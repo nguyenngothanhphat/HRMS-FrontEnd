@@ -1,0 +1,32 @@
+.signup_component {
+  position: relative;
+  :global {
+    .has-error {
+      input,
+      input:hover,
+      input:focus {
+        border-color: #ff4d4f !important;
+      }
+    }
+    .ant-form-item-label {
+      label {
+        opacity: 0.7 !important;
+        color: #000 !important;
+        font-size: 16px !important;
+        letter-spacing: 0;
+        line-height: 20px !important;
+        font-weight: 400 !important;
+      }
+      .ant-form-item-required {
+        &:before {
+          display: none !important;
+        }
+        &:after {
+          content: '*' !important;
+          color: #000 !important;
+          opacity: 0.7 !important;
+        }
+      }
+    }
+  }
+}

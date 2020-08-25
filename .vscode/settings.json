@@ -1,0 +1,22 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist": true,
+    "**/coverge": true
+  },
+  "typescript.referencesCodeLens.enabled": true,
+  "tslint.ignoreDefinitionFiles": true,
+  "tslint.exclude": "**/node_modules/**/*",
+  "editor.formatOnSave": true,
+  "eslint.autoFixOnSave": true,
+  "javascript.format.enable": false,
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#0000008a",
+    "titleBar.activeBackground": "#0000008a",
+    "titleBar.activeForeground": "#ffffff"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}

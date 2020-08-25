@@ -1,0 +1,82 @@
+:global {
+  .has-error :local(.root) .ant-input,
+  .has-error :local(.root) .ant-input-affix-wrapper:hover .ant-input {
+    border-color: #d9d9d9;
+  }
+  .ant-table-body {
+    overflow-x: auto !important;
+  }
+}
+
+.root {
+  :global {
+    .ant-table {
+      margin-top: 25px;
+    }
+  }
+}
+
+.btnView {
+  margin-right: 10px;
+  color: #76d0ff;
+}
+
+.btnView:hover,
+.btnDel:hover {
+  color: #e67225;
+}
+
+.btnDel {
+  color: #ff6f6f;
+  cursor: pointer;
+}
+
+.input {
+  width: 100%;
+  :global {
+    .ant-input {
+      border: none;
+      border-bottom: 1px solid #d9d9d9;
+      border-radius: 0;
+      box-shadow: none;
+      background-color: #fff;
+      color: rgba(0, 0, 0, 0.65);
+      cursor: default;
+    }
+    .ant-input:focus,
+    .ant-input:after,
+    .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled) {
+      border-bottom: 1px solid #e67225;
+    }
+  }
+}
+
+.popoverCheck {
+  :global {
+    .ant-popover-inner-content {
+      background-color: #d2d2d2;
+      font-weight: 600;
+    }
+    .ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow {
+      left: 80%;
+    }
+  }
+}
+
+.titleAdd {
+  font-size: 24px;
+  color: #e67225;
+  font-weight: bold;
+  text-align: center;
+}
+
+.description {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.avatar {
+  border: 0.5px solid black;
+  margin-right: 10px;
+}

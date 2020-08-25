@@ -1,0 +1,15 @@
+FROM circleci/node:latest-browsers
+USER root
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package.json ./
+RUN yarn
+
+FROM circleci/node
+USER root
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app /usr/src/app
+COPY . .
+RUN yarn build

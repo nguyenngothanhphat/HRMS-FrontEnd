@@ -1,0 +1,100 @@
+.root {
+  .select {
+    width: 100% !important;
+  }
+
+  .select :global(.ant-select-selection),
+  .input {
+    border: none;
+    width: 100% !important;
+    border-bottom: 1px solid #d9d9d9;
+    border-radius: 0 !important;
+    &:focus {
+      box-shadow: none;
+      border-color: #f2954e;
+    }
+  }
+
+  .disabled {
+    background: #fff;
+    pointer-events: none;
+    input {
+      word-spacing: 10px;
+    }
+  }
+
+  .total {
+    input {
+      color: rgba(0, 0, 0, 0.65);
+      word-spacing: 5px;
+    }
+  }
+
+  .rate {
+    input {
+      text-align: center;
+    }
+  }
+
+  :global {
+    .ant-row-flex {
+      width: 100%;
+      padding: 0;
+    }
+
+    .ant-input-number-focused {
+      box-shadow: none;
+      border-color: #f2954e;
+    }
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+  }
+}
+
+:global {
+  .screen-sm,
+  .screen-xs {
+    :local(.root) .ant-input-number-input {
+      text-align: center;
+    }
+  }
+}
+
+.inputPicker {
+  :global {
+    .ant-input {
+      border: none;
+      border-bottom: 1px solid #d9d9d9;
+      border-radius: 0;
+      box-shadow: none;
+      background-color: #fff;
+      color: rgba(0, 0, 0, 0.65);
+      cursor: default;
+    }
+    .ant-input:focus,
+    .ant-input:after,
+    .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled) {
+      border-bottom: 1px solid #e67225;
+    }
+  }
+}
+
+.title {
+  font-weight: 14px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.avatar {
+  max-width: 100%;
+  height: auto;
+}
+
+.amountInput {
+  margin-top: 18px;
+}
+
+.styleText {
+  text-align: center;
+}

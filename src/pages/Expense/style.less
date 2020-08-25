@@ -1,0 +1,270 @@
+@import '~antd/lib/style/themes/default.less';
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 29px;
+}
+
+.addBtn {
+  height: 47px;
+  width: 170px;
+  border-radius: 4px;
+  border: none;
+  background-color: #fca00a;
+  font-size: 14px;
+  line-height: 17px;
+  color: white;
+  // margin-right: 40px;
+  &:hover,
+  &:focus {
+    opacity: 0.6;
+    background-color: #fca00a;
+  }
+}
+
+.tabBox {
+  width: 100%;
+  border: none;
+  background-color: #f0f2f5;
+  :global {
+    .ant-card-wider-padding .ant-card-body {
+      padding: 0 10px;
+    }
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+}
+
+.root {
+  background-color: #eff2fa;
+  :global {
+    .ant-input {
+      height: 47px;
+      width: 191px;
+    }
+    .ant-menu-item {
+      padding: 0;
+      margin: 0 40px 0 0 !important;
+    }
+    // menu
+    .ant-statistic-content {
+      font-weight: normal;
+      letter-spacing: 0;
+      line-height: 22px;
+      color: black;
+      opacity: 0.5;
+      .ant-statistic-content-value-decimal {
+        font-size: 18px;
+      }
+    }
+    .ant-menu-item-selected {
+      font-weight: bold;
+      .intranet-pages-expense-style-summary {
+        color: @primary-color !important;
+        .intranet-pages-expense-style-summaryCount {
+          color: @primary-color !important;
+        }
+      }
+      .ant-statistic-content {
+        font-weight: bold;
+        color: @primary-color;
+        opacity: 1;
+      }
+    }
+    .ant-menu-submenu-title {
+      display: none;
+    }
+  }
+}
+
+// delete modal
+.deleteModal {
+  width: 400px !important;
+  :global {
+    .ant-modal-body {
+      font-size: 12px;
+      letter-spacing: 0;
+      line-height: 15px;
+      color: black;
+      padding-bottom: 29px;
+    }
+    .ant-modal-footer {
+      border: none;
+      padding-top: 0;
+      padding-bottom: 28px;
+      .ant-btn {
+        width: 100px;
+        height: 35px;
+        border-color: #fca00a;
+        color: #fca00a;
+        &:hover,
+        &:focus {
+          opacity: 0.6;
+        }
+      }
+      .ant-btn-primary {
+        margin-left: 24px;
+        background-color: #fca00a;
+        color: white;
+      }
+    }
+  }
+}
+
+.filterDrawer {
+  .filterDrawerTitle {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    color: #3a354e;
+  }
+  :global {
+    // drawer
+    .ant-drawer-content-wrapper {
+      .ant-drawer-content {
+        border-radius: 4px;
+      }
+    }
+    .ant-drawer-close {
+      color: #3a354e;
+    }
+    .ant-drawer-wrapper-body {
+      display: block !important;
+      background-color: #fff;
+    }
+    // form
+    .ant-form-item-label {
+      line-height: 15px;
+      label {
+        opacity: 0.5;
+        color: #3a354e;
+        font-size: 12px;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.menuArea {
+  flex-wrap: nowrap;
+  .summary {
+    font-size: 18px;
+    line-height: 22px;
+    color: #9c9c9c;
+    .summaryCount {
+      margin-top: 5px;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: normal;
+      padding-bottom: 11px;
+      color: black;
+    }
+  }
+}
+
+.actionBtn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: auto;
+  padding-left: 25px;
+  height: 51px;
+  background: linear-gradient(270deg, #f4f7fe 0%, #eff2fa 100%);
+  .btn {
+    margin-right: 25px;
+    width: 18px;
+    height: auto;
+    cursor: pointer;
+    &:hover {
+      fill: @primary-color !important;
+    }
+  }
+}
+
+.btnAdd {
+  width: 200px;
+}
+
+.btnExport {
+  min-width: 117px;
+  margin-bottom: 10px;
+}
+
+.menuMainTitle {
+  color: #3a354e;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 29px;
+  margin-bottom: 6.5px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border: 0.5px solid #dadada;
+  margin-bottom: 18.5px;
+}
+
+.menuTitle {
+  color: #3a354e;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 22px;
+  margin-bottom: 6px;
+}
+
+.menuSubTitle {
+  color: #9c9c9c;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.addMenuStyle {
+  padding: 33px 28px 35px 40px;
+}
+
+.iconBlack {
+  fill: black;
+  width: 18px;
+}
+
+.iconPrimary {
+  fill: @primary-color;
+  width: 18px;
+}
+
+.selectYear {
+  width: 100px;
+  height: 47px;
+  margin-right: 22px;
+  :global {
+    .ant-select-selection {
+      height: 47px;
+      .ant-select-selection__rendered {
+        line-height: 47px;
+      }
+    }
+  }
+}
+
+.disabled {
+  cursor: not-allowed !important;
+  opacity: 0.3 !important;
+}
+
+.countDelete {
+  color: #f5a623;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.deleteTitle {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 20px;
+  margin-bottom: 24px;
+  color: black;
+}

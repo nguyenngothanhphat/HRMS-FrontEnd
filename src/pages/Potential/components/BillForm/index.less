@@ -1,0 +1,57 @@
+.root {
+  padding: 0;
+}
+
+.btnAdd {
+  width: 150px;
+  font-size: 15px;
+  font-weight: 600;
+  &.btnNew {
+    background-color: #4b5c64;
+    color: #fff;
+  }
+}
+
+.form1 {
+  padding-bottom: 24px;
+  :global {
+    .ant-card-body {
+      padding: 24px 24px 0;
+    }
+  }
+}
+
+.form2 {
+  :global {
+    .ant-upload.ant-upload-drag {
+      margin-bottom: 15px;
+    }
+    .ant-upload.ant-upload-drag .ant-upload-btn {
+      height: 319px;
+    }
+    .ant-upload-list-picture-card .ant-upload-list-item {
+      width: 103px;
+      height: 103px;
+    }
+  }
+}
+
+.input,
+.select > :global(.ant-select-selection),
+.date :global(.ant-input) {
+  border: none;
+  border-bottom: 1px solid #d9d9d9;
+  border-radius: 0;
+  box-shadow: none !important;
+  &:focus,
+  input:focus {
+    box-shadow: none !important;
+    border-color: #f2954e;
+  }
+
+  &:hover,
+  input:hover {
+    box-shadow: none !important;
+    border-color: #f2954e;
+  }
+}

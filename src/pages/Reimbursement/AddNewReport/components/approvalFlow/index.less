@@ -1,0 +1,65 @@
+.approval_flow_paper {
+  padding: 15px 25px 10px 25px;
+  min-width: 608px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background-color: #fff;
+  border-radius: 4px;
+  .approval_flow_slider_node {
+    font-size: 11px;
+    line-height: 13px;
+    word-wrap: break-word;
+    color: #6c6c6c;
+    max-width: 60px;
+    text-overflow: ellipsis;
+  }
+  :global {
+    .ant-slider-track {
+      background-color: #65c652 !important;
+    }
+    .ant-slider-dot-active {
+      border: none;
+      background-color: #65c652 !important;
+    }
+    .ant-slider-handle {
+      border: none;
+      background-color: #65c652 !important;
+      transform: scale(0.714) translateX(-50%) !important;
+    }
+    .ant-slider-dot {
+      border: none;
+      background-color: #e8e8e8;
+    }
+  }
+}
+.approval_flow_paper_reject {
+  :global {
+    .ant-slider-track {
+      background-color: #f75b62 !important;
+    }
+    .ant-slider-dot-active {
+      border: none;
+      background-color: #f75b62 !important;
+    }
+    .ant-slider-handle {
+      border: none;
+      background-color: #f75b62 !important;
+    }
+  }
+}
+
+.approval_flow_paper_inquiry {
+  :global {
+    .ant-slider-track {
+      background-color: orange !important;
+    }
+    .ant-slider-dot-active {
+      border: none;
+      background-color: orange !important;
+    }
+    .ant-slider-handle {
+      border: none;
+      background-color: orange !important;
+    }
+  }
+}

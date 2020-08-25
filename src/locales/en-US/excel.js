@@ -1,0 +1,18 @@
+export default {
+  'excel.bill': 'Expenses',
+  'excel.reimbursable.yes': 'Yes',
+  'excel.reimbursable.no': 'No',
+  'excel.report-id': 'Report ID',
+  'excel.expense-id': 'Expense ID',
+  'excel.requester': 'Requester',
+  'excel.amount-of-bills': 'Amount of bills',
+  'excel.original-amount': 'Original Amount',
+  'excel.original-currency': 'Original Currency',
+  'excel.date': 'Date',
+  'excel.working-email': 'Working email',
+  'excel.description': 'Description',
+  'excel.type': 'Type',
+  'excel.office': 'Office',
+  'excel.status': 'Status',
+  'excel.action': 'Action',
+};

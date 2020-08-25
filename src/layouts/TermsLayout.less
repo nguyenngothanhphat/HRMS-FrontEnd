@@ -1,0 +1,58 @@
+@import '~antd/lib/style/themes/default.less';
+
+.container {
+  background: url('@/assets/backgroud.png') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: space-around;
+  min-height: 100vh;
+}
+
+.content {
+  // padding: 20px 0;
+  margin: 20px;
+  width: 95vw;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5em;
+  background-color: #fff;
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.5);
+}
+
+// Medium grid
+//
+
+@media (max-width: @screen-xs-min) {
+  .content {
+    max-width: 370px;
+  }
+}
+
+@media (min-width: @screen-xs-min) {
+  .content {
+    width: 370px;
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  .content {
+    width: 370px;
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  .content {
+    width: 85vw;
+  }
+}
+
+@media (min-width: @screen-lg-min) {
+  .content {
+    width: 80vw;
+  }
+}
+
+@media (min-width: @screen-xl-min) {
+  .content {
+    width: 75vw;
+  }
+}

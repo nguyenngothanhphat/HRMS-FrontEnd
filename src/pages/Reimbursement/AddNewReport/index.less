@@ -1,0 +1,226 @@
+.employee_report_new_component {
+  .employee_new_report_dialog_content {
+    p {
+      font-size: 12px !important;
+      line-height: 15px;
+      &:first-of-type {
+        margin-top: 0;
+      }
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+  .employee_report_new_name {
+    h1 {
+      color: #3a354e;
+      font-size: 35px;
+      line-height: 42px;
+      font-weight: 500;
+      margin: 0;
+      // max-width: 250px !important;
+      white-space: nowrap;
+      overflow: hidden !important;
+      float: right;
+      text-overflow: ellipsis;
+      .employee_report_totalAmount {
+        :global {
+          .ant-statistic-content-value-int {
+            font-size: 35px;
+            line-height: 42px;
+            font-weight: 500;
+          }
+          .ant-statistic-content-value-decimal {
+            font-size: 24px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    .employee_report_button_save,
+    .employee_report_button_submit {
+      height: 35px;
+      min-width: 120px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .employee_report_button_save {
+      border: 1px solid #fca00a;
+      color: #fca00a;
+      // &:hover {
+      //   background-color: #fca00a;
+      //   color: #fff;
+      // }
+    }
+    .employee_report_button_submit {
+      background-color: #fca00a;
+      border: 1px solid #fca00a;
+      color: #fff;
+      margin-left: 32px;
+      // &:hover {
+      //   background-color: #fff;
+      //   color: #fca00a;
+      // }
+    }
+    .employee_report_name_description {
+      color: #000;
+      font-size: 12px;
+      line-height: 15px;
+      max-width: 322px;
+      float: right;
+      margin-top: 7px;
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+  }
+  .employee_report_col_name {
+    h1 {
+      color: #3a354e;
+      font-size: 24px;
+      font-weight: bold;
+      line-height: 29px;
+      transform: translate(0, -5px);
+      margin: 0;
+    }
+    :global {
+      .ant-tabs-tab {
+        width: 50%;
+        margin-right: 0;
+        text-align: center;
+      }
+      .ant-tabs-nav {
+        width: 100%;
+        background-color: #f4f7fe;
+      }
+      .ant-tabs-bar {
+        margin-bottom: 0 !important;
+      }
+      .ant-input {
+        border: none !important;
+        border-bottom: 1px solid #d9d9d9 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        input {
+          border: none !important;
+          background-color: #fff !important;
+        }
+
+        &:focus,
+        input:focus {
+          box-shadow: none !important;
+          border-color: #2b6df8 !important;
+        }
+
+        &:hover,
+        input:hover {
+          box-shadow: none !important;
+          border-color: #2b6df8 !important;
+        }
+      }
+    }
+    .employee_report_name {
+      max-width: 450px;
+      margin-top: 25px;
+      margin-bottom: 21px;
+      .employee_report_name_input {
+        opacity: 0.5;
+        color: #000;
+        font-size: 12px;
+        line-height: 15px;
+        &:after {
+          content: '*';
+          color: #000;
+          opacity: 0.5;
+          font-size: 10px;
+          transform: translate(0, -2px);
+        }
+      }
+      .employee_report_input_value {
+        background-color: transparent;
+        color: #000;
+        font-size: 18px;
+        line-height: 22px;
+      }
+    }
+  }
+  .employee_new_report_summary {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    z-index: 99;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  .employee_new_report_approval {
+    .employee_new_report_approval_block {
+      margin-right: 20px;
+      position: relative;
+      height: 412px;
+    }
+  }
+  @media only screen and (min-width: 1181px) {
+    .employee_new_report_summary {
+      transform: translate(0, 35px);
+    }
+  }
+  @media only screen and (max-width: 1180px) {
+    .employee_new_report_approval {
+      min-width: 100% !important;
+    }
+    .employee_new_report_summary {
+      transform: translate(0, 447px);
+    }
+    .employee_new_report_comment_box {
+      min-width: 100% !important;
+      margin-top: -310px;
+    }
+    .employee_new_report_expense_list {
+      margin-top: 341px;
+    }
+  }
+  @media only screen and (max-width: 855px) {
+    .employee_new_col_name_container {
+      min-width: 100% !important;
+      h1 {
+        transform: translate(0, 117px);
+      }
+    }
+    .employee_new_report_name_container {
+      min-width: 100% !important;
+      transform: translate(0, -36px);
+    }
+  }
+}
+
+.employee_new_report_dialog {
+  :global {
+    .ant-modal-content {
+      width: 400px;
+      overflow: auto;
+      height: auto;
+      border-radius: 4px;
+      .ant-modal-close-x {
+        display: none !important;
+      }
+      .ant-modal-header {
+        border-color: transparent;
+        padding: 20px 25px 24px 25px;
+        .ant-modal-title {
+          color: #000;
+          font-size: 16px;
+          font-weight: bold;
+          line-height: 20px;
+        }
+      }
+      .ant-modal-footer {
+        border-color: transparent;
+        padding: 0 !important;
+        margin: 33px auto 28px 23px;
+      }
+      .ant-modal-body {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+}

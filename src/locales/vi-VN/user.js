@@ -1,0 +1,15 @@
+export default {
+  'user.sigin.success': 'Tạo tài khoản mới thành công',
+  'user.profile.update.success': 'Cập nhật hồ sơ người dùng thành công',
+  'user.not.found.mileage.rate': 'Tỷ lệ phụ cấp lộ phí không tìm thấy, bạn phải cập nhật nó',
+  'user.mileage.rate.update.success': 'Cập nhật hồ sơ thành công',
+  'user.title': 'Chức vụ',
+  'user.userCode': 'Số hiệu',
+  'user.supervisor': 'Giám sát viên',
+  'user.location': 'Vị trí',
+  'user.location.currency': 'Tiền tệ',
+  'user.name': 'Tên',
+  'user.email': 'Email',
+  'user.notification': 'Nhận email thông báo nâng cấp hệ thống',
+  'user.notification.success': 'Cập nhật thông báo thành công',
+};

@@ -1,0 +1,18 @@
+export default {
+  'filter.date.range': 'Date of Spend',
+  'filter.amount.range': 'Amount',
+  'filter.from': 'From',
+  'filter.to': 'To',
+  'filter.select.category': 'Categories',
+  'filter.select.category.placeholder': 'Select a category',
+  'filter.select.type.placeholder': 'Select a type',
+  'filter.select.group.placeholder': 'Select a tag',
+  'filter.select.project.placeholder': 'Select a project',
+  'filter.creditCard.select.placeholder': 'Select a credit card',
+  'filter.btn.reset': 'Reset',
+  'filter.btn.submit': 'Submit',
+  'filter.btn.resolve': 'Resolve',
+  'filter.btn.reject': 'Reject',
+  'filter.type.normal-expense': 'Normal expense',
+  'filter.type.mileage': 'Mileage',
+};

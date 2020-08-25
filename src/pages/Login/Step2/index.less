@@ -1,0 +1,98 @@
+.step2Container {
+  max-width: 500px;
+  :global {
+    .ant-input {
+      border: 1px solid rgba(184, 184, 184, 0.3) !important;
+      border-radius: 4px !important;
+      font-size: 14px !important;
+      color: #3a354e;
+    }
+  }
+  .link {
+    color: #f5a623;
+    font-size: 14px;
+    line-height: 17px;
+    &:hover {
+      cursor: pointer;
+      color: rgba(252, 160, 10, 0.7) !important;
+    }
+  }
+  .scheck {
+    display: flex;
+    justify-content: space-between;
+    :global {
+      .ant-checkbox-inner {
+        width: 14px;
+        height: 14px;
+      }
+      .ant-checkbox-checked .ant-checkbox-inner {
+        background-color: #2b6df8;
+      }
+      .ant-checkbox-checked .ant-checkbox-inner::after {
+        width: 5px !important;
+        height: 8px !important;
+      }
+    }
+    .labelFW {
+      color: #3a354e;
+      font-size: 12px;
+      letter-spacing: 0;
+      line-height: 15px;
+      font-weight: normal !important;
+    }
+  }
+  .title {
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 41px;
+    color: #3a354e;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    opacity: 0.7;
+    color: #3a354e;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 39px;
+  }
+  .inputLabel {
+    font-size: 16px;
+    line-height: 20px;
+    opacity: 0.7;
+    color: #3a354e;
+  }
+  .submitBtn {
+    background-color: #fca00a;
+    border-color: #fca00a;
+    border-radius: 4px;
+    color: white;
+    height: 50px;
+    &:hover {
+      background-color: rgba(252, 160, 10, 0.7) !important;
+      border-color: rgba(252, 160, 10, 0.7) !important;
+      color: white;
+    }
+  }
+  button:disabled,
+  button[disabled],
+  button[disabled]:hover {
+    opacity: 0.5;
+  }
+  .wrapSignUpLink {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    .txtDontHave {
+      color: #3a354e;
+      font-size: 14px;
+      line-height: 17px;
+      margin-right: 5px;
+    }
+  }
+  .signin_companyCode {
+    text-transform: uppercase;
+    &::placeholder {
+      text-transform: capitalize;
+    }
+  }
+}

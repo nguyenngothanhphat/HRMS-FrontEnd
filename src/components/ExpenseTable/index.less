@@ -1,0 +1,171 @@
+@import '~antd/lib/style/themes/default.less';
+
+.root {
+  .has-error :local(.root) .ant-input,
+  .has-error :local(.root) .ant-input-affix-wrapper:hover .ant-input {
+    border-color: #d9d9d9;
+  }
+  :global {
+    // table
+    .ant-table {
+      .ant-table-content {
+        border-radius: 4px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px 0 rgba(180, 180, 180, 0.5);
+      }
+      .ant-table-body {
+        overflow-x: auto !important;
+      }
+      tbody > tr.ant-table-row-selected > td {
+        background-color: #e9f0fe;
+      }
+    }
+    .ant-table-small {
+      border: none;
+    }
+    .ant-table-thead {
+      border-radius: 4px 4px 0 0;
+      background-color: #f4f7fe;
+      & > tr > th {
+        font-weight: bold;
+      }
+    }
+    // table > check box
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: @primary-color;
+      border-color: @primary-color;
+    }
+    .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+      background-color: @primary-color;
+    }
+    .ant-checkbox-inner {
+      width: 13px;
+      height: 13px;
+      &::after {
+        width: 7px;
+        height: 7px;
+      }
+    }
+
+    // table pagination
+    .ant-pagination-item {
+      border: none;
+      background-color: transparent;
+    }
+    .ant-pagination-item-active {
+      border: none;
+      background-color: transparent;
+    }
+
+    // pagination
+    .ant-select-selection,
+    .ant-input-search,
+    .ant-input {
+      &:hover,
+      &:focus {
+        border-bottom: 1px solid @primary-color;
+      }
+    }
+    .ant-select-selection {
+      background-color: transparent;
+      &:hover,
+      &:focus {
+        border-bottom: 1px solid @primary-color !important;
+      }
+    }
+    .ant-pagination-options-quick-jumper {
+      input {
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid #d9d9d9;
+        &:hover,
+        &:focus {
+          border-bottom: 1px solid @primary-color;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+.btnView {
+  margin-right: 10px;
+  color: #76d0ff;
+}
+
+.btnView:hover,
+.btnDel:hover {
+  color: #e67225;
+}
+
+.btnDel {
+  color: #ff6f6f;
+  cursor: pointer;
+}
+
+.btnSearch {
+  width: 200px;
+}
+
+:global(.ant-calendar-picker-input) {
+  border: none;
+}
+
+.description {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 150px;
+}
+
+.divider {
+  margin-bottom: 35px;
+  padding-left: 15px;
+}
+
+.priceInput {
+  display: flex;
+  align-items: flex-end;
+}
+
+.reviewBtn {
+  width: 72.91px;
+  height: 26px;
+  border-radius: 12.5px;
+  color: #f5a623;
+  border-color: #f5a623;
+  font-size: 12px;
+  line-height: 15px;
+  &:hover,
+  &:focus {
+    color: #f5a623;
+    border-color: #f5a623;
+    opacity: 0.6;
+  }
+}
+
+.spentColumn {
+  padding-left: 28px !important;
+}
+
+.reviewExpenseDrawer {
+  :global {
+    .ant-drawer-header {
+      .ant-drawer-title {
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0;
+        line-height: 20px;
+      }
+    }
+    .ant-drawer-close {
+      color: #3a354e;
+    }
+    .ant-drawer-wrapper-body {
+      background-color: #fff;
+      display: block !important;
+      // padding-bottom: 100px;
+    }
+  }
+}

@@ -1,0 +1,62 @@
+.root {
+  .select {
+    width: 100% !important;
+  }
+
+  .select :global(.ant-select-selection),
+  .input {
+    border: none;
+    width: 100% !important;
+    border-bottom: 1px solid #d9d9d9;
+    border-radius: 0 !important;
+    &:focus,
+    .select:focus {
+      box-shadow: none;
+      border-color: #2b6df8 !important;
+    }
+  }
+
+  .disabled {
+    background: #fff;
+    pointer-events: none;
+    input {
+      word-spacing: 10px;
+    }
+  }
+
+  .total {
+    input {
+      color: rgba(0, 0, 0, 0.65);
+      word-spacing: 5px;
+    }
+  }
+
+  .rate {
+    input {
+      text-align: center;
+    }
+  }
+
+  :global {
+    .ant-row-flex {
+      width: 100%;
+    }
+
+    .ant-input-number-focused {
+      box-shadow: none;
+      border-color: #2b6df8 !important;
+    }
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+  }
+}
+
+:global {
+  .screen-sm,
+  .screen-xs {
+    :local(.root) .ant-input-number-input {
+      text-align: center;
+    }
+  }
+}

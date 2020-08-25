@@ -1,0 +1,63 @@
+.signup_selector {
+  position: absolute;
+  width: 416px;
+  transform: translate(0, -75px);
+  .signup_step_icon {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 17px;
+    background-color: #fca00a;
+    padding: 4px 9px;
+    border-radius: 50%;
+  }
+  :global {
+    .ant-steps {
+      height: 50px;
+    }
+    .ant-steps-item {
+      overflow: initial !important;
+      &:nth-of-type(2),
+      &:nth-of-type(3) {
+        .ant-steps-item-description {
+          transform: translate(-20px, 30px);
+        }
+      }
+    }
+    .ant-steps-item-description {
+      transform: translate(-30px, 30px);
+    }
+    .ant-steps-item-icon {
+      transform: translate(30px, 0);
+    }
+    .ant-steps-item-title {
+      &:after {
+        top: 13px !important;
+        height: 2px;
+        background-color: #fca00a !important;
+        width: 139px !important;
+        transform: translateX(6px);
+      }
+    }
+    .ant-steps-item-process {
+      .ant-steps-item-title {
+        &:after {
+          opacity: 0.5 !important;
+        }
+      }
+    }
+    .ant-steps-item-wait {
+      .ant-steps-item-title {
+        &:after {
+          opacity: 0.5 !important;
+        }
+      }
+      .ant-steps-item-icon {
+        .intranet-pages-signup-components-steps-index-signup_step_icon {
+          opacity: 0.5 !important;
+        }
+      }
+    }
+  }
+}

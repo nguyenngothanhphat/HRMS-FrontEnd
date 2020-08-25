@@ -1,0 +1,249 @@
+.root {
+  width: 100%;
+  :global {
+    .ant-form-item {
+      margin-bottom: 18px;
+    }
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+    .ant-select-selection-selected-value,
+    .ant-input {
+      color: black;
+      font-size: 18px;
+      line-height: 22px;
+    }
+    .ant-input {
+      padding: 4px 0;
+    }
+    .ant-select-selection__placeholder {
+      font-size: 18px;
+    }
+    .ant-form-item-label > label::after {
+      content: ':';
+      display: none;
+    }
+    .ant-form-item-required::before {
+      display: none;
+    }
+    .ant-btn-group .ant-btn-primary:first-child:not(:last-child) {
+      min-width: 122px;
+      background-color: #fca00a;
+      border: none;
+      height: 47px;
+    }
+    .ant-dropdown-button.ant-btn-group > .ant-btn:last-child:not(:first-child) {
+      height: 47px;
+      border: none;
+      border-left: 0.5px solid white;
+      background-color: #fca00a;
+    }
+    .ant-btn-group > .ant-btn:hover {
+      background-color: rgba(252, 160, 10, 0.7) !important;
+      z-index: unset;
+    }
+  }
+  .viewCheckbox {
+    margin-top: 23px;
+    :global {
+      .ant-checkbox-checked .ant-checkbox-inner {
+        background-color: #2b6df8 !important;
+        border-color: #2b6df8 !important;
+      }
+      .ant-form-item {
+        margin-bottom: 0;
+      }
+    }
+    .textCheckBox {
+      color: #3a354e;
+      font-weight: normal;
+      font-size: 18px;
+      float: right;
+    }
+  }
+
+  .input,
+  .select > :global(.ant-select-selection),
+  .date :global(.ant-input) {
+    border: none;
+    border-bottom: 1px solid #d9d9d9;
+    border-radius: 0;
+    box-shadow: none !important;
+    &:focus,
+    input:focus {
+      box-shadow: none !important;
+      border-color: #2b6df8 !important;
+    }
+
+    &:hover,
+    input:hover {
+      box-shadow: none !important;
+      border-color: #2b6df8 !important;
+    }
+  }
+  .inputFail,
+  .selectFail > :global(.ant-select-selection),
+  .dateFail :global(.ant-input) {
+    border: none;
+    border-bottom: 1px solid red !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    &:focus,
+    input:focus {
+      box-shadow: none !important;
+      border-color: red !important;
+    }
+
+    &:hover,
+    input:hover {
+      box-shadow: none !important;
+      border-color: red !important;
+    }
+  }
+}
+
+.form2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .textTitleForm2 {
+    margin-top: 50px;
+    margin-bottom: 40px;
+    font-size: 12px;
+    line-height: 15px;
+    color: rgba(58, 53, 78, 0.5);
+  }
+  .btnAdd {
+    min-width: 140px;
+    height: 47px;
+    background-color: #fca00a !important;
+    color: #fff;
+    border-color: #fca00a !important;
+    border-width: 1px;
+    &:hover {
+      background-color: rgba(252, 160, 10, 0.7) !important;
+      border-color: rgba(252, 160, 10, 0.7) !important;
+    }
+  }
+
+  .btnNew {
+    background-color: #fff;
+    color: #fca00a !important;
+    border-color: #fca00a !important;
+    height: 47px;
+    min-width: 150px;
+    &:hover {
+      color: rgba(252, 160, 10, 0.7) !important;
+      border-color: rgba(252, 160, 10, 0.7) !important;
+    }
+  }
+  :global {
+    .ant-upload.ant-upload-drag {
+      margin-bottom: 15px;
+    }
+    .ant-upload.ant-upload-drag .ant-upload-btn {
+      height: 319px;
+    }
+    .ant-upload-list-picture-card .ant-upload-list-item {
+      width: 103px;
+      height: 103px;
+    }
+  }
+}
+
+.mainTitle {
+  font-size: 24px;
+  line-height: 29px;
+  color: #3a354e;
+  font-weight: 600;
+  margin: 0;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 17px;
+  margin-right: 6px;
+  line-height: 29px;
+  color: #3a354e;
+  font-weight: 600;
+}
+
+.btnAddTag {
+  font-size: 18px;
+  color: #fca00a;
+  font-weight: 600;
+}
+
+.label {
+  color: rgba(58, 53, 78, 0.5);
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.labelFail {
+  color: red;
+  font-size: 12px;
+  font-weight: normal;
+}
+.required {
+  color: rgba(58, 53, 78, 0.5);
+  font-size: 14px;
+}
+.requiredFail {
+  color: #f5222d;
+  font-size: 14px;
+}
+
+// delete modal
+.deleteModal {
+  width: 400px !important;
+  :global {
+    .ant-modal-body {
+      font-size: 12px;
+      letter-spacing: 0;
+      line-height: 15px;
+      color: black;
+      padding-bottom: 29px;
+    }
+    .ant-modal-footer {
+      border: none;
+      padding-top: 0;
+      padding-bottom: 28px;
+      .ant-btn {
+        width: 100px;
+        height: 35px;
+        border-color: #fca00a;
+        color: #fca00a;
+        &:hover,
+        &:focus {
+          opacity: 0.6;
+        }
+      }
+      .ant-btn-primary {
+        margin-left: 24px;
+        background-color: #fca00a;
+        color: white;
+      }
+    }
+  }
+}
+
+.deleteTitle {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0;
+  line-height: 20px;
+  margin-bottom: 24px;
+  color: black;
+}
+
+.menu {
+  :global {
+    .ant-dropdown-menu-item {
+      width: 139px !important;
+    }
+    .ant-dropdown-menu-item:hover {
+      background-color: #eff2fa !important;
+    }
+  }
+}

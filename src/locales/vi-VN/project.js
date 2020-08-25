@@ -1,0 +1,15 @@
+export default {
+  'project.submit.success': 'Lưu dự án thành công',
+  'project.remove.success': 'Xoá dự án thành công',
+  'project.name': 'TÊN',
+  'project.description': 'MÔ TẢ',
+  'project.visibility': 'THẤY ĐƯỢC',
+  'project.all-project': 'Tất cả dự án',
+  'project.add-project': 'Thêm dự án',
+  'project.status': 'Trạng thái',
+  'project.active': 'KÍCH HOẠT',
+  'project.inactive': 'VÔ HIỆU',
+  'project.visibility.checkbox': 'Hiển thị cho tất cả nhân viên',
+  'project.all-employee': 'Tất cả nhân viên',
+  'project.visibility.required': 'Dự án phải được nhìn thấy bởi ít nhất một nhân viên',
+};

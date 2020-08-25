@@ -1,0 +1,91 @@
+.root {
+  margin: 24px;
+  .form {
+    :global {
+      .ant-form-item {
+        font-size: 12px;
+        margin-top: 15px;
+      }
+      label {
+        cursor: text;
+      }
+      .ant-input-disabled {
+        background-color: transparent;
+        color: rgba(0, 0, 0, 0.65);
+      }
+    }
+    .has-error .ant-input:focus {
+      box-shadow: none;
+    }
+    .ant-select-selection {
+      border: none;
+    }
+  }
+
+  .price-input {
+    box-shadow: none !important;
+    border: none;
+    background-color: transparent;
+    font-size: 32px;
+    :global(.ant-input-number-input) {
+      color: black;
+      cursor: default;
+      text-align: right;
+    }
+  }
+
+  .input {
+    border: none;
+    border-bottom: 1px solid #d9d9d9;
+    border-radius: 0;
+    box-shadow: none !important;
+    input {
+      border: none;
+      background-color: #fff;
+    }
+
+    &:focus,
+    input:focus {
+      box-shadow: none !important;
+      border-color: #f2954e;
+    }
+
+    &:hover,
+    input:hover {
+      box-shadow: none !important;
+      border-color: #f2954e;
+    }
+  }
+}
+
+.popup :global(.ant-modal-content) {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .btn {
+    height: 35px;
+    width: 100px;
+    margin: 0 10px 5px;
+    padding: 0 15px;
+    border-radius: 4px;
+  }
+}
+
+.select {
+  :global {
+    .ant-select-selection {
+      border-top: 0;
+      border-right: 0;
+      border-left: 0;
+      border-radius: 0 !important;
+    }
+    .ant-select-selection--multiple .ant-select-selection__placeholder {
+      margin-left: 11px !important;
+    }
+  }
+}
+
+.mr10 {
+  margin-right: 10px;
+}

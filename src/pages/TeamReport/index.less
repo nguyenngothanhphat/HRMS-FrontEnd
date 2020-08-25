@@ -1,0 +1,172 @@
+@import '~antd/lib/style/themes/default.less';
+
+.listRpWrapper {
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3a354e;
+    line-height: 29px;
+  }
+  .selectFY {
+    :global {
+      .ant-select-selection {
+        height: 44px;
+        display: flex;
+        align-items: center;
+      }
+      .ant-select-selection-selected-value {
+        font-size: 14px;
+        color: #3a354e;
+      }
+      .ant-select-arrow {
+        font-size: 11px;
+        color: #3a354e;
+      }
+    }
+  }
+  .selectLocation {
+    margin-right: 24px;
+    :global {
+      .ant-select-selection {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        width: 141px;
+      }
+      .ant-select-selection-selected-value {
+        font-size: 14px;
+        color: #3a354e;
+        font-weight: bold;
+      }
+      .ant-select-arrow {
+        font-size: 11px;
+        color: #3a354e;
+      }
+      .ant-select-selection__rendered {
+        margin: 0 auto;
+      }
+    }
+  }
+}
+.tableReport {
+  text-align: center;
+  width: 210px;
+  border-radius: 4px;
+  height: 70px;
+  background-color: white;
+}
+.menuArea {
+  flex-wrap: nowrap;
+  margin-top: 28px;
+  :global {
+    .ant-menu-item {
+      padding-left: 0;
+      margin-right: 50px;
+    }
+    .ant-statistic-content {
+      font-weight: normal;
+      letter-spacing: 0;
+      line-height: 22px;
+      color: black;
+      opacity: 0.5;
+      .ant-statistic-content-value-decimal {
+        font-size: 18px;
+      }
+    }
+    .ant-menu-item-selected {
+      .intranet-pages-team-report-index-summary {
+        color: #2b6df8 !important;
+        font-weight: bold !important;
+        opacity: 1;
+      }
+      .intranet-pages-team-report-index-summaryCount {
+        color: #2b6df8 !important;
+      }
+      .ant-statistic-content {
+        font-weight: bold;
+        color: @primary-color;
+        opacity: 1;
+      }
+    }
+  }
+  .summary {
+    font-size: 18px;
+    line-height: 22px;
+    color: #3a354e;
+    .summaryCount {
+      margin-top: 5px;
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: normal;
+      padding-bottom: 11px;
+      color: black;
+    }
+  }
+}
+.actionBtn {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-width: 511px;
+  height: 51px;
+  background: linear-gradient(270deg, #f4f7fe 0%, #eff2fa 100%);
+  .btn {
+    width: 18px;
+    height: auto;
+    cursor: pointer;
+    margin-right: 30px;
+    &:hover {
+      fill: @primary-color !important;
+    }
+  }
+}
+.addBtn {
+  width: 100px;
+  height: 44px;
+  background-color: #fca00a;
+  border-color: #fca00a;
+}
+.btnExport {
+  min-width: 117px;
+  margin-bottom: 10px;
+}
+.hiddenLink {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.filterDrawer {
+  .filterDrawerTitle {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 24px;
+    color: #3a354e;
+  }
+  :global {
+    // drawer
+    .ant-drawer-content-wrapper {
+      .ant-drawer-content {
+        border-radius: 4px;
+      }
+    }
+    .ant-drawer-close {
+      color: #3a354e;
+    }
+    // form
+    .ant-form-item-label {
+      line-height: 15px;
+      label {
+        opacity: 0.5;
+        color: #3a354e;
+        font-size: 12px;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.iconPrimary {
+  fill: @primary-color;
+  width: 18px;
+}

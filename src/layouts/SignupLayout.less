@@ -1,0 +1,95 @@
+@import '~antd/lib/style/themes/default.less';
+
+.container {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: white;
+  .footer {
+    background-color: white;
+    font-size: 12px;
+    box-shadow: 0 10px 30px 3px rgba(31, 31, 44, 0.3);
+    z-index: 1;
+  }
+  .ml150 {
+    margin-left: 150px;
+  }
+  .mr150 {
+    margin-right: 150px;
+  }
+  :global {
+    .ant-layout-footer {
+      padding: 14px 0;
+    }
+  }
+}
+
+.logindata {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .backgroundImage {
+    width: 100%;
+    height: calc(100vh - 46px);
+    object-fit: cover;
+  }
+}
+.loginLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 60px 60px 30px 60px;
+  overflow: hidden;
+  height: calc(100vh - 46px);
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 44px;
+  position: absolute;
+  .image {
+    width: 80px;
+    height: auto;
+  }
+  .title {
+    text-align: left;
+    font-size: 50px;
+    line-height: 61px;
+    color: #4a90e2;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+}
+
+.loginRight {
+  padding: 102px 40px 0 40px;
+  overflow: auto;
+  height: calc(100vh - 46px);
+}
+
+.LoginChange {
+  margin-top: 102px;
+  padding: 0;
+}
+.loginImage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.image {
+  background-color: #fff;
+  // min-height: 100vh;
+  :global {
+    .ant-row-flex {
+      padding: 0;
+    }
+  }
+}
+.imaged {
+  position: absolute;
+  right: 0;
+  width: auto;
+  height: 190px;
+}

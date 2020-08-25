@@ -1,0 +1,15 @@
+export default {
+  'filter.from': 'Từ',
+  'filter.to': 'Đến',
+  'filter.select.category.placeholder': 'Chọn một danh mục',
+  'filter.select.type.placeholder': 'Chọn một loại',
+  'filter.select.group.placeholder': 'Chọn một thẻ',
+  'filter.select.project.placeholder': 'Chọn một dự án',
+  'filter.creditCard.select.placeholder': 'Chọn thẻ tín dụng',
+  'filter.btn.reset': 'Đặt lại',
+  'filter.btn.submit': 'Nộp',
+  'filter.btn.resolve': 'Giải quyết',
+  'filter.btn.reject': 'Từ chối',
+  'filter.type.normal-expense': 'Chí phí thường',
+  'filter.type.mileage': 'Phụ cấp lộ phí',
+};
