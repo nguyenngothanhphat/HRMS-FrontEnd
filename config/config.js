@@ -5,7 +5,7 @@ import defaultSettings from '../src/defaultSettings';
 
 const { pwa, theme } = defaultSettings;
 const { APP_TYPE } = process.env;
-const TARGET = 'http://localhost:4500';
+const TARGET = 'https://stgapi-expenso.paxanimi.ai';
 const API_SERVER = '/server/api/';
 
 const plugins = [

@@ -6,7 +6,7 @@ import PageLoading from '../PageLoading';
 import { getDefaultCollapsedSubMenus } from './SiderMenuUtils';
 
 const BaseMenu = React.lazy(() => import('./BaseMenu'));
-const BottomMenu = React.lazy(() => import('./BottomMenu'));
+// const BottomMenu = React.lazy(() => import('./BottomMenu'));
 const { Sider } = Layout;
 const VERSION_WEB = '1.3.0';
 
@@ -92,7 +92,7 @@ export default class SiderMenu extends PureComponent {
                 {...defaultProps}
               />
               <div className={styles.line} />
-              <BottomMenu
+              {/* <BottomMenu
                 {...this.props}
                 mode="inline"
                 handleOpenChange={this.handleOpenChange}
@@ -102,7 +102,7 @@ export default class SiderMenu extends PureComponent {
                 theme={theme}
                 // inlineCollapsed
                 {...defaultProps}
-              />
+              /> */}
               <Menu
                 selectedKeys={[]}
                 onClick={this.onMenuClick}
@@ -121,14 +121,14 @@ export default class SiderMenu extends PureComponent {
                     <span className={styles.txtMenu}>Notifications</span>
                   </span>
                 </Menu.Item> */}
-                <Menu.Item key="logout">
+                {/* <Menu.Item key="logout">
                   <span>
                     <img src="/assets/new-imgs/logout.svg" alt="icon" className={styles.icon} />
                     <span className={styles.txtMenu}>
                       {formatMessage({ id: 'menu.account.logout' })}
                     </span>
                   </span>
-                </Menu.Item>
+                </Menu.Item> */}
               </Menu>
             </Suspense>
           </div>
