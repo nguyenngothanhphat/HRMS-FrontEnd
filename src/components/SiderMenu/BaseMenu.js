@@ -92,7 +92,6 @@ export default class BaseMenu extends PureComponent {
       return (
         <span>
           <Link to={itemPath} target={target}>
-            {icon}
             <span>{name}</span>
           </Link>
         </span>

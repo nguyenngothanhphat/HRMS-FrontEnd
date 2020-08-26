@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import Link from 'umi/link';
+import { Icon } from 'antd';
 import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
@@ -25,12 +25,16 @@ class GlobalHeader extends PureComponent {
     const { collapsed, logo, children, ...restProps } = this.props;
     return (
       <div className={styles.header}>
-        <Link to="/" className={styles.containerLeft}>
-          <img className={styles.logoStyles} src={logo} alt="logo" />
-          <span className={styles.companyName}>Expenso</span>
-        </Link>
+        <div className={styles.containerLeft}>
+          <Icon
+            className={styles.btnTrigger}
+            // type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+            onClick={this.toggle}
+            type="menu"
+          />
 
-        {/* <BreadcrumbView className={styles.breadcrumb} linkElement={Link} {...restProps} /> */}
+          <span className={styles.companyName}>App Name</span>
+        </div>
         <RightContent {...this.props} />
       </div>
     );

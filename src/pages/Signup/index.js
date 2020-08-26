@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 // import { formatMessage } from 'umi-plugin-react/locale';
 import { Row } from 'antd';
+import PageLoading from '@/components/PageLoading';
 import styles from './index.less';
 import Step01 from './Step_1';
 // import Step02 from './Step_2';
@@ -9,7 +10,6 @@ import Step01 from './Step_1';
 // import Step04 from './Step_4';
 import Step05 from './Step_5';
 import Step06 from './Step_1_2';
-import PageLoading from '@/components/PageLoading';
 
 @connect(({ signup, loading }) => ({
   signup,

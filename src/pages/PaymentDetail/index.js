@@ -4,12 +4,9 @@ import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import router from 'umi/router';
 import withRouter from 'umi/withRouter';
-import ListReportTable from '../Report/ListReportTable';
 import PageLoading from '@/components/PageLoading';
 import EmployeeDetail from './component/EmployeeDetail';
 import PaymentSummary from './component/PaymentSummary';
-import ReportBreadcrumb from '../Reimbursement/components/Breadcrumb';
-import DialogConfirm from '../Reimbursement/ViewReport/components/DialogConfirm';
 
 import styles from './index.less';
 
@@ -20,10 +17,6 @@ import styles from './index.less';
   reimbursement,
 }))
 class PaymentDetail extends PureComponent {
-  state = {
-    open: false,
-  };
-
   componentDidMount() {
     const {
       dispatch,
@@ -148,21 +141,6 @@ class PaymentDetail extends PureComponent {
       currency,
     };
     dispatch({ type: 'payment/markPaid', payload: data });
-    this.setState({
-      open: false,
-    });
-  };
-
-  onDialogOpen = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  onDialogClose = () => {
-    this.setState({
-      open: false,
-    });
   };
 
   render() {
@@ -178,7 +156,6 @@ class PaymentDetail extends PureComponent {
         params: { payId },
       },
     } = this.props;
-    const { open = false } = this.state;
 
     const isQueue = payId.includes('queue_') && Object.keys(selectedReportPaid).length > 0;
     const currency = this.getCurrency();
@@ -237,34 +214,8 @@ class PaymentDetail extends PureComponent {
       currency,
     };
 
-    const dialogContent = (
-      <div className={styles.payment_detail_dialog_content}>
-        <p>{formatMessage({ id: 'payment.detail.dialog.markPaid.content_1' })}</p>
-        <p style={{ display: 'flex', color: '#fca00a', fontWeight: 'bold' }}>
-          {formatMessage({ id: 'payment.detail.dialog.markPaid.content_2_1' })}
-          {(selectedReportPaid.listReport && selectedReportPaid.listReport.length) || 0}
-          {formatMessage({ id: 'payment.detail.dialog.markPaid.content_2_2' })}
-          {currency}
-          {selectedReportPaid.reimbursable
-            ? selectedReportPaid.reimbursable
-                .toFixed(2)
-                .toString()
-                .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1')
-            : 0}
-          {formatMessage({ id: 'payment.detail.dialog.markPaid.content_2_3' })}
-        </p>
-        <p>{formatMessage({ id: 'payment.detail.dialog.markPaid.content_3' })}</p>
-      </div>
-    );
-
     return (item && item.id === payId) || isQueue ? (
       <Row className={styles.payment_detail}>
-        <Col span={24} style={{ marginBottom: '23px' }}>
-          <ReportBreadcrumb
-            title={formatMessage({ id: 'payment.detail.title' })}
-            isViewReportInPayment
-          />
-        </Col>
         <Col span={14} className={styles.payment_detail_employee}>
           <EmployeeDetail employee={isQueue ? employeeInfoQueue : employeeInfo} />
         </Col>
@@ -292,29 +243,6 @@ class PaymentDetail extends PureComponent {
             </Col>
           </Row>
         </Col>
-        <Col span={24}>
-          <div className={styles.payment_detail_reports_title}>
-            {formatMessage({ id: 'payment.detail.reports' })}
-          </div>
-          <ListReportTable
-            list={isQueue ? selectedReportPaid.listReport : item.reportIds}
-            isPaymentDetailView
-            selectedListID={[]}
-            setSelectedListID={[]}
-            {...this.props}
-          />
-        </Col>
-        {isQueue && (
-          <DialogConfirm
-            className={styles.payment_detail_dialog}
-            open={open}
-            title={formatMessage({ id: 'payment.detail.dialog.markPaid.title' })}
-            onConfirm={this.onMarkPaid}
-            onDialogClose={this.onDialogClose}
-            content={dialogContent}
-            submit={formatMessage({ id: 'employee.new.page.dialog.button.submit' })}
-          />
-        )}
       </Row>
     ) : (
       <PageLoading size="small" />

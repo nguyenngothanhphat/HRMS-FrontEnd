@@ -40,8 +40,8 @@ class HeaderView extends PureComponent {
         style={{
           padding: 0,
           width: '100%',
-          backgroundColor: '#fff',
-          height: '80px',
+          backgroundColor: '#000',
+          height: '4rem',
           lineHeight: '0',
         }}
       >

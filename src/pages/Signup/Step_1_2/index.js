@@ -1,13 +1,12 @@
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
-import { Form, Row, Col, Radio, Tooltip } from 'antd';
+import { Form, Row, Col, Tooltip } from 'antd';
 import { isEmail } from '@/utils/utils';
 import SignUpInput from '../components/Input';
 import SignUpBtn from '../components/Button';
-import SignUpSelect from '../components/Select';
 
-import LocationDialog from '../../Reimbursement/ViewReport/components/DialogConfirm';
+// import LocationDialog from '../../Reimbursement/ViewReport/components/DialogConfirm';
 
 import styles from './index.less';
 
@@ -23,13 +22,11 @@ const FormItem = Form.Item;
 class Step0102 extends React.Component {
   state = {
     finishing: false,
-    openDialog: false,
     locationCount: 0,
     locationTemp: {},
     locationTempRender: {},
     locationListRender: [],
     locationList: [],
-    onSave: false,
     onEdit: false,
     locationIndex: false,
   };
@@ -47,9 +44,7 @@ class Step0102 extends React.Component {
       onEdit = false,
       locationIndex = false,
     } = this.state;
-    this.setState({
-      onSave: false,
-    });
+
     let data = locationList;
     let dataRender = locationListRender;
     if (
@@ -204,9 +199,7 @@ class Step0102 extends React.Component {
 
   onSave = () => {
     const { form, dispatch } = this.props;
-    this.setState({
-      onSave: true,
-    });
+
     form.validateFieldsAndScroll((err, values) => {
       const { name, currency, country, distanceUnit } = values;
       if (!err || (!err.name && !err.currency && !err.country && !err.distanceUnit)) {
@@ -234,9 +227,6 @@ class Step0102 extends React.Component {
           country: '',
           distanceUnit: 'km',
         });
-        this.setState({
-          openDialog: false,
-        });
       }
     });
   };
@@ -250,7 +240,6 @@ class Step0102 extends React.Component {
     const { form } = this.props;
     this.setState({
       onEdit: true,
-      openDialog: true,
       locationIndex: index,
     });
     form.setFieldsValue({
@@ -358,90 +347,88 @@ class Step0102 extends React.Component {
       email = '',
       firstName = '',
       setting: { locationLimit = 0 },
-      locations: { countryList = [] },
-      list,
       company = {},
     } = this.props;
     const {
       finishing = false,
-      openDialog = false,
+      // openDialog = false,
       locationCount = 0,
       locationListRender = [],
-      onSave = false,
+      // onSave = false,
     } = this.state;
 
-    const content = (
-      <Row>
-        <Col span={24}>
-          <FormItem
-            label={formatMessage({ id: 'signup.step_4.locationName.title' })}
-            className={styles.signup_form_1}
-          >
-            {getFieldDecorator('name', {
-              rules: [
-                {
-                  required: true,
-                  validator: this.checkName,
-                },
-              ],
-              initialValue: '',
-            })(<SignUpInput size="large" />)}
-          </FormItem>
-        </Col>
-        <Col span={24}>
-          <FormItem
-            label={formatMessage({ id: 'signup.step_4.currency.title' })}
-            className={styles.signup_form_2}
-          >
-            {getFieldDecorator('currency', {
-              rules: [
-                {
-                  required: true,
-                  validator: this.checkCurrency,
-                },
-              ],
-              initialValue: '',
-            })(<SignUpSelect style={{ width: '100%' }} data={list} type="currency" />)}
-          </FormItem>
-        </Col>
-        <Col span={24}>
-          <FormItem
-            label={formatMessage({ id: 'signup.step_1_2.country.title' })}
-            className={styles.signup_form_2}
-          >
-            {getFieldDecorator('country', {
-              rules: [
-                {
-                  required: true,
-                  validator: this.checkCountry,
-                },
-              ],
-              initialValue: '',
-            })(<SignUpSelect style={{ width: '100%' }} data={countryList} type="country" />)}
-          </FormItem>
-        </Col>
-        <Col span={24}>
-          <FormItem
-            label={formatMessage({ id: 'signup.step_4.distance.title' })}
-            className={styles.signup_form_1}
-          >
-            {getFieldDecorator('distanceUnit', {
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-              initialValue: 'km',
-            })(
-              <Radio.Group name="radiogroup">
-                <Radio value="km">Km</Radio>
-                <Radio value="mile">Mile</Radio>
-              </Radio.Group>
-            )}
-          </FormItem>
-        </Col>
-      </Row>
-    );
+    // const content = (
+    //   <Row>
+    //     <Col span={24}>
+    //       <FormItem
+    //         label={formatMessage({ id: 'signup.step_4.locationName.title' })}
+    //         className={styles.signup_form_1}
+    //       >
+    //         {getFieldDecorator('name', {
+    //           rules: [
+    //             {
+    //               required: true,
+    //               validator: this.checkName,
+    //             },
+    //           ],
+    //           initialValue: '',
+    //         })(<SignUpInput size="large" />)}
+    //       </FormItem>
+    //     </Col>
+    //     <Col span={24}>
+    //       <FormItem
+    //         label={formatMessage({ id: 'signup.step_4.currency.title' })}
+    //         className={styles.signup_form_2}
+    //       >
+    //         {getFieldDecorator('currency', {
+    //           rules: [
+    //             {
+    //               required: true,
+    //               validator: this.checkCurrency,
+    //             },
+    //           ],
+    //           initialValue: '',
+    //         })(<SignUpSelect style={{ width: '100%' }} data={list} type="currency" />)}
+    //       </FormItem>
+    //     </Col>
+    //     <Col span={24}>
+    //       <FormItem
+    //         label={formatMessage({ id: 'signup.step_1_2.country.title' })}
+    //         className={styles.signup_form_2}
+    //       >
+    //         {getFieldDecorator('country', {
+    //           rules: [
+    //             {
+    //               required: true,
+    //               validator: this.checkCountry,
+    //             },
+    //           ],
+    //           initialValue: '',
+    //         })(<SignUpSelect style={{ width: '100%' }} data={countryList} type="country" />)}
+    //       </FormItem>
+    //     </Col>
+    //     <Col span={24}>
+    //       <FormItem
+    //         label={formatMessage({ id: 'signup.step_4.distance.title' })}
+    //         className={styles.signup_form_1}
+    //       >
+    //         {getFieldDecorator('distanceUnit', {
+    //           rules: [
+    //             {
+    //               required: true,
+    //             },
+    //           ],
+    //           initialValue: 'km',
+    //         })(
+    //           <Radio.Group name="radiogroup">
+    //             <Radio value="km">Km</Radio>
+    //             <Radio value="mile">Mile</Radio>
+    //           </Radio.Group>
+    //         )}
+    //       </FormItem>
+    //     </Col>
+    //   </Row>
+    // );
 
     return (
       <Row style={{ maxWidth: '500px' }} className={styles.signup_step_2_component}>
@@ -519,14 +506,7 @@ class Step0102 extends React.Component {
                       &nbsp;
                       {`(${locationCount}/${locationLimit || 0})`}
                       {locationCount < locationLimit ? (
-                        <span
-                          className={styles.signup_form_1_2_ask_more}
-                          onClick={() => {
-                            this.setState({
-                              openDialog: true,
-                            });
-                          }}
-                        >
+                        <span className={styles.signup_form_1_2_ask_more}>
                           {formatMessage({ id: 'signup.step_1_2.askMore' })}
                         </span>
                       ) : (
@@ -572,7 +552,7 @@ class Step0102 extends React.Component {
             </Col>
           </Row>
         </Col>
-        <LocationDialog
+        {/* <LocationDialog
           open={openDialog}
           title={formatMessage({ id: 'signup.dialog.Location.title' })}
           onDialogClose={() => {
@@ -585,7 +565,7 @@ class Step0102 extends React.Component {
           className={styles.signup_step_1_2_dialog}
           content={content}
           submit={formatMessage({ id: 'employee.report.view.button.save' })}
-        />
+        /> */}
       </Row>
     );
   }

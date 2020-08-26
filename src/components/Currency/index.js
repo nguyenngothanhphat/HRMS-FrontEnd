@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import classNames from 'classnames';
-import styles from './index.less';
 import FlagIcon from '@/components/FlagIcon';
+import styles from './index.less';
 
 @connect()
 class Currency extends PureComponent {
