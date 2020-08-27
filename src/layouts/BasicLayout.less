@@ -1,24 +1,28 @@
-.content {
-  display: flex;
-  justify-content: center;
-  background-color: #eff2fa;
-  margin: 30px 35px 35px 115px;
-  overflow: hidden !important;
-  .contentChildren {
-    max-width: 1120px;
-    width: 100%;
-    // animation /////////////
-    opacity: 1;
-    animation: fade 1s linear;
-
-    @keyframes fade {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
+.containerBasiclayout {
+  .titleHeader {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    &__textName {
+      color: #fff;
+      margin-left: 1rem;
     }
-    // ///////////////////////
+  }
+  :global(.ant-page-header-heading) {
+    display: none;
+  }
+  :global(.ant-page-header) {
+    padding: 0.5rem 5rem;
+  }
+  :global(.ant-layout) {
+    background-color: #fff;
+  }
+  :global(.ant-pro-page-container-children-content) {
+    margin: 0;
+    padding: 0 5rem;
+  }
+  :global(.ant-pro-global-header-layout-mix) {
+    background-color: #000;
   }
 }

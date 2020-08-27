@@ -1,103 +1,110 @@
-import getCountries, { getCurrencyList } from '@/services/api';
-import { dialog } from '@/utils/utils';
+import { queryNotices } from '@/services/user';
 
-export default {
+const GlobalModel = {
   namespace: 'global',
-
   state: {
     collapsed: false,
-    onClickMenu: false,
-    currencies: {
-      origin: [],
-      filter: [],
-    },
-    countries: {
-      origin: [],
-      filter: [],
-    },
+    notices: [],
   },
-
   effects: {
-    *fetchCurrency({ payload: keyword }, { put, call, select }) {
-      try {
-        const { currencies } = yield select(st => st.global);
-        let { origin } = currencies;
-        if (origin.length === 0) origin = yield call(getCurrencyList);
-        let filter = origin;
-        if (typeof keyword === 'string') {
-          if (keyword === '') filter = origin;
-          else
-            filter = filter
-              .filter(cur => {
-                let { code, name } = cur;
-                const key = keyword.toLowerCase();
-                code = code.toLowerCase();
-                name = name.toLowerCase();
-                return code.indexOf(key) > -1 || name.indexOf(key) > -1;
-              })
-              .sort(item => (item.code === keyword ? -1 : 1));
-        }
-        filter = filter.slice(0, 20);
-        yield put({ type: 'save', payload: { currencies: { origin, filter } } });
-        return filter;
-      } catch (errors) {
-        dialog(errors);
-      }
-      return [];
+    *fetchNotices(_, { call, put, select }) {
+      const data = yield call(queryNotices);
+      yield put({
+        type: 'saveNotices',
+        payload: data,
+      });
+      const unreadCount = yield select(
+        state => state.global.notices.filter(item => !item.read).length,
+      );
+      yield put({
+        type: 'user/changeNotifyCount',
+        payload: {
+          totalCount: data.length,
+          unreadCount,
+        },
+      });
     },
-    *fetchCountries({ payload: keyword }, { put, call, select }) {
-      try {
-        const { countries } = yield select(st => st.global);
-        let { origin } = countries;
-        if (origin.length === 0) origin = yield call(getCountries);
-        let filter = origin;
-        if (typeof keyword === 'string') {
-          if (keyword === '') filter = origin;
-          else
-            filter = origin
-              .filter(country => {
-                let { nativeName, name, alpha2Code } = country;
-                const key = keyword.toLowerCase();
-                nativeName = nativeName.toLowerCase();
-                name = name.toLowerCase();
-                alpha2Code = alpha2Code.toLowerCase();
-                return (
-                  nativeName.indexOf(key) > -1 ||
-                  name.indexOf(key) > -1 ||
-                  alpha2Code.indexOf(key) > -1
-                );
-              })
-              .sort(item => (item.alpha2Code === keyword ? -1 : 1));
-        }
-        filter = filter.slice(0, 20);
-        yield put({ type: 'save', payload: { countries: { origin, filter } } });
-        return filter;
-      } catch (errors) {
-        dialog(errors);
-      }
-      return [];
+
+    *clearNotices({ payload }, { put, select }) {
+      yield put({
+        type: 'saveClearedNotices',
+        payload,
+      });
+      const count = yield select(state => state.global.notices.length);
+      const unreadCount = yield select(
+        state => state.global.notices.filter(item => !item.read).length,
+      );
+      yield put({
+        type: 'user/changeNotifyCount',
+        payload: {
+          totalCount: count,
+          unreadCount,
+        },
+      });
+    },
+
+    *changeNoticeReadState({ payload }, { put, select }) {
+      const notices = yield select(state =>
+        state.global.notices.map(item => {
+          const notice = { ...item };
+
+          if (notice.id === payload) {
+            notice.read = true;
+          }
+
+          return notice;
+        }),
+      );
+      yield put({
+        type: 'saveNotices',
+        payload: notices,
+      });
+      yield put({
+        type: 'user/changeNotifyCount',
+        payload: {
+          totalCount: notices.length,
+          unreadCount: notices.filter(item => !item.read).length,
+        },
+      });
     },
   },
-
   reducers: {
-    save(state, { payload }) {
+    changeLayoutCollapsed(
+      state = {
+        notices: [],
+        collapsed: true,
+      },
+      { payload },
+    ) {
+      return { ...state, collapsed: payload };
+    },
+
+    saveNotices(state, { payload }) {
       return {
+        collapsed: false,
         ...state,
-        ...payload,
+        notices: payload,
       };
     },
-    changeLayoutCollapsed(state, { payload }) {
+
+    saveClearedNotices(
+      state = {
+        notices: [],
+        collapsed: true,
+      },
+      { payload },
+    ) {
       return {
         ...state,
-        collapsed: payload,
+        collapsed: false,
+        notices: state.notices.filter(item => item.type !== payload),
       };
     },
   },
-
   subscriptions: {
     setup({ history }) {
       // Subscribe history(url) change, trigger `load` action if pathname is `/`
-      return history.listen(({ pathname, search }) => {
+      history.listen(({ pathname, search }) => {
         if (typeof window.ga !== 'undefined') {
           window.ga('send', 'pageview', pathname + search);
         }
@@ -105,3 +112,4 @@ export default {
     },
   },
 };
+export default GlobalModel;

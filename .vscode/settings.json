@@ -9,7 +9,6 @@
   "tslint.ignoreDefinitionFiles": true,
   "tslint.exclude": "**/node_modules/**/*",
   "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
   "javascript.format.enable": false,
   "workbench.colorCustomizations": {
     "activityBar.background": "#0000008a",

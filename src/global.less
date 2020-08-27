@@ -1,10 +1,17 @@
-@import '~antd/lib/style/themes/default.less';
-@import './assets/fonts.less';
+@import '~antd/es/style/themes/default.less';
 
 html,
 body,
 #root {
   height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  min-height: 100vh;
 }
 
 canvas {
@@ -22,164 +29,26 @@ ol {
   list-style: none;
 }
 
-.globalSpin {
-  width: 100%;
-  margin: 40px 0 !important;
-}
-
-.wrapper {
-  margin: 24px;
-  padding: 24px;
-  background-color: white;
-}
-
-.bg-white {
-  background-color: white !important;
-}
-
-.p-t-1 {
-  padding-top: 6px;
-}
-
-.p-t-4 {
-  padding-top: 24px;
-}
-
-.b-r {
-  border-radius: 6px !important;
-}
-
-.m-1 {
-  margin: 5px;
-}
-
-.m-4 {
-  margin: 24px;
-}
-
-.colorWeak {
-  filter: invert(80%);
-}
-
-.ant-layout {
-  min-height: 100vh;
-}
-
-.ant-form-explain {
-  font-size: 12px !important;
-}
-
-.ant-form label {
-  font-weight: bold;
-}
-
-.no-border {
-  border: none;
-}
-
-.b-gray {
-  border-color: #bfbfbf !important;
-}
-
-.btn {
-  cursor: pointer;
-  width: 80px;
-  box-shadow: none;
-  background-color: transparent;
-  border-radius: 0;
-}
-
-.btn-info {
-  cursor: pointer;
-  border-color: #1890ff;
-  color: #1890ff;
-  &:hover,
-  &:focus {
-    background-color: transparent;
-    border-color: #40a9ff;
-    color: #40a9ff;
-  }
-
-  &.fill {
-    background-color: #1890ff;
-    color: white;
-    &:hover,
-    &:focus {
-      background-color: #40a9ff;
-      color: #00000065;
+@media (max-width: @screen-xs) {
+  .ant-table {
+    width: 100%;
+    overflow-x: auto;
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
+        white-space: pre;
+        > span {
+          display: block;
+        }
+      }
     }
   }
 }
 
-.btn-danger {
-  cursor: pointer;
-  border-color: #f5222d;
-  color: #f5222d;
-  &:hover,
-  &:focus {
-    background-color: transparent;
-    border-color: #ff7875;
-    color: #ff7875;
-  }
-
-  &.fill {
-    background-color: #f5222d;
-    &:hover,
-    &:focus {
-      background-color: #ff7875;
-      color: #00000065;
-    }
-  }
-}
-
-.b-l-sm {
-  border-left: 1px solid;
-}
-
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type='number'] {
-  -moz-appearance: textfield;
-}
-
-.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
-  left: 98% !important;
-}
-
-.ant-menu-dark.ant-menu-inline .ant-menu-item::after {
-  border-right: 2px solid #fca00a !important;
-}
-
-.ant-select-selection,
-.ant-input-search,
-.ant-input {
-  border: none !important;
-  border-bottom: 1px solid #d9d9d9 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  input {
-    border: none !important;
-    background-color: #fff !important;
-  }
-
-  // &:focus,
-  // input:focus {
-  //   box-shadow: none !important;
-  //   border-bottom: 1px solid @primary-color !important;
-  // }
-
-  // &:hover,
-  // input:hover {
-  //   box-shadow: none !important;
-  //   border-bottom: 1px solid @primary-color !important;
-  // }
-
-  &:focus,
-  &:hover {
-    box-shadow: none !important;
-    border-bottom: 1px solid @primary-color !important;
+// 兼容IE11
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
+    min-height: 100vh;
   }
 }

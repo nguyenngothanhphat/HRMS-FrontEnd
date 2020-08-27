@@ -1,109 +1,41 @@
 // https://umijs.org/config/
-import pageRoutes from './router.config';
-import webpackPlugin from './plugin.config';
-import defaultSettings from '../src/defaultSettings';
+import { defineConfig } from 'umi';
+import defaultSettings from './defaultSettings';
+import routes from "./routes";
+import proxy from './proxy';
 
-const { pwa, theme } = defaultSettings;
-const { APP_TYPE } = process.env;
-const TARGET = 'https://stgapi-expenso.paxanimi.ai';
-const API_SERVER = '/server/api/';
-
-const plugins = [
-  [
-    'umi-plugin-react',
-    {
-      antd: true,
-      dva: {
-        hmr: true,
-      },
-      locale: {
-        enable: true,
-        default: 'en-US',
-        baseNavigator: false,
-      },
-      dynamicImport: {
-        loadingComponent: './components/PageLoading/index',
-        webpackChunkName: true,
-        level: 3,
-      },
-      pwa: pwa
-        ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
-        : false,
-    },
-  ],
-];
-
-export default {
-  // add for transfer to umi
-  plugins,
+const { REACT_APP_ENV } = process.env;
+export default defineConfig({
+  hash: true,
+  antd: {},
+  dva: {
+    hmr: true,
+  },
+  locale: {
+    // default zh-CN
+    default: 'zh-CN',
+    antd: true,
+    // default true, when it is true, will use `navigator.language` overwrite default
+    baseNavigator: true,
+  },
+  dynamicImport: {
+    loading: '@/components/PageLoading/index',
+  },
   targets: {
     ie: 11,
   },
-  define: {
-    APP_TYPE: APP_TYPE || '',
+  // umi routes: https://umijs.org/docs/routing
+  routes,
+  // Theme for antd: https://ant.design/docs/react/customize-theme-cn
+  theme: {
+    // ...darkTheme,
+    'primary-color': defaultSettings.primaryColor,
   },
-  treeShaking: true,
-  routes: pageRoutes,
-  // Theme for antd
-  theme,
-  externals: {
-    '@antv/data-set': 'DataSet',
-  },
-  proxy: {
-    '/api/attachments': {
-      target: TARGET,
-      changeOrigin: true,
-    },
-    [API_SERVER]: {
-      target: TARGET,
-      changeOrigin: true,
-      pathRewrite: { [`^${API_SERVER}`]: '' },
-    },
-    '/image/': {
-      target: TARGET,
-      changeOrigin: true,
-    },
-    '/server/apigoogle/': {
-      target: 'https://maps.googleapis.com/maps/api',
-      changeOrigin: true,
-      pathRewrite: { '^/server/apigoogle/': '' },
-    },
-  },
+  // @ts-ignore
+  title: false,
   ignoreMomentLocale: true,
-  lessLoaderOptions: {
-    javascriptEnabled: true,
-  },
-  disableRedirectHoist: true,
-  cssLoaderOptions: {
-    modules: true,
-    getLocalIdent: (context, localIdentName, localName) => {
-      if (
-        context.resourcePath.includes('node_modules') ||
-        context.resourcePath.includes('ant.design.pro.less') ||
-        context.resourcePath.includes('global.less')
-      ) {
-        return localName;
-      }
-      const match = context.resourcePath.match(/src(.*)/);
-      if (match && match[1]) {
-        const antdProPath = match[1].replace('.less', '');
-        const arr = antdProPath
-          .split('/')
-          .map(a => a.replace(/([A-Z])/g, '-$1'))
-          .map(a => a.toLowerCase());
-        return `intranet-${arr.join('-')}-${localName}`.replace(/--/g, '-');
-      }
-      return localName;
-    },
-  },
+  proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
   },
-
-  chainWebpack: webpackPlugin,
-};
+});

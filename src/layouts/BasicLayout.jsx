@@ -1,0 +1,127 @@
+/**
+ * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ * You can view component api by:
+ * https://github.com/ant-design/ant-design-pro-layout
+ */
+import ProLayout from '@ant-design/pro-layout';
+import React, { useEffect } from 'react';
+import { Link, useIntl, connect, history } from 'umi';
+import { Result, Button } from 'antd';
+import Authorized from '@/utils/Authorized';
+import RightContent from '@/components/GlobalHeader/RightContent';
+import { getAuthorityFromRouter } from '@/utils/utils';
+import logo from '../assets/logo.svg';
+import { MenuOutlined } from '@ant-design/icons';
+import styles from './BasicLayout.less';
+
+const noMatch = (
+  <Result
+    status={403}
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={
+      <Button type="primary">
+        <Link to="/user/login">Go Login</Link>
+      </Button>
+    }
+  />
+);
+
+/**
+ * use Authorized check all menu item
+ */
+const menuDataRender = (menuList) =>
+  menuList.map((item) => {
+    const localItem = {
+      ...item,
+      children: item.children ? menuDataRender(item.children) : undefined,
+    };
+    return Authorized.check(item.authority, localItem, null);
+  });
+
+const BasicLayout = (props) => {
+  const {
+    dispatch,
+    children,
+    settings,
+    location = {
+      pathname: '/',
+    },
+    collapsed,
+  } = props;
+  /**
+   * constructor
+   */
+
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
+    }
+  }, []);
+  /**
+   * init variables
+   */
+
+  const handleMenuCollapse = (payload) => {
+    if (dispatch) {
+      dispatch({
+        type: 'global/changeLayoutCollapsed',
+        payload,
+      });
+    }
+  }; // get children authority
+  const _renderTitleHeader = (
+    <div className={styles.titleHeader} onClick={() => handleMenuCollapse(!collapsed)}>
+      <MenuOutlined />
+      <div className={styles.titleHeader__textName}>App Name</div>
+    </div>
+  );
+
+  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+    authority: undefined,
+  };
+  const { formatMessage } = useIntl();
+  return (
+    <div className={styles.containerBasiclayout}>
+      <ProLayout
+        logo={logo}
+        formatMessage={formatMessage}
+        onCollapse={handleMenuCollapse}
+        headerTitleRender={() => _renderTitleHeader}
+        // onMenuHeaderClick={() => history.push('/')}
+        menuItemRender={(menuItemProps, defaultDom) => {
+          if (menuItemProps.isUrl || !menuItemProps.path) {
+            return defaultDom;
+          }
+
+          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        }}
+        breadcrumbRender={(routers = []) => [
+          {
+            path: '/',
+            breadcrumbName: formatMessage({
+              id: 'menu.home',
+            }),
+          },
+          ...routers,
+        ]}
+        menuDataRender={menuDataRender}
+        rightContentRender={() => <RightContent />}
+        collapsedButtonRender={false}
+        {...props}
+        {...settings}
+      >
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          {children}
+        </Authorized>
+      </ProLayout>
+    </div>
+  );
+};
+
+export default connect(({ global, settings }) => ({
+  collapsed: global.collapsed,
+  settings,
+}))(BasicLayout);

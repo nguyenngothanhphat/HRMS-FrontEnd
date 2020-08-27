@@ -1,13 +1,6 @@
-// use localStorage to store the token info, which might be sent from server in actual project.
 export function getToken() {
   const tokenString = localStorage.getItem('token');
-  let token;
-  try {
-    token = JSON.parse(tokenString) || {};
-  } catch (e) {
-    token = {};
-  }
-  return token;
+  return tokenString ? JSON.parse(tokenString) : '';
 }
 
 export function setToken(token) {
