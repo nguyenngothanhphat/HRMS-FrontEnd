@@ -8,7 +8,7 @@ export default class Directory extends Component {
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
-          <Link to="/employee-profile/0001">Link to profile employee 0001</Link>
+          <Link to="/directory/employee-profile/0001">Link to profile employee 0001</Link>
         </div>
       </PageContainer>
     );

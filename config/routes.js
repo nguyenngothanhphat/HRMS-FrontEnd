@@ -37,9 +37,8 @@ const routes = [
             component: './Directory',
           },
           {
-            path: '/employee-profile/:reId',
+            path: '/directory/employee-profile/:reId',
             name: 'Employee Profile',
-            icon: 'dashboard',
             component: './EmployeeProfile',
             hideInMenu: true,
           },
