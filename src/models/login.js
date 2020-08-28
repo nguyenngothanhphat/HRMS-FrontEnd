@@ -21,7 +21,6 @@ const Model = {
       if (response.statusCode === 200) {
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
-        console.log(itemRole);
         const { _id: role = '' } = itemRole;
         setAuthority(role.toLowerCase());
         const urlParams = new URL(window.location.href);

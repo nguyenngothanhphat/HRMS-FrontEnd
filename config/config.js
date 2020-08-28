@@ -1,7 +1,7 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
-import routes from "./routes";
+import routes from './routes';
 import proxy from './proxy';
 
 const { REACT_APP_ENV } = process.env;
@@ -13,7 +13,7 @@ export default defineConfig({
   },
   locale: {
     // default zh-CN
-    default: 'zh-CN',
+    default: 'en-US',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: true,
