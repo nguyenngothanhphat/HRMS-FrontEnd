@@ -5,7 +5,6 @@ import styles from './index.less';
 export default class EmployeeProfile extends Component {
   render() {
     const {
-      dispatch,
       match: { params: { reId = '' } = {} },
     } = this.props;
     return (

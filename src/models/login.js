@@ -3,7 +3,7 @@ import { history } from 'umi';
 import { accountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { setToken } from '@/utils/token';
-import { getPageQuery } from '@/utils/utils';
+import { getPageQuery, dialog } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
@@ -12,13 +12,13 @@ const Model = {
   },
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(accountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
-
-      if (response.statusCode === 200) {
+      try {
+        const response = yield call(accountLogin, payload);
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+        if (response.statusCode !== 200) throw response;
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
         const { _id: role = '' } = itemRole;
@@ -26,13 +26,10 @@ const Model = {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
-
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
-
           if (redirectUrlParams.origin === urlParams.origin) {
             redirect = redirect.substr(urlParams.origin.length);
-
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }
@@ -41,12 +38,13 @@ const Model = {
             return;
           }
         }
-
         history.replace(redirect || '/');
+      } catch (errors) {
+        dialog(errors);
       }
     },
 
-    logout() {
+    *logout() {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
