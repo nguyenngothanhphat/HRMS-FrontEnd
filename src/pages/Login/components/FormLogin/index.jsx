@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
-import { connect } from 'umi';
+import { Link, connect } from 'umi';
 
 import styles from './index.less';
 
@@ -13,8 +13,6 @@ class FormLogin extends Component {
     this.handleSubmit(payload);
   };
 
-  onFinishFailed = (errorInfo) => {};
-
   handleSubmit = (values) => {
     const { dispatch } = this.props;
     dispatch({
@@ -23,11 +21,26 @@ class FormLogin extends Component {
     });
   };
 
+  _renderButton = (getFieldValue) => {
+    const { loading } = this.props;
+    const valueEmail = getFieldValue('email');
+    const valuePsw = getFieldValue('password');
+    return (
+      <Button
+        type="primary"
+        htmlType="submit"
+        loading={loading}
+        disabled={!valueEmail || !valuePsw}
+      >
+        Login
+      </Button>
+    );
+  };
+
   render() {
-    const { loading = false } = this.props;
     return (
       <div className={styles.formWrapper}>
-        <p>Sign in to your account</p>
+        <p className={styles.formWrapper__title}>Sign in to your account</p>
         <Form
           layout="vertical"
           name="basic"
@@ -35,7 +48,8 @@ class FormLogin extends Component {
             remember: true,
           }}
           onFinish={this.onFinish}
-          onFinishFailed={this.onFinishFailed}
+          requiredMark={false}
+          ref={this.formRef}
         >
           <Form.Item
             label="Enter company email address"
@@ -61,13 +75,22 @@ class FormLogin extends Component {
           >
             <Input.Password />
           </Form.Item>
+          <Link to="/">
+            <p style={{ fontSize: '13px', textDecoration: 'underline', margin: '0px' }}>
+              Forgot Password?
+            </p>
+          </Link>
           <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Keep me sign in</Checkbox>
+            <Checkbox>Keep me signed in</Checkbox>
           </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Submit
-            </Button>
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) =>
+              prevValues.email !== currentValues.email ||
+              prevValues.password !== currentValues.password
+            }
+          >
+            {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
         </Form>
       </div>
