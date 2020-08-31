@@ -20,7 +20,7 @@ class FormLogin extends Component {
     const valueEmail = getFieldValue('email');
     return (
       <Button type="primary" htmlType="submit" loading={loading} disabled={!valueEmail}>
-        Login
+        Send
       </Button>
     );
   };
@@ -51,18 +51,6 @@ class FormLogin extends Component {
           >
             <Input />
           </Form.Item>
-          {/* <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item> */}
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) => prevValues.email !== currentValues.email}

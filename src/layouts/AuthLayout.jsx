@@ -1,12 +1,18 @@
 import React from 'react';
 import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
+import { Redirect } from 'umi';
+import { getToken } from '@/utils/token';
 import styles from './AuthLayout.less';
 
 const { Header, Content } = Layout;
 
 class AuthLayout extends React.PureComponent {
   render() {
+    const token = getToken();
+    if (token) {
+      return <Redirect to="/" />;
+    }
     const { children } = this.props;
     return (
       <Layout className={styles.root}>
