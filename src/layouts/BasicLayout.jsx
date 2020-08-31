@@ -89,8 +89,8 @@ const BasicLayout = (props) => {
         logo={logo}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
-        headerTitleRender={() => _renderTitleHeader}
-        // onMenuHeaderClick={() => history.push('/')}
+        headerTitleRender={() => <div style={{ display: 'none' }}></div>}
+        headerContentRender={() => _renderTitleHeader}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
