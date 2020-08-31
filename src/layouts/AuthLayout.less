@@ -1,24 +1,26 @@
 .root {
   width: 100vw;
   background-color: white;
-
-  .textAppName {
-    font-weight: 600;
-    margin-left: 1rem;
-  }
-
-  .textSignUp {
-    text-decoration: underline;
-    font-weight: 600;
-    margin-left: 0.5rem;
-  }
-
   :global(.ant-layout-header) {
     display: flex;
-    // height: 5rem;
     padding: 0 50px;
     color: rgba(0, 0, 0, 0.85);
     background: #fff;
     justify-content: space-between;
+  }
+  .leftContent {
+    .textAppName {
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+  }
+
+  .rightContent {
+    .textSignUp {
+      text-decoration: underline;
+      font-weight: 600;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
   }
 }
