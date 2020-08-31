@@ -23,4 +23,36 @@
       cursor: pointer;
     }
   }
+
+  .rootLogin {
+    min-height: calc(100vh - 64px);
+    .contentLeft {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 3rem;
+      &__text1 {
+        font-size: 2rem;
+        width: 70%;
+        min-width: 20rem;
+        line-height: 2rem;
+      }
+      &__text2 {
+        color: #acacac;
+        font-size: 18px;
+        width: 70%;
+        min-width: 20rem;
+      }
+    }
+    .contentRight {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    @media screen and (max-width: 768px) {
+      .contentLeft {
+        display: none;
+      }
+    }
+  }
 }

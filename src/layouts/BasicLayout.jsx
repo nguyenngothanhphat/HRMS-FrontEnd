@@ -73,8 +73,8 @@ const BasicLayout = (props) => {
     }
   }; // get children authority
   const _renderTitleHeader = (
-    <div className={styles.titleHeader} onClick={() => handleMenuCollapse(!collapsed)}>
-      <MenuOutlined />
+    <div className={styles.titleHeader}>
+      <MenuOutlined onClick={() => handleMenuCollapse(!collapsed)} />
       <div className={styles.titleHeader__textName}>App Name</div>
     </div>
   );
