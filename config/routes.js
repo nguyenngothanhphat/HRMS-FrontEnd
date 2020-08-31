@@ -25,20 +25,20 @@ const routes = [
           },
           {
             path: '/dashboard',
-            name: 'Dashboard',
+            name: 'dashboard',
             icon: 'dashboard',
             component: './Dashboard',
             // authority: ['admin'],
           },
           {
             path: '/directory',
-            name: 'Directory',
+            name: 'directory',
             icon: 'unordered-list',
             component: './Directory',
           },
           {
             path: '/directory/employee-profile/:reId',
-            name: 'Employee Profile',
+            name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
           },
