@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import styles from './index.less';
+// import PropTypes from 'prop-types';
 import { Row, Col, Avatar, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import styles from './index.less';
 
 class UserInfo extends PureComponent {
   constructor(props) {
@@ -12,24 +13,27 @@ class UserInfo extends PureComponent {
       type2: false,
     };
   }
+
   handleType1 = () => {
     this.setState({
       type1: true,
       type2: false,
     });
   };
+
   handleType2 = () => {
     this.setState({
       type1: false,
       type2: true,
     });
   };
+
   render() {
     const { type1, type2 } = this.state;
     return (
       <Row className={styles.UserInfo}>
         <Col sm={24} md={12} lg={12}>
-          <p>My Dashboard</p>
+          <p className={styles.titleDashBoard}>My Dashboard</p>
           <div className={styles.buttonTabName}>
             <Button type={type1 === true ? 'primary' : ''} onClick={this.handleType1}>
               Admin

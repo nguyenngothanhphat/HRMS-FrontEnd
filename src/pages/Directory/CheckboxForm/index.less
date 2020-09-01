@@ -1,0 +1,77 @@
+.CheckBoxForm {
+  margin-bottom: -18px;
+  .title {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  .nameCheckBox {
+    width: 143px;
+    height: 22px;
+    margin-bottom: 0;
+    margin-left: 51px;
+    color: #044040;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'Noto Sans', sans-serif;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+    text-align: left;
+  }
+  .allCheckBox {
+    width: 21px;
+    height: 22px;
+    margin-right: 68px;
+    color: #0d61dd;
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'Noto Sans', sans-serif;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+    text-align: left;
+  }
+  .groupCheckBox {
+    display: flex;
+    flex-flow: column;
+    margin-bottom: 30px;
+    margin-left: 51px;
+    :global {
+      .ant-checkbox + span {
+        width: 53px;
+        height: 22px;
+        color: #044040;
+        font-weight: 500;
+        font-size: 16px;
+        font-family: 'Noto Sans', sans-serif;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 1.38;
+        letter-spacing: normal;
+        text-align: left;
+      }
+      .ant-checkbox-inner {
+        width: 13px;
+        height: 13px;
+        background-color: #fff;
+        border: solid 1px #707070;
+        border-radius: 2px;
+      }
+      .ant-checkbox-checked .ant-checkbox-inner::after {
+        top: 5px;
+        left: 1.5px;
+        border: 2px solid #044040;
+        border-top: 0;
+        border-left: 0;
+      }
+      .ant-checkbox-group-item {
+        padding-bottom: 9px;
+      }
+    }
+  }
+}

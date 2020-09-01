@@ -9,7 +9,7 @@ import {
 // import { formatMessage } from 'umi';
 // import { dialog } from '@/utils/utils';
 // import { getToken } from '@/utils/token';
-// import { InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Dragger } = Upload;

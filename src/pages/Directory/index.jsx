@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Link, NavLink } from 'umi';
+import { PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import TopTabs from './TopTabs';
 import BotTab from './BotTabs';
-import { PlusOutlined } from '@ant-design/icons';
 import TableFilter from './TableFilter';
 
-export default class Directory extends Component {
+export default class Directory extends PureComponent {
   render() {
     return (
       <PageContainer>
@@ -17,7 +17,7 @@ export default class Directory extends Component {
           <div className={styles.boxCreate}>
             <NavLink to="/directory" className={styles.buttonCreate}>
               <PlusOutlined />
-              <p>Create New Profile</p>
+              <p className={styles.NameNewProfile}>Create New Profile</p>
             </NavLink>
             <div className={styles.Text}>
               <p>View Activity log </p>
