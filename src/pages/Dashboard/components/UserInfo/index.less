@@ -1,0 +1,62 @@
+p {
+  width: 120px;
+  margin-bottom: 0;
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 35px;
+}
+.buttonTabName {
+  margin-top: 3px;
+}
+.buttonTabName span {
+  font-weight: 600;
+}
+.boxInfo {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+.boxTextRight {
+  padding-right: 10px;
+  text-align: right;
+}
+.iconBorder {
+  margin-bottom: 15px;
+  border: 2px solid #65b4eb;
+  border-radius: 50%;
+}
+.boxItem1 {
+  font-weight: 600;
+}
+.boxItem4 {
+  text-decoration: underline;
+}
+:global {
+  .ant-avatar.ant-avatar-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+    background: black;
+    border: 1.5px solid;
+  }
+}
+@media screen and (max-width: 760px) {
+  .boxInfo {
+    flex-flow: column;
+    justify-content: center;
+  }
+  .iconBorder {
+    order: 1;
+    margin-bottom: 0;
+  }
+  .boxTextRight {
+    order: 3;
+    padding-right: 40px;
+    text-align: center;
+  }
+}
