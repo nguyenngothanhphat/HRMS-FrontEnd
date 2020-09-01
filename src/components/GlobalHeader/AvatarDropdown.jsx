@@ -2,15 +2,19 @@ import { LogoutOutlined, SettingOutlined, UserOutlined, UpOutlined } from '@ant-
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
 import { history, connect } from 'umi';
-import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
+const LOGOUT = 'logout';
+const VIEWPROFILE = 'viewProfile';
+const CHANGEPASSWORD = 'changePassword';
+const SETTINGS = 'settings';
+ 
 class AvatarDropdown extends React.Component {
   onMenuClick = (event) => {
     const { key } = event;
 
-    if (key === 'logout') {
+    if (key === LOGOUT) {
       const { dispatch } = this.props;
       if (dispatch) {
         dispatch({
@@ -21,22 +25,19 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    if (key === 'viewProfile') {
-      const { dispatch } = this.props;
+    if (key === VIEWPROFILE) {
       alert('View Profile');
 
       return;
     }
 
-    if (key === 'changePassword') {
-      const { dispatch } = this.props;
+    if (key === CHANGEPASSWORD) {
       alert('Change Password');
 
       return;
     }
 
-    if (key === 'settings') {
-      const { dispatch } = this.props;
+    if (key === SETTINGS) {
       alert('Settings');
 
       return;
@@ -97,21 +98,21 @@ class AvatarDropdown extends React.Component {
           </div>
         </div>
         <UpOutlined className={styles.menuItemIcon} />
-        <Menu.Item key="viewProfile" className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}>
+        <Menu.Item key={VIEWPROFILE} className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}>
           {/* {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })} */}
           View Profile
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="changePassword" className={styles.menuItemLink}>
+        <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           Change password
         </Menu.Item>
-        <Menu.Item key="settings" className={styles.menuItemLink}>
+        <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
           Settings
         </Menu.Item>
         <Menu.Divider />
         <Menu.ItemGroup>
           <span className={styles.sessionLogin}>Session login: 11:30</span>
-          <Menu.Item key="logout" className={styles.menuItemLogout}>
+          <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             Logout
           </Menu.Item>
         </Menu.ItemGroup>
