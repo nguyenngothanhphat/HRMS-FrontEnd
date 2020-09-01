@@ -1,7 +1,20 @@
 module.exports = {
-  extends: [require.resolve('../dist/eslint')],
+  parser: 'babel-eslint',
+  extends: ['airbnb', 'prettier', 'plugin:compat/recommended'],
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+    mocha: true,
+    jest: true,
+    jasmine: true,
+  },
   globals: {
-    ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: true,
+    APP_TYPE: true,
     page: true,
+  },
+  rules: {},
+  settings: {
+    polyfills: ['fetch', 'promises', 'url', 'object-assign'],
   },
 };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -24,6 +25,12 @@ class EmployeeProfile extends Component {
   openModalUpload = () => {
     this.setState({
       open: true,
+    });
+  };
+
+  _handleCancel = () => {
+    this.setState({
+      open: false,
     });
   };
 
@@ -63,6 +70,7 @@ class EmployeeProfile extends Component {
               </Button>
             </Dropdown>
           </Row>
+          <ModalUpload visible={open} handleCancel={this._handleCancel} />
         </div>
       </PageContainer>
     );
