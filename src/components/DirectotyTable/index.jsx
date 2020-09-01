@@ -64,13 +64,6 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {} } = this.state;
-    const pagination = {
-      position: ['bottomLeft'],
-      total: this.data.length,
-      showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
-      pageSize: 20,
-      defaultCurrent: 1,
-    };
     const data = [
       {
         key: '1',
@@ -265,6 +258,13 @@ class DirectoryTable extends Component {
         reportingManager: 'xxxxxxxxx',
       },
     ];
+    const pagination = {
+      position: ['bottomLeft'],
+      total: data.length,
+      showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
+      pageSize: 20,
+      defaultCurrent: 1,
+    };
     return (
       <div className={styles.directoryTable}>
         <Table
