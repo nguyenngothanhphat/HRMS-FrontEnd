@@ -12,7 +12,6 @@ export default defineConfig({
     hmr: true,
   },
   locale: {
-    // default zh-CN
     default: 'en-US',
     antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
@@ -30,6 +29,7 @@ export default defineConfig({
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
+    'text-color': '#044040',
   },
   // @ts-ignore
   title: false,

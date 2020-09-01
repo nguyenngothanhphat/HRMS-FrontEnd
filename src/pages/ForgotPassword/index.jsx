@@ -13,26 +13,14 @@ class FormLogin extends Component {
     this.handleSubmit(payload);
   };
 
-  handleSubmit = (values) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'login/login',
-      payload: { ...values },
-    });
-  };
+  handleSubmit = (values) => {};
 
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
     const valueEmail = getFieldValue('email');
-    const valuePsw = getFieldValue('password');
     return (
-      <Button
-        type="primary"
-        htmlType="submit"
-        loading={loading}
-        disabled={!valueEmail || !valuePsw}
-      >
-        Login
+      <Button type="primary" htmlType="submit" loading={loading} disabled={!valueEmail}>
+        Send
       </Button>
     );
   };
@@ -40,7 +28,7 @@ class FormLogin extends Component {
   render() {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Sign in to your account</p>
+        <p className={styles.formWrapper__title}>Forgot Password?</p>
         <Form
           layout="vertical"
           name="basic"
@@ -64,31 +52,8 @@ class FormLogin extends Component {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Link to="/">
-            <p style={{ fontSize: '13px', textDecoration: 'underline', margin: '0px' }}>
-              Forgot Password?
-            </p>
-          </Link>
-          <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Keep me signed in</Checkbox>
-          </Form.Item>
-          <Form.Item
             noStyle
-            shouldUpdate={(prevValues, currentValues) =>
-              prevValues.email !== currentValues.email ||
-              prevValues.password !== currentValues.password
-            }
+            shouldUpdate={(prevValues, currentValues) => prevValues.email !== currentValues.email}
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>

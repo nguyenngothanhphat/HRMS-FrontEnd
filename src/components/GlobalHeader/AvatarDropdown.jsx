@@ -1,21 +1,44 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
-import { history, connect } from 'umi';
+import { history, connect, formatMessage } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+
+const LOGOUT = 'logout';
+const VIEWPROFILE = 'viewProfile';
+const CHANGEPASSWORD = 'changePassword';
+const SETTINGS = 'settings';
 
 class AvatarDropdown extends React.Component {
   onMenuClick = (event) => {
     const { key } = event;
 
-    if (key === 'logout') {
+    if (key === LOGOUT) {
       const { dispatch } = this.props;
       if (dispatch) {
         dispatch({
           type: 'login/logout',
         });
       }
+
+      return;
+    }
+
+    if (key === VIEWPROFILE) {
+      alert('View Profile');
+
+      return;
+    }
+
+    if (key === CHANGEPASSWORD) {
+      alert('Change Password');
+
+      return;
+    }
+
+    if (key === SETTINGS) {
+      alert('Settings');
 
       return;
     }
@@ -47,10 +70,53 @@ class AvatarDropdown extends React.Component {
         )}
         {menu && <Menu.Divider />}
 
-        <Menu.Item key="logout">
-          <LogoutOutlined />
-          Logout
+        <div className={styles.viewProfile}>
+          <div className={styles.viewProfileAvatar}>
+            {currentUser.avatar ? (
+              <Avatar
+                size="medium"
+                className={styles.avatar}
+                src={currentUser.avatar}
+                alt="avatar"
+              />
+            ) : (
+              <Avatar
+                size="medium"
+                className={styles.avatar}
+                icon={<UserOutlined />}
+                alt="default-avatar"
+              />
+            )}
+          </div>
+          <div className={styles.viewProfileInfo}>
+            <span>{currentUser.name}</span>
+            <br />
+            <span>Senior HR</span>
+            <br />
+            <span>PIS-2400</span>
+          </div>
+        </div>
+        <UpOutlined className={styles.menuItemIcon} />
+        <Menu.Item
+          key={VIEWPROFILE}
+          className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}
+        >
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
         </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
+        </Menu.Item>
+        <Menu.Item key="settings" className={styles.menuItemLink}>
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.ItemGroup>
+          <span className={styles.sessionLogin}>{formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30</span>
+          <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
+            {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
+          </Menu.Item>
+        </Menu.ItemGroup>
       </Menu>
     );
     return currentUser && currentUser.name ? (

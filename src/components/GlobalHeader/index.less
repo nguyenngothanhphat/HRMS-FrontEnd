@@ -6,8 +6,85 @@
   :global(.anticon) {
     margin-right: 8px;
   }
+
   :global(.ant-dropdown-menu-item) {
     min-width: 160px;
+  }
+
+  :global(.ant-dropdown-menu-item-divider) {
+    background-color: #79ccda;
+  }
+
+  position: relative;
+  min-width: 240px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 4%;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5),
+  0 9px 28px 0 rgba(0, 0, 0, 0.05),
+  0 12px 48px 16px rgba(0, 0, 0, 0.03);
+
+
+  .menuItemLink {
+    margin-top: @margin-xs + 2px;
+    margin-bottom: @margin-xs + 2px;
+    color: #1890ff;
+    font-size: @font-size-base;
+    text-decoration: underline;
+  }
+
+  .menuItemLink.menuItemViewProfile {
+    padding-left: 62px;
+    text-align: left;
+  }
+
+  .menuItemLogout {
+    margin-top: @margin-xs + 2px;
+    margin-bottom: @margin-xs + 2px;
+    color: red;
+  }
+
+  .viewProfile {
+    display: flex;
+    width: 100%;
+    padding-top: 5px;
+    padding-left: @padding-xs + 2px;
+    text-align: left;
+
+    .viewProfileAvatar {
+      .avatar {
+        margin-top: 5px;
+        background: @black;
+        box-shadow: 0 0 0 1.75px @white, 0 0 0 3.75px #2294e3;
+      }
+    }
+
+    .viewProfileInfo {
+      padding-left: 20px;
+
+      span:first-child {
+        font-weight: 700;
+      }
+
+      span:not(:first-child) {
+        color: #c2c2c2;
+      }
+    }
+  }
+
+  .menuItemIcon {
+    position: absolute;
+    top: 2%;
+    right: 0;
+    color: #1890ff;
+    font-size: 18px;
+    opacity: 0.75;
+  }
+
+  .sessionLogin {
+    padding: 0;
+    color: #c2c2c2;
+    font-size: 14px;
   }
 }
 
@@ -17,6 +94,7 @@
   height: 48px;
   margin-left: auto;
   overflow: hidden;
+
   .action {
     display: flex;
     align-items: center;
@@ -24,25 +102,31 @@
     padding: 0 12px;
     cursor: pointer;
     transition: all 0.3s;
-    > span {
+
+    >span {
       vertical-align: middle;
     }
+
     &:hover {
       background: @pro-header-hover-bg;
     }
+
     &:global(.opened) {
       background: @pro-header-hover-bg;
     }
   }
+
   .search {
     padding: 0 12px;
+
     &:hover {
       background: transparent;
     }
   }
+
   .account {
     .avatar {
-      margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
+      margin:~'calc((@{layout-header-height} - 24px) / 2)'0;
       margin-right: 8px;
       color: @primary-color;
       vertical-align: top;
@@ -54,9 +138,11 @@
 .dark {
   .action {
     color: rgba(255, 255, 255, 0.85);
-    > span {
+
+    >span {
       color: rgba(255, 255, 255, 0.85);
     }
+
     &:hover,
     &:global(.opened) {
       background: @primary-color;
@@ -68,12 +154,15 @@
   .dark {
     .action {
       color: @text-color;
-      > span {
+
+      >span {
         color: @text-color;
       }
+
       &:hover {
         color: rgba(255, 255, 255, 0.85);
-        > span {
+
+        >span {
           color: rgba(255, 255, 255, 0.85);
         }
       }

@@ -73,8 +73,8 @@ const BasicLayout = (props) => {
     }
   }; // get children authority
   const _renderTitleHeader = (
-    <div className={styles.titleHeader} onClick={() => handleMenuCollapse(!collapsed)}>
-      <MenuOutlined />
+    <div className={styles.titleHeader}>
+      <MenuOutlined onClick={() => handleMenuCollapse(!collapsed)} />
       <div className={styles.titleHeader__textName}>App Name</div>
     </div>
   );
@@ -89,8 +89,8 @@ const BasicLayout = (props) => {
         logo={logo}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
-        headerTitleRender={() => _renderTitleHeader}
-        // onMenuHeaderClick={() => history.push('/')}
+        headerTitleRender={() => <div style={{ display: 'none' }}></div>}
+        headerContentRender={() => _renderTitleHeader}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;

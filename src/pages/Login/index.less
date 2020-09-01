@@ -1,16 +1,31 @@
-.rootLogin {
-  min-height: calc(100vh - 64px);
-  .contentLeft {
-    display: block;
+.formWrapper {
+  width: 55%;
+  height: auto;
+  background-color: #fff;
+  padding: 20px 30px 40px;
+  box-shadow: 0 0 11px #ececec;
+  &__title {
+    color: #acacac;
+    font-weight: 600;
   }
-  .contentRight {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  @media screen and (max-width: 768px) {
-    .contentLeft {
-      display: none;
+  :global {
+    .ant-btn-primary {
+      height: 40px;
+      width: 100%;
+      font-weight: 600;
     }
+    .ant-form-item {
+      margin-bottom: 1rem;
+    }
+    .ant-form label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .formWrapper {
+    width: 70%;
   }
 }
