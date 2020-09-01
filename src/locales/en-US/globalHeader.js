@@ -14,4 +14,9 @@ export default {
   'component.noticeIcon.cleared': 'Cleared',
   'component.noticeIcon.empty': 'No notifications',
   'component.noticeIcon.view-more': 'View more',
+  'component.globalHeader.avatarDropdown.view-profile': 'View profile',
+  'component.globalHeader.avatarDropdown.change-password': 'Change password',
+  'component.globalHeader.avatarDropdown.settings': 'Settings',
+  'component.globalHeader.avatarDropdown.session-login': 'Session login',
+  'component.globalHeader.avatarDropdown.logout': 'Logout',
 };

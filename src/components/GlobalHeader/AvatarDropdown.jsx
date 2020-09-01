@@ -1,7 +1,7 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import React from 'react';
-import { history, connect } from 'umi';
+import { history, connect, formatMessage } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -9,7 +9,7 @@ const LOGOUT = 'logout';
 const VIEWPROFILE = 'viewProfile';
 const CHANGEPASSWORD = 'changePassword';
 const SETTINGS = 'settings';
- 
+
 class AvatarDropdown extends React.Component {
   onMenuClick = (event) => {
     const { key } = event;
@@ -42,7 +42,6 @@ class AvatarDropdown extends React.Component {
 
       return;
     }
-
 
     history.push(`/account/${key}`);
   };
@@ -98,22 +97,24 @@ class AvatarDropdown extends React.Component {
           </div>
         </div>
         <UpOutlined className={styles.menuItemIcon} />
-        <Menu.Item key={VIEWPROFILE} className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}>
-          {/* {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })} */}
-          View Profile
+        <Menu.Item
+          key={VIEWPROFILE}
+          className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}
+        >
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
-          Change password
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
         </Menu.Item>
-        <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
-          Settings
+        <Menu.Item key="settings" className={styles.menuItemLink}>
+          {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
         </Menu.Item>
         <Menu.Divider />
         <Menu.ItemGroup>
-          <span className={styles.sessionLogin}>Session login: 11:30</span>
+          <span className={styles.sessionLogin}>{formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30</span>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
-            Logout
+            {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
         </Menu.ItemGroup>
       </Menu>
