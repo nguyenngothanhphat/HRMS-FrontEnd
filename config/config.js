@@ -29,6 +29,7 @@ export default defineConfig({
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
+    'text-color': '#044040',
   },
   // @ts-ignore
   title: false,
