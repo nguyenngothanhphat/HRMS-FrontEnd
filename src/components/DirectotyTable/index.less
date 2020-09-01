@@ -1,0 +1,114 @@
+@import '~antd/es/style/themes/default.less';
+
+.mixin-border-bottom-row {
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.mixin-ant-pagination {
+  width: 17px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0;
+  line-height: 17px;
+}
+
+.mixin-ant-pagination-disabled {
+  background-color: #acacac;
+}
+
+.directoryTable {
+
+  :global {
+    .ant-table table {
+      font-size: 16px;
+    }
+
+
+    .ant-table-tbody>tr>td {
+      padding: 6px;
+      background-color: #f4f4f4;
+      .mixin-border-bottom-row();
+    }
+
+    .ant-table-tbody>tr>td:first-child {
+      padding-left: 40px;
+    }
+
+    .ant-table-thead>tr>th {
+      .mixin-border-bottom-row();
+    }
+
+    span.anticon.anticon-caret-up.ant-table-column-sorter-up {
+      display: none;
+    }
+
+    span.anticon.anticon-caret-down.ant-table-column-sorter-down {
+      padding-top: 15px;
+      color: #044040;
+      font-size: 14px;
+    }
+
+    thead[class*="ant-table-thead"] th {
+      color: #044040;
+      font-weight: 500;
+      background-color: @white;
+    }
+
+    .ant-table-pagination.ant-pagination {
+      padding-left: 40px;
+    }
+
+    li.ant-pagination-item {
+      display: none;
+    }
+
+    li.ant-pagination-total-text {
+      font-size: 16px;
+      opacity: 0.4;
+    }
+
+    li.ant-pagination-prev {
+      .mixin-ant-pagination();
+    }
+
+    li.ant-pagination-next {
+      .mixin-ant-pagination();
+    }
+
+    button.ant-pagination-item-link {
+      padding: 0;
+      color: @white;
+      font-size: 12px;
+      text-align: center;
+      background-color: @black;
+      border: none;
+      border-radius: unset;
+    }
+
+    li.ant-pagination-prev.ant-pagination-disabled button {
+      .mixin-ant-pagination-disabled();
+    }
+
+    li.ant-pagination-next.ant-pagination-disabled button {
+      .mixin-ant-pagination-disabled();
+    }
+
+  }
+
+  .directoryTableName {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      margin-right: 15px;
+      background-color: @white;
+      border: solid 1px #707070;
+    }
+
+    p {
+      text-decoration: underline;
+    }
+  }
+}

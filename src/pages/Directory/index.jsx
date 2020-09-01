@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Link, NavLink } from 'umi';
+import { PlusOutlined } from '@ant-design/icons';
+import DirectotyTable from '../../components/DirectotyTable';
+import TableFilter from './TableFilter';
 import styles from './index.less';
 import TopTabs from './TopTabs';
 import BotTab from './BotTabs';
-import { PlusOutlined } from '@ant-design/icons';
-import TableFilter from './TableFilter';
 
-export default class Directory extends Component {
+
+export default class Directory extends PureComponent {
   render() {
     return (
       <PageContainer>
@@ -26,6 +28,7 @@ export default class Directory extends Component {
           </div>
           <BotTab />
           <TableFilter />
+          <DirectotyTable />
         </div>
       </PageContainer>
     );
