@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
-import { Link, connect } from 'umi';
+import { Form, Input, Button } from 'antd';
+import { connect } from 'umi';
 
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading: loading.effects['login/login'],
 }))
-class FormLogin extends Component {
+class ForgotPassword extends Component {
   onFinish = (values) => {
     const payload = { email: values.email, password: values.password };
     this.handleSubmit(payload);
   };
 
-  handleSubmit = (values) => {};
+  handleSubmit = (values) => {
+    alert(values);
+  };
 
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
@@ -47,6 +49,10 @@ class FormLogin extends Component {
                 required: true,
                 message: 'Please input your email!',
               },
+              {
+                type: 'email',
+                message: 'Email invalid',
+              },
             ]}
           >
             <Input />
@@ -63,4 +69,4 @@ class FormLogin extends Component {
   }
 }
 
-export default FormLogin;
+export default ForgotPassword;
