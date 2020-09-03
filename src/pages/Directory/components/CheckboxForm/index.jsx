@@ -47,6 +47,7 @@ class CheckBoxForms extends PureComponent {
         <Checkbox.Group
           className={styles.groupCheckBox}
           options={data}
+          name="ádbc"
           value={list}
           onChange={this.onChange}
         />
@@ -58,7 +59,6 @@ class CheckBoxForms extends PureComponent {
 CheckBoxForms.propTypes = {
   name: PropTypes.string.isRequired,
   all: PropTypes.string.isRequired,
-  //   data: PropTypes.array.isRequired,
   data: PropTypes.arrayOf(PropTypes.string),
 };
 CheckBoxForms.defaultProps = {

@@ -1,11 +1,10 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
 import { Layout, Input } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
+@connect()
 class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,6 +22,13 @@ class TableFilter extends PureComponent {
       ],
       rendertext3: [{ name: 'Location', all: 'All', data: ['Bengaluru', 'San Jose'] }],
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/fetchLocation',
+    });
   }
 
   toggle = () => {
@@ -61,13 +67,24 @@ class TableFilter extends PureComponent {
           <p className={styles.textName}>Name</p>
           <Input className={styles.formInput} onChange={this.handleChange} />
           {rendertext1.map((data) => {
-            return <CheckBoxForms name={data.name} all={data.all} data={filterdata || data.data} />;
+            return (
+              <CheckBoxForms
+                key={data.name}
+                name={data.name}
+                all={data.all}
+                data={filterdata || data.data}
+              />
+            );
           })}
           {rendertext2.map((data) => {
-            return <CheckBoxForms name={data.name} all={data.all} data={data.data} />;
+            return (
+              <CheckBoxForms key={data.name} name={data.name} all={data.all} data={data.data} />
+            );
           })}
           {rendertext3.map((data) => {
-            return <CheckBoxForms name={data.name} all={data.all} data={data.data} />;
+            return (
+              <CheckBoxForms key={data.name} name={data.name} all={data.all} data={data.data} />
+            );
           })}
         </Sider>
         {collapsed ? <div className={styles.openSider} onClick={this.toggle} /> : ''}
