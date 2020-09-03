@@ -17,6 +17,7 @@ class TopTabs extends PureComponent {
       ],
     };
   }
+
   render() {
     const { toptabs } = this.state;
     return <Tab tabs={toptabs} />;

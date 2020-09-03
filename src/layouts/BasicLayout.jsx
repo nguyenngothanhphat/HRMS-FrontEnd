@@ -10,8 +10,8 @@ import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import logo from '../assets/logo.svg';
 import { MenuOutlined } from '@ant-design/icons';
+import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 
 const noMatch = (
@@ -89,7 +89,7 @@ const BasicLayout = (props) => {
         logo={logo}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
-        headerTitleRender={() => <div style={{ display: 'none' }}></div>}
+        headerTitleRender={() => <div style={{ display: 'none' }} />}
         headerContentRender={() => _renderTitleHeader}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
