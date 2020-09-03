@@ -32,6 +32,11 @@ class TableFilter extends PureComponent {
     });
   };
 
+  // handleChange = (e) => {
+  //   console.log(e.target.value);
+  //   const { rendertext1 } = this.state;
+  // };
+
   render() {
     const { Sider, Content } = Layout;
     const { collapsed, rendertext1, rendertext2, rendertext3 } = this.state;
