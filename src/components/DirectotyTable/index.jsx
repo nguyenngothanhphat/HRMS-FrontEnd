@@ -72,7 +72,7 @@ class DirectoryTable extends Component {
   };
 
   handleProfileEmployee = () => {
-    history.push('/directory/employee-profile/0001">Link to profile employee 0001');
+    history.push('/directory/employee-profile/0001');
   };
 
   render() {
