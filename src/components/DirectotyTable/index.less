@@ -1,4 +1,5 @@
 @import '~antd/es/style/themes/default.less';
+@import '~antd/es/style/mixins/scrollbar.less';
 
 .mixin-border-bottom-row {
   border-bottom: 2px solid #e3e3e3;
@@ -17,9 +18,11 @@
 }
 
 .directoryTable {
+  height: 100%;
+
   :global {
     .ant-table-container {
-      height: 702px;
+      height: 668px;
       overflow: hidden;
       background: #f4f4f4;
     }
@@ -28,13 +31,13 @@
       font-size: 16px;
     }
 
-    .ant-table-tbody>tr>td {
+    .ant-table-tbody > tr > td {
       padding: 6px;
       background-color: #f4f4f4;
       .mixin-border-bottom-row();
     }
 
-    .ant-table-thead>tr>th {
+    .ant-table-thead > tr > th {
       border-bottom: none;
       padding: 0;
     }
@@ -55,7 +58,7 @@
       background-color: @white;
     }
 
-    .ant-table-tbody>tr.ant-table-row:hover>td {
+    .ant-table-tbody > tr.ant-table-row:hover > td {
       cursor: pointer;
     }
 
@@ -67,20 +70,6 @@
       width: 100%;
       background-color: #f7f7f7;
       border-top: 1px solid #d0d0d0;
-    }
-
-    /* width */
-    ::-webkit-scrollbar {
-      width: 5px;
-      border-radius: 3px;
-      background-color: #f7f7f7;
-      border: none;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.41);
-      border-radius: 3px;
     }
 
     li.ant-pagination-item {
@@ -119,10 +108,12 @@
     }
   }
 
+  .customScrollbar();
+
   .directoryTableName {
     display: flex;
     align-items: center;
-    padding-left: 35px;
+    padding-left: 10px;
 
     .avatar {
       width: 44px;

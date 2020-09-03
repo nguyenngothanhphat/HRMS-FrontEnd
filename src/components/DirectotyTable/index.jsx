@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { Link, NavLink, history } from 'umi';
-import { Table, Avatar, Pagination } from 'antd';
+import { history } from 'umi';
+import { Table, Avatar } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sortedName: {}
+      sortedName: {},
     };
   }
 
   renderUser = (generalInfo) => {
-    console.log('record', generalInfo);
     return (
       <div className={styles.directoryTableName}>
         <Avatar className={styles.avatar} alt="avatar" />
@@ -31,9 +30,9 @@ class DirectoryTable extends Component {
         align: 'center',
         sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '30%'
+        width: '30%',
       },
-      { 
+      {
         title: 'Title',
         dataIndex: 'compensation',
         key: 'compensation',
@@ -67,24 +66,18 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
-    console.log('handleChange');
     this.setState({
-      sortedName: sorter
+      sortedName: sorter,
     });
   };
 
   handleProfileEmployee = () => {
     history.push('/directory/employee-profile/0001">Link to profile employee 0001');
-  }
+  };
 
   render() {
     const { sortedName = {} } = this.state;
-    const {
-      list = [],
-      pagination: paginationProps,
-    } = this.props;
-
-    console.log(this.props);
+    const { list = [], pagination: paginationProps } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -98,15 +91,15 @@ class DirectoryTable extends Component {
         <Table
           size="medium"
           columns={this.generateColumns(sortedName)}
-          onRow={(record, rowIndex) => {
+          onRow={() => {
             return {
-              onClick: () => this.handleProfileEmployee() // click row
+              onClick: () => this.handleProfileEmployee(), // click row
             };
           }}
           dataSource={list}
           pagination={paginationProps === false ? false : pagination}
           onChange={this.handleChangeTable}
-          scroll={{ y: 702 }}
+          scroll={{ y: 766 }}
         />
       </div>
     );

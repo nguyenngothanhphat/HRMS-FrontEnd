@@ -1,3 +1,5 @@
+@import '~antd/es/style/mixins/scrollbar.less';
+
 .TabFilter {
   :global {
     .ant-layout-header {
@@ -5,10 +7,13 @@
     }
 
     .ant-layout-sider {
-      // height: 702px;
+      overflow-y: auto;
+      height: 766px;
       background-color: #e3e3e3;
     }
   }
+
+  .customScrollbar();
 
   .openSider {
     position: relative;
@@ -35,7 +40,7 @@
 
   .openSider::after {
     position: absolute;
-    content: "";
+    content: '';
     height: 21px;
     width: 20px;
     background: #0d61dd;
