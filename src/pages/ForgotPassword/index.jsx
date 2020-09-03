@@ -5,8 +5,9 @@ import { Link, connect } from 'umi';
 
 import styles from './index.less';
 
-@connect(({ loading }) => ({
-  loading: loading.effects['login/login'],
+@connect(({ loading, changePassword: { statusSendEmail } = {} }) => ({
+  loading: loading.effects['changePassword/forgotPassword'],
+  statusSendEmail,
 }))
 class ForgotPassword extends Component {
   constructor(props) {
@@ -16,13 +17,26 @@ class ForgotPassword extends Component {
     };
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'changePassword/save',
+      payload: { statusSendEmail: false },
+    });
+  }
+
   onFinish = (values) => {
     const { email } = values;
     this.handleSubmit(email);
   };
 
   handleSubmit = (email) => {
+    const { dispatch } = this.props;
     this.setState({ email });
+    dispatch({
+      type: 'changePassword/forgotPassword',
+      payload: { email },
+    });
   };
 
   _renderForm = () => {
@@ -92,8 +106,8 @@ class ForgotPassword extends Component {
     let [part1] = splitted;
     part1 = part1.substring(0, 3);
     const [, part2] = splitted;
-    const lenghtHidden = part1.length - 3;
-    return `${part1}***@${part2}`;
+    // const lenghtHidden = part1.length - 3;
+    return `${part1}******@${part2}`;
   };
 
   _renderSendSuccessfully = () => {
@@ -120,9 +134,10 @@ class ForgotPassword extends Component {
   };
 
   render() {
-    const { email } = this.state;
-
-    return <Fragment>{!email ? this._renderForm() : this._renderSendSuccessfully()}</Fragment>;
+    const { statusSendEmail } = this.props;
+    return (
+      <Fragment>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</Fragment>
+    );
   }
 }
 

@@ -85,7 +85,9 @@ class FormLogin extends Component {
             </p>
           </Link>
           <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>Keep me signed in</Checkbox>
+            <Checkbox>
+              <span style={{ color: '#000' }}>Keep me signed in</span>
+            </Checkbox>
           </Form.Item>
           <Form.Item
             noStyle
