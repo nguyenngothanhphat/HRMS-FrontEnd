@@ -59,6 +59,10 @@ class FormLogin extends Component {
                 required: true,
                 message: 'Please input your email!',
               },
+              {
+                type: 'email',
+                message: 'Email invalid',
+              },
             ]}
           >
             <Input />

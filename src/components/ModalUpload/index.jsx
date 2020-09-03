@@ -35,20 +35,15 @@ class ModalUpload extends Component {
 
   onChange = (info) => {
     const { status } = info.file;
-    if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
-      return;
-    }
     if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
+      // message.success(`${info.file.name} file uploaded successfully.`);
       this.getBase64(info.file.originFileObj, (imageUrl) =>
         this.setState({
+          fileUploaded: info.file.originFileObj,
           imageUrl,
-          loading: false,
         }),
       );
     } else if (status === 'error') {
-      this.setState({ loading: false });
       message.error(`${info.file.name} file upload failed.`);
     }
   };
@@ -58,15 +53,23 @@ class ModalUpload extends Component {
     this.setState(
       {
         imageUrl: '',
+        fileUploaded: {},
         loading: false,
       },
       () => handleCancel(),
     );
   };
 
+  handleUploadToServer = () => {
+    const { fileUploaded } = this.state;
+    const formData = new FormData();
+    formData.append('file', fileUploaded);
+    // call API upload with data is formData
+  };
+
   render() {
     const { visible = false } = this.props;
-    const { loading, imageUrl } = this.state;
+    const { loading, imageUrl, fileUploaded = {} } = this.state;
     const props = {
       name: 'file',
       multiple: false,
@@ -78,15 +81,16 @@ class ModalUpload extends Component {
         className={styles.modalUpload}
         visible={visible}
         title="Upload Image"
-        onOk={() => {}}
+        onOk={this.handleUploadToServer}
         onCancel={this.handleCancel}
         footer={[
           <Button
             key="submit"
             type="primary"
-            // loading={loading}
+            disabled={!fileUploaded.lastModified}
+            loading={loading}
             className={styles.btnSubmit}
-            onClick={() => {}}
+            onClick={this.handleUploadToServer}
           >
             Submit
           </Button>,
@@ -95,7 +99,7 @@ class ModalUpload extends Component {
         <div>
           <Dragger {...props} onChange={this.onChange} beforeUpload={this.beforeUpload}>
             {imageUrl ? (
-              <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />
+              <img src={imageUrl} alt="img--upload" className={styles.modalUpload__img} />
             ) : (
               <div>
                 <p className="ant-upload-drag-icon">
