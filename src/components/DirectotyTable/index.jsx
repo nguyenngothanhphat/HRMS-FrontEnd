@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import { Table, Avatar } from 'antd';
+import { Link, NavLink, history } from 'umi';
+import { Table, Avatar, Pagination } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      sortedName: {}
+    };
   }
 
-  renderUser = (record) => {
-    console.log('record', record);
+  renderUser = (generalInfo) => {
+    console.log('record', generalInfo);
     return (
       <div className={styles.directoryTableName}>
         <Avatar className={styles.avatar} alt="avatar" />
-        <p>{record}</p>
+        <p>{generalInfo.fullName}</p>
       </div>
     );
   };
@@ -22,30 +25,37 @@ class DirectoryTable extends Component {
     const columns = [
       {
         title: 'Full Name',
-        dataIndex: 'fullName',
-        render: (fullName) => this.renderUser(fullName),
+        dataIndex: 'generalInfo',
+        key: 'generalInfo',
+        render: (generalInfo) => this.renderUser(generalInfo),
         align: 'center',
-        sorter: (a, b) => a.fullName.length - b.fullName.length,
-        sortOrder: sortedName.columnKey === 'fullName' && sortedName.order,
+        sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
+        sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
+        width: '30%'
       },
-      {
+      { 
         title: 'Title',
-        dataIndex: 'title',
+        dataIndex: 'compensation',
+        key: 'compensation',
+        render: (compensation) => <span>{compensation.title}</span>,
         align: 'center',
       },
       {
         title: 'Department',
         dataIndex: 'department',
+        render: (department) => <span>{department.name}</span>,
         align: 'center',
       },
       {
         title: 'Location',
         dataIndex: 'location',
+        render: (location) => <span>{location.name}</span>,
         align: 'center',
       },
       {
         title: 'Reporting Manager',
-        dataIndex: 'reportingManager',
+        dataIndex: 'manager',
+        render: (manager) => <span>{manager.name}</span>,
         align: 'center',
       },
     ];
@@ -57,210 +67,28 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
+    console.log('handleChange');
     this.setState({
-      sortedName: sorter,
+      sortedName: sorter
     });
   };
 
+  handleProfileEmployee = () => {
+    history.push('/directory/employee-profile/0001">Link to profile employee 0001');
+  }
+
   render() {
     const { sortedName = {} } = this.state;
-    const data = [
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '1',
-        fullName: 'John Brown',
-        title: 98,
-        department: 60,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '2',
-        fullName: 'Jim Green',
-        title: 98,
-        department: 66,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '3',
-        fullName: 'Joe Black',
-        title: 98,
-        department: 90,
-        location: 70,
-        reportingManager: 'xxxxxxxxx',
-      },
-      {
-        key: '4',
-        fullName: 'Jim Red',
-        title: 88,
-        department: 99,
-        location: 89,
-        reportingManager: 'xxxxxxxxx',
-      },
-    ];
+    const {
+      list = [],
+      pagination: paginationProps,
+    } = this.props;
+
+    console.log(this.props);
+
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: list.length,
       showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
       pageSize: 20,
       defaultCurrent: 1,
@@ -270,9 +98,15 @@ class DirectoryTable extends Component {
         <Table
           size="medium"
           columns={this.generateColumns(sortedName)}
-          dataSource={data}
-          pagination={pagination}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: () => this.handleProfileEmployee() // click row
+            };
+          }}
+          dataSource={list}
+          pagination={paginationProps === false ? false : pagination}
           onChange={this.handleChangeTable}
+          scroll={{ y: 702 }}
         />
       </div>
     );

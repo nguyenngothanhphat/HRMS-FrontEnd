@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Tab from '../Tab';
 
 class BotTab extends PureComponent {
@@ -13,6 +13,7 @@ class BotTab extends PureComponent {
       ],
     };
   }
+
   render() {
     const { bottabs } = this.state;
     return <Tab tabs={bottabs} />;

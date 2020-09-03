@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Modal,
-  Button,
-  Upload,
-  message,
-  //  notification
-} from 'antd';
-// import { formatMessage } from 'umi';
-// import { dialog } from '@/utils/utils';
-// import { getToken } from '@/utils/token';
+import { Modal, Button, Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import styles from './index.less';
 

@@ -2,12 +2,11 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Link, NavLink } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import DirectotyTable from '../../components/DirectotyTable';
 import TableFilter from './TableFilter';
+
 import styles from './index.less';
 import TopTabs from './TopTabs';
 import BotTab from './BotTabs';
-
 
 export default class Directory extends PureComponent {
   render() {
@@ -19,7 +18,7 @@ export default class Directory extends PureComponent {
           <div className={styles.boxCreate}>
             <NavLink to="/directory" className={styles.buttonCreate}>
               <PlusOutlined />
-              <p>Create New Profile</p>
+              <p className={styles.NameNewProfile}>Create New Profile</p>
             </NavLink>
             <div className={styles.Text}>
               <p>View Activity log </p>
@@ -28,7 +27,6 @@ export default class Directory extends PureComponent {
           </div>
           <BotTab />
           <TableFilter />
-          <DirectotyTable />
         </div>
       </PageContainer>
     );
