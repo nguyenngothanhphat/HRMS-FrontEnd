@@ -99,7 +99,7 @@ class DirectoryTable extends Component {
           dataSource={list}
           pagination={paginationProps === false ? false : pagination}
           onChange={this.handleChangeTable}
-          scroll={{ y: 766 }}
+          scroll={{ y: 702 }}
         />
       </div>
     );
