@@ -8,7 +8,22 @@
     color: #acacac;
     font-weight: 600;
   }
+  .inputPassword {
+    :global {
+      .ant-input {
+        height: 30px;
+        color: #000;
+      }
+      .ant-input-affix-wrapper {
+        height: 40px;
+      }
+    }
+  }
   :global {
+    .ant-input {
+      height: 40px;
+      color: #000;
+    }
     .ant-btn-primary {
       height: 40px;
       width: 100%;
@@ -21,6 +36,12 @@
       font-size: 12px;
       font-weight: 500;
     }
+  }
+
+  input:-webkit-autofill,
+  input:focus:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #fff inset;
+    box-shadow: 0 0 0 100px #fff inset;
   }
 }
 

@@ -61,7 +61,7 @@ class FormLogin extends Component {
               },
               {
                 type: 'email',
-                message: 'Email invalid',
+                message: 'Invalid email',
               },
             ]}
           >
@@ -77,7 +77,7 @@ class FormLogin extends Component {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password className={styles.inputPassword} />
           </Form.Item>
           <Link to="/forgot-password">
             <p style={{ fontSize: '13px', textDecoration: 'underline', margin: '0px' }}>
