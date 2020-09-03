@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Link, NavLink } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
+import TableFilter from './TableFilter';
+
 import styles from './index.less';
 import TopTabs from './TopTabs';
 import BotTab from './BotTabs';
-import TableFilter from './TableFilter';
 
 export default class Directory extends PureComponent {
   render() {
