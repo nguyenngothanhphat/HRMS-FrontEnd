@@ -32,14 +32,20 @@ class TableFilter extends PureComponent {
     });
   };
 
-  // handleChange = (e) => {
-  //   console.log(e.target.value);
-  //   const { rendertext1 } = this.state;
-  // };
+  handlefilter = (value, inputvalue) => {
+    const valuedata = value.filter((x) => x.toLowerCase().includes(inputvalue.toLowerCase()));
+    this.setState({ filterdata: valuedata });
+  };
+
+  handleChange = (e) => {
+    const inputvalue = e.target.value;
+    const { rendertext1 } = this.state;
+    rendertext1.filter((value) => this.handlefilter(value.data, inputvalue));
+  };
 
   render() {
     const { Sider, Content } = Layout;
-    const { collapsed, rendertext1, rendertext2, rendertext3 } = this.state;
+    const { collapsed, rendertext1, rendertext2, rendertext3, filterdata } = this.state;
     return (
       <Layout className={styles.TabFilter}>
         <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
@@ -53,9 +59,9 @@ class TableFilter extends PureComponent {
             </div>
           </div>
           <p className={styles.textName}>Name</p>
-          <Input className={styles.formInput} />
+          <Input className={styles.formInput} onChange={this.handleChange} />
           {rendertext1.map((data) => {
-            return <CheckBoxForms name={data.name} all={data.all} data={data.data} />;
+            return <CheckBoxForms name={data.name} all={data.all} data={filterdata || data.data} />;
           })}
           {rendertext2.map((data) => {
             return <CheckBoxForms name={data.name} all={data.all} data={data.data} />;
