@@ -16,6 +16,7 @@ class CheckBoxForms extends PureComponent {
   }
 
   onChange = (checkedList) => {
+    console.log(checkedList);
     const { data } = this.props;
     this.setState({
       checkedList,
@@ -27,8 +28,9 @@ class CheckBoxForms extends PureComponent {
 
   onCheckAllChange = (e) => {
     const { data } = this.props;
+    const newdata = data.map((x) => x.value);
     this.setState({
-      list: e.target ? data : [],
+      list: e.target ? newdata : [],
       checkAll: e.target,
     });
   };

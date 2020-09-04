@@ -7,6 +7,6 @@ export async function LocationFilter(payload) {
   });
 }
 
-export async function Department() {
-  return request('/api/location/list');
+export async function DepartmentFilter() {
+  return request('/api/department/list');
 }

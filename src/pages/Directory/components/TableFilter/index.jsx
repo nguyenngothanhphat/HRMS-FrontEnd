@@ -4,7 +4,10 @@ import { connect } from 'umi';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
-@connect()
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,7 +23,9 @@ class TableFilter extends PureComponent {
           data: ['Design', 'Development', 'Marketing', 'Sales', 'HR', 'Administration'],
         },
       ],
-      rendertext3: [{ name: 'Location', all: 'All', data: ['Bengaluru', 'San Jose'] }],
+      locationState: 'Location',
+      department: 'Department',
+      all: 'All',
     };
   }
 
@@ -28,6 +33,9 @@ class TableFilter extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/fetchLocation',
+    });
+    dispatch({
+      type: 'employee/fetchDepartment',
     });
   }
 
@@ -51,7 +59,25 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider, Content } = Layout;
-    const { collapsed, rendertext1, rendertext2, rendertext3, filterdata } = this.state;
+    const {
+      collapsed,
+      rendertext1,
+      rendertext2,
+      filterdata,
+      locationState,
+      department,
+      all,
+    } = this.state;
+    const {
+      employee: { location = [] },
+    } = this.props;
+    const formatData = location.map((item) => {
+      const { name: label, id: value } = item;
+      return {
+        label,
+        value,
+      };
+    });
     return (
       <Layout className={styles.TabFilter}>
         <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
@@ -77,15 +103,13 @@ class TableFilter extends PureComponent {
             );
           })}
           {rendertext2.map((data) => {
-            return (
-              <CheckBoxForms key={data.name} name={data.name} all={data.all} data={data.data} />
-            );
+            return <CheckBoxForms key={department} name={department} all={all} data={data.data} />;
           })}
-          {rendertext3.map((data) => {
+          <CheckBoxForms key={locationState} name={locationState} all={all} data={formatData} />
+          {/* {rendertext3.map((data) => {
             return (
-              <CheckBoxForms key={data.name} name={data.name} all={data.all} data={data.data} />
             );
-          })}
+          })} */}
         </Sider>
         {collapsed ? <div className={styles.openSider} onClick={this.toggle} /> : ''}
         <Content
