@@ -37,9 +37,6 @@ class CheckBoxForms extends PureComponent {
   render() {
     const { name, all, data } = this.props;
     const { list } = this.state;
-    // const newlist = [...list];
-    // newlist.push(list);
-    // console.log(newlist);
     return (
       <div className={styles.CheckBoxForm}>
         <div className={styles.title}>
