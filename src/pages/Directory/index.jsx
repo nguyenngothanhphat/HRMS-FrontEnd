@@ -1,32 +1,24 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Link, NavLink } from 'umi';
-import { PlusOutlined } from '@ant-design/icons';
-import TableFilter from './TableFilter';
-
+import { Tabs } from 'antd';
 import styles from './index.less';
-import TopTabs from './TopTabs';
-import BotTab from './BotTabs';
+import OrganChart from './components/OrganisationChart';
+import DirectoryComponent from './components/Directory';
 
 export default class Directory extends PureComponent {
   render() {
+    const { TabPane } = Tabs;
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
-          <Link to="/directory/employee-profile/0001">Link to profile employee 0001</Link>
-          <TopTabs />
-          <div className={styles.boxCreate}>
-            <NavLink to="/directory" className={styles.buttonCreate}>
-              <PlusOutlined />
-              <p className={styles.NameNewProfile}>Create New Profile</p>
-            </NavLink>
-            <div className={styles.Text}>
-              <p>View Activity log </p>
-              <span>(15)</span>
-            </div>
-          </div>
-          <BotTab />
-          <TableFilter />
+          <Tabs defaultActiveKey="1" className={styles.Tab}>
+            <TabPane tab="Directory" key="1">
+              <DirectoryComponent />
+            </TabPane>
+            <TabPane tab="Organisation Chart" key="2">
+              <OrganChart />
+            </TabPane>
+          </Tabs>
         </div>
       </PageContainer>
     );
