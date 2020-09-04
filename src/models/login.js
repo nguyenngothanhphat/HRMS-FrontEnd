@@ -1,5 +1,6 @@
 /* eslint-disable compat/compat */
-// import { stringify } from 'querystring';
+/* eslint-disable require-yield */
+import { stringify } from 'querystring';
 import { history } from 'umi';
 import { accountLogin } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
