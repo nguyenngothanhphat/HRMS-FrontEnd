@@ -22,7 +22,7 @@ class CheckBoxForms extends PureComponent {
   }
 
   onChange = (checkedList) => {
-    const { data, onBox, name, dispatch } = this.props;
+    const { data, name, dispatch } = this.props;
     dispatch({
       type: 'employee/saveFilter',
       payload: { name, checkedList },
@@ -34,9 +34,9 @@ class CheckBoxForms extends PureComponent {
         indeterminate: !!checkedList.length && checkedList.length < data.length,
         checkAll: checkedList.length === data.length,
       },
-      () => {
-        onBox(this.state);
-      },
+      // () => {
+      //   onBox(this.state);
+      // },
     );
   };
 
