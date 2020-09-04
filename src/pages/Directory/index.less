@@ -1,76 +1,44 @@
 .containerDirectory {
-  // background-color: rgba(0, 0, 0, 0.3);
   min-height: 100vh;
-}
-.boxCreate {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-}
-.buttonCreate {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  width: 193px;
-  height: 51px;
-  border-radius: 2px;
-  background-color: #0d61dd;
-  p {
-    margin-bottom: 0px;
-    width: 145px;
-    height: 22px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.38;
-    letter-spacing: normal;
-    text-align: left;
-    color: #ffffff;
-  }
-  :global {
-    .anticon {
-      margin-right: 9px;
-      margin-bottom: 1px;
-      color: #ffffff;
-      font-size: 14px;
+  .Tab {
+    :global {
+      .ant-tabs-nav {
+        padding-left: 51px;
+        height: 58px;
+        background-color: #f4f4f4;
+        margin-bottom: 0px;
+      }
+      .ant-tabs-tab {
+        margin: 0 66px 0 0;
+      }
+      .ant-tabs-ink-bar.ant-tabs-ink-bar-animated {
+        height: 9px;
+      }
+      .ant-tabs-ink-bar {
+        height: 9px;
+        background-color: #044040;
+      }
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+        color: #044040;
+        font-size: 18px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        letter-spacing: normal;
+        text-align: left;
+      }
+      .ant-tabs-tab-btn {
+        font-family: 'Noto Sans', sans-serif;
+        font-size: 18px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.33;
+        letter-spacing: normal;
+        text-align: left;
+        color: #044040;
+      }
     }
-  }
-}
-.Text {
-  display: flex;
-  flex-flow: row nowrap;
-  text-decoration: underline;
-  margin-top: 35px;
-  margin-bottom: 26.3px;
-  p {
-    width: 130px;
-    height: 24px;
-    margin-bottom: 0;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.33;
-    letter-spacing: normal;
-    text-align: left;
-    color: #140606;
-  }
-  span {
-    width: 32px;
-    height: 24px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.33;
-    letter-spacing: normal;
-    text-align: left;
-    color: #de0e0e;
   }
 }

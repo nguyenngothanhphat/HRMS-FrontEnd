@@ -53,8 +53,9 @@ const errorHandler = (error) => {
 const request = (url, options = {}, noAuth) => {
   let headers = options.headers || {};
   if (!noAuth) {
-    const { token } = getToken();
+    const token = getToken();
     headers = {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
       ...headers,
     };

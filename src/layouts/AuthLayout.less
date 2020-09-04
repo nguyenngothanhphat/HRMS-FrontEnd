@@ -3,23 +3,23 @@
   background-color: white;
   :global(.ant-layout-header) {
     display: flex;
+    justify-content: space-between;
     padding: 0 50px;
     color: rgba(0, 0, 0, 0.85);
     background: #fff;
-    justify-content: space-between;
   }
   .leftContent {
     .textAppName {
-      font-weight: 600;
       margin-left: 1rem;
+      font-weight: 600;
     }
   }
 
   .rightContent {
     .textSignUp {
-      text-decoration: underline;
-      font-weight: 600;
       margin-left: 0.5rem;
+      font-weight: 600;
+      text-decoration: underline;
       cursor: pointer;
     }
   }
@@ -32,23 +32,23 @@
       justify-content: center;
       padding-left: 3rem;
       &__text1 {
-        font-size: 2rem;
         width: 70%;
         min-width: 20rem;
+        font-size: 2rem;
         line-height: 2rem;
         color: #000;
       }
       &__text2 {
-        color: #acacac;
-        font-size: 18px;
         width: 70%;
         min-width: 20rem;
+        color: #acacac;
+        font-size: 18px;
       }
     }
     .contentRight {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
     @media screen and (max-width: 768px) {
       .contentLeft {
