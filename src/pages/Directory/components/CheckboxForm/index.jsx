@@ -16,7 +16,8 @@ class CheckBoxForms extends PureComponent {
   }
 
   onChange = (checkedList) => {
-    const { data } = this.props;
+    const { data, onBoxForms } = this.props;
+    onBoxForms(checkedList);
     this.setState({
       checkedList,
       list: checkedList,
@@ -37,9 +38,6 @@ class CheckBoxForms extends PureComponent {
   render() {
     const { name, all, data } = this.props;
     const { list } = this.state;
-    // const newlist = [...list];
-    // newlist.push(list);
-    // console.log(newlist);
     return (
       <div className={styles.CheckBoxForm}>
         <div className={styles.title}>

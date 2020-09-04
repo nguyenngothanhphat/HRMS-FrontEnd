@@ -83,7 +83,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {} } = this.state;
-    const { list = [], pagination: paginationProps } = this.props;
+    const { list = [] } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -103,9 +103,9 @@ class DirectoryTable extends Component {
             };
           }}
           dataSource={list}
-          pagination={paginationProps === false ? false : pagination}
+          pagination={list.length > 10 ? pagination : false}
           onChange={this.handleChangeTable}
-          scroll={{ y: 702 }}
+          scroll={{ y: 540 }}
         />
       </div>
     );

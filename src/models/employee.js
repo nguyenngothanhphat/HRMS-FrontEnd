@@ -37,9 +37,16 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchListEmployeeMyTeam(_, { call, put }) {
+    *fetchListEmployeeMyTeam(
+      { payload: { department = [], location = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getListEmployeeMyTeam);
+        const response = yield call(getListEmployeeMyTeam, {
+          department: `{"$in":${department}}`,
+          location,
+          name,
+        });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'employee/listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
@@ -47,9 +54,16 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchListEmployeeActive(_, { call, put }) {
+    *fetchListEmployeeActive(
+      { payload: { department = [], location = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getListEmployeeActive);
+        const response = yield call(getListEmployeeActive, {
+          department: { $in: department },
+          location: { $in: location },
+          name,
+        });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'employee/listEmployeeActive', payload: { listEmployeeActive } });
@@ -57,9 +71,16 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchListEmployeeInActive(_, { call, put }) {
+    *fetchListEmployeeInActive(
+      { payload: { department = [], location = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getListEmployeeInActive);
+        const response = yield call(getListEmployeeInActive, {
+          department: { $in: department },
+          location: { $in: location },
+          name,
+        });
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'employee/listEmployeeInActive', payload: { listEmployeeInActive } });

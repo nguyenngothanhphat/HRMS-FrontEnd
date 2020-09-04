@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect } from 'umi';
-import DirectotyTable from '@/components/DirectotyTable';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
@@ -13,7 +12,6 @@ class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: false,
       rendertext1: [
         {
           name: 'Employment Type',
@@ -45,28 +43,29 @@ class TableFilter extends PureComponent {
   }
 
   toggle = () => {
-    const { collapsed } = this.state;
-    this.setState({
-      collapsed: !collapsed,
-    });
-  };
-
-  handlefilter = (value, inputvalue) => {
-    const valuedata = value.filter((x) => x.toLowerCase().includes(inputvalue.toLowerCase()));
-    this.setState({ filterdata: valuedata });
+    const { onToggle } = this.props;
+    onToggle();
   };
 
   handleChange = (e) => {
     const inputvalue = e.target.value;
-    const { rendertext1 } = this.state;
-    rendertext1.filter((value) => this.handlefilter(value.data, inputvalue));
+    const { onHandleChange } = this.props;
+    onHandleChange(inputvalue);
+  };
+
+  handleCheckbox = () => {
+    // console.log(value);
+    // const {handleBoxForm} =this.props;
+    // handleBoxForm(value);
   };
 
   render() {
-    const { Sider, Content } = Layout;
-    const { collapsed, rendertext1, filterdata, locationState, departmentState, all } = this.state;
+    const { Sider } = Layout;
+    const { rendertext1, locationState, departmentState, all } = this.state;
     const {
       employee: { location = [], department = [] },
+      collapsed,
+      onCheckBox,
     } = this.props;
     const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
@@ -82,487 +81,15 @@ class TableFilter extends PureComponent {
         value,
       };
     });
-    const employeesState = [
-      {
-        generalInfo: {
-          firstName: 'Adija Venka ',
-          lastName: ' Last',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 1',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 2',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 3',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 4',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 5',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 6',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 7',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 8',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 9',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 10',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 11',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 12',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 13',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 14',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 15',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 16',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 17',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 18',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 19',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 20',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 21',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 22',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 23',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 24',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 25',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka 25',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-      {
-        generalInfo: {
-          fullName: 'Adija Venka ',
-        },
-        compensation: {
-          title: 'UX designer',
-        },
-        department: {
-          name: 'Design',
-        },
-        location: {
-          name: 'Begalura',
-        },
-        manager: {
-          name: 'Anil Reddy',
-        },
-      },
-    ];
+    const filteredArr = formatDataDepartment.reduce((precur, current) => {
+      const x = precur.find((item) => item.label === current.label);
+      if (!x) {
+        return precur.concat([current]);
+      }
+      return precur;
+    }, []);
     return (
-      <Layout className={styles.TabFilter}>
+      <div className={styles.TabFilter}>
         <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
           <div className={styles.topFilter}>
             <div className={styles.textFilters}>Filters</div>
@@ -581,7 +108,8 @@ class TableFilter extends PureComponent {
                 key={data.name}
                 name={data.name}
                 all={data.all}
-                data={filterdata || data.data}
+                data={data.data}
+                onBoxForms={onCheckBox}
               />
             );
           })}
@@ -589,25 +117,18 @@ class TableFilter extends PureComponent {
             key={departmentState}
             name={departmentState}
             all={all}
-            data={formatDataDepartment}
+            data={filteredArr}
+            onBoxForms={onCheckBox}
           />
           <CheckBoxForms
             key={locationState}
             name={locationState}
             all={all}
             data={formatDataLocation}
+            onBoxForms={onCheckBox}
           />
         </Sider>
-        {collapsed ? <div className={styles.openSider} onClick={this.toggle} /> : ''}
-        <Content
-          className="site-layout-background"
-          style={{
-            minHeight: 280,
-          }}
-        >
-          <DirectotyTable list={employeesState} />
-        </Content>
-      </Layout>
+      </div>
     );
   }
 }
