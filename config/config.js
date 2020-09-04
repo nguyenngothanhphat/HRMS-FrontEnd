@@ -30,6 +30,8 @@ export default defineConfig({
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
     'text-color': '#044040',
+    'table-font-size': '16px',
+    'pagination-item-link-bg': '#000000',
   },
   // @ts-ignore
   title: false,

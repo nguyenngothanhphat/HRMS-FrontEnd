@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react';
-import { NavLink } from 'umi';
+import { connect, NavLink } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
+import DirectotyTable from '@/components/DirectotyTable';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
@@ -17,9 +22,30 @@ class DirectoryComponent extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeInActive',
+    });
+  }
+
+  renderDirectoryTable = () => {};
+
   render() {
     const { TabPane } = Tabs;
     const { bottabs } = this.state;
+    const {
+      employee: { listEmployeeActive = [] },
+    } = this.props;
+    // console.log('listEmployeeActive', listEmployeeActive);
+    // console.log('listEmployeeMyTeam', listEmployeeMyTeam);
+    // console.log('listEmployeeInActive', listEmployeeInActive);
     return (
       <div className={styles.DirectoryComponent}>
         <div className={styles.boxCreate}>
@@ -34,7 +60,9 @@ class DirectoryComponent extends PureComponent {
         </div>
         <Tabs defaultActiveKey="1" className={styles.Tab}>
           {bottabs.map((tab) => (
-            <TabPane tab={tab.name} key={tab.id} />
+            <TabPane tab={tab.name} key={tab.id}>
+              <DirectotyTable list={listEmployeeActive} />
+            </TabPane>
           ))}
         </Tabs>
         <TableFilter />

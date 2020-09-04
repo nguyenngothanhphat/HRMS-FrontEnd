@@ -39,6 +39,9 @@ class TableFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchDepartment',
     });
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+    });
   }
 
   toggle = () => {
@@ -82,7 +85,8 @@ class TableFilter extends PureComponent {
     const employeesState = [
       {
         generalInfo: {
-          fullName: 'Adija Venka ',
+          firstName: 'Adija Venka ',
+          lastName: ' Last',
         },
         compensation: {
           title: 'UX designer',

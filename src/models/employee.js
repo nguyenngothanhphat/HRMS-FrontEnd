@@ -1,11 +1,20 @@
 import { dialog } from '@/utils/utils';
-import { LocationFilter, DepartmentFilter } from '../services/employee';
+import {
+  LocationFilter,
+  DepartmentFilter,
+  getListEmployeeMyTeam,
+  getListEmployeeActive,
+  getListEmployeeInActive,
+} from '../services/employee';
 
 const employee = {
   namespace: 'employee',
   state: {
     location: [],
     department: [],
+    listEmployeeMyTeam: [],
+    listEmployeeActive: [],
+    listEmployeeInActive: [],
   },
   effects: {
     *fetchLocation(_, { call, put }) {
@@ -28,6 +37,36 @@ const employee = {
         dialog(errors);
       }
     },
+    *fetchListEmployeeMyTeam(_, { call, put }) {
+      try {
+        const response = yield call(getListEmployeeMyTeam);
+        const { statusCode, data: listEmployeeMyTeam = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'employee/listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListEmployeeActive(_, { call, put }) {
+      try {
+        const response = yield call(getListEmployeeActive);
+        const { statusCode, data: listEmployeeActive = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'employee/listEmployeeActive', payload: { listEmployeeActive } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListEmployeeInActive(_, { call, put }) {
+      try {
+        const response = yield call(getListEmployeeInActive);
+        const { statusCode, data: listEmployeeInActive = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'employee/listEmployeeInActive', payload: { listEmployeeInActive } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     saveLocation(state, action) {
@@ -37,6 +76,24 @@ const employee = {
       };
     },
     saveDeparment(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    listEmployeeMyTeam(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    listEmployeeActive(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    listEmployeeInActive(state, action) {
       return {
         ...state,
         ...action.payload,

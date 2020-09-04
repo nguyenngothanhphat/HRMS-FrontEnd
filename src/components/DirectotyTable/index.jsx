@@ -15,7 +15,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTableName}>
         <Avatar className={styles.avatar} alt="avatar" />
-        <p>{generalInfo.fullName}</p>
+        <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
   };
@@ -26,7 +26,7 @@ class DirectoryTable extends Component {
         title: 'Full Name',
         dataIndex: 'generalInfo',
         key: 'generalInfo',
-        render: (generalInfo) => this.renderUser(generalInfo),
+        render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
         align: 'center',
         sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
@@ -36,25 +36,31 @@ class DirectoryTable extends Component {
         title: 'Title',
         dataIndex: 'compensation',
         key: 'compensation',
-        render: (compensation) => <span>{compensation.title}</span>,
+        render: (compensation) => (
+          <span>
+            {compensation && Object.prototype.hasOwnProperty.call(compensation, 'tittle')
+              ? compensation.tittle.name
+              : ''}
+          </span>
+        ),
         align: 'center',
       },
       {
         title: 'Department',
         dataIndex: 'department',
-        render: (department) => <span>{department.name}</span>,
+        render: (department) => <span>{department ? department.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Location',
         dataIndex: 'location',
-        render: (location) => <span>{location.name}</span>,
+        render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Reporting Manager',
         dataIndex: 'manager',
-        render: (manager) => <span>{manager.name}</span>,
+        render: (manager) => <span>{manager ? manager.name : ''}</span>,
         align: 'center',
       },
     ];
