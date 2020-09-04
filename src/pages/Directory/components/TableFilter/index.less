@@ -1,13 +1,26 @@
+// @import '~antd/es/style/mixins/scrollbar.less';
+
 .TabFilter {
   :global {
     .ant-layout-header {
       background: none;
     }
+
     .ant-layout-sider {
-      // height: 702px;
+      overflow-y: auto;
+      height: 702px;
       background-color: #e3e3e3;
     }
   }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+  }
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+
   .openSider {
     position: relative;
     width: 17.1px;
@@ -15,11 +28,14 @@
     margin-top: 14px;
     background-color: #0d61dd;
     cursor: pointer;
+    z-index: 1;
   }
+
   .openSider::before {
     position: absolute;
     top: 0;
-    right: -8px;
+    // right: -8px;
+    left: 20px;
     width: 0;
     height: 0;
     border-top: 10.5px solid transparent;
@@ -27,6 +43,15 @@
     border-left: 8px solid #0d61dd;
     content: '';
   }
+
+  .openSider::after {
+    position: absolute;
+    content: '';
+    height: 21px;
+    width: 20px;
+    background: #0d61dd;
+  }
+
   .topFilter {
     display: flex;
     flex-flow: row nowrap;
@@ -34,6 +59,7 @@
     justify-content: space-between;
     height: 54px;
     background-color: #d1d1d1;
+
     .textFilters {
       width: 50px;
       height: 22px;
@@ -49,10 +75,12 @@
       letter-spacing: normal;
       text-align: left;
     }
+
     .resetHide {
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
+
       p {
         width: 44px;
         height: 22px;
@@ -68,6 +96,7 @@
         letter-spacing: normal;
         text-align: left;
       }
+
       .shapeHide {
         position: relative;
         display: flex;
@@ -80,6 +109,7 @@
         background-color: #0d61dd;
         cursor: pointer;
       }
+
       .shapeHide::before {
         position: absolute;
         top: 0;
@@ -91,6 +121,7 @@
         border-right: 8px solid #0d61dd;
         content: '';
       }
+
       span {
         width: 27px;
         height: 17px;
@@ -106,6 +137,7 @@
       }
     }
   }
+
   .textName {
     width: 48px;
     height: 22px;
@@ -120,6 +152,7 @@
     letter-spacing: normal;
     text-align: left;
   }
+
   .formInput {
     width: 310px;
     height: 53px;

@@ -1,0 +1,141 @@
+@import '~antd/es/style/themes/default.less';
+@import '~antd/es/style/mixins/scrollbar.less';
+
+.mixin-border-bottom-row {
+  border-bottom: 2px solid #e3e3e3;
+}
+
+.mixin-ant-pagination {
+  width: 17px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0;
+  line-height: 17px;
+}
+
+.mixin-ant-pagination-disabled {
+  background-color: #acacac;
+}
+
+.directoryTable {
+  height: 100%;
+
+  :global {
+    .ant-table-container {
+      height: 604px;
+      overflow: hidden;
+      background: #f4f4f4;
+    }
+
+    .ant-table table {
+      font-size: 16px;
+    }
+
+    tbody.ant-table-tbody {
+      color: @black;
+    }
+
+    .ant-table-tbody > tr > td {
+      padding: 6px;
+      background-color: #f4f4f4;
+      .mixin-border-bottom-row();
+    }
+
+    .ant-table-thead > tr > th {
+      border-bottom: none;
+      padding: 0;
+    }
+
+    span.anticon.anticon-caret-up.ant-table-column-sorter-up {
+      display: none;
+    }
+
+    span.anticon.anticon-caret-down.ant-table-column-sorter-down {
+      padding-top: 15px;
+      color: #044040;
+      font-size: 14px;
+    }
+
+    thead[class*='ant-table-thead'] th {
+      color: #044040;
+      font-weight: 500;
+      background-color: @white;
+    }
+
+    .ant-table-tbody > tr.ant-table-row:hover > td {
+      cursor: pointer;
+    }
+
+    .ant-table-pagination.ant-pagination {
+      padding-left: 40px;
+      padding-top: 55px;
+      padding-bottom: 10px;
+      margin: 0;
+      width: 100%;
+      background-color: #f7f7f7;
+      border-top: 1px solid #d0d0d0;
+    }
+
+    li.ant-pagination-item {
+      display: none;
+    }
+
+    li.ant-pagination-total-text {
+      font-size: 16px;
+      opacity: 0.4;
+      color: @black;
+    }
+
+    li.ant-pagination-prev {
+      .mixin-ant-pagination();
+    }
+
+    li.ant-pagination-next {
+      .mixin-ant-pagination();
+    }
+
+    button.ant-pagination-item-link {
+      padding: 0;
+      color: @white;
+      font-size: 12px;
+      text-align: center;
+      background-color: @black;
+      border: none;
+      border-radius: unset;
+    }
+
+    li.ant-pagination-prev.ant-pagination-disabled button {
+      .mixin-ant-pagination-disabled();
+    }
+
+    li.ant-pagination-next.ant-pagination-disabled button {
+      .mixin-ant-pagination-disabled();
+    }
+  }
+
+  .customScrollbar();
+
+  .directoryTableName {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background-color: @white;
+      border: solid 1px #707070;
+    }
+
+    p {
+      text-decoration: underline;
+      text-align: left;
+      white-space: nowrap;
+      width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+      padding-left: 15px;
+    }
+  }
+}
