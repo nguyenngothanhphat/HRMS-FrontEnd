@@ -14,17 +14,18 @@ class TableFilter extends PureComponent {
     this.state = {
       collapsed: false,
       rendertext1: [
-        { name: 'Employment Type', all: 'All', data: ['Full Time', 'Part Time', 'Interns'] },
-      ],
-      rendertext2: [
         {
-          name: 'Department',
+          name: 'Employment Type',
           all: 'All',
-          data: ['Design', 'Development', 'Marketing', 'Sales', 'HR', 'Administration'],
+          data: [
+            { label: 'Full Time', value: 'Full Time' },
+            { label: 'Part Time', value: 'Part Time' },
+            { label: 'Interns', value: 'Interns' },
+          ],
         },
       ],
       locationState: 'Location',
-      department: 'Department',
+      departmentState: 'Department',
       all: 'All',
     };
   }
@@ -59,20 +60,19 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider, Content } = Layout;
+    const { collapsed, rendertext1, filterdata, locationState, departmentState, all } = this.state;
     const {
-      collapsed,
-      rendertext1,
-      rendertext2,
-      filterdata,
-      locationState,
-      department,
-      all,
-    } = this.state;
-    const {
-      employee: { location = [] },
+      employee: { location = [], department = [] },
     } = this.props;
-    const formatData = location.map((item) => {
+    const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
+      return {
+        label,
+        value,
+      };
+    });
+    const formatDataDepartment = department.map((item) => {
+      const { name: label, name: value } = item;
       return {
         label,
         value,
@@ -102,10 +102,18 @@ class TableFilter extends PureComponent {
               />
             );
           })}
-          {rendertext2.map((data) => {
-            return <CheckBoxForms key={department} name={department} all={all} data={data.data} />;
-          })}
-          <CheckBoxForms key={locationState} name={locationState} all={all} data={formatData} />
+          <CheckBoxForms
+            key={departmentState}
+            name={departmentState}
+            all={all}
+            data={formatDataDepartment}
+          />
+          <CheckBoxForms
+            key={locationState}
+            name={locationState}
+            all={all}
+            data={formatDataLocation}
+          />
           {/* {rendertext3.map((data) => {
             return (
             );

@@ -8,5 +8,7 @@ export async function LocationFilter(payload) {
 }
 
 export async function DepartmentFilter() {
-  return request('/api/department/list');
+  return request('/api/department/list', {
+    method: 'POST',
+  });
 }

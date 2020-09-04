@@ -13,7 +13,7 @@ const employee = {
         const response = yield call(LocationFilter);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { location } });
+        yield put({ type: 'saveLocation', payload: { location } });
       } catch (errors) {
         dialog(errors);
       }
@@ -23,14 +23,20 @@ const employee = {
         const response = yield call(DepartmentFilter);
         const { statusCode, data: department = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { department } });
+        yield put({ type: 'saveDeparment', payload: { department } });
       } catch (errors) {
         dialog(errors);
       }
     },
   },
   reducers: {
-    save(state, action) {
+    saveLocation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveDeparment(state, action) {
       return {
         ...state,
         ...action.payload,
