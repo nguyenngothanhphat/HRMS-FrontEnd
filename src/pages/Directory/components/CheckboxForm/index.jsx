@@ -23,18 +23,6 @@ class CheckBoxForms extends PureComponent {
 
   onChange = (checkedList) => {
     const { data, onBox, name, dispatch } = this.props;
-    // const { filter } = this.state;
-    // const newFilter = [...filter];
-    // const productIndex = newFilter.findIndex((x) => x.label === name);
-    // if (productIndex < 0) {
-    //   const item = { label: name, value: checkedList };
-    //   newFilter.push(item);
-    // } else {
-    //   newFilter[productIndex] = {
-    //     ...newFilter[productIndex],
-    //     value: checkedList,
-    //   };
-    // }
     dispatch({
       type: 'employee/saveFilter',
       payload: { name, checkedList },
@@ -42,7 +30,6 @@ class CheckBoxForms extends PureComponent {
     this.setState(
       {
         checkedList,
-        // filter: newFilter,
         list: checkedList,
         indeterminate: !!checkedList.length && checkedList.length < data.length,
         checkAll: checkedList.length === data.length,
