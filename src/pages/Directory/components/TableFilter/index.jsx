@@ -44,20 +44,15 @@ class TableFilter extends PureComponent {
     onToggle();
   };
 
-  handlefilter = (value, inputvalue) => {
-    const valuedata = value.filter((x) => x.label.toLowerCase().includes(inputvalue.toLowerCase()));
-    this.setState({ filterdata: valuedata });
-  };
-
   handleChange = (e) => {
     const inputvalue = e.target.value;
-    const { rendertext1 } = this.state;
-    rendertext1.filter((value) => this.handlefilter(value.data, inputvalue));
+    const { onHandleChange } = this.props;
+    onHandleChange(inputvalue);
   };
 
   render() {
     const { Sider } = Layout;
-    const { rendertext1, filterdata, locationState, departmentState, all } = this.state;
+    const { rendertext1, locationState, departmentState, all } = this.state;
     const {
       employee: { location = [], department = [] },
       collapsed,
@@ -99,12 +94,7 @@ class TableFilter extends PureComponent {
           <Input className={styles.formInput} onChange={this.handleChange} />
           {rendertext1.map((data) => {
             return (
-              <CheckBoxForms
-                key={data.name}
-                name={data.name}
-                all={data.all}
-                data={filterdata || data.data}
-              />
+              <CheckBoxForms key={data.name} name={data.name} all={data.all} data={data.data} />
             );
           })}
           <CheckBoxForms
