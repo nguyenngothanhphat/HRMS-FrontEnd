@@ -1,14 +1,36 @@
 .formWrapper {
-  width: 55%;
-  height: auto;
+  width: 56%;
+  min-height: 60%;
+  background-color: #fff;
   padding: 20px 30px 40px;
   background-color: #fff;
   box-shadow: 0 0 11px #ececec;
+  color: #000;
   &__title {
     color: #acacac;
     font-weight: 600;
   }
+
+  &__description {
+    color: #000;
+    font-size: 12px;
+    text-align: justify;
+    margin-bottom: 1.5rem;
+  }
+
+  &__descriptionSuccessfully {
+    color: #000;
+    font-size: 12px;
+    text-align: center;
+    width: 90%;
+    margin-bottom: 0;
+  }
+
   :global {
+    .ant-input {
+      height: 40px;
+      color: #000;
+    }
     .ant-btn-primary {
       width: 100%;
       height: 40px;
@@ -21,6 +43,12 @@
       font-weight: 500;
       font-size: 12px;
     }
+  }
+
+  input:-webkit-autofill,
+  input:focus:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #fff inset;
+    box-shadow: 0 0 0 100px #fff inset;
   }
 }
 

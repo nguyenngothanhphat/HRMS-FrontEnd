@@ -19,6 +19,16 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/reset-password/:reId',
+    component: '../layouts/AuthLayout',
+    routes: [
+      {
+        path: '/reset-password/:reId',
+        component: './ResetPassword',
+      },
+    ],
+  },
 
   {
     path: '/',
