@@ -76,7 +76,13 @@ class TableFilter extends PureComponent {
         value,
       };
     });
-
+    const filteredArr = formatDataDepartment.reduce((precur, current) => {
+      const x = precur.find((item) => item.label === current.label);
+      if (!x) {
+        return precur.concat([current]);
+      }
+      return precur;
+    }, []);
     return (
       <div className={styles.TabFilter}>
         <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
@@ -105,7 +111,7 @@ class TableFilter extends PureComponent {
             key={departmentState}
             name={departmentState}
             all={all}
-            data={formatDataDepartment}
+            data={filteredArr}
           />
           <CheckBoxForms
             key={locationState}
