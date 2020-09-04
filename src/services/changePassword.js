@@ -11,9 +11,9 @@ export async function forgotPasswordAPI(params) {
   );
 }
 
-export async function abc(params) {
+export async function resetPasswordAPI(params) {
   return request(
-    '/api/password/recover',
+    '/api/password/reset',
     {
       method: 'POST',
       data: params,

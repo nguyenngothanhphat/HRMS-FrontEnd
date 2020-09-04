@@ -1,35 +1,32 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-// import { CheckCircleFilled } from '@ant-design/icons';
+import { CheckCircleFilled } from '@ant-design/icons';
 import { connect } from 'umi';
 
 import styles from './index.less';
 
-@connect(({ loading, changePassword: { statusSendEmail } = {} }) => ({
-  loading: loading.effects['changePassword/forgotPassword'],
-  statusSendEmail,
+@connect(({ loading }) => ({
+  loading: loading.effects['changePassword/resetPassword'],
 }))
 class ResetPassword extends Component {
-  check = (rule, value, callback) => {
-    if (value.trim() === '') {
-      callback('Please input your new password!');
-      // } else if (value && value !== form.getFieldValue('password')) {
-      //   callback(formatMessage({ id: 'global.required.comnfirmpassword' }));
-    }
-    callback();
-  };
-
   onFinish = (values) => {
-    // const { email } = values;
-    // this.handleSubmit(email);
+    const { password } = values;
+    this.handleSubmit(password);
   };
 
-  handleSubmit = (email) => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'changePassword/forgotPassword',
-    //   payload: { email },
-    // });
+  handleSubmit = (password) => {
+    const {
+      dispatch,
+      match: { params: { reId: code = '' } = {} },
+    } = this.props;
+    const payload = {
+      code,
+      password,
+    };
+    dispatch({
+      type: 'changePassword/resetPassword',
+      payload,
+    });
   };
 
   _renderButton = (getFieldValue) => {
@@ -49,13 +46,20 @@ class ResetPassword extends Component {
   };
 
   render() {
+    const arrText = [
+      'Use a minimum of 8 characters',
+      'At least one letter, one number and one special character.',
+    ];
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>Create New Password</p>
-        <p className={styles.formWrapper__description}>
-          In order to retrieve password, you must enter your registered company email id or private
-          email id entered submitted with the HR.
-        </p>
+        {arrText.map((item) => (
+          <div style={{ marginBottom: '0.5rem' }}>
+            <CheckCircleFilled style={{ color: '#ACACAC', marginRight: '4px' }} />
+            <span className={styles.formWrapper__description}>{item}</span>
+          </div>
+        ))}
+
         <Form
           layout="vertical"
           name="basic"
@@ -65,6 +69,7 @@ class ResetPassword extends Component {
           onFinish={this.onFinish}
           requiredMark={false}
           ref={this.formRef}
+          style={{ marginTop: '1rem' }}
         >
           <Form.Item
             label="Enter Password"
@@ -73,6 +78,14 @@ class ResetPassword extends Component {
               {
                 required: true,
                 message: 'Please input your new password!',
+              },
+              {
+                min: 8,
+                message: 'Minimum of 8 characters!',
+              },
+              {
+                pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
+                message: 'At least one letter, one number and one special character!',
               },
             ]}
           >

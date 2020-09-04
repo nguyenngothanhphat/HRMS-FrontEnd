@@ -1,3 +1,6 @@
+/* eslint-disable compat/compat */
+/* eslint-disable no-undef */
+import React from 'react';
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { List, notification } from 'antd';
@@ -72,14 +75,17 @@ export function dialog(response) {
   if (messageArray.length === 0) {
     messageArray = [message || 'Unknow error'];
   }
-
   notification.error({
     message: 'Process fail',
     description: (
       <List
         size="small"
         dataSource={messageArray}
-        renderItem={(msg) => <List.Item key={msg}>{msg}</List.Item>}
+        renderItem={(msg) => (
+          <List.Item key={msg} style={{ padding: '0', color: '#000' }}>
+            {msg}
+          </List.Item>
+        )}
       />
     ),
   });
