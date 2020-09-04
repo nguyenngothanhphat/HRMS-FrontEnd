@@ -3,12 +3,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class CheckBoxForms extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      filter: [],
       list: [],
       indeterminate: true,
       checkAll: false,
@@ -16,13 +22,35 @@ class CheckBoxForms extends PureComponent {
   }
 
   onChange = (checkedList) => {
-    const { data } = this.props;
-    this.setState({
-      checkedList,
-      list: checkedList,
-      indeterminate: !!checkedList.length && checkedList.length < data.length,
-      checkAll: checkedList.length === data.length,
+    const { data, onBox, name, dispatch } = this.props;
+    // const { filter } = this.state;
+    // const newFilter = [...filter];
+    // const productIndex = newFilter.findIndex((x) => x.label === name);
+    // if (productIndex < 0) {
+    //   const item = { label: name, value: checkedList };
+    //   newFilter.push(item);
+    // } else {
+    //   newFilter[productIndex] = {
+    //     ...newFilter[productIndex],
+    //     value: checkedList,
+    //   };
+    // }
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name, checkedList },
     });
+    this.setState(
+      {
+        checkedList,
+        // filter: newFilter,
+        list: checkedList,
+        indeterminate: !!checkedList.length && checkedList.length < data.length,
+        checkAll: checkedList.length === data.length,
+      },
+      () => {
+        onBox(this.state);
+      },
+    );
   };
 
   onCheckAllChange = (e) => {
@@ -48,6 +76,7 @@ class CheckBoxForms extends PureComponent {
         <Checkbox.Group
           className={styles.groupCheckBox}
           options={data}
+          name={name}
           value={list}
           onChange={this.onChange}
         />

@@ -505,12 +505,15 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    console.log(valueInput);
     const newFilter = employeesState.filter((value) =>
       value.generalInfo.fullName.toLowerCase().includes(valueInput.toLowerCase()),
     );
     this.setState({ filter: newFilter });
   };
+
+  // handleFormBox = (value) => {
+  //   // console.log(value);
+  // };
 
   render() {
     const { Content } = Layout;
@@ -536,6 +539,7 @@ class DirectoryComponent extends PureComponent {
                   onToggle={this.handleToggle}
                   collapsed={collapsed}
                   onHandleChange={this.handleChange}
+                  FormBox={this.handleFormBox}
                 />
                 {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
                 <Content
