@@ -35,14 +35,14 @@ const employee = {
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
-      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+      const findIndex = data.findIndex((item) => item.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { actionFilter };
+        const item = { name: actionFilter.name, checkList: actionFilter.checkedList };
         data.push(item);
       } else {
         data[findIndex] = {
           ...data[findIndex],
-          checkedList: actionFilter.checkedList,
+          checkList: actionFilter.checkedList,
         };
       }
       return {

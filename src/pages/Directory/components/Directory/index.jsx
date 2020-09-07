@@ -516,9 +516,6 @@ class DirectoryComponent extends PureComponent {
     this.setState({ filter: newFilter });
   };
 
-  // handleFormBox = (value) => {
-  //   // console.log(value);
-  // };
   handleClickTabPane = () => {
     const { dispatch } = this.props;
     dispatch({
