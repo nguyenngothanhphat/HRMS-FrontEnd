@@ -50,8 +50,9 @@ class CheckBoxForms extends PureComponent {
   };
 
   render() {
-    const { name, all, data } = this.props;
+    const { name, all, data, employee } = this.props;
     const { list } = this.state;
+    const check = employee.clearFilter;
     return (
       <div className={styles.CheckBoxForm}>
         <div className={styles.title}>
@@ -64,7 +65,7 @@ class CheckBoxForms extends PureComponent {
           className={styles.groupCheckBox}
           options={data}
           name={name}
-          value={list}
+          value={check ? [] : list}
           onChange={this.onChange}
         />
       </div>

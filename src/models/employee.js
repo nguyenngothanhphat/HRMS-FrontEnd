@@ -16,6 +16,7 @@ const employee = {
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
+    clearFilter: false,
   },
   effects: {
     *fetchLocation(_, { call, put }) {
@@ -94,6 +95,7 @@ const employee = {
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
+      console.log('actionFilter', actionFilter);
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
         const item = { actionFilter };
@@ -106,7 +108,15 @@ const employee = {
       }
       return {
         ...state,
+        clearFilter: false,
         filter: [...data],
+      };
+    },
+    ClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: true,
+        filter: [],
       };
     },
     saveLocation(state, action) {
