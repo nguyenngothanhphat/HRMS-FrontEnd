@@ -48,12 +48,6 @@ class TableFilter extends PureComponent {
     onHandleChange(inputvalue);
   };
 
-  handleCheckbox = () => {
-    // console.log(value);
-    // const {handleBoxForm} =this.props;
-    // handleBoxForm(value);
-  };
-
   render() {
     const { Sider } = Layout;
     const { locationState, departmentState, all, data, EmploymentState } = this.state;

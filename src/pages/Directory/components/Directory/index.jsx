@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect, NavLink } from 'umi';
+import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
@@ -11,19 +11,6 @@ import TableFilter from '../TableFilter';
   employee,
 }))
 class DirectoryComponent extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      employee: props.employee,
-      collapsed: false,
-      bottabs: [
-        { id: 1, name: 'Active Employees' },
-        { id: 2, name: 'My Team' },
-        { id: 3, name: 'Inactive Employees' },
-      ],
-    };
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
       const { employee } = nextProps;
@@ -43,67 +30,71 @@ class DirectoryComponent extends PureComponent {
         }
         return { employmentType, department, location };
       });
-      console.log('nextProps', nextProps);
-      console.log('employmentType', employmentType);
-      console.log('department', department);
-      console.log('location', location);
-      if (nextProps.employee === prevState.employee) {
-        console.log('nextProps.employee', nextProps.employee);
-        console.log('prevState.employee', prevState.employee);
-        // const { dispatch } = nextProps;
-        // const params = {
-        //   department, location
-        // }
-        // dispatch({
-        //   type: 'employee/fetchListEmployeeActive',
-        //   payload: params
-        // });
-      }
-      // const { dispatch } = nextProps;
-      // const params = {
-      //   department, location
-      // }
-      // dispatch({
-      //   type: 'employee/fetchListEmployeeActive',
-      //   payload: params
-      // });
-      // dispatch({
-      //   type: 'employee/fetchListEmployeeMyTeam',
-      //   payload: params
-      // });
-      // dispatch({
-      //   type: 'employee/fetchListEmployeeInActive',
-      //   payload: params
-      // });
+      return {
+        ...prevState,
+        department,
+        location,
+        employmentType,
+      };
     }
+    return null;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      employee: props.employee,
+      department: [],
+      location: [],
+      employmentType: [],
+      filterName: '',
+      collapsed: false,
+      bottabs: [
+        { id: 1, name: 'Active Employees' },
+        { id: 2, name: 'My Team' },
+        { id: 3, name: 'Inactive Employees' },
+      ],
+    };
   }
 
   componentDidMount() {
+    this.getDataTable();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { department, location, employmentType, filterName } = this.state;
+    const params = {
+      name: filterName,
+      department,
+      location,
+      employmentType,
+    };
+
+    if (
+      prevState.department.length !== department.length ||
+      prevState.location.length !== location.length ||
+      prevState.employmentType.length !== employmentType.length ||
+      prevState.filterName !== filterName
+    ) {
+      this.getDataTable(params);
+    }
+  }
+
+  getDataTable = (params) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/fetchListEmployeeActive',
+      payload: params,
     });
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
+      payload: params,
     });
     dispatch({
       type: 'employee/fetchListEmployeeInActive',
-    });
-  }
-
-  handleToggle = () => {
-    const { collapsed } = this.state;
-    this.setState({
-      collapsed: !collapsed,
+      payload: params,
     });
   };
-
-  // handleChange = (valueInput) => {
-  //   const newFilter = employeesState.filter((value) =>
-  //     value.generalInfo.fullName.toLowerCase().includes(valueInput.toLowerCase()),
-  //   );
-  //   this.setState({ filter: newFilter });
-  // };
 
   renderListEmployee = (tabId) => {
     const {
@@ -116,6 +107,17 @@ class DirectoryComponent extends PureComponent {
       return listEmployeeMyTeam;
     }
     return listEmployeeInActive;
+  };
+
+  handleToggle = () => {
+    const { collapsed } = this.state;
+    this.setState({
+      collapsed: !collapsed,
+    });
+  };
+
+  handleChange = (valueInput) => {
+    this.setState({ filterName: valueInput });
   };
 
   handleClickTabPane = () => {
