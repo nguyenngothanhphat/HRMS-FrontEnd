@@ -28,7 +28,10 @@ class DirectoryTable extends Component {
         key: 'generalInfo',
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
         align: 'center',
-        sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
+        sorter: (a, b) =>
+          `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
+            `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
+          ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         width: '30%',
       },
@@ -48,20 +51,37 @@ class DirectoryTable extends Component {
       {
         title: 'Department',
         dataIndex: 'department',
+        key: 'department',
         render: (department) => <span>{department ? department.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Location',
         dataIndex: 'location',
+        key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Reporting Manager',
         dataIndex: 'manager',
-        render: (manager) => <span>{manager ? manager.name : ''}</span>,
+        key: 'manager',
+        render: (manager) => <span>{manager ? manager.name : 'Reporting Manager'}</span>,
         align: 'center',
+      },
+      {
+        title: 'Employment Type',
+        dataIndex: 'compensation',
+        key: 'employmentType',
+        render: (compensation) => (
+          <span>
+            {compensation && compensation.employeeType && compensation.employeeType.name
+              ? compensation.employeeType.name
+              : 'employmentType'}
+          </span>
+        ),
+        align: 'center',
+        width: '15%',
       },
     ];
 
@@ -103,9 +123,10 @@ class DirectoryTable extends Component {
             };
           }}
           dataSource={list}
-          pagination={list.length > 10 ? pagination : false}
+          rowKey={(record) => record._id}
+          pagination={list.length > 20 ? pagination : false}
           onChange={this.handleChangeTable}
-          scroll={{ y: 540 }}
+          scroll={{ y: 540, x: 700 }}
         />
       </div>
     );

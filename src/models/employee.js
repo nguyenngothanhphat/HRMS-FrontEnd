@@ -10,6 +10,7 @@ import {
 const employee = {
   namespace: 'employee',
   state: {
+    filter: [],
     location: [],
     department: [],
     listEmployeeMyTeam: [],
@@ -49,7 +50,7 @@ const employee = {
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'employee/listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
+        yield put({ type: 'listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
       } catch (errors) {
         dialog(errors);
       }
@@ -66,7 +67,7 @@ const employee = {
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'employee/listEmployeeActive', payload: { listEmployeeActive } });
+        yield put({ type: 'listEmployeeActive', payload: { listEmployeeActive } });
       } catch (errors) {
         dialog(errors);
       }
@@ -83,13 +84,31 @@ const employee = {
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'employee/listEmployeeInActive', payload: { listEmployeeInActive } });
+        yield put({ type: 'listEmployeeInActive', payload: { listEmployeeInActive } });
       } catch (errors) {
         dialog(errors);
       }
     },
   },
   reducers: {
+    saveFilter(state, action) {
+      const data = [...state.filter];
+      const actionFilter = action.payload;
+      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+      if (findIndex < 0) {
+        const item = { actionFilter };
+        data.push(item);
+      } else {
+        data[findIndex] = {
+          ...data[findIndex],
+          checkedList: actionFilter.checkedList,
+        };
+      }
+      return {
+        ...state,
+        filter: [...data],
+      };
+    },
     saveLocation(state, action) {
       return {
         ...state,

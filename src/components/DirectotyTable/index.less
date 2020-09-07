@@ -15,9 +15,6 @@
 }
 
 .directoryTable {
-  height: 100%;
-  background-color: #f7f7f7;
-
   :global {
     .ant-table-container {
       background: #f4f4f4;
@@ -74,7 +71,7 @@
     .ant-table-pagination.ant-pagination {
       padding-left: 40px;
       padding-top: 55px;
-      padding-bottom: 10px;
+      padding-bottom: 14px;
       margin: 0;
       width: 100%;
       background-color: #f7f7f7;
@@ -119,7 +116,7 @@
   .directoryTableName {
     display: flex;
     align-items: center;
-    padding-left: 10px;
+    padding-left: 35px;
 
     .avatar {
       width: 44px;
@@ -138,5 +135,18 @@
       margin: 0;
       padding-left: 15px;
     }
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+    background-color: #f7f7f7;
+    border: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.41);
+    border-radius: 3px;
   }
 }

@@ -23,6 +23,13 @@ class DirectoryComponent extends PureComponent {
     };
   }
 
+  static getDerivedStateFromProps(nextProps) {
+    if ('filter' in nextProps) {
+      return { currency: nextProps.currency };
+    }
+    return null;
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -50,8 +57,6 @@ class DirectoryComponent extends PureComponent {
   //   this.setState({ filter: newFilter });
   // };
 
-  handleChange = () => {};
-
   renderListEmployee = (tabId) => {
     const {
       employee: { listEmployeeActive = [], listEmployeeMyTeam = [], listEmployeeInActive = [] },
@@ -65,498 +70,17 @@ class DirectoryComponent extends PureComponent {
     return listEmployeeInActive;
   };
 
-  handleCheckBox = (value) => {
-    console.log(value);
-  };
-
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { bottabs, collapsed } = this.state;
-    // const employeesState = [
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka ',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 1',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 2',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 3',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 4',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 5',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 6',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 7',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 8',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 9',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 10',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 11',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 12',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 13',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 14',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 15',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 16',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 17',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 18',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 19',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 20',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 21',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 22',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 23',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 24',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 25',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka 25',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   {
-    //   generalInfo: {
-    //   fullName: 'Adija Venka ',
-    //   },
-    //   compensation: {
-    //   title: 'UX designer',
-    //   },
-    //   department: {
-    //   name: 'Design',
-    //   },
-    //   location: {
-    //   name: 'Begalura',
-    //   },
-    //   manager: {
-    //   name: 'Anil Reddy',
-    //   },
-    //   },
-    //   ];
+
     return (
       <div className={styles.DirectoryComponent}>
         <div className={styles.boxCreate}>
           <NavLink to="/directory" className={styles.buttonCreate}>
             <PlusOutlined />
-            <p className={styles.NameNewProfile}>Create New Profile</p>
+            <p className={styles.NameNewProfile}>Set Up New Profile</p>
           </NavLink>
           <div className={styles.Text}>
             <p className={styles.ViewText}>View Activity log </p>
@@ -564,20 +88,21 @@ class DirectoryComponent extends PureComponent {
           </div>
         </div>
         <Tabs defaultActiveKey="1" className={styles.Tab}>
+          <TableFilter
+            onToggle={this.handleToggle}
+            collapsed={collapsed}
+            onHandleChange={this.handleChange}
+            FormBox={this.handleFormBox}
+          />
           {bottabs.map((tab) => (
             <TabPane tab={tab.name} key={tab.id}>
               <Layout>
-                <TableFilter
-                  onToggle={this.handleToggle}
-                  collapsed={collapsed}
-                  onHandleChange={this.handleChange}
-                  onCheckBox={this.handleCheckBox}
-                />
                 {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
                 <Content
                   className="site-layout-background"
                   style={{
-                    minHeight: 280,
+                    maxHeight: 702,
+                    backgroundColor: '#f7f7f7',
                   }}
                 >
                   <DirectotyTable list={this.renderListEmployee(tab.id)} />

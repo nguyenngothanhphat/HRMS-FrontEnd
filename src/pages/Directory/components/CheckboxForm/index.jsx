@@ -3,12 +3,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class CheckBoxForms extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      filter: [],
       list: [],
       indeterminate: true,
       checkAll: false,
@@ -16,14 +22,22 @@ class CheckBoxForms extends PureComponent {
   }
 
   onChange = (checkedList) => {
-    const { data, onBoxForms } = this.props;
-    onBoxForms(checkedList);
-    this.setState({
-      checkedList,
-      list: checkedList,
-      indeterminate: !!checkedList.length && checkedList.length < data.length,
-      checkAll: checkedList.length === data.length,
+    const { data, name, dispatch } = this.props;
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name, checkedList },
     });
+    this.setState(
+      {
+        checkedList,
+        list: checkedList,
+        indeterminate: !!checkedList.length && checkedList.length < data.length,
+        checkAll: checkedList.length === data.length,
+      },
+      // () => {
+      //   onBox(this.state);
+      // },
+    );
   };
 
   onCheckAllChange = (e) => {
@@ -49,6 +63,7 @@ class CheckBoxForms extends PureComponent {
         <Checkbox.Group
           className={styles.groupCheckBox}
           options={data}
+          name={name}
           value={list}
           onChange={this.onChange}
         />
