@@ -3,6 +3,9 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+
+import Documents from './components/Documents';
+
 import styles from './index.less';
 
 const { Item } = Menu;
@@ -89,7 +92,9 @@ class EmployeeProfile extends Component {
           >
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
-                <Layout />
+                <Layout>
+                  { tab.name === 'Documents' ? <Documents /> : ''}
+                </Layout>
               </TabPane>
             ))}
           </Tabs>
