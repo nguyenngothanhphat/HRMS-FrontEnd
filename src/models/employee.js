@@ -7,6 +7,7 @@ const employee = {
     filter: [],
     location: [],
     department: [],
+    clearFilter: false,
   },
   effects: {
     *fetchLocation(_, { call, put }) {
@@ -46,7 +47,15 @@ const employee = {
       }
       return {
         ...state,
+        clearFilter: false,
         filter: [...data],
+      };
+    },
+    ClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: true,
+        filter: [],
       };
     },
     saveLocation(state, action) {
