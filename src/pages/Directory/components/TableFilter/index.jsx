@@ -32,6 +32,9 @@ class TableFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchDepartment',
     });
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+    });
   }
 
   toggle = () => {
@@ -51,6 +54,7 @@ class TableFilter extends PureComponent {
     const {
       employee: { location = [], department = [] },
       collapsed,
+      // onCheckBox,
       FormBox,
     } = this.props;
     const formatDataLocation = location.map((item) => {

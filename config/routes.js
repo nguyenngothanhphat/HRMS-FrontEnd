@@ -62,7 +62,24 @@ const routes = [
             component: './EmployeeProfile',
             hideInMenu: true,
           },
-
+          {
+            path: '/employee-onboarding',
+            name: 'employeeOnboarding',
+            icon: 'unordered-list',
+            component: './EmployeeOnboarding',
+          },
+          {
+            path: '/employee-onboarding/:action(add)',
+            name: 'addTeamMember',
+            hideInMenu: true,
+            component: './FormTeamMember',
+          },
+          {
+            path: '/employee-onboarding/:action(review)/:reId',
+            name: 'reviewTeamMember',
+            hideInMenu: true,
+            component: './FormTeamMember',
+          },
           {
             component: './404',
           },

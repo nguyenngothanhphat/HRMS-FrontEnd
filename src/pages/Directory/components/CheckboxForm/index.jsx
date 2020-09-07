@@ -68,7 +68,6 @@ class CheckBoxForms extends PureComponent {
           value={check ? [] : list}
           onChange={this.onChange}
         />
-        ;
       </div>
     );
   }
