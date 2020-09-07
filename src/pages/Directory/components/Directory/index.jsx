@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { NavLink } from 'umi';
+import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
@@ -484,6 +484,11 @@ const employeesState = [
     },
   },
 ];
+
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
@@ -505,11 +510,20 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    console.log(valueInput);
     const newFilter = employeesState.filter((value) =>
       value.generalInfo.fullName.toLowerCase().includes(valueInput.toLowerCase()),
     );
     this.setState({ filter: newFilter });
+  };
+
+  // handleFormBox = (value) => {
+  //   // console.log(value);
+  // };
+  handleClickTabPane = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/ClearFilter',
+    });
   };
 
   render() {
@@ -528,7 +542,7 @@ class DirectoryComponent extends PureComponent {
             <span className={styles.ViewNumber}>(15)</span>
           </div>
         </div>
-        <Tabs defaultActiveKey="1" className={styles.Tab}>
+        <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
           {bottabs.map((tab) => (
             <TabPane tab={tab.name} key={tab.id}>
               <Layout>
@@ -536,6 +550,7 @@ class DirectoryComponent extends PureComponent {
                   onToggle={this.handleToggle}
                   collapsed={collapsed}
                   onHandleChange={this.handleChange}
+                  FormBox={this.handleFormBox}
                 />
                 {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
                 <Content

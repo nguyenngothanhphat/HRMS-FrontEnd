@@ -4,8 +4,10 @@ import { LocationFilter, DepartmentFilter } from '../services/employee';
 const employee = {
   namespace: 'employee',
   state: {
+    filter: [],
     location: [],
     department: [],
+    clearFilter: false,
   },
   effects: {
     *fetchLocation(_, { call, put }) {
@@ -30,6 +32,32 @@ const employee = {
     },
   },
   reducers: {
+    saveFilter(state, action) {
+      const data = [...state.filter];
+      const actionFilter = action.payload;
+      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+      if (findIndex < 0) {
+        const item = { actionFilter };
+        data.push(item);
+      } else {
+        data[findIndex] = {
+          ...data[findIndex],
+          checkedList: actionFilter.checkedList,
+        };
+      }
+      return {
+        ...state,
+        clearFilter: false,
+        filter: [...data],
+      };
+    },
+    ClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: true,
+        filter: [],
+      };
+    },
     saveLocation(state, action) {
       return {
         ...state,
