@@ -15,7 +15,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTableName}>
         <Avatar className={styles.avatar} alt="avatar" />
-        <p>{generalInfo.fullName}</p>
+        <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
   };
@@ -26,9 +26,12 @@ class DirectoryTable extends Component {
         title: 'Full Name',
         dataIndex: 'generalInfo',
         key: 'generalInfo',
-        render: (generalInfo) => this.renderUser(generalInfo),
+        render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
         align: 'center',
-        sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
+        sorter: (a, b) =>
+          `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
+            `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
+          ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         width: '30%',
       },
@@ -36,26 +39,49 @@ class DirectoryTable extends Component {
         title: 'Title',
         dataIndex: 'compensation',
         key: 'compensation',
-        render: (compensation) => <span>{compensation.title}</span>,
+        render: (compensation) => (
+          <span>
+            {compensation && Object.prototype.hasOwnProperty.call(compensation, 'tittle')
+              ? compensation.tittle.name
+              : ''}
+          </span>
+        ),
         align: 'center',
       },
       {
         title: 'Department',
         dataIndex: 'department',
-        render: (department) => <span>{department.name}</span>,
+        key: 'department',
+        render: (department) => <span>{department ? department.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Location',
         dataIndex: 'location',
-        render: (location) => <span>{location.name}</span>,
+        key: 'location',
+        render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Reporting Manager',
         dataIndex: 'manager',
-        render: (manager) => <span>{manager.name}</span>,
+        key: 'manager',
+        render: (manager) => <span>{manager ? manager.name : 'Reporting Manager'}</span>,
         align: 'center',
+      },
+      {
+        title: 'Employment Type',
+        dataIndex: 'compensation',
+        key: 'employmentType',
+        render: (compensation) => (
+          <span>
+            {compensation && compensation.employeeType && compensation.employeeType.name
+              ? compensation.employeeType.name
+              : 'employmentType'}
+          </span>
+        ),
+        align: 'center',
+        width: '15%',
       },
     ];
 
@@ -77,7 +103,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {} } = this.state;
-    const { list = [], pagination: paginationProps } = this.props;
+    const { list = [] } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -97,9 +123,10 @@ class DirectoryTable extends Component {
             };
           }}
           dataSource={list}
-          pagination={paginationProps === false ? false : pagination}
+          rowKey={(record) => record._id}
+          pagination={list.length > 20 ? pagination : false}
           onChange={this.handleChangeTable}
-          scroll={{ y: 702 }}
+          scroll={{ y: 540, x: 700 }}
         />
       </div>
     );
