@@ -4,6 +4,7 @@ import { SmileOutlined } from '@ant-design/icons';
 import { Redirect } from 'umi';
 import { getToken } from '@/utils/token';
 import styles from './AuthLayout.less';
+import LoginImage from '../assets/Intranet_01.png';
 
 const { Header, Content } = Layout;
 
@@ -23,21 +24,24 @@ class AuthLayout extends React.PureComponent {
           </div>
           <div className={styles.rightContent}>
             <span>New User?</span>
-            <span className={styles.textSignUp}>SIGN UP</span>
+            <span className={styles.textSignUp}>Sign up</span>
           </div>
         </Header>
-        <Content>
+        <Content className={styles.content}>
           <Row className={styles.rootLogin}>
-            <Col md={7} lg={9} xl={10} className={styles.contentLeft}>
+            <Col lg={9} xl={10} className={styles.contentLeft}>
+              <div className={styles.contentLeft__image}>
+                <img src={LoginImage} alt='login' />
+              </div>
               <p className={styles.contentLeft__text1}>
-                Spending too much time on HR, not your business? We can fix that.
+                Spending too much time on HR, not your business? <br />We can fix that.
               </p>
               <p className={styles.contentLeft__text2}>
                 Streamline onboarding, benefits, payroll, PTO, and more with our simple, intuitive
                 platform.
               </p>
             </Col>
-            <Col xs={24} sm={24} md={17} lg={15} xl={14} className={styles.contentRight}>
+            <Col xs={24} sm={24} md={24} lg={15} xl={14} className={styles.contentRight}>
               {children}
             </Col>
           </Row>
