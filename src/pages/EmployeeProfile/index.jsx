@@ -3,7 +3,6 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import BenefitTab from './components/BenefitTab';
 import styles from './index.less';
 
 const { Item } = Menu;
@@ -90,9 +89,7 @@ class EmployeeProfile extends Component {
           >
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
-                <Layout>
-                  <BenefitTab />
-                </Layout>
+                <Layout />
               </TabPane>
             ))}
           </Tabs>
