@@ -76,7 +76,7 @@ const BasicLayout = (props) => {
   const _renderTitleHeader = (
     <div className={styles.titleHeader}>
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
-        <MenuOutlined />
+        <MenuOutlined style={{ fontSize: '20px' }} />
       </div>
       {/* Your Logo */}
       {/* <div className={styles.titleHeader__textName} style={{ color: 'red' }}>
@@ -90,8 +90,10 @@ const BasicLayout = (props) => {
   };
   const { formatMessage } = useIntl();
 
+  const styleMenu = !collapsed ? styles.menuOpen : styles.menuOff;
+
   return (
-    <div className={styles.containerBasiclayout}>
+    <div className={styleMenu}>
       <ProLayout
         logo={logo}
         formatMessage={formatMessage}

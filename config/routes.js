@@ -65,7 +65,7 @@ const routes = [
           {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
-            icon: 'unordered-list',
+            icon: 'file',
             component: './EmployeeOnboarding',
           },
           {
