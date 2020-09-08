@@ -19,13 +19,13 @@ class DirectoryComponent extends PureComponent {
       let department = [];
       let location = [];
       filter.map((item) => {
-        if (item.actionFilter.name === 'Employment Type') {
+        if (item.name === 'Employment Type') {
           employmentType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Department') {
+        if (item.name === 'Department') {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Location') {
+        if (item.name === 'Location') {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         return { employmentType, department, location };

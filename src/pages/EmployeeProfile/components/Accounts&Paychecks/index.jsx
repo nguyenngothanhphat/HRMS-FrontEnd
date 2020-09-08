@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Collapse } from 'antd';
+import { CaretRightOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import PaySlipMonth from './PayslipMonth';
 
@@ -68,7 +69,12 @@ class AccountsPaychecks extends PureComponent {
               <p className={styles.TitleDetails}>Pay Slips</p>
             </div>
             <div>
-              <Collapse defaultActiveKey={['1']} className={styles.CollapseYear}>
+              <Collapse
+                defaultActiveKey={['1']}
+                className={styles.CollapseYear}
+                expandIconPosition="right"
+                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+              >
                 <Panel header={`Year ${year}`} key="1">
                   <PaySlipMonth />
                 </Panel>

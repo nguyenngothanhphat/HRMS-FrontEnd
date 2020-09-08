@@ -98,12 +98,12 @@ const employee = {
       // const findIndex = data.findIndex((item) => item.name === actionFilter.name);
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { name: actionFilter.name, checkList: actionFilter.checkedList };
+        const item = { name: actionFilter.name, checkedList: actionFilter.checkedList };
         data.push(item);
       } else {
         data[findIndex] = {
           ...data[findIndex],
-          checkList: actionFilter.checkedList,
+          checkedList: actionFilter.checkedList,
         };
       }
       return {
