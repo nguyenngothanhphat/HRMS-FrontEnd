@@ -46,7 +46,7 @@ const routes = [
           {
             path: '/dashboard',
             name: 'dashboard',
-            icon: 'dashboard',
+            icon: 'home',
             component: './Dashboard',
             // authority: ['admin'],
           },

@@ -6,7 +6,7 @@
 import ProLayout from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Link, useIntl, connect } from 'umi';
-import { Result, Button } from 'antd';
+import { Result, Button, Menu } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
@@ -69,14 +69,19 @@ const BasicLayout = (props) => {
     if (dispatch) {
       dispatch({
         type: 'global/changeLayoutCollapsed',
-        payload,
+        payload: !payload,
       });
     }
   }; // get children authority
   const _renderTitleHeader = (
     <div className={styles.titleHeader}>
-      <MenuOutlined onClick={() => handleMenuCollapse(!collapsed)} />
-      <div className={styles.titleHeader__textName}>App Name</div>
+      <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
+        <MenuOutlined />
+      </div>
+      {/* Your Logo */}
+      {/* <div className={styles.titleHeader__textName} style={{ color: 'red' }}>
+        App Name
+      </div> */}
     </div>
   );
 
@@ -84,6 +89,7 @@ const BasicLayout = (props) => {
     authority: undefined,
   };
   const { formatMessage } = useIntl();
+
   return (
     <div className={styles.containerBasiclayout}>
       <ProLayout
@@ -110,6 +116,7 @@ const BasicLayout = (props) => {
         ]}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
+        // menuRender={() => <div style={{ marginTop: '50px' }}>aaxax</div>}
         collapsedButtonRender={false}
         {...props}
         {...settings}
