@@ -6,7 +6,7 @@
 import ProLayout from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
 import { Link, useIntl, connect } from 'umi';
-import { Result, Button, Menu } from 'antd';
+import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
@@ -78,10 +78,11 @@ const BasicLayout = (props) => {
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
         <MenuOutlined style={{ fontSize: '20px' }} />
       </div>
-      {/* Your Logo */}
-      {/* <div className={styles.titleHeader__textName} style={{ color: 'red' }}>
-        App Name
-      </div> */}
+      <img
+        className={styles.titleHeader__logo}
+        src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
+        alt="img-logo"
+      />
     </div>
   );
 
