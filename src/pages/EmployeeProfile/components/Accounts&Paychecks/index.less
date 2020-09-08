@@ -78,4 +78,29 @@
     text-align: right;
     color: #044040;
   }
+  .CollapseYear {
+    height: auto;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+    text-align: left;
+    color: #044040;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    :global {
+      .ant-collapse-header {
+        color: #044040;
+      }
+      .ant-collapse-content-box {
+        padding: 0;
+      }
+      .ant-collapse-content-box {
+        border-bottom: solid 1px rgba(112, 112, 112, 0.3);
+      }
+    }
+  }
 }

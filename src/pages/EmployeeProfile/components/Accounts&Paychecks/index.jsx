@@ -1,27 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Collapse } from 'antd';
 import styles from './index.less';
+import PaySlipMonth from './PayslipMonth';
 
 class AccountsPaychecks extends PureComponent {
   render() {
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    const month = new Date();
     return (
       <div className={styles.AccountPaychecks}>
         <Row gutter={24}>
@@ -82,12 +68,15 @@ class AccountsPaychecks extends PureComponent {
               <p className={styles.TitleDetails}>Pay Slips</p>
             </div>
             <div>
-              <Collapse defaultActiveKey={['1']}>
+              <Collapse defaultActiveKey={['1']} className={styles.CollapseYear}>
                 <Panel header={`Year ${year}`} key="1">
-                  <div>
-                    <p>{`Payslip for ${monthNames[month.getMonth()]}`}</p>
-                    <a href="">Download</a>
-                  </div>
+                  <PaySlipMonth />
+                </Panel>
+                <Panel header={`Year ${year - 1}`} key="2">
+                  <PaySlipMonth />
+                </Panel>
+                <Panel header={`Year ${year - 2}`} key="3">
+                  <PaySlipMonth />
                 </Panel>
               </Collapse>
             </div>
