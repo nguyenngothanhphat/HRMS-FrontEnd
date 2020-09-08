@@ -64,6 +64,7 @@ class TableFilter extends PureComponent {
         value,
       };
     });
+
     const formatDataDepartment = department.map((item) => {
       const { name: label, name: value } = item;
       return {

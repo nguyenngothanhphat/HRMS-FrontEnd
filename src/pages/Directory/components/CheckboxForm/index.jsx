@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { Checkbox } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -50,7 +49,7 @@ class CheckBoxForms extends PureComponent {
   };
 
   render() {
-    const { name, all, data, employee } = this.props;
+    const { name = '', all = '', data = [], employee = {} } = this.props;
     const { list } = this.state;
     const check = employee.clearFilter;
     return (
@@ -72,14 +71,5 @@ class CheckBoxForms extends PureComponent {
     );
   }
 }
-
-CheckBoxForms.propTypes = {
-  name: PropTypes.string.isRequired,
-  all: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(PropTypes.string),
-};
-CheckBoxForms.defaultProps = {
-  data: [],
-};
 
 export default CheckBoxForms;
