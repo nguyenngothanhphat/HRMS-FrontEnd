@@ -42,7 +42,7 @@ class ForgotPassword extends Component {
   _renderForm = () => {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Forgot Password?</p>
+        <p className={styles.formWrapper__title}>Forgot Password</p>
         <p className={styles.formWrapper__description}>
           In order to retrieve password, you must enter your registered company email id or private
           email id entered submitted with the HR.
@@ -79,13 +79,11 @@ class ForgotPassword extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <Link to="/login">
-            <Form.Item>
-              <Button type="primary" htmlType="submit" ghost style={{ marginTop: '1rem' }}>
-                Back
-              </Button>
-            </Form.Item>
-          </Link>
+          <Form.Item>
+            <Link to="/login">
+              <p className={styles.toLogin}>Sign in</p>
+            </Link>
+          </Form.Item>
         </Form>
       </div>
     );
@@ -135,9 +133,7 @@ class ForgotPassword extends Component {
 
   render() {
     const { statusSendEmail } = this.props;
-    return (
-      <Fragment>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</Fragment>
-    );
+    return <>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</>;
   }
 }
 
