@@ -3,11 +3,14 @@ import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
+import _ from 'lodash';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
 @connect(({ loading, employee }) => ({
-  loading: loading.effects['login/login'],
+  loadingListActive: loading.effects['employee/listEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/listEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/listEmployeeInActive'],
   employee,
 }))
 class DirectoryComponent extends PureComponent {
@@ -143,6 +146,7 @@ class DirectoryComponent extends PureComponent {
   handleClickTabPane = (tabId) => {
     this.setState({
       tabId: Number(tabId),
+      filterName: '',
     });
     const { dispatch } = this.props;
     dispatch({
@@ -153,7 +157,8 @@ class DirectoryComponent extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
+    const { bottabs, collapsed, filterName } = this.state;
+    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
@@ -174,7 +179,8 @@ class DirectoryComponent extends PureComponent {
                 <TableFilter
                   onToggle={this.handleToggle}
                   collapsed={collapsed}
-                  onHandleChange={this.handleChange}
+                  onHandleChange={_.debounce(this.handleChange, 200)}
+                  valueInput={filterName}
                   FormBox={this.handleFormBox}
                 />
                 {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
@@ -185,7 +191,10 @@ class DirectoryComponent extends PureComponent {
                     backgroundColor: '#f7f7f7',
                   }}
                 >
-                  <DirectotyTable list={this.renderListEmployee(tab.id)} />
+                  <DirectotyTable
+                    loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                    list={this.renderListEmployee(tab.id)}
+                  />
                 </Content>
               </Layout>
             </TabPane>
