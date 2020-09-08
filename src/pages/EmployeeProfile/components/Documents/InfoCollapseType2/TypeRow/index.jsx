@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Collapse } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -9,29 +9,44 @@ function callback(key) {
   console.log(key);
 }
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-  `;
-const genExtra = () => (
-  <div className={styles.downloadButton}>
-    <a>Complete</a>
-    <DownloadOutlined />
-  </div>
-);
-
 class TypeRow extends PureComponent {
+  genExtra = () => (
+    <div className={styles.statusAndDownload}>
+      <a>Complete</a>
+      <DownloadOutlined
+        className={styles.downloadButton}
+        onClick={(event) => {
+        console.log('download onclick');
+        event.stopPropagation();
+      }}
+      />
+    </div>
+  );
+
     render() {
+        const { data } = this.props;
         return (
-          <Collapse
-            defaultActiveKey={['1']}
-            onChange={callback}
-          >
-            <Panel header="This is panel header 1" key="1" extra={genExtra()}>
-              <div>{text}</div>
-            </Panel>
-          </Collapse>
+          <div>
+            { data.map(row => (
+              <Collapse
+                defaultActiveKey={['1']}
+                onChange={callback}
+                expandIcon={({ isActive }) => <CaretRightOutlined className={styles.collapseIcon} rotate={isActive ? 90 : 0} />}
+                className={styles.eachCollapse}
+              >
+                <Panel header={row.title} className={styles.eachPanel} key="1" extra={this.genExtra()}>
+                  { row.rows.map(tt => (
+                    <div className={styles.eachRow}>
+                      <div className={styles.fileName}><a>{tt.fileName}</a></div>
+                      <div>{tt.generatedBy}</div>
+                      <div>{tt.date}</div>
+                      <div />
+                    </div>
+                  )) }
+                </Panel>
+              </Collapse>
+            ))}
+          </div>
         )
     }
 }

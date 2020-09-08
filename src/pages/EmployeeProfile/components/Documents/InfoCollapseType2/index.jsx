@@ -2,6 +2,33 @@ import React, { PureComponent } from 'react';
 import styles from './index.less';
 import TypeRow from './TypeRow';
 
+const data = [
+  {
+    title: 'Offer Letter',
+    rows: [
+      {
+        fileName: 'Abc.txt',
+        generatedBy: 'Terralogic',
+        date: '20/12/2020'
+      },
+      {
+        fileName: 'Cdf.txt',
+        generatedBy: 'Terralogic',
+        date: '20/12/2020'
+      }
+    ]
+  },
+  {
+    title: 'Tax Documents',
+    rows: [
+      {
+        fileName: 'aaaaaaaaaa.txt',
+        generatedBy: 'Terralogic',
+        date: '20/12/2020'
+      }
+    ]
+  }
+]
 class InfoCollapseType2 extends PureComponent {
     constructor(props) {
         super(props);
@@ -23,7 +50,7 @@ class InfoCollapseType2 extends PureComponent {
               <span>Status</span>
             </div>
             <div className={styles.tableOfContents}>
-              <TypeRow />
+              <TypeRow data={data} />
             </div>
           </div>
         )
