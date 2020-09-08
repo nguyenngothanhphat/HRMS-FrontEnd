@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import CommonLayout from '@/components/CommonLayout';
+import BasicInformation from './components/BasicInformation';
+import JobDetails from './components/JobDetails';
 import styles from './index.less';
 
 export default class FormTeamMember extends PureComponent {
@@ -14,11 +17,18 @@ export default class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId = '' } = {} },
     } = this.props;
+    const listMenu = [
+      { id: '1', name: 'Basic Information', component: <BasicInformation /> },
+      { id: '2', name: 'Job Details', component: <JobDetails /> },
+    ];
 
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
-          {action} team member {action === 'review' && reId}
+          <p>
+            {action} team member {action === 'review' && reId}
+          </p>
+          <CommonLayout listMenu={listMenu} />
         </div>
       </PageContainer>
     );
