@@ -15,12 +15,12 @@ class DirectoryComponent extends PureComponent {
     if ('employee' in nextProps) {
       const { employee } = nextProps;
       const { filter } = employee;
-      let employmentType = [];
+      let employeeType = [];
       let department = [];
       let location = [];
       filter.map((item) => {
         if (item.actionFilter.name === 'Employment Type') {
-          employmentType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+          employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         if (item.actionFilter.name === 'Department') {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -28,13 +28,13 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === 'Location') {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employmentType, department, location };
+        return { employeeType, department, location };
       });
       return {
         ...prevState,
         department,
         location,
-        employmentType,
+        employeeType,
       };
     }
     return null;
@@ -48,6 +48,7 @@ class DirectoryComponent extends PureComponent {
       location: [],
       employmentType: [],
       filterName: '',
+      tabId: 1,
       collapsed: false,
       bottabs: [
         { id: 1, name: 'Active Employees' },
@@ -58,42 +59,61 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount() {
-    this.getDataTable();
+    this.initDataTable();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employmentType, filterName } = this.state;
+    const { department, location, employeeType, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       department,
       location,
-      employmentType,
+      employeeType,
     };
 
     if (
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
-      prevState.employmentType.length !== employmentType.length ||
+      prevState.employeeType.length !== employeeType.length ||
       prevState.filterName !== filterName
     ) {
-      this.getDataTable(params);
+      this.getDataTable(params, tabId);
     }
   }
 
-  getDataTable = (params) => {
+  initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: params,
+      type: 'employee/fetchListEmployeeMyTeam',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: params,
+      type: 'employee/fetchListEmployeeActive',
     });
     dispatch({
       type: 'employee/fetchListEmployeeInActive',
-      payload: params,
     });
+  };
+
+  getDataTable = (params, tabId) => {
+    const { dispatch } = this.props;
+    if (tabId === 1) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: params,
+      });
+    }
+    if (tabId === 2) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: params,
+      });
+    }
+    if (tabId === 3) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: params,
+      });
+    }
   };
 
   renderListEmployee = (tabId) => {
@@ -120,7 +140,10 @@ class DirectoryComponent extends PureComponent {
     this.setState({ filterName: valueInput });
   };
 
-  handleClickTabPane = () => {
+  handleClickTabPane = (tabId) => {
+    this.setState({
+      tabId: Number(tabId),
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
