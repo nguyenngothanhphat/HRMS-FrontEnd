@@ -117,15 +117,15 @@ class DirectoryTable extends Component {
         <Table
           size="medium"
           columns={this.generateColumns(sortedName)}
-          onRow={() => {
+          onRow={(record) => {
             return {
-              onClick: () => this.handleProfileEmployee(), // click row
+              onClick: () => this.handleProfileEmployee(record._id), // click row
             };
           }}
           dataSource={list}
           rowKey={(record) => record._id}
           pagination={list.length > 20 ? pagination : false}
-          onChange={this.handleChangeTable}
+          // onChange={this.handleChangeTable}
           scroll={{ y: 540, x: 700 }}
         />
       </div>

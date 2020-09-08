@@ -40,13 +40,14 @@ const employee = {
       }
     },
     *fetchListEmployeeMyTeam(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
-          department: `{"$in":${department}}`,
-          location,
+          department: { $in: department },
+          location: { $in: location },
+          employeeType: { $in: employeeType },
           name,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
@@ -57,13 +58,14 @@ const employee = {
       }
     },
     *fetchListEmployeeActive(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
           department: { $in: department },
           location: { $in: location },
+          employeeType: { $in: employeeType },
           name,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -74,13 +76,14 @@ const employee = {
       }
     },
     *fetchListEmployeeInActive(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
           department: { $in: department },
           location: { $in: location },
+          employeeType: { $in: employeeType },
           name,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
@@ -95,7 +98,6 @@ const employee = {
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
-      // const findIndex = data.findIndex((item) => item.name === actionFilter.name);
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
         const item = { actionFilter };
