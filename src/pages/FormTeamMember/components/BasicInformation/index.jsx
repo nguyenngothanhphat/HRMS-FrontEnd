@@ -27,7 +27,7 @@ export default class BasicInformation extends PureComponent {
           onFinish={this.onFinish}
           onFinishFailed={this.onFinishFailed}
         >
-          <Row gutter={[48, 8]}>
+          <Row gutter={[48, 0]}>
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 24 }}
@@ -67,6 +67,19 @@ export default class BasicInformation extends PureComponent {
               </Form.Item>
             </Col>
             <BasicInformationReminder />
+          </Row>
+          <Row gutter={[48, 0]}>
+            <Col span={12}>
+              <Form.Item
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                required={false}
+                label="Previous experience in years"
+                name="workEmail"
+              >
+                <Input className={styles.formInput} />
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
       </div>

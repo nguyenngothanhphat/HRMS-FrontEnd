@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import { CloseOutlined } from '@ant-design/icons';
+
 import styles from './index.less';
 
 export default class BasicInformationReminder extends PureComponent {
@@ -6,6 +8,7 @@ export default class BasicInformationReminder extends PureComponent {
     return (
       <div className={styles.basicInformationReminder}>
         <div className={styles.reminderWrapper}>
+          <CloseOutlined className={styles.reminderWrapper__close} />
           <div className={styles.reminderWrapper__header}>
             <div className={styles.reminderWrapper__header__icon}>
               <p>!</p>
