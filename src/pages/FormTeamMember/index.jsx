@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import BasicInformation from './components/BasicInformation/index';
 import styles from './index.less';
 
 export default class FormTeamMember extends PureComponent {
@@ -19,6 +20,8 @@ export default class FormTeamMember extends PureComponent {
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
           {action} team member {action === 'review' && reId}
+          <br />
+          <BasicInformation />
         </div>
       </PageContainer>
     );
