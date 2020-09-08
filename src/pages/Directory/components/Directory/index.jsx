@@ -22,10 +22,10 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === 'Employment Type') {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.name === 'Department') {
+        if (item.actionFilter.name === 'Department') {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.name === 'Location') {
+        if (item.actionFilter.name === 'Location') {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         return { employeeType, department, location };

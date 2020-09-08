@@ -26,22 +26,21 @@ class CheckBoxForms extends PureComponent {
       type: 'employee/saveFilter',
       payload: { name, checkedList },
     });
-    this.setState(
-      {
-        checkedList,
-        list: checkedList,
-        indeterminate: !!checkedList.length && checkedList.length < data.length,
-        checkAll: checkedList.length === data.length,
-      },
-      // () => {
-      //   onBox(this.state);
-      // },
-    );
+    this.setState({
+      checkedList,
+      list: checkedList,
+      indeterminate: !!checkedList.length && checkedList.length < data.length,
+      checkAll: checkedList.length === data.length,
+    });
   };
 
   onCheckAllChange = (e) => {
-    const { data } = this.props;
+    const { data, dispatch, name } = this.props;
     const newdata = data.map((x) => x.value);
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name, checkedList: newdata },
+    });
     this.setState({
       list: e.target ? newdata : [],
       checkAll: e.target,
