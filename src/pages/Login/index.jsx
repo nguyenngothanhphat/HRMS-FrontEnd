@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
+import { EyeFilled } from '@ant-design/icons';
 import { Link, connect } from 'umi';
 
 import styles from './index.less';
@@ -77,7 +78,12 @@ class FormLogin extends Component {
               },
             ]}
           >
-            <Input.Password className={styles.inputPassword} />
+            <Input.Password
+              iconRender={(visible) =>
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+              }
+              className={styles.inputPassword}
+            />
           </Form.Item>
           <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
             <Checkbox>
