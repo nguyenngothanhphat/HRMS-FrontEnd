@@ -32,7 +32,6 @@ export default defineConfig({
     'table-font-size': '16px',
     'pagination-item-link-bg': '#000000',
     // tabs
-    'tabs-ink-bar-color': '#2c6df9',
     'tabs-title-font-size': '18px',
   },
   // @ts-ignore
