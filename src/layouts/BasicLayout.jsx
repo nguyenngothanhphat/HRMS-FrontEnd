@@ -69,14 +69,20 @@ const BasicLayout = (props) => {
     if (dispatch) {
       dispatch({
         type: 'global/changeLayoutCollapsed',
-        payload,
+        payload: !payload,
       });
     }
   }; // get children authority
   const _renderTitleHeader = (
     <div className={styles.titleHeader}>
-      <MenuOutlined onClick={() => handleMenuCollapse(!collapsed)} />
-      <div className={styles.titleHeader__textName}>App Name</div>
+      <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
+        <MenuOutlined style={{ fontSize: '20px' }} />
+      </div>
+      <img
+        className={styles.titleHeader__logo}
+        src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
+        alt="img-logo"
+      />
     </div>
   );
 
@@ -84,8 +90,11 @@ const BasicLayout = (props) => {
     authority: undefined,
   };
   const { formatMessage } = useIntl();
+
+  const styleMenu = !collapsed ? styles.menuOpen : styles.menuOff;
+
   return (
-    <div className={styles.containerBasiclayout}>
+    <div className={styleMenu}>
       <ProLayout
         logo={logo}
         formatMessage={formatMessage}
@@ -110,6 +119,7 @@ const BasicLayout = (props) => {
         ]}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
+        // menuRender={() => <div style={{ marginTop: '50px' }}>aaxax</div>}
         collapsedButtonRender={false}
         {...props}
         {...settings}

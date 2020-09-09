@@ -7,6 +7,13 @@ export async function LocationFilter(payload) {
   });
 }
 
+export async function EmployeeTypeFilter(payload) {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function DepartmentFilter() {
   return request('/api/department/list', {
     method: 'POST',
