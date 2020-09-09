@@ -46,10 +46,9 @@ class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee: props.employee,
       department: [],
       location: [],
-      employmentType: [],
+      employeeType: [],
       filterName: '',
       tabId: 1,
       changeTab: false,
