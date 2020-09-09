@@ -136,12 +136,13 @@ export default class BasicInformation extends PureComponent {
               <hr />
               {this._renderForm()}
             </div>
-
-            {/* <div className={styles.basicInformation__bottom}> */}
-            <BottomBar />
-            {/* </div> */}
           </Col>
           <Col span={8}>asdsd</Col>
+        </Row>
+        <Row>
+          <Col span={16}>
+            <BottomBar />
+          </Col>
         </Row>
       </div>
     );
