@@ -66,7 +66,7 @@ class DirectoryTable extends Component {
         title: 'Reporting Manager',
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : 'Reporting Manager'}</span>,
+        render: (manager) => <span>{manager ? manager.name : ''}</span>,
         align: 'center',
       },
       {
@@ -75,9 +75,7 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (compensation) => (
           <span>
-            {compensation && compensation.employeeType && compensation.employeeType.name
-              ? compensation.employeeType.name
-              : 'employmentType'}
+            {compensation && compensation.employeeType ? compensation.employeeType.name : ''}
           </span>
         ),
         align: 'center',
