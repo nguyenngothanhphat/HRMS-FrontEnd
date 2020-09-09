@@ -8,7 +8,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { MenuOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { connect, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -78,11 +78,13 @@ const BasicLayout = (props) => {
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
         <MenuOutlined style={{ fontSize: '20px' }} />
       </div>
-      <img
-        className={styles.titleHeader__logo}
-        src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
-        alt="img-logo"
-      />
+      <Link to="/">
+        <img
+          className={styles.titleHeader__logo}
+          src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
+          alt="img-logo"
+        />
+      </Link>
     </div>
   );
 
