@@ -6,10 +6,7 @@ import OrganChart from './components/OrganisationChart';
 import DirectoryComponent from './components/Directory';
 
 export default class Directory extends PureComponent {
-  operations =
-    <Button style={styles.viewActivityButton}>
-      View activity logs (15)
-    </Button>;
+  operations = (<Button style={styles.viewActivityButton}>View activity logs (15)</Button>);
 
   render() {
     const { TabPane } = Tabs;

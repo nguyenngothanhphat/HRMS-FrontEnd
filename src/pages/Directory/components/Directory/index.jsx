@@ -184,12 +184,11 @@ class DirectoryComponent extends PureComponent {
             />
             {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
-          
+
           <div className={styles.contentContainer}>
             <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
               {bottabs.map((tab) => (
                 <TabPane tab={tab.name} key={tab.id}>
-                
                   <Content
                     className="site-layout-background"
                     style={{
@@ -203,7 +202,7 @@ class DirectoryComponent extends PureComponent {
                     />
                   </Content>
                 </TabPane>
-            ))}
+              ))}
             </Tabs>
           </div>
         </Layout>
