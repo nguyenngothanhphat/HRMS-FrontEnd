@@ -1,4 +1,5 @@
 .DirectoryComponent {
+  margin: 0 24px;
   @keyframes displayOpenSider {
     0% {
       opacity: 0;
@@ -49,44 +50,46 @@
   .CloseSider {
     display: none;
   }
+  .buttonCreate {
+    margin: 36px 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 42px;
+    border-radius: 30px;
+    border: 1px solid #FFA100;
+    background-color: white;
+    .NameNewProfile {
+      margin-bottom: 0px;
+      width: 145px;
+      height: 22px;
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.38;
+      letter-spacing: normal;
+      text-align: left;
+      color: #FFA100;
+    }
+    :global {
+      .anticon {
+        margin-right: 9px;
+        margin-bottom: 1px;
+        color: #FFA100;
+        font-size: 14px;
+      }
+    }
+  }
   .boxCreate {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 0;
-    .buttonCreate {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: center;
-      align-items: center;
-      width: 193px;
-      height: 51px;
-      border-radius: 2px;
-      background-color: #0d61dd;
-      .NameNewProfile {
-        margin-bottom: 0px;
-        width: 145px;
-        height: 22px;
-        font-family: 'Noto Sans', sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: 1.38;
-        letter-spacing: normal;
-        text-align: left;
-        color: #ffffff;
-      }
-      :global {
-        .anticon {
-          margin-right: 9px;
-          margin-bottom: 1px;
-          color: #ffffff;
-          font-size: 14px;
-        }
-      }
-    }
+    margin: 20px 24px;
     .Text {
       display: flex;
       flex-flow: row nowrap;
@@ -121,5 +124,9 @@
         color: #de0e0e;
       }
     }
+  }
+  .filterSider {
+    // width: 300px;
+    padding-right: 24px;
   }
 }

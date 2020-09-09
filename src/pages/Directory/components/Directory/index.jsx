@@ -169,28 +169,26 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        <div className={styles.boxCreate}>
-          <NavLink to="/directory" className={styles.buttonCreate}>
-            <PlusOutlined />
-            <p className={styles.NameNewProfile}>Set Up New Profile</p>
-          </NavLink>
-          <div className={styles.Text}>
-            <p className={styles.ViewText}>View Activity log </p>
-            <span className={styles.ViewNumber}>(15)</span>
+        <Layout>
+          <div className={styles.filterSider}>
+            <NavLink to="/directory" className={styles.buttonCreate}>
+              <PlusOutlined />
+              <p className={styles.NameNewProfile}>Set Up New Profile</p>
+            </NavLink>
+            <TableFilter
+              onToggle={this.handleToggle}
+              collapsed={collapsed}
+              onHandleChange={this.handleChange}
+              FormBox={this.handleFormBox}
+              changeTab={changeTab}
+            />
+            {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
-        </div>
-        <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-          {bottabs.map((tab) => (
-            <TabPane tab={tab.name} key={tab.id}>
-              <Layout>
-                <TableFilter
-                  onToggle={this.handleToggle}
-                  collapsed={collapsed}
-                  onHandleChange={this.handleChange}
-                  FormBox={this.handleFormBox}
-                  changeTab={changeTab}
-                />
-                {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
+          
+          <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
+            {bottabs.map((tab) => (
+              <TabPane tab={tab.name} key={tab.id}>
+              
                 <Content
                   className="site-layout-background"
                   style={{
@@ -203,10 +201,10 @@ class DirectoryComponent extends PureComponent {
                     list={this.renderListEmployee(tab.id)}
                   />
                 </Content>
-              </Layout>
-            </TabPane>
+              </TabPane>
           ))}
-        </Tabs>
+          </Tabs>
+        </Layout>
       </div>
     );
   }
