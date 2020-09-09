@@ -33,6 +33,99 @@ const PersonalInforAddr = [
     text: '4th Main, 18th Cross, Kochi, Belandur, Near Factory Layout, India, 230002',
   },
 ];
+const PassportandVisa = [
+  {
+    id: 1,
+    title: 'Passport Number',
+    text: 'PNHG0000993748',
+  },
+  {
+    id: 2,
+    title: 'Issued Country',
+    text: 'India',
+  },
+  {
+    id: 3,
+    title: 'Issued On',
+    text: '22-05-2025',
+  },
+  {
+    id: 4,
+    title: 'Valid Till',
+    text: '22-05-2025',
+  },
+  {
+    id: 5,
+    title: 'Visa Number',
+    text: '87659087',
+  },
+  {
+    id: 6,
+    title: 'Issued On',
+    text: '22-05-2025',
+  },
+  {
+    id: 7,
+    title: 'Valid Till',
+    text: '22-05-2025',
+  },
+];
+const Emergency = [
+  {
+    id: 1,
+    title: 'Emergency Contact',
+    text: '+91 9836583726',
+  },
+  {
+    id: 2,
+    title: 'Person’s Name',
+    text: 'Pratyush Gupta',
+  },
+  {
+    id: 3,
+    title: 'Relation',
+    text: 'Friend',
+  },
+];
+const ProfessionalAcademic = [
+  {
+    id: 1,
+    title: 'Previous Job Title',
+    text: 'Senior UX Designer',
+  },
+  {
+    id: 2,
+    title: 'Previous Company',
+    text: 'Apple Co.',
+  },
+  {
+    id: 3,
+    title: 'Past Experience',
+    text: '2 Years',
+  },
+  {
+    id: 4,
+    title: 'Total Experience',
+    text: '6 Years',
+  },
+  {
+    id: 5,
+    title: 'Qualification',
+    text: 'Bachelors in Technology',
+  },
+];
+const ProfessionalAcademic2 = [
+  {
+    id: 1,
+    title: 'Certifications',
+    text: ['1) HCI Certification', '2) UX Academy Certification'],
+  },
+  {
+    id: 2,
+    title: 'Skills',
+    text: ['1) Product Management', '2) Lean/Agile Processes', '3) UX Methodologies'],
+  },
+];
 class GeneralInfo extends PureComponent {
   render() {
     return (
@@ -41,59 +134,134 @@ class GeneralInfo extends PureComponent {
           <div>
             <p>Employee Information</p>
           </div>
-          <Row>
-            {EmployeeInfo.map((item) => {
-              return (
-                <Col span={4} key={item.id}>
-                  <p>{item.title}</p>
-                  <p>{item.text}</p>
-                </Col>
-              );
-            })}
-            {EmployeeInfo1.map((item) => {
-              return (
-                <Col span={4} key={item.id}>
-                  <p>{item.title}</p>
-                  <p>{item.text}</p>
-                </Col>
-              );
-            })}
-          </Row>
+          <div className="abc">
+            <Row>
+              {EmployeeInfo.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+          <div>
+            <Row>
+              {EmployeeInfo1.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
         </div>
         <div>
           <div>
             <p>Personal Information</p>
           </div>
-          <Row>
-            {PersonalInfor1.map((item) => {
-              return (
-                <Col span={4} key={item.id}>
-                  <p>{item.title}</p>
-                  <p>{item.text}</p>
-                </Col>
-              );
-            })}
-            {PersonalInfor2.map((item) => {
-              return (
-                <Col span={4} key={item.id}>
-                  <p>{item.title}</p>
-                  <p>{item.text}</p>
-                </Col>
-              );
-            })}
-            <Col span={8}>
-              <p>Linkedin</p>
-              <a href="">www.linkedin.com/adityavenkatesh</a>
-            </Col>
-            {PersonalInforAddr.map((item) => {
-              return (
-                <Col span={12} key={item.id}>
-                  <p>{item.title}</p>
-                  <p>{item.text}</p>
-                </Col>
-              );
-            })}
-          </Row>
+          <div>
+            <Row>
+              {PersonalInfor1.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+              {PersonalInfor2.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+              <Col span={4}>
+                <p>Linkedin</p>
+                <a href="">www.linkedin.com/adityavenkatesh</a>
+              </Col>
+            </Row>
+          </div>
+          <div>
+            <Row>
+              {PersonalInforAddr.map((item) => {
+                return (
+                  <Col span={12} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+        </div>
+        <div>
+          <div>
+            <p>Passport and Visa Information</p>
+          </div>
+          <div>
+            <Row>
+              {PassportandVisa.map((item) => {
+                return (
+                  <Col span={3} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+        </div>
+        <div>
+          <div>
+            <p>Emergency Contact Details</p>
+          </div>
+          <div>
+            <Row>
+              {Emergency.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+        </div>
+        <div>
+          <div>
+            <p>Professional & Academic Background</p>
+          </div>
+          <div>
+            <Row>
+              {ProfessionalAcademic.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    <p>{item.text}</p>
+                  </Col>
+                );
+              })}
+            </Row>
+            <Row>
+              {ProfessionalAcademic2.map((item) => {
+                return (
+                  <Col span={4} key={item.id}>
+                    <p>{item.title}</p>
+                    {item.text.map((text) => {
+                      return <p>{text}</p>;
+                    })}
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
         </div>
       </div>
     );
