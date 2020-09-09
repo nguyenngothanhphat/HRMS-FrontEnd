@@ -3,11 +3,14 @@ import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
 @connect(({ loading, employee }) => ({
-  loading: loading.effects['login/login'],
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
 }))
 class DirectoryComponent extends PureComponent {
@@ -43,12 +46,12 @@ class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee: props.employee,
       department: [],
       location: [],
-      employmentType: [],
+      employeeType: [],
       filterName: '',
       tabId: 1,
+      changeTab: false,
       collapsed: false,
       bottabs: [
         { id: 1, name: 'Active Employees' },
@@ -56,6 +59,11 @@ class DirectoryComponent extends PureComponent {
         { id: 3, name: 'Inactive Employees' },
       ],
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        filterName: query,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
@@ -137,12 +145,15 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    this.setState({ filterName: valueInput });
+    // const input = valueInput.toLowerCase();
+    this.setDebounce(valueInput);
   };
 
   handleClickTabPane = (tabId) => {
     this.setState({
       tabId: Number(tabId),
+      changeTab: true,
+      filterName: '',
     });
     const { dispatch } = this.props;
     dispatch({
@@ -153,7 +164,8 @@ class DirectoryComponent extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
+    const { bottabs, collapsed, changeTab } = this.state;
+    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
@@ -176,6 +188,7 @@ class DirectoryComponent extends PureComponent {
                   collapsed={collapsed}
                   onHandleChange={this.handleChange}
                   FormBox={this.handleFormBox}
+                  changeTab={changeTab}
                 />
                 {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
                 <Content
@@ -185,7 +198,10 @@ class DirectoryComponent extends PureComponent {
                     backgroundColor: '#f7f7f7',
                   }}
                 >
-                  <DirectotyTable list={this.renderListEmployee(tab.id)} />
+                  <DirectotyTable
+                    loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                    list={this.renderListEmployee(tab.id)}
+                  />
                 </Content>
               </Layout>
             </TabPane>
