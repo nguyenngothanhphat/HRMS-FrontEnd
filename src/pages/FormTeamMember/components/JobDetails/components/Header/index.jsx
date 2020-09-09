@@ -5,7 +5,7 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'Job Detail',
+      title: 'Job Details ',
       text: 'The details of the position the candidate is being recruited for',
     };
   }
@@ -13,13 +13,13 @@ class Header extends Component {
   render() {
     const { title, text } = this.state;
     return (
-      <div>
-        <Typography level={4} className={styles.Header}>
+      <div className={styles.Header}>
+        <Typography.Title level={4} className={styles.HeaderTitle}>
           {title}
-        </Typography>
-        <Typography level={5} className={styles.HeaderText}>
+        </Typography.Title>
+        <Typography.Title level={5} className={styles.HeaderText}>
           {text}
-        </Typography>
+        </Typography.Title>
       </div>
     );
   }

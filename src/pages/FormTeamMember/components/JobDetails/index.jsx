@@ -1,8 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import ModalUpload from '@/components/ModalUpload';
-import { Select, Radio, Row, Col, DatePicker } from 'antd';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Select, Radio, Row, Col, DatePicker } from 'antd';
 import Header from './components/Header/';
 import RadioComponent from './components/RadioComponent/';
 import FieldsComponent from './components/FieldsComponent/';
@@ -12,8 +9,18 @@ const { Option } = Select;
 export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isToggle: false,
+    };
   }
+  handleSubmit = (e) => {
+    e.preventDefault();
+  };
+  handleSwitch = () => {
+    this.setState((prevState) => ({
+      isToggle: !prevState.isToggle,
+    }));
+  };
   render() {
     const Tab = {
       positionTab: {
@@ -41,12 +48,12 @@ export default class JobDetails extends PureComponent {
         value: 1,
         placeholder: 'Select a job title',
         Option: [
-          'UX Designer',
-          'UX Research',
-          'Researcher',
-          'UI Designer',
-          'Business Analyst',
-          'Sale Presentative',
+          { key: 1, name: 'UX Designer' },
+          { key: 2, name: 'UX Research' },
+          { key: 3, name: 'Researcher' },
+          { key: 4, name: 'UI Designer' },
+          { key: 5, name: 'Business Analyst' },
+          { key: 6, name: 'Sale Presentative' },
         ],
       },
       { title: 'Job title', value: 2, placeholder: 'Select a job title', Option: [] },
@@ -57,11 +64,20 @@ export default class JobDetails extends PureComponent {
       { title: 'Preferred date of joining', value: 7 },
     ];
     return (
-      <div className={styles.JobDetailsComponent}>
-        <Header />
-        <RadioComponent Tab={Tab} />
-        <FieldsComponent dropdownField={dropdownField} />
-      </div>
+      <>
+        <Row gutter={[24, 0]}>
+          <Col span={16}>
+            <div className={styles.JobDetailsComponent}>
+              <Form onSubmit={this.handleSubmit}>
+                <Header />
+                <RadioComponent Tab={Tab} />
+                <FieldsComponent handleSwitch={this.handleSwitch} dropdownField={dropdownField} />
+              </Form>
+            </div>
+          </Col>
+          <Col span={8}>asdasd</Col>
+        </Row>
+      </>
     );
   }
 }

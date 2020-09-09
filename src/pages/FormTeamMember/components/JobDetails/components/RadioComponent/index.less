@@ -1,4 +1,5 @@
 .RadioComponent {
+  padding-top: 32px;
   .Radio {
     display: block;
     padding-bottom: 18px;
@@ -24,5 +25,12 @@
 
   .paddingRightRadio {
     padding-right: 32px;
+  }
+  :global {
+    label.ant-radio-wrapper-checked {
+      span.ant-typography {
+        color: #161c29;
+      }
+    }
   }
 }
