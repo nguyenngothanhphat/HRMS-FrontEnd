@@ -85,14 +85,14 @@ class TableFilter extends PureComponent {
 
     return (
       <div className={styles.TabFilter}>
-        <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
+        <Sider width="300px" trigger={null} collapsed={collapsed} collapsedWidth="0">
           <div className={styles.topFilter}>
             <div className={styles.textFilters}>Filters</div>
             <div className={styles.resetHide}>
               <p>Reset</p>
-              <div className={styles.shapeHide} onClick={this.toggle}>
+              {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
-              </div>
+              </div> */}
             </div>
           </div>
           <p className={styles.textName}>Name</p>
