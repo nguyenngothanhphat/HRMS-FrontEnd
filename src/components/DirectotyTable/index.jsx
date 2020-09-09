@@ -27,13 +27,13 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'generalInfo',
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
-        align: 'center',
+        align: 'left',
         sorter: (a, b) =>
           `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
             `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '30%',
+        width: '25%',
       },
       {
         title: 'Title',
@@ -46,28 +46,28 @@ class DirectoryTable extends Component {
               : ''}
           </span>
         ),
-        align: 'center',
+        align: 'left',
       },
       {
         title: 'Department',
         dataIndex: 'department',
         key: 'department',
         render: (department) => <span>{department ? department.name : ''}</span>,
-        align: 'center',
+        align: 'left',
       },
       {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
-        align: 'center',
+        align: 'left',
       },
       {
         title: 'Reporting Manager',
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => <span>{manager ? manager.name : ''}</span>,
-        align: 'center',
+        align: 'left',
       },
       {
         title: 'Employment Type',
@@ -78,7 +78,7 @@ class DirectoryTable extends Component {
             {compensation && compensation.employeeType ? compensation.employeeType.name : ''}
           </span>
         ),
-        align: 'center',
+        align: 'left',
         width: '15%',
       },
     ];

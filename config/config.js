@@ -29,7 +29,7 @@ export default defineConfig({
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
-    'table-font-size': '16px',
+    'table-font-size': '13px',
     'pagination-item-link-bg': '#000000',
   },
   // @ts-ignore
