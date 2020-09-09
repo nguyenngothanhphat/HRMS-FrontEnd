@@ -14,9 +14,9 @@ export default class FormTeamMember extends PureComponent {
   // }
 
   render() {
-    const {
-      match: { params: { action = '', reId = '' } = {} },
-    } = this.props;
+    // const {
+    //   match: { params: { action = '', reId = '' } = {} },
+    // } = this.props;
     const listMenu = [
       { id: '1', name: 'Basic Information', component: <BasicInformation /> },
       { id: '2', name: 'Job Details', component: <JobDetails /> },
@@ -25,9 +25,6 @@ export default class FormTeamMember extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
-          <p>
-            {action} team member {action === 'review' && reId}
-          </p>
           <CommonLayout listMenu={listMenu} />
         </div>
       </PageContainer>
