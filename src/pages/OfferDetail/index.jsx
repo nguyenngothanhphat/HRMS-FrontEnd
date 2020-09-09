@@ -90,18 +90,6 @@ const OfferDetail = () => {
                   </div>
                 </Option>
               ))}
-              {/*               
-              <Option value="Template.xlsx">
-                <div className={styles.iconWrapper}>
-                  <span>Template.xlsx</span>
-                </div>
-              </Option>
-
-              <Option value="Template.pdf">
-                <div className={styles.iconWrapper}>
-                  <span>Template.pdf</span>
-                </div>
-              </Option> */}
             </Select>
 
             <Alert display={true} type="remind" header="reminder">
