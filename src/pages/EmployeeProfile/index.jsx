@@ -4,6 +4,7 @@ import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import AccountsPaychecks from './components/Accounts&Paychecks';
+import GeneralInfo from './components/GeneralInfo';
 import styles from './index.less';
 
 const { Item } = Menu;
@@ -84,13 +85,14 @@ class EmployeeProfile extends Component {
           </Row>
           <ModalUpload visible={open} handleCancel={this._handleCancel} />
           <Tabs
-            defaultActiveKey="4"
+            defaultActiveKey="1"
             className={styles.TabEmployee}
             onTabClick={this.handleClickTabPane}
           >
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
+                  {tab.name === 'General Info' ? <GeneralInfo /> : ''}
                   {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
               </TabPane>
