@@ -57,9 +57,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
@@ -75,9 +75,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -93,9 +93,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;

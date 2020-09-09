@@ -8,7 +8,9 @@ import styles from './index.less';
 import TableFilter from '../TableFilter';
 
 @connect(({ loading, employee }) => ({
-  loading: loading.effects['login/login'],
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
 }))
 class DirectoryComponent extends PureComponent {
@@ -44,10 +46,9 @@ class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee: props.employee,
       department: [],
       location: [],
-      employmentType: [],
+      employeeType: [],
       filterName: '',
       tabId: 1,
       changeTab: false,
@@ -144,8 +145,8 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    const input = valueInput.toLowerCase();
-    this.setDebounce(input);
+    // const input = valueInput.toLowerCase();
+    this.setDebounce(valueInput);
   };
 
   handleClickTabPane = (tabId) => {
@@ -164,6 +165,7 @@ class DirectoryComponent extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { bottabs, collapsed, changeTab } = this.state;
+    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
@@ -196,7 +198,10 @@ class DirectoryComponent extends PureComponent {
                     backgroundColor: '#f7f7f7',
                   }}
                 >
-                  <DirectotyTable list={this.renderListEmployee(tab.id)} />
+                  <DirectotyTable
+                    loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                    list={this.renderListEmployee(tab.id)}
+                  />
                 </Content>
               </Layout>
             </TabPane>
