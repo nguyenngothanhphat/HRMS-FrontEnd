@@ -185,25 +185,27 @@ class DirectoryComponent extends PureComponent {
             {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
           
-          <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-            {bottabs.map((tab) => (
-              <TabPane tab={tab.name} key={tab.id}>
-              
-                <Content
-                  className="site-layout-background"
-                  style={{
-                    maxHeight: 702,
-                    backgroundColor: '#f7f7f7',
-                  }}
-                >
-                  <DirectotyTable
-                    loading={loadingListActive || loadingListMyTeam || loadingListInActive}
-                    list={this.renderListEmployee(tab.id)}
-                  />
-                </Content>
-              </TabPane>
-          ))}
-          </Tabs>
+          <div className={styles.contentContainer}>
+            <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
+              {bottabs.map((tab) => (
+                <TabPane tab={tab.name} key={tab.id}>
+                
+                  <Content
+                    className="site-layout-background"
+                    style={{
+                      // maxHeight: 702,
+                      backgroundColor: '#f7f7f7',
+                    }}
+                  >
+                    <DirectotyTable
+                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                      list={this.renderListEmployee(tab.id)}
+                    />
+                  </Content>
+                </TabPane>
+            ))}
+            </Tabs>
+          </div>
         </Layout>
       </div>
     );
