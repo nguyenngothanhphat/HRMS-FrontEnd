@@ -9,6 +9,4 @@ const CheckboxItem = () => {
   );
 };
 
-CheckboxItem.propTypes = {};
-
 export default CheckboxItem;

@@ -1,0 +1,40 @@
+@blue-background-inside: #e4edff;
+@blue-background-outside: #e9f0ff;
+.SendEmail {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+  padding-top: 32px;
+  padding-left: 32px;
+  .header {
+    .icon {
+      width: 64px;
+      height: 64px;
+      line-height: 64px;
+      text-align: center;
+      border-radius: 50%;
+      background: @blue-background-outside;
+      opacity: 0.55;
+      margin-right: 0.5px;
+      .inside {
+        width: 47px;
+        height: 47px;
+        line-height: 47px;
+        margin: auto;
+        border-radius: 50%;
+        transform: translate(0, 20%);
+        background-color: @blue-background-inside;
+        .send {
+          transform: translate(12%, -6%);
+        }
+      }
+    }
+  }
+  :global {
+    .ant-space-item {
+      margin-right: 16px;
+    }
+  }
+}
