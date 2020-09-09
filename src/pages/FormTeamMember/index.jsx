@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@/layouts/layout/src';
 import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';

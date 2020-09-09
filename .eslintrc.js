@@ -1,6 +1,10 @@
 module.exports = {
   parser: 'babel-eslint',
   extends: ['airbnb', 'prettier', 'plugin:compat/recommended'],
+  plugins: ['import'],
+  compilerOptions: {
+    target: './tsconfig.json',
+  },
   env: {
     browser: true,
     node: true,
@@ -37,5 +41,10 @@ module.exports = {
   },
   settings: {
     polyfills: ['fetch', 'promises', 'url', 'object-assign'],
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
 };
