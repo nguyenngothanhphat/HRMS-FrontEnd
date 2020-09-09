@@ -133,6 +133,12 @@ const employee = {
         filter: [],
       };
     },
+    offClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: false,
+      };
+    },
     saveEmployeeType(state, action) {
       return {
         ...state,

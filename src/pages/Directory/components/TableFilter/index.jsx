@@ -17,6 +17,8 @@ class TableFilter extends PureComponent {
       locationState: 'Location',
       departmentState: 'Department',
       all: 'All',
+      text: '',
+      clearText: '',
     };
   }
 
@@ -42,16 +44,20 @@ class TableFilter extends PureComponent {
   };
 
   handleChange = (e) => {
+    const { onHandleChange, dispatch } = this.props;
+    dispatch({
+      type: 'employee/offClearFilter',
+    });
     const inputvalue = e.target.value;
-    const { onHandleChange } = this.props;
+    this.setState({ text: inputvalue });
     onHandleChange(inputvalue);
   };
 
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState } = this.state;
+    const { locationState, departmentState, all, EmploymentState, text, clearText } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [] },
+      employee: { location = [], department = [], employeetype = [], clearFilter = false },
       collapsed,
     } = this.props;
     const formatDataLocation = location.map((item) => {
@@ -90,7 +96,11 @@ class TableFilter extends PureComponent {
             </div>
           </div>
           <p className={styles.textName}>Name</p>
-          <Input className={styles.formInput} onChange={this.handleChange} />
+          <Input
+            value={clearFilter ? clearText : text}
+            className={styles.formInput}
+            onChange={this.handleChange}
+          />
 
           <CheckBoxForms
             key={EmploymentState}
