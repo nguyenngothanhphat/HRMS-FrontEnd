@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import styles from './index.less';
 
 const EmployeeInfo = [
   { id: 1, title: 'Legal Name', text: 'Aditya Venkatesh' },
@@ -118,133 +119,141 @@ const ProfessionalAcademic2 = [
   {
     id: 1,
     title: 'Certifications',
-    text: ['1) HCI Certification', '2) UX Academy Certification'],
+    text: [
+      { id: 1, text: '1) HCI Certification' },
+      { id: 2, text: '2) UX Academy Certification' },
+    ],
   },
   {
     id: 2,
     title: 'Skills',
-    text: ['1) Product Management', '2) Lean/Agile Processes', '3) UX Methodologies'],
+    text: [
+      { id: 1, text: '1) Product Management' },
+      { id: 2, text: '2) Lean/Agile Processes' },
+      { id: 3, text: '3) UX Methodologies' },
+    ],
   },
 ];
 class GeneralInfo extends PureComponent {
   render() {
     return (
-      <div>
-        <div>
-          <div>
-            <p>Employee Information</p>
+      <div className={styles.GeneralInfo}>
+        <div className={styles.Genspage}>
+          <div className={styles.backgroundTitle}>
+            <p className={styles.GenTitle}>Employee Information</p>
           </div>
-          <div className="abc">
-            <Row>
-              {EmployeeInfo.map((item) => {
-                return (
-                  <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
-                  </Col>
-                );
-              })}
-            </Row>
-          </div>
-          <div>
-            <Row>
-              {EmployeeInfo1.map((item) => {
-                return (
-                  <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
-                  </Col>
-                );
-              })}
-            </Row>
-          </div>
+
+          <Row>
+            {EmployeeInfo.map((item) => {
+              return (
+                <Col span={4} key={item.id}>
+                  <p className={styles.titleDetail}>{item.title}</p>
+                  <p className={styles.TextDetail}>{item.text}</p>
+                </Col>
+              );
+            })}
+          </Row>
+          <div className={styles.GenLine} />
+          <Row>
+            {EmployeeInfo1.map((item) => {
+              return (
+                <Col span={4} key={item.id}>
+                  <p className={styles.titleDetail}>{item.title}</p>
+                  <p className={styles.TextDetail}>{item.text}</p>
+                </Col>
+              );
+            })}
+          </Row>
         </div>
-        <div>
-          <div>
-            <p>Personal Information</p>
+        <div className={styles.Genspage}>
+          <div className={styles.backgroundTitle}>
+            <p className={styles.GenTitle}>Personal Information</p>
           </div>
           <div>
             <Row>
               {PersonalInfor1.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
               {PersonalInfor2.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
               <Col span={4}>
-                <p>Linkedin</p>
-                <a href="">www.linkedin.com/adityavenkatesh</a>
+                <p className={styles.titleDetail}>Linkedin</p>
+                <a href="" className={styles.GenLink}>
+                  www.linkedin.com/adityavenkatesh
+                </a>
               </Col>
             </Row>
           </div>
+          <div className={styles.GenLine} />
           <div>
             <Row>
               {PersonalInforAddr.map((item) => {
                 return (
                   <Col span={12} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
             </Row>
           </div>
         </div>
-        <div>
-          <div>
-            <p>Passport and Visa Information</p>
+        <div className={styles.Genspage}>
+          <div className={styles.backgroundTitle}>
+            <p className={styles.GenTitle}>Passport and Visa Information</p>
           </div>
           <div>
             <Row>
               {PassportandVisa.map((item) => {
                 return (
                   <Col span={3} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
             </Row>
           </div>
         </div>
-        <div>
-          <div>
-            <p>Emergency Contact Details</p>
+        <div className={styles.Genspage}>
+          <div className={styles.backgroundTitle}>
+            <p className={styles.GenTitle}>Emergency Contact Details</p>
           </div>
           <div>
             <Row>
               {Emergency.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
             </Row>
           </div>
         </div>
-        <div>
-          <div>
-            <p>Professional & Academic Background</p>
+        <div className={styles.Genspage}>
+          <div className={styles.backgroundTitle}>
+            <p className={styles.GenTitle}>Professional & Academic Background</p>
           </div>
           <div>
             <Row>
               {ProfessionalAcademic.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
-                    <p>{item.text}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
               })}
@@ -253,9 +262,13 @@ class GeneralInfo extends PureComponent {
               {ProfessionalAcademic2.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p>{item.title}</p>
+                    <p className={styles.titleDetail}>{item.title}</p>
                     {item.text.map((text) => {
-                      return <p>{text}</p>;
+                      return (
+                        <p key={text.id} className={styles.TextDetail}>
+                          {text.text}
+                        </p>
+                      );
                     })}
                   </Col>
                 );
