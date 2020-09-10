@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Layout } from 'antd';
+import { Layout, Collapse } from 'antd';
+import { CaretRightOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
 import DependentTabs from './components/DependentTabs';
@@ -58,6 +59,25 @@ export default class BenefitTab extends PureComponent {
               return <GroupInfoType2 data={item} />;
             })}
           </div>
+
+          <Collapse
+            bordered={false}
+            expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+            className="site-collapse-custom-collapse"
+            expandIconPosition="right"
+          >
+            <Collapse.Panel
+              header="Available Benefit Plans"
+              key="1"
+              className="site-collapse-custom-panel"
+            >
+              <div className={styles.content}>
+                {data.map((item) => {
+                  return <GroupInfoType2 data={item} />;
+                })}
+              </div>
+            </Collapse.Panel>
+          </Collapse>
         </Content>
       </Layout>
     );

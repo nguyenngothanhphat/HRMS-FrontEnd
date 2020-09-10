@@ -9,6 +9,7 @@
   .content {
     display: flex;
     flex-wrap: wrap;
+    background-color: #fff;
   }
   .headings {
     font-size: 18px;
@@ -17,4 +18,28 @@
     padding: 12px;
     background-color: #f4f4f4;
   }
+}
+
+[data-theme='compact'] .site-collapse-custom-collapse .site-collapse-custom-panel,
+.site-collapse-custom-collapse .site-collapse-custom-panel {
+  background-color: #fff;
+  border-radius: 2px;
+  margin-bottom: 24px;
+  border: 0px;
+  overflow: hidden;
+}
+
+div.ant-collapse-header {
+  :global {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.33;
+    text-align: left;
+    color: #044040;
+    background-color: #f4f4f4;
+  }
+}
+
+div.ant-collapse-content-box {
+  background-color: #fff;
 }
