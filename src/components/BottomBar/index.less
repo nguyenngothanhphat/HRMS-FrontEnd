@@ -1,19 +1,19 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@spacing-xxs: 4px;
+
 .bottomBar {
-  position: fixed;
-  bottom: 0;
-  width: inherit;
-  height: 72px;
+  // position: fixed;
+  // bottom: 0;
+  // width: inherit;
+  // height: 72px;
   border-radius: 5px;
   box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
   border: solid 1px #d6dce0;
   background-color: blue;
-
-  &__wrapper {
-    // bottom: 0;
-    // width: inherit;
-    // height: 72px;
-    // border-radius: 5px;
-    // box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    // border: solid 1px #d6dce0;
+  padding: 8 * @spacing-xxs;
+  &__button {
+    text-align: right;
   }
 }

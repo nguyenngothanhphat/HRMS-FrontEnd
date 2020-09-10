@@ -18,7 +18,7 @@ export default class BasicInformation extends PureComponent {
   onFinish = (values) => {
     const newValues = { ...values };
     newValues.workEmail += '@terralogic.com';
-    // console.log('Success:', newValues);
+    console.log('Success:', newValues);
   };
 
   onFinishFailed = (errorInfo) => {
@@ -128,23 +128,23 @@ export default class BasicInformation extends PureComponent {
 
   render() {
     return (
-      <div className={styles.basicInformation}>
-        <Row gutter={[24, 0]}>
-          <Col span={16}>
+      <Row gutter={[24, 0]}>
+        <Col span={16}>
+          <div className={styles.basicInformation}>
             <div className={styles.basicInformation__top}>
               <BasicInformationHeader />
               <hr />
               {this._renderForm()}
             </div>
-          </Col>
-          <Col span={8}>asdsd</Col>
-        </Row>
-        <Row>
-          <Col span={16}>
-            <BottomBar />
-          </Col>
-        </Row>
-      </div>
+            <BottomBar
+              type="primary"
+              htmlType="submit"
+              className={styles.basicInformation__bottom}
+            />
+          </div>
+        </Col>
+        <Col span={8}>asdsd</Col>
+      </Row>
     );
   }
 }
