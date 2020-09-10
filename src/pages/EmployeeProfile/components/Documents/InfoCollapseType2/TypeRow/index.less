@@ -1,0 +1,62 @@
+.eachCollapse {
+  :global {
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0;
+    }
+  }
+
+  .eachPanel {
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    .eachRow:last-child {
+      margin-bottom: 0;
+    }
+    margin-bottom: 10px;
+    .eachRow {
+      padding: 17px 17px 0 17px;
+      .fileName {
+        display: flex;
+        align-items: center;
+        span {
+          margin-left: 10px;
+          font-weight: 500;
+        }
+        .fileIcon {
+          margin-left: 30px;
+          font-size: 20px;
+          color: #2c6df9;
+        }
+        overflow: auto;
+      }
+    }
+    .eachRow:last-child {
+      padding-bottom: 17px;
+    }
+  }
+
+  .statusAndDownload {
+    display: flex;
+    align-items: center;
+    a {
+      color: #00ba73;
+      margin-right: 10px;
+      font-weight: 500;
+      align-self: center;
+      margin-top: -3px;
+    }
+    .downloadButton {
+      color: #2c6df9;
+      font-size: 25px;
+      :hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  .collapseIcon {
+    color: #707070 !important;
+    font-size: 16px !important;
+  }
+}
