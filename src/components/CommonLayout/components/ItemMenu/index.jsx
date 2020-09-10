@@ -4,7 +4,7 @@ import s from './index.less';
 export default class ItemMenu extends PureComponent {
   render() {
     const { item = {}, handelClick = () => {}, selectedItemId } = this.props;
-    const { id = '', name = '' } = item;
+    const { id = '', name = '', isComplete = false } = item;
     const isActive = selectedItemId === id;
     const className = isActive ? s.itemMenuActive : s.itemMenu;
     const isTabTopActive = id === selectedItemId - 1;
@@ -14,7 +14,10 @@ export default class ItemMenu extends PureComponent {
         className={className}
         style={isTabTopActive ? { borderBottom: 'none' } : {}}
       >
-        {name}
+        <p className={s.textName}>{name}</p>
+        {isComplete && (
+          <img src="/assets/images/iconCheck.svg" alt="iconCheck" className={s.iconCheck} />
+        )}
       </div>
     );
   }
