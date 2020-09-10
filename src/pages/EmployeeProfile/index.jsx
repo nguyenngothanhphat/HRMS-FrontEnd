@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+
+import InfoCollapseType2 from './components/Documents/InfoCollapseType2';
 import AccountsPaychecks from './components/Accounts&Paychecks';
+
 import styles from './index.less';
 
 const { Item } = Menu;
@@ -84,14 +87,15 @@ class EmployeeProfile extends Component {
           </Row>
           <ModalUpload visible={open} handleCancel={this._handleCancel} />
           <Tabs
-            defaultActiveKey="4"
+            defaultActiveKey="5"
             className={styles.TabEmployee}
             onTabClick={this.handleClickTabPane}
           >
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
-                  {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  { tab.name === 'Documents' ? <InfoCollapseType2 /> : ''}
+                  { tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
               </TabPane>
             ))}

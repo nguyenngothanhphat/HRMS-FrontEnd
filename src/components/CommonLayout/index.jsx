@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 
@@ -33,14 +34,21 @@ export default class CommonLayout extends PureComponent {
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft}>
-          {listMenu.map((item) => (
-            <ItemMenu
-              key={item.id}
-              item={item}
-              handelClick={this._handelClick}
-              selectedItemId={selectedItemId}
-            />
-          ))}
+          <div className={s.viewLeft__menu}>
+            {listMenu.map((item) => (
+              <ItemMenu
+                key={item.id}
+                item={item}
+                handelClick={this._handelClick}
+                selectedItemId={selectedItemId}
+              />
+            ))}
+            <div className={s.viewLeft__menu__btnPreviewOffer}>
+              <Button type="primary" ghost>
+                Preview offer letter
+              </Button>
+            </div>
+          </div>
         </div>
         <div className={s.viewRight}>{displayComponent}</div>
       </div>
