@@ -1,8 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-import { CheckCircleFilled } from '@ant-design/icons';
 import { Link, connect } from 'umi';
-
+import mail from './asset/mail-art.png';
 import styles from './index.less';
 
 @connect(({ loading, changePassword: { statusSendEmail } = {} }) => ({
@@ -42,7 +41,7 @@ class ForgotPassword extends Component {
   _renderForm = () => {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Forgot Password?</p>
+        <p className={styles.formWrapper__title}>Forgot Password</p>
         <p className={styles.formWrapper__description}>
           In order to retrieve password, you must enter your registered company email id or private
           email id entered submitted with the HR.
@@ -79,13 +78,11 @@ class ForgotPassword extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <Link to="/login">
-            <Form.Item>
-              <Button type="primary" htmlType="submit" ghost style={{ marginTop: '1rem' }}>
-                Back
-              </Button>
-            </Form.Item>
-          </Link>
+          <Form.Item>
+            <Link to="/login">
+              <p className={styles.toLogin}>Sign in</p>
+            </Link>
+          </Form.Item>
         </Form>
       </div>
     );
@@ -124,10 +121,10 @@ class ForgotPassword extends Component {
           padding: '0 30px',
         }}
       >
-        <CheckCircleFilled style={{ color: '#eee', fontSize: '80px', marginBottom: '2rem' }} />
+        <img alt="" src={mail} style={{ color: '#eee', fontSize: '80px', marginBottom: '2rem' }} />
         <p className={styles.formWrapper__descriptionSuccessfully}>
-          An email with the link to change your password was sent to the email id {protectEmail}.
-          Click on the link to create new password
+          An email with the link to change your password was sent to the email id{' '}
+          <span>{protectEmail}</span>. Click on the link to create new password
         </p>
       </div>
     );
@@ -135,9 +132,7 @@ class ForgotPassword extends Component {
 
   render() {
     const { statusSendEmail } = this.props;
-    return (
-      <Fragment>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</Fragment>
-    );
+    return <>{!statusSendEmail ? this._renderForm() : this._renderSendSuccessfully()}</>;
   }
 }
 
