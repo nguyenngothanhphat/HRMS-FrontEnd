@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button } from 'antd';
 import styles from './index.less';
 import OrganChart from './components/OrganisationChart';

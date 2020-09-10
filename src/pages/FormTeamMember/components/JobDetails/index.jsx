@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Form, Select, Radio, Row, Col, DatePicker, Button } from 'antd';
+import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'antd';
 import Header from './components/Header/';
 import RadioComponent from './components/RadioComponent/';
 import FieldsComponent from './components/FieldsComponent/';
 import StepsComponent from './components/StepsComponent/';
+import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 const { Option } = Select;
 
@@ -128,7 +129,16 @@ export default class JobDetails extends PureComponent {
     ];
     const Steps = {
       title: 'Complete onboarding process at a glance',
-      keyPage: [{ key: 1, data: 'Setup the employee profile' }],
+      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+    };
+    const Note = {
+      title: 'Note',
+      data: (
+        <Typography.Text>
+          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
+          working days for entire process to complete
+        </Typography.Text>
+      ),
     };
     return (
       <>
@@ -142,10 +152,16 @@ export default class JobDetails extends PureComponent {
               </Form>
             </div>
           </Col>
-          <Col span={8}>asdasd</Col>
-          {/* <Col span={8}>
-            <StepsComponent />
-          </Col> */}
+          <Col span={8}>
+            <div className={styles.rightWrapper}>
+              <Row>
+                <NoteComponent note={Note} />
+              </Row>
+              <Row>
+                <StepsComponent Steps={Steps} />
+              </Row>
+            </div>
+          </Col>
         </Row>
       </>
     );
