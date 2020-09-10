@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Collapse } from 'antd';
+import { Collapse, Row, Col } from 'antd';
 import { DownloadOutlined, CaretRightOutlined, FileOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -35,15 +35,15 @@ class TypeRow extends PureComponent {
               >
                 <Panel header={row.title} className={styles.eachPanel} key="1" extra={this.genExtra()}>
                   { row.files.map(file => (
-                    <div className={styles.eachRow}>
-                      <div className={styles.fileName}>
+                    <Row className={styles.eachRow}>
+                      <Col span={7} className={styles.fileName}>
                         <FileOutlined className={styles.fileIcon} />
                         <a>{file.fileName}</a>
-                      </div>
-                      <span>{file.generatedBy}</span>
-                      <span>{file.date}</span>
-                      <span />
-                    </div>
+                      </Col>
+                      <Col span={8}>{file.generatedBy}</Col>
+                      <Col span={8}>{file.date}</Col>
+                      <Col span={1} />
+                    </Row>
                   )) }
                 </Panel>
               </Collapse>
