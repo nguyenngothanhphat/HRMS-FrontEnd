@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
+import { EyeFilled } from '@ant-design/icons';
 import { Link, connect } from 'umi';
 
 import styles from './index.less';
@@ -32,7 +33,7 @@ class FormLogin extends Component {
         loading={loading}
         disabled={!valueEmail || !valuePsw}
       >
-        Login
+        Sign in
       </Button>
     );
   };
@@ -52,7 +53,7 @@ class FormLogin extends Component {
           ref={this.formRef}
         >
           <Form.Item
-            label="Enter company email address"
+            label="Email address"
             name="email"
             rules={[
               {
@@ -65,7 +66,7 @@ class FormLogin extends Component {
               },
             ]}
           >
-            <Input />
+            <Input className={styles.InputEmail} />
           </Form.Item>
           <Form.Item
             label="Password"
@@ -77,27 +78,28 @@ class FormLogin extends Component {
               },
             ]}
           >
-            <Input.Password className={styles.inputPassword} />
+            <Input.Password
+              iconRender={(visible) =>
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />}
+              className={styles.inputPassword}
+            />
           </Form.Item>
-          <Link to="/forgot-password">
-            <p style={{ fontSize: '13px', textDecoration: 'underline', margin: '0px' }}>
-              Forgot Password?
-            </p>
-          </Link>
-          <Form.Item name="remember" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
             <Checkbox>
-              <span style={{ color: '#000' }}>Keep me signed in</span>
+              <span>Keep me signed in</span>
             </Checkbox>
           </Form.Item>
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
               prevValues.email !== currentValues.email ||
-              prevValues.password !== currentValues.password
-            }
+              prevValues.password !== currentValues.password}
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
+          <Link to="/forgot-password">
+            <p className={styles.forgotPassword}>Forgot Password?</p>
+          </Link>
         </Form>
       </div>
     );

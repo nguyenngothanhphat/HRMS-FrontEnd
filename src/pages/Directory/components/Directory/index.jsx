@@ -3,11 +3,14 @@ import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
 @connect(({ loading, employee }) => ({
-  loading: loading.effects['login/login'],
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
 }))
 class DirectoryComponent extends PureComponent {
@@ -15,12 +18,12 @@ class DirectoryComponent extends PureComponent {
     if ('employee' in nextProps) {
       const { employee } = nextProps;
       const { filter } = employee;
-      let employmentType = [];
+      let employeeType = [];
       let department = [];
       let location = [];
       filter.map((item) => {
         if (item.actionFilter.name === 'Employment Type') {
-          employmentType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+          employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         if (item.actionFilter.name === 'Department') {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -28,13 +31,13 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === 'Location') {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employmentType, department, location };
+        return { employeeType, department, location };
       });
       return {
         ...prevState,
         department,
         location,
-        employmentType,
+        employeeType,
       };
     }
     return null;
@@ -43,11 +46,12 @@ class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee: props.employee,
       department: [],
       location: [],
-      employmentType: [],
+      employeeType: [],
       filterName: '',
+      tabId: 1,
+      changeTab: false,
       collapsed: false,
       bottabs: [
         { id: 1, name: 'Active Employees' },
@@ -55,45 +59,69 @@ class DirectoryComponent extends PureComponent {
         { id: 3, name: 'Inactive Employees' },
       ],
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        filterName: query,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
-    this.getDataTable();
+    this.initDataTable();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employmentType, filterName } = this.state;
+    const { department, location, employeeType, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       department,
       location,
-      employmentType,
+      employeeType,
     };
 
     if (
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
-      prevState.employmentType.length !== employmentType.length ||
+      prevState.employeeType.length !== employeeType.length ||
       prevState.filterName !== filterName
     ) {
-      this.getDataTable(params);
+      this.getDataTable(params, tabId);
     }
   }
 
-  getDataTable = (params) => {
+  initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: params,
+      type: 'employee/fetchListEmployeeMyTeam',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: params,
+      type: 'employee/fetchListEmployeeActive',
     });
     dispatch({
       type: 'employee/fetchListEmployeeInActive',
-      payload: params,
     });
+  };
+
+  getDataTable = (params, tabId) => {
+    const { dispatch } = this.props;
+    if (tabId === 1) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: params,
+      });
+    }
+    if (tabId === 2) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: params,
+      });
+    }
+    if (tabId === 3) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: params,
+      });
+    }
   };
 
   renderListEmployee = (tabId) => {
@@ -117,10 +145,16 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    this.setState({ filterName: valueInput });
+    // const input = valueInput.toLowerCase();
+    this.setDebounce(valueInput);
   };
 
-  handleClickTabPane = () => {
+  handleClickTabPane = (tabId) => {
+    this.setState({
+      tabId: Number(tabId),
+      changeTab: true,
+      filterName: '',
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
@@ -130,44 +164,48 @@ class DirectoryComponent extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
+    const { bottabs, collapsed, changeTab } = this.state;
+    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
-        <div className={styles.boxCreate}>
-          <NavLink to="/directory" className={styles.buttonCreate}>
-            <PlusOutlined />
-            <p className={styles.NameNewProfile}>Set Up New Profile</p>
-          </NavLink>
-          <div className={styles.Text}>
-            <p className={styles.ViewText}>View Activity log </p>
-            <span className={styles.ViewNumber}>(15)</span>
+        <Layout>
+          <div className={styles.filterSider}>
+            <NavLink to="/directory" className={styles.buttonCreate}>
+              <PlusOutlined />
+              <p className={styles.NameNewProfile}>Set Up New Profile</p>
+            </NavLink>
+            <TableFilter
+              onToggle={this.handleToggle}
+              collapsed={collapsed}
+              onHandleChange={this.handleChange}
+              FormBox={this.handleFormBox}
+              changeTab={changeTab}
+            />
+            {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
-        </div>
-        <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-          {bottabs.map((tab) => (
-            <TabPane tab={tab.name} key={tab.id}>
-              <Layout>
-                <TableFilter
-                  onToggle={this.handleToggle}
-                  collapsed={collapsed}
-                  onHandleChange={this.handleChange}
-                  FormBox={this.handleFormBox}
-                />
-                {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
-                <Content
-                  className="site-layout-background"
-                  style={{
-                    maxHeight: 702,
-                    backgroundColor: '#f7f7f7',
-                  }}
-                >
-                  <DirectotyTable list={this.renderListEmployee(tab.id)} />
-                </Content>
-              </Layout>
-            </TabPane>
-          ))}
-        </Tabs>
+
+          <div className={styles.contentContainer}>
+            <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
+              {bottabs.map((tab) => (
+                <TabPane tab={tab.name} key={tab.id}>
+                  <Content
+                    className="site-layout-background"
+                    style={{
+                      // maxHeight: 702,
+                      backgroundColor: '#f7f7f7',
+                    }}
+                  >
+                    <DirectotyTable
+                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                      list={this.renderListEmployee(tab.id)}
+                    />
+                  </Content>
+                </TabPane>
+              ))}
+            </Tabs>
+          </div>
+        </Layout>
       </div>
     );
   }

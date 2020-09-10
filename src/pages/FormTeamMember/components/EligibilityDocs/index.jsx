@@ -55,9 +55,9 @@ export default class EligibilityDocs extends PureComponent {
   render() {
     return (
       <>
-        <Row gutter={[24, 0]}>
-          <Col span={16}>
-            <div className={styles.EligibilityDocs}>
+        <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+          <Col span={17} className={styles.leftWrapper}>
+            <div className={styles.eliContainer}>
               {/* Warning will be shown as user is HR and disappear if user is candidate */}
               <Warning />
               <Title />
@@ -66,7 +66,7 @@ export default class EligibilityDocs extends PureComponent {
               })}
             </div>
           </Col>
-          <Col span={8}>
+          <Col span={7} className={styles.rightWrapper}>
             <SendEmail />
           </Col>
         </Row>

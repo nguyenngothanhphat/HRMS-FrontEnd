@@ -2,6 +2,7 @@ import { dialog } from '@/utils/utils';
 import {
   LocationFilter,
   DepartmentFilter,
+  EmployeeTypeFilter,
   getListEmployeeMyTeam,
   getListEmployeeActive,
   getListEmployeeInActive,
@@ -13,12 +14,23 @@ const employee = {
     filter: [],
     location: [],
     department: [],
+    employeetype: [],
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
     clearFilter: false,
   },
   effects: {
+    *fetchEmployeeType(_, { call, put }) {
+      try {
+        const response = yield call(EmployeeTypeFilter);
+        const { statusCode, data: employeetype = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveEmployeeType', payload: { employeetype } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchLocation(_, { call, put }) {
       try {
         const response = yield call(LocationFilter);
@@ -40,13 +52,14 @@ const employee = {
       }
     },
     *fetchListEmployeeMyTeam(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
-          department: `{"$in":${department}}`,
+          department,
           location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
@@ -57,13 +70,14 @@ const employee = {
       }
     },
     *fetchListEmployeeActive(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
-          department: { $in: department },
-          location: { $in: location },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -74,13 +88,14 @@ const employee = {
       }
     },
     *fetchListEmployeeInActive(
-      { payload: { department = [], location = [], name = '' } = {} },
+      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
-          department: { $in: department },
-          location: { $in: location },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
@@ -95,7 +110,6 @@ const employee = {
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
-      console.log('actionFilter', actionFilter);
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
         const item = { actionFilter };
@@ -117,6 +131,18 @@ const employee = {
         ...state,
         clearFilter: true,
         filter: [],
+      };
+    },
+    offClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: false,
+      };
+    },
+    saveEmployeeType(state, action) {
+      return {
+        ...state,
+        ...action.payload,
       };
     },
     saveLocation(state, action) {

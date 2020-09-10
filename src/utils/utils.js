@@ -90,3 +90,13 @@ export function dialog(response) {
     ),
   });
 }
+
+export const filteredArr = (data) => {
+  return data.reduce((precur, current) => {
+    const x = precur.find((item) => item.label === current.label);
+    if (!x) {
+      return precur.concat([current]);
+    }
+    return precur;
+  }, []);
+};
