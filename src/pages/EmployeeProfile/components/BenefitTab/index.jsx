@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
+import DependentTabs from './components/DependentTabs';
 
 const { Sider, Content } = Layout;
 const data = [
@@ -19,6 +20,21 @@ const data = [
   { title: 'Over Time', plans: [{ 'Over Time stuff': '20 July 2020' }] },
 ];
 
+const dependentData = [
+  {
+    name: 'John Doe',
+    gender: 'Not sure',
+    relationship: 'Single but open for opportunities',
+    dob: '21-5-1995',
+  },
+  {
+    name: 'Mary Doe',
+    gender: 'Lesbian',
+    relationship: 'Married to John',
+    dob: '21-5-1995',
+  },
+];
+
 export default class BenefitTab extends PureComponent {
   render() {
     return (
@@ -26,8 +42,8 @@ export default class BenefitTab extends PureComponent {
         <Sider breakpoint="md" collapsedWidth="0" width={606} className={styles.sideTab}>
           <h3 className={styles.headings}>Employee Dependent Details</h3>
           <div>
-            {[1, 2].map((item) => {
-              return <div className={styles.tab}>Hello Sidebar number {item}</div>;
+            {dependentData.map((item, idx) => {
+              return <DependentTabs index={idx} data={item} />;
             })}
           </div>
         </Sider>
