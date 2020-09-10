@@ -1,40 +1,70 @@
-.commonRow {
-    border-radius: 2px;
-    border: 0px;
-    overflow: hidden;
-}
-
-.eachCollapse, .eachPanel {
-    &:extend(.commonRow);
-}
-
-.eachPanel {
-   background-color: #f4f4f4;
-}
-
-.eachRow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    margin-top: 5px;
-    .fileName {
-        width: 30px;
-        padding-left: 35px;
+.eachCollapse {
+    .commonRow {
+        border-radius: 2px;
+        border: 0px;
+        overflow: hidden;
     }
-}
-
-.statusAndDownload {
-    a {
-        color: #00ba73;
-        margin-right: 10px;
+    
+    .eachPanel {
+        &:extend(.commonRow);
     }
-    .downloadButton {
-        font-size: 15px;
-        :hover{
-            opacity: 0.7;
+    
+    .eachPanel {
+        background-color: white;
+        .eachRow:last-child {
+            margin-bottom: 0;
         }
     }
-}
-.collapseIcon {
-    color: #707070 !important;
+    
+    .eachPanel {
+        background-color: white;
+        margin-bottom: 10px;
+        .eachRow {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            .fileName {
+                width: 30px;
+                padding-left: 35px;
+                display: flex;
+                align-items: center;
+                a {
+                    margin-left: 5px;
+                    font-weight: 500;
+                }
+            }
+            .fileIcon {
+                color: #2c6df9;
+            }
+            span {
+                color: #464646;
+            }
+        }
+        .eachRow:last-child {
+            margin-bottom: 0;
+        }
+    }
+    
+    .eachPanel:not(:last-child) {
+        border-bottom: none;
+        background-color: red;
+    }
+    
+    .statusAndDownload {
+        a {
+            color: #00ba73;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        .downloadButton {
+            color:#2c6df9;
+            font-size: 15px;
+            :hover{
+                opacity: 0.7;
+            }
+        }
+    }
+    .collapseIcon {
+        color: #707070 !important;
+    }
 }

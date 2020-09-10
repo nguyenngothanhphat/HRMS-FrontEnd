@@ -5,7 +5,7 @@ import TypeRow from './TypeRow';
 const data = [
   {
     title: 'Offer Letter',
-    rows: [
+    files: [
       {
         fileName: 'Abc.txt',
         generatedBy: 'Terralogic',
@@ -20,7 +20,7 @@ const data = [
   },
   {
     title: 'Tax Documents',
-    rows: [
+    files: [
       {
         fileName: 'aaaaaaaaaa.txt',
         generatedBy: 'Terralogic',

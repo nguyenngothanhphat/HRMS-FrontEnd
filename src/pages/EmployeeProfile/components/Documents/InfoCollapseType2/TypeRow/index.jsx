@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Collapse } from 'antd';
-import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { DownloadOutlined, CaretRightOutlined, FileOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -16,9 +16,8 @@ class TypeRow extends PureComponent {
       <DownloadOutlined
         className={styles.downloadButton}
         onClick={(event) => {
-        console.log('download onclick');
-        event.stopPropagation();
-      }}
+          event.stopPropagation();
+        }}
       />
     </div>
   );
@@ -35,12 +34,15 @@ class TypeRow extends PureComponent {
                 className={styles.eachCollapse}
               >
                 <Panel header={row.title} className={styles.eachPanel} key="1" extra={this.genExtra()}>
-                  { row.rows.map(tt => (
+                  { row.files.map(file => (
                     <div className={styles.eachRow}>
-                      <div className={styles.fileName}><a>{tt.fileName}</a></div>
-                      <div>{tt.generatedBy}</div>
-                      <div>{tt.date}</div>
-                      <div />
+                      <div className={styles.fileName}>
+                        <FileOutlined className={styles.fileIcon} />
+                        <a>{file.fileName}</a>
+                      </div>
+                      <span>{file.generatedBy}</span>
+                      <span>{file.date}</span>
+                      <span />
                     </div>
                   )) }
                 </Panel>
