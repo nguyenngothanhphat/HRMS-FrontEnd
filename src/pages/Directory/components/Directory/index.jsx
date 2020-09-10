@@ -3,11 +3,14 @@ import { NavLink, connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
 @connect(({ loading, employee }) => ({
-  loading: loading.effects['login/login'],
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
 }))
 class DirectoryComponent extends PureComponent {
@@ -43,12 +46,12 @@ class DirectoryComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee: props.employee,
       department: [],
       location: [],
-      employmentType: [],
+      employeeType: [],
       filterName: '',
       tabId: 1,
+      changeTab: false,
       collapsed: false,
       bottabs: [
         { id: 1, name: 'Active Employees' },
@@ -56,6 +59,11 @@ class DirectoryComponent extends PureComponent {
         { id: 3, name: 'Inactive Employees' },
       ],
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        filterName: query,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
@@ -137,12 +145,15 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    this.setState({ filterName: valueInput });
+    // const input = valueInput.toLowerCase();
+    this.setDebounce(valueInput);
   };
 
   handleClickTabPane = (tabId) => {
     this.setState({
       tabId: Number(tabId),
+      changeTab: true,
+      filterName: '',
     });
     const { dispatch } = this.props;
     dispatch({
@@ -153,44 +164,48 @@ class DirectoryComponent extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
+    const { bottabs, collapsed, changeTab } = this.state;
+    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
-        <div className={styles.boxCreate}>
-          <NavLink to="/directory" className={styles.buttonCreate}>
-            <PlusOutlined />
-            <p className={styles.NameNewProfile}>Set Up New Profile</p>
-          </NavLink>
-          <div className={styles.Text}>
-            <p className={styles.ViewText}>View Activity log </p>
-            <span className={styles.ViewNumber}>(15)</span>
+        <Layout>
+          <div className={styles.filterSider}>
+            <NavLink to="/directory" className={styles.buttonCreate}>
+              <PlusOutlined />
+              <p className={styles.NameNewProfile}>Set Up New Profile</p>
+            </NavLink>
+            <TableFilter
+              onToggle={this.handleToggle}
+              collapsed={collapsed}
+              onHandleChange={this.handleChange}
+              FormBox={this.handleFormBox}
+              changeTab={changeTab}
+            />
+            {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
-        </div>
-        <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-          {bottabs.map((tab) => (
-            <TabPane tab={tab.name} key={tab.id}>
-              <Layout>
-                <TableFilter
-                  onToggle={this.handleToggle}
-                  collapsed={collapsed}
-                  onHandleChange={this.handleChange}
-                  FormBox={this.handleFormBox}
-                />
-                {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
-                <Content
-                  className="site-layout-background"
-                  style={{
-                    maxHeight: 702,
-                    backgroundColor: '#f7f7f7',
-                  }}
-                >
-                  <DirectotyTable list={this.renderListEmployee(tab.id)} />
-                </Content>
-              </Layout>
-            </TabPane>
-          ))}
-        </Tabs>
+
+          <div className={styles.contentContainer}>
+            <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
+              {bottabs.map((tab) => (
+                <TabPane tab={tab.name} key={tab.id}>
+                  <Content
+                    className="site-layout-background"
+                    style={{
+                      // maxHeight: 702,
+                      backgroundColor: '#f7f7f7',
+                    }}
+                  >
+                    <DirectotyTable
+                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                      list={this.renderListEmployee(tab.id)}
+                    />
+                  </Content>
+                </TabPane>
+              ))}
+            </Tabs>
+          </div>
+        </Layout>
       </div>
     );
   }

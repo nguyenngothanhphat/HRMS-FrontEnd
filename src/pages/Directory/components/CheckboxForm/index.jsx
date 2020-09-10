@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unused-state */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { Checkbox } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -27,22 +26,21 @@ class CheckBoxForms extends PureComponent {
       type: 'employee/saveFilter',
       payload: { name, checkedList },
     });
-    this.setState(
-      {
-        checkedList,
-        list: checkedList,
-        indeterminate: !!checkedList.length && checkedList.length < data.length,
-        checkAll: checkedList.length === data.length,
-      },
-      // () => {
-      //   onBox(this.state);
-      // },
-    );
+    this.setState({
+      checkedList,
+      list: checkedList,
+      indeterminate: !!checkedList.length && checkedList.length < data.length,
+      checkAll: checkedList.length === data.length,
+    });
   };
 
   onCheckAllChange = (e) => {
-    const { data } = this.props;
+    const { data, dispatch, name } = this.props;
     const newdata = data.map((x) => x.value);
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name, checkedList: newdata },
+    });
     this.setState({
       list: e.target ? newdata : [],
       checkAll: e.target,
@@ -50,7 +48,7 @@ class CheckBoxForms extends PureComponent {
   };
 
   render() {
-    const { name, all, data, employee } = this.props;
+    const { name = '', all = '', data = [], employee = {} } = this.props;
     const { list } = this.state;
     const check = employee.clearFilter;
     return (
@@ -72,14 +70,5 @@ class CheckBoxForms extends PureComponent {
     );
   }
 }
-
-CheckBoxForms.propTypes = {
-  name: PropTypes.string.isRequired,
-  all: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(PropTypes.string),
-};
-CheckBoxForms.defaultProps = {
-  data: [],
-};
 
 export default CheckBoxForms;

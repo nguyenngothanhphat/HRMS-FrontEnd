@@ -2,6 +2,7 @@ import { dialog } from '@/utils/utils';
 import {
   LocationFilter,
   DepartmentFilter,
+  EmployeeTypeFilter,
   getListEmployeeMyTeam,
   getListEmployeeActive,
   getListEmployeeInActive,
@@ -13,12 +14,23 @@ const employee = {
     filter: [],
     location: [],
     department: [],
+    employeetype: [],
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
     clearFilter: false,
   },
   effects: {
+    *fetchEmployeeType(_, { call, put }) {
+      try {
+        const response = yield call(EmployeeTypeFilter);
+        const { statusCode, data: employeetype = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveEmployeeType', payload: { employeetype } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchLocation(_, { call, put }) {
       try {
         const response = yield call(LocationFilter);
@@ -45,9 +57,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
@@ -63,9 +75,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
@@ -81,9 +93,9 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
-          department: { $in: department },
-          location: { $in: location },
-          employeeType: { $in: employeeType },
+          department,
+          location,
+          employeeType,
           name,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
@@ -119,6 +131,18 @@ const employee = {
         ...state,
         clearFilter: true,
         filter: [],
+      };
+    },
+    offClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: false,
+      };
+    },
+    saveEmployeeType(state, action) {
+      return {
+        ...state,
+        ...action.payload,
       };
     },
     saveLocation(state, action) {
