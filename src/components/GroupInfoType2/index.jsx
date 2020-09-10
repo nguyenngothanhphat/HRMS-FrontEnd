@@ -3,24 +3,27 @@ import PropTypes from 'prop-types';
 import styles from './styles.less';
 
 export default function GroupInfoType2({ data, width, fullWidth }) {
-  const plans = Object.entries(data);
-
   return (
     <div style={{ width: fullWidth ? '100%' : width }}>
       <div className={styles.GroupInfoType2}>
-        <div className={styles.title}>{}</div>
+        <div className={styles.title}>
+          <p>{data.title}</p>
+        </div>
         <div className={styles.subTitle}>
           <p>Plan</p>
           <p>Active Till</p>
         </div>
-        {plans.map((item) => {
-          return (
-            <div className={styles.content}>
-              <div>{item[0]}</div>
-              <div>{item[1]}</div>
-            </div>
-          );
-        })}
+        <div>
+          {data.plans.map((x) => {
+            const temp = Object.entries(x);
+            return (
+              <div className={styles.content}>
+                <div>{temp[0][0]}</div>
+                <div>{temp[0][1]}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -34,5 +37,5 @@ GroupInfoType2.propTypes = {
 
 GroupInfoType2.defaultProps = {
   fullWidth: false,
-  width: '50%',
+  width: '477px',
 };
