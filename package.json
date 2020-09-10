@@ -47,7 +47,6 @@
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
     "@ant-design/pro-descriptions": "^1.0.4",
-    "@ant-design/pro-layout": "^6.4.8",
     "@ant-design/pro-table": "^2.5.13",
     "antd": "^4.5.3",
     "babel-eslint": "^10.1.0",
@@ -64,6 +63,7 @@
     "prettier": "^2.1.1",
     "qs": "^6.9.0",
     "react": "^16.8.6",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-helmet-async": "^1.0.4",
     "react-orgchart": "^1.0.5",

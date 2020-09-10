@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageLoading } from '@ant-design/pro-layout';
+import { PageLoading } from '@/layouts/layout/src';
 import { Redirect, connect } from 'umi';
 import { stringify } from 'querystring';
 import { getToken } from '@/utils/token';
