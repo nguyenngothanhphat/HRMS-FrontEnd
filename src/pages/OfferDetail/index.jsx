@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/no-array-index-key */
+import React, { useState } from 'react';
 
 import { Radio, Select, Checkbox } from 'antd';
-const { Option } = Select;
 
 import { currencyArr, timeoffArr, fileArr } from './mockData';
 
@@ -14,20 +14,22 @@ import getFileType from './components/utils';
 
 import './override.less';
 
+const { Option } = Select;
+
 const OfferDetail = () => {
   const [includeOffer, setIncludeOffer] = useState(false);
   const [file, setFile] = useState('Template.docx');
   const [agreement, setAgreement] = useState(false);
   const [handbook, setHandbook] = useState(false);
-  const [compensationType, setCompensationType] = useState('salary');
+  // const [compensationType, setCompensationType] = useState('salary');
   const [currency, setCurrency] = useState('dollar');
 
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(true);
 
-  let timeoffAlertRef = null;
+  // let timeoffAlertRef = null;
 
   const handleRadio = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setIncludeOffer(value);
   };
 
@@ -43,11 +45,11 @@ const OfferDetail = () => {
     setFile(value);
   };
 
-  const handleAgreementChange = (value) => {
+  const handleAgreementChange = () => {
     setAgreement(!agreement);
   };
 
-  const handleHandbookChange = (value) => {
+  const handleHandbookChange = () => {
     setHandbook(!handbook);
   };
 
@@ -61,7 +63,9 @@ const OfferDetail = () => {
         <div className={styles.top}>
           <h3 className={styles.header}>Offer details</h3>
 
-          <p>All documents supporting candidate's employment eligibility will be display here</p>
+          <p>
+            All documents supporting candidate&apos;s employment eligibility will be display here
+          </p>
         </div>
 
         <div className={styles.middle}>
@@ -69,7 +73,7 @@ const OfferDetail = () => {
 
           <Radio.Group onChange={handleRadio} value={includeOffer} className={styles.radioGroup}>
             <Radio value={false}>Do not include offer letter</Radio>
-            <Radio value={true}>Use an existing offer letter</Radio>
+            <Radio value>Use an existing offer letter</Radio>
           </Radio.Group>
 
           <div className={styles.wrapper1}>
@@ -92,7 +96,7 @@ const OfferDetail = () => {
               ))}
             </Select>
 
-            <Alert display={true} type="remind" header="reminder">
+            <Alert display type="remind" header="reminder">
               <p>
                 This offer letter will be sent in <strong>Phase 3</strong> of the onboarding
                 process.
@@ -113,20 +117,20 @@ const OfferDetail = () => {
           <p className={styles.handbook}>Company handbook</p>
 
           <Checkbox value={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
-            My company's handbook
+            My company&apos;s handbook
           </Checkbox>
 
           <div className={styles.wrapper2}>
             <div className={styles.compensationWrapper}>
               <p className={styles.compensation}>Compensation type</p>
 
-              <Select className={styles.select} value={compensationType} disabled>
+              <Select className={styles.select} value="salary" disabled>
                 <Option value="salary">Salary</Option>
                 <Option value="salary2">Salary2</Option>
                 <Option value="salary3">Salary3</Option>
               </Select>
             </div>
-            <Alert display={true} type="info">
+            <Alert display type="info">
               <p>
                 To view salary related insights, explore the <a> Compensation Management App </a>
               </p>
@@ -166,7 +170,7 @@ const OfferDetail = () => {
 
             <Alert
               display={displayTimeoffAlert}
-              ref={(ref) => (timeoffAlertRef = ref)}
+              // ref={(ref) => {timeoffAlertRef = ref}}
               type="caution"
             >
               <p>Are you sure? This hire will not be able to submit any time off requests.</p>

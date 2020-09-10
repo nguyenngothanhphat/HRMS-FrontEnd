@@ -15,6 +15,8 @@ const FileIcon = (props) => {
       return <img className={styles.optionIcon} src={ExcelIcon} alt="excel" />;
     case 'pdf':
       return <img className={styles.optionIcon} src={PdfIcon} alt="pdf" />;
+    default:
+      return <img className={styles.optionIcon} src={WordIcon} alt="word" />;
   }
 };
 
