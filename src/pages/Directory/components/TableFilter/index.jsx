@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect } from 'umi';
+import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
@@ -13,24 +14,27 @@ class TableFilter extends PureComponent {
     super(props);
     this.state = {
       EmploymentState: 'Employment Type',
-      data: [
-        { label: 'Full Time', value: 'Full Time' },
-        { label: 'Part Time', value: 'Part Time' },
-        { label: 'Interns', value: 'Interns' },
-      ],
       locationState: 'Location',
       departmentState: 'Department',
       all: 'All',
+      text: '',
+      clearText: '',
     };
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
+      type: 'employee/fetchEmployeeType',
+    });
+    dispatch({
       type: 'employee/fetchLocation',
     });
     dispatch({
       type: 'employee/fetchDepartment',
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
     });
   }
 
@@ -40,18 +44,21 @@ class TableFilter extends PureComponent {
   };
 
   handleChange = (e) => {
+    const { onHandleChange, dispatch } = this.props;
+    dispatch({
+      type: 'employee/offClearFilter',
+    });
     const inputvalue = e.target.value;
-    const { onHandleChange } = this.props;
+    this.setState({ text: inputvalue });
     onHandleChange(inputvalue);
   };
 
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, data, EmploymentState } = this.state;
+    const { locationState, departmentState, all, EmploymentState, text, clearText } = this.state;
     const {
-      employee: { location = [], department = [] },
+      employee: { location = [], department = [], employeetype = [], clearFilter = false },
       collapsed,
-      FormBox,
     } = this.props;
     const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
@@ -60,55 +67,58 @@ class TableFilter extends PureComponent {
         value,
       };
     });
-    const formatDataDepartment = department.map((item) => {
-      const { name: label, name: value } = item;
+    const formatDataEmployeeType = employeetype.map((item) => {
+      const { name: label, _id: value } = item;
       return {
         label,
         value,
       };
     });
-    const filteredArr = formatDataDepartment.reduce((precur, current) => {
-      const x = precur.find((item) => item.label === current.label);
-      if (!x) {
-        return precur.concat([current]);
-      }
-      return precur;
-    }, []);
+
+    const formatDataDepartment = department.map((item) => {
+      const { name: label, _id: value } = item;
+      return {
+        label,
+        value,
+      };
+    });
+
     return (
       <div className={styles.TabFilter}>
-        <Sider width="410px" trigger={null} collapsed={collapsed} collapsedWidth="0">
+        <Sider width="300px" trigger={null} collapsed={collapsed} collapsedWidth="0">
           <div className={styles.topFilter}>
             <div className={styles.textFilters}>Filters</div>
             <div className={styles.resetHide}>
               <p>Reset</p>
-              <div className={styles.shapeHide} onClick={this.toggle}>
+              {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
-              </div>
+              </div> */}
             </div>
           </div>
           <p className={styles.textName}>Name</p>
-          <Input className={styles.formInput} onChange={this.handleChange} />
+          <Input
+            value={clearFilter ? clearText : text}
+            className={styles.formInput}
+            onChange={this.handleChange}
+          />
 
           <CheckBoxForms
             key={EmploymentState}
             name={EmploymentState}
             all={all}
-            data={data}
-            onBox={FormBox}
+            data={filteredArr(formatDataEmployeeType)}
           />
           <CheckBoxForms
             key={departmentState}
             name={departmentState}
             all={all}
-            data={filteredArr}
-            onBox={FormBox}
+            data={filteredArr(formatDataDepartment)}
           />
           <CheckBoxForms
             key={locationState}
             name={locationState}
             all={all}
             data={formatDataLocation}
-            onBox={FormBox}
           />
         </Sider>
       </div>

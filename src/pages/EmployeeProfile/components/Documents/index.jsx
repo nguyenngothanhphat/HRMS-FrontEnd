@@ -1,18 +1,33 @@
+import { Layout, Row, Col } from 'antd';
 import React, { PureComponent } from 'react';
+import InfoCollapseType2 from './InfoCollapseType2';
 
 class Documents extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            
-        }
-    }
-
     render () {
         return (
-          <div>
-            <h1>Documents Tab</h1>
-          </div>
+          <Layout>
+            <Row>
+              <Col span={12}>
+                <InfoCollapseType2 />
+              </Col>
+              <Col span={12}>
+                <InfoCollapseType2 />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <InfoCollapseType2 />
+              </Col>
+              <Col span={12}>
+                <InfoCollapseType2 />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <InfoCollapseType2 />
+              </Col>
+            </Row>
+          </Layout>
         )
     }
 }

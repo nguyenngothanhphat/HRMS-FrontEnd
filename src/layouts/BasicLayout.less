@@ -1,12 +1,23 @@
-.containerBasiclayout {
+.root {
   .titleHeader {
     display: flex;
     flex-direction: row;
     align-items: center;
     height: 100%;
-    &__textName {
-      margin-left: 1rem;
-      color: #fff;
+    .buttonToggle {
+      background-color: #161c29;
+      width: 80px;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    &__logo {
+      margin-left: 20px;
+      width: 80px;
+      height: 50px;
+      object-fit: contain;
     }
   }
 
@@ -14,21 +25,98 @@
     .ant-layout {
       background-color: #fff;
     }
-    .ant-page-header {
-      padding: 0.5rem 5rem;
-    }
+
     .ant-pro-global-header-layout-mix {
-      background-color: #000;
+      background-color: #fff;
     }
     .ant-pro-page-container-children-content {
       margin: 0;
-      padding: 0 5rem;
-    }
-    .ant-page-header-heading {
-      display: none;
     }
     .ant-pro-global-header-logo {
       display: none;
+    }
+
+    .ant-page-header {
+      background-color: #eee;
+      padding: 15px 0 10px 20px;
+      position: relative;
+    }
+
+    .ant-breadcrumb {
+      padding-top: 10px;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-breadcrumb > span:last-child a {
+      display: inline-block;
+      color: #161c29;
+      font-size: 13px;
+      font-weight: 500;
+      height: 2.5rem;
+      background-color: #fff;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      padding: 10px 15px;
+      opacity: 1;
+      margin-left: -24px;
+      position: absolute;
+      bottom: 0;
+    }
+
+    .ant-breadcrumb a {
+      font-size: 13px;
+      color: #161c29;
+      opacity: 0.6;
+    }
+
+    .ant-breadcrumb-separator {
+      margin: 0px 20px;
+      font-size: large;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .ant-page-header-heading {
+      display: none;
+    }
+
+    .ant-pro-sider-light .ant-menu-light {
+      background-color: #2c6df9;
+    }
+    .ant-pro-sider.ant-layout-sider-light .ant-menu-item a {
+      color: #fff;
+    }
+    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      background-color: #2c6df9;
+    }
+    .ant-menu-item-selected {
+      background-image: linear-gradient(to right, #2c6df9, #144ecb);
+      border-right: 3px solid #fca00a;
+    }
+
+    .ant-pro-sider .ant-menu-inline-collapsed .ant-menu-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .ant-menu-item-only-child {
+      border-bottom: 1px solid #3158d1;
+      height: 75px;
+      display: flex;
+      align-items: center;
+      margin: 0 !important;
+      &:active {
+        height: 75px;
+        margin: 0 !important;
+        background-color: #2c6df9;
+      }
+    }
+    .ant-menu-vertical .ant-menu-item::after,
+    .ant-menu-vertical-left .ant-menu-item::after,
+    .ant-menu-vertical-right .ant-menu-item::after,
+    .ant-menu-inline .ant-menu-item::after {
+      border-right: none;
     }
   }
 

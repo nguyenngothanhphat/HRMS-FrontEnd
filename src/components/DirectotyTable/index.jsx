@@ -15,7 +15,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTableName}>
         <Avatar className={styles.avatar} alt="avatar" />
-        <p>{generalInfo.fullName}</p>
+        <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
   };
@@ -26,9 +26,12 @@ class DirectoryTable extends Component {
         title: 'Full Name',
         dataIndex: 'generalInfo',
         key: 'generalInfo',
-        render: (generalInfo) => this.renderUser(generalInfo),
+        render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
         align: 'center',
-        sorter: (a, b) => a.generalInfo.fullName.localeCompare(b.generalInfo.fullName),
+        sorter: (a, b) =>
+          `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
+            `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
+          ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         width: '30%',
       },
@@ -36,26 +39,47 @@ class DirectoryTable extends Component {
         title: 'Title',
         dataIndex: 'compensation',
         key: 'compensation',
-        render: (compensation) => <span>{compensation.title}</span>,
+        render: (compensation) => (
+          <span>
+            {compensation && Object.prototype.hasOwnProperty.call(compensation, 'tittle')
+              ? compensation.tittle.name
+              : ''}
+          </span>
+        ),
         align: 'center',
       },
       {
         title: 'Department',
         dataIndex: 'department',
-        render: (department) => <span>{department.name}</span>,
+        key: 'department',
+        render: (department) => <span>{department ? department.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Location',
         dataIndex: 'location',
-        render: (location) => <span>{location.name}</span>,
+        key: 'location',
+        render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'center',
       },
       {
         title: 'Reporting Manager',
         dataIndex: 'manager',
-        render: (manager) => <span>{manager.name}</span>,
+        key: 'manager',
+        render: (manager) => <span>{manager ? manager.name : ''}</span>,
         align: 'center',
+      },
+      {
+        title: 'Employment Type',
+        dataIndex: 'compensation',
+        key: 'employmentType',
+        render: (compensation) => (
+          <span>
+            {compensation && compensation.employeeType ? compensation.employeeType.name : ''}
+          </span>
+        ),
+        align: 'center',
+        width: '15%',
       },
     ];
 
@@ -77,13 +101,13 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {} } = this.state;
-    const { list = [], pagination: paginationProps } = this.props;
-
+    const { list = [], loading } = this.props;
+    const rowSize = 15;
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
       showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
-      pageSize: 20,
+      pageSize: rowSize,
       defaultCurrent: 1,
     };
     return (
@@ -91,15 +115,18 @@ class DirectoryTable extends Component {
         <Table
           size="medium"
           columns={this.generateColumns(sortedName)}
-          onRow={() => {
+          onRow={(record) => {
             return {
-              onClick: () => this.handleProfileEmployee(), // click row
+              onClick: () => this.handleProfileEmployee(record._id), // click row
             };
           }}
           dataSource={list}
-          pagination={paginationProps === false ? false : pagination}
-          onChange={this.handleChangeTable}
-          scroll={{ y: 702 }}
+          rowKey={(record) => record._id}
+          pagination={pagination}
+          // pagination={list.length > rowSize ? pagination : false}
+          loading={loading}
+          // onChange={this.handleChangeTable}
+          // scroll={{ y: 540, x: 700 }}
         />
       </div>
     );
