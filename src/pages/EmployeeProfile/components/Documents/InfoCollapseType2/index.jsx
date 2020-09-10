@@ -31,13 +31,6 @@ const data = [
   }
 ]
 class InfoCollapseType2 extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        }
-    }
-
     render() {
         return (
           <div className={styles.InfoCollapseType2}>
