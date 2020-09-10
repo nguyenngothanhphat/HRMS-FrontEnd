@@ -21,12 +21,8 @@ const OfferDetail = () => {
   const [file, setFile] = useState('Template.docx');
   const [agreement, setAgreement] = useState(false);
   const [handbook, setHandbook] = useState(false);
-  // const [compensationType, setCompensationType] = useState('salary');
   const [currency, setCurrency] = useState('dollar');
-
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(true);
-
-  // let timeoffAlertRef = null;
 
   const handleRadio = (e) => {
     const { value } = e.target;

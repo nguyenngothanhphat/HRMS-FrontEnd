@@ -3,6 +3,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
+import OfferDetail from './components/OfferDetail';
 import styles from './index.less';
 
 export default class FormTeamMember extends PureComponent {
@@ -20,6 +21,7 @@ export default class FormTeamMember extends PureComponent {
     const listMenu = [
       { id: '1', name: 'Basic Information', component: <BasicInformation /> },
       { id: '2', name: 'Job Details', component: <JobDetails /> },
+      { id: '4', name: 'Offer Details', component: <OfferDetail /> },
     ];
 
     return (

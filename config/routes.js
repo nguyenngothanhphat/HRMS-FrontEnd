@@ -81,12 +81,6 @@ const routes = [
             component: './FormTeamMember',
           },
           {
-            path: '/employee-onboarding/offer-detail',
-            name: 'offerDetail',
-            hideInMenu: true,
-            component: './OfferDetail',
-          },
-          {
             component: './404',
           },
         ],
