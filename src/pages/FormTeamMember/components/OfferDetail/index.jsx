@@ -1,8 +1,9 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Radio, Select, Checkbox } from 'antd';
 
+import { connect } from 'umi';
 import { currencyArr, timeoffArr, fileArr } from './mockData';
 
 import styles from './index.less';
@@ -12,17 +13,30 @@ import Template from './components/Template/index.js';
 import Alert from './components/Alert/index.js';
 import getFileType from './components/utils';
 
-import './override.less';
-
 const { Option } = Select;
 
-const OfferDetail = () => {
+const OfferDetail = (props) => {
   const [includeOffer, setIncludeOffer] = useState(false);
   const [file, setFile] = useState('Template.docx');
   const [agreement, setAgreement] = useState(false);
   const [handbook, setHandbook] = useState(false);
   const [currency, setCurrency] = useState('dollar');
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(true);
+
+  const { dispatch } = props;
+
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'info/save',
+        payload: {
+          offerDetail: {
+            currency: 'Euro',
+          },
+        },
+      });
+    }
+  }, []);
 
   const handleRadio = (e) => {
     const { value } = e.target;
@@ -183,4 +197,7 @@ const OfferDetail = () => {
   );
 };
 
-export default OfferDetail;
+export default connect(({ global, settings }) => ({
+  collapsed: global.collapsed,
+  settings,
+}))(OfferDetail);

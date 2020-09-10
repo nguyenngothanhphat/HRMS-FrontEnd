@@ -21,6 +21,7 @@
     border: 0.5px solid @border-color;
     border-radius: 2.5px;
     flex: 1;
+    background-color: white;
 
     span,
     p,
@@ -185,6 +186,7 @@
     margin-left: 24px;
     width: 351px;
     min-width: 241px;
+    background-color: white;
   }
 
   @media (max-width: 1090px) {
@@ -193,6 +195,35 @@
     .rightCol {
       width: 100%;
       margin-left: 0;
+    }
+  }
+
+  :global {
+    .ant-select-arrow {
+      top: 40%;
+      color: #161c29;
+    }
+
+    .select > img {
+      width: 15px;
+      height: 15px;
+    }
+
+    .ant-checkbox-wrapper,
+    .ant-radio-wrapper {
+      span:nth-child(1) {
+        margin-right: 8px;
+      }
+    }
+
+    .ant-select-selection-search {
+      input.ant-select-selection-search-input {
+        display: none;
+      }
+    }
+
+    .ant-select-selector .ant-select-selection-search {
+      display: none;
     }
   }
 }
