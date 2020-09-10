@@ -164,11 +164,7 @@ const OfferDetail = () => {
               </Select>
             </div>
 
-            <Alert
-              display={displayTimeoffAlert}
-              // ref={(ref) => {timeoffAlertRef = ref}}
-              type="caution"
-            >
+            <Alert display={displayTimeoffAlert} type="caution">
               <p>Are you sure? This hire will not be able to submit any time off requests.</p>
             </Alert>
           </div>
