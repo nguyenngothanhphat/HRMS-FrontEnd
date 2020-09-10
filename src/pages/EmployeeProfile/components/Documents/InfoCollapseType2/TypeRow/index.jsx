@@ -5,15 +5,17 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 class TypeRow extends PureComponent {
+  handleClick = (event) => {
+    // no collapse activate when clicking on download button
+    event.stopPropagation();
+  }
+  
   statusAndDownloadButton = () => (
     <div className={styles.statusAndDownload}>
       <a>Complete</a>
       <DownloadOutlined
         className={styles.downloadButton}
-        onClick={(event) => {
-          // no collapse activate when clicking on download button
-          event.stopPropagation();
-        }}
+        onClick={this.handleClick}
       />
     </div>
   );
