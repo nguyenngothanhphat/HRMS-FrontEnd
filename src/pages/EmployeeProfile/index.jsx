@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';

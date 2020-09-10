@@ -1,18 +1,18 @@
 /**
- * Ant Design Pro v4 use `@ant-design/pro-layout` to handle Layout.
+ * Ant Design Pro v4 use `@/layouts/layout/src` to handle Layout.
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
-import { Link, useIntl, connect } from 'umi';
-import { Result, Button } from 'antd';
-import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
+import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { MenuOutlined } from '@ant-design/icons';
+import { Button, Result } from 'antd';
+import React, { useEffect } from 'react';
+import { connect, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
+import ProLayout from './layout/src';
 
 const noMatch = (
   <Result
@@ -78,11 +78,13 @@ const BasicLayout = (props) => {
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
         <MenuOutlined style={{ fontSize: '20px' }} />
       </div>
-      <img
-        className={styles.titleHeader__logo}
-        src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
-        alt="img-logo"
-      />
+      <Link to="/">
+        <img
+          className={styles.titleHeader__logo}
+          src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
+          alt="img-logo"
+        />
+      </Link>
     </div>
   );
 
@@ -91,12 +93,11 @@ const BasicLayout = (props) => {
   };
   const { formatMessage } = useIntl();
 
-  const styleMenu = !collapsed ? styles.menuOpen : styles.menuOff;
-
   return (
-    <div className={styleMenu}>
+    <div className={styles.root}>
       <ProLayout
         logo={logo}
+        headerHeight={80}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
@@ -119,7 +120,6 @@ const BasicLayout = (props) => {
         ]}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
-        // menuRender={() => <div style={{ marginTop: '50px' }}>aaxax</div>}
         collapsedButtonRender={false}
         {...props}
         {...settings}
