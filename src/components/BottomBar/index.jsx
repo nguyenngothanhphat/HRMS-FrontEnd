@@ -10,6 +10,27 @@ export default class BottomBar extends PureComponent {
     this.state = {};
   }
 
+  onClickNext = () => {
+    const { onClickNext } = this.props;
+    onClickNext();
+  };
+
+  _renderBottomButton = () => {
+    const { currentPage } = this.props;
+    if (currentPage === 1) {
+      return (
+        <Button
+          type="primary"
+          onClick={this.onClickNext}
+          className={styles.bottomBar__button__primary}
+        >
+          Next
+        </Button>
+      );
+    }
+    return null;
+  };
+
   render() {
     const { className } = this.props;
     return (
@@ -19,9 +40,7 @@ export default class BottomBar extends PureComponent {
             <div className={styles.bottomBar__status}>ssssssssssssssssss</div>
           </Col>
           <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              <Button />
-            </div>
+            <div className={styles.bottomBar__button}>{this._renderBottomButton()}</div>
           </Col>
         </Row>
       </div>

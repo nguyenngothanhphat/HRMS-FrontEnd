@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Button } from 'antd';
+import { Row, Col, Form, Input } from 'antd';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
-import BottomBar from '../../../../components/BottomBar';
 
 import styles from './index.less';
 
@@ -11,9 +10,26 @@ export default class BasicInformation extends PureComponent {
     super(props);
 
     this.state = {
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      experienceYear: '',
       isOpenReminder: false,
     };
   }
+
+  componentWillUnmount = () => {
+    console.log(this.state);
+  };
+
+  handleChange = (e) => {
+    const { target } = e;
+    const { name } = target;
+    const { value } = target;
+    this.setState({
+      [name]: value,
+    });
+  };
 
   onFinish = (values) => {
     const newValues = { ...values };
@@ -38,7 +54,7 @@ export default class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder } = this.state;
+    const { isOpenReminder, fullName, privateEmail, workEmail, experienceYear } = this.state;
     return (
       <Form
         className={styles.basicInformation__form}
@@ -59,7 +75,12 @@ export default class BasicInformation extends PureComponent {
               name="fullName"
               rules={[{ required: true, message: 'Please input your full name!' }]}
             >
-              <Input className={styles.formInput} />
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="fullName"
+                value={fullName}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -80,7 +101,12 @@ export default class BasicInformation extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.formInput} />
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="privateEmail"
+                value={privateEmail}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -93,7 +119,12 @@ export default class BasicInformation extends PureComponent {
               name="workEmail"
             >
               <p className={styles.formInput__domain}>@terralogic.com</p>
-              <Input className={styles.formInput} />
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="workEmail"
+                value={workEmail}
+              />
             </Form.Item>
           </Col>
           {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
@@ -113,15 +144,20 @@ export default class BasicInformation extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.formInput} />
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="experienceYear"
+                value={experienceYear}
+              />
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item>
+        {/* <Form.Item>
           <Button type="primary" htmlType="submit">
             Submit
           </Button>
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     );
   };
@@ -136,11 +172,11 @@ export default class BasicInformation extends PureComponent {
               <hr />
               {this._renderForm()}
             </div>
-            <BottomBar
+            {/* <BottomBar
               type="primary"
               htmlType="submit"
               className={styles.basicInformation__bottom}
-            />
+            /> */}
           </div>
         </Col>
         <Col span={8}>asdsd</Col>

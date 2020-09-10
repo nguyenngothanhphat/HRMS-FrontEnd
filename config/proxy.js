@@ -8,7 +8,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://171b5109359a.ngrok.io/',
+      target: 'http://e9277b3c9d82.ngrok.io',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
