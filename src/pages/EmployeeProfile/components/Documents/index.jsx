@@ -4,70 +4,147 @@ import InfoCollapseType2 from './InfoCollapseType2';
 
 const data = [
   {
-    title: 'Offer Letter',
-    files: [
+    title: 'Bank Detail',
+    body: [
       {
-        fileName: 'Abc.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
       },
       {
-        fileName: 'Cdf.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
-      },
-    ],
-  },
-  {
-    title: 'Tax Documents',
-    files: [
-      {
-        fileName: 'aaaaaaaaaa.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
-      },
-    ],
-  },
-  {
-    title: 'Tax Documents',
-    files: [
-      {
-        fileName: 'aaaaaaaaaa.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
-      },
-    ],
-  },
-];
-
-const data1 = [
-  {
-    title: 'Offer Letter',
-    files: [
-      {
-        fileName: 'Abc.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
-      },
-      {
-        fileName: 'Cdf.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
-      },
-      {
-        fileName: 'Cdf.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
       },
     ],
   },
   {
-    title: 'Tax Documents',
-    files: [
+    title: 'Example 2',
+    body: [
       {
-        fileName: 'aaaaaaaaaa.txt',
-        generatedBy: 'Terralogic',
-        date: '20/12/2020',
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
+      },
+      {
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Example 3',
+    body: [
+      {
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
+      },
+      {
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Example 4',
+    body: [
+      {
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
+      },
+      {
+        kind: 'Offer Letter',
+        files: [
+          {
+            fileName: 'Abc.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+          {
+            fileName: 'Cdf.txt',
+            generatedBy: 'Terralogic',
+            date: '20/12/2020',
+          },
+        ],
       },
     ],
   },
@@ -79,13 +156,14 @@ class Documents extends PureComponent {
       <Layout>
         <Row>
           <Col xs={24} lg={12}>
-            <InfoCollapseType2 data={data} />
-            <InfoCollapseType2 data={data1} />
-            <InfoCollapseType2 data={data} />
+            {data.map((value, index) =>
+              index % 2 === 0 ? <InfoCollapseType2 data={value} /> : '',
+            )}
           </Col>
           <Col xs={24} lg={12}>
-            <InfoCollapseType2 data={data1} />
-            <InfoCollapseType2 data={data} />
+            {data.map((value, index) =>
+              index % 2 !== 0 ? <InfoCollapseType2 data={value} /> : '',
+            )}
           </Col>
         </Row>
       </Layout>

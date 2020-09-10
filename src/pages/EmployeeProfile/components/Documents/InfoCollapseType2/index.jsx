@@ -9,7 +9,7 @@ class InfoCollapseType2 extends PureComponent {
     return (
       <div className={styles.InfoCollapseType2}>
         <div className={styles.tableTitle}>
-          <span>Bank Details</span>
+          <span>{data.title}</span>
         </div>
         <Row className={styles.columnName}>
           <Col span={8}>Type</Col>
@@ -20,7 +20,7 @@ class InfoCollapseType2 extends PureComponent {
           </Col>
         </Row>
         <div className={styles.tableOfContents}>
-          <TypeRow data={data} />
+          <TypeRow data={data.body} />
         </div>
       </div>
     );

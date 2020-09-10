@@ -18,7 +18,7 @@ class TypeRow extends PureComponent {
   );
 
   render() {
-    const { data } = this.props;
+    const { data = [] } = this.props;
     return (
       <div>
         {data.map((row) => (
@@ -30,7 +30,7 @@ class TypeRow extends PureComponent {
             className={styles.eachCollapse}
           >
             <Panel
-              header={row.title}
+              header={row.kind}
               className={styles.eachPanel}
               key="1"
               extra={this.statusAndDownloadButton()}
