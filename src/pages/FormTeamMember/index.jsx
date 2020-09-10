@@ -5,7 +5,6 @@ import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import styles from './index.less';
-
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
   // const {
