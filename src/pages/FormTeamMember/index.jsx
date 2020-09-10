@@ -20,7 +20,13 @@ export default class FormTeamMember extends PureComponent {
     } = this.props;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
     const listMenu = [
-      { id: 1, name: 'Basic Information', component: <BasicInformation /> },
+      {
+        id: 1,
+        name: 'Basic Information',
+        key: 'basicInformation',
+        isComplete: true,
+        component: <BasicInformation />,
+      },
       { id: 2, name: 'Job Details', component: <JobDetails /> },
       { id: 3, name: 'Eligibility documents', component: <BasicInformation /> },
       { id: 4, name: 'Offer Details', component: <BasicInformation /> },
