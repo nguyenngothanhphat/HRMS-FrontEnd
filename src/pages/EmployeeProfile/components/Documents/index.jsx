@@ -9,14 +9,14 @@ const data = [
       {
         fileName: 'Abc.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
+        date: '20/12/2020',
       },
       {
         fileName: 'Cdf.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
-      }
-    ]
+        date: '20/12/2020',
+      },
+    ],
   },
   {
     title: 'Tax Documents',
@@ -24,9 +24,9 @@ const data = [
       {
         fileName: 'aaaaaaaaaa.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
-      }
-    ]
+        date: '20/12/2020',
+      },
+    ],
   },
   {
     title: 'Tax Documents',
@@ -34,11 +34,11 @@ const data = [
       {
         fileName: 'aaaaaaaaaa.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
-      }
-    ]
-  }
-]
+        date: '20/12/2020',
+      },
+    ],
+  },
+];
 
 const data1 = [
   {
@@ -47,19 +47,19 @@ const data1 = [
       {
         fileName: 'Abc.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
+        date: '20/12/2020',
       },
       {
         fileName: 'Cdf.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
+        date: '20/12/2020',
       },
       {
         fileName: 'Cdf.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
-      }
-    ]
+        date: '20/12/2020',
+      },
+    ],
   },
   {
     title: 'Tax Documents',
@@ -67,30 +67,30 @@ const data1 = [
       {
         fileName: 'aaaaaaaaaa.txt',
         generatedBy: 'Terralogic',
-        date: '20/12/2020'
-      }
-    ]
-  }
-]
+        date: '20/12/2020',
+      },
+    ],
+  },
+];
 
 class Documents extends PureComponent {
-    render () {
-        return (
-          <Layout>
-            <Row>
-              <Col xs={24} lg={12}>
-                <InfoCollapseType2 data={data} />
-                <InfoCollapseType2 data={data1} />
-                <InfoCollapseType2 data={data} />
-              </Col>
-              <Col xs={24} lg={12}>
-                <InfoCollapseType2 data={data1} />
-                <InfoCollapseType2 data={data} />
-              </Col>
-            </Row>
-          </Layout>
-        )
-    }
+  render() {
+    return (
+      <Layout>
+        <Row>
+          <Col xs={24} lg={12}>
+            <InfoCollapseType2 data={data} />
+            <InfoCollapseType2 data={data1} />
+            <InfoCollapseType2 data={data} />
+          </Col>
+          <Col xs={24} lg={12}>
+            <InfoCollapseType2 data={data1} />
+            <InfoCollapseType2 data={data} />
+          </Col>
+        </Row>
+      </Layout>
+    );
+  }
 }
 
 export default Documents;
