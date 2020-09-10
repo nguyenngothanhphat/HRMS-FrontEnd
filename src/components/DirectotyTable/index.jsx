@@ -66,7 +66,7 @@ class DirectoryTable extends Component {
         title: 'Reporting Manager',
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : 'Reporting Manager'}</span>,
+        render: (manager) => <span>{manager ? manager.name : ''}</span>,
         align: 'center',
       },
       {
@@ -75,9 +75,7 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (compensation) => (
           <span>
-            {compensation && compensation.employeeType && compensation.employeeType.name
-              ? compensation.employeeType.name
-              : 'employmentType'}
+            {compensation && compensation.employeeType ? compensation.employeeType.name : ''}
           </span>
         ),
         align: 'center',
@@ -103,13 +101,13 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {} } = this.state;
-    const { list = [] } = this.props;
-
+    const { list = [], loading } = this.props;
+    const rowSize = 15;
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
       showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
-      pageSize: 20,
+      pageSize: rowSize,
       defaultCurrent: 1,
     };
     return (
@@ -117,16 +115,18 @@ class DirectoryTable extends Component {
         <Table
           size="medium"
           columns={this.generateColumns(sortedName)}
-          onRow={() => {
+          onRow={(record) => {
             return {
-              onClick: () => this.handleProfileEmployee(), // click row
+              onClick: () => this.handleProfileEmployee(record._id), // click row
             };
           }}
           dataSource={list}
           rowKey={(record) => record._id}
-          pagination={list.length > 20 ? pagination : false}
-          onChange={this.handleChangeTable}
-          scroll={{ y: 540, x: 700 }}
+          pagination={pagination}
+          // pagination={list.length > rowSize ? pagination : false}
+          loading={loading}
+          // onChange={this.handleChangeTable}
+          // scroll={{ y: 540, x: 700 }}
         />
       </div>
     );

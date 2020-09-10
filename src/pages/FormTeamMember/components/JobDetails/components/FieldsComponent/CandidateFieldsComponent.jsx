@@ -26,7 +26,13 @@ class CandidateFieldsComponent extends Component {
           <Col span={8}>
             <Typography.Title level={5}>{dropdownField[5].title}</Typography.Title>
             <Select placeholder={dropdownField[5].placeholder} className={styles}>
-              <Option></Option>
+              {dropdownField[5].Option.map((data) => (
+                <Option value={data.key}>
+                  <Typography.Text className={ExternalStyle.SelectedOption}>
+                    {data.name}
+                  </Typography.Text>
+                </Option>
+              ))}
             </Select>
           </Col>
         </Row>

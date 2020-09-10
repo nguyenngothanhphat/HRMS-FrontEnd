@@ -55,7 +55,7 @@ class ResetPassword extends Component {
         <p className={styles.formWrapper__title}>Create New Password</p>
         {arrText.map((item) => (
           <div style={{ marginBottom: '0.5rem' }}>
-            <CheckCircleFilled style={{ color: '#ACACAC', marginRight: '4px' }} />
+            <CheckCircleFilled style={{ color: '#13A951', marginRight: '10px' }} />
             <span className={styles.formWrapper__description}>{item}</span>
           </div>
         ))}

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Form, Select, Radio, Row, Col, DatePicker } from 'antd';
+import { Form, Select, Radio, Row, Col, DatePicker, Button } from 'antd';
 import Header from './components/Header/';
 import RadioComponent from './components/RadioComponent/';
 import FieldsComponent from './components/FieldsComponent/';
+import StepsComponent from './components/StepsComponent/';
 import styles from './index.less';
 const { Option } = Select;
 
@@ -10,18 +11,20 @@ export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isToggle: false,
+      isValid: false,
     };
   }
   handleSubmit = (e) => {
     e.preventDefault();
   };
-  handleSwitch = () => {
-    this.setState((prevState) => ({
-      isToggle: !prevState.isToggle,
-    }));
+
+  handleButton = () => {
+    this.setState({
+      isValid: true,
+    });
   };
   render() {
+    const { isValid } = this.state;
     const Tab = {
       positionTab: {
         title: 'Position',
@@ -56,13 +59,77 @@ export default class JobDetails extends PureComponent {
           { key: 6, name: 'Sale Presentative' },
         ],
       },
-      { title: 'Job title', value: 2, placeholder: 'Select a job title', Option: [] },
-      { title: 'Job category', value: 3, placeholder: 'Select a job category', Option: [] },
-      { title: 'Work location', value: 4, placeholder: 'Select a work location', Option: [] },
-      { title: 'Reporting Manager', value: 5, placeholder: 'Select', Option: [] },
-      { title: `Candidate's notice Period`, value: 6, placeholder: 'Time period', Option: [] },
+      {
+        title: 'Job title',
+        value: 2,
+        placeholder: 'Select a job title',
+        Option: [
+          { key: 1, name: 'UX Designer' },
+          { key: 2, name: 'UX Research' },
+          { key: 3, name: 'Researcher' },
+          { key: 4, name: 'UI Designer' },
+          { key: 5, name: 'Business Analyst' },
+          { key: 6, name: 'Sale Presentative' },
+        ],
+      },
+      {
+        title: 'Job category',
+        value: 3,
+        placeholder: 'Select a job category',
+        Option: [
+          { key: 1, name: 'Test' },
+          { key: 2, name: 'Dummy' },
+          { key: 3, name: 'DummyText' },
+          { key: 4, name: 'Abcde' },
+          { key: 5, name: 'Text' },
+          { key: 6, name: 'Texts' },
+        ],
+      },
+      {
+        title: 'Work location',
+        value: 4,
+        placeholder: 'Select a work location',
+        Option: [
+          { key: 1, name: 'HCM City' },
+          { key: 2, name: 'Dubai' },
+          { key: 3, name: 'US' },
+          { key: 4, name: 'AUS' },
+          { key: 5, name: 'Korea' },
+          { key: 6, name: 'China' },
+        ],
+      },
+      {
+        title: 'Reporting Manager',
+        value: 5,
+        placeholder: 'Select',
+        Option: [
+          { key: 1, name: 'Project Manager' },
+          { key: 2, name: 'Dummy' },
+          { key: 3, name: 'Test' },
+          { key: 4, name: 'Product Manager' },
+          { key: 5, name: 'Project Leader' },
+          { key: 6, name: 'Senior' },
+        ],
+      },
+      {
+        title: `Candidate's notice Period`,
+        value: 6,
+        placeholder: 'Time period',
+        Option: [
+          { key: 1, name: 'Test' },
+          { key: 2, name: 'ABCD' },
+          { key: 3, name: 'Testing' },
+          { key: 4, name: '10AM' },
+          { key: 5, name: '5PM' },
+          { key: 6, name: 'For Hours' },
+        ],
+      },
       { title: 'Preferred date of joining', value: 7 },
     ];
+    const Steps = {
+      title: 'Complete onboarding process at a glance',
+      keyPage: [{ key: 1, data: 'Setup the employee profile' }],
+    };
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -76,6 +143,9 @@ export default class JobDetails extends PureComponent {
             </div>
           </Col>
           <Col span={8}>asdasd</Col>
+          {/* <Col span={8}>
+            <StepsComponent />
+          </Col> */}
         </Row>
       </>
     );
