@@ -36,13 +36,13 @@ class TypeRow extends PureComponent {
                 <Panel header={row.title} className={styles.eachPanel} key="1" extra={this.genExtra()}>
                   { row.files.map(file => (
                     <Row className={styles.eachRow}>
-                      <Col span={7} className={styles.fileName}>
+                      <Col span={8} className={styles.fileName}>
                         <FileOutlined className={styles.fileIcon} />
                         <a>{file.fileName}</a>
                       </Col>
-                      <Col span={8}>{file.generatedBy}</Col>
-                      <Col span={8}>{file.date}</Col>
-                      <Col span={1} />
+                      <Col span={7}>{file.generatedBy}</Col>
+                      <Col span={7}>{file.date}</Col>
+                      <Col span={2} />
                     </Row>
                   )) }
                 </Panel>
