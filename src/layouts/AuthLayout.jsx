@@ -31,10 +31,11 @@ class AuthLayout extends React.PureComponent {
           <Row className={styles.rootLogin}>
             <Col lg={9} xl={10} className={styles.contentLeft}>
               <div className={styles.contentLeft__image}>
-                <img src={LoginImage} alt='login' />
+                <img src={LoginImage} alt="login" />
               </div>
               <p className={styles.contentLeft__text1}>
-                Spending too much time on HR, not your business? <br />We can fix that.
+                Spending too much time on HR, not your business? <br />
+                We can fix that.
               </p>
               <p className={styles.contentLeft__text2}>
                 Streamline onboarding, benefits, payroll, PTO, and more with our simple, intuitive
