@@ -10,7 +10,6 @@
   .GenTitle {
     height: 24px;
     margin-bottom: 0;
-    font-family: 'Roboto', sans-serif;
     font-size: 18px;
     font-weight: 600;
     font-stretch: normal;
@@ -23,7 +22,6 @@
   .titleDetail {
     height: 22px;
     margin: 20px 0;
-    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     font-weight: 600;
     font-stretch: normal;
@@ -35,7 +33,6 @@
   }
   .TextDetail {
     height: 22px;
-    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     font-weight: normal;
     font-stretch: normal;
@@ -43,11 +40,10 @@
     line-height: 1.38;
     letter-spacing: normal;
     text-align: left;
-    color: #2c6df9;
+    // color: #2c6df9;
   }
   .GenLink {
     height: 22px;
-    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     font-weight: normal;
     font-stretch: normal;
@@ -61,8 +57,29 @@
   .Genspage {
     margin-top: 25px;
   }
-  .GenLine {
+  .GenRowLine {
     opacity: 0.26;
     border: solid 1px #707070;
+  }
+  .GenColLine {
+    position: relative;
+  }
+  .GenColLine::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: -40px;
+    z-index: 2;
+    height: 100%;
+    opacity: 0.26;
+    border: solid 1px #707070;
+  }
+  .spaceIconLegal {
+    display: inline;
+    padding-left: 8px;
+  }
+  .GenIconlegal {
+    color: black;
+    border-radius: 50%;
   }
 }

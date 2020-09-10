@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Popover } from 'antd';
+import { QuestionCircleFilled, TeamOutlined, EditFilled } from '@ant-design/icons';
 import styles from './index.less';
 
 const EmployeeInfo = [
@@ -136,6 +137,7 @@ const ProfessionalAcademic2 = [
 ];
 class GeneralInfo extends PureComponent {
   render() {
+    const content = 'We require your gender for legal reasons.';
     return (
       <div className={styles.GeneralInfo}>
         <div className={styles.Genspage}>
@@ -147,13 +149,24 @@ class GeneralInfo extends PureComponent {
             {EmployeeInfo.map((item) => {
               return (
                 <Col span={4} key={item.id}>
-                  <p className={styles.titleDetail}>{item.title}</p>
+                  <p className={styles.titleDetail}>
+                    {item.title}
+                    {item.title === 'Legal Gender' ? (
+                      <Popover content={content} trigger="hover">
+                        <div className={styles.spaceIconLegal}>
+                          <QuestionCircleFilled className={styles.GenIconlegal} />
+                        </div>
+                      </Popover>
+                    ) : (
+                      ''
+                    )}
+                  </p>
                   <p className={styles.TextDetail}>{item.text}</p>
                 </Col>
               );
             })}
           </Row>
-          <div className={styles.GenLine} />
+          <div className={styles.GenRowLine} />
           <Row>
             {EmployeeInfo1.map((item) => {
               return (
@@ -174,7 +187,11 @@ class GeneralInfo extends PureComponent {
               {PersonalInfor1.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p className={styles.titleDetail}>{item.title}</p>
+                    <p className={styles.titleDetail}>
+                      {item.title}
+                      <TeamOutlined />
+                      <EditFilled />
+                    </p>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
@@ -195,12 +212,16 @@ class GeneralInfo extends PureComponent {
               </Col>
             </Row>
           </div>
-          <div className={styles.GenLine} />
+          <div className={styles.GenRowLine} />
           <div>
             <Row>
               {PersonalInforAddr.map((item) => {
                 return (
-                  <Col span={12} key={item.id}>
+                  <Col
+                    span={item.title === 'Residence Address' ? 12 : 12}
+                    key={item.id}
+                    className={item.title === 'Current Address' ? styles.GenColLine : ''}
+                  >
                     <p className={styles.titleDetail}>{item.title}</p>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
@@ -217,7 +238,11 @@ class GeneralInfo extends PureComponent {
             <Row>
               {PassportandVisa.map((item) => {
                 return (
-                  <Col span={3} key={item.id}>
+                  <Col
+                    span={3}
+                    key={item.id}
+                    className={item.title === 'Visa Number' ? styles.GenColLine : ''}
+                  >
                     <p className={styles.titleDetail}>{item.title}</p>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
@@ -258,6 +283,7 @@ class GeneralInfo extends PureComponent {
                 );
               })}
             </Row>
+            <div className={styles.GenRowLine} />
             <Row>
               {ProfessionalAcademic2.map((item) => {
                 return (
