@@ -56,10 +56,6 @@ const OfferDetail = (props) => {
     }
   }, [includeOffer, file, agreement, handbook, currency, timeoff]);
 
-  useEffect(() => {
-    console.log(handbook);
-  }, [handbook]);
-
   const handleRadio = (e) => {
     const { value } = e.target;
     setIncludeOffer(value);
