@@ -1,4 +1,3 @@
-import { dialog } from '@/utils/utils';
 // import {
 //   LocationFilter,
 //   DepartmentFilter,
@@ -12,7 +11,13 @@ const info = {
   namespace: 'info',
   state: {
     offerDetail: {
+      includeOffer: false,
+      file: 'Template.docx',
+      agreement: false,
+      handbook: false,
+      compensation: 'Salary',
       currency: 'Dollar',
+      timeoff: 'can not',
     },
   },
   effects: {

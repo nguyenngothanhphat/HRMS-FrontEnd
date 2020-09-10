@@ -16,27 +16,49 @@ import getFileType from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const [includeOffer, setIncludeOffer] = useState(false);
-  const [file, setFile] = useState('Template.docx');
-  const [agreement, setAgreement] = useState(false);
-  const [handbook, setHandbook] = useState(false);
-  const [currency, setCurrency] = useState('dollar');
-  const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(true);
+  const { dispatch, offerDetail } = props;
 
-  const { dispatch } = props;
+  // Get default value from "info" store
+  const {
+    includeOffer: includeOfferProp,
+    file: fileProp,
+    agreement: agreementProp,
+    handbook: handbookProp,
+    currency: currencyProp,
+    timeoff: timeoffProp,
+  } = offerDetail;
 
+  const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
+  const [file, setFile] = useState(fileProp);
+  const [agreement, setAgreement] = useState(agreementProp);
+  const [handbook, setHandbook] = useState(handbookProp);
+  const [currency, setCurrency] = useState(currencyProp);
+  const [timeoff, setTimeoff] = useState(timeoffProp);
+  const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
+
+  // Trigger dispatch save changes to "info" store
   useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'info/save',
         payload: {
           offerDetail: {
-            currency: 'Euro',
+            ...offerDetail,
+            includeOffer,
+            file,
+            agreement,
+            handbook,
+            currency,
+            timeoff,
           },
         },
       });
     }
-  }, []);
+  }, [includeOffer, file, agreement, handbook, currency, timeoff]);
+
+  useEffect(() => {
+    console.log(handbook);
+  }, [handbook]);
 
   const handleRadio = (e) => {
     const { value } = e.target;
@@ -49,6 +71,7 @@ const OfferDetail = (props) => {
     } else {
       setDisplayTimeoffAlert(false);
     }
+    setTimeoff(value);
   };
 
   const handleFileChange = (value) => {
@@ -56,11 +79,11 @@ const OfferDetail = (props) => {
   };
 
   const handleAgreementChange = () => {
-    setAgreement(!agreement);
+    setAgreement((prevState) => !prevState);
   };
 
   const handleHandbookChange = () => {
-    setHandbook(!handbook);
+    setHandbook((prevState) => !prevState);
   };
 
   const handleCurrencyChange = (value) => {
@@ -118,7 +141,7 @@ const OfferDetail = (props) => {
 
           <Checkbox
             className="checkbox"
-            value={agreement}
+            checked={agreement}
             onChange={(e) => handleAgreementChange(e.target.value)}
           >
             Default YC IP / Confidentiality Agreement
@@ -126,7 +149,7 @@ const OfferDetail = (props) => {
 
           <p className={styles.handbook}>Company handbook</p>
 
-          <Checkbox value={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
+          <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
             My company&apos;s handbook
           </Checkbox>
 
@@ -166,7 +189,7 @@ const OfferDetail = (props) => {
               <p className={styles.timeoff}>Time off Policy</p>
 
               <Select
-                defaultValue="can not"
+                value={timeoff}
                 className={styles.select}
                 onChange={(value) => handleTimeoffChange(value)}
               >
@@ -197,7 +220,6 @@ const OfferDetail = (props) => {
   );
 };
 
-export default connect(({ global, settings }) => ({
-  collapsed: global.collapsed,
-  settings,
+export default connect(({ info: { offerDetail = {} } = {} }) => ({
+  offerDetail,
 }))(OfferDetail);
