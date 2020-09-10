@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import styles from './index.less';
 
@@ -84,7 +85,7 @@ class EmployeeProfile extends Component {
           </Row>
           <ModalUpload visible={open} handleCancel={this._handleCancel} />
           <Tabs
-            defaultActiveKey="4"
+            defaultActiveKey="2"
             className={styles.TabEmployee}
             onTabClick={this.handleClickTabPane}
           >
@@ -92,6 +93,7 @@ class EmployeeProfile extends Component {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
                   {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  {tab.name === 'Employment & Compensation' ? <EmploymentTab /> : ''}
                 </Layout>
               </TabPane>
             ))}
