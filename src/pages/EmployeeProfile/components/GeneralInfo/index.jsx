@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Popover } from 'antd';
+import { Row, Col, Modal, Tooltip } from 'antd';
 import { QuestionCircleFilled, TeamOutlined, EditFilled } from '@ant-design/icons';
+import 'antd/dist/antd.less';
 import styles from './index.less';
 
 const EmployeeInfo = [
@@ -136,7 +137,21 @@ const ProfessionalAcademic2 = [
   },
 ];
 class GeneralInfo extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { visible: false };
+  }
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
   render() {
+    const { visible } = this.state;
+    console.log(visible);
+    // const color = { color: '#bfbfbf' };
     const content = 'We require your gender for legal reasons.';
     return (
       <div className={styles.GeneralInfo}>
@@ -149,18 +164,22 @@ class GeneralInfo extends PureComponent {
             {EmployeeInfo.map((item) => {
               return (
                 <Col span={4} key={item.id}>
-                  <p className={styles.titleDetail}>
-                    {item.title}
+                  <div className={styles.boxTitle}>
+                    <p className={styles.titleDetail}> {item.title}</p>
                     {item.title === 'Legal Gender' ? (
-                      <Popover content={content} trigger="hover">
+                      <Tooltip
+                        title={content}
+                        overlayClassName={styles.GenPopover}
+                        getPopupContainer={() => document.body}
+                      >
                         <div className={styles.spaceIconLegal}>
                           <QuestionCircleFilled className={styles.GenIconlegal} />
                         </div>
-                      </Popover>
+                      </Tooltip>
                     ) : (
                       ''
                     )}
-                  </p>
+                  </div>
                   <p className={styles.TextDetail}>{item.text}</p>
                 </Col>
               );
@@ -190,7 +209,12 @@ class GeneralInfo extends PureComponent {
                     <p className={styles.titleDetail}>
                       {item.title}
                       <TeamOutlined />
-                      <EditFilled />
+                      <EditFilled onClick={this.showModal} />
+                      <Modal title="Basic Modal" visible={visible} footer={null}>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                      </Modal>
                     </p>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
