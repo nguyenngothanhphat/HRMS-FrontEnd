@@ -47,6 +47,10 @@
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
     "@ant-design/pro-descriptions": "^1.0.4",
+<<<<<<< Updated upstream
+=======
+    "@ant-design/pro-layout": "^6.4.15",
+>>>>>>> Stashed changes
     "@ant-design/pro-table": "^2.5.13",
     "antd": "^4.5.3",
     "babel-eslint": "^10.1.0",
