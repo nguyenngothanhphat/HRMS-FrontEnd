@@ -10,6 +10,12 @@
 const info = {
   namespace: 'info',
   state: {
+    basicInformation: {
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      experienceYear: '',
+    },
     offerDetail: {
       includeOffer: false,
       file: 'Template.docx',
@@ -33,6 +39,12 @@ const info = {
     // },
   },
   reducers: {
+    saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,

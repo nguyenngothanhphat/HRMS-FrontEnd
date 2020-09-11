@@ -1,11 +1,16 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input } from 'antd';
+import { connect } from 'umi';
+
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 
 import styles from './index.less';
 
-export default class BasicInformation extends PureComponent {
+@connect(({ info }) => ({
+  info,
+}))
+class BasicInformation extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -19,6 +24,14 @@ export default class BasicInformation extends PureComponent {
   }
 
   componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    const { fullName, privateEmail, workEmail, experienceYear } = this.state;
+    dispatch({
+      type: 'info/saveBasicInformation',
+      payload: {
+        basicInformation: { fullName, privateEmail, workEmail, experienceYear },
+      },
+    });
     console.log(this.state);
   };
 
@@ -184,3 +197,5 @@ export default class BasicInformation extends PureComponent {
     );
   }
 }
+
+export default BasicInformation;
