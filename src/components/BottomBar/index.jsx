@@ -28,6 +28,17 @@ export default class BottomBar extends PureComponent {
         </Button>
       );
     }
+    if (currentPage === 4) {
+      return (
+        <Button
+          type="primary"
+          onClick={this.onClickNext}
+          className={styles.bottomBar__button__primary}
+        >
+          Proceed
+        </Button>
+      );
+    }
     return null;
   };
 
@@ -37,7 +48,7 @@ export default class BottomBar extends PureComponent {
       <div className={`${styles.bottomBar} ${className}`}>
         <Row>
           <Col span={16}>
-            <div className={styles.bottomBar__status}>ssssssssssssssssss</div>
+            <div className={styles.bottomBar__status}>*All mandatory fields have been filled.</div>
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>{this._renderBottomButton()}</div>
