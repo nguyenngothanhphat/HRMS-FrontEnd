@@ -79,8 +79,13 @@ class EmployeeProfile extends Component {
               <div className={styles.viewInfo__text}>
                 <p className={styles.textName}>Aditya Venkatesh</p>
                 <p className={styles.textInfo}>UX Lead (Full Time), Design</p>
-                <p className={styles.textInfo}>Location: Bengaluru, India (+5:30 GMT)</p>
-                <p className={styles.textInfo}>Joined on December 10th, 2018</p>
+                <p className={styles.textInfo}>
+                  {formatMessage({ id: 'pages.employeeProfile.location' })}: Bengaluru, India (+5:30
+                  GMT)
+                </p>
+                <p className={styles.textInfo}>
+                  {formatMessage({ id: 'pages.employeeProfile.joinedOn' })} December 10th, 2018
+                </p>
               </div>
             </div>
             <Dropdown overlay={menu} placement="bottomRight">
