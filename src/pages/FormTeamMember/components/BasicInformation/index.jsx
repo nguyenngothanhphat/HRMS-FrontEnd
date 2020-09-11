@@ -7,8 +7,9 @@ import BasicInformationReminder from './components/BasicInformationReminder';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation } = {} }) => ({
+@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
   basicInformation,
+  checkMandatory,
 }))
 class BasicInformation extends PureComponent {
   constructor(props) {
@@ -29,14 +30,32 @@ class BasicInformation extends PureComponent {
   handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
-    const { basicInformation } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, checkMandatory } = this.props;
+
+    const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
+
+    const { basicInformation = {} } = this.state;
     basicInformation[name] = value;
+    const { fullName = '', workEmail = '', privateEmail = '' } = basicInformation;
+
+    if (
+      fullName !== '' &&
+      workEmail !== '' &&
+      privateEmail !== '' &&
+      emailRegExp.test(privateEmail)
+    ) {
+      checkMandatory.filledBasicInformation = true;
+    } else {
+      checkMandatory.filledBasicInformation = false;
+    }
 
     dispatch({
       type: 'info/saveBasicInformation',
       payload: {
         basicInformation,
+        checkMandatory: {
+          ...checkMandatory,
+        },
       },
     });
   };
@@ -136,7 +155,6 @@ class BasicInformation extends PureComponent {
               className={styles.formInput__email}
               name="workEmail"
             >
-              {/* <p className={styles.formInput__domain}>@terralogic.com</p> */}
               <Input
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}

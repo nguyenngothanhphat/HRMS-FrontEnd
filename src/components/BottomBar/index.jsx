@@ -5,26 +5,45 @@ import { connect } from 'umi';
 
 import styles from './index.less';
 
-class BottomBar extends React.Component {
+class BottomBar extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {};
   }
 
-  componentWillUpdate(newProp) {
-    const { offerDetailField } = newProp;
-    console.log(offerDetailField);
-    const { currency } = offerDetailField;
-    console.log(currency);
-    if (currency === false) {
-      console.log('Update');
-    }
-  }
+  // componentWillUpdate(newProp) {
+  //   const { offerDetailField, checkMandatory } = newProp;
+  //   const { currency } = offerDetailField;
+  //   const { filledBasicInformation } = checkMandatory;
+  //   if (currency === false) {
+  //     console.log('Update');
+  //   }
+  // }
 
   onClickNext = () => {
     const { onClickNext } = this.props;
     onClickNext();
+  };
+
+  _renderStatus = () => {
+    const { currentPage, offerDetailField, checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+    if (currentPage === 1) {
+      return !filledBasicInformation ? (
+        <div className={styles.normalText}>
+          <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
+        </div>
+      ) : (
+        <div className={styles.greenText}>*All mandatory details have been filled</div>
+      );
+    }
+    if (currentPage === 4) {
+      return offerDetailField.currency === true
+        ? '*All mandatory fields have been filled.'
+        : `Currency field must be 'Dollar'`;
+    }
+    return null;
   };
 
   _renderBottomButton = () => {
@@ -56,19 +75,12 @@ class BottomBar extends React.Component {
 
   render() {
     const { className } = this.props;
-    const { offerDetailField } = this.props;
-    // console.log(offerDetailField);
-    // const { currency } = offerDetailField;
 
     return (
       <div className={`${styles.bottomBar} ${className}`}>
-        <Row>
+        <Row align="middle">
           <Col span={16}>
-            <div className={styles.bottomBar__status}>
-              {offerDetailField.currency === true
-                ? '*All mandatory fields have been filled.'
-                : `Currency field must be 'Dollar'`}
-            </div>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>{this._renderBottomButton()}</div>
@@ -80,6 +92,7 @@ class BottomBar extends React.Component {
 }
 
 // export default BottomBar;
-export default connect(({ info: { offerDetailField = {} } = {} }) => ({
+export default connect(({ info: { offerDetailField = {}, checkMandatory = {} } = {} }) => ({
   offerDetailField,
+  checkMandatory,
 }))(BottomBar);

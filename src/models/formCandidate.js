@@ -25,6 +25,9 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    checkMandatory: {
+      filledBasicInformation: false,
+    },
     offerDetailField: {
       currency: true,
     },
