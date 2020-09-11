@@ -22,14 +22,17 @@ class DirectoryComponent extends PureComponent {
       let employeeType = [];
       let department = [];
       let location = [];
+      const employeeTypeConst = 'Employment Type';
+      const departmentConst = 'Department';
+      const locationConst = 'Location';
       filter.map((item) => {
-        if (item.actionFilter.name === 'Employment Type') {
+        if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Department') {
+        if (item.actionFilter.name === departmentConst) {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Location') {
+        if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         return { employeeType, department, location };
@@ -54,6 +57,7 @@ class DirectoryComponent extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: false,
+      pageSelected: 1,
       bottabs: [
         { id: 1, name: 'Active Employees' },
         { id: 2, name: 'My Team' },
