@@ -4,6 +4,7 @@ import { Button } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
+import OfferDetail from './components/OfferDetail';
 import styles from './index.less';
 import EligibilityDocs from './components/EligibilityDocs';
 
@@ -25,18 +26,48 @@ export default class FormTeamMember extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        isComplete: true,
         component: <BasicInformation />,
       },
-      { id: 2, name: 'Job Details', component: <JobDetails /> },
-      { id: 3, name: 'Eligibility documents', component: <EligibilityDocs /> },
-      { id: 4, name: 'Offer Details', component: <BasicInformation /> },
-      { id: 5, name: 'Benefits', component: <BasicInformation /> },
-      { id: 6, name: 'Salary structure', component: <BasicInformation /> },
-      { id: 7, name: 'Payroll settings', component: <BasicInformation /> },
-      { id: 8, name: 'Custom Fields', component: <BasicInformation /> },
-      { id: 9, name: 'Additional options', component: <BasicInformation /> },
+      { id: 2, name: 'Job Details', key: 'jobDetails', component: <JobDetails /> },
+      {
+        id: 3,
+        name: 'Eligibility Documents',
+        key: 'eligibilityDocuments',
+        component: <EligibilityDocs />,
+      },
+      { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
+      { id: 5, name: 'Benefits', key: 'benefits', component: <BasicInformation /> },
+      { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <BasicInformation /> },
+      { id: 7, name: 'Payroll Settings', key: 'customFields', component: <BasicInformation /> },
+      { id: 8, name: 'Custom Fields', key: 'additionalOptions', component: <BasicInformation /> },
+      {
+        id: 9,
+        name: 'Additional Options',
+        key: 'additionalOptions',
+        component: <BasicInformation />,
+      },
     ];
+
+    const candidateProcess = {
+      basicInformation: true,
+      jobDetails: false,
+      eligibilityDocuments: true,
+      offerDetails: false,
+      benefits: false,
+      salaryStructure: false,
+      payrollSettings: false,
+      customFields: false,
+      additionalOptions: false,
+    };
+
+    const formatListMenu =
+      listMenu.map((item) => {
+        const { key } = item;
+        return {
+          ...item,
+          isComplete: candidateProcess[key],
+        };
+      }) || [];
 
     return (
       <PageContainer>
@@ -52,7 +83,7 @@ export default class FormTeamMember extends PureComponent {
               </div>
             )}
           </div>
-          <CommonLayout listMenu={listMenu} />
+          <CommonLayout listMenu={formatListMenu} />
         </div>
       </PageContainer>
     );
