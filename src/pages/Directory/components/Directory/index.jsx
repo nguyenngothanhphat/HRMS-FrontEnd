@@ -18,6 +18,7 @@ class DirectoryComponent extends PureComponent {
     if ('employee' in nextProps) {
       const { employee } = nextProps;
       const { filter } = employee;
+      console.log(filter);
       let employeeType = [];
       let department = [];
       let location = [];
@@ -80,6 +81,7 @@ class DirectoryComponent extends PureComponent {
     };
 
     if (
+      prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
@@ -154,15 +156,15 @@ class DirectoryComponent extends PureComponent {
       changeTab: true,
       filterName: '',
     });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/ClearFilter',
+    });
     setTimeout(() => {
       this.setState({
         changeTab: false,
       });
     }, 5);
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employee/ClearFilter',
-    });
   };
 
   render() {

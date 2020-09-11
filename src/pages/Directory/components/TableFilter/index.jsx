@@ -71,7 +71,7 @@ class TableFilter extends PureComponent {
     const { Sider } = Layout;
     const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [] },
+      employee: { location = [], department = [], employeetype = [], clearFilter = false },
       collapsed,
       changeTab,
     } = this.props;
@@ -114,7 +114,11 @@ class TableFilter extends PureComponent {
           {changeTab ? (
             ''
           ) : (
-            <Input value={text} className={styles.formInput} onChange={this.handleChange} />
+            <Input
+              value={clearFilter ? '' : text}
+              className={styles.formInput}
+              onChange={this.handleChange}
+            />
           )}
 
           {reset || changeTab ? (

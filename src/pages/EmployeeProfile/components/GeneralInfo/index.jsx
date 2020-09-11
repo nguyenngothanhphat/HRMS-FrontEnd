@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import { Row, Col, Modal, Tooltip, Radio } from 'antd';
 import { QuestionCircleFilled, TeamOutlined, EditFilled, LockFilled } from '@ant-design/icons';
 import styles from './index.less';
@@ -135,6 +136,10 @@ const ProfessionalAcademic2 = [
     ],
   },
 ];
+@connect(({ loading, employee }) => ({
+  loading: loading.effects['login/login'],
+  employee,
+}))
 class GeneralInfo extends PureComponent {
   constructor(props) {
     super(props);
@@ -148,7 +153,7 @@ class GeneralInfo extends PureComponent {
   };
 
   onChangeRadio = (e) => {
-    // console.log('radio checked', e.target.value);
+    console.log('radio checked', e);
     this.setState({
       value: e.target.value,
       visible: false,
@@ -163,8 +168,6 @@ class GeneralInfo extends PureComponent {
 
   render() {
     const { visible, value } = this.state;
-    // console.log(visible);
-    // const color = { color: '#bfbfbf' };
     const content = 'We require your gender for legal reasons.';
     return (
       <div className={styles.GeneralInfo}>
@@ -215,41 +218,50 @@ class GeneralInfo extends PureComponent {
               {PersonalInfor1.map((item) => {
                 return (
                   <Col span={4} key={item.id}>
-                    <p className={styles.titleDetail}>
-                      {item.title}
-                      <TeamOutlined />
-                      <EditFilled onClick={this.showModal} />
-                      <Modal
-                        title="SELECT PRIVACY"
-                        visible={visible}
-                        footer={null}
-                        closable={false}
-                        onCancel={this.handleCancel}
-                      >
-                        <div>
-                          <p>
-                            The number will be still visible to your Reporting Manager, HR and
-                            Finance teams however you can Choose to keep it hidden from other
-                            co-workers.
-                          </p>
-                        </div>
-                        <div className={styles.GenRadio}>
-                          <Radio.Group onChange={this.onChangeRadio} value={value}>
-                            <Radio value="Co-Workers">
-                              <TeamOutlined />
-                              <div>
-                                <p className={styles.GenRadiotitle}>Co-Workers</p>
-                                <p className={styles.GenRadiotext}>Your colleagues at lollypop</p>
-                              </div>
-                            </Radio>
-                            <Radio value="Only Me">
-                              <LockFilled />
-                              Only Me
-                            </Radio>
-                          </Radio.Group>
-                        </div>
-                      </Modal>
-                    </p>
+                    <div className={styles.GenFlexbox}>
+                      <p className={styles.titleDetail}> {item.title} </p>
+                      <div className={styles.GenBoxIcon}>
+                        {value === 'Co-Workers' ? (
+                          <TeamOutlined className={styles.GenIconTeam} />
+                        ) : (
+                          <LockFilled className={styles.GenIconTeam} />
+                        )}
+                        <EditFilled onClick={this.showModal} className={styles.GenIconEdit} />
+                      </div>
+                    </div>
+                    <Modal
+                      title="SELECT PRIVACY"
+                      visible={visible}
+                      footer={null}
+                      closable={false}
+                      onCancel={this.handleCancel}
+                      className={styles.GenModal}
+                    >
+                      <div className={styles.GenModalbBackgroundText}>
+                        <p className={styles.GenModalText}>
+                          The number will be still visible to your Reporting Manager, HR and Finance
+                          teams however you can Choose to keep it hidden from other co-workers.
+                        </p>
+                      </div>
+                      <div className={styles.GenRadio}>
+                        <Radio.Group onChange={this.onChangeRadio} value={value}>
+                          <Radio value="Co-Workers">
+                            <TeamOutlined className={styles.GenIconRadio} />
+                            <div className={styles.GenFormText}>
+                              <p className={styles.GenRadiotitle}>Co-Workers</p>
+                              <p className={styles.GenRadiotext}>Your colleagues at lollypop</p>
+                            </div>
+                          </Radio>
+                          <Radio value="Only Me">
+                            <LockFilled className={styles.GenIconRadio} />
+                            <div className={styles.GenFormText}>
+                              <p className={styles.GenRadiotitle}>Only Me</p>
+                              <p className={styles.GenRadiotext}>Your top level management only</p>
+                            </div>
+                          </Radio>
+                        </Radio.Group>
+                      </div>
+                    </Modal>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
