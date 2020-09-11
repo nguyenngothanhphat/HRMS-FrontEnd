@@ -5,7 +5,7 @@ import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import authLayout from './en-US/authLayout';
-import NotFound404Page from './en-US/NotFound404Page';
+import notFoundPage from './en-US/notFoundPage';
 import dashboardPage from './en-US/dashboardPage';
 import directoryPage from './en-US/directoryPage';
 import employeeProfilePage from './en-US/employeeProfilePage';
@@ -28,7 +28,7 @@ export default {
   ...pwa,
   ...component,
   ...authLayout,
-  ...NotFound404Page,
+  ...notFoundPage,
   ...dashboardPage,
   ...directoryPage,
   ...employeeProfilePage,
