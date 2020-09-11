@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'antd';
-import Header from './components/Header/';
-import RadioComponent from './components/RadioComponent/';
-import FieldsComponent from './components/FieldsComponent/';
-import StepsComponent from './components/StepsComponent/';
+import Header from './components/Header';
+import RadioComponent from './components/RadioComponent';
+import FieldsComponent from './components/FieldsComponent';
+import StepsComponent from './components/StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
+
 const { Option } = Select;
 
 export default class JobDetails extends PureComponent {
@@ -15,6 +16,7 @@ export default class JobDetails extends PureComponent {
       isValid: false,
     };
   }
+
   handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -24,6 +26,7 @@ export default class JobDetails extends PureComponent {
       isValid: true,
     });
   };
+
   render() {
     const { isValid } = this.state;
     const Tab = {
@@ -157,6 +160,7 @@ export default class JobDetails extends PureComponent {
               <Row>
                 <NoteComponent note={Note} />
               </Row>
+              <hr />
               <Row>
                 <StepsComponent Steps={Steps} />
               </Row>
