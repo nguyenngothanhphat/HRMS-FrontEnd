@@ -11,6 +11,13 @@
     flex-wrap: wrap;
     background-color: #fff;
   }
+  .subHeadings {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.38;
+    text-align: left;
+    color: #044040;
+  }
   .headings {
     font-size: 18px;
     font-weight: 600;
@@ -18,28 +25,30 @@
     padding: 12px;
     background-color: #f4f4f4;
   }
-}
-
-[data-theme='compact'] .site-collapse-custom-collapse .site-collapse-custom-panel,
-.site-collapse-custom-collapse .site-collapse-custom-panel {
-  background-color: #fff;
-  border-radius: 2px;
-  margin-bottom: 24px;
-  border: 0px;
-  overflow: hidden;
-}
-
-div.ant-collapse-header {
   :global {
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.33;
-    text-align: left;
-    color: #044040;
-    background-color: #f4f4f4;
-  }
-}
+    [data-theme='compact'] .site-collapse-custom-collapse .site-collapse-custom-panel,
+    .site-collapse-custom-collapse .site-collapse-custom-panel {
+      color: #044040;
+      background-color: #fff;
+    }
 
-div.ant-collapse-content-box {
-  background-color: #fff;
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0;
+    }
+
+    div.ant-collapse-header {
+      :global {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.33;
+        text-align: left;
+        color: #044040;
+        background-color: #f4f4f4;
+      }
+    }
+
+    div.ant-collapse-content-box {
+      background-color: #fff;
+    }
+  }
 }

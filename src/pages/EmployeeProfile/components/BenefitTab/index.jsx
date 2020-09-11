@@ -5,6 +5,7 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
 import DependentTabs from './components/DependentTabs';
+import KYC from './components/KYC';
 
 const { Sider, Content } = Layout;
 const data = [
@@ -42,11 +43,17 @@ export default class BenefitTab extends PureComponent {
       <Layout className={styles.benefitTab}>
         <Sider breakpoint="md" collapsedWidth="0" width={606} className={styles.sideTab}>
           <h3 className={styles.headings}>Employee Dependent Details</h3>
-          <div>
+          {/* <div>
             {dependentData.map((item, idx) => {
               return <DependentTabs index={idx} data={item} />;
             })}
-          </div>
+          </div> */}
+          <KYC
+            kycStat="Complete"
+            walletStat="Active"
+            adhaar="8947-9866-9999-9999"
+            paytm="+91-7876534261"
+          />
         </Sider>
         <Content
           style={{
@@ -61,6 +68,7 @@ export default class BenefitTab extends PureComponent {
           </div>
 
           <Collapse
+            accordion
             bordered={false}
             expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
             className="site-collapse-custom-collapse"
@@ -71,10 +79,21 @@ export default class BenefitTab extends PureComponent {
               key="1"
               className="site-collapse-custom-panel"
             >
-              <div className={styles.content}>
-                {data.map((item) => {
-                  return <GroupInfoType2 data={item} />;
-                })}
+              <div>
+                <h1 className={styles.subHeadings}>For Global Employess</h1>
+                <div className={styles.content}>
+                  {data.map((item) => {
+                    return <GroupInfoType2 data={item} />;
+                  })}
+                </div>
+              </div>
+              <div>
+                <h1 className={styles.subHeadings}>For Indian Employess</h1>
+                <div className={styles.content}>
+                  {data.map((item) => {
+                    return <GroupInfoType2 data={item} />;
+                  })}
+                </div>
               </div>
             </Collapse.Panel>
           </Collapse>
