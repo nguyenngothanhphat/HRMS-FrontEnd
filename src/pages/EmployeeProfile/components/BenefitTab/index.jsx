@@ -43,21 +43,25 @@ export default class BenefitTab extends PureComponent {
       <Layout className={styles.benefitTab}>
         <Sider breakpoint="md" collapsedWidth="0" width={606} className={styles.sideTab}>
           <h3 className={styles.headings}>Employee Dependent Details</h3>
-          {/* <div>
-            {dependentData.map((item, idx) => {
-              return <DependentTabs index={idx} data={item} />;
-            })}
-          </div> */}
-          <KYC
-            kycStat="Complete"
-            walletStat="Active"
-            adhaar="8947-9866-9999-9999"
-            paytm="+91-7876534261"
-          />
+          {Math.floor(Math.random() * 10) > 5 ? (
+            <div>
+              {dependentData.map((item, idx) => {
+                return <DependentTabs index={idx} data={item} />;
+              })}
+            </div>
+          ) : (
+            <KYC
+              kycStat="Complete"
+              walletStat="Active"
+              adhaar="8947-9866-9999-9999"
+              paytm="+91-7876534261"
+            />
+          )}
         </Sider>
         <Content
           style={{
             paddingLeft: '24px',
+            width: '988px',
           }}
         >
           <h3 className={styles.headings}>Opted Benefit Plans</h3>
@@ -88,7 +92,7 @@ export default class BenefitTab extends PureComponent {
                 </div>
               </div>
               <div>
-                <h1 className={styles.subHeadings}>For Indian Employess</h1>
+                <h1 className={styles.subHeadings}>For Indian Employees</h1>
                 <div className={styles.content}>
                   {data.map((item) => {
                     return <GroupInfoType2 data={item} />;
