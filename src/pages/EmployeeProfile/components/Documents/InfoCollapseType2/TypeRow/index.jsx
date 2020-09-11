@@ -5,21 +5,20 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 class TypeRow extends PureComponent {
+  handleClick = (event) => {
+    // no collapse activate when clicking on download button
+    event.stopPropagation();
+  };
+
   statusAndDownloadButton = () => (
     <div className={styles.statusAndDownload}>
       <a>Complete</a>
-      <DownloadOutlined
-        className={styles.downloadButton}
-        onClick={(event) => {
-          // no collapse activate when clicking on download button
-          event.stopPropagation();
-        }}
-      />
+      <DownloadOutlined className={styles.downloadButton} onClick={this.handleClick} />
     </div>
   );
 
   render() {
-    const { data } = this.props;
+    const { data = [] } = this.props;
     return (
       <div>
         {data.map((row) => (
@@ -31,7 +30,7 @@ class TypeRow extends PureComponent {
             className={styles.eachCollapse}
           >
             <Panel
-              header={row.title}
+              header={row.kind}
               className={styles.eachPanel}
               key="1"
               extra={this.statusAndDownloadButton()}

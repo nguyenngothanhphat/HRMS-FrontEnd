@@ -5,7 +5,7 @@ import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 
-import InfoCollapseType2 from './components/Documents/InfoCollapseType2';
+import Documents from './components/Documents';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 
 import styles from './index.less';
@@ -96,7 +96,7 @@ class EmployeeProfile extends Component {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
                   {tab.name === 'Employment & Compensation' ? <EmploymentTab /> : ''}
-                  {tab.name === 'Documents' ? <InfoCollapseType2 /> : ''}
+                  {tab.name === 'Documents' ? <Documents /> : ''}
                   {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
               </TabPane>
