@@ -6,14 +6,16 @@ import OrganChart from './components/OrganisationChart';
 import DirectoryComponent from './components/Directory';
 
 export default class Directory extends PureComponent {
-  operations = (<Button style={styles.viewActivityButton}>View activity logs (15)</Button>);
+  operations = () => {
+    return <Button style={styles.viewActivityButton}>View activity logs (15)</Button>;
+  };
 
   render() {
     const { TabPane } = Tabs;
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
-          <Tabs defaultActiveKey="1" className={styles.Tab} tabBarExtraContent={this.operations}>
+          <Tabs defaultActiveKey="1" className={styles.Tab} tabBarExtraContent={this.operations()}>
             <TabPane tab="Directory" key="1">
               <DirectoryComponent />
             </TabPane>
