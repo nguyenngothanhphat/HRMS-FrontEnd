@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Row, Col, Modal, Tooltip, Radio } from 'antd';
+import { Row, Col, Tooltip } from 'antd';
 import { QuestionCircleFilled, TeamOutlined, EditFilled, LockFilled } from '@ant-design/icons';
+import ModalComponent from './components/Modal';
 import styles from './index.less';
 
 const EmployeeInfo = [
@@ -143,20 +144,18 @@ const ProfessionalAcademic2 = [
 class GeneralInfo extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { visible: false, value: 'Co-Workers' };
+    this.state = {
+      visible: false,
+      valueNumber: 'Co-Workers',
+      valueEmail: 'Co-Workers',
+      itemSelected: {},
+    };
   }
 
-  showModal = () => {
+  showModal = (itemSelected) => {
     this.setState({
       visible: true,
-    });
-  };
-
-  onChangeRadio = (e) => {
-    console.log('radio checked', e);
-    this.setState({
-      value: e.target.value,
-      visible: false,
+      itemSelected,
     });
   };
 
@@ -166,8 +165,28 @@ class GeneralInfo extends PureComponent {
     });
   };
 
+  handleChangeRadio = (e) => {
+    const { name, value } = e.target;
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'employee/saveRadio',
+    //   payload: { name, value },
+    // });
+    if (name === 'Personal Number') {
+      this.setState({
+        valueNumber: value,
+        visible: false,
+      });
+    } else {
+      this.setState({
+        valueEmail: value,
+        visible: false,
+      });
+    }
+  };
+
   render() {
-    const { visible, value } = this.state;
+    const { visible, itemSelected, valueEmail, valueNumber } = this.state;
     const content = 'We require your gender for legal reasons.';
     return (
       <div className={styles.GeneralInfo}>
@@ -221,47 +240,18 @@ class GeneralInfo extends PureComponent {
                     <div className={styles.GenFlexbox}>
                       <p className={styles.titleDetail}> {item.title} </p>
                       <div className={styles.GenBoxIcon}>
-                        {value === 'Co-Workers' ? (
+                        {(item.title === 'Personal Number' && valueNumber === 'Co-Workers') ||
+                        (item.title === 'Personal Email' && valueEmail === 'Co-Workers') ? (
                           <TeamOutlined className={styles.GenIconTeam} />
                         ) : (
                           <LockFilled className={styles.GenIconTeam} />
                         )}
-                        <EditFilled onClick={this.showModal} className={styles.GenIconEdit} />
+                        <EditFilled
+                          onClick={() => this.showModal(item)}
+                          className={styles.GenIconEdit}
+                        />
                       </div>
                     </div>
-                    <Modal
-                      title="SELECT PRIVACY"
-                      visible={visible}
-                      footer={null}
-                      closable={false}
-                      onCancel={this.handleCancel}
-                      className={styles.GenModal}
-                    >
-                      <div className={styles.GenModalbBackgroundText}>
-                        <p className={styles.GenModalText}>
-                          The number will be still visible to your Reporting Manager, HR and Finance
-                          teams however you can Choose to keep it hidden from other co-workers.
-                        </p>
-                      </div>
-                      <div className={styles.GenRadio}>
-                        <Radio.Group onChange={this.onChangeRadio} value={value}>
-                          <Radio value="Co-Workers">
-                            <TeamOutlined className={styles.GenIconRadio} />
-                            <div className={styles.GenFormText}>
-                              <p className={styles.GenRadiotitle}>Co-Workers</p>
-                              <p className={styles.GenRadiotext}>Your colleagues at lollypop</p>
-                            </div>
-                          </Radio>
-                          <Radio value="Only Me">
-                            <LockFilled className={styles.GenIconRadio} />
-                            <div className={styles.GenFormText}>
-                              <p className={styles.GenRadiotitle}>Only Me</p>
-                              <p className={styles.GenRadiotext}>Your top level management only</p>
-                            </div>
-                          </Radio>
-                        </Radio.Group>
-                      </div>
-                    </Modal>
                     <p className={styles.TextDetail}>{item.text}</p>
                   </Col>
                 );
@@ -372,6 +362,13 @@ class GeneralInfo extends PureComponent {
             </Row>
           </div>
         </div>
+        <ModalComponent
+          visible={visible}
+          item={itemSelected}
+          handleCancel={this.handleCancel}
+          defaultValue={{ valueEmail, valueNumber }}
+          handleChangeRadio={this.handleChangeRadio}
+        />
       </div>
     );
   }

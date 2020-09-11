@@ -18,6 +18,7 @@ const employee = {
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
+    dataRadio: [],
     clearFilter: false,
   },
   effects: {
@@ -107,6 +108,12 @@ const employee = {
     },
   },
   reducers: {
+    // saveRadio(state, action) {
+    //   const data = [];
+    //   return {
+    //     ...state,
+    //   };
+    // },
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
