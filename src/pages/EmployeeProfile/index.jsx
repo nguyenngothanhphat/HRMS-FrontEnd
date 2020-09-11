@@ -3,8 +3,9 @@ import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import BenefitTab from './components/BenefitTab';
 
-import InfoCollapseType2 from './components/Documents/InfoCollapseType2';
+import Documents from './components/Documents';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import GeneralInfo from './components/GeneralInfo';
 
@@ -97,7 +98,9 @@ class EmployeeProfile extends Component {
                 <Layout>
                   {tab.name === 'General Info' ? <GeneralInfo /> : ''}
                   {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
-                  {tab.name === 'Documents' ? <InfoCollapseType2 /> : ''}
+                  {/* {tab.name === 'Documents' ? <InfoCollapseType2 /> : ''} */}
+                  {tab.name === 'Benefit Plans' ? <BenefitTab /> : ''}
+                  {tab.name === 'Documents' ? <Documents /> : ''}
                 </Layout>
               </TabPane>
             ))}

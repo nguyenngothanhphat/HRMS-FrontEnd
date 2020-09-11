@@ -47,7 +47,7 @@ class TableFilter extends PureComponent {
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({
-      type: 'employee/offClearFilter',
+      type: 'employee/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
@@ -71,7 +71,7 @@ class TableFilter extends PureComponent {
     const { Sider } = Layout;
     const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearFilter = false },
+      employee: { location = [], department = [], employeetype = [], clearName = false },
       collapsed,
       changeTab,
     } = this.props;
@@ -115,7 +115,7 @@ class TableFilter extends PureComponent {
             ''
           ) : (
             <Input
-              value={clearFilter ? '' : text}
+              value={clearName ? '' : text}
               className={styles.formInput}
               onChange={this.handleChange}
             />

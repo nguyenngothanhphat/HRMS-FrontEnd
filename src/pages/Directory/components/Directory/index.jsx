@@ -181,6 +181,7 @@ class DirectoryComponent extends PureComponent {
               <PlusOutlined />
               <p className={styles.NameNewProfile}>Set Up New Profile</p>
             </NavLink>
+
             <TableFilter
               onToggle={this.handleToggle}
               collapsed={collapsed}
@@ -188,6 +189,7 @@ class DirectoryComponent extends PureComponent {
               FormBox={this.handleFormBox}
               changeTab={changeTab}
             />
+
             {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
 

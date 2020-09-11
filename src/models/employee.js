@@ -20,6 +20,7 @@ const employee = {
     listEmployeeInActive: [],
     dataRadio: [],
     clearFilter: false,
+    clearName: false,
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -108,12 +109,6 @@ const employee = {
     },
   },
   reducers: {
-    // saveRadio(state, action) {
-    //   const data = [];
-    //   return {
-    //     ...state,
-    //   };
-    // },
     saveFilter(state, action) {
       const data = [...state.filter];
       const actionFilter = action.payload;
@@ -137,13 +132,14 @@ const employee = {
       return {
         ...state,
         clearFilter: true,
+        clearName: true,
         filter: [],
       };
     },
-    offClearFilter(state) {
+    offClearName(state) {
       return {
         ...state,
-        clearFilter: false,
+        clearName: false,
       };
     },
     saveEmployeeType(state, action) {
