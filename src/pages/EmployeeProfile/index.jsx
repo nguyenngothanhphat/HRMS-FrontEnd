@@ -4,6 +4,7 @@ import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
+import BenefitTab from './components/BenefitTab';
 
 import Documents from './components/Documents';
 import AccountsPaychecks from './components/Accounts&Paychecks';
@@ -105,6 +106,7 @@ class EmployeeProfile extends Component {
                 <Layout>
                   {tab.id === 5 ? <Documents /> : ''}
                   {tab.id === 4 ? <AccountsPaychecks /> : ''}
+                  {tab.id === 8 ? <BenefitTab /> : ''}
                 </Layout>
               </TabPane>
             ))}
