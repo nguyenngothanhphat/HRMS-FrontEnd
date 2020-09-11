@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input } from 'antd';
+import { Row, Col, Form, Input, Typography } from 'antd';
 import { connect } from 'umi';
 
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
+import NoteComponent from '../NoteComponent';
+import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
@@ -195,6 +197,19 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
+    const Steps = {
+      title: 'Complete onboarding process at a glance',
+      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+    };
+    const Note = {
+      title: 'Note',
+      data: (
+        <Typography.Text>
+          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
+          working days for entire process to complete
+        </Typography.Text>
+      ),
+    };
     return (
       <Row gutter={[24, 0]}>
         <Col span={16}>
@@ -206,7 +221,17 @@ class BasicInformation extends PureComponent {
             </div>
           </div>
         </Col>
-        <Col span={8}>asdsd</Col>
+        <Col span={8}>
+          <div className={styles.rightWrapper}>
+            <Row>
+              <NoteComponent note={Note} />
+            </Row>
+            <hr />
+            <Row>
+              <StepsComponent Steps={Steps} />
+            </Row>
+          </div>
+        </Col>
       </Row>
     );
   }
