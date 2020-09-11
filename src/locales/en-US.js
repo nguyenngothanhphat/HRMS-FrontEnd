@@ -4,8 +4,14 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import pages from './en-US/pages';
-import layouts from './en-US/layouts';
+import authLayout from './en-US/authLayout';
+import NotFound404Page from './en-US/NotFound404Page';
+import dashboardPage from './en-US/dashboardPage';
+import directoryPage from './en-US/directoryPage';
+import employeeProfilePage from './en-US/employeeProfilePage';
+import forgotPasswordPage from './en-US/forgotPasswordPage';
+import loginPage from './en-US/loginPage';
+import resetPasswordPage from './en-US/resetPasswordPage';
 
 export default {
   'navBar.lang': 'Languages',
@@ -21,6 +27,12 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...pages,
-  ...layouts,
+  ...authLayout,
+  ...NotFound404Page,
+  ...dashboardPage,
+  ...directoryPage,
+  ...employeeProfilePage,
+  ...forgotPasswordPage,
+  ...loginPage,
+  ...resetPasswordPage,
 };
