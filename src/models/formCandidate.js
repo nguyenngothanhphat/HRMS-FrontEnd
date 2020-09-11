@@ -25,6 +25,9 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    offerDetailField: {
+      currency: true,
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {

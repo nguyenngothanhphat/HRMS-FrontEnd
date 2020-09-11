@@ -11,12 +11,12 @@ import styles from './index.less';
 import FileIcon from './components/FileIcon/index.js';
 import Template from './components/Template/index.js';
 import Alert from './components/Alert/index.js';
-import getFileType from './components/utils';
+import { getFileType } from './components/utils';
 
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, offerDetail } = props;
+  const { dispatch, offerDetail, offerDetailField } = props;
 
   // Get default value from "info" store
   const {
@@ -84,6 +84,17 @@ const OfferDetail = (props) => {
 
   const handleCurrencyChange = (value) => {
     setCurrency(value);
+    if (dispatch) {
+      dispatch({
+        type: 'info/save',
+        payload: {
+          offerDetailField: {
+            ...offerDetailField,
+            currency: value === 'dollar',
+          },
+        },
+      });
+    }
   };
 
   return (
@@ -216,6 +227,7 @@ const OfferDetail = (props) => {
   );
 };
 
-export default connect(({ info: { offerDetail = {} } = {} }) => ({
+export default connect(({ info: { offerDetail = {}, offerDetailField = {} } = {} }) => ({
   offerDetail,
+  offerDetailField,
 }))(OfferDetail);
