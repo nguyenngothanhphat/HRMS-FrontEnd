@@ -1,45 +1,63 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input } from 'antd';
+import { connect } from 'umi';
+
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 
 import styles from './index.less';
 
-export default class BasicInformation extends PureComponent {
+@connect(({ info: { basicInformation } = {} }) => ({
+  basicInformation,
+}))
+class BasicInformation extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      fullName: '',
-      privateEmail: '',
-      workEmail: '',
-      experienceYear: '',
       isOpenReminder: false,
     };
   }
 
-  componentWillUnmount = () => {
-    console.log(this.state);
-  };
+  static getDerivedStateFromProps(props) {
+    if ('basicInformation' in props) {
+      return { basicInformation: props.basicInformation || {} };
+    }
+    return null;
+  }
 
   handleChange = (e) => {
     const { target } = e;
-    const { name } = target;
-    const { value } = target;
-    this.setState({
-      [name]: value,
+    const { name, value } = target;
+    const { basicInformation } = this.state;
+    const { dispatch } = this.props;
+    basicInformation[name] = value;
+
+    dispatch({
+      type: 'info/saveBasicInformation',
+      payload: {
+        basicInformation,
+      },
     });
   };
 
-  onFinish = (values) => {
-    const newValues = { ...values };
-    newValues.workEmail += '@terralogic.com';
-    console.log('Success:', newValues);
+  onChangeFormData = (key, value) => {
+    const { myInfo } = this.state;
+    myInfo[key] = value;
+    this.setState({
+      myInfo,
+    });
   };
 
-  onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  // onFinish = (values) => {
+  //   const newValues = { ...values };
+  //   newValues.workEmail += '@terralogic.com';
+  //   console.log('Success:', newValues);
+  // };
+
+  // onFinishFailed = (errorInfo) => {
+  //   console.log('Failed:', errorInfo);
+  // };
 
   onClickClose = () => {
     this.setState({
@@ -54,16 +72,17 @@ export default class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder, fullName, privateEmail, workEmail, experienceYear } = this.state;
+    const { isOpenReminder, basicInformation = {} } = this.state;
+    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
     return (
       <Form
         className={styles.basicInformation__form}
         wrapperCol={{ span: 24 }}
         name="basic"
-        initialValues={{ remember: true }}
+        initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
         onFocus={this.onFocus}
-        onFinish={this.onFinish}
-        onFinishFailed={this.onFinishFailed}
+        // onFinish={this.onFinish}
+        // onFinishFailed={this.onFinishFailed}
       >
         <Row gutter={[48, 0]}>
           <Col span={12}>
@@ -79,7 +98,6 @@ export default class BasicInformation extends PureComponent {
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
-                value={fullName}
               />
             </Form.Item>
           </Col>
@@ -105,7 +123,7 @@ export default class BasicInformation extends PureComponent {
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
-                value={privateEmail}
+                // defaultValue={privateEmail}
               />
             </Form.Item>
           </Col>
@@ -118,12 +136,13 @@ export default class BasicInformation extends PureComponent {
               className={styles.formInput__email}
               name="workEmail"
             >
-              <p className={styles.formInput__domain}>@terralogic.com</p>
+              {/* <p className={styles.formInput__domain}>@terralogic.com</p> */}
               <Input
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
-                value={workEmail}
+                // suffix="@terralogic.com"
+                // defaultValue={workEmail}
               />
             </Form.Item>
           </Col>
@@ -148,16 +167,11 @@ export default class BasicInformation extends PureComponent {
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="experienceYear"
-                value={experienceYear}
+                // defaultValue={experienceYear}
               />
             </Form.Item>
           </Col>
         </Row>
-        {/* <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item> */}
       </Form>
     );
   };
@@ -172,11 +186,6 @@ export default class BasicInformation extends PureComponent {
               <hr />
               {this._renderForm()}
             </div>
-            {/* <BottomBar
-              type="primary"
-              htmlType="submit"
-              className={styles.basicInformation__bottom}
-            /> */}
           </div>
         </Col>
         <Col span={8}>asdsd</Col>
@@ -184,3 +193,5 @@ export default class BasicInformation extends PureComponent {
     );
   }
 }
+
+export default BasicInformation;

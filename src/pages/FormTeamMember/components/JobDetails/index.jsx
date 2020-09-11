@@ -6,38 +6,29 @@ import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
-
+import { connect } from 'umi';
 const { Option } = Select;
 
 export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isOpenReminder: false,
-    };
+    this.state = {};
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  onFocus = () => {
-    this.setState({
-      isOpenReminder: true,
-    });
-  };
+  // handleRadio = (e) => {
+  //   const { value } = e.target;
+  //   console.log(value);
+  // };
 
-  handleRadio = (e) => {
-    const { value } = e.target;
-    console.log(value);
-  };
-
-  handleSelect = (value) => {
-    console.log(value);
+  handleSelect = (e) => {
+    console.log(e);
   };
 
   render() {
-    const { isValid } = this.state;
     const Tab = {
       positionTab: {
         title: 'Position',
@@ -157,11 +148,9 @@ export default class JobDetails extends PureComponent {
         <Row gutter={[24, 0]}>
           <Col span={16}>
             <div className={styles.JobDetailsComponent}>
-              <Form onSubmit={this.handleSubmit}>
-                <Header />
-                <RadioComponent Tab={Tab} handleRadio={this.handleRadio} />
-                <FieldsComponent handleSelect={this.handleSelect} dropdownField={dropdownField} />
-              </Form>
+              <Header />
+              <RadioComponent Tab={Tab} />
+              <FieldsComponent dropdownField={dropdownField} handleSelect={this.handleSelect} />
             </div>
           </Col>
           <Col span={8}>

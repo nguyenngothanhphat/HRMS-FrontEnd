@@ -8,6 +8,10 @@ class FirstFieldsComponent extends Component {
     super(props);
   }
 
+  handleSelect_ = (e) => {
+    this.props.handleSelect(e);
+  };
+
   render() {
     const { styles, dropdownField, handleSelect } = this.props;
     return (
@@ -19,7 +23,7 @@ class FirstFieldsComponent extends Component {
               <Select
                 placeholder={dropdownField[0].placeholder}
                 className={styles}
-                onChange={handleSelect}
+                onChange={(e) => this.handleSelect_(e)}
               >
                 {dropdownField[0].Option.map((data) => (
                   <Option value={data.value}>
@@ -38,7 +42,7 @@ class FirstFieldsComponent extends Component {
               <Select
                 placeholder={dropdownField[1].placeholder}
                 className={styles}
-                onChange={handleSelect}
+                onChange={(e) => this.handleSelect_(e)}
               >
                 {dropdownField[1].Option.map((data) => (
                   <Option value={data.value}>
@@ -54,7 +58,8 @@ class FirstFieldsComponent extends Component {
               <Select
                 placeholder={dropdownField[2].placeholder}
                 className={styles}
-                onChange={handleSelect}
+                name="select"
+                onChange={(e) => this.handleSelect_(e)}
               >
                 {dropdownField[2].Option.map((data) => (
                   <Option value={data.value}>
@@ -72,7 +77,7 @@ class FirstFieldsComponent extends Component {
               <Select
                 placeholder={dropdownField[3].placeholder}
                 className={styles}
-                onChange={handleSelect}
+                onChange={(e) => this.handleSelect_(e)}
               >
                 {dropdownField[3].Option.map((data) => (
                   <Option value={data.value}>
@@ -88,7 +93,7 @@ class FirstFieldsComponent extends Component {
               <Select
                 placeholder={dropdownField[4].placeholder}
                 className={styles}
-                onChange={handleSelect}
+                onChange={(e) => this.handleSelect_(e)}
               >
                 {dropdownField[4].Option.map((data) => (
                   <Option value={data.value}>

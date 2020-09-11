@@ -1,4 +1,3 @@
-import { dialog } from '@/utils/utils';
 // import {
 //   LocationFilter,
 //   DepartmentFilter,
@@ -11,10 +10,32 @@ import { dialog } from '@/utils/utils';
 const info = {
   namespace: 'info',
   state: {
-    offerDetail: {
-      currency: 'Dollar',
+    basicInformation: {
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      experienceYear: '',
     },
-    jobDetail: {},
+    offerDetail: {
+      includeOffer: false,
+      file: 'Template.docx',
+      agreement: false,
+      handbook: false,
+      compensation: 'Salary',
+      currency: 'Dollar',
+      timeoff: 'can not',
+    },
+    jobDetail: {
+      position: 1,
+      classification: 1,
+      department: '',
+      jobTitle: '',
+      jobCategory: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -29,6 +50,18 @@ const info = {
     // },
   },
   reducers: {
+    saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveJobDetail(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,
