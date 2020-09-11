@@ -19,6 +19,7 @@ class TableFilter extends PureComponent {
       all: 'All',
       text: '',
       clearText: '',
+      reset: false,
     };
   }
 
@@ -53,12 +54,26 @@ class TableFilter extends PureComponent {
     onHandleChange(inputvalue);
   };
 
+  handleReset = () => {
+    this.setState({ text: '', reset: true });
+    const { onHandleChange, dispatch } = this.props;
+    const { clearText } = this.state;
+    onHandleChange(clearText);
+    dispatch({
+      type: 'employee/ClearFilter',
+    });
+    setTimeout(() => {
+      this.setState({ reset: false });
+    }, 5);
+  };
+
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState, text, clearText } = this.state;
+    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearFilter = false },
+      employee: { location = [], department = [], employeetype = [] },
       collapsed,
+      changeTab,
     } = this.props;
     const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
@@ -89,37 +104,49 @@ class TableFilter extends PureComponent {
           <div className={styles.topFilter}>
             <div className={styles.textFilters}>Filters</div>
             <div className={styles.resetHide}>
-              <p>Reset</p>
+              <p onClick={this.handleReset}>Reset</p>
               {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
               </div> */}
             </div>
           </div>
           <p className={styles.textName}>Name</p>
-          <Input
-            value={clearFilter ? clearText : text}
-            className={styles.formInput}
-            onChange={this.handleChange}
-          />
+          {changeTab ? (
+            ''
+          ) : (
+            <Input value={text} className={styles.formInput} onChange={this.handleChange} />
+          )}
 
-          <CheckBoxForms
-            key={EmploymentState}
-            name={EmploymentState}
-            all={all}
-            data={filteredArr(formatDataEmployeeType)}
-          />
-          <CheckBoxForms
-            key={departmentState}
-            name={departmentState}
-            all={all}
-            data={filteredArr(formatDataDepartment)}
-          />
-          <CheckBoxForms
-            key={locationState}
-            name={locationState}
-            all={all}
-            data={formatDataLocation}
-          />
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={EmploymentState}
+              name={EmploymentState}
+              all={all}
+              data={filteredArr(formatDataEmployeeType)}
+            />
+          )}
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={departmentState}
+              name={departmentState}
+              all={all}
+              data={filteredArr(formatDataDepartment)}
+            />
+          )}
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={locationState}
+              name={locationState}
+              all={all}
+              data={formatDataLocation}
+            />
+          )}
         </Sider>
       </div>
     );

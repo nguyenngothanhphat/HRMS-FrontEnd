@@ -108,3 +108,29 @@
     }
   }
 }
+.GenRadio {
+  .GenRadiotitle {
+    margin-bottom: 0;
+  }
+  .GenRadiotext {
+    margin-bottom: 0;
+  }
+  :global {
+    .ant-radio-group {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .ant-radio-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .ant-radio {
+      position: absolute;
+      content: '';
+      top: 0;
+      right: 0;
+    }
+  }
+}

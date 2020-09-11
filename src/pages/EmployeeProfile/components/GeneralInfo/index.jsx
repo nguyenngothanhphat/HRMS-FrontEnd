@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal, Tooltip } from 'antd';
-import { QuestionCircleFilled, TeamOutlined, EditFilled } from '@ant-design/icons';
-import 'antd/dist/antd.less';
+import { Row, Col, Modal, Tooltip, Radio } from 'antd';
+import { QuestionCircleFilled, TeamOutlined, EditFilled, LockFilled } from '@ant-design/icons';
 import styles from './index.less';
 
 const EmployeeInfo = [
@@ -139,7 +138,7 @@ const ProfessionalAcademic2 = [
 class GeneralInfo extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { visible: false };
+    this.state = { visible: false, value: 'Co-Workers' };
   }
 
   showModal = () => {
@@ -148,9 +147,23 @@ class GeneralInfo extends PureComponent {
     });
   };
 
+  onChangeRadio = (e) => {
+    // console.log('radio checked', e.target.value);
+    this.setState({
+      value: e.target.value,
+      visible: false,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   render() {
-    const { visible } = this.state;
-    console.log(visible);
+    const { visible, value } = this.state;
+    // console.log(visible);
     // const color = { color: '#bfbfbf' };
     const content = 'We require your gender for legal reasons.';
     return (
@@ -167,11 +180,7 @@ class GeneralInfo extends PureComponent {
                   <div className={styles.boxTitle}>
                     <p className={styles.titleDetail}> {item.title}</p>
                     {item.title === 'Legal Gender' ? (
-                      <Tooltip
-                        title={content}
-                        overlayClassName={styles.GenPopover}
-                        getPopupContainer={() => document.body}
-                      >
+                      <Tooltip title={content} overlayClassName={styles.GenPopover}>
                         <div className={styles.spaceIconLegal}>
                           <QuestionCircleFilled className={styles.GenIconlegal} />
                         </div>
@@ -210,10 +219,35 @@ class GeneralInfo extends PureComponent {
                       {item.title}
                       <TeamOutlined />
                       <EditFilled onClick={this.showModal} />
-                      <Modal title="Basic Modal" visible={visible} footer={null}>
-                        <p>Some contents...</p>
-                        <p>Some contents...</p>
-                        <p>Some contents...</p>
+                      <Modal
+                        title="SELECT PRIVACY"
+                        visible={visible}
+                        footer={null}
+                        closable={false}
+                        onCancel={this.handleCancel}
+                      >
+                        <div>
+                          <p>
+                            The number will be still visible to your Reporting Manager, HR and
+                            Finance teams however you can Choose to keep it hidden from other
+                            co-workers.
+                          </p>
+                        </div>
+                        <div className={styles.GenRadio}>
+                          <Radio.Group onChange={this.onChangeRadio} value={value}>
+                            <Radio value="Co-Workers">
+                              <TeamOutlined />
+                              <div>
+                                <p className={styles.GenRadiotitle}>Co-Workers</p>
+                                <p className={styles.GenRadiotext}>Your colleagues at lollypop</p>
+                              </div>
+                            </Radio>
+                            <Radio value="Only Me">
+                              <LockFilled />
+                              Only Me
+                            </Radio>
+                          </Radio.Group>
+                        </div>
                       </Modal>
                     </p>
                     <p className={styles.TextDetail}>{item.text}</p>

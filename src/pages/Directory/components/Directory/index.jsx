@@ -63,7 +63,7 @@ class DirectoryComponent extends PureComponent {
       this.setState({
         filterName: query,
       });
-    }, 1000);
+    }, 500);
   }
 
   componentDidMount() {
@@ -145,7 +145,6 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    // const input = valueInput.toLowerCase();
     this.setDebounce(valueInput);
   };
 
@@ -155,6 +154,11 @@ class DirectoryComponent extends PureComponent {
       changeTab: true,
       filterName: '',
     });
+    setTimeout(() => {
+      this.setState({
+        changeTab: false,
+      });
+    }, 5);
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
