@@ -38,6 +38,9 @@
 
   &__button {
     text-align: right;
+    &__disabled {
+      opacity: 0.3;
+    }
     :global {
       .ant-btn-primary {
         // display: none;
@@ -52,6 +55,10 @@
         font-weight: 500;
         letter-spacing: 0.13px;
         color: #ffffff;
+        &:hover {
+          background-color: #ffa100;
+          color: #ffffff;
+        }
       }
     }
     // &__primary {

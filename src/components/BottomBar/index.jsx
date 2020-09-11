@@ -47,13 +47,19 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomButton = () => {
-    const { currentPage } = this.props;
+    const { currentPage, checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+
     if (currentPage === 1) {
       return (
         <Button
           type="primary"
           onClick={this.onClickNext}
-          className={styles.bottomBar__button__primary}
+          className={`${styles.bottomBar__button__primary} ${
+            !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+          }`}
+          // { filledBasicInformation ? disabled : null }
+          disabled={!filledBasicInformation}
         >
           Next
         </Button>
