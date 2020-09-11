@@ -7,11 +7,19 @@ class FieldsComponent extends Component {
     super(props);
   }
   render() {
-    const { dropdownField, handleSwitch } = this.props;
+    const { dropdownField, handleSelect } = this.props;
     return (
       <div className={styles.FieldsComponent}>
-        <FirstFieldsComponent styles={styles.Input} dropdownField={dropdownField} />
-        <CandidateFieldsComponent styles={styles.Input} dropdownField={dropdownField} />
+        <FirstFieldsComponent
+          styles={styles.Input}
+          dropdownField={dropdownField}
+          handleSelect={handleSelect}
+        />
+        <CandidateFieldsComponent
+          styles={styles.Input}
+          dropdownField={dropdownField}
+          handleSelect={handleSelect}
+        />
       </div>
     );
   }

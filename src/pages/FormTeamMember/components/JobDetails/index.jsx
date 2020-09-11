@@ -13,7 +13,7 @@ export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isValid: false,
+      isOpenReminder: false,
     };
   }
 
@@ -21,10 +21,19 @@ export default class JobDetails extends PureComponent {
     e.preventDefault();
   };
 
-  handleButton = () => {
+  onFocus = () => {
     this.setState({
-      isValid: true,
+      isOpenReminder: true,
     });
+  };
+
+  handleRadio = (e) => {
+    const { value } = e.target;
+    console.log(value);
+  };
+
+  handleSelect = (value) => {
+    console.log(value);
   };
 
   render() {
@@ -52,83 +61,83 @@ export default class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'Department',
-        value: 1,
+        id: 1,
         placeholder: 'Select a job title',
         Option: [
-          { key: 1, name: 'UX Designer' },
-          { key: 2, name: 'UX Research' },
-          { key: 3, name: 'Researcher' },
-          { key: 4, name: 'UI Designer' },
-          { key: 5, name: 'Business Analyst' },
-          { key: 6, name: 'Sale Presentative' },
+          { key: 1, value: 'UX Designer' },
+          { key: 2, value: 'UX Research' },
+          { key: 3, value: 'Researcher' },
+          { key: 4, value: 'UI Designer' },
+          { key: 5, value: 'Business Analyst' },
+          { key: 6, value: 'Sale Presentative' },
         ],
       },
       {
         title: 'Job title',
-        value: 2,
+        id: 2,
         placeholder: 'Select a job title',
         Option: [
-          { key: 1, name: 'UX Designer' },
-          { key: 2, name: 'UX Research' },
-          { key: 3, name: 'Researcher' },
-          { key: 4, name: 'UI Designer' },
-          { key: 5, name: 'Business Analyst' },
-          { key: 6, name: 'Sale Presentative' },
+          { key: 1, value: 'UX Designer' },
+          { key: 2, value: 'UX Research' },
+          { key: 3, value: 'Researcher' },
+          { key: 4, value: 'UI Designer' },
+          { key: 5, value: 'Business Analyst' },
+          { key: 6, value: 'Sale Presentative' },
         ],
       },
       {
         title: 'Job category',
-        value: 3,
+        id: 3,
         placeholder: 'Select a job category',
         Option: [
-          { key: 1, name: 'Test' },
-          { key: 2, name: 'Dummy' },
-          { key: 3, name: 'DummyText' },
-          { key: 4, name: 'Abcde' },
-          { key: 5, name: 'Text' },
-          { key: 6, name: 'Texts' },
+          { key: 1, value: 'Test' },
+          { key: 2, value: 'Dummy' },
+          { key: 3, value: 'DummyText' },
+          { key: 4, value: 'Abcde' },
+          { key: 5, value: 'Text' },
+          { key: 6, value: 'Texts' },
         ],
       },
       {
         title: 'Work location',
-        value: 4,
+        id: 4,
         placeholder: 'Select a work location',
         Option: [
-          { key: 1, name: 'HCM City' },
-          { key: 2, name: 'Dubai' },
-          { key: 3, name: 'US' },
-          { key: 4, name: 'AUS' },
-          { key: 5, name: 'Korea' },
-          { key: 6, name: 'China' },
+          { key: 1, value: 'HCM City' },
+          { key: 2, value: 'Dubai' },
+          { key: 3, value: 'US' },
+          { key: 4, value: 'AUS' },
+          { key: 5, value: 'Korea' },
+          { key: 6, value: 'China' },
         ],
       },
       {
         title: 'Reporting Manager',
-        value: 5,
+        id: 5,
         placeholder: 'Select',
         Option: [
-          { key: 1, name: 'Project Manager' },
-          { key: 2, name: 'Dummy' },
-          { key: 3, name: 'Test' },
-          { key: 4, name: 'Product Manager' },
-          { key: 5, name: 'Project Leader' },
-          { key: 6, name: 'Senior' },
+          { key: 1, value: 'Project Manager' },
+          { key: 2, value: 'Dummy' },
+          { key: 3, value: 'Test' },
+          { key: 4, value: 'Product Manager' },
+          { key: 5, value: 'Project Leader' },
+          { key: 6, value: 'Senior' },
         ],
       },
       {
         title: `Candidate's notice Period`,
-        value: 6,
+        id: 6,
         placeholder: 'Time period',
         Option: [
-          { key: 1, name: 'Test' },
-          { key: 2, name: 'ABCD' },
-          { key: 3, name: 'Testing' },
-          { key: 4, name: '10AM' },
-          { key: 5, name: '5PM' },
-          { key: 6, name: 'For Hours' },
+          { key: 1, value: 'Test' },
+          { key: 2, value: 'ABCD' },
+          { key: 3, value: 'Testing' },
+          { key: 4, value: '10AM' },
+          { key: 5, value: '5PM' },
+          { key: 6, value: 'For Hours' },
         ],
       },
-      { title: 'Preferred date of joining', value: 7 },
+      { title: 'Preferred date of joining', id: 7 },
     ];
     const Steps = {
       title: 'Complete onboarding process at a glance',
@@ -150,8 +159,8 @@ export default class JobDetails extends PureComponent {
             <div className={styles.JobDetailsComponent}>
               <Form onSubmit={this.handleSubmit}>
                 <Header />
-                <RadioComponent Tab={Tab} />
-                <FieldsComponent handleSwitch={this.handleSwitch} dropdownField={dropdownField} />
+                <RadioComponent Tab={Tab} handleRadio={this.handleRadio} />
+                <FieldsComponent handleSelect={this.handleSelect} dropdownField={dropdownField} />
               </Form>
             </div>
           </Col>

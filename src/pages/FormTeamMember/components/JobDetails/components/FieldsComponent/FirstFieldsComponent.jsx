@@ -9,18 +9,23 @@ class FirstFieldsComponent extends Component {
   }
 
   render() {
-    const { styles, dropdownField } = this.props;
+    const { styles, dropdownField, handleSelect } = this.props;
     return (
       <>
         <div className={ExternalStyle.FirstFieldsComponent}>
           <Row gutter={[48, 0]}>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[0].title}</Typography.Title>
-              <Select placeholder={dropdownField[0].placeholder} className={styles}>
+              <Select
+                placeholder={dropdownField[0].placeholder}
+                className={styles}
+                onChange={handleSelect}
+              >
                 {dropdownField[0].Option.map((data) => (
-                  <Option value={data.key}>
+                  <Option value={data.value}>
+                    {console.log(Option)}
                     <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.name}
+                      {data.value}
                     </Typography.Text>
                   </Option>
                 ))}
@@ -30,11 +35,15 @@ class FirstFieldsComponent extends Component {
           <Row gutter={[24, 0]}>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[1].title}</Typography.Title>
-              <Select placeholder={dropdownField[1].placeholder} className={styles}>
+              <Select
+                placeholder={dropdownField[1].placeholder}
+                className={styles}
+                onChange={handleSelect}
+              >
                 {dropdownField[1].Option.map((data) => (
-                  <Option value={data.key}>
+                  <Option value={data.value}>
                     <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.name}
+                      {data.value}
                     </Typography.Text>
                   </Option>
                 ))}
@@ -42,11 +51,15 @@ class FirstFieldsComponent extends Component {
             </Col>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[2].title}</Typography.Title>
-              <Select placeholder={dropdownField[2].placeholder} className={styles}>
+              <Select
+                placeholder={dropdownField[2].placeholder}
+                className={styles}
+                onChange={handleSelect}
+              >
                 {dropdownField[2].Option.map((data) => (
-                  <Option value={data.key}>
+                  <Option value={data.value}>
                     <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.name}
+                      {data.value}
                     </Typography.Text>
                   </Option>
                 ))}
@@ -56,11 +69,15 @@ class FirstFieldsComponent extends Component {
           <Row gutter={[24, 0]}>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[3].title}</Typography.Title>
-              <Select placeholder={dropdownField[3].placeholder} className={styles}>
+              <Select
+                placeholder={dropdownField[3].placeholder}
+                className={styles}
+                onChange={handleSelect}
+              >
                 {dropdownField[3].Option.map((data) => (
-                  <Option value={data.key}>
+                  <Option value={data.value}>
                     <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.name}
+                      {data.value}
                     </Typography.Text>
                   </Option>
                 ))}
@@ -68,11 +85,15 @@ class FirstFieldsComponent extends Component {
             </Col>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[4].title}</Typography.Title>
-              <Select placeholder={dropdownField[4].placeholder} className={styles}>
+              <Select
+                placeholder={dropdownField[4].placeholder}
+                className={styles}
+                onChange={handleSelect}
+              >
                 {dropdownField[4].Option.map((data) => (
-                  <Option value={data.key}>
+                  <Option value={data.value}>
                     <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.name}
+                      {data.value}
                     </Typography.Text>
                   </Option>
                 ))}
