@@ -203,9 +203,9 @@ const OfferDetail = (props) => {
           </div>
         </div>
 
-        <div className={styles.bottom}>
+        {/* <div className={styles.bottom}>
           <p className={styles.note}>*All mandatory fields have been filled.</p>
-        </div>
+        </div> */}
       </div>
 
       <div className={styles.rightCol}>
