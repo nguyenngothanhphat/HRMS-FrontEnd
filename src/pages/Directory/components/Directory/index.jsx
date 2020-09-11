@@ -16,8 +16,9 @@ import TableFilter from '../TableFilter';
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
-      const { employee } = nextProps;
-      const { filter } = employee;
+      const {
+        employee: { filter = [] },
+      } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
@@ -80,6 +81,7 @@ class DirectoryComponent extends PureComponent {
     };
 
     if (
+      prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
