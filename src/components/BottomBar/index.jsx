@@ -15,6 +15,10 @@ export default class BottomBar extends PureComponent {
     onClickNext();
   };
 
+  onClickPrev = () => {
+    const { onClickPrev } = this.props;
+    onClickPrev();
+  };
   _renderBottomButton = () => {
     const { currentPage } = this.props;
     if (currentPage === 1) {
@@ -26,6 +30,25 @@ export default class BottomBar extends PureComponent {
         >
           Next
         </Button>
+      );
+    } else if (currentPage === 2) {
+      return (
+        <>
+          <Button
+            type="secondary"
+            onClick={this.onClickPrev}
+            className={styles.bottomBar__button__secondary}
+          >
+            Previous
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onClickNext}
+            className={styles.bottomBar__button__primary}
+          >
+            Next
+          </Button>
+        </>
       );
     }
     return null;

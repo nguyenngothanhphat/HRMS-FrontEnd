@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import styles from './index.less';
 import { Typography, Row, Col } from 'antd';
-class StepsComponent extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { Steps } = this.props;
+const StepsComponent = ({Steps={}}) =>  {
     return (
       <div className={styles.StepsComponent}>
         <Typography.Title level={5}>{Steps.title}</Typography.Title>

@@ -14,6 +14,7 @@ const info = {
     offerDetail: {
       currency: 'Dollar',
     },
+    jobDetail: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {

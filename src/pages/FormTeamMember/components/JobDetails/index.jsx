@@ -3,7 +3,7 @@ import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'a
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
-import StepsComponent from './components/StepsComponent';
+import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 

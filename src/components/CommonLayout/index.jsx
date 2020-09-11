@@ -39,7 +39,15 @@ export default class CommonLayout extends PureComponent {
       displayComponent: nextItem.component,
     });
   };
-
+  handlePrev = () => {
+    const { selectedItemId } = this.state;
+    const { listMenu = [] } = this.props;
+    const prevItem = listMenu.find((element) => element.id === selectedItemId - 1);
+    this.setState({
+      selectedItemId: prevItem.id,
+      displayComponent: prevItem.component,
+    });
+  };
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
@@ -68,7 +76,11 @@ export default class CommonLayout extends PureComponent {
           {displayComponent}
           <Row gutter={[24, 0]}>
             <Col span={16}>
-              <BottomBar onClickNext={this.handleNext} currentPage={selectedItemId} />
+              <BottomBar
+                onClickPrev={this.handlePrev}
+                onClickNext={this.handleNext}
+                currentPage={selectedItemId}
+              />
             </Col>
           </Row>
         </div>
