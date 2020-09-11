@@ -10,4 +10,8 @@ const getFileType = (str) => {
   }
 };
 
-export default getFileType;
+const checkValidField = (value) => {
+  return value === 'dollar';
+};
+
+export { getFileType, checkValidField };
