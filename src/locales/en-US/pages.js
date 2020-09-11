@@ -1,5 +1,6 @@
 export default {
   'pages.employeeProfile.BenefitTab.dependentDetails': 'Employee Dependent Details',
+  'pages.employeeProfile.BenefitTab.kycDetails': 'KYC Details',
   'pages.employeeProfile.BenefitTab.optedPlans': 'Opted Benefit Plans',
   'pages.employeeProfile.BenefitTab.availablePlans': 'Available Benefit Plans',
   'pages.employeeProfile.BenefitTab.forGlobalEmployees': 'For Global Employees',

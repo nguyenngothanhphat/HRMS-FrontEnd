@@ -42,22 +42,29 @@ export default class BenefitTab extends PureComponent {
     return (
       <Layout className={styles.benefitTab}>
         <Sider breakpoint="md" collapsedWidth="0" width={606} className={styles.sideTab}>
-          <h3 className={styles.headings}>
-            {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
-          </h3>
           {Math.floor(Math.random() * 10) > 5 ? (
             <div>
-              {dependentData.map((item, idx) => {
-                return <DependentTabs index={idx} data={item} />;
-              })}
+              <h3 className={styles.headings}>
+                {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
+              </h3>
+              <div>
+                {dependentData.map((item, idx) => {
+                  return <DependentTabs index={idx} data={item} />;
+                })}
+              </div>
             </div>
           ) : (
-            <KYC
-              kycStat="Complete"
-              walletStat="Active"
-              adhaar="8947-9866-9999-9999"
-              paytm="+91-7876534261"
-            />
+            <div>
+              <h3 className={styles.headings}>
+                {formatMessage({ id: 'pages.employeeProfile.BenefitTab.kycDetails' })}
+              </h3>
+              <KYC
+                kycStat="Complete"
+                walletStat="Active"
+                adhaar="8947-9866-9999-9999"
+                paytm="+91-7876534261"
+              />
+            </div>
           )}
         </Sider>
         <Content
