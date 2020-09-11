@@ -7,8 +7,8 @@ import DirectoryComponent from './components/Directory';
 
 export default class Directory extends PureComponent {
   operations = () => {
-    return (<Button style={styles.viewActivityButton}>View activity logs (15)</Button>);
-  }
+    return <Button style={styles.viewActivityButton}>View activity logs (15)</Button>;
+  };
 
   render() {
     const { TabPane } = Tabs;
