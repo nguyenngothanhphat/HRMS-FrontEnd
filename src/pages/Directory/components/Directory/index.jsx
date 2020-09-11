@@ -189,13 +189,7 @@ class DirectoryComponent extends PureComponent {
             <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
               {bottabs.map((tab) => (
                 <TabPane tab={tab.name} key={tab.id}>
-                  <Content
-                    className="site-layout-background"
-                    style={{
-                      // maxHeight: 702,
-                      backgroundColor: '#f7f7f7',
-                    }}
-                  >
+                  <Content className="site-layout-background">
                     <DirectotyTable
                       loading={loadingListActive || loadingListMyTeam || loadingListInActive}
                       list={this.renderListEmployee(tab.id)}
