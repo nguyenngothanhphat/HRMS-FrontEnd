@@ -126,7 +126,16 @@ class DirectoryTable extends Component {
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
-      showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {total}{' '}
+        </span>
+      ),
       pageSize: rowSize,
       current: pageSelected,
       onChange: this.onChangePagination,
