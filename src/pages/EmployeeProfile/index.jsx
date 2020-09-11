@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import BenefitTab from './components/BenefitTab';
 
 import Documents from './components/Documents';
 import AccountsPaychecks from './components/Accounts&Paychecks';
@@ -94,6 +95,7 @@ class EmployeeProfile extends Component {
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
+                  {tab.name === 'Benefit Plans' ? <BenefitTab /> : ''}
                   {tab.name === 'Documents' ? <Documents /> : ''}
                   {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
