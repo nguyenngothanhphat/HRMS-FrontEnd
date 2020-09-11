@@ -87,15 +87,15 @@ class EmployeeProfile extends Component {
           </Row>
           <ModalUpload visible={open} handleCancel={this._handleCancel} />
           <Tabs
-            defaultActiveKey="5"
+            defaultActiveKey="1"
             className={styles.TabEmployee}
             onTabClick={this.handleClickTabPane}
           >
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
-                  { tab.name === 'Documents' ? <Documents /> : ''}
-                  { tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  {tab.name === 'Documents' ? <Documents /> : ''}
+                  {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
               </TabPane>
             ))}
