@@ -4,7 +4,8 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import documentTab from './en-US/documentTab';
+import pages from './en-US/pages';
+import layouts from './en-US/layouts';
 
 export default {
   'navBar.lang': 'Languages',
@@ -20,5 +21,6 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...documentTab,
+  ...pages,
+  ...layouts,
 };
