@@ -6,8 +6,9 @@
   border-radius: 5px;
   border: solid 1px #d6dce0;
   background-color: #ffffff;
-  padding-top: 32px;
-  padding-left: 32px;
+  padding: 32px;
+  padding-bottom: 0;
+  overflow: hidden;
   .header {
     .icon {
       width: 64px;
@@ -40,6 +41,27 @@
       line-height: normal;
       letter-spacing: normal;
       color: #161c29;
+    }
+  }
+  .body {
+    margin-top: 32px;
+    // padding-right: 100px;
+    .radioContainer {
+      width: 100%;
+      .radioItem {
+        height: 32px;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 2rem;
+        margin-right: 0;
+        .radioHelper {
+          font-weight: normal;
+          font-size: 10px;
+          color: #707177;
+          padding-left: 25px;
+          white-space: pre-wrap;
+        }
+      }
     }
   }
 }

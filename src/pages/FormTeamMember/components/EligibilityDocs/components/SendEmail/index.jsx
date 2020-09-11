@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Space, Form, Radio } from 'antd';
+import { Typography, Space, Radio } from 'antd';
 import send from './Assets/path.svg';
 import style from './index.less';
 
@@ -17,25 +17,21 @@ const index = () => {
         </Space>
       </div>
       <div className={style.body}>
-        <Form>
-          <Form.Item>
-            <Radio.Group>
-              <Radio value={1}>
-                Via Email <br />
-                <Typography.Text>
-                  The form will be sent on candidate’s private email id.
-                </Typography.Text>
-              </Radio>
-              <br />
-              <Radio value={2}>
-                Generate Link <br />
-                <Typography.Text>
-                  The link to the form will be generated which can be shared.
-                </Typography.Text>
-              </Radio>
-            </Radio.Group>
-          </Form.Item>
-        </Form>
+        <Radio.Group className={style.radioContainer}>
+          <Radio value={1} className={style.radioItem}>
+            Via Email
+            <p className={style.radioHelper}>
+              The form will be sent on candidate’s private email id.
+            </p>
+          </Radio>
+          <br />
+          <Radio value={2} className={style.radioItem}>
+            Generate Link
+            <p className={style.radioHelper}>
+              The link to the form will be generated which can be shared.
+            </p>
+          </Radio>
+        </Radio.Group>
       </div>
     </div>
   );
