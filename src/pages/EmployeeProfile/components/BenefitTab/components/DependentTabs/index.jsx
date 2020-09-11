@@ -1,25 +1,43 @@
 import React from 'react';
+import { formatMessage } from 'umi';
 import styles from './styles.less';
 
 export default function DependentTabs(props) {
   const { data, index } = props;
+  const name = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.legalName',
+  });
+  const gender = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.gender',
+  });
+  const relationship = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.relationship',
+  });
+  const dob = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dob',
+  });
   return (
     <div className={styles.tab}>
-      <div style={{ fontWeight: '600' }}>Dependent {index}</div>
+      <div style={{ fontWeight: '600' }}>
+        {formatMessage({
+          id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
+        })}{' '}
+        {index}
+      </div>
       <div className={styles.info}>
-        {['Legal Name', 'Gender', 'Relationship', 'Date of Birth'].map((item) => {
+        {[name, gender, relationship, dob].map((item) => {
           let foo = '';
           switch (item) {
-            case 'Legal Name':
+            case name:
               foo = data.name;
               break;
-            case 'Gender':
+            case gender:
               foo = data.gender;
               break;
-            case 'Relationship':
+            case relationship:
               foo = data.relationship;
               break;
-            case 'Date of Birth':
+            case dob:
               foo = data.dob;
               break;
             default:

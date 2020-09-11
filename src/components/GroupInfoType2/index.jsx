@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatMessage } from 'umi';
 import styles from './styles.less';
 
 export default function GroupInfoType2({ data, width, fullWidth }) {
@@ -10,8 +11,8 @@ export default function GroupInfoType2({ data, width, fullWidth }) {
           <p>{data.title}</p>
         </div>
         <div className={styles.subTitle}>
-          <p>Plan</p>
-          <p>Active Till</p>
+          <p>{formatMessage({ id: 'component.GroupInfoType2.plan' })}</p>
+          <p>{formatMessage({ id: 'component.GroupInfoType2.active' })}</p>
         </div>
         <div>
           {data.plans.map((x) => {

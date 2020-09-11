@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { Layout, Collapse } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
 import DependentTabs from './components/DependentTabs';
@@ -42,7 +42,9 @@ export default class BenefitTab extends PureComponent {
     return (
       <Layout className={styles.benefitTab}>
         <Sider breakpoint="md" collapsedWidth="0" width={606} className={styles.sideTab}>
-          <h3 className={styles.headings}>Employee Dependent Details</h3>
+          <h3 className={styles.headings}>
+            {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
+          </h3>
           {Math.floor(Math.random() * 10) > 5 ? (
             <div>
               {dependentData.map((item, idx) => {
@@ -64,7 +66,9 @@ export default class BenefitTab extends PureComponent {
             width: '988px',
           }}
         >
-          <h3 className={styles.headings}>Opted Benefit Plans</h3>
+          <h3 className={styles.headings}>
+            {formatMessage({ id: 'pages.employeeProfile.BenefitTab.optedPlans' })}
+          </h3>
           <div className={styles.content}>
             {data.map((item) => {
               return <GroupInfoType2 data={item} />;
@@ -79,12 +83,14 @@ export default class BenefitTab extends PureComponent {
             expandIconPosition="right"
           >
             <Collapse.Panel
-              header="Available Benefit Plans"
+              header={formatMessage({ id: 'pages.employeeProfile.BenefitTab.availablePlans' })}
               key="1"
               className="site-collapse-custom-panel"
             >
               <div>
-                <h1 className={styles.subHeadings}>For Global Employess</h1>
+                <h1 className={styles.subHeadings}>
+                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.forGlobalEmployees' })}
+                </h1>
                 <div className={styles.content}>
                   {data.map((item) => {
                     return <GroupInfoType2 data={item} />;
@@ -92,7 +98,9 @@ export default class BenefitTab extends PureComponent {
                 </div>
               </div>
               <div>
-                <h1 className={styles.subHeadings}>For Indian Employees</h1>
+                <h1 className={styles.subHeadings}>
+                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.forIndianEmployees' })}
+                </h1>
                 <div className={styles.content}>
                   {data.map((item) => {
                     return <GroupInfoType2 data={item} />;
@@ -106,5 +114,3 @@ export default class BenefitTab extends PureComponent {
     );
   }
 }
-
-BenefitTab.propTypes = {};
