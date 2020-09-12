@@ -8,6 +8,7 @@ import BenefitTab from './components/BenefitTab';
 
 import Documents from './components/Documents';
 import AccountsPaychecks from './components/Accounts&Paychecks';
+import GeneralInfo from './components/GeneralInfo';
 
 import styles from './index.less';
 
@@ -104,9 +105,11 @@ class EmployeeProfile extends Component {
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
-                  {tab.id === 5 ? <Documents /> : ''}
-                  {tab.id === 4 ? <AccountsPaychecks /> : ''}
-                  {tab.id === 8 ? <BenefitTab /> : ''}
+                  {tab.name === 'General Info' ? <GeneralInfo /> : ''}
+                  {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  {/* {tab.name === 'Documents' ? <InfoCollapseType2 /> : ''} */}
+                  {tab.name === 'Benefit Plans' ? <BenefitTab /> : ''}
+                  {tab.name === 'Documents' ? <Documents /> : ''}
                 </Layout>
               </TabPane>
             ))}

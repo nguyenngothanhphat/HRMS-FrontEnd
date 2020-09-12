@@ -16,9 +16,7 @@ import TableFilter from '../TableFilter';
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
-      const {
-        employee: { filter = [] },
-      } = nextProps;
+      const { employee: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
@@ -68,7 +66,7 @@ class DirectoryComponent extends PureComponent {
       this.setState({
         filterName: query,
       });
-    }, 1000);
+    }, 500);
   }
 
   componentDidMount() {
@@ -151,7 +149,6 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    // const input = valueInput.toLowerCase();
     this.setDebounce(valueInput);
   };
 
@@ -165,6 +162,11 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/ClearFilter',
     });
+    setTimeout(() => {
+      this.setState({
+        changeTab: false,
+      });
+    }, 5);
   };
 
   render() {
@@ -183,6 +185,7 @@ class DirectoryComponent extends PureComponent {
                 {formatMessage({ id: 'pages.directory.directory.setUpNewProfile' })}
               </p>
             </NavLink>
+
             <TableFilter
               onToggle={this.handleToggle}
               collapsed={collapsed}
@@ -190,6 +193,7 @@ class DirectoryComponent extends PureComponent {
               FormBox={this.handleFormBox}
               changeTab={changeTab}
             />
+
             {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
 

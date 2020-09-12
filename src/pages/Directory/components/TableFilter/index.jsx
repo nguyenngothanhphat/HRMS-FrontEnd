@@ -19,6 +19,7 @@ class TableFilter extends PureComponent {
       all: 'All',
       text: '',
       clearText: '',
+      reset: false,
     };
   }
 
@@ -46,19 +47,33 @@ class TableFilter extends PureComponent {
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({
-      type: 'employee/offClearFilter',
+      type: 'employee/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
     onHandleChange(inputvalue);
   };
 
+  handleReset = () => {
+    this.setState({ text: '', reset: true });
+    const { onHandleChange, dispatch } = this.props;
+    const { clearText } = this.state;
+    onHandleChange(clearText);
+    dispatch({
+      type: 'employee/ClearFilter',
+    });
+    setTimeout(() => {
+      this.setState({ reset: false });
+    }, 5);
+  };
+
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState, text, clearText } = this.state;
+    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearFilter = false },
+      employee: { location = [], department = [], employeetype = [], clearName = false },
       collapsed,
+      changeTab,
     } = this.props;
     const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
@@ -91,39 +106,53 @@ class TableFilter extends PureComponent {
               {formatMessage({ id: 'pages.directory.tableFilter.filter' })}
             </div>
             <div className={styles.resetHide}>
-              <p>{formatMessage({ id: 'pages.directory.tableFilter.reset' })}</p>
+              <p onClick={this.handleReset}>{formatMessage({ id: 'pages.directory.tableFilter.reset' })}</p>
               {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
               </div> */}
             </div>
           </div>
-          <p className={styles.textName}>
-            {formatMessage({ id: 'pages.directory.tableFilter.name' })}
-          </p>
-          <Input
-            value={clearFilter ? clearText : text}
-            className={styles.formInput}
-            onChange={this.handleChange}
-          />
+          <p className={styles.textName}>{formatMessage({ id: 'pages.directory.tableFilter.name' })}</p>
+          {changeTab ? (
+            ''
+          ) : (
+            <Input
+              value={clearName ? '' : text}
+              className={styles.formInput}
+              onChange={this.handleChange}
+            />
+          )}
 
-          <CheckBoxForms
-            key={EmploymentState}
-            name={EmploymentState}
-            all={all}
-            data={filteredArr(formatDataEmployeeType)}
-          />
-          <CheckBoxForms
-            key={departmentState}
-            name={departmentState}
-            all={all}
-            data={filteredArr(formatDataDepartment)}
-          />
-          <CheckBoxForms
-            key={locationState}
-            name={locationState}
-            all={all}
-            data={formatDataLocation}
-          />
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={EmploymentState}
+              name={EmploymentState}
+              all={all}
+              data={filteredArr(formatDataEmployeeType)}
+            />
+          )}
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={departmentState}
+              name={departmentState}
+              all={all}
+              data={filteredArr(formatDataDepartment)}
+            />
+          )}
+          {reset || changeTab ? (
+            ''
+          ) : (
+            <CheckBoxForms
+              key={locationState}
+              name={locationState}
+              all={all}
+              data={formatDataLocation}
+            />
+          )}
         </Sider>
       </div>
     );
