@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
@@ -87,15 +87,19 @@ class TableFilter extends PureComponent {
       <div className={styles.TabFilter}>
         <Sider width="300px" trigger={null} collapsed={collapsed} collapsedWidth="0">
           <div className={styles.topFilter}>
-            <div className={styles.textFilters}>Filters</div>
+            <div className={styles.textFilters}>
+              {formatMessage({ id: 'pages.directory.tableFilter.filter' })}
+            </div>
             <div className={styles.resetHide}>
-              <p>Reset</p>
+              <p>{formatMessage({ id: 'pages.directory.tableFilter.reset' })}</p>
               {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
               </div> */}
             </div>
           </div>
-          <p className={styles.textName}>Name</p>
+          <p className={styles.textName}>
+            {formatMessage({ id: 'pages.directory.tableFilter.name' })}
+          </p>
           <Input
             value={clearFilter ? clearText : text}
             className={styles.formInput}

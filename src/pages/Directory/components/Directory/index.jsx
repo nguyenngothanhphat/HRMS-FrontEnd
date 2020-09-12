@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect } from 'umi';
+import { NavLink, connect, formatMessage } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
@@ -59,9 +59,9 @@ class DirectoryComponent extends PureComponent {
       collapsed: false,
       pageSelected: 1,
       bottabs: [
-        { id: 1, name: 'Active Employees' },
-        { id: 2, name: 'My Team' },
-        { id: 3, name: 'Inactive Employees' },
+        { id: 1, name: formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }) },
+        { id: 2, name: formatMessage({ id: 'pages.directory.directory.myTeamTab' }) },
+        { id: 3, name: formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }) },
       ],
     };
     this.setDebounce = debounce((query) => {
@@ -179,7 +179,9 @@ class DirectoryComponent extends PureComponent {
           <div className={styles.filterSider}>
             <NavLink to="/directory" className={styles.buttonCreate}>
               <PlusOutlined />
-              <p className={styles.NameNewProfile}>Set Up New Profile</p>
+              <p className={styles.NameNewProfile}>
+                {formatMessage({ id: 'pages.directory.directory.setUpNewProfile' })}
+              </p>
             </NavLink>
             <TableFilter
               onToggle={this.handleToggle}

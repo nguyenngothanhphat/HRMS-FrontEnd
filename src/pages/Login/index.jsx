@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
-import { Link, connect } from 'umi';
-
+import { Link, connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
@@ -33,7 +32,7 @@ class FormLogin extends Component {
         loading={loading}
         disabled={!valueEmail || !valuePsw}
       >
-        Sign in
+        {formatMessage({ id: 'pages.login.signIn' })}
       </Button>
     );
   };
@@ -41,7 +40,9 @@ class FormLogin extends Component {
   render() {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Sign in to your account</p>
+        <p className={styles.formWrapper__title}>
+          {formatMessage({ id: 'pages.login.signInToYourAccount' })}
+        </p>
         <Form
           layout="vertical"
           name="basic"
@@ -53,28 +54,28 @@ class FormLogin extends Component {
           ref={this.formRef}
         >
           <Form.Item
-            label="Email address"
+            label={formatMessage({ id: 'pages.login.emailLabel' })}
             name="email"
             rules={[
               {
                 required: true,
-                message: 'Please input your email!',
+                message: formatMessage({ id: 'pages.login.pleaseInputYourEmail' }),
               },
               {
                 type: 'email',
-                message: 'Invalid email',
+                message: formatMessage({ id: 'pages.login.invalidEmail' }),
               },
             ]}
           >
             <Input className={styles.InputEmail} />
           </Form.Item>
           <Form.Item
-            label="Password"
+            label={formatMessage({ id: 'pages.login.passwordLabel' })}
             name="password"
             rules={[
               {
                 required: true,
-                message: 'Please input your password!',
+                message: formatMessage({ id: 'pages.login.pleaseInputYourPassword' }),
               },
             ]}
           >
@@ -87,7 +88,7 @@ class FormLogin extends Component {
           </Form.Item>
           <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
             <Checkbox>
-              <span>Keep me signed in</span>
+              <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
           </Form.Item>
           <Form.Item
@@ -100,7 +101,9 @@ class FormLogin extends Component {
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
           <Link to="/forgot-password">
-            <p className={styles.forgotPassword}>Forgot Password?</p>
+            <p className={styles.forgotPassword}>
+              {formatMessage({ id: 'pages.login.forgotPassword' })}
+            </p>
           </Link>
         </Form>
       </div>

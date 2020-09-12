@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ModalUpload from '@/components/ModalUpload';
 import { Row, Dropdown, Button, Menu, Layout, Tabs } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
 import BenefitTab from './components/BenefitTab';
 
 import Documents from './components/Documents';
@@ -18,14 +19,17 @@ class EmployeeProfile extends Component {
     this.state = {
       open: false,
       nameTabs: [
-        { id: 1, name: 'General Info' },
-        { id: 2, name: 'Employment & Compensation' },
-        { id: 3, name: 'Performance History' },
-        { id: 4, name: 'Accounts and Paychecks' },
-        { id: 5, name: 'Documents' },
-        { id: 6, name: 'Work Eligibility & I-9' },
-        { id: 7, name: 'Time & Scheduling' },
-        { id: 8, name: 'Benefit Plans' },
+        { id: 1, name: formatMessage({ id: 'pages.employeeProfile.generalInfoTab' }) },
+        {
+          id: 2,
+          name: formatMessage({ id: 'pages.employeeProfile.employmentAndCompensationTab' }),
+        },
+        { id: 3, name: formatMessage({ id: 'pages.employeeProfile.performanceHistoryTab' }) },
+        { id: 4, name: formatMessage({ id: 'pages.employeeProfile.accountsAndPaychecksTab' }) },
+        { id: 5, name: formatMessage({ id: 'pages.employeeProfile.documentsTab' }) },
+        { id: 6, name: formatMessage({ id: 'pages.employeeProfile.workEligibilityAndI-9Tab' }) },
+        { id: 7, name: formatMessage({ id: 'pages.employeeProfile.timeAndSchedulingTab' }) },
+        { id: 8, name: formatMessage({ id: 'pages.employeeProfile.benefitPlansTab' }) },
       ],
     };
   }
@@ -55,13 +59,13 @@ class EmployeeProfile extends Component {
     const menu = (
       <Menu>
         <Item key="1" onClick={() => alert(1)}>
-          Put on Leave (PWP)
+          {formatMessage({ id: 'pages.employeeProfile.putOnLeave' })}
         </Item>
         <Item key="2" onClick={() => alert(2)}>
-          Raise Termination
+          {formatMessage({ id: 'pages.employeeProfile.raiseTermination' })}
         </Item>
         <Item key="3" onClick={() => alert(3)}>
-          Request Details
+          {formatMessage({ id: 'pages.employeeProfile.requestDetails' })}
         </Item>
       </Menu>
     );
@@ -76,13 +80,18 @@ class EmployeeProfile extends Component {
               <div className={styles.viewInfo__text}>
                 <p className={styles.textName}>Aditya Venkatesh</p>
                 <p className={styles.textInfo}>UX Lead (Full Time), Design</p>
-                <p className={styles.textInfo}>Location: Bengaluru, India (+5:30 GMT)</p>
-                <p className={styles.textInfo}>Joined on December 10th, 2018</p>
+                <p className={styles.textInfo}>
+                  {formatMessage({ id: 'pages.employeeProfile.location' })}: Bengaluru, India (+5:30
+                  GMT)
+                </p>
+                <p className={styles.textInfo}>
+                  {formatMessage({ id: 'pages.employeeProfile.joinedOn' })} December 10th, 2018
+                </p>
               </div>
             </div>
             <Dropdown overlay={menu} placement="bottomRight">
               <Button type="primary" className={styles.btnActions}>
-                Actions <DownOutlined />
+                {formatMessage({ id: 'pages.employeeProfile.actionMenu' })} <DownOutlined />
               </Button>
             </Dropdown>
           </Row>
@@ -95,9 +104,9 @@ class EmployeeProfile extends Component {
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
-                  {tab.name === 'Benefit Plans' ? <BenefitTab /> : ''}
-                  {tab.name === 'Documents' ? <Documents /> : ''}
-                  {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  {tab.id === 5 ? <Documents /> : ''}
+                  {tab.id === 4 ? <AccountsPaychecks /> : ''}
+                  {tab.id === 8 ? <BenefitTab /> : ''}
                 </Layout>
               </TabPane>
             ))}
