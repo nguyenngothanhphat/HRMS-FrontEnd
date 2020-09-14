@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
@@ -111,7 +111,7 @@ class BasicInformation extends PureComponent {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Full Name*"
+              label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
               rules={[{ required: true, message: 'Please input your full name!' }]}
             >
@@ -127,7 +127,7 @@ class BasicInformation extends PureComponent {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Private e-mail id*"
+              label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
               name="privateEmail"
               rules={[
                 {
@@ -153,7 +153,7 @@ class BasicInformation extends PureComponent {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Work email id*"
+              label={formatMessage({ id: 'component.basicInformation.workEmail' })}
               className={styles.formInput__email}
               name="workEmail"
             >
@@ -161,7 +161,7 @@ class BasicInformation extends PureComponent {
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
-                // suffix="@terralogic.com"
+                suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
             </Form.Item>
@@ -174,7 +174,7 @@ class BasicInformation extends PureComponent {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Previous experience in years"
+              label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
               name="experienceYear"
               rules={[
                 {

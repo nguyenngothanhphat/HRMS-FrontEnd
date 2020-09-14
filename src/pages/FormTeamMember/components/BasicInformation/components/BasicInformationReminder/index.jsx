@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { CloseOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
 
 import styles from './index.less';
 
@@ -19,14 +20,11 @@ export default class BasicInformationReminder extends PureComponent {
               <p>!</p>
             </div>
             <div className={styles.reminderWrapper__header__title}>
-              <p>Reminder</p>
+              <p>{formatMessage({ id: 'component.reminder.title' })}</p>
             </div>
           </div>
           <div className={styles.reminderWrapper__content}>
-            <p>
-              This will be used to login to Terralogic portal once the candidate is confirmed as an
-              employee. This field cannot be viewed by the candidate yet.
-            </p>
+            <p>{formatMessage({ id: 'component.reminder.content' })}</p>
           </div>
         </div>
       </div>
