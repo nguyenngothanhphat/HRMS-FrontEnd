@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
-import { Redirect } from 'umi';
+import { Redirect, formatMessage } from 'umi';
 import { getToken } from '@/utils/token';
 import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
@@ -20,11 +20,15 @@ class AuthLayout extends React.PureComponent {
         <Header>
           <div className={styles.leftContent}>
             <Avatar size="large" icon={<SmileOutlined />} />
-            <span className={styles.textAppName}>Appname</span>
+            <span className={styles.textAppName}>
+              {formatMessage({ id: 'layout.authLayout.appName' })}
+            </span>
           </div>
           <div className={styles.rightContent}>
-            <span>New User?</span>
-            <span className={styles.textSignUp}>Sign up</span>
+            <span>{formatMessage({ id: 'layout.authLayout.newUser' })}</span>
+            <span className={styles.textSignUp}>
+              {formatMessage({ id: 'layout.authLayout.signUp' })}
+            </span>
           </div>
         </Header>
         <Content className={styles.content}>
@@ -34,12 +38,11 @@ class AuthLayout extends React.PureComponent {
                 <img src={LoginImage} alt="login" />
               </div>
               <p className={styles.contentLeft__text1}>
-                Spending too much time on HR, not your business? <br />
-                We can fix that.
+                {formatMessage({ id: 'layout.authLayout.contentLeft.text1.1' })} <br />
+                {formatMessage({ id: 'layout.authLayout.contentLeft.text1.2' })}
               </p>
               <p className={styles.contentLeft__text2}>
-                Streamline onboarding, benefits, payroll, PTO, and more with our simple, intuitive
-                platform.
+                {formatMessage({ id: 'layout.authLayout.contentLeft.text2' })}
               </p>
             </Col>
             <Col xs={24} sm={24} md={24} lg={15} xl={14} className={styles.contentRight}>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import styles from './index.less';
 
@@ -40,19 +40,21 @@ class ResetPassword extends Component {
         loading={loading}
         disabled={!valuePsw || !valueConfirm}
       >
-        Create Password
+        {formatMessage({ id: 'pages.resetPassword.createPassword' })}
       </Button>
     );
   };
 
   render() {
     const arrText = [
-      'Use a minimum of 8 characters',
-      'At least one letter, one number and one special character.',
+      formatMessage({ id: 'pages.resetPassword.arrText1' }),
+      formatMessage({ id: 'pages.resetPassword.arrText2' }),
     ];
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Create New Password</p>
+        <p className={styles.formWrapper__title}>
+          {formatMessage({ id: 'pages.resetPassword.title' })}
+        </p>
         {arrText.map((item) => (
           <div style={{ marginBottom: '0.5rem' }}>
             <CheckCircleFilled style={{ color: '#13A951', marginRight: '10px' }} />
@@ -72,32 +74,32 @@ class ResetPassword extends Component {
           style={{ marginTop: '1rem' }}
         >
           <Form.Item
-            label="Enter Password"
+            label={formatMessage({ id: 'pages.resetPassword.passwordLabel' })}
             name="password"
             rules={[
               {
                 required: true,
-                message: 'Please input your new password!',
+                message: formatMessage({ id: 'pages.resetPassword.pleaseInputYourNewPassword' }),
               },
               {
                 min: 8,
-                message: 'Minimum of 8 characters!',
+                message: formatMessage({ id: 'pages.resetPassword.minimumCharacter' }),
               },
               {
                 pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
-                message: 'At least one letter, one number and one special character!',
+                message: formatMessage({ id: 'pages.resetPassword.passwordRules' }),
               },
             ]}
           >
             <Input.Password className={styles.inputPassword} />
           </Form.Item>
           <Form.Item
-            label="Confirm Password"
+            label={formatMessage({ id: 'pages.resetPassword.confirmPasswordLabel' })}
             name="confirmPassword"
             rules={[
               {
                 required: true,
-                message: 'Please confirm your password!',
+                message: formatMessage({ id: 'pages.resetPassword.pleaseConfirmPassword' }),
               },
               ({ getFieldValue }) => ({
                 validator(rule, value) {
@@ -106,7 +108,7 @@ class ResetPassword extends Component {
                   }
                   // eslint-disable-next-line compat/compat
                   return Promise.reject(
-                    new Error('The two passwords that you entered do not match!'),
+                    new Error(formatMessage({ id: 'pages.resetPassword.passwordNotMatch' })),
                   );
                 },
               }),
