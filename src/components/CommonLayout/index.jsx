@@ -20,7 +20,7 @@ export default class CommonLayout extends PureComponent {
     });
   }
 
-  _handelClick = (item) => {
+  handleClick = (item) => {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
@@ -39,7 +39,7 @@ export default class CommonLayout extends PureComponent {
               <ItemMenu
                 key={item.id}
                 item={item}
-                handelClick={this._handelClick}
+                handelClick={this.handleClick}
                 selectedItemId={selectedItemId}
               />
             ))}
