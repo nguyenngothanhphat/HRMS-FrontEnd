@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import { UserAddOutlined, FilterOutlined } from '@ant-design/icons';
-import { Tabs, Layout } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
+import { Tabs, Layout, Image } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
 import { debounce } from 'lodash';
+import addTeam from '@/assets/addTeam.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -173,7 +174,8 @@ class DirectoryComponent extends PureComponent {
     return (
       <div className={styles.tabBarExtra}>
         <NavLink to="/directory" className={styles.buttonCreate}>
-          <UserAddOutlined />
+          {/* <UserAddOutlined /> */}
+          <Image width={20} src={addTeam} alt="" className={styles.AddTeamimg} />
           <p className={styles.NameNewProfile}>
             {formatMessage({ id: 'pages.directory.directory.addTeamMember' })}
           </p>
