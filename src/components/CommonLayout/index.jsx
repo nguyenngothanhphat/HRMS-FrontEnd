@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
+import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import s from './index.less';
 
 export default class CommonLayout extends PureComponent {
@@ -44,7 +45,15 @@ export default class CommonLayout extends PureComponent {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              <Button type="primary" ghost>
+              <Button
+                type="primary"
+                ghost
+                onClick={() =>
+                  this.setState({
+                    displayComponent: <PreviewOffer />,
+                  })
+                }
+              >
                 Preview offer letter
               </Button>
             </div>
