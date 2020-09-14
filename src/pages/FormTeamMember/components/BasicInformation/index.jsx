@@ -113,7 +113,7 @@ class BasicInformation extends PureComponent {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
-              rules={[{ required: true, message: 'Please input your full name!' }]}
+              rules={[{ required: true, message: `'Please input your full name!'` }]}
             >
               <Input
                 onChange={(e) => this.handleChange(e)}
@@ -197,16 +197,6 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
-    const steps = {
-      title: 'Complete onboarding process at a glance',
-      keyPage: [
-        { key: 1, data: `Prepare the new candidate's offer letter` },
-        { key: 2, data: `Send for approval` },
-        { key: 3, data: `Post approval,send letter to candidate` },
-        { key: 4, data: `Post approval,send letter to candidate` },
-        { key: 5, data: `Setup for the employee` },
-      ],
-    };
     const Note = {
       title: 'Note',
       data: (
@@ -233,7 +223,7 @@ class BasicInformation extends PureComponent {
               <NoteComponent note={Note} />
             </Row>
             <Row style={{ width: '322px' }}>
-              <StepsComponent steps={steps} />
+              <StepsComponent />
             </Row>
           </div>
         </Col>

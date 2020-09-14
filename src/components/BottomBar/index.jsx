@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import styles from './index.less';
 
@@ -30,16 +30,20 @@ class BottomBar extends PureComponent {
     const { onClickPrev } = this.props;
     onClickPrev();
   };
+
   _renderStatus = () => {
     const { currentPage, offerDetailField, checkMandatory } = this.props;
     const { filledBasicInformation } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
         <div className={styles.normalText}>
-          <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
+          <div className={styles.redText}>*</div>
+          {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
         </div>
       ) : (
-        <div className={styles.greenText}>*All mandatory details have been filled</div>
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
       );
     }
     if (currentPage === 4) {
@@ -68,7 +72,8 @@ class BottomBar extends PureComponent {
           Next
         </Button>
       );
-    } else if (currentPage === 2) {
+    }
+    if (currentPage === 2) {
       return (
         <>
           <Button
