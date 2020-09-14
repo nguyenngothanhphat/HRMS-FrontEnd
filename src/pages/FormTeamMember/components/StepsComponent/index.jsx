@@ -5,14 +5,22 @@ import styles from './index.less';
 class StepsComponent extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      title: 'Complete onboarding process at a glance',
+      keyPage: [
+        { key: 1, data: `Prepare the new candidate's offer letter` },
+        { key: 2, data: `Send for approval` },
+        { key: 3, data: `Post approval,send letter to candidate` },
+        { key: 4, data: `Post approval,send letter to candidate` },
+        { key: 5, data: `Setup for the employee` },
+      ],
+    };
   }
 
-  componentDidMount() {
-    console.log('did mount');
-  }
+  componentDidMount() {}
 
   render() {
-    const { steps: { keyPage = [], title = '' } = {} } = this.props;
+    const { title, keyPage } = this.state;
     console.log(keyPage);
     return (
       <div className={styles.StepsComponent}>
