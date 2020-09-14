@@ -161,7 +161,7 @@ class BasicInformation extends PureComponent {
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
-                suffix="@terralogic.com"
+                // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
             </Form.Item>
