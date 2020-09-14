@@ -6,7 +6,8 @@
   &__title {
     font-weight: 700;
     color: #161c29;
-    margin-bottom: 5.8px;
+    margin-bottom: 25px;
+    font-size: 16px;
   }
   .InputEmail {
     :global {
@@ -30,10 +31,15 @@
   .checkbox {
     :global {
       .ant-checkbox-inner {
+        width: 14px;
+        height: 14px;
         object-fit: contain;
         opacity: 0.5;
         border-radius: 3.5px;
         border: solid 1.5px #707177;
+      }
+      .ant-checkbox-wrapper-checked {
+        opacity: 1;
       }
       span {
         font-size: 12px;
@@ -47,7 +53,8 @@
   }
   .forgotPassword {
     :global {
-      padding-top: 19.3px;
+      font-size: 13px;
+      padding-top: 38.5px;
       text-decoration: underline;
       margin: 0;
       text-align: center;
@@ -59,12 +66,13 @@
       color: #707177;
       margin-top: 13.5px;
       font-weight: 500;
-      font-size: 12px;
+      font-size: 13px;
     }
     .ant-input {
       border-radius: 4.5px;
       height: 31px;
       color: #000;
+      border: solid 1px #d6dce4;
     }
     .ant-btn-primary {
       font-size: 12px;
@@ -75,6 +83,7 @@
       border-radius: 30px;
       color: #fff;
       background-color: #ffa100;
+      border: none;
     }
     .ant-form-item {
       margin-bottom: 0;
