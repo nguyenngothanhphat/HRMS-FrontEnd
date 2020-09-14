@@ -7,7 +7,7 @@ import copy from './Assets/copy-office.svg';
 
 const index = () => {
   const [isEnable, setIsEnable] = useState(null);
-  // const [isLinkEnable, setIsLinkEnable] = useState(false);
+  const [isInputEnable, setIsInputEnable] = useState(true);
 
   const handleEmailClick = () => {
     setIsEnable(true);
@@ -15,6 +15,10 @@ const index = () => {
 
   const handleLinkClick = () => {
     setIsEnable(false);
+  };
+
+  const handleClick = () => {
+    setIsInputEnable(false);
   };
 
   return (
@@ -50,9 +54,11 @@ const index = () => {
         <div className={style.line} />
         <Form layout="vertical" className={style.emailForm}>
           <Form.Item label="Personal email id of the joinee">
-            <Input defaultValue="Landonorris@gmail.com" disabled />
+            <Input defaultValue="Landonorris@gmail.com" disabled={isInputEnable} />
           </Form.Item>
-          <Typography.Text className={style.change}>Change</Typography.Text>
+          <Typography.Text className={style.change} onClick={handleClick}>
+            Change
+          </Typography.Text>
           <Button>Send email</Button>
         </Form>
       </div>
