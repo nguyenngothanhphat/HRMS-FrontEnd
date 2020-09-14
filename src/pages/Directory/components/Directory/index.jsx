@@ -200,7 +200,7 @@ class DirectoryComponent extends PureComponent {
         <div className={styles.contentContainer}>
           <Tabs
             defaultActiveKey="1"
-            className={styles.Tab}
+            className={styles.TabComponent}
             onTabClick={this.handleClickTabPane}
             tabBarExtraContent={this.rightButton()}
           >
