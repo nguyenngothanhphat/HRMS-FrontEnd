@@ -26,6 +26,10 @@ class BottomBar extends PureComponent {
     onClickNext();
   };
 
+  onClickPrev = () => {
+    const { onClickPrev } = this.props;
+    onClickPrev();
+  };
   _renderStatus = () => {
     const { currentPage, offerDetailField, checkMandatory } = this.props;
     const { filledBasicInformation } = checkMandatory;
@@ -63,6 +67,25 @@ class BottomBar extends PureComponent {
         >
           Next
         </Button>
+      );
+    } else if (currentPage === 2) {
+      return (
+        <>
+          <Button
+            type="secondary"
+            onClick={this.onClickPrev}
+            className={styles.bottomBar__button__secondary}
+          >
+            Previous
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onClickNext}
+            className={styles.bottomBar__button__primary}
+          >
+            Next
+          </Button>
+        </>
       );
     }
     if (currentPage === 4) {

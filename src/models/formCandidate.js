@@ -25,6 +25,17 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    jobDetail: {
+      position: 1,
+      classification: 1,
+      department: '',
+      jobTitle: '',
+      jobCategory: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
     checkMandatory: {
       filledBasicInformation: false,
     },
@@ -46,6 +57,12 @@ const info = {
   },
   reducers: {
     saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveJobDetail(state, action) {
       return {
         ...state,
         ...action.payload,

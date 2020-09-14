@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
@@ -106,12 +106,12 @@ class BasicInformation extends PureComponent {
         // onFinishFailed={this.onFinishFailed}
       >
         <Row gutter={[48, 0]}>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Full Name*"
+              label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
               rules={[{ required: true, message: 'Please input your full name!' }]}
             >
@@ -122,12 +122,12 @@ class BasicInformation extends PureComponent {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Private e-mail id*"
+              label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
               name="privateEmail"
               rules={[
                 {
@@ -148,12 +148,12 @@ class BasicInformation extends PureComponent {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Work email id*"
+              label={formatMessage({ id: 'component.basicInformation.workEmail' })}
               className={styles.formInput__email}
               name="workEmail"
             >
@@ -169,12 +169,12 @@ class BasicInformation extends PureComponent {
           {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
         </Row>
         <Row gutter={[48, 0]}>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Previous experience in years"
+              label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
               name="experienceYear"
               rules={[
                 {
@@ -197,9 +197,15 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
-    const Steps = {
+    const steps = {
       title: 'Complete onboarding process at a glance',
-      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+      keyPage: [
+        { key: 1, data: `Prepare the new candidate's offer letter` },
+        { key: 2, data: `Send for approval` },
+        { key: 3, data: `Post approval,send letter to candidate` },
+        { key: 4, data: `Post approval,send letter to candidate` },
+        { key: 5, data: `Setup for the employee` },
+      ],
     };
     const Note = {
       title: 'Note',
@@ -212,7 +218,7 @@ class BasicInformation extends PureComponent {
     };
     return (
       <Row gutter={[24, 0]}>
-        <Col span={16}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={styles.basicInformation}>
             <div className={styles.basicInformation__top}>
               <BasicInformationHeader />
@@ -221,14 +227,13 @@ class BasicInformation extends PureComponent {
             </div>
           </div>
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <hr />
-            <Row>
-              <StepsComponent Steps={Steps} />
+            <Row style={{ width: '322px' }}>
+              <StepsComponent steps={steps} />
             </Row>
           </div>
         </Col>

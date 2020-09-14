@@ -3,32 +3,32 @@ import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'a
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
-import StepsComponent from './components/StepsComponent';
+import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
-
+import { connect } from 'umi';
 const { Option } = Select;
 
 export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isValid: false,
-    };
+    this.state = {};
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  handleButton = () => {
-    this.setState({
-      isValid: true,
-    });
+  // handleRadio = (e) => {
+  //   const { value } = e.target;
+  //   console.log(value);
+  // };
+
+  handleSelect = (e) => {
+    console.log(e);
   };
 
   render() {
-    const { isValid } = this.state;
     const Tab = {
       positionTab: {
         title: 'Position',
@@ -52,87 +52,93 @@ export default class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'Department',
-        value: 1,
+        id: 1,
         placeholder: 'Select a job title',
         Option: [
-          { key: 1, name: 'UX Designer' },
-          { key: 2, name: 'UX Research' },
-          { key: 3, name: 'Researcher' },
-          { key: 4, name: 'UI Designer' },
-          { key: 5, name: 'Business Analyst' },
-          { key: 6, name: 'Sale Presentative' },
+          { key: 1, value: 'UX Designer' },
+          { key: 2, value: 'UX Research' },
+          { key: 3, value: 'Researcher' },
+          { key: 4, value: 'UI Designer' },
+          { key: 5, value: 'Business Analyst' },
+          { key: 6, value: 'Sale Presentative' },
         ],
       },
       {
         title: 'Job title',
-        value: 2,
+        id: 2,
         placeholder: 'Select a job title',
         Option: [
-          { key: 1, name: 'UX Designer' },
-          { key: 2, name: 'UX Research' },
-          { key: 3, name: 'Researcher' },
-          { key: 4, name: 'UI Designer' },
-          { key: 5, name: 'Business Analyst' },
-          { key: 6, name: 'Sale Presentative' },
+          { key: 1, value: 'UX Designer' },
+          { key: 2, value: 'UX Research' },
+          { key: 3, value: 'Researcher' },
+          { key: 4, value: 'UI Designer' },
+          { key: 5, value: 'Business Analyst' },
+          { key: 6, value: 'Sale Presentative' },
         ],
       },
       {
         title: 'Job category',
-        value: 3,
+        id: 3,
         placeholder: 'Select a job category',
         Option: [
-          { key: 1, name: 'Test' },
-          { key: 2, name: 'Dummy' },
-          { key: 3, name: 'DummyText' },
-          { key: 4, name: 'Abcde' },
-          { key: 5, name: 'Text' },
-          { key: 6, name: 'Texts' },
+          { key: 1, value: 'Test' },
+          { key: 2, value: 'Dummy' },
+          { key: 3, value: 'DummyText' },
+          { key: 4, value: 'Abcde' },
+          { key: 5, value: 'Text' },
+          { key: 6, value: 'Texts' },
         ],
       },
       {
         title: 'Work location',
-        value: 4,
+        id: 4,
         placeholder: 'Select a work location',
         Option: [
-          { key: 1, name: 'HCM City' },
-          { key: 2, name: 'Dubai' },
-          { key: 3, name: 'US' },
-          { key: 4, name: 'AUS' },
-          { key: 5, name: 'Korea' },
-          { key: 6, name: 'China' },
+          { key: 1, value: 'HCM City' },
+          { key: 2, value: 'Dubai' },
+          { key: 3, value: 'US' },
+          { key: 4, value: 'AUS' },
+          { key: 5, value: 'Korea' },
+          { key: 6, value: 'China' },
         ],
       },
       {
         title: 'Reporting Manager',
-        value: 5,
+        id: 5,
         placeholder: 'Select',
         Option: [
-          { key: 1, name: 'Project Manager' },
-          { key: 2, name: 'Dummy' },
-          { key: 3, name: 'Test' },
-          { key: 4, name: 'Product Manager' },
-          { key: 5, name: 'Project Leader' },
-          { key: 6, name: 'Senior' },
+          { key: 1, value: 'Project Manager' },
+          { key: 2, value: 'Dummy' },
+          { key: 3, value: 'Test' },
+          { key: 4, value: 'Product Manager' },
+          { key: 5, value: 'Project Leader' },
+          { key: 6, value: 'Senior' },
         ],
       },
       {
         title: `Candidate's notice Period`,
-        value: 6,
+        id: 6,
         placeholder: 'Time period',
         Option: [
-          { key: 1, name: 'Test' },
-          { key: 2, name: 'ABCD' },
-          { key: 3, name: 'Testing' },
-          { key: 4, name: '10AM' },
-          { key: 5, name: '5PM' },
-          { key: 6, name: 'For Hours' },
+          { key: 1, value: 'Test' },
+          { key: 2, value: 'ABCD' },
+          { key: 3, value: 'Testing' },
+          { key: 4, value: '10AM' },
+          { key: 5, value: '5PM' },
+          { key: 6, value: 'For Hours' },
         ],
       },
-      { title: 'Preferred date of joining', value: 7 },
+      { title: 'Preferred date of joining', id: 7 },
     ];
-    const Steps = {
+    const steps = {
       title: 'Complete onboarding process at a glance',
-      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+      keyPage: [
+        { key: 1, data: `Prepare the new candidate's offer letter` },
+        { key: 2, data: `Send for approval` },
+        { key: 3, data: `Post approval,send letter to candidate` },
+        { key: 4, data: `Post approval,send letter to candidate` },
+        { key: 5, data: `Setup for the employee` },
+      ],
     };
     const Note = {
       title: 'Note',
@@ -148,11 +154,9 @@ export default class JobDetails extends PureComponent {
         <Row gutter={[24, 0]}>
           <Col span={16}>
             <div className={styles.JobDetailsComponent}>
-              <Form onSubmit={this.handleSubmit}>
-                <Header />
-                <RadioComponent Tab={Tab} />
-                <FieldsComponent handleSwitch={this.handleSwitch} dropdownField={dropdownField} />
-              </Form>
+              <Header />
+              <RadioComponent Tab={Tab} />
+              <FieldsComponent dropdownField={dropdownField} handleSelect={this.handleSelect} />
             </div>
           </Col>
           <Col span={8}>
@@ -160,9 +164,8 @@ export default class JobDetails extends PureComponent {
               <Row>
                 <NoteComponent note={Note} />
               </Row>
-              <hr />
-              <Row>
-                <StepsComponent Steps={Steps} />
+              <Row style={{ width: '322px' }}>
+                <StepsComponent steps={steps} />
               </Row>
             </div>
           </Col>

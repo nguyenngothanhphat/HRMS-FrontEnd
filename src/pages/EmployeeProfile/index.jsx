@@ -94,8 +94,8 @@ class EmployeeProfile extends Component {
             {nameTabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout>
-                  { tab.name === 'Documents' ? <InfoCollapseType2 /> : ''}
-                  { tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
+                  {tab.name === 'Documents' ? <InfoCollapseType2 /> : ''}
+                  {tab.name === 'Accounts and Paychecks' ? <AccountsPaychecks /> : ''}
                 </Layout>
               </TabPane>
             ))}
