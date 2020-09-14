@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 // import PropTypes from 'prop-types';
 import { Row, Col, Avatar, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class UserInfo extends PureComponent {
@@ -33,13 +34,15 @@ class UserInfo extends PureComponent {
     return (
       <Row className={styles.UserInfo}>
         <Col sm={24} md={12} lg={12}>
-          <p className={styles.titleDashBoard}>My Dashboard</p>
+          <p className={styles.titleDashBoard}>
+            {formatMessage({ id: 'pages.dashboard.myDashboard' })}
+          </p>
           <div className={styles.buttonTabName}>
             <Button type={type1 === true ? 'primary' : ''} onClick={this.handleType1}>
-              Admin
+              {formatMessage({ id: 'pages.dashboard.adminTab' })}
             </Button>
             <Button type={type2 === true ? 'primary' : ''} onClick={this.handleType2}>
-              Personal
+              {formatMessage({ id: 'pages.dashboard.personalTab' })}
             </Button>
           </div>
         </Col>

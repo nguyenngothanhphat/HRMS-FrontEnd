@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect } from 'umi';
+import { NavLink, connect, formatMessage } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
@@ -16,19 +16,21 @@ import TableFilter from '../TableFilter';
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
-      const { employee } = nextProps;
-      const { filter } = employee;
+      const { employee: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
+      const employeeTypeConst = 'Employment Type';
+      const departmentConst = 'Department';
+      const locationConst = 'Location';
       filter.map((item) => {
-        if (item.actionFilter.name === 'Employment Type') {
+        if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Department') {
+        if (item.actionFilter.name === departmentConst) {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Location') {
+        if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         return { employeeType, department, location };
@@ -53,17 +55,18 @@ class DirectoryComponent extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: false,
+      pageSelected: 1,
       bottabs: [
-        { id: 1, name: 'Active Employees' },
-        { id: 2, name: 'My Team' },
-        { id: 3, name: 'Inactive Employees' },
+        { id: 1, name: formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }) },
+        { id: 2, name: formatMessage({ id: 'pages.directory.directory.myTeamTab' }) },
+        { id: 3, name: formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }) },
       ],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
         filterName: query,
       });
-    }, 1000);
+    }, 500);
   }
 
   componentDidMount() {
@@ -80,6 +83,7 @@ class DirectoryComponent extends PureComponent {
     };
 
     if (
+      prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
@@ -145,7 +149,6 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    // const input = valueInput.toLowerCase();
     this.setDebounce(valueInput);
   };
 
@@ -159,6 +162,11 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/ClearFilter',
     });
+    setTimeout(() => {
+      this.setState({
+        changeTab: false,
+      });
+    }, 5);
   };
 
   render() {
@@ -173,8 +181,11 @@ class DirectoryComponent extends PureComponent {
           <div className={styles.filterSider}>
             <NavLink to="/directory" className={styles.buttonCreate}>
               <PlusOutlined />
-              <p className={styles.NameNewProfile}>Set Up New Profile</p>
+              <p className={styles.NameNewProfile}>
+                {formatMessage({ id: 'pages.directory.directory.setUpNewProfile' })}
+              </p>
             </NavLink>
+
             <TableFilter
               onToggle={this.handleToggle}
               collapsed={collapsed}
@@ -182,6 +193,7 @@ class DirectoryComponent extends PureComponent {
               FormBox={this.handleFormBox}
               changeTab={changeTab}
             />
+
             {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
           </div>
 

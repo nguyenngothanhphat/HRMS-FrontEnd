@@ -14,6 +14,7 @@ class CheckBoxForms extends PureComponent {
     super(props);
     this.state = {
       filter: [],
+      clearList: [],
       list: [],
       indeterminate: true,
       checkAll: false,
