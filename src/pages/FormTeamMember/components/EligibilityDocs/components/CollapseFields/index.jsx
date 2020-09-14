@@ -9,7 +9,7 @@ const CollapseField = ({ item = [] }) => {
   const [itemCheck, setItemCheck] = useState(false);
   const [indeterminate, setIndeterminate] = useState(true);
 
-  const defaultCheckList = item.items.find(() => )
+  // const defaultCheckList = item.items.find(() => )
 
   const handleChange = (e) => {
     setIsCheck(e.target.checked);
@@ -48,7 +48,7 @@ const CollapseField = ({ item = [] }) => {
             <Checkbox.Group
               direction="vertical"
               className={styles.checkboxItem}
-              checked={checked}
+              // checked={checked}
               options={item.items.map((obj) => obj.name)}
             />
             {/* {item.items.map((obj) => (
