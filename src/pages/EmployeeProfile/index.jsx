@@ -98,7 +98,7 @@ class EmployeeProfile extends Component {
           </Row>
           <ModalUpload visible={open} handleCancel={this._handleCancel} />
           <Tabs
-            defaultActiveKey="1"
+            defaultActiveKey="5"
             className={styles.TabEmployee}
             onTabClick={this.handleClickTabPane}
           >
