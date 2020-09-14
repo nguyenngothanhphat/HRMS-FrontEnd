@@ -106,7 +106,7 @@ class FirstFieldsComponent extends Component {
             </Col>
           </Row>
         </div>
-        <div className={ExternalStyle.Line}></div>
+        <div className={ExternalStyle.Line} />
       </>
     );
   }

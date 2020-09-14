@@ -106,7 +106,7 @@ class BasicInformation extends PureComponent {
         // onFinishFailed={this.onFinishFailed}
       >
         <Row gutter={[48, 0]}>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -122,7 +122,7 @@ class BasicInformation extends PureComponent {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -148,7 +148,7 @@ class BasicInformation extends PureComponent {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -169,7 +169,7 @@ class BasicInformation extends PureComponent {
           {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
         </Row>
         <Row gutter={[48, 0]}>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -197,9 +197,15 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
-    const Steps = {
+    const steps = {
       title: 'Complete onboarding process at a glance',
-      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+      keyPage: [
+        { key: 1, data: `Prepare the new candidate's offer letter` },
+        { key: 2, data: `Send for approval` },
+        { key: 3, data: `Post approval,send letter to candidate` },
+        { key: 4, data: `Post approval,send letter to candidate` },
+        { key: 5, data: `Setup for the employee` },
+      ],
     };
     const Note = {
       title: 'Note',
@@ -212,7 +218,7 @@ class BasicInformation extends PureComponent {
     };
     return (
       <Row gutter={[24, 0]}>
-        <Col span={16}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={styles.basicInformation}>
             <div className={styles.basicInformation__top}>
               <BasicInformationHeader />
@@ -221,14 +227,13 @@ class BasicInformation extends PureComponent {
             </div>
           </div>
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <hr />
-            <Row>
-              <StepsComponent Steps={Steps} />
+            <Row style={{ width: '322px' }}>
+              <StepsComponent steps={steps} />
             </Row>
           </div>
         </Col>

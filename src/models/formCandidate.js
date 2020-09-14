@@ -35,44 +35,44 @@ const info = {
       reportingManager: '',
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
-      checkMandatory: {
-        filledBasicInformation: false,
-      },
-      offerDetailField: {
-        currency: true,
-      },
     },
-    effects: {
-      // *fetchEmployeeType(_, { call, put }) {
-      //   try {
-      //     const response = yield call(EmployeeTypeFilter);
-      //     const { statusCode, data: employeetype = [] } = response;
-      //     if (statusCode !== 200) throw response;
-      //     yield put({ type: 'saveEmployeeType', payload: { employeetype } });
-      //   } catch (errors) {
-      //     dialog(errors);
-      //   }
-      // },
+    checkMandatory: {
+      filledBasicInformation: false,
     },
-    reducers: {
-      saveBasicInformation(state, action) {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      },
-      saveJobDetail(state, action) {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      },
-      save(state, action) {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      },
+    offerDetailField: {
+      currency: true,
+    },
+  },
+  effects: {
+    // *fetchEmployeeType(_, { call, put }) {
+    //   try {
+    //     const response = yield call(EmployeeTypeFilter);
+    //     const { statusCode, data: employeetype = [] } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({ type: 'saveEmployeeType', payload: { employeetype } });
+    //   } catch (errors) {
+    //     dialog(errors);
+    //   }
+    // },
+  },
+  reducers: {
+    saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveJobDetail(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
   },
 };
