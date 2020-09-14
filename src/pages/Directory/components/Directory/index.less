@@ -1,20 +1,17 @@
 .DirectoryComponent {
   margin: 0 24px;
-  @keyframes displayOpenSider {
-    0% {
-      opacity: 0;
-    }
-    25% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
+  .TabComponent {
+    :global {
+      .ant-tabs-tab {
+        font-size: 14px;
+        font-weight: bold;
+      }
     }
   }
-
+  .AddTeamimg {
+    margin-right: 10px;
+    margin-bottom: 5px;
+  }
   .buttonCreate {
     margin: 22px 32px 22px 0;
     display: flex;
