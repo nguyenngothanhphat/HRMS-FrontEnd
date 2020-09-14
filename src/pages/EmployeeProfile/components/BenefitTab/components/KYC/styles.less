@@ -1,20 +1,43 @@
 .kyc {
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-bottom: 20px;
   border: 1px solid #fff;
-  margin: 12px;
-  height: 257px;
   border-radius: 6px;
   background-color: #fff;
   font-size: 16px;
-  padding: 20px;
+  text-align: left;
   h1 {
     font-size: 24px;
   }
   .items {
-    display: flex;
-    flex-wrap: wrap;
+    margin-top: 24px;
     background: #fff;
     .item {
-      width: 250px;
+      display: flex;
+      justify-content: space-between;
+      width: 40%;
+      div:first-child {
+        margin-bottom: 16px;
+        width: 50%;
+        font-size: 13px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #000000;
+      }
+      div:last-child {
+        margin-bottom: 16px;
+        width: 50%;
+        font-size: 13px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+      }
     }
   }
 }

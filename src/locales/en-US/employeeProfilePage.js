@@ -22,7 +22,7 @@ export default {
   'pages.employeeProfile.documents.infoCollapseType2.status': 'Status',
 
   'pages.employeeProfile.BenefitTab.dependentDetails': 'Employee Dependent Details',
-  'pages.employeeProfile.BenefitTab.kycDetails': 'KYC Details',
+  'pages.employeeProfile.BenefitTab.kycDetails': 'KYC Details - Adhaar Number',
   'pages.employeeProfile.BenefitTab.optedPlans': 'Opted Benefit Plans',
   'pages.employeeProfile.BenefitTab.availablePlans': 'Available Benefit Plans',
   'pages.employeeProfile.BenefitTab.forGlobalEmployees': 'For Global Employees',
