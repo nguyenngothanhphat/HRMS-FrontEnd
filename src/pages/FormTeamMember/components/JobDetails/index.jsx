@@ -9,8 +9,8 @@ import styles from './index.less';
 import { connect } from 'umi';
 const { Option } = Select;
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
-  basicInformation,
+@connect(({ info: { jobDetail, checkMandatory } = {} }) => ({
+  jobDetail,
   checkMandatory,
 }))
 export default class JobDetails extends PureComponent {
@@ -43,10 +43,10 @@ export default class JobDetails extends PureComponent {
     if (
       department !== '' &&
       jobCategory !== '' &&
+      jobTitle !== '' &&
       workLocation !== '' &&
       reportingManager !== '' &&
-      candidatesNoticePeriod !== '' &&
-      prefferedDateOfJoining !== ''
+      candidatesNoticePeriod !== ''
     ) {
       checkMandatory.filledJobDetail = true;
     } else {
@@ -97,6 +97,7 @@ export default class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'department',
+        name: 'Department',
         id: 1,
         placeholder: 'Select a job title',
         Option: [
@@ -109,7 +110,8 @@ export default class JobDetails extends PureComponent {
         ],
       },
       {
-        title: 'Job title',
+        title: 'jobTitle',
+        name: 'Job title',
         id: 2,
         placeholder: 'Select a job title',
         Option: [
@@ -122,7 +124,8 @@ export default class JobDetails extends PureComponent {
         ],
       },
       {
-        title: 'Job category',
+        title: 'jobCategory',
+        name: 'Job category',
         id: 3,
         placeholder: 'Select a job category',
         Option: [
@@ -135,7 +138,8 @@ export default class JobDetails extends PureComponent {
         ],
       },
       {
-        title: 'Work location',
+        title: 'workLocation',
+        name: 'Work location',
         id: 4,
         placeholder: 'Select a work location',
         Option: [
@@ -148,7 +152,8 @@ export default class JobDetails extends PureComponent {
         ],
       },
       {
-        title: 'Reporting Manager',
+        title: 'reportingManager',
+        name: 'Reporting Manager',
         id: 5,
         placeholder: 'Select',
         Option: [
@@ -160,20 +165,23 @@ export default class JobDetails extends PureComponent {
           { key: 6, value: 'Senior' },
         ],
       },
-      // {
-      //   title: `Candidate's notice Period`,
-      //   id: 6,
-      //   placeholder: 'Time period',
-      //   Option: [
-      //     { key: 1, value: 'Test' },
-      //     { key: 2, value: 'ABCD' },
-      //     { key: 3, value: 'Testing' },
-      //     { key: 4, value: '10AM' },
-      //     { key: 5, value: '5PM' },
-      //     { key: 6, value: 'For Hours' },
-      //   ],
-      // },
-      // { title: 'Preferred date of joining', id: 7 },
+    ];
+    const candidateField = [
+      {
+        title: `candidatesNoticePeriod`,
+        name: `Candidate's notice Period`,
+        id: 1,
+        placeholder: 'Time period',
+        Option: [
+          { key: 1, value: 'Test' },
+          { key: 2, value: 'ABCD' },
+          { key: 3, value: 'Testing' },
+          { key: 4, value: '10AM' },
+          { key: 5, value: '5PM' },
+          { key: 6, value: 'For Hours' },
+        ],
+      },
+      { title: 'prefferedDateOfJoining', name: 'Preferred date of joining', id: 2 },
     ];
     const Note = {
       title: 'Note',
@@ -191,7 +199,11 @@ export default class JobDetails extends PureComponent {
             <div className={styles.JobDetailsComponent}>
               <Header />
               <RadioComponent Tab={Tab} />
-              <FieldsComponent dropdownField={dropdownField} handleSelect={this.handleSelect} />
+              <FieldsComponent
+                dropdownField={dropdownField}
+                handleSelect={this.handleSelect}
+                candidateField={candidateField}
+              />
             </div>
           </Col>
           <Col span={8}>

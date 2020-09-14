@@ -3,6 +3,10 @@ import { Row, Col, Select, Typography } from 'antd';
 import ExternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
+@connect(({ info: { jobDetail, checkMandatory } = {} }) => ({
+  jobDetail,
+  checkMandatory,
+}))
 class FirstFieldsComponent extends Component {
   constructor(props) {
     super(props);
@@ -11,20 +15,31 @@ class FirstFieldsComponent extends Component {
   // handleSelect_ = (e) => {
   //   this.props.handleSelect(e);
   // };
-
   render() {
     const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
+    const {
+      position,
+      classification,
+      department,
+      jobTitle,
+      jobCategory,
+      workLocation,
+      reportingManager,
+      candidatesNoticePeriod,
+      prefferedDateOfJoining,
+    } = jobDetail;
     return (
       <>
         <div className={ExternalStyle.FirstFieldsComponent}>
-          {dropdownField.map((item) => (
-            <Row>
-              <Col span={item.title === 'Department' ? 24 : 12}>
-                <Typography.Title level={5}>{item.title}</Typography.Title>
+          <Row gutter={[24, 0]}>
+            {dropdownField.map((item) => (
+              <Col span={item.title === 'department' ? 24 : 12}>
+                <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
                   className={styles}
                   onChange={(e) => handleSelect(e, item.title)}
+                  value={item.title}
                 >
                   {item.Option.map((data) => (
                     <Option value={data.value}>
@@ -36,8 +51,8 @@ class FirstFieldsComponent extends Component {
                   ))}
                 </Select>
               </Col>
-            </Row>
-          ))}
+            ))}
+          </Row>
           {/* <Row gutter={[48, 0]}>
             <Col span={12}>
               <Typography.Title level={5}>{dropdownField[0].title}</Typography.Title>

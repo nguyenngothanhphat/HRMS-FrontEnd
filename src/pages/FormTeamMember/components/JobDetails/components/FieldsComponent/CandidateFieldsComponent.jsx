@@ -15,30 +15,35 @@ class CandidateFieldsComponent extends Component {
       isHidden: !prevState.isHidden,
     }));
   };
+
   render() {
-    const { dropdownField, styles } = this.props;
+    const { dropdownField, styles, candidateField, handleSelect = () => {} } = this.props;
     return (
       <div className={ExternalStyle.CandidateFields}>
         <Typography.Title level={5} className={ExternalStyle.title}>
           To be filled by candidate
         </Typography.Title>
-        {/* <Row>
+        <Row>
           <Col span={8}>
-            <Typography.Title level={5}>{dropdownField[5].title}</Typography.Title>
-            <Select placeholder={dropdownField[5].placeholder} className={styles}>
-              {dropdownField[5].Option.map((data) => (
-                <Option value={data.key}>
+            <Typography.Title level={5}>{candidateField[0].name}</Typography.Title>
+            <Select
+              placeholder={candidateField[0].placeholder}
+              className={styles}
+              onChange={(e) => handleSelect(e, candidateField[0].title)}
+            >
+              {candidateField[0].Option.map((data) => (
+                <Option value={data.value}>
                   <Typography.Text className={ExternalStyle.SelectedOption}>
-                    {data.name}
+                    {data.value}
                   </Typography.Text>
                 </Option>
               ))}
             </Select>
           </Col>
-        </Row> */}
-        {/* <Row gutter={[24, 0]}>
+        </Row>
+        <Row gutter={[24, 0]}>
           <Col span={12}>
-            <Typography.Title level={5}>{dropdownField[6].title}</Typography.Title>
+            <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
             <DatePicker className={styles} placeholder="" picker="week"></DatePicker>
           </Col>
           <Col span={6}>
@@ -90,7 +95,7 @@ class CandidateFieldsComponent extends Component {
               </div>
             ) : null}
           </Col>
-        </Row> */}
+        </Row>
       </div>
     );
   }
