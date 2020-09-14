@@ -1,0 +1,66 @@
+.ViewDocument {
+  margin: 20px 10px 0 10px;
+  border-radius: 5px;
+  border: solid 1px #d6dce0;
+  width: 100%;
+  .tableTitle {
+    display: flex;
+    justify-content: space-between;
+    span {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .goBackButton {
+      img {
+        margin-top: -5px;
+      }
+      span {
+        color: #2c6df9;
+        margin-left: 15px;
+      }
+    }
+    border-bottom: solid 1px #d6dce0;
+    padding: 20px;
+  }
+  .tableContent {
+    padding: 20px;
+    border-bottom: solid 1px #d6dce0;
+    .documentPreviewFrame {
+      border-radius: 5px;
+      border: solid 1px #2c6df9;
+      background-color: #f3f7ff;
+      height: 300px;
+    }
+    .documentInfo {
+      .infoRow {
+        margin: 10px 0;
+        .infoCol1 {
+          font-weight: bold;
+        }
+        .infoCol2 {
+          color: #707177;
+        }
+      }
+      .shareViaEmailInput {
+        width: 400px;
+      }
+    }
+  }
+  .operationButton {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    .uploadButton {
+      color: #ffa100;
+      font-weight: bold;
+    }
+    .saveButton {
+      font-weight: bold;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      background-color: #ffa100;
+      padding: 0 25px;
+      color: white;
+    }
+  }
+}

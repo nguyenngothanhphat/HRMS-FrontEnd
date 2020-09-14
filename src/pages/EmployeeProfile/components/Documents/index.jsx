@@ -1,6 +1,7 @@
 import { Layout, Row, Col } from 'antd';
 import React, { PureComponent } from 'react';
 import InfoCollapseType2 from './InfoCollapseType2';
+import ViewDocument from './ViewDocument';
 import styles from './index.less';
 
 const data = [
@@ -156,7 +157,7 @@ class Documents extends PureComponent {
     return (
       <Layout className={styles.Documents}>
         <Row className={styles.documentRow}>
-          <Col xs={24} lg={12} className={styles.documentCol}>
+          {/* <Col xs={24} lg={12} className={styles.documentCol}>
             {data.map((value, index) =>
               index % 2 === 0 ? <InfoCollapseType2 data={value} /> : '',
             )}
@@ -165,7 +166,8 @@ class Documents extends PureComponent {
             {data.map((value, index) =>
               index % 2 !== 0 ? <InfoCollapseType2 data={value} /> : '',
             )}
-          </Col>
+          </Col> */}
+          <ViewDocument />
         </Row>
       </Layout>
     );
