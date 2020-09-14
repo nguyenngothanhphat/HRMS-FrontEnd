@@ -38,6 +38,7 @@ const info = {
     },
     checkMandatory: {
       filledBasicInformation: false,
+      filledJobDetail: false,
     },
     offerDetailField: {
       currency: true,

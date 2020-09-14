@@ -22,7 +22,7 @@ class CandidateFieldsComponent extends Component {
         <Typography.Title level={5} className={ExternalStyle.title}>
           To be filled by candidate
         </Typography.Title>
-        <Row>
+        {/* <Row>
           <Col span={8}>
             <Typography.Title level={5}>{dropdownField[5].title}</Typography.Title>
             <Select placeholder={dropdownField[5].placeholder} className={styles}>
@@ -35,8 +35,8 @@ class CandidateFieldsComponent extends Component {
               ))}
             </Select>
           </Col>
-        </Row>
-        <Row gutter={[24, 0]}>
+        </Row> */}
+        {/* <Row gutter={[24, 0]}>
           <Col span={12}>
             <Typography.Title level={5}>{dropdownField[6].title}</Typography.Title>
             <DatePicker className={styles} placeholder="" picker="week"></DatePicker>
@@ -90,7 +90,7 @@ class CandidateFieldsComponent extends Component {
               </div>
             ) : null}
           </Col>
-        </Row>
+        </Row> */}
       </div>
     );
   }
