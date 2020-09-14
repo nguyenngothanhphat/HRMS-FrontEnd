@@ -4,6 +4,8 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
+import formTeamMember from './en-US/formTeamMember';
+import commonLayout from './en-US/commonLayout';
 
 export default {
   'navBar.lang': 'Languages',
@@ -19,4 +21,6 @@ export default {
   ...settings,
   ...pwa,
   ...component,
+  ...formTeamMember,
+  ...commonLayout,
 };

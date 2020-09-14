@@ -34,7 +34,25 @@ const info = {
         duration: '',
         poe: []
       }]
-    }
+    },
+    jobDetail: {
+      position: 1,
+      classification: 1,
+      department: '',
+      jobTitle: '',
+      jobCategory: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
+    checkMandatory: {
+      filledBasicInformation: false,
+      filledJobDetail: false,
+    },
+    offerDetailField: {
+      currency: true,
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -50,6 +68,12 @@ const info = {
   },
   reducers: {
     saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveJobDetail(state, action) {
       return {
         ...state,
         ...action.payload,
