@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Row, Col, Tooltip } from 'antd';
+import { Row, Col, Tooltip, Modal, Tabs, Layout, Button } from 'antd';
 import { QuestionCircleFilled, TeamOutlined, EditFilled, LockFilled } from '@ant-design/icons';
 import ModalComponent from './components/Modal';
 import styles from './index.less';
@@ -146,6 +146,7 @@ class GeneralInfo extends PureComponent {
     super(props);
     this.state = {
       visible: false,
+      visibleTitle: false,
       valueNumber: 'Co-Workers',
       valueEmail: 'Co-Workers',
       itemSelected: {},
@@ -162,16 +163,12 @@ class GeneralInfo extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
+      visibleTitle: false,
     });
   };
 
   handleChangeRadio = (e) => {
     const { name, value } = e.target;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employee/saveRadio',
-    //   payload: { name, value },
-    // });
     if (name === 'Personal Number') {
       this.setState({
         valueNumber: value,
@@ -185,14 +182,57 @@ class GeneralInfo extends PureComponent {
     }
   };
 
+  showModalTitle = () => {
+    this.setState({
+      visibleTitle: true,
+    });
+  };
+
   render() {
-    const { visible, itemSelected, valueEmail, valueNumber } = this.state;
+    const { visible, itemSelected, valueEmail, valueNumber, visibleTitle } = this.state;
     const content = 'We require your gender for legal reasons.';
+    const titleName = [
+      { id: 1, name: 'Employee Info' },
+      { id: 2, name: 'Personal Info' },
+      { id: 3, name: 'Passport & Visa' },
+      { id: 4, name: 'Emergency' },
+      { id: 5, name: 'Professional Background' },
+    ];
+    const { TabPane } = Tabs;
     return (
       <div className={styles.GeneralInfo}>
         <div className={styles.Genspage}>
           <div className={styles.backgroundTitle}>
             <p className={styles.GenTitle}>Employee Information</p>
+            <EditFilled onClick={() => this.showModalTitle()} className={styles.GenIconEditTitle} />
+            <Modal
+              title="Edit General Information"
+              visible={visibleTitle}
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+              className={styles.GenModalTitle}
+              width={861}
+              footer={[
+                <Button key="next">Next</Button>,
+                <Button key="submit" type="primary" onClick={this.handleOk}>
+                  Save
+                </Button>,
+              ]}
+            >
+              <Tabs defaultActiveKey="1">
+                {titleName.map((tab) => (
+                  <TabPane tab={tab.name} key={tab.id}>
+                    <Layout>
+                      {tab.name === 'Employee Info' ? 'Employee Info' : ''}
+                      {tab.name === 'Personal Info' ? 'Personal Info' : ''}
+                      {tab.name === 'Passport & Visa' ? 'Passport & Visa' : ''}
+                      {tab.name === 'Emergency' ? 'Emergency' : ''}
+                      {tab.name === 'Professional Background' ? 'Professional Background' : ''}
+                    </Layout>
+                  </TabPane>
+                ))}
+              </Tabs>
+            </Modal>
           </div>
 
           <Row>
