@@ -1,4 +1,6 @@
 .eachCollapse {
+  padding: 0 20px;
+  background-color: white;
   :global {
     .ant-collapse-content > .ant-collapse-content-box {
       padding: 0;
@@ -7,14 +9,19 @@
     .ant-collapse-header {
       font-weight: bold;
       font-size: 13px;
-      .ant-collapse-arrow {
-        margin-top: -3px;
-      }
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .ant-collapse-header::after {
+      display: inline !important;
+      content: url(../../../../../../assets/arrow_icon.svg) !important;
+      margin-left: 15px;
     }
   }
-  &:last-child {
+
+  &:not(:last-child) {
     .eachPanel {
-      border: none;
+      border-bottom: 1px solid #d6dce0;
     }
   }
   .eachPanel {
@@ -22,11 +29,11 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    padding-top: 5px;
-    padding-bottom: 2px;
+    padding: 5px 0 2px 0;
+    border: none;
     .eachRow {
       font-size: 13px;
-      padding: 17px 17px 0 17px;
+      padding: 17px 0 0 0;
       &:last-child {
         padding-bottom: 25px;
       }
@@ -51,6 +58,7 @@
   .statusAndButtons {
     display: flex;
     align-items: center;
+    position: relative;
     a {
       color: #00ba73;
       margin-right: 20px;
@@ -60,17 +68,16 @@
       margin-top: -3px;
     }
     .downloadButton {
-      color: #2c6df9;
-      font-size: 25px;
+      height: 20px;
       margin-right: 20px;
-      :hover {
+      &:hover {
         opacity: 0.7;
       }
     }
     .menuButton {
       color: #bfbfbf;
       font-size: 25px;
-      :hover {
+      &:hover {
         opacity: 0.7;
       }
     }

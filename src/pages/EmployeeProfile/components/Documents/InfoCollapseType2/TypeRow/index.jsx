@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Collapse, Row, Col } from 'antd';
-import { DownloadOutlined, CaretRightOutlined, EllipsisOutlined } from '@ant-design/icons';
-import FileIconPDF from '../../../../../../assets/pdf_icon.png';
+import { CaretUpOutlined, EllipsisOutlined } from '@ant-design/icons';
+import FileIcon from '../../../../../../assets/pdf_icon.png';
+import DownloadIcon from '../../../../../../assets/download_icon.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -19,7 +20,12 @@ class TypeRow extends PureComponent {
   statusAndButtons = () => (
     <div className={styles.statusAndButtons}>
       <a>Complete</a>
-      <DownloadOutlined className={styles.downloadButton} onClick={this.handleDownloadClick} />
+      <img
+        alt="download"
+        src={DownloadIcon}
+        className={styles.downloadButton}
+        onClick={this.handleDownloadClick}
+      />
       <EllipsisOutlined className={styles.menuButton} onClick={this.handleMenuClick} />
     </div>
   );
@@ -29,25 +35,19 @@ class TypeRow extends PureComponent {
     return (
       <div>
         {data.map((row) => (
-          <Collapse
-            defaultActiveKey={['1']}
-            bordered={false}
-            expandIcon={({ isActive }) => (
-              <CaretRightOutlined className={styles.collapseIcon} rotate={isActive ? 90 : 0} />
-            )}
-            className={styles.eachCollapse}
-          >
+          <Collapse defaultActiveKey={['1']} bordered={false} className={styles.eachCollapse}>
             <Panel
               header={row.kind}
               className={styles.eachPanel}
               key="1"
+              showArrow={false}
               extra={this.statusAndButtons()}
             >
               {row.files.map((file) => (
                 <Row className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
                     <a>
-                      <img src={FileIconPDF} alt="file" className={styles.fileIcon} />
+                      <img src={FileIcon} alt="file" className={styles.fileIcon} />
                       <span>{file.fileName}</span>
                     </a>
                   </Col>
