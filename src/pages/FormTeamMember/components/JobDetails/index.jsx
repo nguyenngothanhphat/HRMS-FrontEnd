@@ -3,8 +3,7 @@ import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'a
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
-import StepsComponent from '../StepsComponent';
-import NoteComponent from '../NoteComponent';
+import RightSideComponent from '../RightSideComponent';
 import styles from './index.less';
 import { connect } from 'umi';
 const { Option } = Select;
@@ -132,7 +131,13 @@ export default class JobDetails extends PureComponent {
     ];
     const Steps = {
       title: 'Complete onboarding process at a glance',
-      keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
+      keyPage: [
+        { key: 1, data: `Prepare the new candidate's offer letter` },
+        { key: 2, data: `Send for approval` },
+        { key: 3, data: `Post approval, send letter to candidate` },
+        { key: 4, data: `Post approval, send letter to candidate ` },
+        { key: 5, data: `Setup the employee profile` },
+      ],
     };
     const Note = {
       title: 'Note',
@@ -154,15 +159,7 @@ export default class JobDetails extends PureComponent {
             </div>
           </Col>
           <Col span={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
-                <NoteComponent note={Note} />
-              </Row>
-              <hr />
-              <Row>
-                <StepsComponent Steps={Steps} />
-              </Row>
-            </div>
+            <RightSideComponent Note={Note} Steps={Steps} />
           </Col>
         </Row>
       </>

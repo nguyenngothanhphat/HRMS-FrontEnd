@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styles from './index.less';
 import { Typography, Space } from 'antd';
 import lightning from './assets/lightning.svg';
-const NoteComponent = ({ note = {} }) => {
+const NoteComponent = ({ Note = {} }) => {
   // const renderHTMl = () => {
   //   return note.data;
   // };
@@ -12,9 +12,9 @@ const NoteComponent = ({ note = {} }) => {
         <div>
           <img src={lightning}></img>
         </div>
-        <Typography.Title level={5}>{note.title}</Typography.Title>
+        <Typography.Title level={5}>{Note.title}</Typography.Title>
       </Space>
-      <div>{note.data}</div>
+      <div>{Note.data}</div>
     </div>
   );
 };
