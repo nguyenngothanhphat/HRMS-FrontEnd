@@ -45,7 +45,6 @@ class DirectoryTable extends Component {
             `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '25%',
         fixed: 'left',
       },
       {
@@ -99,7 +98,6 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
-        width: '15%',
       },
     ];
 
@@ -136,7 +134,7 @@ class DirectoryTable extends Component {
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
-      position: ['bottomLeft'],
+      position: ['bottomRight'],
       total: list.length,
       showTotal: (total, range) => (
         <span>
@@ -155,7 +153,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTable}>
         <Table
-          size="medium"
+          size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
             return {
@@ -168,7 +166,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          // scroll={{ y: 'auto' }}
+          scroll={{ x: 800, y: 400 }}
         />
       </div>
     );
