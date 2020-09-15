@@ -1,4 +1,3 @@
-import { Layout, Row, Col } from 'antd';
 import React, { PureComponent } from 'react';
 import InfoCollapseType2 from './InfoCollapseType2';
 import ViewDocument from './ViewDocument';

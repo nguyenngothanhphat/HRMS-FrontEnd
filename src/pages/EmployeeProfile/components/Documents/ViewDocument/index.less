@@ -20,6 +20,9 @@
         color: #2c6df9;
         margin-left: 15px;
       }
+      &:hover {
+        opacity: 0.8;
+      }
     }
     border-bottom: solid 1px #d6dce0;
     padding: 20px;
@@ -29,13 +32,29 @@
     border-bottom: solid 1px #d6dce0;
     .documentPreviewFrame {
       border-radius: 5px;
-      border: solid 1px #2c6df9;
       background-color: #f3f7ff;
-      height: 300px;
+      // margin-bottom: 40px;
+      width: 100%;
+      :global {
+        .ant-upload.ant-upload-drag {
+          height: 300px;
+          width: 100%;
+          border: dashed 1px #2c6df9;
+        }
+        .ant-upload-list .ant-upload-list-picture {
+          width: 100%;
+          margin: 20px;
+        }
+        .ant-upload-list {
+          background-color: white;
+          color: #00c598;
+          padding: 10px 0;
+        }
+      }
     }
     .documentInfo {
       .infoRow {
-        margin: 10px 0;
+        margin: 15px 0;
         .infoCol1 {
           font-weight: bold;
         }
@@ -44,7 +63,7 @@
         }
       }
       .shareViaEmailInput {
-        width: 400px;
+        width: 250px;
       }
     }
   }

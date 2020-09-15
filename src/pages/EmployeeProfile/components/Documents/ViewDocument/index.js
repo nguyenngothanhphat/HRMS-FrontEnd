@@ -1,11 +1,31 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin } from 'antd';
+import { Button, Row, Col, Select, Spin, Upload, message } from 'antd';
 import debounce from 'lodash/debounce';
+import { InboxOutlined } from '@ant-design/icons';
 import GoBackButton from '../../../../../assets/goBack_icon.svg';
+import AttachmentIcon from '../../../../../assets/attachment_icon.svg';
 import styles from './index.less';
+
+const { Dragger } = Upload;
 
 const { Option } = Select;
 
+const propsUploadFile = {
+  name: 'file',
+  multiple: true,
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  onChange(info) {
+    const { status } = info.file;
+    if (status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (status === 'done') {
+      message.success(`${info.file.name} file uploaded successfully.`);
+    } else if (status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+};
 export default class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
@@ -19,8 +39,7 @@ export default class ViewDocument extends PureComponent {
     fetching: false,
   };
 
-  fetchUser = (value) => {
-    console.log('fetching user', value);
+  fetchUser = () => {
     this.lastFetchId += 1;
     const fetchId = this.lastFetchId;
     this.setState({ data: [], fetching: true });
@@ -60,36 +79,42 @@ export default class ViewDocument extends PureComponent {
         </div>
         <div className={styles.tableContent}>
           <div className={styles.documentPreviewFrame}>
-            <span />
+            <Dragger {...propsUploadFile}>
+              <p className="ant-upload-text">
+                <img src={AttachmentIcon} alt="upload" />{' '}
+                <a style={{ color: '#2c6df9', fontWeight: 'bold' }}>Choose file</a> or drap files
+                here
+              </p>
+            </Dragger>
           </div>
           <div className={styles.documentPages} />
           <div className={styles.documentInfo}>
             <Row className={styles.infoRow}>
-              <Col className={styles.infoCol1} span={8}>
+              <Col className={styles.infoCol1} span={7}>
                 Document Type
               </Col>
-              <Col className={styles.infoCol2} span={16}>
+              <Col className={styles.infoCol2} span={17}>
                 Adhaar Card
               </Col>
             </Row>
             <Row className={styles.infoRow}>
-              <Col className={styles.infoCol1} span={8}>
+              <Col className={styles.infoCol1} span={7}>
                 Adhaar Card Number
               </Col>
-              <Col className={styles.infoCol2} span={16}>
+              <Col className={styles.infoCol2} span={17}>
                 9999-0000-0000-0000
               </Col>
             </Row>
             <Row className={styles.infoRow}>
-              <Col className={styles.infoCol1} span={8}>
+              <Col className={styles.infoCol1} span={7}>
                 Share with
               </Col>
-              <Col className={styles.infoCol2} span={16}>
+              <Col className={styles.infoCol2} span={17}>
                 <Select
                   mode="multiple"
                   labelInValue
                   value={value}
-                  placeholder="Select users"
+                  placeholder="Choose email address"
                   notFoundContent={fetching ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchUser}

@@ -58,10 +58,14 @@ class TypeRow extends PureComponent {
               {row.files.map((file) => (
                 <Row className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
-                    <a>
+                    <div
+                      onClick={() => {
+                        console.log('Hi em');
+                      }}
+                    >
                       <img src={FileIcon} alt="file" className={styles.fileIcon} />
                       <span>{file.fileName}</span>
-                    </a>
+                    </div>
                   </Col>
                   <Col span={7}>{file.generatedBy}</Col>
                   <Col span={7}>{file.date}</Col>
