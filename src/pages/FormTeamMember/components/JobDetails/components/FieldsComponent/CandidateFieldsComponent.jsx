@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import { Radio, Row, Col, Select, DatePicker, Typography, Alert } from 'antd';
 import ExternalStyle from './CandidateFieldsComponent.less';
+import { connect } from 'umi';
 const { Option } = Select;
+@connect(({ info: { jobDetail } = {} }) => ({
+  jobDetail,
+}))
 class CandidateFieldsComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isHidden: false,
-      isToggle: false,
     };
+  }
+  static getDerivedStateFromProps(props) {
+    if ('jobDetail' in props) {
+      return { jobDetail: props.jobDetail || {} };
+    }
+    return null;
   }
   handleClick = () => {
     this.setState((prevState) => ({
@@ -18,18 +27,21 @@ class CandidateFieldsComponent extends Component {
 
   render() {
     const { dropdownField, styles, candidateField, handleSelect = () => {} } = this.props;
+    const { jobDetail = {} } = this.state;
+    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetail;
     return (
       <div className={ExternalStyle.CandidateFields}>
         <Typography.Title level={5} className={ExternalStyle.title}>
           To be filled by candidate
         </Typography.Title>
-        <Row>
-          <Col span={8}>
+        <Row gutter={[24, 0]}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>{candidateField[0].name}</Typography.Title>
             <Select
               placeholder={candidateField[0].placeholder}
               className={styles}
               onChange={(e) => handleSelect(e, candidateField[0].title)}
+              defaultValue={candidatesNoticePeriod}
             >
               {candidateField[0].Option.map((data) => (
                 <Option value={data.value}>
@@ -42,11 +54,17 @@ class CandidateFieldsComponent extends Component {
           </Col>
         </Row>
         <Row gutter={[24, 0]}>
-          <Col span={12}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
-            <DatePicker className={styles} placeholder="" picker="week"></DatePicker>
+            <DatePicker
+              className={styles}
+              placeholder=""
+              picker="week"
+              onChange={(e) => handleSelect(e, candidateField[1].title)}
+              defaultValue={prefferedDateOfJoining}
+            ></DatePicker>
           </Col>
-          <Col span={6}>
+          <Col xs={16} sm={16} md={14} lg={10} xl={10}>
             {!this.state.isHidden ? (
               <div className={ExternalStyle.warning}>
                 <button

@@ -25,6 +25,20 @@ export default class JobDetails extends PureComponent {
     return null;
   }
 
+  handleRadio = (e) => {
+    const { target } = e;
+    const { name, value } = target;
+    const { dispatch } = this.props;
+    const { jobDetail = {} } = this.state;
+    jobDetail[name] = value;
+
+    dispatch({
+      type: 'info/saveJobDetail',
+      payload: {
+        jobDetail,
+      },
+    });
+  };
   handleSelect = (value, name) => {
     const { dispatch, checkMandatory } = this.props;
     const { jobDetail = {} } = this.state;
@@ -46,7 +60,8 @@ export default class JobDetails extends PureComponent {
       jobTitle !== '' &&
       workLocation !== '' &&
       reportingManager !== '' &&
-      candidatesNoticePeriod !== ''
+      candidatesNoticePeriod !== '' &&
+      prefferedDateOfJoining !== ''
     ) {
       checkMandatory.filledJobDetail = true;
     } else {
@@ -61,22 +76,12 @@ export default class JobDetails extends PureComponent {
         },
       },
     });
-    // console.log(e, name);
-
-    // dispatch({
-    //   type: 'info/saveJobDetail',
-    //   payload: {
-    //     jobDetail,
-    //     checkMandatory: {
-    //       ...checkMandatory,
-    //     },
-    //   },
-    // });
   };
   render() {
     const Tab = {
       positionTab: {
         title: 'Position',
+        name: 'position',
         arr: [
           { value: 1, position: 'Employee' },
           { value: 2, position: 'Contingent worker' },
@@ -84,6 +89,7 @@ export default class JobDetails extends PureComponent {
       },
       classificationTab: {
         title: 'Classification',
+        name: 'classification',
         arr: [
           { value: 1, classification: 'Full-Time (Employee working more than 30 hours a week)' },
           { value: 2, classification: 'Part-Time (Employee working less than 30 hours a week)' },
@@ -195,10 +201,10 @@ export default class JobDetails extends PureComponent {
     return (
       <>
         <Row gutter={[24, 0]}>
-          <Col span={16}>
+          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.JobDetailsComponent}>
               <Header />
-              <RadioComponent Tab={Tab} />
+              <RadioComponent Tab={Tab} handleRadio={this.handleRadio} />
               <FieldsComponent
                 dropdownField={dropdownField}
                 handleSelect={this.handleSelect}
@@ -206,12 +212,12 @@ export default class JobDetails extends PureComponent {
               />
             </div>
           </Col>
-          <Col span={8}>
+          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
             <div className={styles.rightWrapper}>
               <Row>
                 <NoteComponent note={Note} />
               </Row>
-              <Row style={{ width: '322px' }}>
+              <Row style={{ width: '100%' }}>
                 <StepsComponent />
               </Row>
             </div>

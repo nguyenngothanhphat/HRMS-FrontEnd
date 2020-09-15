@@ -22,7 +22,7 @@ class Header extends Component {
             {text}
           </Typography.Title>
         </div>
-        <div className={styles.HeaderLine}></div>
+        <hr />
       </>
     );
   }
