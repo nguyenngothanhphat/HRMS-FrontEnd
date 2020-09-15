@@ -18,7 +18,7 @@ export default function GroupInfoType2({ data }) {
 
             <div className={styles.content}>
               <p style={{ width: '50%' }}>{temp[0][0]}</p>
-              <p style={{ width: '50%' }}>{temp[0][1]}</p>
+              <p style={{ width: '100%' }}>{temp[0][1]}</p>
             </div>
           </div>
         );
