@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button } from 'antd';
+import { Divider, Tag, Menu, Dropdown, Button, Spin } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -7,9 +7,10 @@ import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
 
-@connect(({ employeeProfile: { generalData = {}, compensationData = {} } = {} }) => ({
+@connect(({ loading, employeeProfile: { generalData = {}, compensationData = {} } = {} }) => ({
   generalData,
   compensationData,
+  loading: loading.effects['employeeProfile/fetchGeneralInfo'],
 }))
 class ViewInformation extends PureComponent {
   constructor(props) {
@@ -54,7 +55,7 @@ class ViewInformation extends PureComponent {
       'Product design',
       'Sales',
     ];
-    const { generalData, compensationData } = this.props;
+    const { generalData, compensationData, loading } = this.props;
     const { firstName = '', avatar = '', skillss = dummyListSkill, createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible } = this.state;
@@ -77,6 +78,12 @@ class ViewInformation extends PureComponent {
         </Item>
       </Menu>
     );
+    if (loading)
+      return (
+        <div className={s.viewLoading}>
+          <Spin />
+        </div>
+      );
     return (
       <div className={s.viewRight__infoEmployee}>
         <img
