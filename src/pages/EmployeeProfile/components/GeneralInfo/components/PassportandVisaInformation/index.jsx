@@ -1,19 +1,19 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip } from 'antd';
-import { EditFilled, QuestionCircleOutlined } from '@ant-design/icons';
+import { Row, Col } from 'antd';
+import { EditFilled } from '@ant-design/icons';
 import styles from './index.less';
 
-class EmployeeInformation extends PureComponent {
+class PassportVisaInformation extends PureComponent {
   render() {
     const { dataAPI = {} } = this.props;
     console.log('generalData', dataAPI);
     return (
-      <div className={styles.EmployeeInformation}>
+      <div className={styles.PassportVisaInformation}>
         <Row className={styles.EmployeeDetails}>
           <Col span={24}>
             <div>
               <div className={styles.spaceTitle}>
-                <p className={styles.EmployeeTitle}>Employee Information</p>
+                <p className={styles.EmployeeTitle}>Passport and Visa Information</p>
                 <div className={styles.flexEdit}>
                   <EditFilled className={styles.IconEdit} />
                   <p className={styles.Edit}>Edit</p>
@@ -25,83 +25,90 @@ class EmployeeInformation extends PureComponent {
             <div className={styles.spaceDetails}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>Legal Name</p>
+                  <p className={styles.Name}>Passport Number</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>{dataAPI.legalName}</p>
+                  <p className={styles.Text}>{dataAPI.passportNo}</p>
                 </Col>
               </Col>
             </div>
             <div className={styles.spaceDetails}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>Date of Birth</p>
+                  <p className={styles.Name}>Issued Country</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>date</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={6} className={styles.boxInfoToolTip}>
-                  <p className={styles.Name}>Legal Gender</p>
-                  <Tooltip placement="top" title="aa">
-                    <QuestionCircleOutlined />
-                  </Tooltip>
-                </Col>
-                <Col span={6}>
-                  <p className={styles.Text}>{dataAPI.legalGender}</p>
+                  <p className={styles.Text}>{dataAPI.passportIssueCountry}</p>
                 </Col>
               </Col>
             </div>
             <div className={styles.spaceDetails}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>Employee ID</p>
+                  <p className={styles.Name}>Issued On</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>{dataAPI.employeeId}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={6}>
-                  <p className={styles.Name}>Work Email</p>
-                </Col>
-                <Col span={6}>
-                  <p className={styles.Text}>email</p>
+                  <p className={styles.Text}>Issued On</p>
                 </Col>
               </Col>
             </div>
             <div className={styles.spaceDetails}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>Work Number</p>
+                  <p className={styles.Name}>Visa Number</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>number phone</p>
+                  <p className={styles.Text}>Visa Number</p>
                 </Col>
               </Col>
             </div>
             <div className={styles.spaceDetails}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>Adhaar Card Number</p>
+                  <p className={styles.Name}>Visa Type</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>Card Number</p>
+                  <p className={styles.Text}>Visa Type</p>
+                </Col>
+              </Col>
+            </div>
+            <div className={styles.spaceDetails}>
+              <Col span={24} className={styles.boxInfo}>
+                <Col span={6}>
+                  <p className={styles.Name}>Country</p>
+                </Col>
+                <Col span={6}>
+                  <p className={styles.Text}>Country</p>
+                </Col>
+              </Col>
+            </div>
+            <div className={styles.spaceDetails}>
+              <Col span={24} className={styles.boxInfo}>
+                <Col span={6}>
+                  <p className={styles.Name}>Entry Type</p>
+                </Col>
+                <Col span={6}>
+                  <p className={styles.Text}>Entry Type</p>
+                </Col>
+              </Col>
+            </div>
+            <div className={styles.spaceDetails}>
+              <Col span={24} className={styles.boxInfo}>
+                <Col span={6}>
+                  <p className={styles.Name}>Issued On</p>
+                </Col>
+                <Col span={6}>
+                  <p className={styles.Text}>Issued On</p>
                 </Col>
               </Col>
             </div>
             <div className={styles.spaceDetailsBot}>
               <Col span={24} className={styles.boxInfo}>
                 <Col span={6}>
-                  <p className={styles.Name}>UAN Number</p>
+                  <p className={styles.Name}>Valid Till</p>
                 </Col>
                 <Col span={6}>
-                  <p className={styles.Text}>UAN Number</p>
+                  <p className={styles.Text}>Valid Till</p>
                 </Col>
               </Col>
             </div>
@@ -112,4 +119,4 @@ class EmployeeInformation extends PureComponent {
   }
 }
 
-export default EmployeeInformation;
+export default PassportVisaInformation;

@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
+import PersonalInformation from './components/PersonalInformation';
+import PassportVisaInformation from './components/PassportandVisaInformation';
+import EmergencyContact from './components/EmergencyContactDetails';
 import styles from './index.less';
 
 @connect(({ loading, employeeProfile }) => ({
@@ -15,8 +18,6 @@ class GeneralInfo extends PureComponent {
       employeeProfile: { generalData = {} },
     } = this.props;
 
-    console.log('Loading general info', loadingGeneral);
-
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
@@ -26,6 +27,9 @@ class GeneralInfo extends PureComponent {
     return (
       <div className={styles.GeneralInfo}>
         <EmployeeInformation dataAPI={generalData} />
+        <PersonalInformation dataAPI={generalData} />
+        <PassportVisaInformation dataAPI={generalData} />
+        <EmergencyContact dataAPI={generalData} />
       </div>
     );
   }
