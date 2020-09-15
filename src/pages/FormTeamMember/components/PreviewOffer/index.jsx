@@ -95,24 +95,6 @@ const PreviewOffer = () => {
     resetForm();
   };
 
-  // const validateEmail = (email) => {
-  //   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //   return re.test(String(email).toLowerCase());
-  // };
-
-  const handleMail = (value) => {
-    setMail(value);
-    // console.log(value);
-    // if (validateEmail(value)) {
-    //   return;
-    // }
-    // Mail is not valid
-    // if (mailRef) {
-    //   console.log(mailRef.props.class);
-    //   console.log('wrong');
-    // }
-  };
-
   useEffect(() => {
     // Set width for each input
     for (let i = 0; i < inputRefs.length; i += 1) {
