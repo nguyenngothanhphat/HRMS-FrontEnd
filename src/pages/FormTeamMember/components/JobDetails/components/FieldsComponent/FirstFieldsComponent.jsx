@@ -1,34 +1,70 @@
 import React, { Component } from 'react';
 import { Row, Col, Select, Typography } from 'antd';
 import ExternalStyle from './FirstFieldsComponent.less';
-
+import { connect } from 'umi';
 const { Option } = Select;
+
+@connect(({ info: { jobDetail } = {} }) => ({
+  jobDetail,
+}))
 class FirstFieldsComponent extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isNull: false,
+    };
   }
-
-  // handleSelect_ = (e) => {
-  //   this.props.handleSelect(e);
-  // };
-
+  static getDerivedStateFromProps(props) {
+    if ('jobDetail' in props) {
+      return { jobDetail: props.jobDetail || {} };
+    }
+    return null;
+  }
+  saveData = (e) => {
+    // if (name === 'department') {
+    //   console.log(e);
+    // }
+    console.log(e);
+  };
   render() {
     const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
+    const { jobDetail = {} } = this.state;
+    const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
     return (
       <>
         <div className={ExternalStyle.FirstFieldsComponent}>
-          {dropdownField.map((item) => (
-            <Row>
-              <Col span={item.title === 'Department' ? 24 : 12}>
-                <Typography.Title level={5}>{item.title}</Typography.Title>
+          <Row gutter={[24, 0]}>
+            {dropdownField.map((item) => (
+              <Col
+                xs={24}
+                sm={24}
+                md={12}
+                lg={12}
+                xl={12}
+                offset={item.title === 'department' ? 12 : 0}
+                pull={item.title === 'department' ? 12 : 0}
+              >
+                <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
                   className={styles}
                   onChange={(e) => handleSelect(e, item.title)}
+                  defaultValue={
+                    item.title === 'department'
+                      ? department
+                      : item.title === 'jobTitle'
+                      ? jobTitle
+                      : item.title === 'jobCategory'
+                      ? jobCategory
+                      : item.title === 'workLocation'
+                      ? workLocation
+                      : item.title === 'reportingManager'
+                      ? reportingManager
+                      : null
+                  }
                 >
                   {item.Option.map((data) => (
                     <Option value={data.value}>
-                      {console.log(Option)}
                       <Typography.Text className={ExternalStyle.SelectedOption}>
                         {data.value}
                       </Typography.Text>
@@ -36,96 +72,8 @@ class FirstFieldsComponent extends Component {
                   ))}
                 </Select>
               </Col>
-            </Row>
-          ))}
-          {/* <Row gutter={[48, 0]}>
-            <Col span={12}>
-              <Typography.Title level={5}>{dropdownField[0].title}</Typography.Title>
-              <Select
-                placeholder={dropdownField[0].placeholder}
-                className={styles}
-                onChange={(e) => this.handleSelect_(e, "department")}
-              >
-                {dropdownField[0].Option.map((data) => (
-                  <Option value={data.value}>
-                    {console.log(Option)}
-                    <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.value}
-                    </Typography.Text>
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-          </Row> */}
-          {/* <Row gutter={[24, 0]}>
-            <Col span={12}>
-              <Typography.Title level={5}>{dropdownField[1].title}</Typography.Title>
-              <Select
-                placeholder={dropdownField[1].placeholder}
-                className={styles}
-                onChange={(e) => this.handleSelect_(e)}
-              >
-                {dropdownField[1].Option.map((data) => (
-                  <Option value={data.value}>
-                    <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.value}
-                    </Typography.Text>
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={12}>
-              <Typography.Title level={5}>{dropdownField[2].title}</Typography.Title>
-              <Select
-                placeholder={dropdownField[2].placeholder}
-                className={styles}
-                name="select"
-                onChange={(e) => this.handleSelect_(e)}
-              >
-                {dropdownField[2].Option.map((data) => (
-                  <Option value={data.value}>
-                    <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.value}
-                    </Typography.Text>
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-          </Row> */}
-          {/* <Row gutter={[24, 0]}>
-            <Col span={12}>
-              <Typography.Title level={5}>{dropdownField[3].title}</Typography.Title>
-              <Select
-                placeholder={dropdownField[3].placeholder}
-                className={styles}
-                onChange={(e) => this.handleSelect_(e)}
-              >
-                {dropdownField[3].Option.map((data) => (
-                  <Option value={data.value}>
-                    <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.value}
-                    </Typography.Text>
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={12}>
-              <Typography.Title level={5}>{dropdownField[4].title}</Typography.Title>
-              <Select
-                placeholder={dropdownField[4].placeholder}
-                className={styles}
-                onChange={(e) => this.handleSelect_(e)}
-              >
-                {dropdownField[4].Option.map((data) => (
-                  <Option value={data.value}>
-                    <Typography.Text className={ExternalStyle.SelectedOption}>
-                      {data.value}
-                    </Typography.Text>
-                  </Option>
-                ))}
-              </Select>
-            </Col>
-          </Row> */}
+            ))}
+          </Row>
         </div>
         <div className={ExternalStyle.Line} />
       </>
