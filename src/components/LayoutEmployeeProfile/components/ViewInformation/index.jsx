@@ -1,12 +1,33 @@
 import React, { PureComponent } from 'react';
 import { Divider, Tag, Menu, Dropdown, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import ModalUpload from '@/components/ModalUpload';
 import s from '@/components/LayoutEmployeeProfile/index.less';
+import { visible } from 'chalk';
 
 const { Item } = Menu;
 
 class ViewInformation extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
+
+  openModalUpload = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   render() {
+    const { visible } = this.state;
     const listTagSkills = [
       { color: 'red', name: 'Product Management' },
       { color: 'volcano', name: 'UX Design' },
@@ -42,7 +63,12 @@ class ViewInformation extends PureComponent {
           alt="img-avt"
           className={s.infoEmployee__imgAvt}
         />
-        {/* <div className={s.infoEmployee__imgAvt__upload}>btn upload</div> */}
+        <img
+          src="/assets/images/iconUploadImage.svg"
+          onClick={this.openModalUpload}
+          alt="img-upload"
+          className={s.infoEmployee__imgAvt__upload}
+        />
         <div className={s.infoEmployee__textNameAndTitle}>
           <p className={s.infoEmployee__textNameAndTitle__name}>Aditya Venkatesh</p>
           <p className={s.infoEmployee__textNameAndTitle__title}>UX Lead, Designer</p>
@@ -86,6 +112,7 @@ class ViewInformation extends PureComponent {
             </Button>
           </Dropdown>
         </div>
+        <ModalUpload visible={visible} handleCancel={this.handleCancel} />
       </div>
     );
   }

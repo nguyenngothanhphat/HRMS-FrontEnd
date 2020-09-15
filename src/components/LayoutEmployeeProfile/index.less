@@ -46,8 +46,15 @@
           margin: auto;
           &__upload {
             position: absolute;
+            cursor: pointer;
+            right: -65px;
+            margin: auto;
+            left: 0;
             top: 120px;
-            right: 66px;
+            &:active,
+            &:hover {
+              opacity: 0.5;
+            }
           }
         }
         &__textNameAndTitle {
