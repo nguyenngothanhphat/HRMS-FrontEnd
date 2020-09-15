@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Button } from 'antd';
+import { Tabs } from 'antd';
 import { formatMessage } from 'umi';
 import styles from './index.less';
 import OrganChart from './components/OrganisationChart';
@@ -9,9 +9,12 @@ import DirectoryComponent from './components/Directory';
 export default class Directory extends PureComponent {
   operations = () => {
     return (
-      <Button style={styles.viewActivityButton}>
-        {formatMessage({ id: 'pages.directory.viewActivityLog' })} (15)
-      </Button>
+      <div className={styles.viewActivityBox}>
+        <div className={styles.viewActivityBoxBackGround} />
+        <div className={styles.viewActivityButton}>
+          {formatMessage({ id: 'pages.directory.viewActivityLog' })} (15)
+        </div>
+      </div>
     );
   };
 
