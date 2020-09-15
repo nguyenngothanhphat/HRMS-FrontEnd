@@ -34,6 +34,12 @@ const PreviewOffer = () => {
 
   const [mail, setMail] = useState('');
 
+  const [mailForm] = Form.useForm();
+
+  const resetForm = () => {
+    mailForm.resetFields();
+  };
+
   const imageHandler = (e) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -80,6 +86,7 @@ const PreviewOffer = () => {
     setCity2('');
     setFile(null);
     setMail('');
+    resetForm();
   };
 
   // const validateEmail = (email) => {
@@ -333,7 +340,7 @@ const PreviewOffer = () => {
 
           <div className={styles.mail}>
             <span>HR Email ID</span>
-            <Form initialValues={{ mail }}>
+            <Form form={mailForm} value={mail}>
               <Form.Item
                 name="email"
                 rules={[
