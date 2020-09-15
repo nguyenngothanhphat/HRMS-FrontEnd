@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 import logo from './components/images/brand-logo.png';
-// import whiteImg from './components/images/white.png';
 // eslint-disable-next-line import/no-unresolved
 import whiteImg from './components/images/white.png';
 
@@ -11,7 +10,7 @@ import CancelIcon from './components/CancelIcon';
 
 import styles from './index.less';
 
-const INPUT_WIDTH = [40, 100, 10, 120, 100, 40, 100, 10, 120, 100]; // Width for each input field
+const INPUT_WIDTH = [40, 100, 18, 120, 100, 40, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = () => {
   const inputRefs = [];
@@ -55,6 +54,13 @@ const PreviewOffer = () => {
   };
 
   const handleSubmit = () => {
+    // Check if mail address is valid
+    const mailError = mailForm.getFieldError('email');
+
+    if (mailError) {
+      return;
+    }
+
     // Insert all value of inputs
     const info = {
       day,
@@ -133,7 +139,7 @@ const PreviewOffer = () => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={day} type="text" onChange={(e) => setDay(e.target.value)} />
+                <input value={day} type="number" onChange={(e) => setDay(e.target.value)} />
               </div>{' '}
               day of
               <div
@@ -141,7 +147,7 @@ const PreviewOffer = () => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={month} type="text" onChange={(e) => setMonth(e.target.value)} />
+                <input value={month} type="number" onChange={(e) => setMonth(e.target.value)} />
               </div>
               . 20
               <div
@@ -149,7 +155,7 @@ const PreviewOffer = () => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={year} type="text" onChange={(e) => setYear(e.target.value)} />
+                <input value={year} type="number" onChange={(e) => setYear(e.target.value)} />
               </div>
               . between [name of employer] a corporation incoporated under the laws of Province on
               Ontario, and having its principal place of business at{' '}
@@ -340,7 +346,8 @@ const PreviewOffer = () => {
 
           <div className={styles.mail}>
             <span>HR Email ID</span>
-            <Form form={mailForm} value={mail}>
+
+            <Form form={mailForm} name="myForm" value={mail}>
               <Form.Item
                 name="email"
                 rules={[
@@ -355,9 +362,8 @@ const PreviewOffer = () => {
                 ]}
               >
                 <Input
-                  name="mail"
                   required={false}
-                  // value={mail}
+                  value={mail}
                   placeholder="address@terraminds.com"
                   onChange={(e) => setMail(e.target.value)}
                 />

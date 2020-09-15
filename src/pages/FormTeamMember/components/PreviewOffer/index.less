@@ -7,6 +7,7 @@
 @big-glow: #f6f7f9;
 @blue: #2c6df9;
 @orange: #ffa100;
+@dark-orange: #e08e00;
 @border-color: #d6dce0;
 
 .previewContainer {
@@ -65,9 +66,22 @@
           //   width: 200px;
 
           input {
+            text-align: center;
             border: none;
             outline: none;
             width: 100%;
+          }
+
+          /* Chrome, Safari, Edge, Opera */
+          input::-webkit-outer-spin-button,
+          input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+
+          /* Firefox */
+          input[type='number'] {
+            -moz-appearance: textfield;
           }
 
           &:before {
@@ -150,6 +164,10 @@
                 fill: @blue;
               }
             }
+
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
       }
@@ -209,16 +227,19 @@
           height: 40px;
           background-color: @orange;
           border-radius: 25px;
-
           border: none;
           outline: none;
-
           cursor: pointer;
+          transition: background-color 0.2s ease-in;
 
           span {
             font-size: 14px;
             font-weight: 500;
             color: white;
+          }
+
+          &:hover {
+            background-color: @dark-orange;
           }
         }
 
