@@ -9,6 +9,8 @@ class EmployeeInformation extends PureComponent {
       { id: 1, name: 'Legal Name', text: 'Aditya Venkatesh' },
       { id: 2, name: 'Date of Birth', text: '21st May 1995' },
     ];
+    const { dataAPI = {} } = this.props;
+    console.log('generalData', dataAPI);
     return (
       <div className={styles.EmployeeInformation}>
         <Row className={styles.EmployeeDetails}>

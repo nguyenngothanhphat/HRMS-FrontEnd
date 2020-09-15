@@ -1,11 +1,20 @@
 import React, { PureComponent } from 'react';
 import { Spin } from 'antd';
+import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
 import styles from './index.less';
 
+@connect(({ loading, employeeProfile }) => ({
+  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
+  employeeProfile,
+}))
 class GeneralInfo extends PureComponent {
   render() {
-    const { loading = false } = this.props;
+    const {
+      loading = false,
+      employeeProfile: { generalData = {} },
+    } = this.props;
+
     if (loading)
       return (
         <div className={styles.Loading}>
@@ -14,7 +23,7 @@ class GeneralInfo extends PureComponent {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation />
+        <EmployeeInformation dataAPI={generalData} />
       </div>
     );
   }

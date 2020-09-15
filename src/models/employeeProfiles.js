@@ -1,5 +1,5 @@
 import { dialog } from '@/utils/utils';
-import getGeneralInfo from '@/services/employeeProfiles';
+import { getGeneralInfo, getCompensation } from '@/services/employeeProfiles';
 
 const employeeProfile = {
   namespace: 'employeeProfile',
@@ -7,14 +7,22 @@ const employeeProfile = {
     employeeById: {},
   },
   effects: {
-    *fetchGeneralInfo({ payload: { id = '' } }, { call, put }) {
+    *fetchGeneralInfo({ payload: { employee = '' } }, { call, put }) {
       try {
-        console.log(id);
-        const response = yield call(getGeneralInfo, { id });
-        console.log(response);
+        const response = yield call(getGeneralInfo, { employee });
         const { statusCode, data: generalData = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveGeneral', payload: { generalData } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCompensation({ payload: { employee = '' } }, { call, put }) {
+      try {
+        const response = yield call(getCompensation, { employee });
+        const { statusCode, data: compensationData = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveGeneral', payload: { compensationData } });
       } catch (errors) {
         dialog(errors);
       }

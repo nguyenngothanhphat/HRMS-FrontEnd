@@ -20,13 +20,16 @@ class EmployeeProfile extends Component {
   componentDidMount() {
     // fetch employee by id
     const {
-      match: { params: { reId: id = '' } = {} },
+      match: { params: { reId: employee = '' } = {} },
       dispatch,
     } = this.props;
-    console.log(id);
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
-      payload: { id },
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchCompensation',
+      payload: { employee },
     });
   }
 
