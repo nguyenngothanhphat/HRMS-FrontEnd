@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Input } from 'antd';
+import { formatMessage } from 'umi';
 import Chart from './Chart';
 import s from './index.less';
 
@@ -58,16 +59,20 @@ class OrganChart extends PureComponent {
       <div className={s.container}>
         <Row type="flex" justify="space-between">
           <Input
-            placeholder="Search..."
+            placeholder={formatMessage({ id: 'pages.directory.organisationChart.search' })}
             className={s.viewSearch}
             onChange={(e) => this.setState({ q: e.target.value })}
             onPressEnter={this.handleSearch}
           />
           <div className={s.viewAction}>
-            <p className={s.viewAction__text}>Expand All</p>
-            <p className={s.viewAction__text}>Colapse All</p>
+            <p className={s.viewAction__text}>
+              {formatMessage({ id: 'pages.directory.organisationChart.expandAll' })}
+            </p>
+            <p className={s.viewAction__text}>
+              {formatMessage({ id: 'pages.directory.organisationChart.collapseAll' })}
+            </p>
             <a href="/images/myw3schoolsimage.jpg" download className={s.viewAction__textDownload}>
-              Download
+              {formatMessage({ id: 'pages.directory.organisationChart.download' })}
             </a>
           </div>
         </Row>

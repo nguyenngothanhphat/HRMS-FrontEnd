@@ -70,16 +70,6 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  // onFinish = (values) => {
-  //   const newValues = { ...values };
-  //   newValues.workEmail += '@terralogic.com';
-  //   console.log('Success:', newValues);
-  // };
-
-  // onFinishFailed = (errorInfo) => {
-  //   console.log('Failed:', errorInfo);
-  // };
-
   onClickClose = () => {
     this.setState({
       isOpenReminder: false,
@@ -102,8 +92,6 @@ class BasicInformation extends PureComponent {
         name="basic"
         initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
         onFocus={this.onFocus}
-        // onFinish={this.onFinish}
-        // onFinishFailed={this.onFinishFailed}
       >
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>

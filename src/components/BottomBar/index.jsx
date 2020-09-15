@@ -12,15 +12,6 @@ class BottomBar extends PureComponent {
     this.state = {};
   }
 
-  // componentWillUpdate(newProp) {
-  //   const { offerDetailField, checkMandatory } = newProp;
-  //   const { currency } = offerDetailField;
-  //   const { filledBasicInformation } = checkMandatory;
-  //   if (currency === false) {
-  //     console.log('Update');
-  //   }
-  // }
-
   onClickNext = () => {
     const { onClickNext } = this.props;
     onClickNext();
@@ -66,7 +57,6 @@ class BottomBar extends PureComponent {
           className={`${styles.bottomBar__button__primary} ${
             !filledBasicInformation ? styles.bottomBar__button__disabled : ''
           }`}
-          // { filledBasicInformation ? disabled : null }
           disabled={!filledBasicInformation}
         >
           Next
