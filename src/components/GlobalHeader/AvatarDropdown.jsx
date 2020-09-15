@@ -52,13 +52,12 @@ class AvatarDropdown extends React.Component {
   };
 
   render() {
+    const { currentUser = {}, menu = false } = this.props;
     const {
-      currentUser = {
-        avatar: '',
-        name: '',
-      },
-      menu = false,
-    } = this.props;
+      name = '',
+      generalInfo: { avatar = '' } = {},
+      compensation: { tittle: { name: title = '' } = {} } = {},
+    } = currentUser;
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
@@ -78,13 +77,8 @@ class AvatarDropdown extends React.Component {
 
         <div className={styles.viewProfile}>
           <div className={styles.viewProfileAvatar}>
-            {currentUser.avatar ? (
-              <Avatar
-                size="medium"
-                className={styles.avatar}
-                src={currentUser.avatar}
-                alt="avatar"
-              />
+            {avatar ? (
+              <Avatar size="medium" className={styles.avatar} src={avatar} alt="avatar" />
             ) : (
               <Avatar
                 size="medium"
@@ -95,9 +89,9 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
           <div className={styles.viewProfileInfo}>
-            <span>{currentUser.name}</span>
+            <span>{name}</span>
             <br />
-            <span>Senior HR</span>
+            <span>{title}</span>
             <br />
             <span>PIS-2400</span>
           </div>
@@ -127,12 +121,12 @@ class AvatarDropdown extends React.Component {
         </Menu.ItemGroup>
       </Menu>
     );
-    return currentUser && currentUser.name ? (
+    return currentUser && name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size={44} className={styles.avatar} src={currentUser.avatar} alt="avatar" />
+          <Avatar size={44} className={styles.avatar} src={avatar} alt="avatar" />
           <span className={`${styles.name} anticon`} style={{ color: '#707177' }}>
-            {currentUser.name}
+            {name}
           </span>
         </span>
       </HeaderDropdown>
