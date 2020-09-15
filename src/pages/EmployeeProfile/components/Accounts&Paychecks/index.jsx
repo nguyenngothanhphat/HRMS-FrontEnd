@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Collapse } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import PaySlipMonth from './PayslipMonth';
 
 class AccountsPaychecks extends PureComponent {
+  handleIconCollapse = (isActive) => {
+    return isActive ? <MinusOutlined className={styles.minusIcon} /> : <PlusOutlined />;
+  };
+
   render() {
     const { Panel } = Collapse;
     const getyear = new Date();
@@ -76,7 +80,7 @@ class AccountsPaychecks extends PureComponent {
               defaultActiveKey={['1']}
               className={styles.CollapseYear}
               expandIconPosition="right"
-              expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+              expandIcon={({ isActive }) => this.handleIconCollapse(isActive)}
             >
               <Panel header={`Pay Slips : Year ${year}`} key="1">
                 <PaySlipMonth />
@@ -84,30 +88,6 @@ class AccountsPaychecks extends PureComponent {
             </Collapse>
           </Col>
         </Row>
-
-        {/* <Col span={12}>
-            <div className={styles.backgroundTitle}>
-              <p className={styles.TitleDetails}>Pay Slips</p>
-            </div>
-            <div>
-              <Collapse
-                defaultActiveKey={['1']}
-                className={styles.CollapseYear}
-                expandIconPosition="right"
-                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-              >
-                <Panel header={`Year ${year}`} key="1">
-                  <PaySlipMonth />
-                </Panel>
-                <Panel header={`Year ${year - 1}`} key="2">
-                  <PaySlipMonth />
-                </Panel>
-                <Panel header={`Year ${year - 2}`} key="3">
-                  <PaySlipMonth />
-                </Panel>
-              </Collapse>
-            </div>
-          </Col> */}
       </div>
     );
   }
