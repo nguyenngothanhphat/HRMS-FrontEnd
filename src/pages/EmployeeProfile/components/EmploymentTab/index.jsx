@@ -145,11 +145,7 @@ class EmploymentTab extends PureComponent {
               <div onClick={this.handleMakeChanges}>Make changes</div>
             )}
           </div>
-          {isChanging ? (
-            <HandleChanges steps={steps} current={current} />
-          ) : (
-            <CurrentInfo data={currentData} />
-          )}
+          {isChanging ? <HandleChanges current={current} /> : <CurrentInfo data={currentData} />}
         </div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
