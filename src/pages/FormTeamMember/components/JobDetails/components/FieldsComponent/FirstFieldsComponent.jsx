@@ -1,14 +1,15 @@
 /* eslint-disable no-nested-ternary */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Select, Typography } from 'antd';
 import { connect } from 'umi';
+import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
 
 @connect(({ info: { jobDetail } = {} }) => ({
   jobDetail,
 }))
-class FirstFieldsComponent extends PureComponent {
+class FirstFieldsComponent extends Component {
   static getDerivedStateFromProps(props) {
     if ('jobDetail' in props) {
       return { jobDetail: props.jobDetail || {} };
@@ -63,6 +64,7 @@ class FirstFieldsComponent extends PureComponent {
             ))}
           </Row>
         </div>
+        <div className={InternalStyle.Line} />
       </>
     );
   }
