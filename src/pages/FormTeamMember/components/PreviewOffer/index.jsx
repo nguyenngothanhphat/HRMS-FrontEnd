@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'umi';
 
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
@@ -12,26 +13,43 @@ import styles from './index.less';
 
 const INPUT_WIDTH = [40, 100, 18, 120, 100, 40, 100, 18, 120, 100]; // Width for each input field
 
-const PreviewOffer = () => {
+const PreviewOffer = (props) => {
+  const { dispatch, previewOffer } = props;
+
+  // Get default value from "info" store
+  const {
+    file: fileProp,
+    day: dayProp,
+    month: monthProp,
+    year: yearProp,
+    place: placeProp,
+    city: cityProp,
+    day2: day2Prop,
+    month2: month2Prop,
+    year2: year2Prop,
+    place2: place2Prop,
+    city2: city2Prop,
+    mail: mailProp,
+  } = previewOffer;
+
   const inputRefs = [];
   let fileRef = null;
 
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState(fileProp);
 
-  const [day, setDay] = useState('');
-  const [month, setMonth] = useState('');
-  const [year, setYear] = useState('');
-  const [place, setPlace] = useState('');
-  const [city, setCity] = useState('');
+  const [day, setDay] = useState(dayProp);
+  const [month, setMonth] = useState(monthProp);
+  const [year, setYear] = useState(yearProp);
+  const [place, setPlace] = useState(placeProp);
+  const [city, setCity] = useState(cityProp);
 
-  const [day2, setDay2] = useState('');
-  const [month2, setMonth2] = useState('');
-  const [year2, setYear2] = useState('');
-  const [place2, setPlace2] = useState('');
-  const [city2, setCity2] = useState('');
+  const [day2, setDay2] = useState(day2Prop);
+  const [month2, setMonth2] = useState(month2Prop);
+  const [year2, setYear2] = useState(year2Prop);
+  const [place2, setPlace2] = useState(place2Prop);
+  const [city2, setCity2] = useState(city2Prop);
 
-  const [mail, setMail] = useState('');
-
+  const [mail, setMail] = useState(mailProp);
   const [mailForm] = Form.useForm();
 
   const resetForm = () => {
@@ -52,33 +70,40 @@ const PreviewOffer = () => {
     setFile(null);
   };
 
+  const saveChanges = () => {
+    // Save changes to redux store
+    if (dispatch) {
+      dispatch({
+        type: 'info/save',
+        payload: {
+          previewOffer: {
+            ...previewOffer,
+            file,
+            day,
+            month,
+            year,
+            place,
+            city,
+            day2,
+            month2,
+            year2,
+            place2,
+            city2,
+            mail,
+          },
+        },
+      });
+    }
+  };
+
   const handleSubmit = () => {
     // Check if mail address is valid
     const mailError = mailForm.getFieldError('email');
-
-    if (mailError) {
+    if (mailError.length > 0 || mail.length === 0) {
       return;
     }
 
-    // Insert all value of inputs
-    const info = {
-      day,
-      month,
-      year,
-      place,
-      city,
-      day2,
-      month2,
-      year2,
-      place2,
-      city2,
-      signature: file,
-      hrMail: mail,
-    };
-
-    console.log(info);
-
-    // Clear all input fields
+    // Clear all input fields after submitted
     setDay('');
     setMonth('');
     setYear('');
@@ -102,6 +127,11 @@ const PreviewOffer = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    // Save changes to store whenever input fields change
+    saveChanges();
+  }, [file, day, month, year, place, city, day2, month2, year2, place2, city2, mail]);
 
   return (
     <div className={styles.previewContainer}>
@@ -357,4 +387,7 @@ const PreviewOffer = () => {
   );
 };
 
-export default PreviewOffer;
+// export default PreviewOffer;
+export default connect(({ info: { previewOffer = {} } = {} }) => ({
+  previewOffer,
+}))(PreviewOffer);

@@ -23,7 +23,7 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { currentPage, offerDetailField, checkMandatory } = this.props;
+    const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
@@ -38,9 +38,11 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === 4) {
-      return offerDetailField.currency === true
-        ? '*All mandatory fields have been filled.'
-        : `Currency field must be 'Dollar'`;
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
     }
     return null;
   };
