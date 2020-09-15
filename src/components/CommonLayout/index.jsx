@@ -2,12 +2,9 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
-<<<<<<< HEAD
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-=======
 import BottomBar from '../BottomBar';
 
->>>>>>> master
 import s from './index.less';
 
 export default class CommonLayout extends PureComponent {
