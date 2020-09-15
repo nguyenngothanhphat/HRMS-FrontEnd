@@ -1,61 +1,43 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Select, Spin, Upload, message } from 'antd';
 import debounce from 'lodash/debounce';
-import { InboxOutlined } from '@ant-design/icons';
 import GoBackButton from '../../../../../assets/goBack_icon.svg';
 import AttachmentIcon from '../../../../../assets/attachment_icon.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
-
 const { Option } = Select;
 
-const propsUploadFile = {
-  name: 'file',
-  multiple: true,
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
+const mockData = [
+  {
+    id: 123,
+    value: 'ngoctuanitpy@gmail.com',
+    text: 'ngoctuanitpy@gmail.com',
   },
-};
+  {
+    id: 456,
+    value: 'tuan@gmail.com',
+    text: 'tuan@gmail.com',
+  },
+];
 export default class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
-    this.lastFetchId = 0;
     this.fetchUser = debounce(this.fetchUser, 800);
+    this.state = {
+      data: [],
+      value: [],
+      fetching: false,
+    };
   }
 
-  state = {
-    data: [],
-    value: [],
-    fetching: false,
-  };
-
-  fetchUser = () => {
-    this.lastFetchId += 1;
-    const fetchId = this.lastFetchId;
-    this.setState({ data: [], fetching: true });
-    fetch('https://randomuser.me/api/?results=5')
-      .then((response) => response.json())
-      .then((body) => {
-        if (fetchId !== this.lastFetchId) {
-          // for fetch callback order
-          return;
-        }
-        const data = body.results.map((user) => ({
-          text: `${user.name.first} ${user.name.last}`,
-          value: user.login.username,
-        }));
-        this.setState({ data, fetching: false });
-      });
+  fetchUser = (value) => {
+    const searchResult = mockData.filter((row = {}) => row.text.includes(value));
+    console.log(searchResult);
+    this.setState({
+      data: searchResult,
+      fetching: true,
+    });
   };
 
   handleChange = (value) => {
@@ -68,6 +50,7 @@ export default class ViewDocument extends PureComponent {
 
   render() {
     const { fetching, data, value } = this.state;
+    console.log('selected emails: ', value);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -79,7 +62,7 @@ export default class ViewDocument extends PureComponent {
         </div>
         <div className={styles.tableContent}>
           <div className={styles.documentPreviewFrame}>
-            <Dragger {...propsUploadFile}>
+            <Dragger>
               <p className="ant-upload-text">
                 <img src={AttachmentIcon} alt="upload" />{' '}
                 <a style={{ color: '#2c6df9', fontWeight: 'bold' }}>Choose file</a> or drap files

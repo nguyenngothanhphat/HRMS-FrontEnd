@@ -33,7 +33,7 @@ class TypeRow extends PureComponent {
   );
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], onFileClick } = this.props;
     return (
       <div>
         {data.map((row) => (
@@ -58,11 +58,7 @@ class TypeRow extends PureComponent {
               {row.files.map((file) => (
                 <Row className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
-                    <div
-                      onClick={() => {
-                        console.log('Hi em');
-                      }}
-                    >
+                    <div>
                       <img src={FileIcon} alt="file" className={styles.fileIcon} />
                       <span>{file.fileName}</span>
                     </div>

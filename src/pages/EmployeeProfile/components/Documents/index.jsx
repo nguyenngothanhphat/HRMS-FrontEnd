@@ -12,12 +12,12 @@ const data = [
         kind: 'Offer Letter',
         files: [
           {
-            fileName: 'Abc.txt',
+            fileName: 'Abc.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
-            fileName: 'Cdf.txt',
+            fileName: 'Cdf documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
@@ -27,12 +27,12 @@ const data = [
         kind: 'Offer Letter',
         files: [
           {
-            fileName: 'Abc.txt',
+            fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
-            fileName: 'Cdf.txt',
+            fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
@@ -48,22 +48,22 @@ const data = [
         kind: 'Offer Letter',
         files: [
           {
-            fileName: 'Abc.txt',
+            fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
-            fileName: 'Cdf.txt',
+            fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
-            fileName: 'Abc.txt',
+            fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
-            fileName: 'Cdf.txt',
+            fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },

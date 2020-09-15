@@ -5,6 +5,10 @@ import TypeRow from './TypeRow';
 import styles from './index.less';
 
 class InfoCollapseType2 extends PureComponent {
+  onFileClick = (value) => {
+    console.log('Hi em', value);
+  };
+
   render() {
     const { data = [] } = this.props;
     return (
