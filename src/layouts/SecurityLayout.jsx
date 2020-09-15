@@ -2,7 +2,6 @@ import React from 'react';
 import { PageLoading } from '@/layouts/layout/src';
 import { Redirect, connect } from 'umi';
 import { stringify } from 'querystring';
-import { getToken } from '@/utils/token';
 
 class SecurityLayout extends React.Component {
   state = {
@@ -10,12 +9,11 @@ class SecurityLayout extends React.Component {
   };
 
   componentDidMount() {
-    const token = getToken();
     this.setState({
       isReady: true,
     });
     const { dispatch } = this.props;
-    if (token) {
+    if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
       });
