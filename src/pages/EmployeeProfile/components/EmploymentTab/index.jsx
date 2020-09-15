@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { div, Table, Tag } from 'antd';
+import { Button, div, Table, Tag } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
@@ -37,15 +37,9 @@ class EmploymentTab extends PureComponent {
     this.setState({ isChanging: !isChanging });
   };
 
-  handleOk = () => {
-    this.nextTab();
-  };
-
-  handleCancel = () => {
-    this.setState({
-      isChanging: false,
-    });
-  };
+  // handleOk = () => {
+  //   this.nextTab();
+  // };
 
   handleChangeHistory = () => {
     this.setState({
@@ -55,19 +49,17 @@ class EmploymentTab extends PureComponent {
 
   nextTab = () => {
     const { current } = this.state;
-    const currentTab = current + 1;
-    this.setState({ current: currentTab });
+    this.setState({ current: current + 1 });
   };
 
   previousTab = () => {
     const { current } = this.state;
-    const currentTab = current - 1;
-    this.setState({ current: currentTab });
+    this.setState({ current: current - 1 });
   };
 
-  onChangeSteps = (current) => {
-    this.setState({ current });
-  };
+  // onChangeSteps = (current) => {
+  //   this.setState({ current });
+  // };
 
   render() {
     const { isChanging, current, currentData } = this.state;
@@ -146,6 +138,19 @@ class EmploymentTab extends PureComponent {
             )}
           </div>
           {isChanging ? <HandleChanges current={current} /> : <CurrentInfo data={currentData} />}
+          {isChanging ? (
+            <div className={styles.footer}>
+              <div>{current + 1}/5 steps</div>
+              <div className={styles.buttons}>
+                <Button onClick={this.previousTab} type="text">
+                  {current > 0 ? 'Back' : null}
+                </Button>
+                <Button onClick={this.nextTab} type="primary">
+                  Continue
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
