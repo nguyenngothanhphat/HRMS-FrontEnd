@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal, Table, Tag, Steps, Button, message } from 'antd';
+import { div, Table, Tag } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-
+import CurrentInfo from './components/CurrentInfo';
+import HandleChanges from './components/HandleChanges';
 import styles from './index.less';
-
-const { Step } = Steps;
 
 const steps = [
   { title: 'Effective Date', content: 'Effective Date' },
@@ -18,10 +17,25 @@ class EmploymentTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
+      isChanging: false,
       current: 0,
+      currentData: {
+        title: 'UX Lead',
+        joiningDate: '10th December 2018',
+        location: 'Bengaluru, India',
+        employType: 'Full Time Employee',
+        compenType: 'Salaried',
+        annualSalary: '$75000',
+        manager: 'Anil Reddy',
+        timeOff: '20 Day PTO Applicable',
+      },
     };
   }
+
+  handleMakeChanges = () => {
+    const { isChanging } = this.state;
+    this.setState({ isChanging: !isChanging });
+  };
 
   handleOk = () => {
     this.nextTab();
@@ -29,13 +43,13 @@ class EmploymentTab extends PureComponent {
 
   handleCancel = () => {
     this.setState({
-      visible: false,
+      isChanging: false,
     });
   };
 
   handleChangeHistory = () => {
     this.setState({
-      visible: true,
+      isChanging: true,
     });
   };
 
@@ -56,7 +70,7 @@ class EmploymentTab extends PureComponent {
   };
 
   render() {
-    const { visible, current } = this.state;
+    const { isChanging, current, currentData } = this.state;
     const columns = [
       {
         title: 'Changed Infomation',
@@ -120,94 +134,35 @@ class EmploymentTab extends PureComponent {
       },
     ];
     return (
-      <div className={styles.employmentTab}>
-        <Row className={styles.employmentTab_title} justify="space-between" align="middle">
-          <span>Employment & Compensation</span>
-          <span span={4}>
-            <u>Make changes</u>
-          </span>
-        </Row>
-        <Row justify="start" gutter={16}>
-          <Col span={4}>
-            <p>Title</p>
-            <p>UX Lead</p>
-          </Col>
-          <Col span={6}>
-            <p>Joining Date</p>
-            <p>10th December 2018</p>
-          </Col>
-          <Col span={6}>
-            <p>Location</p>
-            <p>Viet Nam</p>
-          </Col>
-          <Col span={6}>
-            <p>Location</p>
-            <p>Viet Nam</p>
-          </Col>
-        </Row>
-        <hr />
-        <Row justify="start" gutter={16}>
-          <Col span={4}>
-            <p>Title</p>
-            <p>UX Lead</p>
-          </Col>
-          <Col span={6}>
-            <p>Joining Date</p>
-            <p>10th December 2018</p>
-          </Col>
-          <Col span={6}>
-            <p>Location</p>
-            <p>Bengaluru, India</p>
-          </Col>
-          <Col span={6}>
-            <p>Employment Type</p>
-            <p>Full Time Employee</p>
-          </Col>
-        </Row>
-        <Row className={styles.employmentTab_title} align="middle">
-          <span>Change History</span>
-          <div className={styles.employmentTab_changeIcon}>
-            <EditOutlined
-              className={styles.employmentTab_iconEdit}
-              onClick={this.handleChangeHistory}
-            />
+      <div>
+        <div className={styles.employmentTab}>
+          <div className={styles.employmentTab_title}>
+            <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
+
+            {isChanging ? (
+              <div onClick={this.handleMakeChanges}>Cancel & Return</div>
+            ) : (
+              <div onClick={this.handleMakeChanges}>Make changes</div>
+            )}
           </div>
-        </Row>
-        <Table columns={columns} dataSource={data} pagination={false} />
-        <Modal
-          className={styles.employmentTab_modal}
-          title="Edit Employment & Compensation"
-          visible={visible}
-          onCancel={this.handleCancel}
-          footer={[
-            <div className="steps-action">
-              {current < steps.length - 1 && (
-                <Button type="primary" onClick={() => this.nextTab()}>
-                  Next
-                </Button>
-              )}
-              {current === steps.length - 1 && (
-                <Button type="primary" onClick={() => message.success('Processing complete!')}>
-                  Done
-                </Button>
-              )}
-              {current > 0 && (
-                <Button style={{ margin: '0 8px' }} onClick={() => this.previousTab()}>
-                  Previous
-                </Button>
-              )}
-            </div>,
-          ]}
-        >
-          <>
-            <Steps type="navigation" size="small" current={current} onChange={this.onChangeSteps}>
-              {steps.map((item) => (
-                <Step key={item.title} title={item.title} />
-              ))}
-            </Steps>
-            <div className="steps-content">{steps[current].content}</div>
-          </>
-        </Modal>
+          {isChanging ? (
+            <HandleChanges steps={steps} current={current} />
+          ) : (
+            <CurrentInfo data={currentData} />
+          )}
+        </div>
+        <div className={styles.employmentTab}>
+          <div className={styles.employmentTab_title} align="middle">
+            <div>Change History</div>
+            <div className={styles.employmentTab_changeIcon}>
+              <EditOutlined
+                className={styles.employmentTab_iconEdit}
+                onClick={this.handleChangeHistory}
+              />
+            </div>
+          </div>
+          <Table columns={columns} dataSource={data} pagination={false} />
+        </div>
       </div>
     );
   }
