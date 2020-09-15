@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
+import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import styles from './index.less';
 
+@connect(({ employeeProfile }) => ({
+  employeeProfile,
+}))
 class EmployeeProfile extends Component {
   constructor(props) {
     super(props);
@@ -14,9 +18,18 @@ class EmployeeProfile extends Component {
 
   componentDidMount() {
     // fetch employee by id
-    // const {
-    //   match: { params: { reId = '' } = {} },
-    // } = this.props;
+    const {
+      match: { params: { reId: employee = '' } = {} },
+      dispatch,
+    } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchGeneralInfo',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchCompensation',
+      payload: { employee },
+    });
   }
 
   render() {

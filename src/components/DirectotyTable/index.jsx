@@ -115,8 +115,8 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = () => {
-    history.push('/directory/employee-profile/0001');
+  handleProfileEmployee = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   render() {
