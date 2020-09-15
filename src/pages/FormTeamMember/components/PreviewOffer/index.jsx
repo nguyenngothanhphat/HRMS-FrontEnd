@@ -15,7 +15,6 @@ const INPUT_WIDTH = [40, 100, 18, 120, 100, 40, 100, 18, 120, 100]; // Width for
 const PreviewOffer = () => {
   const inputRefs = [];
   let fileRef = null;
-  // const mailRef = null;
 
   const [file, setFile] = useState(null);
 
