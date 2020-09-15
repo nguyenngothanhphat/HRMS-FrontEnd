@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
+import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import styles from './index.less';
 
+@connect(({ loading, employeeProfile }) => ({
+  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
+  employeeProfile,
+}))
 class EmployeeProfile extends Component {
   constructor(props) {
     super(props);
@@ -14,18 +19,25 @@ class EmployeeProfile extends Component {
 
   componentDidMount() {
     // fetch employee by id
-    // const {
-    //   match: { params: { reId = '' } = {} },
-    // } = this.props;
+    const {
+      match: { params: { reId: id = '' } = {} },
+      dispatch,
+    } = this.props;
+    console.log(id);
+    dispatch({
+      type: 'employeeProfile/fetchGeneralInfo',
+      payload: { id },
+    });
   }
 
   render() {
+    const { loadingGeneral } = this.props;
     const listMenu = [
       {
         id: 1,
         name: 'General Info',
 
-        component: <GeneralInfo />,
+        component: <GeneralInfo loading={loadingGeneral} />,
       },
       {
         id: 2,

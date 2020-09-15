@@ -28,7 +28,7 @@ class AccountsPaychecks extends PureComponent {
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>
-          <Col span={24} className>
+          <Col span={24}>
             <div>
               <div className={styles.spaceTitle}>
                 <p className={styles.TitleDetails}>Bank Details</p>
