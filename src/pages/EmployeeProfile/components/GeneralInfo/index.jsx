@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
+import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
 import styles from './index.less';
 
 @connect(({ loading, employeeProfile }) => ({
@@ -26,6 +27,7 @@ class GeneralInfo extends PureComponent {
     return (
       <div className={styles.GeneralInfo}>
         <EmployeeInformation dataAPI={generalData} />
+        <ProfessionalAcademicBackground />
       </div>
     );
   }
