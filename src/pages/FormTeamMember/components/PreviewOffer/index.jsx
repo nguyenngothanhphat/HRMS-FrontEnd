@@ -3,6 +3,7 @@ import { connect } from 'umi';
 
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
+import NumericInput from '@/components/NumericInput';
 import logo from './components/images/brand-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import whiteImg from './components/images/white.png';
@@ -11,7 +12,7 @@ import CancelIcon from './components/CancelIcon';
 
 import styles from './index.less';
 
-const INPUT_WIDTH = [40, 100, 18, 120, 100, 40, 100, 18, 120, 100]; // Width for each input field
+const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = (props) => {
   const { dispatch, previewOffer = {} } = props;
@@ -150,7 +151,7 @@ const PreviewOffer = (props) => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={day} type="number" onChange={(e) => setDay(e.target.value)} />
+                <input value={day} type="text" onChange={(e) => setDay(e.target.value)} />
               </div>{' '}
               day of
               <div
@@ -158,7 +159,7 @@ const PreviewOffer = (props) => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={month} type="number" onChange={(e) => setMonth(e.target.value)} />
+                <input value={month} type="text" onChange={(e) => setMonth(e.target.value)} />
               </div>
               . 20
               <div
@@ -166,7 +167,12 @@ const PreviewOffer = (props) => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={year} type="number" onChange={(e) => setYear(e.target.value)} />
+                <NumericInput
+                  onChange={(value) => setYear(value)}
+                  value={year}
+                  maxLength={2}
+                  min={1}
+                />
               </div>
               . between [name of employer] a corporation incoporated under the laws of Province on
               Ontario, and having its principal place of business at{' '}
@@ -232,7 +238,12 @@ const PreviewOffer = (props) => {
                   inputRefs.push(ref);
                 }}
               >
-                <input value={year2} type="text" onChange={(e) => setYear2(e.target.value)} />
+                <NumericInput
+                  onChange={(value) => setYear2(value)}
+                  value={year2}
+                  maxLength={2}
+                  min={1}
+                />
               </div>
               . between [name of employer] a corporation incoporated under the laws of Province on
               Ontario, and having its principal place of business at{' '}

@@ -71,12 +71,12 @@ export default class CommonLayout extends PureComponent {
               <Button
                 type="primary"
                 ghost
-                onClick={() =>
+                onClick={() => {
                   this.setState({
                     selectedItemId: '',
                     displayComponent: <PreviewOffer />,
-                  })
-                }
+                  });
+                }}
               >
                 Preview offer letter
               </Button>
