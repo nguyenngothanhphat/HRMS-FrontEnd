@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
 import { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout, Image } from 'antd';
-import DirectotyTable from '@/components/DirectotyTable';
+import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
 import addTeam from '@/assets/addTeam.svg';
 import styles from './index.less';
@@ -192,7 +192,7 @@ class DirectoryComponent extends PureComponent {
   };
 
   render() {
-    const { Content } = Layout;
+    const { Content, Footer } = Layout;
     const { TabPane } = Tabs;
     const { bottabs, collapsed, changeTab } = this.state;
     const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
@@ -200,32 +200,42 @@ class DirectoryComponent extends PureComponent {
     return (
       <div className={styles.DirectoryComponent}>
         <div className={styles.contentContainer}>
-          <Tabs
-            defaultActiveKey="1"
-            className={styles.TabComponent}
-            onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton()}
-          >
-            {bottabs.map((tab) => (
-              <TabPane tab={tab.name} key={tab.id}>
-                <Layout>
-                  <TableFilter
-                    onToggle={this.handleToggle}
-                    collapsed={collapsed}
-                    onHandleChange={this.handleChange}
-                    FormBox={this.handleFormBox}
-                    changeTab={changeTab}
-                  />
-                  <Content className="site-layout-background">
-                    <DirectotyTable
-                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
-                      list={this.renderListEmployee(tab.id)}
+          <Layout className={styles.directoryLayout}>
+            <Tabs
+              defaultActiveKey="1"
+              className={styles.TabComponent}
+              onTabClick={this.handleClickTabPane}
+              tabBarExtraContent={this.rightButton()}
+            >
+              {bottabs.map((tab) => (
+                <TabPane tab={tab.name} key={tab.id}>
+                  <Layout>
+                    <TableFilter
+                      onToggle={this.handleToggle}
+                      collapsed={collapsed}
+                      onHandleChange={this.handleChange}
+                      FormBox={this.handleFormBox}
+                      changeTab={changeTab}
                     />
-                  </Content>
-                </Layout>
-              </TabPane>
-            ))}
-          </Tabs>
+                    <Content className="site-layout-background">
+                      <DirectoryTable
+                        loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                        list={this.renderListEmployee(tab.id)}
+                      />
+                    </Content>
+                  </Layout>
+                </TabPane>
+              ))}
+            </Tabs>
+            <Footer>
+              {/* <Pagination
+                defaultCurrent={1}
+                defaultPageSize={9}
+                onChange={this.handleChange}
+                total={15}
+              /> */}
+            </Footer>
+          </Layout>
         </div>
       </div>
     );

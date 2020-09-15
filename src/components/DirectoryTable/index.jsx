@@ -22,7 +22,11 @@ class DirectoryTable extends Component {
   renderUser = (generalInfo) => {
     return (
       <div className={styles.directoryTableName}>
-        <Avatar className={styles.avatar} alt="avatar" />
+        {generalInfo.avatar ? (
+          <Avatar size="medium" className={styles.avatar} src={generalInfo.avatar} alt="avatar" />
+        ) : (
+          <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+        )}
         <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
@@ -42,6 +46,14 @@ class DirectoryTable extends Component {
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         width: '25%',
+        fixed: 'left',
+      },
+      {
+        title: 'Employee ID',
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        align: 'left',
       },
       {
         title: 'Title',
@@ -122,7 +134,7 @@ class DirectoryTable extends Component {
   render() {
     const { sortedName = {}, pageSelected } = this.state;
     const { list = [], loading } = this.props;
-    const rowSize = 15;
+    const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
@@ -156,7 +168,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          // scroll={{ y: 540, x: 700 }}
+          // scroll={{ y: 'auto' }}
         />
       </div>
     );
