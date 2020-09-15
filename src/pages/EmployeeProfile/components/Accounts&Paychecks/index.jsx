@@ -35,19 +35,23 @@ class AccountsPaychecks extends PureComponent {
               </div>
             </div>
           </Col>
-          <Col span={24} className={styles.spaceDetails}>
-            {dataBankDetails.map((item) => {
-              return (
-                <Col key={item.id} span={24} className={styles.flexbox}>
-                  <Col span={8}>
-                    <p className={styles.Name}>{item.name}</p>
-                  </Col>
-                  <Col span={8}>
-                    <p className={styles.Text}>{item.text}</p>
-                  </Col>
-                </Col>
-              );
-            })}
+          <Col span={24}>
+            <div className={styles.spaceDetails}>
+              {dataBankDetails.map((item) => {
+                return (
+                  <div>
+                    <Col key={item.id} span={24} className={styles.flexbox}>
+                      <Col span={8}>
+                        <p className={styles.Name}>{item.name}</p>
+                      </Col>
+                      <Col span={8}>
+                        <p className={styles.Text}>{item.text}</p>
+                      </Col>
+                    </Col>
+                  </div>
+                );
+              })}
+            </div>
           </Col>
         </Row>
 
@@ -59,19 +63,21 @@ class AccountsPaychecks extends PureComponent {
               </div>
             </div>
           </Col>
-          <Col span={24} className={styles.spaceDetails}>
-            {dataTaxDetails.map((item) => {
-              return (
-                <Col key={item.id} span={24} className={styles.flexbox}>
-                  <Col span={8}>
-                    <p className={styles.Name}>{item.name}</p>
+          <Col span={24}>
+            <div className={styles.spaceDetails}>
+              {dataTaxDetails.map((item) => {
+                return (
+                  <Col key={item.id} span={24} className={styles.flexbox}>
+                    <Col span={8}>
+                      <p className={styles.Name}>{item.name}</p>
+                    </Col>
+                    <Col span={8}>
+                      <p className={styles.Text}>{item.text}</p>
+                    </Col>
                   </Col>
-                  <Col span={8}>
-                    <p className={styles.Text}>{item.text}</p>
-                  </Col>
-                </Col>
-              );
-            })}
+                );
+              })}
+            </div>
           </Col>
         </Row>
         <Row>

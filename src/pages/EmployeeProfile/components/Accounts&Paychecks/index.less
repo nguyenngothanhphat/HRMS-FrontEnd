@@ -5,7 +5,7 @@
   align-items: center;
   .TableBankDetails {
     width: 785px;
-    height: 286px;
+    height: auto;
     object-fit: contain;
     border-radius: 5px;
     border: solid 1px #d6dce0;
@@ -14,7 +14,7 @@
   .TableTaxDetails {
     margin: 24px 0;
     width: 785px;
-    height: 162px;
+    height: auto;
     object-fit: contain;
     border-radius: 5px;
     border: solid 1px #d6dce0;
@@ -32,6 +32,7 @@
   .flexbox {
     display: flex;
     flex-flow: row;
+    margin-bottom: 16px;
   }
   .backgroundTitle {
     display: flex;
@@ -45,6 +46,7 @@
   .TitleDetails {
     height: 19px;
     font-size: 16px;
+    margin-bottom: 0;
     font-weight: bold;
     font-stretch: normal;
     font-style: normal;
@@ -54,6 +56,7 @@
   }
   .Name {
     height: 15px;
+    margin-bottom: 0;
     font-size: 13px;
     font-weight: normal;
     font-stretch: normal;
@@ -64,6 +67,7 @@
   }
   .Text {
     height: 15px;
+    margin-bottom: 0;
     font-size: 13px;
     font-weight: normal;
     font-stretch: normal;
@@ -85,6 +89,9 @@
     color: #161c29;
     border-radius: 5px;
     :global {
+      .ant-collapse-content.ant-collapse-content-active .ant-collapse-content-box {
+        padding: 24px;
+      }
       .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
         right: 24px;
       }
