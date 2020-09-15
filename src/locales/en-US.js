@@ -4,6 +4,8 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
+import formTeamMember from './en-US/formTeamMember';
+import commonLayout from './en-US/commonLayout';
 import authLayout from './en-US/authLayout';
 import notFoundPage from './en-US/notFoundPage';
 import dashboardPage from './en-US/dashboardPage';
@@ -27,6 +29,8 @@ export default {
   ...settings,
   ...pwa,
   ...component,
+  ...formTeamMember,
+  ...commonLayout,
   ...authLayout,
   ...notFoundPage,
   ...dashboardPage,

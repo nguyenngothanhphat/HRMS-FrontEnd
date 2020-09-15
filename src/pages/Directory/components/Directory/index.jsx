@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import { PlusOutlined } from '@ant-design/icons';
-import { Tabs, Layout } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
+import { Tabs, Layout, Image } from 'antd';
 import DirectotyTable from '@/components/DirectotyTable';
 import { debounce } from 'lodash';
+import addTeam from '@/assets/addTeam.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -169,6 +170,27 @@ class DirectoryComponent extends PureComponent {
     }, 5);
   };
 
+  rightButton = () => {
+    return (
+      <div className={styles.tabBarExtra}>
+        <NavLink to="/directory" className={styles.buttonCreate}>
+          {/* <UserAddOutlined /> */}
+          <Image width={20} src={addTeam} alt="" className={styles.AddTeamimg} />
+          <p className={styles.NameNewProfile}>
+            {formatMessage({ id: 'pages.directory.directory.addTeamMember' })}
+          </p>
+        </NavLink>
+        <div className={styles.filterSider} onClick={this.handleToggle}>
+          <div className={styles.filterBackgroundButton} />
+          <div className={styles.filterButton}>
+            <FilterOutlined />
+            <p className={styles.textButtonFilter}>Filter</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
@@ -177,41 +199,34 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        <Layout>
-          <div className={styles.filterSider}>
-            <NavLink to="/directory" className={styles.buttonCreate}>
-              <PlusOutlined />
-              <p className={styles.NameNewProfile}>
-                {formatMessage({ id: 'pages.directory.directory.setUpNewProfile' })}
-              </p>
-            </NavLink>
-
-            <TableFilter
-              onToggle={this.handleToggle}
-              collapsed={collapsed}
-              onHandleChange={this.handleChange}
-              FormBox={this.handleFormBox}
-              changeTab={changeTab}
-            />
-
-            {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
-          </div>
-
-          <div className={styles.contentContainer}>
-            <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-              {bottabs.map((tab) => (
-                <TabPane tab={tab.name} key={tab.id}>
+        <div className={styles.contentContainer}>
+          <Tabs
+            defaultActiveKey="1"
+            className={styles.TabComponent}
+            onTabClick={this.handleClickTabPane}
+            tabBarExtraContent={this.rightButton()}
+          >
+            {bottabs.map((tab) => (
+              <TabPane tab={tab.name} key={tab.id}>
+                <Layout>
+                  <TableFilter
+                    onToggle={this.handleToggle}
+                    collapsed={collapsed}
+                    onHandleChange={this.handleChange}
+                    FormBox={this.handleFormBox}
+                    changeTab={changeTab}
+                  />
                   <Content className="site-layout-background">
                     <DirectotyTable
                       loading={loadingListActive || loadingListMyTeam || loadingListInActive}
                       list={this.renderListEmployee(tab.id)}
                     />
                   </Content>
-                </TabPane>
-              ))}
-            </Tabs>
-          </div>
-        </Layout>
+                </Layout>
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>
       </div>
     );
   }

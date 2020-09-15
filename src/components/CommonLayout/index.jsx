@@ -1,7 +1,13 @@
+/* eslint-disable react/button-has-type */
 import React, { PureComponent } from 'react';
-import { Button } from 'antd';
+import { Row, Col, Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
+<<<<<<< HEAD
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
+=======
+import BottomBar from '../BottomBar';
+
+>>>>>>> master
 import s from './index.less';
 
 export default class CommonLayout extends PureComponent {
@@ -25,6 +31,26 @@ export default class CommonLayout extends PureComponent {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
+    });
+  };
+
+  handleNext = () => {
+    const { selectedItemId } = this.state;
+    const { listMenu = [] } = this.props;
+    const nextItem = listMenu.find((element) => element.id === selectedItemId + 1);
+    this.setState({
+      selectedItemId: nextItem.id,
+      displayComponent: nextItem.component,
+    });
+  };
+
+  handlePrev = () => {
+    const { selectedItemId } = this.state;
+    const { listMenu = [] } = this.props;
+    const prevItem = listMenu.find((element) => element.id === selectedItemId - 1);
+    this.setState({
+      selectedItemId: prevItem.id,
+      displayComponent: prevItem.component,
     });
   };
 
@@ -56,10 +82,22 @@ export default class CommonLayout extends PureComponent {
               >
                 Preview offer letter
               </Button>
+              {/* <button onClick={this.handleNext}> next </button> */}
             </div>
           </div>
         </div>
-        <div className={s.viewRight}>{displayComponent}</div>
+        <div className={s.viewRight}>
+          {displayComponent}
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <BottomBar
+                onClickPrev={this.handlePrev}
+                onClickNext={this.handleNext}
+                currentPage={selectedItemId}
+              />
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }
