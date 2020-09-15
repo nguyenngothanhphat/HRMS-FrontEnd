@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Typography } from 'antd';
 import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
+import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
 import styles from './styles.less';
 
@@ -51,12 +52,27 @@ const listCollapse = [
   },
 ];
 
+const note = {
+  title: 'Note',
+  data: (
+    <>
+      <Typography.Text>
+        The candidate must upload all required documents. And, the<span> HR must approve </span>the
+        documents and mark candidate as eligible.
+      </Typography.Text>
+      <br />
+      <Typography.Paragraph className={styles.boldText}>
+        Post this approval, the remaining processes will open for onboarding.
+      </Typography.Paragraph>
+    </>
+  ),
+};
+
 export default class EligibilityDocs extends PureComponent {
   render() {
     return (
       <>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
-          {/* <Col span={15} className={styles.leftWrapper}> */}
           <Col span={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
               {/* Warning will be shown as user is HR and disappear if user is candidate */}
@@ -68,6 +84,7 @@ export default class EligibilityDocs extends PureComponent {
             </div>
           </Col>
           <Col span={8} className={styles.rightWrapper}>
+            <NoteComponent note={note} />
             <SendEmail />
           </Col>
         </Row>

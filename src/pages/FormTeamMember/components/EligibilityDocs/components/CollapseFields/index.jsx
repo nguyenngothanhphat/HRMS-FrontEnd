@@ -7,18 +7,19 @@ import styles from './index.less';
 const CollapseField = ({ item = [] }) => {
   const [isCheck, setIsCheck] = useState(false);
   const [itemCheck, setItemCheck] = useState(false);
-  const [indeterminate, setIndeterminate] = useState(true);
+  // const [indeterminate, setIndeterminate] = useState(true);
 
-  // const defaultCheckList = item.items.find(() => )
+  const defaultCheckList = [];
+  defaultCheckList.push();
 
   const handleChange = (e) => {
     setIsCheck(e.target.checked);
-    // setIndeterminate(!!)
+    setItemCheck(e.target.checked);
   };
 
   const handleItemChange = () => {
-    if (isCheck) return setItemCheck(isCheck);
-    console.log('check');
+    if (isCheck) return setItemCheck(true);
+    if (itemCheck) return setItemCheck(true);
     return false;
   };
 
@@ -36,7 +37,8 @@ const CollapseField = ({ item = [] }) => {
             <Checkbox
               className={styles.checkbox}
               onClick={(e) => e.stopPropagation()}
-              onChange={handleChange}
+              onChange={handleItemChange}
+              checked={!!isCheck}
             >
               {item.title}
             </Checkbox>
@@ -45,22 +47,23 @@ const CollapseField = ({ item = [] }) => {
         >
           {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
           <Space direction="vertical">
-            <Checkbox.Group
+            {/* <Checkbox.Group
               direction="vertical"
               className={styles.checkboxItem}
-              // checked={checked}
+              checked
               options={item.items.map((obj) => obj.name)}
-            />
-            {/* {item.items.map((obj) => (
+            /> */}
+            {item.items.map((obj) => (
               <Checkbox
                 key={obj.key}
+                // indeterminate
                 className={styles.checkboxItem}
-                onChange={handleItemChange}
-                checked={isCheck}
+                onChange={handleChange}
+                // checked={!!(obj.isRequired || isCheck)}
               >
                 {obj.name}
               </Checkbox>
-            ))} */}
+            ))}
             {item.title === 'Type D: Technical Certifications' ? (
               <Space direction="horizontal">
                 <PlusOutlined className={styles.plusIcon} />

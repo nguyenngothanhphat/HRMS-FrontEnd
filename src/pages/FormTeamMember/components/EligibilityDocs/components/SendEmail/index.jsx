@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, Space, Radio, Input, Form, Button, Row, Col } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import send from './Assets/path.svg';
+import send from './Assets/group-11.svg';
 import style from './index.less';
 import copy from './Assets/copy-office.svg';
 
