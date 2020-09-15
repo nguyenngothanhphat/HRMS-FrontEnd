@@ -18,7 +18,9 @@ const employee = {
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
+    dataRadio: [],
     clearFilter: false,
+    clearName: false,
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -130,13 +132,14 @@ const employee = {
       return {
         ...state,
         clearFilter: true,
+        clearName: true,
         filter: [],
       };
     },
-    offClearFilter(state) {
+    offClearName(state) {
       return {
         ...state,
-        clearFilter: false,
+        clearName: false,
       };
     },
     saveEmployeeType(state, action) {
