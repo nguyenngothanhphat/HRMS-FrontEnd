@@ -14,7 +14,7 @@ import styles from './index.less';
 const INPUT_WIDTH = [40, 100, 18, 120, 100, 40, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = (props) => {
-  const { dispatch, previewOffer } = props;
+  const { dispatch, previewOffer = {} } = props;
 
   // Get default value from "info" store
   const {
@@ -35,21 +35,21 @@ const PreviewOffer = (props) => {
   const inputRefs = [];
   let fileRef = null;
 
-  const [file, setFile] = useState(fileProp);
+  const [file, setFile] = useState(fileProp || null);
 
-  const [day, setDay] = useState(dayProp);
-  const [month, setMonth] = useState(monthProp);
-  const [year, setYear] = useState(yearProp);
-  const [place, setPlace] = useState(placeProp);
-  const [city, setCity] = useState(cityProp);
+  const [day, setDay] = useState(dayProp || '');
+  const [month, setMonth] = useState(monthProp || '');
+  const [year, setYear] = useState(yearProp || '');
+  const [place, setPlace] = useState(placeProp || '');
+  const [city, setCity] = useState(cityProp || '');
 
-  const [day2, setDay2] = useState(day2Prop);
-  const [month2, setMonth2] = useState(month2Prop);
-  const [year2, setYear2] = useState(year2Prop);
-  const [place2, setPlace2] = useState(place2Prop);
-  const [city2, setCity2] = useState(city2Prop);
+  const [day2, setDay2] = useState(day2Prop || '');
+  const [month2, setMonth2] = useState(month2Prop || '');
+  const [year2, setYear2] = useState(year2Prop || '');
+  const [place2, setPlace2] = useState(place2Prop || '');
+  const [city2, setCity2] = useState(city2Prop || '');
 
-  const [mail, setMail] = useState(mailProp);
+  const [mail, setMail] = useState(mailProp || '');
   const [mailForm] = Form.useForm();
 
   const resetForm = () => {

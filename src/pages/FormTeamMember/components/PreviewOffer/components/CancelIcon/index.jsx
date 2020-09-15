@@ -13,7 +13,7 @@ const CancelIcon = (props) => {
       viewBox="0 0 16 16"
       onClick={() => resetImg()}
     >
-      <g fill="none" fill-rule="evenodd">
+      <g fill="none" fillRule="evenodd">
         <g>
           <g>
             <g>
