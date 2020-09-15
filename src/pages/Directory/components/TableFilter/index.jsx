@@ -101,62 +101,64 @@ class TableFilter extends PureComponent {
     return (
       <div className={styles.TabFilter}>
         <Sider width="300px" trigger={null} collapsed={collapsed} collapsedWidth="0">
-          <div className={styles.topFilter}>
-            <div className={styles.textFilters}>
-              {formatMessage({ id: 'pages.directory.tableFilter.filter' })}
-            </div>
-            <div className={styles.resetHide}>
-              <p onClick={this.handleReset}>
-                {formatMessage({ id: 'pages.directory.tableFilter.reset' })}
-              </p>
-              {/* <div className={styles.shapeHide} onClick={this.toggle}>
+          <div className={styles.PaddingFilter}>
+            <div className={styles.topFilter}>
+              <div className={styles.textFilters}>
+                {formatMessage({ id: 'pages.directory.tableFilter.filter' })}
+              </div>
+              <div className={styles.resetHide}>
+                <p onClick={this.handleReset}>
+                  {formatMessage({ id: 'pages.directory.tableFilter.reset' })}
+                </p>
+                {/* <div className={styles.shapeHide} onClick={this.toggle}>
                 <span>Hide</span>
               </div> */}
+              </div>
             </div>
-          </div>
-          <p className={styles.textName}>
-            {formatMessage({ id: 'pages.directory.tableFilter.name' })}
-          </p>
-          {changeTab ? (
-            ''
-          ) : (
-            <Input
-              value={clearName ? '' : text}
-              className={styles.formInput}
-              onChange={this.handleChange}
-            />
-          )}
+            <p className={styles.textName}>
+              {formatMessage({ id: 'pages.directory.tableFilter.name' })}
+            </p>
+            {changeTab ? (
+              ''
+            ) : (
+              <Input
+                value={clearName ? '' : text}
+                className={styles.formInput}
+                onChange={this.handleChange}
+              />
+            )}
 
-          {reset || changeTab ? (
-            ''
-          ) : (
-            <CheckBoxForms
-              key={EmploymentState}
-              name={EmploymentState}
-              all={all}
-              data={filteredArr(formatDataEmployeeType)}
-            />
-          )}
-          {reset || changeTab ? (
-            ''
-          ) : (
-            <CheckBoxForms
-              key={departmentState}
-              name={departmentState}
-              all={all}
-              data={filteredArr(formatDataDepartment)}
-            />
-          )}
-          {reset || changeTab ? (
-            ''
-          ) : (
-            <CheckBoxForms
-              key={locationState}
-              name={locationState}
-              all={all}
-              data={formatDataLocation}
-            />
-          )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <CheckBoxForms
+                key={EmploymentState}
+                name={EmploymentState}
+                all={all}
+                data={filteredArr(formatDataEmployeeType)}
+              />
+            )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <CheckBoxForms
+                key={departmentState}
+                name={departmentState}
+                all={all}
+                data={filteredArr(formatDataDepartment)}
+              />
+            )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <CheckBoxForms
+                key={locationState}
+                name={locationState}
+                all={all}
+                data={formatDataLocation}
+              />
+            )}
+          </div>
         </Sider>
       </div>
     );

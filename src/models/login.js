@@ -46,10 +46,16 @@ const Model = {
       }
     },
 
-    *logout() {
+    *logout(_, { put }) {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: {
+          currentUser: {},
+        },
+      });
       if (window.location.pathname !== '/login' && !redirect) {
         history.replace({
           pathname: '/login',

@@ -18,7 +18,12 @@ const UserModel = {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveCurrentUser',
-        payload: response,
+        payload: {
+          ...response.data,
+          name: [response.data.generalInfo.firstName, response.data.generalInfo.lastName]
+            .filter(Boolean)
+            .join(' '),
+        },
       });
     },
   },
