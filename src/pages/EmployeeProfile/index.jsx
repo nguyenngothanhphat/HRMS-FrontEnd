@@ -21,28 +21,25 @@ class EmployeeProfile extends Component {
     const listMenu = [
       {
         id: 1,
-        name: 'Basic Information',
-        key: 'basicInformation',
+        name: 'General Info',
+
         component: <Test />,
       },
-      { id: 2, name: 'Job Details', key: 'jobDetails', component: <Test /> },
+      {
+        id: 2,
+        name: `Employment & Compensation`,
+        component: <Test />,
+      },
       {
         id: 3,
-        name: 'Eligibility Documents',
-        key: 'eligibilityDocuments',
+        name: 'Performance History',
         component: <Test />,
       },
-      { id: 4, name: 'Offer Details', key: 'offerDetails', component: <Test /> },
-      { id: 5, name: 'Benefits', key: 'benefits', component: <Test /> },
-      { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <Test /> },
-      { id: 7, name: 'Payroll Settings', key: 'customFields', component: <Test /> },
-      { id: 8, name: 'Custom Fields', key: 'additionalOptions', component: <Test /> },
-      {
-        id: 9,
-        name: 'Additional Options',
-        key: 'additionalOptions',
-        component: <Test />,
-      },
+      { id: 4, name: 'Accounts and Paychecks', component: <Test /> },
+      { id: 5, name: 'Documents', component: <Test /> },
+      { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
+      { id: 7, name: 'Time & Scheduling', component: <Test /> },
+      { id: 8, name: 'Benefit Plans', component: <Test /> },
     ];
     return (
       <PageContainer>

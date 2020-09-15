@@ -21,13 +21,11 @@
     padding: 25px;
     &__infoEmployee {
       width: 100%;
-      min-width: 277px;
-      height: 621px;
+      height: auto;
       background-color: #fff;
       border-radius: 5px;
       border: solid 1px #d6dce0;
       overflow: hidden;
-      position: relative;
       .infoEmployee {
         &__imgCover {
           height: 103px;
@@ -106,9 +104,8 @@
       }
     }
     .viewBtnAction {
-      position: absolute;
+      margin: 52px 0 10px 0;
       padding: 0 16px;
-      bottom: 10px;
       width: 100%;
       .btnAction {
         height: 40px;
@@ -123,5 +120,13 @@
         }
       }
     }
+  }
+}
+
+.itemDropdownMenu {
+  color: #8a8d93;
+  font-size: 14px;
+  &:hover {
+    color: #2c6df9;
   }
 }

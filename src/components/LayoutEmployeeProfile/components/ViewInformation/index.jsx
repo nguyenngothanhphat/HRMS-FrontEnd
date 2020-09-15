@@ -17,13 +17,16 @@ class ViewInformation extends PureComponent {
     const menu = (
       <Menu>
         <Item key="1" onClick={() => alert(1)}>
-          Put on Leave (PWP)
+          <div className={s.itemDropdownMenu}>Edit bio</div>
         </Item>
         <Item key="2" onClick={() => alert(2)}>
-          Raise Termination
+          <div className={s.itemDropdownMenu}>Put on Leave (PWP)</div>
         </Item>
         <Item key="3" onClick={() => alert(3)}>
-          Request Details
+          <div className={s.itemDropdownMenu}>Raise Termination</div>
+        </Item>
+        <Item key="4" onClick={() => alert(4)}>
+          <div className={s.itemDropdownMenu}>Request Details</div>
         </Item>
       </Menu>
     );
@@ -66,12 +69,20 @@ class ViewInformation extends PureComponent {
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Bengaluru, India</p>
           </div>
+          <div>
+            <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
+            <img src="/assets/images/iconMail.svg" alt="img-arrow" style={{ marginLeft: '5px' }} />
+          </div>
         </div>
         <div className={s.viewBtnAction}>
           <Dropdown overlay={menu} placement="bottomRight">
             <Button type="primary" className={s.btnAction}>
-              <span className={s.btnAction__text}>Action</span>{' '}
-              <DownOutlined className={s.btnAction__text} />
+              <span className={s.btnAction__text}>Action</span>
+              <img
+                src="/assets/images/iconDownButton.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px' }}
+              />
             </Button>
           </Dropdown>
         </div>
