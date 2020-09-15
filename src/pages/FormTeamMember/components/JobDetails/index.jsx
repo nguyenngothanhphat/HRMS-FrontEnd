@@ -9,25 +9,70 @@ import styles from './index.less';
 import { connect } from 'umi';
 const { Option } = Select;
 
+@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
+  basicInformation,
+  checkMandatory,
+}))
 export default class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
+  static getDerivedStateFromProps(props) {
+    if ('jobDetail' in props) {
+      return { jobDetail: props.jobDetail || {} };
+    }
+    return null;
+  }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+  handleSelect = (value, name) => {
+    const { dispatch, checkMandatory } = this.props;
+    const { jobDetail = {} } = this.state;
+    jobDetail[name] = value;
+    const {
+      position,
+      classification,
+      department,
+      jobTitle,
+      jobCategory,
+      workLocation,
+      reportingManager,
+      candidatesNoticePeriod,
+      prefferedDateOfJoining,
+    } = jobDetail;
+    if (
+      department !== '' &&
+      jobCategory !== '' &&
+      workLocation !== '' &&
+      reportingManager !== '' &&
+      candidatesNoticePeriod !== '' &&
+      prefferedDateOfJoining !== ''
+    ) {
+      checkMandatory.filledJobDetail = true;
+    } else {
+      checkMandatory.filledJobDetail = false;
+    }
+    dispatch({
+      type: 'info/saveJobDetail',
+      payload: {
+        jobDetail,
+        checkMandatory: {
+          ...checkMandatory,
+        },
+      },
+    });
+    // console.log(e, name);
+
+    // dispatch({
+    //   type: 'info/saveJobDetail',
+    //   payload: {
+    //     jobDetail,
+    //     checkMandatory: {
+    //       ...checkMandatory,
+    //     },
+    //   },
+    // });
   };
-
-  // handleRadio = (e) => {
-  //   const { value } = e.target;
-  //   console.log(value);
-  // };
-
-  handleSelect = (e) => {
-    console.log(e);
-  };
-
   render() {
     const Tab = {
       positionTab: {
@@ -51,7 +96,7 @@ export default class JobDetails extends PureComponent {
     };
     const dropdownField = [
       {
-        title: 'Department',
+        title: 'department',
         id: 1,
         placeholder: 'Select a job title',
         Option: [
@@ -115,31 +160,21 @@ export default class JobDetails extends PureComponent {
           { key: 6, value: 'Senior' },
         ],
       },
-      {
-        title: `Candidate's notice Period`,
-        id: 6,
-        placeholder: 'Time period',
-        Option: [
-          { key: 1, value: 'Test' },
-          { key: 2, value: 'ABCD' },
-          { key: 3, value: 'Testing' },
-          { key: 4, value: '10AM' },
-          { key: 5, value: '5PM' },
-          { key: 6, value: 'For Hours' },
-        ],
-      },
-      { title: 'Preferred date of joining', id: 7 },
+      // {
+      //   title: `Candidate's notice Period`,
+      //   id: 6,
+      //   placeholder: 'Time period',
+      //   Option: [
+      //     { key: 1, value: 'Test' },
+      //     { key: 2, value: 'ABCD' },
+      //     { key: 3, value: 'Testing' },
+      //     { key: 4, value: '10AM' },
+      //     { key: 5, value: '5PM' },
+      //     { key: 6, value: 'For Hours' },
+      //   ],
+      // },
+      // { title: 'Preferred date of joining', id: 7 },
     ];
-    const steps = {
-      title: 'Complete onboarding process at a glance',
-      keyPage: [
-        { key: 1, data: `Prepare the new candidate's offer letter` },
-        { key: 2, data: `Send for approval` },
-        { key: 3, data: `Post approval,send letter to candidate` },
-        { key: 4, data: `Post approval,send letter to candidate` },
-        { key: 5, data: `Setup for the employee` },
-      ],
-    };
     const Note = {
       title: 'Note',
       data: (
@@ -165,7 +200,7 @@ export default class JobDetails extends PureComponent {
                 <NoteComponent note={Note} />
               </Row>
               <Row style={{ width: '322px' }}>
-                <StepsComponent steps={steps} />
+                <StepsComponent />
               </Row>
             </div>
           </Col>

@@ -70,16 +70,6 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  // onFinish = (values) => {
-  //   const newValues = { ...values };
-  //   newValues.workEmail += '@terralogic.com';
-  //   console.log('Success:', newValues);
-  // };
-
-  // onFinishFailed = (errorInfo) => {
-  //   console.log('Failed:', errorInfo);
-  // };
-
   onClickClose = () => {
     this.setState({
       isOpenReminder: false,
@@ -102,8 +92,6 @@ class BasicInformation extends PureComponent {
         name="basic"
         initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
         onFocus={this.onFocus}
-        // onFinish={this.onFinish}
-        // onFinishFailed={this.onFinishFailed}
       >
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
@@ -113,7 +101,7 @@ class BasicInformation extends PureComponent {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
-              rules={[{ required: true, message: 'Please input your full name!' }]}
+              rules={[{ required: true, message: `'Please input your full name!'` }]}
             >
               <Input
                 onChange={(e) => this.handleChange(e)}
@@ -197,16 +185,6 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
-    const steps = {
-      title: 'Complete onboarding process at a glance',
-      keyPage: [
-        { key: 1, data: `Prepare the new candidate's offer letter` },
-        { key: 2, data: `Send for approval` },
-        { key: 3, data: `Post approval,send letter to candidate` },
-        { key: 4, data: `Post approval,send letter to candidate` },
-        { key: 5, data: `Setup for the employee` },
-      ],
-    };
     const Note = {
       title: 'Note',
       data: (
@@ -233,7 +211,7 @@ class BasicInformation extends PureComponent {
               <NoteComponent note={Note} />
             </Row>
             <Row style={{ width: '322px' }}>
-              <StepsComponent steps={steps} />
+              <StepsComponent />
             </Row>
           </div>
         </Col>

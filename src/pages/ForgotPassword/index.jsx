@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-import { Link, connect } from 'umi';
+import { Link, connect, formatMessage } from 'umi';
 import mail from './asset/mail-art.png';
 import styles from './index.less';
 
@@ -41,10 +41,12 @@ class ForgotPassword extends Component {
   _renderForm = () => {
     return (
       <div className={styles.formWrapper}>
-        <p className={styles.formWrapper__title}>Forgot Password</p>
+        <p className={styles.formWrapper__title}>
+          {' '}
+          {formatMessage({ id: 'pages.forgotPassword.title' })}
+        </p>
         <p className={styles.formWrapper__description}>
-          In order to retrieve password, you must enter your registered company email id or private
-          email id entered submitted with the HR.
+          {formatMessage({ id: 'pages.forgotPassword.description' })}
         </p>
         <Form
           layout="vertical"
@@ -57,16 +59,16 @@ class ForgotPassword extends Component {
           ref={this.formRef}
         >
           <Form.Item
-            label="Enter company email address/ approved private email"
+            label={formatMessage({ id: 'pages.forgotPassword.emailLabel' })}
             name="email"
             rules={[
               {
                 required: true,
-                message: 'Please input your email!',
+                message: formatMessage({ id: 'pages.forgotPassword.pleaseInputYourEmail' }),
               },
               {
                 type: 'email',
-                message: 'Email invalid',
+                message: formatMessage({ id: 'pages.forgotPassword.invalidEmail' }),
               },
             ]}
           >
@@ -80,7 +82,9 @@ class ForgotPassword extends Component {
           </Form.Item>
           <Form.Item>
             <Link to="/login">
-              <p className={styles.toLogin}>Sign in</p>
+              <p className={styles.toLogin}>
+                {formatMessage({ id: 'pages.forgotPassword.signIn' })}
+              </p>
             </Link>
           </Form.Item>
         </Form>
@@ -93,7 +97,7 @@ class ForgotPassword extends Component {
     const valueEmail = getFieldValue('email');
     return (
       <Button type="primary" htmlType="submit" loading={loading} disabled={!valueEmail}>
-        Retrieve Password
+        {formatMessage({ id: 'pages.forgotPassword.retrievePassword' })}
       </Button>
     );
   };
@@ -123,8 +127,9 @@ class ForgotPassword extends Component {
       >
         <img alt="" src={mail} style={{ color: '#eee', fontSize: '80px', marginBottom: '2rem' }} />
         <p className={styles.formWrapper__descriptionSuccessfully}>
-          An email with the link to change your password was sent to the email id{' '}
-          <span>{protectEmail}</span>. Click on the link to create new password
+          {formatMessage({ id: 'pages.forgotPassword.descriptionSuccessfully1' })}
+          <span>{protectEmail}</span>
+          {formatMessage({ id: 'pages.forgotPassword.descriptionSuccessfully2' })}
         </p>
       </div>
     );

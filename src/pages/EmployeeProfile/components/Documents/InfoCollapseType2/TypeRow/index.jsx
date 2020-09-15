@@ -5,31 +5,37 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 class TypeRow extends PureComponent {
+  handleClick = (event) => {
+    // no collapse activate when clicking on download button
+    event.stopPropagation();
+  };
+
   statusAndDownloadButton = () => (
     <div className={styles.statusAndDownload}>
       <a>Complete</a>
-      <DownloadOutlined
-        className={styles.downloadButton}
-        onClick={(event) => {
-          // no collapse activate when clicking on download button
-          event.stopPropagation();
-        }}
-      />
+      <DownloadOutlined className={styles.downloadButton} onClick={this.handleClick} />
     </div>
   );
 
   render() {
-    const { data } = this.props;
+    const { data = [] } = this.props;
     return (
       <div>
-        { data.map(row => (
+        {data.map((row) => (
           <Collapse
             defaultActiveKey={['1']}
-            expandIcon={({ isActive }) => <CaretRightOutlined className={styles.collapseIcon} rotate={isActive ? 90 : 0} />}
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined className={styles.collapseIcon} rotate={isActive ? 90 : 0} />
+            )}
             className={styles.eachCollapse}
           >
-            <Panel header={row.title} className={styles.eachPanel} key="1" extra={this.statusAndDownloadButton()}>
-              { row.files.map(file => (
+            <Panel
+              header={row.kind}
+              className={styles.eachPanel}
+              key="1"
+              extra={this.statusAndDownloadButton()}
+            >
+              {row.files.map((file) => (
                 <Row className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
                     <a>
@@ -41,12 +47,12 @@ class TypeRow extends PureComponent {
                   <Col span={7}>{file.date}</Col>
                   <Col span={2} />
                 </Row>
-              )) }
+              ))}
             </Panel>
           </Collapse>
         ))}
       </div>
-    )
+    );
   }
 }
 

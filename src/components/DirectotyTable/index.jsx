@@ -8,7 +8,15 @@ class DirectoryTable extends Component {
     super(props);
     this.state = {
       sortedName: {},
+      pageSelected: 1,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { list } = this.props;
+    if (prevProps.list.length !== list.length) {
+      this.setFirstPage();
+    }
   }
 
   renderUser = (generalInfo) => {
@@ -95,20 +103,42 @@ class DirectoryTable extends Component {
     });
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageSelected: pageNumber,
+    });
+  };
+
+  setFirstPage = () => {
+    this.setState({
+      pageSelected: 1,
+    });
+  };
+
   handleProfileEmployee = () => {
     history.push('/directory/employee-profile/0001');
   };
 
   render() {
-    const { sortedName = {} } = this.state;
+    const { sortedName = {}, pageSelected } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 15;
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
-      showTotal: (total, range) => `Showing ${range[0]}-${range[1]} of ${total}`,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {total}{' '}
+        </span>
+      ),
       pageSize: rowSize,
-      defaultCurrent: 1,
+      current: pageSelected,
+      onChange: this.onChangePagination,
     };
     return (
       <div className={styles.directoryTable}>
@@ -122,10 +152,10 @@ class DirectoryTable extends Component {
           }}
           dataSource={list}
           rowKey={(record) => record._id}
-          pagination={pagination}
-          // pagination={list.length > rowSize ? pagination : false}
+          // pagination={{ ...pagination, total: list.length }}
+          pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
-          // onChange={this.handleChangeTable}
+          onChange={this.handleChangeTable}
           // scroll={{ y: 540, x: 700 }}
         />
       </div>
