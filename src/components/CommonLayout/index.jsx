@@ -73,6 +73,7 @@ export default class CommonLayout extends PureComponent {
                 ghost
                 onClick={() =>
                   this.setState({
+                    selectedItemId: '',
                     displayComponent: <PreviewOffer />,
                   })
                 }
