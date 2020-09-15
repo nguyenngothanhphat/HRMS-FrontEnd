@@ -4,7 +4,8 @@ import { getGeneralInfo, getCompensation } from '@/services/employeeProfiles';
 const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
-    employeeById: {},
+    generalData: {},
+    compensationData: {},
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' } }, { call, put }) {
