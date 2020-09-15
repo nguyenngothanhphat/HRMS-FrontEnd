@@ -1,23 +1,23 @@
 import React, { PureComponent } from 'react';
-import { Form, Select, Radio, Row, Col, DatePicker, Button, Typography } from 'antd';
+import { Row, Col, Typography } from 'antd';
+import { connect, formatMessage } from 'umi';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
-import { connect } from 'umi';
-const { Option } = Select;
 
 @connect(({ info: { jobDetail, checkMandatory } = {} }) => ({
   jobDetail,
   checkMandatory,
 }))
-export default class JobDetails extends PureComponent {
+class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
   static getDerivedStateFromProps(props) {
     if ('jobDetail' in props) {
       return { jobDetail: props.jobDetail || {} };
@@ -39,13 +39,12 @@ export default class JobDetails extends PureComponent {
       },
     });
   };
+
   handleSelect = (value, name) => {
     const { dispatch, checkMandatory } = this.props;
     const { jobDetail = {} } = this.state;
     jobDetail[name] = value;
     const {
-      position,
-      classification,
       department,
       jobTitle,
       jobCategory,
@@ -77,25 +76,32 @@ export default class JobDetails extends PureComponent {
       },
     });
   };
+
   render() {
     const Tab = {
       positionTab: {
-        title: 'Position',
+        title: formatMessage({ id: 'component.jobDetail.positionTab' }),
         name: 'position',
         arr: [
-          { value: 1, position: 'Employee' },
-          { value: 2, position: 'Contingent worker' },
+          { value: 1, position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }) },
+          { value: 2, position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }) },
         ],
       },
       classificationTab: {
-        title: 'Classification',
+        title: formatMessage({ id: 'component.jobDetail.classificationTab' }),
         name: 'classification',
         arr: [
-          { value: 1, classification: 'Full-Time (Employee working more than 30 hours a week)' },
-          { value: 2, classification: 'Part-Time (Employee working less than 30 hours a week)' },
+          {
+            value: 1,
+            classification: formatMessage({ id: 'component.jobDetail.classificationRadio1' }),
+          },
+          {
+            value: 2,
+            classification: formatMessage({ id: 'component.jobDetail.classificationRadio2' }),
+          },
           {
             value: 3,
-            classification: 'Internship (A student or trainee participating in an internship)',
+            classification: formatMessage({ id: 'component.jobDetail.classificationRadio3' }),
           },
         ],
       },
@@ -103,7 +109,7 @@ export default class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'department',
-        name: 'Department',
+        name: formatMessage({ id: 'component.jobDetail.department' }),
         id: 1,
         placeholder: 'Select a job title',
         Option: [
@@ -117,7 +123,7 @@ export default class JobDetails extends PureComponent {
       },
       {
         title: 'jobTitle',
-        name: 'Job title',
+        name: formatMessage({ id: 'component.jobDetail.jobTitle' }),
         id: 2,
         placeholder: 'Select a job title',
         Option: [
@@ -131,7 +137,7 @@ export default class JobDetails extends PureComponent {
       },
       {
         title: 'jobCategory',
-        name: 'Job category',
+        name: formatMessage({ id: 'component.jobDetail.jobCategory' }),
         id: 3,
         placeholder: 'Select a job category',
         Option: [
@@ -145,7 +151,7 @@ export default class JobDetails extends PureComponent {
       },
       {
         title: 'workLocation',
-        name: 'Work location',
+        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
         id: 4,
         placeholder: 'Select a work location',
         Option: [
@@ -159,7 +165,7 @@ export default class JobDetails extends PureComponent {
       },
       {
         title: 'reportingManager',
-        name: 'Reporting Manager',
+        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
         id: 5,
         placeholder: 'Select',
         Option: [
@@ -175,7 +181,7 @@ export default class JobDetails extends PureComponent {
     const candidateField = [
       {
         title: `candidatesNoticePeriod`,
-        name: `Candidate's notice Period`,
+        name: formatMessage({ id: 'component.jobDetail.candidateNoticePeriod' }),
         id: 1,
         placeholder: 'Time period',
         Option: [
@@ -187,10 +193,14 @@ export default class JobDetails extends PureComponent {
           { key: 6, value: 'For Hours' },
         ],
       },
-      { title: 'prefferedDateOfJoining', name: 'Preferred date of joining', id: 2 },
+      {
+        title: 'prefferedDateOfJoining',
+        name: formatMessage({ id: 'component.jobDetail.prefferedDateOfJoining' }),
+        id: 2,
+      },
     ];
     const Note = {
-      title: 'Note',
+      title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
         <Typography.Text>
           Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
@@ -227,3 +237,5 @@ export default class JobDetails extends PureComponent {
     );
   }
 }
+
+export default JobDetails;

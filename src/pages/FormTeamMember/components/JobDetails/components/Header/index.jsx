@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Typography } from 'antd';
 import styles from './index.less';
+
 class Header extends Component {
   constructor(props) {
     super(props);
