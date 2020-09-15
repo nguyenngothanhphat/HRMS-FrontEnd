@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
+import GeneralInfo from './components/GeneralInfo';
+import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import styles from './index.less';
 
@@ -23,7 +25,7 @@ class EmployeeProfile extends Component {
         id: 1,
         name: 'General Info',
 
-        component: <Test />,
+        component: <GeneralInfo />,
       },
       {
         id: 2,
@@ -35,7 +37,7 @@ class EmployeeProfile extends Component {
         name: 'Performance History',
         component: <Test />,
       },
-      { id: 4, name: 'Accounts and Paychecks', component: <Test /> },
+      { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
       { id: 5, name: 'Documents', component: <Test /> },
       { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
       { id: 7, name: 'Time & Scheduling', component: <Test /> },

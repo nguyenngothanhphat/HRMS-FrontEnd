@@ -80,7 +80,7 @@ class AccountsPaychecks extends PureComponent {
             </div>
           </Col>
         </Row>
-        <Row>
+        <Row className={styles.TableBankDetails}>
           <Col span={24}>
             <Collapse
               defaultActiveKey={['1']}
