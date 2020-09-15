@@ -7,8 +7,7 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import styles from './index.less';
 
-@connect(({ loading, employeeProfile }) => ({
-  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
+@connect(({ employeeProfile }) => ({
   employeeProfile,
 }))
 class EmployeeProfile extends Component {
@@ -34,13 +33,12 @@ class EmployeeProfile extends Component {
   }
 
   render() {
-    const { loadingGeneral } = this.props;
     const listMenu = [
       {
         id: 1,
         name: 'General Info',
 
-        component: <GeneralInfo loading={loadingGeneral} />,
+        component: <GeneralInfo />,
       },
       {
         id: 2,

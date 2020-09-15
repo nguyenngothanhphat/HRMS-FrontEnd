@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin } from 'antd';
+import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
 import styles from './index.less';
@@ -11,14 +11,16 @@ import styles from './index.less';
 class GeneralInfo extends PureComponent {
   render() {
     const {
-      loading = false,
+      loadingGeneral = false,
       employeeProfile: { generalData = {} },
     } = this.props;
 
-    if (loading)
+    console.log('Loading general info', loadingGeneral);
+
+    if (loadingGeneral)
       return (
-        <div className={styles.Loading}>
-          <Spin />
+        <div className={styles.viewLoading}>
+          <Skeleton loading={loadingGeneral} active />
         </div>
       );
     return (
