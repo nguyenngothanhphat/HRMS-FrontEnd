@@ -46,13 +46,14 @@ class DirectoryTable extends Component {
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
+        width: '15%',
       },
       {
         title: 'Employee ID',
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        align: 'left',
+        align: 'center',
       },
       {
         title: 'Title',
@@ -71,7 +72,11 @@ class DirectoryTable extends Component {
         title: 'Department',
         dataIndex: 'department',
         key: 'department',
-        render: (department) => <span>{department ? department.name : ''}</span>,
+        render: (department) => (
+          <span className={styles.directoryTable_deparmentText}>
+            {department ? department.name : ''}
+          </span>
+        ),
         align: 'left',
       },
       {
@@ -87,6 +92,7 @@ class DirectoryTable extends Component {
         key: 'manager',
         render: (manager) => <span>{manager ? manager.name : ''}</span>,
         align: 'left',
+        width: '15%',
       },
       {
         title: 'Employment Type',
@@ -98,6 +104,7 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
+        width: '15%',
       },
     ];
 
@@ -166,7 +173,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          scroll={{ x: 800, y: 400 }}
+          scroll={{ x: 900, y: 400 }}
         />
       </div>
     );
