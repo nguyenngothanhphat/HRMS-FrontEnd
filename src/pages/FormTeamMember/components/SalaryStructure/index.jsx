@@ -3,6 +3,8 @@ import { Row, Col, Typography } from 'antd';
 import { connect } from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
+import NoteComponent from '../NoteComponent';
+import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
 
@@ -11,32 +13,33 @@ import styles from './index.less';
   checkMandatory,
 }))
 class SalaryStructure extends PureComponent {
-  // constructor(props) {
-  //   super(props);
+  constructor(props) {
+    super(props);
 
-  //   this.state = {
-  //     isOpenReminder: false,
-  //   };
-  // }
+    this.state = {
+      salaryStatus: 3,
+    };
+  }
 
   _renderTable = () => {
     return <div className={styles.tableWrapper}>hi</div>;
   };
 
   render() {
-    // const Steps = {
-    //   title: 'Complete onboarding process at a glance',
-    //   keyPage: [{ key: 1, data: `Prepare the new candidate's offer letter` }],
-    // };
-    // const Note = {
-    //   title: 'Note',
-    //   data: (
-    //     <Typography.Text>
-    //       Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-    //       working days for entire process to complete
-    //     </Typography.Text>
-    //   ),
-    // };
+    const { salaryStatus } = this.state;
+    const Note = {
+      title: 'Note',
+      data: (
+        <Typography.Text>
+          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
+          accept the and acknowledge the salary structure as a part of final negotiation. <br />
+          <br />
+          <span className="bold-text">
+            Post acceptance of salary structure, the final offer letter will be sent.
+          </span>
+        </Typography.Text>
+      ),
+    };
     return (
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
@@ -49,15 +52,14 @@ class SalaryStructure extends PureComponent {
           </div>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
-          {/* <div className={styles.rightWrapper}>
+          <div className={styles.rightWrapper}>
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <hr />
             <Row>
-              <StepsComponent Steps={Steps} />
+              <SalaryAcceptance salaryStatus={salaryStatus} />
             </Row>
-          </div> */}
+          </div>
         </Col>
       </Row>
     );
