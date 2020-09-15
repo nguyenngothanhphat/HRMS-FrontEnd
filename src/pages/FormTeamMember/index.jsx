@@ -7,6 +7,7 @@ import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
+import EligibilityDocs from './components/EligibilityDocs';
 
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
@@ -33,7 +34,7 @@ export default class FormTeamMember extends PureComponent {
         id: 3,
         name: 'Eligibility Documents',
         key: 'eligibilityDocuments',
-        component: <BasicInformation />,
+        component: <EligibilityDocs />,
       },
       { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 5, name: 'Benefits', key: 'benefits', component: <BasicInformation /> },

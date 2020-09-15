@@ -17,7 +17,7 @@ class SalaryStructure extends PureComponent {
     super(props);
 
     this.state = {
-      salaryStatus: 3,
+      salaryStatus: 2,
     };
   }
 

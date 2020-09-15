@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
 
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
+import SendEmail from '../../../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
 
@@ -16,18 +17,20 @@ class SalaryAcceptance extends PureComponent {
     if (salaryStatus === 1) {
       return (
         <SalaryAcceptanceContent
-          radioTitle="I would like to re-negotiate the salary structure."
+          radioTitle="I hereby accept this salary structure."
           note="You have gone through all the contents of the table and accept the salary as terms of your employment."
         />
       );
     }
     if (salaryStatus === 2) {
       return (
-        <SalaryAcceptanceContent
-          radioTitle="I would like to re-negotiate the salary structure."
-          note="You have gone through all the contents of the table. However, I would like to
-          renegotiate."
-        />
+        <>
+          <SalaryAcceptanceContent
+            radioTitle="I would like to re-negotiate the salary structure."
+            note="You have gone through all the contents of the table. However, I would like to
+        renegotiate."
+          />
+        </>
       );
     }
     if (salaryStatus === 3) {
@@ -72,7 +75,13 @@ class SalaryAcceptance extends PureComponent {
   };
 
   render() {
-    return <div className={styles.salaryAcceptance}>{this._renderStatus()}</div>;
+    const { salaryStatus } = this.props;
+    return (
+      <div className={styles.salaryAcceptance}>
+        <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
+        {salaryStatus === 2 ? <SendEmail /> : ''}
+      </div>
+    );
   }
 }
 

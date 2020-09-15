@@ -25,6 +25,16 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    eligibilityDocs: {
+      idProof: [],
+      addProof: [],
+      edu: [],
+      techCerti: [{
+        name: '',
+        duration: '',
+        poe: []
+      }]
+    },
     jobDetail: {
       position: 1,
       classification: 1,
@@ -75,6 +85,12 @@ const info = {
         ...action.payload,
       };
     },
+    saveEligibilityRequirement(state, action) {
+      return {
+        ...state,
+        ...action.payload
+      }
+    }
   },
 };
 export default info;
