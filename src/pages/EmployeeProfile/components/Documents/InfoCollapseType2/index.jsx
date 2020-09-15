@@ -18,9 +18,13 @@ class InfoCollapseType2 extends PureComponent {
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.type' })}
             </Col>
             <Col span={7}>
-              {formatMessage({
-                id: 'pages.employeeProfile.documents.infoCollapseType2.generatedBy',
-              })}
+              {data.type === 1
+                ? formatMessage({
+                    id: 'pages.employeeProfile.documents.infoCollapseType2.generatedBy',
+                  })
+                : formatMessage({
+                    id: 'pages.employeeProfile.documents.infoCollapseType2.uploadedBy',
+                  })}
             </Col>
             <Col span={7}>
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.date' })}

@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Collapse, Row, Col } from 'antd';
-import { CaretUpOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import FileIcon from '../../../../../../assets/pdf_icon.png';
 import DownloadIcon from '../../../../../../assets/download_icon.svg';
+import DownArrowIcon from '../../../../../../assets/downArrow.svg';
+import UpArrowIcon from '../../../../../../assets/upArrow.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -35,12 +37,22 @@ class TypeRow extends PureComponent {
     return (
       <div>
         {data.map((row) => (
-          <Collapse defaultActiveKey={['1']} bordered={false} className={styles.eachCollapse}>
+          <Collapse
+            defaultActiveKey={['1']}
+            bordered={false}
+            className={styles.eachCollapse}
+            expandIcon={({ isActive }) =>
+              isActive ? (
+                <img src={UpArrowIcon} alt="up-arrow" />
+              ) : (
+                <img src={DownArrowIcon} alt="down-arrow" />
+              )
+            }
+          >
             <Panel
               header={row.kind}
               className={styles.eachPanel}
               key="1"
-              showArrow={false}
               extra={this.statusAndButtons()}
             >
               {row.files.map((file) => (

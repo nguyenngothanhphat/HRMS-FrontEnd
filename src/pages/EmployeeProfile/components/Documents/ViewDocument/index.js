@@ -60,7 +60,7 @@ export default class ViewDocument extends PureComponent {
         </div>
         <div className={styles.tableContent}>
           <div className={styles.documentPreviewFrame}>
-            <span>Hi em</span>
+            <span />
           </div>
           <div className={styles.documentPages} />
           <div className={styles.documentInfo}>

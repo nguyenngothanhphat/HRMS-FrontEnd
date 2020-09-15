@@ -3,12 +3,12 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
+import React from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { MenuOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
-import React, { useEffect } from 'react';
 import { connect, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -50,17 +50,6 @@ const BasicLayout = (props) => {
     collapsed,
     route: { routes } = {},
   } = props;
-  /**
-   * constructor
-   */
-
-  useEffect(() => {
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
-  }, []);
   /**
    * init variables
    */

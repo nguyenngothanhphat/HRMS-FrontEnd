@@ -1,6 +1,9 @@
+/* eslint-disable react/button-has-type */
 import React, { PureComponent } from 'react';
-import { Button } from 'antd';
+import { Row, Col, Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
+import BottomBar from '../BottomBar';
+
 import s from './index.less';
 
 export default class CommonLayout extends PureComponent {
@@ -27,6 +30,26 @@ export default class CommonLayout extends PureComponent {
     });
   };
 
+  handleNext = () => {
+    const { selectedItemId } = this.state;
+    const { listMenu = [] } = this.props;
+    const nextItem = listMenu.find((element) => element.id === selectedItemId + 1);
+    this.setState({
+      selectedItemId: nextItem.id,
+      displayComponent: nextItem.component,
+    });
+  };
+
+  handlePrev = () => {
+    const { selectedItemId } = this.state;
+    const { listMenu = [] } = this.props;
+    const prevItem = listMenu.find((element) => element.id === selectedItemId - 1);
+    this.setState({
+      selectedItemId: prevItem.id,
+      displayComponent: prevItem.component,
+    });
+  };
+
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
@@ -47,10 +70,22 @@ export default class CommonLayout extends PureComponent {
               <Button type="primary" ghost>
                 Preview offer letter
               </Button>
+              {/* <button onClick={this.handleNext}> next </button> */}
             </div>
           </div>
         </div>
-        <div className={s.viewRight}>{displayComponent}</div>
+        <div className={s.viewRight}>
+          {displayComponent}
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <BottomBar
+                onClickPrev={this.handlePrev}
+                onClickNext={this.handleNext}
+                currentPage={selectedItemId}
+              />
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }
