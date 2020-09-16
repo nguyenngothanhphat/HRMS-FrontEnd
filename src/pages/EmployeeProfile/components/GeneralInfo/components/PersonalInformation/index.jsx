@@ -7,7 +7,6 @@ import iconQuestTion from '../Icon/icon';
 class PersonalInformation extends PureComponent {
   render() {
     const { dataAPI = {} } = this.props;
-    console.log('generalData', dataAPI);
     const content =
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
     const contentEmail =

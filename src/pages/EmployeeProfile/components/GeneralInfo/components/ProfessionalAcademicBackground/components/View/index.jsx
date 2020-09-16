@@ -1,31 +1,79 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Tag } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
-export default class View extends PureComponent {
-  render() {
-    const dummyData = [
-      { label: 'Previous Job label', value: 'Senior UX Designer' },
-      { label: 'Previous Company', value: 'Apple' },
-      { label: 'Past Experience', value: '5 Years' },
-      { label: 'Total Experience', value: '12 Years' },
-      { label: 'Qualification', value: '12th PUC' },
-    ];
+@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
+  generalData,
+}))
+class View extends PureComponent {
+  formatListSkill = (skills, colors) => {
+    let temp = 0;
+    const listFormat = skills.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item.name,
+        id: item._id,
+      };
+    });
+    return listFormat;
+  };
 
-    const listCertification = [
-      {
-        name: 'HCI Certification',
-        urlFile: 'https://www.mariekuter.com/wp-content/uploads/2014/09/hci-coursera-statement.jpg',
-      },
-      {
-        name: 'UX Academy Certification',
-        urlFile: 'https://media.nngroup.com/media/editor/2019/02/13/ux-certificate-example.png',
-      },
+  _renderListCertification = (list) => {
+    return list.map((item, index) => {
+      const { name = '', urlFile = '', _id = '' } = item;
+      return (
+        <div key={_id} className={styles.viewRow} style={{ marginBottom: '6px' }}>
+          <div className={styles.textValue}>{`${index + 1} - ${name}`}</div>
+          <div className={styles.viewRow}>
+            <a
+              href={urlFile}
+              target="_blank"
+              rel="noopener noreferrer"
+              id="img-certification"
+              className={styles.nameCertification}
+            >
+              {name}
+            </a>
+            <img
+              src="/assets/images/iconFilePNG.svg"
+              alt="iconFilePNG"
+              className={styles.iconCertification}
+            />
+          </div>
+        </div>
+      );
+    });
+  };
+
+  render() {
+    const { generalData } = this.props;
+    const {
+      preJobTitle = '',
+      skills = [],
+      preCompany = '',
+      pastExp = 0,
+      totalExp = 0,
+      qualification = '',
+      certification = [],
+    } = generalData;
+    const dummyData = [
+      { id: 1, label: 'Previous Job label', value: preJobTitle },
+      { id: 2, label: 'Previous Company', value: preCompany },
+      { id: 3, label: 'Past Experience', value: pastExp },
+      { id: 4, label: 'Total Experience', value: totalExp },
+      { id: 5, label: 'Qualification', value: qualification },
     ];
+    const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    const formatListSkill = this.formatListSkill(skills, listColors) || [];
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         {dummyData.map((item) => (
-          <Fragment key={item.label}>
+          <Fragment key={item.id}>
             <Col span={6} className={styles.textLabel}>
               {item.label}
             </Col>
@@ -37,33 +85,20 @@ export default class View extends PureComponent {
         <Col span={6} className={styles.textLabel}>
           Certifications
         </Col>
-        <Col span={18}>
-          {listCertification.map((item, index) => {
-            const { name = '', urlFile = '' } = item;
-            return (
-              <div className={styles.viewRow} style={{ marginBottom: '6px' }}>
-                <div className={styles.textValue}>{`${index + 1} - ${name}`}</div>
-                <div className={styles.viewRow}>
-                  <a
-                    href={urlFile}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    id="img-certification"
-                    className={styles.nameCertification}
-                  >
-                    {name}
-                  </a>
-                  <img
-                    src="/assets/images/iconFilePNG.svg"
-                    alt="iconFilePNG"
-                    className={styles.iconCertification}
-                  />
-                </div>
-              </div>
-            );
-          })}
+        <Col span={18}>{this._renderListCertification(certification)}</Col>
+        <Col span={6} className={styles.textLabel}>
+          Skills
+        </Col>
+        <Col span={9} className={styles.tagSkill}>
+          {formatListSkill.map((item) => (
+            <Tag key={item.id} color={item.color}>
+              {item.name}
+            </Tag>
+          ))}
         </Col>
       </Row>
     );
   }
 }
+
+export default View;

@@ -6,7 +6,6 @@ import styles from './index.less';
 class PassportVisaInformation extends PureComponent {
   render() {
     const { dataAPI = {} } = this.props;
-    console.log('generalData', dataAPI);
     return (
       <div className={styles.PassportVisaInformation}>
         <Row className={styles.EmployeeDetails}>

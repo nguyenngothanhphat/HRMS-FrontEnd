@@ -8,7 +8,6 @@ import styles from './index.less';
 class EmployeeInformation extends PureComponent {
   render() {
     const { dataAPI = {} } = this.props;
-    console.log('generalData', dataAPI);
     const content = 'We require your gender for legal reasons.';
     return (
       <div className={styles.EmployeeInformation}>
