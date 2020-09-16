@@ -39,7 +39,7 @@
         .ant-upload.ant-upload-drag {
           height: 300px;
           width: 100%;
-          border: dashed 1px #2c6df9;
+          // border: dashed 1px #2c6df9;
         }
         .ant-upload-list .ant-upload-list-picture {
           width: 100%;
@@ -47,8 +47,14 @@
         }
         .ant-upload-list {
           background-color: white;
-          color: #00c598;
           padding: 10px 0;
+        }
+        .ant-upload-list-item {
+          background-color: #00c598;
+          color: white;
+          &:hover {
+            color: black;
+          }
         }
       }
     }

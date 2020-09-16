@@ -12,11 +12,13 @@ const data = [
         kind: 'Offer Letter',
         files: [
           {
+            id: 1,
             fileName: 'Abc.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
+            id: 2,
             fileName: 'Cdf documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
@@ -27,11 +29,13 @@ const data = [
         kind: 'Offer Letter',
         files: [
           {
+            id: 3,
             fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
+            id: 4,
             fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
@@ -45,24 +49,28 @@ const data = [
     type: 2, // uploaded by
     body: [
       {
-        kind: 'Offer Letter',
+        kind: 'Offer Letter Document',
         files: [
           {
+            id: 5,
             fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
+            id: 6,
             fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
+            id: 7,
             fileName: 'Abc documents.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
           },
           {
+            id: 8,
             fileName: 'Cdf.pdf',
             generatedBy: 'Terralogic',
             date: '20/12/2020',
@@ -78,6 +86,7 @@ class Documents extends PureComponent {
     super(props);
     this.state = {
       isViewingDocument: false,
+      selectedFile: [],
     };
   }
 
@@ -87,18 +96,33 @@ class Documents extends PureComponent {
     });
   };
 
-  onFileClick = () => {
-    this.setState({
-      isViewingDocument: true,
+  onFileClick = (value) => {
+    console.log('file: ', value);
+    // eslint-disable-next-line array-callback-return
+    data.some((x) => {
+      // eslint-disable-next-line array-callback-return
+      x.body.some((y) => {
+        // eslint-disable-next-line array-callback-return
+        y.files.some((z) => {
+          if (z.id === value) {
+            this.setState({
+              isViewingDocument: true,
+              selectedFile: z,
+            });
+            return true;
+          }
+          return false;
+        });
+      });
     });
   };
 
   render() {
-    const { isViewingDocument } = this.state;
+    const { isViewingDocument, selectedFile } = this.state;
     return (
       <div className={styles.Documents}>
         {isViewingDocument ? (
-          <ViewDocument onBackClick={this.onBackClick} />
+          <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
         ) : (
           data.map((value) => <InfoCollapseType2 onFileClick={this.onFileClick} data={value} />)
         )}

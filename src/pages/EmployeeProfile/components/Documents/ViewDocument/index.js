@@ -60,8 +60,9 @@ export default class ViewDocument extends PureComponent {
 
   render() {
     const { fetching, data, value } = this.state;
-    const { onBackClick } = this.props;
+    const { onBackClick, selectedFile } = this.props;
     // console.log('selected emails: ', value);
+    console.log('selectedFile', selectedFile);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>

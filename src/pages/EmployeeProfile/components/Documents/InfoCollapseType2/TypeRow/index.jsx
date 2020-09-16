@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Collapse, Row, Col } from 'antd';
+import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import FileIcon from '../../../../../../assets/pdf_icon.png';
 import DownloadIcon from '../../../../../../assets/download_icon.svg';
@@ -9,15 +9,36 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 class TypeRow extends PureComponent {
-  handleDownloadClick = (event) => {
-    // no collapse activate when clicking on download button
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: true,
+    };
+  }
+
+  preventCollapse = (event) => {
     event.stopPropagation();
   };
 
-  handleMenuClick = (event) => {
-    // no collapse activate when clicking on menu button
-    event.stopPropagation();
+  handleDownloadClick = (event) => {
+    this.preventCollapse(event);
   };
+
+  handleMenuClick = (event) => {
+    this.preventCollapse(event);
+  };
+
+  menu = () => (
+    <Menu>
+      <Menu.Item>
+        <div>1st menu item</div>
+      </Menu.Item>
+      <Menu.Item>
+        <div>2nd menu item</div>
+      </Menu.Item>
+      <Menu.Item danger>a danger item</Menu.Item>
+    </Menu>
+  );
 
   statusAndButtons = () => (
     <div className={styles.statusAndButtons}>
@@ -28,37 +49,61 @@ class TypeRow extends PureComponent {
         className={styles.downloadButton}
         onClick={this.handleDownloadClick}
       />
-      <EllipsisOutlined className={styles.menuButton} onClick={this.handleMenuClick} />
+      <Dropdown overlay={this.menu}>
+        <EllipsisOutlined onClick={this.handleMenuClick} className={styles.menuButton} />
+      </Dropdown>
     </div>
   );
 
+  headerWithArrowIcon = (open, title) => (
+    <div className={styles.headerWithArrowIcon}>
+      <span>{title}</span>
+      {open ? (
+        <img src={UpArrowIcon} alt="up-arrow" />
+      ) : (
+        <img src={DownArrowIcon} alt="down-arrow" />
+      )}
+    </div>
+  );
+
+  // customArrowIcon = (isActive) =>
+  //   isActive ? (
+  //     <img src={UpArrowIcon} alt="up-arrow" />
+  //   ) : (
+  //     <img src={DownArrowIcon} alt="down-arrow" />
+  //   );
+
+  onChange = () => {
+    this.setState((prevState) => ({
+      open: !prevState.open,
+    }));
+  };
+
   render() {
     const { data = [], onFileClick } = this.props;
+    const { open } = this.state;
     return (
       <div>
         {data.map((row) => (
           <Collapse
             defaultActiveKey={['1']}
+            onChange={this.onChange}
             bordered={false}
+            // expandIcon={({ isActive }) => this.customArrowIcon(isActive)}
+            // expandIconPosition="right"
             className={styles.eachCollapse}
-            expandIcon={({ isActive }) =>
-              isActive ? (
-                <img src={UpArrowIcon} alt="up-arrow" />
-              ) : (
-                <img src={DownArrowIcon} alt="down-arrow" />
-              )
-            }
           >
             <Panel
-              header={row.kind}
               className={styles.eachPanel}
               key="1"
+              showArrow={false}
+              header={this.headerWithArrowIcon(open, row.kind)}
               extra={this.statusAndButtons()}
             >
               {row.files.map((file) => (
-                <Row className={styles.eachRow}>
+                <Row id={file.id} className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
-                    <div onClick={onFileClick}>
+                    <div onClick={() => onFileClick(file.id)}>
                       <img src={FileIcon} alt="file" className={styles.fileIcon} />
                       <span>{file.fileName}</span>
                     </div>
