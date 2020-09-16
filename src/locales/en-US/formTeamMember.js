@@ -34,6 +34,13 @@ export default {
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
   'component.jobDetail.reminder.content2': '22nd September, 2020',
+  'component.customField.title': 'custom fields',
+  'component.customField.subTitle':
+    ' All documents supporting candidate’s employment eligibility will be displayed here',
+  'component.customField.dentalLabel': 'dental contribution tier*',
+  'component.customField.visionLabel': 'vision contribution tier*',
+  'component.customField.medicalLabel': 'medical contribution tier*',
+  'component.customField.additionalLabel': 'additional information',
   'component.noteComponent.content': `Onboarding is a step-by-step process. It takes anywhere around
   )}
   working days for entire process to complete`,

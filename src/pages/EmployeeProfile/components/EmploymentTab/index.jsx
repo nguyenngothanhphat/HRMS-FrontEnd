@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
@@ -14,6 +15,9 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
+@connect(({ employeeProfile }) => ({
+  employeeProfile,
+}))
 class EmploymentTab extends PureComponent {
   constructor(props) {
     super(props);
