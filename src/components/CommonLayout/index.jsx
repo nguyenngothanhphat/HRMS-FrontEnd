@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 import ItemMenu from './components/ItemMenu';
+import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -23,7 +24,7 @@ export default class CommonLayout extends PureComponent {
     });
   }
 
-  _handelClick = (item) => {
+  handleClick = (item) => {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
@@ -62,12 +63,21 @@ export default class CommonLayout extends PureComponent {
               <ItemMenu
                 key={item.id}
                 item={item}
-                handelClick={this._handelClick}
+                handelClick={this.handleClick}
                 selectedItemId={selectedItemId}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              <Button type="primary" ghost>
+              <Button
+                type="primary"
+                ghost
+                onClick={() => {
+                  this.setState({
+                    selectedItemId: '',
+                    displayComponent: <PreviewOffer />,
+                  });
+                }}
+              >
                 Preview offer letter
               </Button>
               {/* <button onClick={this.handleNext}> next </button> */}

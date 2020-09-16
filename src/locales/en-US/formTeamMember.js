@@ -34,6 +34,22 @@ export default {
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
   'component.jobDetail.reminder.content2': '22nd September, 2020',
+  'component.previewOffer.title': 'employee agreement',
+  'component.previewOffer.hrSignature': 'Signature of the HR',
+  'component.previewOffer.undersigned': 'Undersigned - Ms Riddhima Chaudhary',
+  'component.previewOffer.uploadNew': 'Upload new',
+  'component.previewOffer.submit': 'Submit',
+  'component.previewOffer.submitted': 'Signature submitted',
+  'component.previewOffer.send': 'Send for approval',
+  'component.previewOffer.note1': 'By default notifications ',
+  'component.previewOffer.note2': 'will be sent to HR',
+  'component.previewOffer.note3':
+    ', your manager and recursively loop to your department head for approval.',
+  'component.previewOffer.also':
+    'Also, add e-mail of the new joinee. You can send the offer once all approvals are inorder.',
+  'component.previewOffer.hrMail': 'HR Email ID',
+  'component.previewOffer.invalidMailErr': 'The input is not valid email!',
+  'component.previewOffer.emptyMailErr': 'Please input your email!',
   'component.customField.title': 'custom fields',
   'component.customField.subTitle':
     ' All documents supporting candidate’s employment eligibility will be displayed here',

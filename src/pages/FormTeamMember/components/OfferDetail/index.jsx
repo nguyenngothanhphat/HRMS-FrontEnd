@@ -16,7 +16,7 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, offerDetail, offerDetailField } = props;
+  const { dispatch, offerDetail } = props;
 
   // Get default value from "info" store
   const {
@@ -84,17 +84,6 @@ const OfferDetail = (props) => {
 
   const handleCurrencyChange = (value) => {
     setCurrency(value);
-    if (dispatch) {
-      dispatch({
-        type: 'info/save',
-        payload: {
-          offerDetailField: {
-            ...offerDetailField,
-            currency: value === 'dollar',
-          },
-        },
-      });
-    }
   };
 
   return (
@@ -213,10 +202,6 @@ const OfferDetail = (props) => {
             </Alert>
           </div>
         </div>
-
-        {/* <div className={styles.bottom}>
-          <p className={styles.note}>*All mandatory fields have been filled.</p>
-        </div> */}
       </div>
 
       <div className={styles.rightCol}>
@@ -227,7 +212,6 @@ const OfferDetail = (props) => {
   );
 };
 
-export default connect(({ info: { offerDetail = {}, offerDetailField = {} } = {} }) => ({
+export default connect(({ info: { offerDetail = {} } = {} }) => ({
   offerDetail,
-  offerDetailField,
 }))(OfferDetail);

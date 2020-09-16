@@ -48,9 +48,11 @@ class BottomBar extends PureComponent {
     }
 
     if (currentPage === 4) {
-      return offerDetailField.currency === true
-        ? '*All mandatory fields have been filled.'
-        : `Currency field must be 'Dollar'`;
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
     }
 
     if (currentPage === 8) {
