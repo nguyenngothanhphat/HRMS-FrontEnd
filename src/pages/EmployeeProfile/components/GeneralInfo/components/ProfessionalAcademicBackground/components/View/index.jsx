@@ -7,6 +7,13 @@ import styles from './index.less';
   generalData,
 }))
 class View extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchListSkill',
+    });
+  }
+
   formatListSkill = (skills, colors) => {
     let temp = 0;
     const listFormat = skills.map((item) => {

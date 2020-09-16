@@ -8,7 +8,7 @@ class ProfessionalAcademicBackground extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isEdit: true,
+      isEdit: false,
     };
   }
 
