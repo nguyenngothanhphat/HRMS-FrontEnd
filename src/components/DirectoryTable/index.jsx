@@ -173,7 +173,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          scroll={{ x: 900, y: 400 }}
+          scroll={{ x: 900, y: 'max-content' }}
         />
       </div>
     );
