@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { history } from 'umi';
+import { history, formatMessage } from 'umi';
 import { Table, Avatar } from 'antd';
 import styles from './index.less';
 
@@ -35,7 +35,7 @@ class DirectoryTable extends Component {
   generateColumns = (sortedName) => {
     const columns = [
       {
-        title: 'Full Name',
+        title: formatMessage({ id: 'component.directory.table.fullName' }),
         dataIndex: 'generalInfo',
         key: 'generalInfo',
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
@@ -49,14 +49,14 @@ class DirectoryTable extends Component {
         width: '15%',
       },
       {
-        title: 'Employee ID',
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         align: 'center',
       },
       {
-        title: 'Title',
+        title: formatMessage({ id: 'component.directory.table.title' }),
         dataIndex: 'compensation',
         key: 'compensation',
         render: (compensation) => (
@@ -69,7 +69,7 @@ class DirectoryTable extends Component {
         align: 'left',
       },
       {
-        title: 'Department',
+        title: formatMessage({ id: 'component.directory.table.department' }),
         dataIndex: 'department',
         key: 'department',
         render: (department) => (
@@ -80,14 +80,14 @@ class DirectoryTable extends Component {
         align: 'left',
       },
       {
-        title: 'Location',
+        title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'left',
       },
       {
-        title: 'Reporting Manager',
+        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => <span>{manager ? manager.name : ''}</span>,
@@ -95,7 +95,7 @@ class DirectoryTable extends Component {
         width: '15%',
       },
       {
-        title: 'Employment Type',
+        title: formatMessage({ id: 'component.directory.table.employmentType' }),
         dataIndex: 'compensation',
         key: 'employmentType',
         render: (compensation) => (
@@ -146,11 +146,11 @@ class DirectoryTable extends Component {
       showTotal: (total, range) => (
         <span>
           {' '}
-          Showing{' '}
+          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {total}{' '}
+          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
       pageSize: rowSize,
