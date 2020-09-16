@@ -6,7 +6,9 @@ import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
 import CustomField from './components/CustomField';
+import Benefit from './components/Benefit';
 import styles from './index.less';
+
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
   // const {
@@ -35,7 +37,7 @@ export default class FormTeamMember extends PureComponent {
         component: <BasicInformation />,
       },
       { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
-      { id: 5, name: 'Benefits', key: 'benefits', component: <BasicInformation /> },
+      { id: 5, name: 'Benefits', key: 'benefits', component: <Benefit /> },
       { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <BasicInformation /> },
       { id: 7, name: 'Payroll Settings', key: 'customFields', component: <BasicInformation /> },
       { id: 8, name: 'Custom Fields', key: 'additionalOptions', component: <CustomField /> },
