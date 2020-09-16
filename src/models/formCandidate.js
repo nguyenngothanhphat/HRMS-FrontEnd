@@ -10,6 +10,12 @@
 const info = {
   namespace: 'info',
   state: {
+    basicInformation: {
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      experienceYear: '',
+    },
     offerDetail: {
       includeOffer: false,
       file: 'Template.docx',
@@ -19,8 +25,30 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    jobDetail: {
+      position: 1,
+      classification: 1,
+      department: '',
+      jobTitle: '',
+      jobCategory: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
+    checkMandatory: {
+      filledBasicInformation: false,
+      filledJobDetail: false,
+      filledCustomField: false,
+    },
     offerDetailField: {
       currency: true,
+    },
+    customField: {
+      dental: 'tier1',
+      vision: 'tier1',
+      medical: 'tier1',
+      additionalInfo: '',
     },
   },
   effects: {
@@ -36,6 +64,18 @@ const info = {
     // },
   },
   reducers: {
+    saveBasicInformation(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveJobDetail(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     save(state, action) {
       return {
         ...state,

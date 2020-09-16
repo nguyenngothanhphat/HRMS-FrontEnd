@@ -1,57 +1,22 @@
 .DirectoryComponent {
-  margin: 0 24px;
-  @keyframes displayOpenSider {
-    0% {
-      opacity: 0;
-    }
-    25% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 1;
+  margin: 32px 100px;
+  .TabComponent {
+    :global {
+      .ant-tabs-tab {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .ant-layout {
+        min-height: 540px;
+      }
     }
   }
-  .openSider {
-    position: relative;
-    opacity: 1;
-    width: 17.1px;
-    height: 21px;
-    margin-top: 14px;
-    background-color: #0d61dd;
-    cursor: pointer;
-    z-index: 1;
-    animation-name: displayOpenSider;
-    animation-duration: 1s;
-  }
-
-  .openSider::before {
-    position: absolute;
-    top: 0;
-    // right: -8px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-top: 10.5px solid transparent;
-    border-bottom: 10.5px solid transparent;
-    border-left: 8px solid #0d61dd;
-    content: '';
-  }
-
-  .openSider::after {
-    position: absolute;
-    content: '';
-    height: 21px;
-    width: 20px;
-    background: #0d61dd;
-  }
-  .CloseSider {
-    display: none;
+  .AddTeamimg {
+    margin-right: 10px;
+    margin-bottom: 5px;
   }
   .buttonCreate {
-    margin: 22px 0;
+    margin: 22px 32px 22px 0;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -59,15 +24,14 @@
     width: 100%;
     height: 42px;
     border-radius: 30px;
-    border: 1px solid #ffa100;
     background-color: white;
     .NameNewProfile {
       margin-bottom: 0px;
       width: 145px;
       height: 22px;
       font-family: 'Noto Sans', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.38;
@@ -80,7 +44,7 @@
         margin-right: 9px;
         margin-bottom: 1px;
         color: #ffa100;
-        font-size: 14px;
+        font-size: 20px;
       }
     }
   }
@@ -126,16 +90,69 @@
     }
   }
   .filterSider {
-    // width: 300px;
-    padding-right: 24px;
+    position: relative;
+    margin-right: 24px;
+    cursor: pointer;
   }
   .contentContainer {
     width: 100%;
-    padding-top: 6px;
     overflow-x: auto;
     border: 1px solid #d6dce0;
     border-radius: 8px;
     margin: 20px 0;
     height: 100%;
+    .directoryLayout {
+      position: relative;
+      :global {
+        .ant-layout-footer {
+          height: 70px;
+          border-top: solid 1px #d6dce0;
+          background: #ffffff;
+        }
+      }
+      .directoryLayout_inner {
+        min-height: unset;
+      }
+    }
+  }
+  .tabBarExtra {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    .filterButton {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+      content: '';
+      display: flex;
+      flex-flow: row;
+      :global {
+        .anticon-filter {
+          font-size: 14px;
+          color: #2c6df9;
+          padding-top: 4px;
+          margin-right: 11px;
+        }
+      }
+    }
+    .textButtonFilter {
+      margin-bottom: 0;
+      height: 17px;
+      font-size: 14px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: 0.13px;
+      color: #2c6df9;
+    }
+    .filterBackgroundButton {
+      width: 111px;
+      height: 40px;
+      object-fit: contain;
+      opacity: 0.07;
+      border-radius: 5px;
+      background-color: #568afa;
+    }
   }
 }

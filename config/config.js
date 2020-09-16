@@ -29,8 +29,8 @@ export default defineConfig({
   theme: {
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
-    'table-font-size': '16px',
-    'pagination-item-link-bg': '#000000',
+    'table-font-size': '13px',
+    'pagination-item-link-bg': '#f0f2f6',
     // tabs
     'tabs-title-font-size': '18px',
   },

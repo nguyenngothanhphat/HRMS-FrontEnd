@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect } from 'umi';
-import { PlusOutlined } from '@ant-design/icons';
+import { NavLink, connect, formatMessage } from 'umi';
+import Icon, { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
-import DirectotyTable from '@/components/DirectotyTable';
+import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
+import addTeam from './icon.js';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -16,19 +17,21 @@ import TableFilter from '../TableFilter';
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
-      const { employee } = nextProps;
-      const { filter } = employee;
+      const { employee: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
+      const employeeTypeConst = 'Employment Type';
+      const departmentConst = 'Department';
+      const locationConst = 'Location';
       filter.map((item) => {
-        if (item.actionFilter.name === 'Employment Type') {
+        if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Department') {
+        if (item.actionFilter.name === departmentConst) {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === 'Location') {
+        if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         return { employeeType, department, location };
@@ -53,17 +56,18 @@ class DirectoryComponent extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: false,
+      pageSelected: 1,
       bottabs: [
-        { id: 1, name: 'Active Employees' },
-        { id: 2, name: 'My Team' },
-        { id: 3, name: 'Inactive Employees' },
+        { id: 1, name: formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }) },
+        { id: 2, name: formatMessage({ id: 'pages.directory.directory.myTeamTab' }) },
+        { id: 3, name: formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }) },
       ],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
         filterName: query,
       });
-    }, 1000);
+    }, 500);
   }
 
   componentDidMount() {
@@ -80,6 +84,7 @@ class DirectoryComponent extends PureComponent {
     };
 
     if (
+      prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
@@ -145,7 +150,6 @@ class DirectoryComponent extends PureComponent {
   };
 
   handleChange = (valueInput) => {
-    // const input = valueInput.toLowerCase();
     this.setDebounce(valueInput);
   };
 
@@ -159,6 +163,33 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/ClearFilter',
     });
+    setTimeout(() => {
+      this.setState({
+        changeTab: false,
+      });
+    }, 5);
+  };
+
+  rightButton = () => {
+    return (
+      <div className={styles.tabBarExtra}>
+        <NavLink to="/directory" className={styles.buttonCreate}>
+          {/* <UserAddOutlined /> */}
+          <Icon component={addTeam} />
+          {/* <Image width={20} src={addTeam} alt="" className={styles.AddTeamimg} /> */}
+          <p className={styles.NameNewProfile}>
+            {formatMessage({ id: 'pages.directory.directory.addTeamMember' })}
+          </p>
+        </NavLink>
+        <div className={styles.filterSider} onClick={this.handleToggle}>
+          <div className={styles.filterBackgroundButton} />
+          <div className={styles.filterButton}>
+            <FilterOutlined />
+            <p className={styles.textButtonFilter}>Filter</p>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -169,43 +200,44 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        <Layout>
-          <div className={styles.filterSider}>
-            <NavLink to="/directory" className={styles.buttonCreate}>
-              <PlusOutlined />
-              <p className={styles.NameNewProfile}>Set Up New Profile</p>
-            </NavLink>
-            <TableFilter
-              onToggle={this.handleToggle}
-              collapsed={collapsed}
-              onHandleChange={this.handleChange}
-              FormBox={this.handleFormBox}
-              changeTab={changeTab}
-            />
-            {collapsed ? <div className={styles.openSider} onClick={this.handleToggle} /> : ''}
-          </div>
-
-          <div className={styles.contentContainer}>
-            <Tabs defaultActiveKey="1" className={styles.Tab} onTabClick={this.handleClickTabPane}>
-              {bottabs.map((tab) => (
-                <TabPane tab={tab.name} key={tab.id}>
-                  <Content
-                    className="site-layout-background"
-                    style={{
-                      // maxHeight: 702,
-                      backgroundColor: '#f7f7f7',
-                    }}
-                  >
-                    <DirectotyTable
+        <div className={styles.contentContainer}>
+          {/* <Layout className={styles.directoryLayout}> */}
+          <Tabs
+            defaultActiveKey="1"
+            className={styles.TabComponent}
+            onTabClick={this.handleClickTabPane}
+            tabBarExtraContent={this.rightButton()}
+          >
+            {bottabs.map((tab) => (
+              <TabPane tab={tab.name} key={tab.id}>
+                <Layout className={styles.directoryLayout_inner}>
+                  <TableFilter
+                    onToggle={this.handleToggle}
+                    collapsed={collapsed}
+                    onHandleChange={this.handleChange}
+                    FormBox={this.handleFormBox}
+                    changeTab={changeTab}
+                  />
+                  <Content className="site-layout-background">
+                    <DirectoryTable
                       loading={loadingListActive || loadingListMyTeam || loadingListInActive}
                       list={this.renderListEmployee(tab.id)}
                     />
                   </Content>
-                </TabPane>
-              ))}
-            </Tabs>
-          </div>
-        </Layout>
+                </Layout>
+              </TabPane>
+            ))}
+          </Tabs>
+          {/* <Footer> */}
+          {/* <Pagination
+                defaultCurrent={1}
+                defaultPageSize={9}
+                onChange={this.handleChange}
+                total={15}
+              /> */}
+          {/* </Footer> */}
+          {/* </Layout> */}
+        </div>
       </div>
     );
   }
