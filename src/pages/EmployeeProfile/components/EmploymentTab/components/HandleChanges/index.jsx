@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Radio, DatePicker, Select } from 'antd';
+import { Radio, DatePicker, Select, Input } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 
 export default function HandleChanges(props) {
@@ -53,8 +54,9 @@ export default function HandleChanges(props) {
 
   const SecondStep = () => {
     const { Option } = Select;
-    function onChange(value) {
+    function onChange(value, type) {
       console.log(`selected ${value}`);
+      console.log(`selected ${type}`);
     }
     function onSearch(value) {
       console.log('searched: ', value);
@@ -64,12 +66,20 @@ export default function HandleChanges(props) {
         <div className={styles.headings}>What do you wish to change?</div>
         <div className={styles.select}>
           <div>Title</div>
-          <Select
-            showSearch
+          <Input
             style={{ width: 300 }}
+            placeholder="Enter a title"
+            onChange={(e) => onChange(e.target.value, 'title')}
+          />
+        </div>
+        <div className={styles.select}>
+          <div>Work Location</div>
+          <Select
+            suffixIcon={<DownOutlined style={{ color: 'black' }} />}
+            showSearch
             placeholder="Select a location"
             optionFilterProp="children"
-            onChange={onChange}
+            onChange={(value) => onChange(value, 'wLocation')}
             onSearch={onSearch}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -82,12 +92,13 @@ export default function HandleChanges(props) {
           </Select>
         </div>
         <div className={styles.select}>
+          <div>Employment Type</div>
           <Select
+            suffixIcon={<DownOutlined style={{ color: 'black' }} />}
             showSearch
-            style={{ width: 300 }}
             placeholder="Select an employment type"
             optionFilterProp="children"
-            onChange={onChange}
+            onChange={(value) => onChange(value, 'employment')}
             onSearch={onSearch}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -98,6 +109,35 @@ export default function HandleChanges(props) {
             })}
             ]
           </Select>
+        </div>
+        <div className={styles.select}>
+          <div>Compensation Type</div>
+          <Select
+            suffixIcon={<DownOutlined style={{ color: 'black' }} />}
+            showSearch
+            placeholder="Select an compensation type"
+            optionFilterProp="children"
+            onChange={(value) => onChange(value, 'compensation')}
+            onSearch={onSearch}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {['Salaried', 'Stock options', 'Other non-cash benefits'].map((item) => {
+              return <Option value={item}>{item}</Option>;
+            })}
+            ]
+          </Select>
+        </div>
+        <div className={styles.select}>
+          <div>Annual Salary</div>
+          <Input
+            suffix={<DownOutlined />}
+            style={{ width: 300 }}
+            placeholder="Enter an amount"
+            onChange={(e) => onChange(e.target.value, 'salary')}
+            prefix="￥"
+          />
         </div>
       </div>
     );
