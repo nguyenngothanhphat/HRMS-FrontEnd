@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import { Row, Col, Typography, Select, Input } from 'antd';
 import NoteComponent from '../NoteComponent';
@@ -83,17 +83,17 @@ const CustomField = (props) => {
         <Col xs={24} sm={24} md={24} lg={16} xl={16} className={styles.leftWrapper}>
           <div className={styles.content}>
             <div className={styles.header}>
-              <h3>custom fields</h3>
+              <h3>{formatMessage({ id: 'component.customField.title' })}</h3>
 
-              <p>
-                All documents supporting candidate’s employment eligibility will be displayed here
-              </p>
+              <p>{formatMessage({ id: 'component.customField.subTitle' })}</p>
             </div>
 
             <div className={styles.body}>
               <Row className={styles.row} gutter={48}>
                 <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-                  <p className={styles.label}>Dental Contribution Tier*</p>
+                  <p className={styles.label}>
+                    {formatMessage({ id: 'component.customField.dentalLabel' })}
+                  </p>
 
                   <Select name="dental" value={dental} onChange={handleDentalChange}>
                     <Option value="tier1">[ 2020 ] Voluntary Dental</Option>
@@ -104,7 +104,9 @@ const CustomField = (props) => {
 
               <Row className={styles.row} gutter={48}>
                 <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-                  <p className={styles.label}>Vision Contribution Tier*</p>
+                  <p className={styles.label}>
+                    {formatMessage({ id: 'component.customField.visionLabel' })}
+                  </p>
 
                   <Select value={vision} onChange={handleVisionChange}>
                     <Option value="tier1">[ 2020 ] Voluntary Vision</Option>
@@ -113,7 +115,9 @@ const CustomField = (props) => {
                 </Col>
 
                 <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-                  <p className={styles.label}>Medical Contribution Tier*</p>
+                  <p className={styles.label}>
+                    {formatMessage({ id: 'component.customField.medicalLabel' })}
+                  </p>
 
                   <Select value={medical} onChange={handleMedicalChange}>
                     <Option value="tier1">[ 2020 ] Voluntary Medical</Option>
@@ -124,7 +128,9 @@ const CustomField = (props) => {
 
               <Row className={styles.row} gutter={48}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                  <p className={styles.label}>Additional Information</p>
+                  <p className={styles.label}>
+                    {formatMessage({ id: 'component.customField.additionalLabel' })}
+                  </p>
 
                   <TextArea
                     className={styles.additional}
