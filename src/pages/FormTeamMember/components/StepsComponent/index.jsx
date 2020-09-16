@@ -21,7 +21,6 @@ class StepsComponent extends Component {
 
   render() {
     const { title, keyPage } = this.state;
-    console.log(keyPage);
     return (
       <div className={styles.StepsComponent}>
         <Carousel autoplay className={styles.carouselWrapper}>
