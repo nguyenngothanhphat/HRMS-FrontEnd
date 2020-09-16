@@ -47,27 +47,21 @@ class ViewInformation extends PureComponent {
       temp += 1;
       return {
         color: colors[temp - 1],
-        name: item,
+        name: item.name,
+        id: item._id,
       };
     });
     return listFormat;
   };
 
   render() {
-    const dummyListSkill = [
-      'Product Management',
-      'UX Design',
-      'UI Design',
-      'Product design',
-      'Sales',
-    ];
     const { generalData, compensationData, loading } = this.props;
-    const { firstName = '', avatar = '', skillss = dummyListSkill, createdAt = '' } = generalData;
+    const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    const formatListSkill = this.formatListSkill(skillss, listColors) || [];
+    const formatListSkill = this.formatListSkill(skills, listColors) || [];
     const menu = (
       <Menu>
         <Item key="1" onClick={() => alert(1)}>
@@ -118,7 +112,9 @@ class ViewInformation extends PureComponent {
           <p className={s.titleTag}>Skills</p>
           <div>
             {formatListSkill.map((item) => (
-              <Tag color={item.color}>{item.name}</Tag>
+              <Tag key={item.id} color={item.color}>
+                {item.name}
+              </Tag>
             ))}
           </div>
           <Divider />

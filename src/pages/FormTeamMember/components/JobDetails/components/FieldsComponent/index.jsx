@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import CandidateFieldsComponent from './CandidateFieldsComponent';
 import FirstFieldsComponent from './FirstFieldsComponent';
 import styles from './index.less';
-class FieldsComponent extends Component {
-  constructor(props) {
-    super(props);
-  }
+
+class FieldsComponent extends PureComponent {
   render() {
-    const { dropdownField, handleSelect } = this.props;
+    const { dropdownField, handleSelect, candidateField } = this.props;
     return (
       <div className={styles.FieldsComponent}>
         <FirstFieldsComponent
@@ -19,6 +17,7 @@ class FieldsComponent extends Component {
           styles={styles.Input}
           dropdownField={dropdownField}
           handleSelect={handleSelect}
+          candidateField={candidateField}
         />
       </div>
     );

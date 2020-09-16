@@ -100,7 +100,7 @@ class TableFilter extends PureComponent {
 
     return (
       <div className={styles.TabFilter}>
-        <Sider width="300px" trigger={null} collapsed={collapsed} collapsedWidth="0">
+        <Sider width="244px" trigger={null} collapsed={collapsed} collapsedWidth="0">
           <div className={styles.PaddingFilter}>
             <div className={styles.topFilter}>
               <div className={styles.textFilters}>

@@ -17,4 +17,14 @@ export default {
   'pages.directory.organisationChart.expandAll': 'Expand All',
   'pages.directory.organisationChart.collapseAll': 'Colapse All',
   'pages.directory.organisationChart.download': 'Download',
+  /* Table */
+  'component.directory.table.fullName': 'Full Name',
+  'component.directory.table.employeeID': 'Employee ID',
+  'component.directory.table.title': 'Title',
+  'component.directory.table.department': 'Department',
+  'component.directory.table.location': 'Location',
+  'component.directory.table.reportingManager': 'Reporting Manager ',
+  'component.directory.table.employmentType': 'Employment Type',
+  'component.directory.pagination.showing': 'Showing',
+  'component.directory.pagination.of': 'of',
 };
