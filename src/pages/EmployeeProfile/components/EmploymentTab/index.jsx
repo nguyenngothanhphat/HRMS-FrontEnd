@@ -51,7 +51,9 @@ class EmploymentTab extends PureComponent {
 
   nextTab = () => {
     const { current } = this.state;
-    this.setState({ current: current + 1 });
+    if (current === 4) {
+      this.setState({ current });
+    } else this.setState({ current: current + 1 });
   };
 
   previousTab = () => {
