@@ -1,6 +1,5 @@
 import React from 'react';
 import { Select, Input } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 
 export default function ThirdStep(props) {
@@ -13,7 +12,6 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Department</div>
         <Select
-          suffixIcon={<DownOutlined style={{ color: 'black' }} />}
           showSearch
           placeholder="Select a department"
           optionFilterProp="children"
@@ -40,7 +38,6 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Reporting to</div>
         <Select
-          suffixIcon={<DownOutlined style={{ color: 'black' }} />}
           showSearch
           placeholder=""
           optionFilterProp="children"
