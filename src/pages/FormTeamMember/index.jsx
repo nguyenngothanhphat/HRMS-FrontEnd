@@ -7,6 +7,7 @@ import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
 import CustomField from './components/CustomField';
 import styles from './index.less';
+
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
   // const {
