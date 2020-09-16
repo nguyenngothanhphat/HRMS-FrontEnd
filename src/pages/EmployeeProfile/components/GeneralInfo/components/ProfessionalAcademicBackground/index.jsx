@@ -8,7 +8,7 @@ class ProfessionalAcademicBackground extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isEdit: false,
+      isEdit: true,
     };
   }
 
@@ -18,9 +18,15 @@ class ProfessionalAcademicBackground extends PureComponent {
     });
   };
 
+  handleCancel = () => {
+    this.setState({
+      isEdit: false,
+    });
+  };
+
   render() {
     const { isEdit } = this.state;
-    const renderComponent = isEdit ? <Edit /> : <View />;
+    const renderComponent = isEdit ? <Edit handleCancel={this.handleCancel} /> : <View />;
     return (
       <div className={styles.root}>
         <div className={styles.viewTitle}>
@@ -30,7 +36,9 @@ class ProfessionalAcademicBackground extends PureComponent {
             <p className={styles.viewTitle__edit__text}>Edit</p>
           </div>
         </div>
-        <div className={styles.viewBottom}>{renderComponent}</div>
+        <div className={styles.viewBottom} style={isEdit ? { padding: 0 } : {}}>
+          {renderComponent}
+        </div>
       </div>
     );
   }
