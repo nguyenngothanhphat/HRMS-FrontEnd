@@ -46,7 +46,7 @@ class DirectoryTable extends Component {
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
-        width: '15%',
+        width: '20%',
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
