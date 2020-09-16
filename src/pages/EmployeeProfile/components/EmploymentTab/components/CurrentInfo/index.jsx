@@ -48,7 +48,7 @@ export default function CurrentInfo(props) {
         return (
           <div className={styles.items}>
             <div>{info}</div>
-            <div>{data[item]}</div>
+            <div>{item === 'annualSalary' ? `$${data[item]}` : data[item]}</div>
           </div>
         );
       })}

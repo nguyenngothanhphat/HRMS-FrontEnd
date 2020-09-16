@@ -4,11 +4,34 @@ import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
 import ThirdStep from './components/ThirdStep';
 import FourthStep from './components/FourthStep';
+import FifthStep from './components/FifthStep';
 
 export default function HandleChanges(props) {
-  const { current } = props;
+  const { current, data } = props;
   const [radio, setRadio] = useState(1);
-  const onRadioChange = (e) => {
+  const [changeData, setChangeData] = useState({
+    stepOne: radio,
+    stepTwo: {
+      title: '',
+      wLocation: '',
+      employType: '',
+      compenType: '',
+      annual: '',
+    },
+    stepThree: {
+      department: '',
+      position: '',
+      reportTo: '',
+    },
+    stepFour: [],
+    stepFive: {
+      promotedTo: '',
+      newSalary: Number,
+      location: '',
+    },
+  });
+  const onRadioChange = (e, info) => {
+    console.log(e.target.value, info);
     setRadio(e.target.value);
   };
   function onChange(value, type) {
@@ -25,6 +48,17 @@ export default function HandleChanges(props) {
       {current === 1 ? <SecondStep onChange={onChange} onSearch={onSearch} /> : null}
       {current === 2 ? <ThirdStep onChange={onChange} onSearch={onSearch} /> : null}
       {current === 3 ? <FourthStep onRadioChange={onRadioChange} radio={radio} /> : null}
+      {current === 4 ? (
+        <FifthStep
+          name={data.name}
+          currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
+          data={{
+            newTitle: changeData.stepTwo.title,
+            newSalary: changeData.stepTwo.annual,
+            newLocation: changeData.stepTwo.wLocation,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

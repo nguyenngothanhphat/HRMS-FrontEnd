@@ -1,5 +1,6 @@
 import React from 'react';
 import { Radio, DatePicker } from 'antd';
+import { CalendarOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 
 export default function FirstStep(props) {
@@ -13,6 +14,7 @@ export default function FirstStep(props) {
           A change that already happened.
           {radio === 1 ? (
             <DatePicker
+              suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '60%',
                 marginLeft: '50%',
@@ -31,6 +33,7 @@ export default function FirstStep(props) {
           Scheduled change
           {radio === 3 ? (
             <DatePicker
+              suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '75%',
                 marginLeft: '95%',

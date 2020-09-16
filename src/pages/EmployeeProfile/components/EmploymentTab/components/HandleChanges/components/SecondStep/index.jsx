@@ -77,11 +77,10 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div>Annual Salary</div>
         <Input
-          suffix={<DownOutlined />}
           style={{ width: 300 }}
           placeholder="Enter an amount"
           onChange={(e) => onChange(e.target.value, 'salary')}
-          prefix="￥"
+          prefix="$"
         />
       </div>
     </div>

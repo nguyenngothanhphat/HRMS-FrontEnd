@@ -21,12 +21,13 @@ class EmploymentTab extends PureComponent {
       isChanging: false,
       current: 0,
       currentData: {
+        name: 'Aditya',
         title: 'UX Lead',
         joiningDate: '10th December 2018',
         location: 'Bengaluru, India',
         employType: 'Full Time Employee',
         compenType: 'Salaried',
-        annualSalary: '$75000',
+        annualSalary: '75000',
         manager: 'Anil Reddy',
         timeOff: '20 Day PTO Applicable',
       },
@@ -37,10 +38,6 @@ class EmploymentTab extends PureComponent {
     const { isChanging } = this.state;
     this.setState({ isChanging: !isChanging });
   };
-
-  // handleOk = () => {
-  //   this.nextTab();
-  // };
 
   handleChangeHistory = () => {
     this.setState({
@@ -58,10 +55,6 @@ class EmploymentTab extends PureComponent {
     this.setState({ current: current - 1 });
   };
 
-  // onChangeSteps = (current) => {
-  //   this.setState({ current });
-  // };
-
   render() {
     const { isChanging, current, currentData } = this.state;
     return (
@@ -76,7 +69,11 @@ class EmploymentTab extends PureComponent {
               <div onClick={this.handleMakeChanges}>Make changes</div>
             )}
           </div>
-          {isChanging ? <HandleChanges current={current} /> : <CurrentInfo data={currentData} />}
+          {isChanging ? (
+            <HandleChanges data={currentData} current={current} />
+          ) : (
+            <CurrentInfo data={currentData} />
+          )}
           {isChanging ? (
             <div className={styles.footer}>
               <div>{current + 1}/5 steps</div>
@@ -85,7 +82,7 @@ class EmploymentTab extends PureComponent {
                   {current > 0 ? 'Back' : null}
                 </Button>
                 <Button onClick={this.nextTab} type="primary">
-                  Continue
+                  {current === 4 ? 'Submit' : 'Continue'}
                 </Button>
               </div>
             </div>
