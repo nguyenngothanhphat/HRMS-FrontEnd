@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
@@ -140,7 +140,7 @@ const PreviewOffer = (props) => {
         <div className={styles.leftContainer}>
           <header>
             <img src={logo} alt="terralogic logo" />
-            <h1>employee agreement</h1>
+            <h1>{formatMessage({ id: 'component.previewOffer.title' })}</h1>
           </header>
 
           <div className={styles.content}>
@@ -300,10 +300,10 @@ const PreviewOffer = (props) => {
                 </div>
               </div>
             </div>
-            <h2>Signature of the HR</h2>
+            <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
           </header>
 
-          <p>Undersigned - Ms Riddhima Chaudhary</p>
+          <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p>
 
           <div className={styles.upload}>
             {!file ? (
@@ -319,7 +319,7 @@ const PreviewOffer = (props) => {
                 fileRef.click();
               }}
             >
-              Upload new
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
             <CancelIcon resetImg={resetImg} />
@@ -338,9 +338,11 @@ const PreviewOffer = (props) => {
 
           <div className={styles.submitContainer}>
             <Button type="primary" onClick={handleSubmit}>
-              Submit
+              {formatMessage({ id: 'component.previewOffer.submit' })}
             </Button>
-            <span className={styles.submitMessage}>{file ? 'Signature submitted' : ''}</span>
+            <span className={styles.submitMessage}>
+              {file ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+            </span>
           </div>
         </div>
 
@@ -353,21 +355,19 @@ const PreviewOffer = (props) => {
                 </div>
               </div>
             </div>
-            <h2>Send for approval</h2>
+            <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
           </header>
 
           <p>
-            By default notifications <span>will be sent to HR</span>, your manager and recursively
-            loop to your department head for approval.
+            {formatMessage({ id: 'component.previewOffer.note1' })}
+            <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
+            {formatMessage({ id: 'component.previewOffer.note3' })}
           </p>
 
-          <p>
-            Also, add e-mail of the new joinee. You can send the offer once all approvals are in
-            order.
-          </p>
+          <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
 
           <div className={styles.mail}>
-            <span>HR Email ID</span>
+            <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
 
             <Form form={mailForm} name="myForm" value={mail}>
               <Form.Item
@@ -375,11 +375,11 @@ const PreviewOffer = (props) => {
                 rules={[
                   {
                     type: 'email',
-                    message: 'The input is not valid email!',
+                    message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
                   },
                   {
                     required: true,
-                    message: 'Please input your email!',
+                    message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
                   },
                 ]}
               >
