@@ -12,10 +12,19 @@ import styles from './index.less';
   employeeProfile,
 }))
 class GeneralInfo extends PureComponent {
+  componentDidMount() {
+    // const compensationData = { a: '1' };
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'employeeProfile/saveTemp',
+    //   payload: { compensationData },
+    // });
+  }
+
   render() {
     const {
       loadingGeneral = false,
-      employeeProfile: { generalData = {} },
+      employeeProfile: { tempData: { generalData = {} } = {} },
     } = this.props;
 
     if (loadingGeneral)
