@@ -1,8 +1,10 @@
 .EmployeeInformation {
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
+  margin-top: 24px;
+  width: 100%;
+  border-radius: 5px;
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+
   .Edit {
     margin-bottom: 0;
     font-size: 14px;
@@ -16,6 +18,10 @@
   .flexEdit {
     display: flex;
     flex-flow: row;
+    cursor: pointer;
+  }
+  .flexEdit:hover {
+    opacity: 0.5;
   }
   .IconEdit {
     margin-top: 3px;
@@ -49,62 +55,7 @@
     letter-spacing: normal;
     color: #161c29;
   }
-  .boxInfo {
-    display: flex;
-    flex-flow: row;
-    margin-bottom: 16px;
-  }
-  .boxInfo:last-child {
-    margin-bottom: 0;
-  }
-  .spaceDetailsBot {
-    padding: 24px;
-  }
-  .spaceDetails {
-    padding: 24px 24px 0 24px;
-  }
-  .Name {
-    margin-bottom: 0;
-    font-size: 13px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #000000;
-  }
-  .Text {
-    margin-bottom: 0;
-    font-size: 13px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #707177;
-  }
-  .boxInfoToolTip {
-    display: flex;
-  }
-  .iconQuestTion {
-    margin-top: 2px;
-    margin-left: 9px;
-  }
-}
-.GenEITooltip {
-  :global {
-    .ant-tooltip-content {
-      border-radius: 5px;
-    }
-    .ant-tooltip-inner {
-      font-size: 12px;
-      font-weight: 500;
-      font-stretch: normal;
-      font-style: normal;
-      line-height: 1.5;
-      letter-spacing: normal;
-      text-align: center;
-      color: #ffffff;
-    }
+  .viewBottom {
+    padding: 24px 24px 8px;
   }
 }

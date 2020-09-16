@@ -1,138 +1,39 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip, Radio } from 'antd';
-import Icon, { EditFilled, LockFilled, UserOutlined } from '@ant-design/icons';
+import { EditFilled } from '@ant-design/icons';
 import styles from './index.less';
-import iconQuestTion from '../Icon/icon';
+import Edit from './components/Edit';
+import View from './components/View';
 
 class PersonalInformation extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEdit: false,
+    };
+  }
+
+  handleEdit = () => {
+    // console.log('click ne');
+    // this.setState({
+    //   isEdit: true,
+    // });
+  };
+
   render() {
-    const { dataAPI = {} } = this.props;
-    console.log('generalData', dataAPI);
-    const content =
-      'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
-    const contentEmail =
-      'The email will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
+    // const { dataAPI = {} } = this.props;
+    // console.log('generalData', dataAPI);
+    const { isEdit } = this.state;
+    const renderComponent = isEdit ? <Edit /> : <View />;
     return (
       <div className={styles.PersonalInformation}>
-        <Row className={styles.EmployeeDetails}>
-          <Col span={24}>
-            <div>
-              <div className={styles.spaceTitle}>
-                <p className={styles.EmployeeTitle}>Personal Information</p>
-                <div className={styles.flexEdit}>
-                  <EditFilled className={styles.IconEdit} />
-                  <p className={styles.Edit}>Edit</p>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col span={24}>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8} className={styles.boxInfoToolTip}>
-                  <p className={styles.Name}>Personal Number</p>
-                  <Tooltip
-                    placement="top"
-                    title={content}
-                    overlayClassName={styles.GenPITooltip}
-                    color="#568afa"
-                  >
-                    <Icon component={iconQuestTion} className={styles.iconQuestTion} />
-                  </Tooltip>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.personalNumber}</p>
-                </Col>
-                <Col span={2}>
-                  <Radio.Group
-                    defaultValue="a"
-                    buttonStyle="solid"
-                    className={styles.iconLockPermit}
-                  >
-                    <div>
-                      <Radio.Button value="a">
-                        <LockFilled className={styles.iconLock} />
-                      </Radio.Button>
-                    </div>
-                    <div>
-                      <Radio.Button value="b">
-                        <UserOutlined className={styles.iconPermit} />
-                      </Radio.Button>
-                    </div>
-                  </Radio.Group>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8} className={styles.boxInfoToolTip}>
-                  <p className={styles.Name}>Personal Email</p>
-                  <Tooltip
-                    placement="top"
-                    title={contentEmail}
-                    overlayClassName={styles.GenPITooltip}
-                    color="#568afa"
-                  >
-                    <Icon component={iconQuestTion} className={styles.iconQuestTion} />
-                  </Tooltip>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.personalEmail}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8}>
-                  <p className={styles.Name}>Blood Group</p>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.Blood}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8}>
-                  <p className={styles.Name}>Marital Status</p>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.maritalStatus}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8}>
-                  <p className={styles.Name}>Linkedin</p>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.linkedIn}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetails}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8}>
-                  <p className={styles.Name}>Residence Address</p>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.residentAddress}</p>
-                </Col>
-              </Col>
-            </div>
-            <div className={styles.spaceDetailsBot}>
-              <Col span={24} className={styles.boxInfo}>
-                <Col span={8}>
-                  <p className={styles.Name}>Current Address</p>
-                </Col>
-                <Col span={14}>
-                  <p className={styles.Text}>{dataAPI.currentAddress}</p>
-                </Col>
-              </Col>
-            </div>
-          </Col>
-        </Row>
+        <div className={styles.spaceTitle}>
+          <p className={styles.EmployeeTitle}>Personal Information</p>
+          <div className={styles.flexEdit} onClick={this.handleEdit}>
+            <EditFilled className={styles.IconEdit} />
+            <p className={styles.Edit}>Edit</p>
+          </div>
+        </div>
+        <div className={styles.viewBottom}>{renderComponent}</div>
       </div>
     );
   }
