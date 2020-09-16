@@ -6,7 +6,6 @@ import styles from './index.less';
 class EmergencyContact extends PureComponent {
   render() {
     const { dataAPI = {} } = this.props;
-    console.log('generalData', dataAPI);
     return (
       <div className={styles.EmergencyContact}>
         <Row className={styles.EmployeeDetails}>

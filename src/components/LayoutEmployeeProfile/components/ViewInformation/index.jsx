@@ -1,17 +1,23 @@
 import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin } from 'antd';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
+import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
 
-@connect(({ loading, employeeProfile: { generalData = {}, compensationData = {} } = {} }) => ({
-  generalData,
-  compensationData,
-  loading: loading.effects['employeeProfile/fetchGeneralInfo'],
-}))
+@connect(
+  ({
+    loading,
+    employeeProfile: { tempData: { generalData = {}, compensationData = {} } = {} } = {},
+  }) => ({
+    generalData,
+    compensationData,
+    loading: loading.effects['employeeProfile/fetchGeneralInfo'],
+  }),
+)
 class ViewInformation extends PureComponent {
   constructor(props) {
     super(props);
@@ -91,7 +97,7 @@ class ViewInformation extends PureComponent {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img src={avatar} alt="img-avt" className={s.infoEmployee__imgAvt} />
+        <Avatar icon={<UserOutlined />} src={avatar} size={96} className={s.infoEmployee__imgAvt} />
         <img
           src="/assets/images/iconUploadImage.svg"
           onClick={this.openModalUpload}
