@@ -60,7 +60,7 @@ const info = {
     offerDetailField: {
       currency: true,
     },
-
+    benefits: {},
     customField: {
       dental: 'tier1',
       vision: 'tier1',

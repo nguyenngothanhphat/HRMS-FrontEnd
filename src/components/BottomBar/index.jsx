@@ -144,7 +144,7 @@ class BottomBar extends PureComponent {
   _renderBottomBar = () => {
     const { currentPage, checkMandatory } = this.props;
     const { salaryStatus } = checkMandatory;
-    if (salaryStatus === 1) {
+    if ((currentPage === 4 && salaryStatus === 1) || currentPage !== 5) {
       return (
         <div className={styles.bottomBar}>
           <Row align="middle">
@@ -157,9 +157,6 @@ class BottomBar extends PureComponent {
           </Row>
         </div>
       );
-    }
-    if (currentPage === 5) {
-      return '';
     }
     return null;
   };
