@@ -70,14 +70,14 @@ class EmploymentTab extends PureComponent {
             <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
 
             {isChanging ? (
-              <div style={{ display: 'flex' }}>
+              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={require('./asset/path.svg')} />
-                <div onClick={this.handleMakeChanges}>Cancel & Return</div>
+                <div>Cancel & Return</div>
               </div>
             ) : (
-              <div style={{ display: 'flex' }}>
+              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={require('./asset/edit.svg')} />
-                <div onClick={this.handleMakeChanges}>Make changes</div>
+                <div>Make changes</div>
               </div>
             )}
           </div>
