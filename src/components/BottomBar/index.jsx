@@ -24,7 +24,7 @@ class BottomBar extends PureComponent {
 
   _renderStatus = () => {
     const { currentPage, offerDetailField, checkMandatory } = this.props;
-    const { filledBasicInformation, filledJobDetail } = checkMandatory;
+    const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
         <div className={styles.normalText}>
@@ -36,7 +36,8 @@ class BottomBar extends PureComponent {
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
         </div>
       );
-    } else if (currentPage === 2) {
+    }
+    if (currentPage === 2) {
       return !filledJobDetail ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
@@ -50,6 +51,19 @@ class BottomBar extends PureComponent {
       return offerDetailField.currency === true
         ? '*All mandatory fields have been filled.'
         : `Currency field must be 'Dollar'`;
+    }
+
+    if (currentPage === 8) {
+      return !filledCustomField ? (
+        <div className={styles.normalText}>
+          <div className={styles.redText}>*</div>
+          {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+        </div>
+      ) : (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
     }
     return null;
   };
