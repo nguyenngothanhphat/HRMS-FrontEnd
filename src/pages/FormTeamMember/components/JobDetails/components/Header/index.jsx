@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Typography } from 'antd';
+import { formatMessage } from 'umi';
 import styles from './index.less';
-class Header extends Component {
+
+class Header extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'Job Details ',
-      text: 'The details of the position the candidate is being recruited for',
+      title: formatMessage({ id: 'component.jobDetail.title' }),
+      text: formatMessage({ id: 'component.jobDetail.subtitle' }),
     };
   }
 
@@ -22,7 +24,7 @@ class Header extends Component {
             {text}
           </Typography.Title>
         </div>
-        <div className={styles.HeaderLine}></div>
+        <hr />
       </>
     );
   }

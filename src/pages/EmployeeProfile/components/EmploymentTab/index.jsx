@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Button, div, Table, Tag } from 'antd';
+import { Button, div } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
+import ChangeHistoryTable from './components/ChangeHistoryTable';
 import styles from './index.less';
 
 const steps = [
@@ -63,68 +64,6 @@ class EmploymentTab extends PureComponent {
 
   render() {
     const { isChanging, current, currentData } = this.state;
-    const columns = [
-      {
-        title: 'Changed Infomation',
-        dataIndex: 'name',
-        key: 'name',
-        render: (text) => <a>{text}</a>,
-      },
-      {
-        title: 'Effective Date',
-        dataIndex: 'age',
-        key: 'age',
-      },
-      {
-        title: 'Changed By',
-        dataIndex: 'address',
-        key: 'address',
-      },
-      {
-        title: 'Changed Date',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: (tags) => (
-          <>
-            {tags.map((tag) => {
-              let color = tag.length > 5 ? 'geekblue' : 'green';
-              if (tag === 'loser') {
-                color = 'volcano';
-              }
-              return (
-                <Tag color={color} key={tag}>
-                  {tag.toUpperCase()}
-                </Tag>
-              );
-            })}
-          </>
-        ),
-      },
-    ];
-
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-      },
-    ];
     return (
       <div>
         <div className={styles.employmentTab}>
@@ -162,7 +101,7 @@ class EmploymentTab extends PureComponent {
               />
             </div>
           </div>
-          <Table columns={columns} dataSource={data} pagination={false} />
+          <ChangeHistoryTable />
         </div>
       </div>
     );
