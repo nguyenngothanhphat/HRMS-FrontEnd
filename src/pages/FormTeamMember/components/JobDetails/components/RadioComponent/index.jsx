@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Radio, Typography } from 'antd';
 import styles from './index.less';
 
-class RadioComponent extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+class RadioComponent extends PureComponent {
   render() {
     const { Tab, handleRadio } = this.props;
     return (

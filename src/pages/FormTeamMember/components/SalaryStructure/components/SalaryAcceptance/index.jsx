@@ -1,14 +1,41 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
+import { connect } from 'umi';
 
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import SendEmail from '../../../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
 
+@connect(({ info: { salaryStructure = {} } = {} }) => ({
+  salaryStructure,
+}))
 class SalaryAcceptance extends PureComponent {
   onFinish = (values) => {
     console.log(values);
+  };
+
+  static getDerivedStateFromProps(props) {
+    if ('salaryStructure' in props) {
+      return { salaryStructure: props.salaryStructure || {} };
+    }
+    return null;
+  }
+
+  handleChange = (e) => {
+    const { target } = e;
+    const { name, value } = target;
+    const { dispatch } = this.props;
+
+    const { salaryStructure = {} } = this.state;
+    salaryStructure[name] = value;
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        salaryStructure,
+      },
+    });
   };
 
   _renderStatus = () => {
@@ -34,6 +61,8 @@ class SalaryAcceptance extends PureComponent {
       );
     }
     if (salaryStatus === 3) {
+      const { salaryStructure = {} } = this.state;
+      const { rejectComment } = salaryStructure;
       return (
         <>
           <SalaryAcceptanceContent
@@ -45,7 +74,7 @@ class SalaryAcceptance extends PureComponent {
             className={styles.basicInformation__form}
             wrapperCol={{ span: 24 }}
             name="basic"
-            // initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
+            initialValues={{ rejectComment }}
             onFinish={this.onFinish}
             onFocus={this.onFocus}
           >
@@ -54,12 +83,12 @@ class SalaryAcceptance extends PureComponent {
               wrapperCol={{ span: 24 }}
               required={false}
               label="Comment"
-              name="salaryComment"
+              name="rejectComment"
             >
               <Input
-                // onChange={(e) => this.handleChange(e)}
+                onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="fullName"
+                name="rejectComment"
               />
             </Form.Item>
             <Form.Item>

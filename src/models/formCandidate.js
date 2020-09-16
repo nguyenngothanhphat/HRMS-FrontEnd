@@ -49,7 +49,7 @@ const info = {
       prefferedDateOfJoining: '',
     },
     salaryStructure: {
-      fullName: '',
+      rejectComment: '',
     },
     checkMandatory: {
       filledBasicInformation: false,

@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Typography, Space, Radio, Row, Col } from 'antd';
+
 import lightning from './assets/lightning.svg';
+
 import styles from './index.less';
 
 class SalaryAcceptanceContent extends PureComponent {
