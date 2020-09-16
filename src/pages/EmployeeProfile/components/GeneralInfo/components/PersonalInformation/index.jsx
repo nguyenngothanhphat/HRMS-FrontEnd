@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Tooltip } from 'antd';
-import Icon, { EditFilled } from '@ant-design/icons';
+import { Row, Col, Tooltip, Radio } from 'antd';
+import Icon, { EditFilled, LockFilled, UserOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import iconQuestTion from '../Icon/icon';
 
@@ -40,8 +40,26 @@ class PersonalInformation extends PureComponent {
                     <Icon component={iconQuestTion} className={styles.iconQuestTion} />
                   </Tooltip>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.personalNumber}</p>
+                </Col>
+                <Col span={2}>
+                  <Radio.Group
+                    defaultValue="a"
+                    buttonStyle="solid"
+                    className={styles.iconLockPermit}
+                  >
+                    <div>
+                      <Radio.Button value="a">
+                        <LockFilled className={styles.iconLock} />
+                      </Radio.Button>
+                    </div>
+                    <div>
+                      <Radio.Button value="b">
+                        <UserOutlined className={styles.iconPermit} />
+                      </Radio.Button>
+                    </div>
+                  </Radio.Group>
                 </Col>
               </Col>
             </div>
@@ -58,7 +76,7 @@ class PersonalInformation extends PureComponent {
                     <Icon component={iconQuestTion} className={styles.iconQuestTion} />
                   </Tooltip>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.personalEmail}</p>
                 </Col>
               </Col>
@@ -68,7 +86,7 @@ class PersonalInformation extends PureComponent {
                 <Col span={8}>
                   <p className={styles.Name}>Blood Group</p>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.Blood}</p>
                 </Col>
               </Col>
@@ -78,7 +96,7 @@ class PersonalInformation extends PureComponent {
                 <Col span={8}>
                   <p className={styles.Name}>Marital Status</p>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.maritalStatus}</p>
                 </Col>
               </Col>
@@ -88,7 +106,7 @@ class PersonalInformation extends PureComponent {
                 <Col span={8}>
                   <p className={styles.Name}>Linkedin</p>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.linkedIn}</p>
                 </Col>
               </Col>
@@ -98,7 +116,7 @@ class PersonalInformation extends PureComponent {
                 <Col span={8}>
                   <p className={styles.Name}>Residence Address</p>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.residentAddress}</p>
                 </Col>
               </Col>
@@ -108,7 +126,7 @@ class PersonalInformation extends PureComponent {
                 <Col span={8}>
                   <p className={styles.Name}>Current Address</p>
                 </Col>
-                <Col span={8}>
+                <Col span={14}>
                   <p className={styles.Text}>{dataAPI.currentAddress}</p>
                 </Col>
               </Col>
