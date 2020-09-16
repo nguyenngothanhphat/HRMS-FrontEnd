@@ -10,7 +10,7 @@ class InfoCollapseType2 extends PureComponent {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], onFileClick } = this.props;
     return (
       <div className={styles.InfoCollapseType2}>
         <div className={styles.tableTitle}>
@@ -38,7 +38,7 @@ class InfoCollapseType2 extends PureComponent {
             </Col>
           </Row>
           <div className={styles.tableOfContents}>
-            <TypeRow data={data.body} />
+            <TypeRow data={data.body} onFileClick={onFileClick} />
           </div>
         </div>
       </div>

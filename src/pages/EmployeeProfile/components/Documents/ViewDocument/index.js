@@ -12,12 +12,10 @@ const mockData = [
   {
     id: 123,
     value: 'ngoctuanitpy@gmail.com',
-    text: 'ngoctuanitpy@gmail.com',
   },
   {
     id: 456,
     value: 'tuan@gmail.com',
-    text: 'tuan@gmail.com',
   },
 ];
 export default class ViewDocument extends PureComponent {
@@ -32,12 +30,24 @@ export default class ViewDocument extends PureComponent {
   }
 
   fetchUser = (value) => {
-    const searchResult = mockData.filter((row = {}) => row.text.includes(value));
-    console.log(searchResult);
     this.setState({
-      data: searchResult,
+      data: [],
       fetching: true,
     });
+    setTimeout(() => {
+      const searchResult = mockData.filter((row = {}) => row.value.includes(value));
+      if (searchResult.length > 0) {
+        this.setState({
+          data: searchResult,
+          fetching: false,
+        });
+      } else {
+        this.setState({
+          data: [],
+          fetching: false,
+        });
+      }
+    }, 500);
   };
 
   handleChange = (value) => {
@@ -50,12 +60,13 @@ export default class ViewDocument extends PureComponent {
 
   render() {
     const { fetching, data, value } = this.state;
-    console.log('selected emails: ', value);
+    const { onBackClick } = this.props;
+    // console.log('selected emails: ', value);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
           <span>View Document - Preview</span>
-          <div className={styles.goBackButton}>
+          <div onClick={onBackClick} className={styles.goBackButton}>
             <img src={GoBackButton} alt="back" />
             <span>Go back</span>
           </div>
@@ -105,7 +116,7 @@ export default class ViewDocument extends PureComponent {
                   className={styles.shareViaEmailInput}
                 >
                   {data.map((d) => (
-                    <Option key={d.value}>{d.text}</Option>
+                    <Option key={d.id}>{d.value}</Option>
                   ))}
                 </Select>
               </Col>

@@ -74,13 +74,34 @@ const data = [
 ];
 
 class Documents extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isViewingDocument: false,
+    };
+  }
+
+  onBackClick = () => {
+    this.setState({
+      isViewingDocument: false,
+    });
+  };
+
+  onFileClick = () => {
+    this.setState({
+      isViewingDocument: true,
+    });
+  };
+
   render() {
+    const { isViewingDocument } = this.state;
     return (
       <div className={styles.Documents}>
-        {data.map((value) => (
-          <InfoCollapseType2 data={value} />
-        ))}
-        <ViewDocument />
+        {isViewingDocument ? (
+          <ViewDocument onBackClick={this.onBackClick} />
+        ) : (
+          data.map((value) => <InfoCollapseType2 onFileClick={this.onFileClick} data={value} />)
+        )}
       </div>
     );
   }
