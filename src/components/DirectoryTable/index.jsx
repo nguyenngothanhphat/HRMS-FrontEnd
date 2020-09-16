@@ -46,7 +46,7 @@ class DirectoryTable extends Component {
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
-        width: '15%',
+        width: '18%',
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
@@ -173,7 +173,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          scroll={{ x: 900, y: 'max-content' }}
+          scroll={{ x: 1000, y: 'max-content' }}
         />
       </div>
     );
