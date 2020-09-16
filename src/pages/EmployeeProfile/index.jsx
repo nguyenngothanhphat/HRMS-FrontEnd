@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
+import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
+import Documents from './components/Documents';
 import styles from './index.less';
 
 @connect(({ employeeProfile }) => ({
@@ -43,7 +45,7 @@ class EmployeeProfile extends Component {
       {
         id: 2,
         name: `Employment & Compensation`,
-        component: <Test />,
+        component: <EmploymentTab />,
       },
       {
         id: 3,
@@ -51,7 +53,7 @@ class EmployeeProfile extends Component {
         component: <Test />,
       },
       { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
-      { id: 5, name: 'Documents', component: <Test /> },
+      { id: 5, name: 'Documents', component: <Documents /> },
       { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
       { id: 7, name: 'Time & Scheduling', component: <Test /> },
       { id: 8, name: 'Benefit Plans', component: <Test /> },
