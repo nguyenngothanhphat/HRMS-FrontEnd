@@ -48,7 +48,11 @@ class BottomBar extends PureComponent {
     }
 
     if (currentPage === 4) {
-      return <div className={styles.greenText}>*All mandatory details have been filled</div>;
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
     }
 
     if (currentPage === 8) {

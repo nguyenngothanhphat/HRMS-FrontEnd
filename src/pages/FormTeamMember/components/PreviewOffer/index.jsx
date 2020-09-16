@@ -1,55 +1,61 @@
 import React, { useState, useEffect } from 'react';
+import { connect, formatMessage } from 'umi';
 
+import { Button, Input, Form } from 'antd';
+import { EditOutlined, SendOutlined } from '@ant-design/icons';
+import NumericInput from '@/components/NumericInput';
 import logo from './components/images/brand-logo.png';
+// eslint-disable-next-line import/no-unresolved
 import whiteImg from './components/images/white.png';
-import { EditOutlined } from '@ant-design/icons';
+
+import CancelIcon from './components/CancelIcon';
 
 import styles from './index.less';
 
-const INPUT_WIDTH = [50, 150, 20, 200, 200];
+const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
-const CancleIcon = (props) => {
-  const { className, resetImg } = props;
+const PreviewOffer = (props) => {
+  const { dispatch, previewOffer = {} } = props;
 
-  return (
-    <svg
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      onClick={() => resetImg()}
-    >
-      <g fill="none" fill-rule="evenodd">
-        <g>
-          <g>
-            <g>
-              <g>
-                <g>
-                  <path
-                    d="M0 0H15.206V15.206H0z"
-                    transform="translate(-1343 -374) translate(1047 215) translate(32 32) translate(0 119) translate(264 8)"
-                  />
-                  <path
-                    fill="#FF5252"
-                    d="M8.493 7.605l3.352-3.352c.247-.247.247-.646 0-.893s-.646-.247-.893 0L7.6 6.71 4.248 3.353c-.247-.247-.646-.247-.893 0s-.247.647 0 .894l3.352 3.358-3.352 3.352c-.247.247-.247.646 0 .893.12.127.279.19.443.19.165 0 .324-.063.45-.184L7.6 8.498l3.352 3.352c.126.127.285.19.45.19.164 0 .323-.063.45-.184.247-.247.247-.646 0-.893L8.492 7.605z"
-                    transform="translate(-1343 -374) translate(1047 215) translate(32 32) translate(0 119) translate(264 8)"
-                  />
-                </g>
-              </g>
-            </g>
-          </g>
-        </g>
-      </g>
-    </svg>
-  );
-};
+  // Get default value from "info" store
+  const {
+    file: fileProp,
+    day: dayProp,
+    month: monthProp,
+    year: yearProp,
+    place: placeProp,
+    city: cityProp,
+    day2: day2Prop,
+    month2: month2Prop,
+    year2: year2Prop,
+    place2: place2Prop,
+    city2: city2Prop,
+    mail: mailProp,
+  } = previewOffer;
 
-const PreviewOffer = () => {
-  let inputRefs = [];
-  let inputRefIndex = 0;
+  const inputRefs = [];
   let fileRef = null;
-  const [file, setFile] = useState(null);
+
+  const [file, setFile] = useState(fileProp || null);
+
+  const [day, setDay] = useState(dayProp || '');
+  const [month, setMonth] = useState(monthProp || '');
+  const [year, setYear] = useState(yearProp || '');
+  const [place, setPlace] = useState(placeProp || '');
+  const [city, setCity] = useState(cityProp || '');
+
+  const [day2, setDay2] = useState(day2Prop || '');
+  const [month2, setMonth2] = useState(month2Prop || '');
+  const [year2, setYear2] = useState(year2Prop || '');
+  const [place2, setPlace2] = useState(place2Prop || '');
+  const [city2, setCity2] = useState(city2Prop || '');
+
+  const [mail, setMail] = useState(mailProp || '');
+  const [mailForm] = Form.useForm();
+
+  const resetForm = () => {
+    mailForm.resetFields();
+  };
 
   const imageHandler = (e) => {
     const reader = new FileReader();
@@ -62,18 +68,71 @@ const PreviewOffer = () => {
   };
 
   const resetImg = () => {
-    console.log('CLICKed');
     setFile(null);
   };
 
+  const saveChanges = () => {
+    // Save changes to redux store
+    if (dispatch) {
+      dispatch({
+        type: 'info/save',
+        payload: {
+          previewOffer: {
+            ...previewOffer,
+            file,
+            day,
+            month,
+            year,
+            place,
+            city,
+            day2,
+            month2,
+            year2,
+            place2,
+            city2,
+            mail,
+          },
+        },
+      });
+    }
+  };
+
+  const handleSubmit = () => {
+    // Check if mail address is valid
+    const mailError = mailForm.getFieldError('email');
+    if (mailError.length > 0 || mail.length === 0) {
+      return;
+    }
+
+    // Clear all input fields after submitted
+    setDay('');
+    setMonth('');
+    setYear('');
+    setPlace('');
+    setCity('');
+    setDay2('');
+    setMonth2('');
+    setYear2('');
+    setPlace2('');
+    setCity2('');
+    setFile(null);
+    setMail('');
+    resetForm();
+  };
+
   useEffect(() => {
-    for (let i = 0; i < inputRefs.length; i++) {
+    // Set width for each input
+    for (let i = 0; i < inputRefs.length; i += 1) {
       if (inputRefs[i]) {
-        console.log(inputRefs[i]);
         inputRefs[i].style.width = `${INPUT_WIDTH[i]}px`;
       }
     }
   }, []);
+
+  useEffect(() => {
+    // Save changes to store whenever input fields change
+    saveChanges();
+  }, [file, day, month, year, place, city, day2, month2, year2, place2, city2, mail]);
 
   return (
     <div className={styles.previewContainer}>
@@ -81,7 +140,7 @@ const PreviewOffer = () => {
         <div className={styles.leftContainer}>
           <header>
             <img src={logo} alt="terralogic logo" />
-            <h1>employee agreement</h1>
+            <h1>{formatMessage({ id: 'component.previewOffer.title' })}</h1>
           </header>
 
           <div className={styles.content}>
@@ -90,41 +149,49 @@ const PreviewOffer = () => {
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={day} type="text" onChange={(e) => setDay(e.target.value)} />
               </div>{' '}
               day of
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={month} type="text" onChange={(e) => setMonth(e.target.value)} />
               </div>
               . 20
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <NumericInput
+                  onChange={(value) => setYear(value)}
+                  value={year}
+                  maxLength={2}
+                  min={1}
+                />
               </div>
               . between [name of employer] a corporation incoporated under the laws of Province on
               Ontario, and having its principal place of business at{' '}
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={place} type="text" onChange={(e) => setPlace(e.target.value)} />
               </div>{' '}
-              (the "Employer"); and [name of (the "Employee")], of the City of ______ in the
-              Province of Ontario (the "Employee").
+              (the &quot;Employer&quot;); and [name of (the &quot;Employee&quot;)], of the City of{' '}
+              <div
+                ref={(ref) => {
+                  inputRefs.push(ref);
+                }}
+              >
+                <input value={city} type="text" onChange={(e) => setCity(e.target.value)} />
+              </div>{' '}
+              in the Province of Ontario (the &quot;Employee&quot;).
             </p>
 
             <p>
@@ -153,49 +220,49 @@ const PreviewOffer = () => {
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={day2} type="text" onChange={(e) => setDay2(e.target.value)} />
               </div>{' '}
               day of
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={month2} type="text" onChange={(e) => setMonth2(e.target.value)} />
               </div>
               . 20
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <NumericInput
+                  onChange={(value) => setYear2(value)}
+                  value={year2}
+                  maxLength={2}
+                  min={1}
+                />
               </div>
               . between [name of employer] a corporation incoporated under the laws of Province on
               Ontario, and having its principal place of business at{' '}
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={place2} type="text" onChange={(e) => setPlace2(e.target.value)} />
               </div>{' '}
-              (the "Employer"); and [name of (the "Employee")], of the City of{' '}
+              (the &quot;Employer&quot;); and [name of (the &quot;Employee&quot;)], of the City of{' '}
               <div
                 ref={(ref) => {
                   inputRefs.push(ref);
-                  inputRefIndex++;
                 }}
               >
-                <input type="text" />
+                <input value={city2} type="text" onChange={(e) => setCity2(e.target.value)} />
               </div>{' '}
-              in the Province of Ontario (the "Employee").
+              in the Province of Ontario (the &quot;Employee&quot;).
             </p>
 
             <p>
@@ -233,10 +300,10 @@ const PreviewOffer = () => {
                 </div>
               </div>
             </div>
-            <h2>Signature of the HR</h2>
+            <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
           </header>
 
-          <p>Undersigned - Ms Riddhima Chaudhary</p>
+          <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p>
 
           <div className={styles.upload}>
             {!file ? (
@@ -247,14 +314,15 @@ const PreviewOffer = () => {
             )}
 
             <button
+              type="submit"
               onClick={() => {
                 fileRef.click();
               }}
             >
-              Submit
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
-            <CancleIcon className={styles.cancleIcon} resetImg={resetImg} />
+            <CancelIcon resetImg={resetImg} />
           </div>
 
           <input
@@ -267,14 +335,70 @@ const PreviewOffer = () => {
               imageHandler(e);
             }}
           />
+
+          <div className={styles.submitContainer}>
+            <Button type="primary" onClick={handleSubmit}>
+              {formatMessage({ id: 'component.previewOffer.submit' })}
+            </Button>
+            <span className={styles.submitMessage}>
+              {file ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+            </span>
+          </div>
         </div>
 
         <div className={styles.send}>
-          <p>Send</p>
+          <header>
+            <div className={styles.icon}>
+              <div className={styles.bigGlow}>
+                <div className={styles.smallGlow}>
+                  <SendOutlined />
+                </div>
+              </div>
+            </div>
+            <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
+          </header>
+
+          <p>
+            {formatMessage({ id: 'component.previewOffer.note1' })}
+            <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
+            {formatMessage({ id: 'component.previewOffer.note3' })}
+          </p>
+
+          <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
+
+          <div className={styles.mail}>
+            <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
+
+            <Form form={mailForm} name="myForm" value={mail}>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: 'email',
+                    message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
+                  },
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
+                  },
+                ]}
+              >
+                <Input
+                  required={false}
+                  value={mail}
+                  placeholder="address@terraminds.com"
+                  onChange={(e) => setMail(e.target.value)}
+                />
+              </Form.Item>
+            </Form>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default PreviewOffer;
+// export default PreviewOffer;
+export default connect(({ info: { previewOffer = {} } = {} }) => ({
+  previewOffer,
+}))(PreviewOffer);
