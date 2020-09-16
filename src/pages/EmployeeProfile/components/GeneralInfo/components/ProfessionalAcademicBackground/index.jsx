@@ -1,41 +1,36 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Row, Col } from 'antd';
+import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
+import View from './components/View';
+import Edit from './components/Edit';
 import styles from './index.less';
 
 class ProfessionalAcademicBackground extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEdit: false,
+    };
+  }
+
+  handleEdit = () => {
+    this.setState({
+      isEdit: true,
+    });
+  };
+
   render() {
-    const dummyData = [
-      { label: 'Previous Job label', value: 'Senior UX Designer' },
-      { label: 'Previous Company', value: 'Apple' },
-      { label: 'Past Experience', value: '5 Years' },
-      { label: 'Total Experience', value: '12 Years' },
-      { label: 'Qualification', value: '12th PUC' },
-    ];
+    const { isEdit } = this.state;
+    const renderComponent = isEdit ? <Edit /> : <View />;
     return (
       <div className={styles.root}>
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          <div className={styles.viewTitle__edit}>
+          <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
             <EditFilled className={styles.viewTitle__edit__icon} />
             <p className={styles.viewTitle__edit__text}>Edit</p>
           </div>
         </div>
-        <div className={styles.viewBottom}>
-          <Row gutter={[0, 16]}>
-            {dummyData.map((item) => (
-              <Fragment key={item.label}>
-                <Col span={6} className={styles.textLabel}>
-                  {item.label}
-                </Col>
-                <Col span={18} className={styles.textValue}>
-                  {item.value}
-                </Col>
-              </Fragment>
-            ))}
-            {/* Custom Col Here */}
-          </Row>
-        </div>
+        <div className={styles.viewBottom}>{renderComponent}</div>
       </div>
     );
   }
