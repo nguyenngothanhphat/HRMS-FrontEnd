@@ -90,7 +90,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : ''}</span>,
+        render: (manager) => (
+          <span>
+            {manager.generalInfo
+              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              : ''}
+          </span>
+        ),
         align: 'left',
         width: '15%',
       },
