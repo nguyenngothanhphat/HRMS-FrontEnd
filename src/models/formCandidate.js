@@ -54,7 +54,7 @@ const info = {
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
-      salaryStatus: 3,
+      salaryStatus: 2,
     },
     offerDetailField: {
       currency: true,
