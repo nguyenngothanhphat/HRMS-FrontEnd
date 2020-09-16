@@ -10,21 +10,17 @@ export default function FourthStep(props) {
       </div>
 
       <label htmlFor className={styles.container}>
-        <input value="Employee" onChange={(e) => onRadioChange(e, 'employee')} type="checkbox" />
+        <input value={4} onChange={(e) => onRadioChange(e)} type="checkbox" />
         <span className={styles.checkmark} />
         Employee
       </label>
       <label htmlFor className={styles.container}>
-        <input
-          value="Employee’s Reporting Manager"
-          onChange={(e) => onRadioChange(e, 'reportingManager')}
-          type="checkbox"
-        />
+        <input value={5} onChange={(e) => onRadioChange(e)} type="checkbox" />
         <span className={styles.checkmark} />
         Employee’s Reporting Manager
       </label>
       <label htmlFor className={styles.container}>
-        <input value="HR Team" onChange={(e) => onRadioChange(e, 'hrTeam')} type="checkbox" />
+        <input value={6} onChange={(e) => onRadioChange(e)} type="checkbox" />
         <span className={styles.checkmark} />
         HR Team
       </label>

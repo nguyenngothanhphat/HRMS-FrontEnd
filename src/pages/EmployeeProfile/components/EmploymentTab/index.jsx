@@ -38,8 +38,9 @@ class EmploymentTab extends PureComponent {
     };
   }
 
-  handleMakeChanges = () => {
+  handleMakeChanges = async () => {
     const { isChanging } = this.state;
+    await this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
   };
 

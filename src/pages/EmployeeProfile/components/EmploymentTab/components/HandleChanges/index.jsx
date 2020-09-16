@@ -12,7 +12,7 @@ class HandleChanges extends PureComponent {
     this.state = {
       radio: 1,
       changeData: {
-        stepOne: 1,
+        stepOne: '',
         stepTwo: {
           title: '',
           wLocation: '',
@@ -41,8 +41,33 @@ class HandleChanges extends PureComponent {
     if (current === 4) onSubmit(changeData);
   }
 
-  onRadioChange = (e, info) => {
-    console.log(e.target.value, info);
+  onRadioChange = (e) => {
+    const { changeData } = this.state;
+    console.log(e.target.value);
+    if (e.target.checked) {
+      switch (e.target.value) {
+        case 1:
+          this.setState({ changeData: { ...changeData, stepOne: 'Before' } });
+          break;
+        case 2:
+          this.setState({ changeData: { ...changeData, stepOne: 'Now' } });
+          break;
+        case 3:
+          this.setState({ changeData: { ...changeData, stepOne: 'Later' } });
+          break;
+        case 4:
+          this.setState({
+            changeData: {
+              ...changeData,
+              stepFour: [...changeData.stepFour, 'Employee'],
+            },
+          });
+          break;
+        default:
+          break;
+      }
+    }
+    console.log(changeData.stepFour);
     this.setState({ radio: e.target.value });
   };
 
