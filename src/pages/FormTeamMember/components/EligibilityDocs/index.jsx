@@ -12,8 +12,8 @@ const listCollapse = [
     id: '1',
     title: 'Type A: Identity Proof',
     items: [
-      { key: '1', name: 'Aadhar Card*', isRequired: true },
-      { key: '2', name: 'PAN*', isRequired: true },
+      { key: '1', name: 'Aadhar Card', isRequired: true },
+      { key: '2', name: 'PAN', isRequired: true },
       { key: '3', name: 'Passport', isRequired: false },
       { key: '4', name: 'Driving License', isRequired: false },
       { key: '5', name: 'Voter Card', isRequired: false },
@@ -32,9 +32,9 @@ const listCollapse = [
     id: '3',
     title: 'Type C: Educational ',
     items: [
-      { key: '1', name: 'SSLC*', isRequired: true },
-      { key: '2', name: 'Intermediate/Diploma*', isRequired: true },
-      { key: '3', name: 'Graduation*', isRequired: true },
+      { key: '1', name: 'SSLC', isRequired: true },
+      { key: '2', name: 'Intermediate/Diploma', isRequired: true },
+      { key: '3', name: 'Graduation', isRequired: true },
       { key: '4', name: 'Post Graduate', isRequired: false },
       { key: '5', name: 'PHD/Doctorate', isRequired: false },
     ],
@@ -51,6 +51,11 @@ const listCollapse = [
     ],
   },
 ];
+
+const defaultCheckListContainer = listCollapse.map((obj) =>
+  obj.items.filter((item) => item.isRequired),
+);
+console.log(defaultCheckListContainer[0]);
 
 const note = {
   title: 'Note',
@@ -69,6 +74,16 @@ const note = {
 };
 
 export default class EligibilityDocs extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  handleCheckBox = (value) => {
+    console.log(value);
+    // console.log(defaultCheckList);
+  };
+
   render() {
     return (
       <>
@@ -79,7 +94,14 @@ export default class EligibilityDocs extends PureComponent {
               <Warning />
               <Title />
               {listCollapse.map((item) => {
-                return <CollapseFields key={item.id} item={item} />;
+                return (
+                  <CollapseFields
+                    key={item.id}
+                    item={item}
+                    handleCheckBox={this.handleCheckBox}
+                    defaultCheckListContainer={defaultCheckListContainer}
+                  />
+                );
               })}
             </div>
           </Col>

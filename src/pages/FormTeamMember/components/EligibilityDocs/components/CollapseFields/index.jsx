@@ -1,26 +1,28 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 import { Collapse, Space, Checkbox, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import InputField from '../InputField';
 import styles from './index.less';
 
-const CollapseField = ({ item = [] }) => {
-  const [isCheck, setIsCheck] = useState(false);
-  const [itemCheck, setItemCheck] = useState(false);
-  // const [indeterminate, setIndeterminate] = useState(true);
+const CollapseField = ({ item = [], handleCheckBox, defaultCheckListContainer = [] }) => {
+  const [checkList, setCheckList] = useState(defaultCheckListContainer[0]);
+  const [checkList_, setCheckList_] = useState(defaultCheckListContainer[2]);
+  const [checkAll, setCheckAll] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(true);
 
-  const defaultCheckList = [];
-  defaultCheckList.push();
-
-  const handleChange = (e) => {
-    setIsCheck(e.target.checked);
-    setItemCheck(e.target.checked);
+  const handleChange = (checkedList) => {
+    setCheckList(checkedList);
+    setCheckList_(checkedList);
+    setIndeterminate(!!checkedList.length && checkedList.length < item.items.length);
+    setCheckAll(checkedList.length === item.items.length);
   };
 
-  const handleItemChange = () => {
-    if (isCheck) return setItemCheck(true);
-    if (itemCheck) return setItemCheck(true);
-    return false;
+  const handleCheckAllChange = (e) => {
+    setCheckList(e.target.checked ? item.items : []);
+    setCheckList_(e.target.checked ? item.items : []);
+    setIndeterminate(false);
+    setCheckAll(e.target.checked);
   };
 
   return (
@@ -37,8 +39,10 @@ const CollapseField = ({ item = [] }) => {
             <Checkbox
               className={styles.checkbox}
               onClick={(e) => e.stopPropagation()}
-              onChange={handleItemChange}
-              checked={!!isCheck}
+              onChange={handleCheckAllChange}
+              name={item.title}
+              checked={checkAll}
+              indeterminate={indeterminate}
             >
               {item.title}
             </Checkbox>
@@ -47,23 +51,33 @@ const CollapseField = ({ item = [] }) => {
         >
           {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
           <Space direction="vertical">
-            {/* <Checkbox.Group
+            <Checkbox.Group
               direction="vertical"
               className={styles.checkboxItem}
-              checked
-              options={item.items.map((obj) => obj.name)}
-            /> */}
-            {item.items.map((obj) => (
+              // eslint-disable-next-line no-nested-ternary
+              value={
+                item.title === 'Type A: Identity Proof'
+                  ? checkList
+                  : item.title === 'Type C: Educational'
+                  ? checkList_
+                  : ''
+              }
+              options={item.items}
+              onChange={handleChange}
+            />
+            {/* {item.items.map((obj) => (
               <Checkbox
                 key={obj.key}
                 // indeterminate
                 className={styles.checkboxItem}
                 onChange={handleChange}
-                // checked={!!(obj.isRequired || isCheck)}
+                checked={obj.isRequired}
+                name={obj.name}
               >
                 {obj.name}
+                {obj.isRequired ? '*' : <></>}
               </Checkbox>
-            ))}
+            ))} */}
             {item.title === 'Type D: Technical Certifications' ? (
               <Space direction="horizontal">
                 <PlusOutlined className={styles.plusIcon} />
