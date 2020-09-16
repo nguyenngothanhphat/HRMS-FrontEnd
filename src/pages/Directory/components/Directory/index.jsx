@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import { FilterOutlined } from '@ant-design/icons';
-import { Tabs, Layout, Image } from 'antd';
-import DirectotyTable from '@/components/DirectotyTable';
+import Icon, { FilterOutlined } from '@ant-design/icons';
+import { Tabs, Layout } from 'antd';
+import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
-import addTeam from '@/assets/addTeam.svg';
+import addTeam from './icon.js';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -175,7 +175,8 @@ class DirectoryComponent extends PureComponent {
       <div className={styles.tabBarExtra}>
         <NavLink to="/directory" className={styles.buttonCreate}>
           {/* <UserAddOutlined /> */}
-          <Image width={20} src={addTeam} alt="" className={styles.AddTeamimg} />
+          <Icon component={addTeam} />
+          {/* <Image width={20} src={addTeam} alt="" className={styles.AddTeamimg} /> */}
           <p className={styles.NameNewProfile}>
             {formatMessage({ id: 'pages.directory.directory.addTeamMember' })}
           </p>
@@ -200,6 +201,7 @@ class DirectoryComponent extends PureComponent {
     return (
       <div className={styles.DirectoryComponent}>
         <div className={styles.contentContainer}>
+          {/* <Layout className={styles.directoryLayout}> */}
           <Tabs
             defaultActiveKey="1"
             className={styles.TabComponent}
@@ -208,7 +210,7 @@ class DirectoryComponent extends PureComponent {
           >
             {bottabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
-                <Layout>
+                <Layout className={styles.directoryLayout_inner}>
                   <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
@@ -217,7 +219,7 @@ class DirectoryComponent extends PureComponent {
                     changeTab={changeTab}
                   />
                   <Content className="site-layout-background">
-                    <DirectotyTable
+                    <DirectoryTable
                       loading={loadingListActive || loadingListMyTeam || loadingListInActive}
                       list={this.renderListEmployee(tab.id)}
                     />
@@ -226,6 +228,15 @@ class DirectoryComponent extends PureComponent {
               </TabPane>
             ))}
           </Tabs>
+          {/* <Footer> */}
+          {/* <Pagination
+                defaultCurrent={1}
+                defaultPageSize={9}
+                onChange={this.handleChange}
+                total={15}
+              /> */}
+          {/* </Footer> */}
+          {/* </Layout> */}
         </div>
       </div>
     );

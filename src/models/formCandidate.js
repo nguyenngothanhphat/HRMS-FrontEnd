@@ -39,6 +39,7 @@ const info = {
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
+      filledCustomField: false,
     },
     previewOffer: {
       file: null,
@@ -53,6 +54,12 @@ const info = {
       place2: '',
       city2: '',
       mail: '',
+    },
+    customField: {
+      dental: 'tier1',
+      vision: 'tier1',
+      medical: 'tier1',
+      additionalInfo: '',
     },
   },
   effects: {

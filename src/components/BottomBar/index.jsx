@@ -23,8 +23,8 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { currentPage, checkMandatory } = this.props;
-    const { filledBasicInformation } = checkMandatory;
+    const { currentPage, offerDetailField, checkMandatory } = this.props;
+    const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
         <div className={styles.normalText}>
@@ -37,8 +37,31 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
+    if (currentPage === 2) {
+      return !filledJobDetail ? (
+        <div className={styles.normalText}>
+          <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
+        </div>
+      ) : (
+        <div className={styles.greenText}>*All mandatory details have been filled</div>
+      );
+    }
+
     if (currentPage === 4) {
       return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
+    }
+
+    if (currentPage === 8) {
+      return !filledCustomField ? (
+        <div className={styles.normalText}>
+          <div className={styles.redText}>*</div>
+          {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+        </div>
+      ) : (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
         </div>
@@ -49,7 +72,7 @@ class BottomBar extends PureComponent {
 
   _renderBottomButton = () => {
     const { currentPage, checkMandatory } = this.props;
-    const { filledBasicInformation } = checkMandatory;
+    const { filledBasicInformation, filledJobDetail } = checkMandatory;
 
     if (currentPage === 1) {
       return (
@@ -78,7 +101,10 @@ class BottomBar extends PureComponent {
           <Button
             type="primary"
             onClick={this.onClickNext}
-            className={styles.bottomBar__button__primary}
+            className={`${styles.bottomBar__button__primary} ${
+              !filledJobDetail ? styles.bottomBar__button__disabled : ''
+            }`}
+            disabled={!filledJobDetail}
           >
             Next
           </Button>
