@@ -42,6 +42,13 @@ class BottomBar extends PureComponent {
         ? '*All mandatory fields have been filled.'
         : `Currency field must be 'Dollar'`;
     }
+    if (currentPage === 6) {
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
+    }
     return null;
   };
 
@@ -94,14 +101,25 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
+    if (currentPage === 6) {
+      return (
+        <Button
+          type="primary"
+          onClick={this.onClickNext}
+          className={styles.bottomBar__button__primary}
+        >
+          Next
+        </Button>
+      );
+    }
     return null;
   };
 
-  render() {
-    const { className } = this.props;
-
-    return (
-      <div className={`${styles.bottomBar} ${className}`}>
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { salaryStatus } = checkMandatory;
+    return salaryStatus !== 2 ? (
+      <div className={styles.bottomBar}>
         <Row align="middle">
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
@@ -111,7 +129,11 @@ class BottomBar extends PureComponent {
           </Col>
         </Row>
       </div>
-    );
+    ) : null;
+  };
+
+  render() {
+    return <>{this._renderBottomBar()}</>;
   }
 }
 

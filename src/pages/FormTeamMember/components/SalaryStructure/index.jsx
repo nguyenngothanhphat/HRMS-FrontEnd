@@ -8,25 +8,25 @@ import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
-  basicInformation,
+@connect(({ info: { salaryStructure = {}, checkMandatory = {} } = {} }) => ({
+  salaryStructure,
   checkMandatory,
 }))
 class SalaryStructure extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      salaryStatus: 2,
-    };
-  }
-
   _renderTable = () => {
-    return <div className={styles.tableWrapper}>hi</div>;
+    return (
+      <div className={styles.tableWrapper}>
+        <p>
+          The table of salary structure should populate here. Need clarification here if this table
+          or information is editable by the HR?
+        </p>
+      </div>
+    );
   };
 
   render() {
-    const { salaryStatus } = this.state;
+    const { checkMandatory } = this.props;
+    const { salaryStatus } = checkMandatory;
     const Note = {
       title: 'Note',
       data: (

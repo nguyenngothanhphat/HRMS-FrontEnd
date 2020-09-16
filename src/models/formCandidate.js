@@ -29,11 +29,13 @@ const info = {
       idProof: [],
       addProof: [],
       edu: [],
-      techCerti: [{
-        name: '',
-        duration: '',
-        poe: []
-      }]
+      techCerti: [
+        {
+          name: '',
+          duration: '',
+          poe: [],
+        },
+      ],
     },
     jobDetail: {
       position: 1,
@@ -46,9 +48,13 @@ const info = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
+    salaryStructure: {
+      fullName: '',
+    },
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
+      salaryStatus: 3,
     },
     offerDetailField: {
       currency: true,
@@ -88,9 +94,9 @@ const info = {
     saveEligibilityRequirement(state, action) {
       return {
         ...state,
-        ...action.payload
-      }
-    }
+        ...action.payload,
+      };
+    },
   },
 };
 export default info;

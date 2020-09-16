@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Radio, Typography } from 'antd';
 import styles from './index.less';
+
 class RadioComponent extends Component {
   constructor(props) {
     super(props);
