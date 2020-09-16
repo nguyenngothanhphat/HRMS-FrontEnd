@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 import { connect } from 'umi';
 import s from './index.less';
 
@@ -31,7 +31,7 @@ class Edit extends PureComponent {
     const { generalData } = this.state;
     const {
       preJobTitle = '',
-      // skills = [],
+      skills = [],
       preCompany = '',
       pastExp = 0,
       totalExp = 0,
@@ -49,6 +49,7 @@ class Edit extends PureComponent {
             pastExp,
             totalExp,
             qualification,
+            skills,
           }}
           {...formItemLayout}
           onFinish={this.onFinish}
@@ -70,6 +71,9 @@ class Edit extends PureComponent {
             <Input />
           </Form.Item>
           <Form.Item label="Qualification" name="qualification" rules={[]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Skills" name="skills" rules={[]}>
             <Input />
           </Form.Item>
         </Form>
