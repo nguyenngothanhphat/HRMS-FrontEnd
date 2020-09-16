@@ -44,7 +44,7 @@ const errorHandler = (error) => {
     });
   }
 
-  return response;
+  return { statusCode: response.status, message: response.message };
 };
 
 /**
