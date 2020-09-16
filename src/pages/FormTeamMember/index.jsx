@@ -5,6 +5,7 @@ import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
+import PreviewOffer from './components/PreviewOffer';
 import CustomField from './components/CustomField';
 import styles from './index.less';
 

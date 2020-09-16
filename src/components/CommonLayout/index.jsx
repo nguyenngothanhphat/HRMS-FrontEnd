@@ -24,7 +24,14 @@ export default class CommonLayout extends PureComponent {
     });
   }
 
-  handleClick = (item) => {
+  _handlePreviewOffer = () => {
+    this.setState({
+      selectedItemId: '',
+      displayComponent: <PreviewOffer />,
+    });
+  };
+
+  _handleClick = (item) => {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
@@ -63,7 +70,7 @@ export default class CommonLayout extends PureComponent {
               <ItemMenu
                 key={item.id}
                 item={item}
-                handelClick={this.handleClick}
+                handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
               />
             ))}
