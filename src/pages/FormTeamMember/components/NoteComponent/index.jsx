@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Space } from 'antd';
-import styles from './index.less';
 import lightning from './assets/lightning.svg';
+import styles from './index.less';
 
 const NoteComponent = ({ note = {} }) => {
   // const renderHTMl = () => {

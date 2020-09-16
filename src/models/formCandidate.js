@@ -25,6 +25,18 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+    eligibilityDocs: {
+      idProof: [],
+      addProof: [],
+      edu: [],
+      techCerti: [
+        {
+          name: '',
+          duration: '',
+          poe: [],
+        },
+      ],
+    },
     jobDetail: {
       position: 1,
       classification: 1,
@@ -36,14 +48,19 @@ const info = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
+    salaryStructure: {
+      rejectComment: '',
+    },
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
+      salaryStatus: 1,
     },
     offerDetailField: {
       currency: true,
     },
+
     customField: {
       dental: 'tier1',
       vision: 'tier1',
@@ -77,6 +94,12 @@ const info = {
       };
     },
     save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveEligibilityRequirement(state, action) {
       return {
         ...state,
         ...action.payload,

@@ -8,6 +8,8 @@ import OfferDetail from './components/OfferDetail';
 import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
+import SalaryStructure from './components/SalaryStructure';
+import EligibilityDocs from './components/EligibilityDocs';
 
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
@@ -34,11 +36,11 @@ export default class FormTeamMember extends PureComponent {
         id: 3,
         name: 'Eligibility Documents',
         key: 'eligibilityDocuments',
-        component: <BasicInformation />,
+        component: <EligibilityDocs />,
       },
       { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 5, name: 'Benefits', key: 'benefits', component: <Benefit /> },
-      { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <BasicInformation /> },
+      { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
       { id: 7, name: 'Payroll Settings', key: 'customFields', component: <BasicInformation /> },
       { id: 8, name: 'Custom Fields', key: 'additionalOptions', component: <CustomField /> },
       {
