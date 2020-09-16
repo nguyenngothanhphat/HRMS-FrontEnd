@@ -1,4 +1,6 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
+import { dialog } from '@/utils/utils';
+import { setToken } from '@/utils/token';
 
 const UserModel = {
   namespace: 'user',
@@ -15,16 +17,29 @@ const UserModel = {
     },
 
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: {
-          ...response.data,
-          name: [response.data.generalInfo.firstName, response.data.generalInfo.lastName]
-            .filter(Boolean)
-            .join(' '),
-        },
-      });
+      try {
+        const response = yield call(queryCurrent);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveCurrentUser',
+          payload: {
+            ...response.data,
+            name: [response.data?.generalInfo?.firstName, response.data?.generalInfo?.lastName]
+              .filter(Boolean)
+              .join(' '),
+          },
+        });
+      } catch (errors) {
+        setToken('');
+        yield put({
+          type: 'saveCurrentUser',
+          payload: {
+            currentUser: {},
+          },
+        });
+        dialog(errors);
+      }
     },
   },
   reducers: {

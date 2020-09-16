@@ -1,19 +1,73 @@
 import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
+import { connect } from 'umi';
+import moment from 'moment';
+import ModalUpload from '@/components/ModalUpload';
+import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
 
+@connect(
+  ({
+    loading,
+    employeeProfile: { tempData: { generalData = {}, compensationData = {} } = {} } = {},
+  }) => ({
+    generalData,
+    compensationData,
+    loading: loading.effects['employeeProfile/fetchGeneralInfo'],
+  }),
+)
 class ViewInformation extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
+
+  openModalUpload = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  formatListSkill = (skills, colors) => {
+    let temp = 0;
+    const listFormat = skills.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item,
+      };
+    });
+    return listFormat;
+  };
+
   render() {
-    const listTagSkills = [
-      { color: 'red', name: 'Product Management' },
-      { color: 'volcano', name: 'UX Design' },
-      { color: 'magenta', name: 'UI Design' },
-      { color: 'orange', name: 'Product design' },
-      { color: 'gold', name: 'Sales' },
+    const dummyListSkill = [
+      'Product Management',
+      'UX Design',
+      'UI Design',
+      'Product design',
+      'Sales',
     ];
+    const { generalData, compensationData, loading } = this.props;
+    const { firstName = '', avatar = '', skillss = dummyListSkill, createdAt = '' } = generalData;
+    const { tittle: { name: title = '' } = {} } = compensationData;
+    const { visible } = this.state;
+    const joinningDate = moment(createdAt).format('DD/MM/YYYY');
+    const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    const formatListSkill = this.formatListSkill(skillss, listColors) || [];
     const menu = (
       <Menu>
         <Item key="1" onClick={() => alert(1)}>
@@ -30,6 +84,12 @@ class ViewInformation extends PureComponent {
         </Item>
       </Menu>
     );
+    if (loading)
+      return (
+        <div className={s.viewLoading}>
+          <Spin />
+        </div>
+      );
     return (
       <div className={s.viewRight__infoEmployee}>
         <img
@@ -37,15 +97,16 @@ class ViewInformation extends PureComponent {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
+        <Avatar icon={<UserOutlined />} src={avatar} size={96} className={s.infoEmployee__imgAvt} />
         <img
-          src="https://st2.depositphotos.com/1007566/12304/v/950/depositphotos_123041444-stock-illustration-avatar-man-cartoon.jpg"
-          alt="img-avt"
-          className={s.infoEmployee__imgAvt}
+          src="/assets/images/iconUploadImage.svg"
+          onClick={this.openModalUpload}
+          alt="img-upload"
+          className={s.infoEmployee__imgAvt__upload}
         />
-        {/* <div className={s.infoEmployee__imgAvt__upload}>btn upload</div> */}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__name}>Aditya Venkatesh</p>
-          <p className={s.infoEmployee__textNameAndTitle__title}>UX Lead, Designer</p>
+          <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
+          <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
         </div>
         <div className={s.infoEmployee__viewBottom}>
           <p className={s.infoEmployee__viewBottom__description}>
@@ -56,14 +117,14 @@ class ViewInformation extends PureComponent {
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
-            {listTagSkills.map((item) => (
+            {formatListSkill.map((item) => (
               <Tag color={item.color}>{item.name}</Tag>
             ))}
           </div>
           <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Joining Date</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>16/02/2020</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{joinningDate}</p>
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
@@ -86,6 +147,7 @@ class ViewInformation extends PureComponent {
             </Button>
           </Dropdown>
         </div>
+        <ModalUpload visible={visible} handleCancel={this.handleCancel} />
       </div>
     );
   }

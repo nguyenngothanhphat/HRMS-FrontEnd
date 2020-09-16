@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
+import ProfessionalAcademicBackground from './components/ProfessionalAcademicBackground';
 import PersonalInformation from './components/PersonalInformation';
 import PassportVisaInformation from './components/PassportandVisaInformation';
 import EmergencyContact from './components/EmergencyContactDetails';
@@ -39,6 +40,7 @@ class GeneralInfo extends PureComponent {
         <PersonalInformation dataAPI={generalData} />
         <PassportVisaInformation dataAPI={generalData} />
         <EmergencyContact dataAPI={generalData} />
+        <ProfessionalAcademicBackground />
       </div>
     );
   }
