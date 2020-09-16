@@ -4,8 +4,15 @@ import { getGeneralInfo, getCompensation } from '@/services/employeeProfiles';
 const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
-    generalData: {},
-    compensationData: {},
+    isModified: false,
+    originData: {
+      generalData: {},
+      compensationData: {},
+    },
+    tempData: {
+      generalData: {},
+      compensationData: {},
+    },
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' } }, { call, put }) {
@@ -13,7 +20,14 @@ const employeeProfile = {
         const response = yield call(getGeneralInfo, { employee });
         const { statusCode, data: generalData = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveGeneral', payload: { generalData } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { generalData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { generalData },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -23,17 +37,38 @@ const employeeProfile = {
         const response = yield call(getCompensation, { employee });
         const { statusCode, data: compensationData = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveGeneral', payload: { compensationData } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { compensationData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { compensationData },
+        });
       } catch (errors) {
         dialog(errors);
       }
     },
   },
   reducers: {
-    saveGeneral(state, action) {
+    saveOrigin(state, action) {
+      const { originData } = state;
       return {
         ...state,
-        ...action.payload,
+        originData: {
+          ...originData,
+          ...action.payload,
+        },
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
       };
     },
   },
