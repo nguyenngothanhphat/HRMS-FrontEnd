@@ -1,47 +1,112 @@
 import React, { PureComponent } from 'react';
-import { Collapse, Row, Col } from 'antd';
-import { DownloadOutlined, CaretRightOutlined, FileOutlined } from '@ant-design/icons';
+import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
+import FileIcon from '../../../../../../assets/pdf_icon.png';
+import DownloadIcon from '../../../../../../assets/download_icon.svg';
+import DownArrowIcon from '../../../../../../assets/downArrow.svg';
+import UpArrowIcon from '../../../../../../assets/upArrow.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 class TypeRow extends PureComponent {
-  handleClick = (event) => {
-    // no collapse activate when clicking on download button
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: true,
+    };
+  }
+
+  preventCollapse = (event) => {
     event.stopPropagation();
   };
 
-  statusAndDownloadButton = () => (
-    <div className={styles.statusAndDownload}>
+  handleDownloadClick = (event) => {
+    this.preventCollapse(event);
+  };
+
+  handleMenuClick = (event) => {
+    this.preventCollapse(event);
+  };
+
+  menu = () => (
+    <Menu>
+      <Menu.Item>
+        <div>1st menu item</div>
+      </Menu.Item>
+      <Menu.Item>
+        <div>2nd menu item</div>
+      </Menu.Item>
+      <Menu.Item danger>a danger item</Menu.Item>
+    </Menu>
+  );
+
+  statusAndButtons = () => (
+    <div className={styles.statusAndButtons}>
       <a>Complete</a>
-      <DownloadOutlined className={styles.downloadButton} onClick={this.handleClick} />
+      <img
+        alt="download"
+        src={DownloadIcon}
+        className={styles.downloadButton}
+        onClick={this.handleDownloadClick}
+      />
+      <Dropdown overlay={this.menu}>
+        <EllipsisOutlined onClick={this.handleMenuClick} className={styles.menuButton} />
+      </Dropdown>
     </div>
   );
 
+  headerWithArrowIcon = (open, title) => (
+    <div className={styles.headerWithArrowIcon}>
+      <span>{title}</span>
+      {open ? (
+        <img src={UpArrowIcon} alt="up-arrow" />
+      ) : (
+        <img src={DownArrowIcon} alt="down-arrow" />
+      )}
+    </div>
+  );
+
+  // customArrowIcon = (isActive) =>
+  //   isActive ? (
+  //     <img src={UpArrowIcon} alt="up-arrow" />
+  //   ) : (
+  //     <img src={DownArrowIcon} alt="down-arrow" />
+  //   );
+
+  onChange = () => {
+    this.setState((prevState) => ({
+      open: !prevState.open,
+    }));
+  };
+
   render() {
-    const { data = [] } = this.props;
+    const { data = [], onFileClick } = this.props;
+    const { open } = this.state;
     return (
       <div>
         {data.map((row) => (
           <Collapse
             defaultActiveKey={['1']}
-            expandIcon={({ isActive }) => (
-              <CaretRightOutlined className={styles.collapseIcon} rotate={isActive ? 90 : 0} />
-            )}
+            onChange={this.onChange}
+            bordered={false}
+            // expandIcon={({ isActive }) => this.customArrowIcon(isActive)}
+            // expandIconPosition="right"
             className={styles.eachCollapse}
           >
             <Panel
-              header={row.kind}
               className={styles.eachPanel}
               key="1"
-              extra={this.statusAndDownloadButton()}
+              showArrow={false}
+              header={this.headerWithArrowIcon(open, row.kind)}
+              extra={this.statusAndButtons()}
             >
               {row.files.map((file) => (
-                <Row className={styles.eachRow}>
+                <Row id={file.id} className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
-                    <a>
-                      <FileOutlined className={styles.fileIcon} />
+                    <div onClick={() => onFileClick(file.id)}>
+                      <img src={FileIcon} alt="file" className={styles.fileIcon} />
                       <span>{file.fileName}</span>
-                    </a>
+                    </div>
                   </Col>
                   <Col span={7}>{file.generatedBy}</Col>
                   <Col span={7}>{file.date}</Col>

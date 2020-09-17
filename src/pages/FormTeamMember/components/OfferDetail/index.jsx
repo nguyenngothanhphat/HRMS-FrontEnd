@@ -3,20 +3,20 @@ import React, { useState, useEffect } from 'react';
 
 import { Radio, Select, Checkbox } from 'antd';
 
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { currencyArr, timeoffArr, fileArr } from './mockData';
 
 import styles from './index.less';
 
-import FileIcon from './components/FileIcon/index.js';
-import Template from './components/Template/index.js';
-import Alert from './components/Alert/index.js';
+import FileIcon from './components/FileIcon/index';
+import Template from './components/Template/index';
+import Alert from './components/Alert/index';
 import { getFileType } from './components/utils';
 
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, offerDetail, offerDetailField } = props;
+  const { dispatch, offerDetail } = props;
 
   // Get default value from "info" store
   const {
@@ -84,36 +84,23 @@ const OfferDetail = (props) => {
 
   const handleCurrencyChange = (value) => {
     setCurrency(value);
-    if (dispatch) {
-      dispatch({
-        type: 'info/save',
-        payload: {
-          offerDetailField: {
-            ...offerDetailField,
-            currency: value === 'dollar',
-          },
-        },
-      });
-    }
   };
 
   return (
     <div className={styles.offerDetailContainer}>
       <div className={styles.offerDetail}>
         <div className={styles.top}>
-          <h3 className={styles.header}>Offer details</h3>
+          <h3 className={styles.header}>{formatMessage({ id: 'component.offerDetail.title' })}</h3>
 
-          <p>
-            All documents supporting candidate&apos;s employment eligibility will be display here
-          </p>
+          <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
         </div>
 
         <div className={styles.middle}>
-          <p>Offer letter</p>
+          <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
 
           <Radio.Group onChange={handleRadio} value={includeOffer} className={styles.radioGroup}>
-            <Radio value={false}>Do not include offer letter</Radio>
-            <Radio value>Use an existing offer letter</Radio>
+            <Radio value={false}>{formatMessage({ id: 'component.offerDetail.notInclude' })}</Radio>
+            <Radio value>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
           </Radio.Group>
 
           <div className={styles.wrapper1}>
@@ -138,31 +125,38 @@ const OfferDetail = (props) => {
 
             <Alert display type="remind" header="reminder">
               <p>
-                This offer letter will be sent in <strong>Phase 3</strong> of the onboarding
-                process.
+                {formatMessage({ id: 'component.offerDetail.alertContent1' })}
+                <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
+                {formatMessage({ id: 'component.offerDetail.alertContent2' })}
               </p>
             </Alert>
           </div>
 
-          <p className={styles.agreement}>Hiring agreements</p>
+          <p className={styles.agreement}>
+            {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
+          </p>
 
           <Checkbox
             className="checkbox"
             checked={agreement}
             onChange={(e) => handleAgreementChange(e.target.value)}
           >
-            Default YC IP / Confidentiality Agreement
+            {formatMessage({ id: 'component.offerDetail.agreement' })}
           </Checkbox>
 
-          <p className={styles.handbook}>Company handbook</p>
+          <p className={styles.handbook}>
+            {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
+          </p>
 
           <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
-            My company&apos;s handbook
+            {formatMessage({ id: 'component.offerDetail.handbook' })}
           </Checkbox>
 
           <div className={styles.wrapper2}>
             <div className={styles.compensationWrapper}>
-              <p className={styles.compensation}>Compensation type</p>
+              <p className={styles.compensation}>
+                {formatMessage({ id: 'component.offerDetail.compensationTitle' })}
+              </p>
 
               <Select className={styles.select} value="salary" disabled>
                 <Option value="salary">Salary</Option>
@@ -172,12 +166,15 @@ const OfferDetail = (props) => {
             </div>
             <Alert display type="info">
               <p>
-                To view salary related insights, explore the <a> Compensation Management App </a>
+                {formatMessage({ id: 'component.offerDetail.alertContent3' })}
+                <a> {formatMessage({ id: 'component.offerDetail.alertContent4' })}</a>
               </p>
             </Alert>
           </div>
 
-          <p className={styles.amount}>Amount in</p>
+          <p className={styles.amount}>
+            {formatMessage({ id: 'component.offerDetail.amountTitle' })}
+          </p>
 
           <Select
             className={styles.select}
@@ -193,7 +190,10 @@ const OfferDetail = (props) => {
 
           <div className={styles.wrapper3}>
             <div className={styles.timeoffWrapper}>
-              <p className={styles.timeoff}>Time off Policy</p>
+              <p className={styles.timeoff}>
+                {' '}
+                {formatMessage({ id: 'component.offerDetail.timeoffTitle' })}
+              </p>
 
               <Select
                 value={timeoff}
@@ -209,14 +209,10 @@ const OfferDetail = (props) => {
             </div>
 
             <Alert display={displayTimeoffAlert} type="caution">
-              <p>Are you sure? This hire will not be able to submit any time off requests.</p>
+              <p>{formatMessage({ id: 'component.offerDetail.alertContent5' })}</p>
             </Alert>
           </div>
         </div>
-
-        {/* <div className={styles.bottom}>
-          <p className={styles.note}>*All mandatory fields have been filled.</p>
-        </div> */}
       </div>
 
       <div className={styles.rightCol}>
@@ -227,7 +223,6 @@ const OfferDetail = (props) => {
   );
 };
 
-export default connect(({ info: { offerDetail = {}, offerDetailField = {} } = {} }) => ({
+export default connect(({ info: { offerDetail = {} } = {} }) => ({
   offerDetail,
-  offerDetailField,
 }))(OfferDetail);
