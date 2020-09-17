@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin, Upload, message } from 'antd';
-import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Row, Col, Select, Spin, Upload } from 'antd';
 import debounce from 'lodash/debounce';
 import { Document, Page, pdfjs } from 'react-pdf';
 import GoBackButton from '../../../../../assets/goBack_icon.svg';
 import styles from './index.less';
+
+import ArrowLeftIcon from '../../../../../assets/arrow-left_icon.svg';
+import ArrowRightIcon from '../../../../../assets/arrow-right_icon.svg';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -136,6 +138,7 @@ export default class ViewDocument extends PureComponent {
               // eslint-disable-next-line no-console
               onLoadError={console.error}
               file={this.getCurrentViewingFileUrl()}
+              noData="No Document"
             >
               {Array.from(new Array(numPages), (el, index) => (
                 <Page className={styles.pdfPage} key={`page_${index + 1}`} pageNumber={index + 1} />
@@ -149,8 +152,8 @@ export default class ViewDocument extends PureComponent {
               <span>{currentViewingFile}</span>/{mockPdfFiles.length}
             </div>
             <div className={styles.filesPagination}>
-              <ArrowLeftOutlined onClick={this.handlePrevViewingFile} />
-              <ArrowRightOutlined onClick={this.handleNextViewingFile} />
+              <img src={ArrowLeftIcon} alt="prev-file" onClick={this.handlePrevViewingFile} />
+              <img src={ArrowRightIcon} alt="next-file" onClick={this.handleNextViewingFile} />
             </div>
           </div>
 
