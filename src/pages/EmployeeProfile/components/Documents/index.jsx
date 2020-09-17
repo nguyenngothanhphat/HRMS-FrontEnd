@@ -87,6 +87,7 @@ class Documents extends PureComponent {
     this.state = {
       isViewingDocument: false,
       selectedFile: [],
+      typeOfSelectedFile: '',
     };
   }
 
@@ -108,6 +109,7 @@ class Documents extends PureComponent {
             this.setState({
               isViewingDocument: true,
               selectedFile: z,
+              typeOfSelectedFile: y.kind,
             });
             return true;
           }
@@ -118,11 +120,15 @@ class Documents extends PureComponent {
   };
 
   render() {
-    const { isViewingDocument, selectedFile } = this.state;
+    const { isViewingDocument, selectedFile, typeOfSelectedFile } = this.state;
     return (
       <div className={styles.Documents}>
         {isViewingDocument ? (
-          <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
+          <ViewDocument
+            selectedFile={selectedFile}
+            typeOfSelectedFile={typeOfSelectedFile}
+            onBackClick={this.onBackClick}
+          />
         ) : (
           data.map((value) => <InfoCollapseType2 onFileClick={this.onFileClick} data={value} />)
         )}

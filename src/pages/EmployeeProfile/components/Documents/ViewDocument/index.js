@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin } from 'antd';
+import { Button, Row, Col, Select, Spin, Upload, message } from 'antd';
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import debounce from 'lodash/debounce';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -24,11 +24,11 @@ const mockData = [
 const mockPdfFiles = [
   {
     id: 1,
-    source: '/sample_1.pdf',
+    source: '/sample_2.pdf',
   },
   {
     id: 2,
-    source: '/sample_2.pdf',
+    source: '/sample_1.pdf',
   },
 ];
 export default class ViewDocument extends PureComponent {
@@ -47,9 +47,9 @@ export default class ViewDocument extends PureComponent {
   getCurrentViewingFileUrl = () => {
     const { currentViewingFile } = this.state;
     let i;
-    for (i = 0; i < mockPdfFiles.length; i += 1) {
-      if (mockPdfFiles[i].id === currentViewingFile) {
-        return mockPdfFiles[i].source;
+    for (i = 1; i <= mockPdfFiles.length; i += 1) {
+      if (i === currentViewingFile) {
+        return mockPdfFiles[i - 1].source;
       }
     }
     return null;
@@ -108,9 +108,13 @@ export default class ViewDocument extends PureComponent {
     });
   };
 
+  onSaveClick = () => {
+    alert('Save');
+  };
+
   render() {
     const { fetching, data, value, numPages, currentViewingFile } = this.state;
-    const { onBackClick } = this.props;
+    const { onBackClick, typeOfSelectedFile } = this.props;
     // const { selectedFile } = this.props;
     // console.log('selected emails: ', value);
     // console.log('selectedFile', selectedFile);
@@ -124,6 +128,7 @@ export default class ViewDocument extends PureComponent {
           </div>
         </div>
         <div className={styles.tableContent}>
+          {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
             <Document
               className={styles.pdfFrame}
@@ -138,6 +143,7 @@ export default class ViewDocument extends PureComponent {
             </Document>
           </div>
 
+          {/* PAGINATION OF DOCUMENT VIEWER */}
           <div className={styles.documentPagination}>
             <div className={styles.numberOfFiles}>
               <span>{currentViewingFile}</span>/{mockPdfFiles.length}
@@ -147,13 +153,15 @@ export default class ViewDocument extends PureComponent {
               <ArrowRightOutlined onClick={this.handleNextViewingFile} />
             </div>
           </div>
+
+          {/* DOCUMENT INFORMATION & SHARING */}
           <div className={styles.documentInfo}>
             <Row className={styles.infoRow}>
               <Col className={styles.infoCol1} span={7}>
                 Document Type
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                Adhaar Card
+                {typeOfSelectedFile}
               </Col>
             </Row>
             <Row className={styles.infoRow}>
@@ -188,11 +196,18 @@ export default class ViewDocument extends PureComponent {
             </Row>
           </div>
         </div>
+
+        {/* BUTTONS */}
         <div className={styles.operationButton}>
-          <Button className={styles.uploadButton} type="link">
-            Upload new
+          <Upload showUploadList={false}>
+            <Button className={styles.uploadButton} type="link">
+              Upload new
+            </Button>
+          </Upload>
+          ,
+          <Button onClick={this.onSaveClick} className={styles.saveButton}>
+            Save
           </Button>
-          <Button className={styles.saveButton}>Save</Button>
         </div>
       </div>
     );
