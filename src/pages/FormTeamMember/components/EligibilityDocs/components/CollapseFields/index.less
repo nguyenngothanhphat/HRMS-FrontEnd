@@ -1,0 +1,91 @@
+@color-grey: #707177;
+@color-blue: #2c6df9;
+
+.CollapseField {
+  margin-bottom: 1rem;
+  :global {
+    .ant-collapse-extra {
+      font-size: 12px;
+      float: none !important;
+      display: inline;
+      color: @color-grey;
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      color: @color-blue;
+      margin-right: 21px !important;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .ant-collapse {
+      border-radius: 5px;
+      border: solid 1px #d6dce0;
+      .ant-collapse-item > .ant-collapse-header {
+        background-color: #fff;
+        padding: 32px;
+      }
+    }
+    span.anticon-calendar {
+      svg {
+        margin-right: 0;
+        color: #000;
+      }
+    }
+    .ant-space-horizontal {
+      padding-left: 33px;
+    }
+  }
+  .checkbox {
+    color: #161c29;
+    padding-right: 1rem;
+    font-size: 14px;
+    span {
+      &:last-child {
+        padding-left: 1rem;
+        padding-top: 1rem;
+      }
+    }
+  }
+  .checkboxItem {
+    display: block;
+    color: #161c29;
+    margin-bottom: 1rem;
+    padding-left: 16px;
+    :global {
+      .ant-checkbox-group-item {
+        display: block;
+        margin-bottom: 1rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    span {
+      &:last-child {
+        padding-top: 1rem;
+        padding-left: 1rem;
+      }
+      &:first {
+        input {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+  .plusIcon {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  .addMore {
+    color: @color-blue;
+    cursor: pointer;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 0.12px;
+  }
+}
