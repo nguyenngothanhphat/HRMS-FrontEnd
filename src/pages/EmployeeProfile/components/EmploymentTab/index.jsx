@@ -52,6 +52,9 @@ class EmploymentTab extends PureComponent {
 
   handleSubmit = (data) => {
     console.log(data);
+    alert(
+      "Submitted! No API yet so you won't see any changes. Check console to see the data you've just input",
+    );
   };
 
   nextTab = (msg) => {
