@@ -9,7 +9,19 @@ class BottomBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      pageId: {
+        basicInformation: 1,
+        jobDetails: 2,
+        eligibilityDocuments: 3,
+        offerDetails: 4,
+        benefits: 5,
+        salaryStructure: 6,
+        payrollSettings: 7,
+        customFields: 8,
+        additionalOptions: 9,
+      },
+    };
   }
 
   onClickNext = () => {
@@ -23,9 +35,11 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
+    const { pageId } = this.state;
+    const { basicInformation, jobDetails, offerDetails, salaryStructure, customFields } = pageId;
     const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
-    if (currentPage === 1) {
+    if (currentPage === basicInformation) {
       return !filledBasicInformation ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>
@@ -37,7 +51,7 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
-    if (currentPage === 2) {
+    if (currentPage === jobDetails) {
       return !filledJobDetail ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
@@ -47,7 +61,7 @@ class BottomBar extends PureComponent {
       );
     }
 
-    if (currentPage === 4) {
+    if (currentPage === offerDetails) {
       return (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
@@ -55,7 +69,7 @@ class BottomBar extends PureComponent {
       );
     }
 
-    if (currentPage === 8) {
+    if (currentPage === customFields) {
       return !filledCustomField ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>
@@ -67,7 +81,7 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
-    if (currentPage === 6) {
+    if (currentPage === salaryStructure) {
       return (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
@@ -78,10 +92,12 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomButton = () => {
+    const { pageId } = this.state;
+    const { basicInformation, jobDetails, offerDetails, salaryStructure } = pageId;
     const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail } = checkMandatory;
 
-    if (currentPage === 1) {
+    if (currentPage === basicInformation) {
       return (
         <Button
           type="primary"
@@ -95,7 +111,7 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === 2) {
+    if (currentPage === jobDetails) {
       return (
         <>
           <Button
@@ -118,7 +134,7 @@ class BottomBar extends PureComponent {
         </>
       );
     }
-    if (currentPage === 4) {
+    if (currentPage === offerDetails) {
       return (
         <Button
           type="primary"
@@ -129,7 +145,7 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === 6) {
+    if (currentPage === salaryStructure) {
       return (
         <Button
           type="primary"
@@ -144,9 +160,11 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomBar = () => {
+    const { pageId } = this.state;
+    const { benefits } = pageId;
     const { currentPage, checkMandatory } = this.props;
     const { salaryStatus } = checkMandatory;
-    if (salaryStatus === 1 && currentPage !== 5) {
+    if (salaryStatus === 1 && currentPage !== benefits) {
       return (
         <div className={styles.bottomBar}>
           <Row align="middle">
