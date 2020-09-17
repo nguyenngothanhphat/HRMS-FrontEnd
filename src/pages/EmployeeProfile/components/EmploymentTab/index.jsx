@@ -1,8 +1,9 @@
-/* eslint-disable global-require */
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
 // import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import edit from './asset/edit.svg';
+import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
@@ -51,12 +52,10 @@ class EmploymentTab extends PureComponent {
     });
   };
 
-  // handleSubmit = (data) => {
-  //   console.log(data);
-  //   alert(
-  //     "Submitted! No API yet so you won't see any changes. Check console to see the data you've just input",
-  //   );
-  // };
+  handleSubmit = (data) => {
+    // console.log(data);
+    alert("Submitted! No API yet so you won't see any changes", JSON.stringify(data));
+  };
 
   nextTab = (msg) => {
     const { current } = this.state;
@@ -83,12 +82,12 @@ class EmploymentTab extends PureComponent {
 
             {isChanging ? (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
-                <img alt="" src={require('./asset/path.svg')} />
+                <img alt="" src={path} />
                 <div>Cancel & Return</div>
               </div>
             ) : (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
-                <img alt="" src={require('./asset/edit.svg')} />
+                <img alt="" src={edit} />
                 <div>Make changes</div>
               </div>
             )}

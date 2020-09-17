@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import moment from 'moment';
 import styles from './styles.less';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
