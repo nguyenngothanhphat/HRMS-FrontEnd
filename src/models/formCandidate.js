@@ -55,7 +55,7 @@ const info = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
-      salaryStatus: 1,
+      salaryStatus: 2,
     },
     previewOffer: {
       file: null,
