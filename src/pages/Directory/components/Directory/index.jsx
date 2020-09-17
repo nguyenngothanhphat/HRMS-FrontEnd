@@ -170,7 +170,7 @@ class DirectoryComponent extends PureComponent {
     }, 5);
   };
 
-  rightButton = () => {
+  rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
         <NavLink to="/directory" className={styles.buttonCreate}>
@@ -182,7 +182,11 @@ class DirectoryComponent extends PureComponent {
           </p>
         </NavLink>
         <div className={styles.filterSider} onClick={this.handleToggle}>
-          <div className={styles.filterBackgroundButton} />
+          {collapsed ? (
+            <div className={styles.filterBackgroundButton_isCollapsed} />
+          ) : (
+            <div className={styles.filterBackgroundButton} />
+          )}
           <div className={styles.filterButton}>
             <FilterOutlined />
             <p className={styles.textButtonFilter}>Filter</p>
@@ -206,7 +210,7 @@ class DirectoryComponent extends PureComponent {
             defaultActiveKey="1"
             className={styles.TabComponent}
             onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton()}
+            tabBarExtraContent={this.rightButton(collapsed)}
           >
             {bottabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>

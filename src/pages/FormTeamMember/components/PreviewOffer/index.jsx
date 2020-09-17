@@ -6,7 +6,7 @@ import { EditOutlined, SendOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
 import logo from './components/images/brand-logo.png';
 // eslint-disable-next-line import/no-unresolved
-import whiteImg from './components/images/white.png';
+import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
 
