@@ -121,12 +121,12 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            {/* <div className={styles.employmentTab_changeIcon}>
-              <EditOutlined
+            <div className={styles.employmentTab_changeIcon}>
+              {/* <EditOutlined
                 className={styles.employmentTab_iconEdit}
                 onClick={this.handleChangeHistory}
-              />
-            </div> */}
+              /> */}
+            </div>
           </div>
           <ChangeHistoryTable />
         </div>
