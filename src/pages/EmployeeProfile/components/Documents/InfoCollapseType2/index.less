@@ -1,27 +1,31 @@
 .InfoCollapseType2 {
-  margin-top: 20px;
-  border: none;
-  margin: 20px 10px;
+  // margin: 20px 10px 0 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: white;
+  border: solid 1px #d6dce0;
   .tableTitle {
-    background-color: #2c6df9;
-    border-radius: 5px;
-    padding: 10px 17px;
     span {
-      color: white;
       font-weight: bold;
+      font-size: 16px;
     }
+    border-bottom: solid 1px #d6dce0;
+    padding: 20px;
+  }
+  .tableContent {
+    padding: 23px;
   }
   .columnName {
     display: flex;
     justify-content: space-between;
-    background-color: white;
-    padding: 10px 17px;
-    span {
-      font-weight: bold;
-    }
+    background-color: #568afa;
+    border-radius: 5px;
+    padding: 10px 19px;
+    font-size: 13px;
     :global {
       .ant-col {
         font-weight: bold;
+        color: white;
       }
     }
     .status {

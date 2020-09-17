@@ -39,9 +39,27 @@ const info = {
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
+      filledCustomField: false,
     },
-    offerDetailField: {
-      currency: true,
+    previewOffer: {
+      file: null,
+      day: '',
+      month: '',
+      year: '',
+      place: '',
+      city: '',
+      day2: '',
+      month2: '',
+      year2: '',
+      place2: '',
+      city2: '',
+      mail: '',
+    },
+    customField: {
+      dental: 'tier1',
+      vision: 'tier1',
+      medical: 'tier1',
+      additionalInfo: '',
     },
   },
   effects: {

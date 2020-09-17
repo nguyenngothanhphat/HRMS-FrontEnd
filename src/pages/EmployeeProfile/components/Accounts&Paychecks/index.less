@@ -1,10 +1,41 @@
 .AccountPaychecks {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  .CollapseYearDetails {
+    width: 100%;
+  }
+  .TableBankDetails {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 5px;
+    border: solid 1px #d6dce0;
+    background-color: #ffffff;
+  }
+  .TableTaxDetails {
+    margin: 24px 0;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 5px;
+    border: solid 1px #d6dce0;
+    background-color: #ffffff;
+  }
+  .spaceTitle {
+    padding: 24px;
+    margin-bottom: 0;
+    object-fit: contain;
+    border-bottom: solid 1px #d6dce0;
+  }
+  .spaceDetails {
+    padding: 24px;
+  }
   .flexbox {
     display: flex;
     flex-flow: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 16px;
   }
   .backgroundTitle {
     display: flex;
@@ -16,71 +47,41 @@
     background-color: #e9f0ff;
   }
   .TitleDetails {
-    height: 24px;
-    padding-left: 20px;
+    height: 19px;
+    font-size: 16px;
     margin-bottom: 0;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
+    font-weight: bold;
     font-stretch: normal;
     font-style: normal;
-    line-height: 1.33;
+    line-height: normal;
     letter-spacing: normal;
-    text-align: left;
-    color: #2c6df9;
+    color: #161c29;
   }
-  .titleLeft {
-    height: 22px;
-    margin-bottom: 20px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.38;
-    letter-spacing: normal;
-    text-align: left;
-    color: black;
-  }
-  .titleRight {
-    height: 22px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1.38;
-    letter-spacing: normal;
-    text-align: right;
-    color: black;
-  }
-  .TextLeft {
-    height: 22px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+  .Name {
+    height: 15px;
+    margin-bottom: 0;
+    font-size: 13px;
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
-    line-height: 1.38;
+    line-height: normal;
     letter-spacing: normal;
-    text-align: left;
-    color: black;
+    color: #000000;
   }
-  .TextRight {
-    height: 22px;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 16px;
+  .Text {
+    height: 15px;
+    margin-bottom: 0;
+    font-size: 13px;
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
-    line-height: 1.38;
+    line-height: normal;
     letter-spacing: normal;
-    text-align: right;
-    color: black;
+    color: #707177;
   }
   .CollapseYear {
+    width: 100%;
     height: auto;
-    font-family: 'Noto Sans', sans-serif;
     font-size: 16px;
     font-weight: 600;
     font-stretch: normal;
@@ -89,20 +90,31 @@
     letter-spacing: normal;
     text-align: left;
     color: #161c29;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-radius: 5px;
     :global {
+      .ant-collapse-content.ant-collapse-content-active .ant-collapse-content-box {
+        padding: 24px;
+      }
+      .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+        right: 24px;
+      }
       .ant-collapse-header {
+        padding: 24px;
+        font-size: 16px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
         color: #161c29;
+        background-color: #ffffff;
       }
       .ant-collapse-content-box {
         padding: 0;
       }
-      .ant-collapse-content-box {
-        border-bottom: solid 1px rgba(112, 112, 112, 0.3);
-      }
       .ant-collapse-arrow svg {
-        color: #707070;
+        font-size: 20px;
+        color: #2c6df9;
       }
     }
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { history } from 'umi';
+import { history, formatMessage } from 'umi';
 import { Table, Avatar } from 'antd';
 import styles from './index.less';
 
@@ -22,7 +22,11 @@ class DirectoryTable extends Component {
   renderUser = (generalInfo) => {
     return (
       <div className={styles.directoryTableName}>
-        <Avatar className={styles.avatar} alt="avatar" />
+        {generalInfo.avatar ? (
+          <Avatar size="medium" className={styles.avatar} src={generalInfo.avatar} alt="avatar" />
+        ) : (
+          <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+        )}
         <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
@@ -31,7 +35,7 @@ class DirectoryTable extends Component {
   generateColumns = (sortedName) => {
     const columns = [
       {
-        title: 'Full Name',
+        title: formatMessage({ id: 'component.directory.table.fullName' }),
         dataIndex: 'generalInfo',
         key: 'generalInfo',
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
@@ -41,10 +45,19 @@ class DirectoryTable extends Component {
             `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
           ),
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '25%',
+        fixed: 'left',
+        width: '18%',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
-        title: 'Title',
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        align: 'center',
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.title' }),
         dataIndex: 'compensation',
         key: 'compensation',
         render: (compensation) => (
@@ -57,28 +70,39 @@ class DirectoryTable extends Component {
         align: 'left',
       },
       {
-        title: 'Department',
+        title: formatMessage({ id: 'component.directory.table.department' }),
         dataIndex: 'department',
         key: 'department',
-        render: (department) => <span>{department ? department.name : ''}</span>,
+        render: (department) => (
+          <span className={styles.directoryTable_deparmentText}>
+            {department ? department.name : ''}
+          </span>
+        ),
         align: 'left',
       },
       {
-        title: 'Location',
+        title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
         align: 'left',
       },
       {
-        title: 'Reporting Manager',
+        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : ''}</span>,
+        render: (manager) => (
+          <span>
+            {manager.generalInfo
+              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              : ''}
+          </span>
+        ),
         align: 'left',
+        width: '15%',
       },
       {
-        title: 'Employment Type',
+        title: formatMessage({ id: 'component.directory.table.employmentType' }),
         dataIndex: 'compensation',
         key: 'employmentType',
         render: (compensation) => (
@@ -115,25 +139,25 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = () => {
-    history.push('/directory/employee-profile/0001');
+  handleProfileEmployee = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   render() {
     const { sortedName = {}, pageSelected } = this.state;
     const { list = [], loading } = this.props;
-    const rowSize = 15;
+    const rowSize = 10;
     const pagination = {
-      position: ['bottomLeft'],
+      position: ['bottomRight'],
       total: list.length,
       showTotal: (total, range) => (
         <span>
           {' '}
-          Showing{' '}
+          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {total}{' '}
+          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
       pageSize: rowSize,
@@ -143,7 +167,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTable}>
         <Table
-          size="medium"
+          size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
             return {
@@ -156,7 +180,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          // scroll={{ y: 540, x: 700 }}
+          scroll={{ x: 1000, y: 'max-content' }}
         />
       </div>
     );

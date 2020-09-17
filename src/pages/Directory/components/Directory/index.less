@@ -1,10 +1,13 @@
 .DirectoryComponent {
-  margin: 0 24px;
+  margin: 32px 100px;
   .TabComponent {
     :global {
       .ant-tabs-tab {
         font-size: 14px;
         font-weight: bold;
+      }
+      .ant-layout {
+        min-height: 540px;
       }
     }
   }
@@ -13,7 +16,7 @@
     margin-bottom: 5px;
   }
   .buttonCreate {
-    margin: 22px 32px 22px 0;
+    margin: 25px 32px 22px 0;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
@@ -28,7 +31,7 @@
       height: 22px;
       font-family: 'Noto Sans', sans-serif;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.38;
@@ -93,12 +96,24 @@
   }
   .contentContainer {
     width: 100%;
-    padding-top: 6px;
     overflow-x: auto;
     border: 1px solid #d6dce0;
     border-radius: 8px;
     margin: 20px 0;
     height: 100%;
+    .directoryLayout {
+      position: relative;
+      :global {
+        .ant-layout-footer {
+          height: 70px;
+          border-top: solid 1px #d6dce0;
+          background: #ffffff;
+        }
+      }
+      .directoryLayout_inner {
+        min-height: unset;
+      }
+    }
   }
   .tabBarExtra {
     display: flex;
@@ -138,6 +153,13 @@
       opacity: 0.07;
       border-radius: 5px;
       background-color: #568afa;
+    }
+    .filterBackgroundButton_isCollapsed {
+      width: 111px;
+      height: 40px;
+      object-fit: contain;
+      opacity: 0.07;
+      border-radius: 5px;
     }
   }
 }

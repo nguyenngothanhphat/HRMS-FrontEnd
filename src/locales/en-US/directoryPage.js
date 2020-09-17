@@ -5,6 +5,7 @@ export default {
   'pages.directory.directory.activeEmployeesTab': 'Active Employees',
   'pages.directory.directory.myTeamTab': 'My Team',
   'pages.directory.directory.inactiveEmployeesTab': 'Inactive Employees',
+  'pages.directory.directory.setUpNewProfile': 'Set Up New Profile',
   'pages.directory.directory.addTeamMember': 'Add team member',
   //   'pages.directory.tableFilter.employmentType': 'Employment Type',
   //   'pages.directory.tableFilter.location': 'Location',
@@ -17,4 +18,14 @@ export default {
   'pages.directory.organisationChart.expandAll': 'Expand All',
   'pages.directory.organisationChart.collapseAll': 'Colapse All',
   'pages.directory.organisationChart.download': 'Download',
+  /* Table */
+  'component.directory.table.fullName': 'Full Name',
+  'component.directory.table.employeeID': 'Employee ID',
+  'component.directory.table.title': 'Title',
+  'component.directory.table.department': 'Department',
+  'component.directory.table.location': 'Location',
+  'component.directory.table.reportingManager': 'Reporting Manager ',
+  'component.directory.table.employmentType': 'Employment Type',
+  'component.directory.pagination.showing': 'Showing',
+  'component.directory.pagination.of': 'of',
 };
