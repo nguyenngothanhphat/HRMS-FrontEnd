@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
+import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
@@ -56,7 +57,7 @@ class EmployeeProfile extends Component {
       { id: 5, name: 'Documents', component: <Documents /> },
       { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
       { id: 7, name: 'Time & Scheduling', component: <Test /> },
-      { id: 8, name: 'Benefit Plans', component: <Test /> },
+      { id: 8, name: 'Benefit Plans', component: <BenefitTab /> },
     ];
     return (
       <PageContainer>
