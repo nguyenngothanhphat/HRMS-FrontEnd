@@ -12,3 +12,9 @@ export async function getCompensation(payload) {
     data: payload,
   });
 }
+
+export async function getListSkill() {
+  return request('/api/skilltype/list', {
+    method: 'POST',
+  });
+}
