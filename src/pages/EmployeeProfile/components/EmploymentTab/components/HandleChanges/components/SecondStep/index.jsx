@@ -5,6 +5,11 @@ import styles from './styles.less';
 export default function SecondStep(props) {
   const { Option } = Select;
   const { onChange, onSearch, changeData } = props;
+
+  const makeKey = () => {
+    return Math.random().toString(36).substring(7);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div className={styles.headings}>What do you wish to change?</div>
@@ -31,7 +36,11 @@ export default function SecondStep(props) {
           }
         >
           {['Bengaluru', 'Ho Chi Minh', 'Sillicon Valley'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
@@ -50,7 +59,11 @@ export default function SecondStep(props) {
           }
         >
           {['Full-Time', 'Part-Time'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
@@ -69,7 +82,11 @@ export default function SecondStep(props) {
           }
         >
           {['Salaried', 'Stock options', 'Other non-cash benefits'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>

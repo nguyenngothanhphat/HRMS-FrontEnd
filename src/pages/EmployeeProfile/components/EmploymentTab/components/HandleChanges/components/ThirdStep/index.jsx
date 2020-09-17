@@ -5,6 +5,9 @@ import styles from './styles.less';
 export default function ThirdStep(props) {
   const { Option } = Select;
   const { onChange, onSearch, changeData } = props;
+  const makeKey = () => {
+    return Math.random().toString(36).substring(7);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -23,7 +26,11 @@ export default function ThirdStep(props) {
           }
         >
           {['Engineer', 'HR', 'Support', 'Design'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
@@ -51,7 +58,11 @@ export default function ThirdStep(props) {
           }
         >
           {['Anil Reddy'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
