@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import FormCertification from './components/FormCertification';
 import s from './index.less';
 
 const formItemLayout = {
@@ -27,28 +28,8 @@ const { Option } = Select;
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      q: '',
-    };
+    this.state = {};
   }
-
-  onNameChange = (event) => {
-    this.setState({
-      q: event.target.value,
-    });
-  };
-
-  customDropdown = (menu) => {
-    const { q } = this.state;
-    return (
-      <div>
-        {menu}
-        <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
-          <Input style={{ flex: 'auto' }} value={q} onChange={this.onNameChange} />
-        </div>
-      </div>
-    );
-  };
 
   tagRender = (props) => {
     const { label, onClose } = props;
@@ -60,6 +41,7 @@ class Edit extends PureComponent {
   };
 
   handleFormChange = (changedValues) => {
+    console.log('changedValues', changedValues);
     const { generalData } = this.props;
     const payload = { ...generalData, ...changedValues };
     const { dispatch } = this.props;
@@ -77,7 +59,6 @@ class Edit extends PureComponent {
 
   render() {
     const { generalData, handleCancel = () => {}, listSkill = [] } = this.props;
-    const { q } = this.state;
     const {
       preJobTitle = '',
       skills = [],
@@ -85,14 +66,9 @@ class Edit extends PureComponent {
       pastExp = 0,
       totalExp = 0,
       qualification = '',
-      // certification = [],
+      certification = [],
     } = generalData;
     const getIdSkill = skills.map((item) => item._id);
-    const listDisplay = q
-      ? listSkill.filter(
-          (item) => item.name && item.name.toLowerCase().indexOf(q.toLowerCase()) > -1,
-        )
-      : listSkill;
     return (
       <div className={s.root}>
         <Form
@@ -104,6 +80,7 @@ class Edit extends PureComponent {
             totalExp,
             qualification,
             skills: getIdSkill,
+            certification,
           }}
           {...formItemLayout}
           onFinish={this.onFinish}
@@ -128,18 +105,21 @@ class Edit extends PureComponent {
           <Form.Item label="Qualification" name="qualification">
             <Input />
           </Form.Item>
+          <Form.Item name="certification" className={s.certificationContainer}>
+            <FormCertification />
+          </Form.Item>
           <Form.Item label="Skills" name="skills">
             <Select
               placeholder="Select skill"
               mode="multiple"
-              // dropdownRender={(menu) => this.customDropdown(menu)}
               tagRender={this.tagRender}
+              onKeyDown={this.handleOnKeyDown}
               showArrow
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {listDisplay.map((item) => (
+              {listSkill.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select>
