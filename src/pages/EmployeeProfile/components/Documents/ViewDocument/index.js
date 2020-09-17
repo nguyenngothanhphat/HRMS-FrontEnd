@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin, Upload, message } from 'antd';
+import { Button, Row, Col, Select, Spin } from 'antd';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import debounce from 'lodash/debounce';
+import { Document, Page, pdfjs } from 'react-pdf';
 import GoBackButton from '../../../../../assets/goBack_icon.svg';
-import AttachmentIcon from '../../../../../assets/attachment_icon.svg';
 import styles from './index.less';
 
-const { Dragger } = Upload;
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 const { Option } = Select;
 
 const mockData = [
@@ -18,6 +20,17 @@ const mockData = [
     value: 'tuan@gmail.com',
   },
 ];
+
+const mockPdfFiles = [
+  {
+    id: 1,
+    source: '/sample_1.pdf',
+  },
+  {
+    id: 2,
+    source: '/sample_2.pdf',
+  },
+];
 export default class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
@@ -26,8 +39,45 @@ export default class ViewDocument extends PureComponent {
       data: [],
       value: [],
       fetching: false,
+      numPages: null,
+      currentViewingFile: 1,
     };
   }
+
+  getCurrentViewingFileUrl = () => {
+    const { currentViewingFile } = this.state;
+    let i;
+    for (i = 0; i < mockPdfFiles.length; i += 1) {
+      if (mockPdfFiles[i].id === currentViewingFile) {
+        return mockPdfFiles[i].source;
+      }
+    }
+    return null;
+  };
+
+  handlePrevViewingFile = () => {
+    const { currentViewingFile } = this.state;
+    if (currentViewingFile > 1) {
+      this.setState((prevState) => ({
+        currentViewingFile: prevState.currentViewingFile - 1,
+      }));
+    }
+  };
+
+  handleNextViewingFile = () => {
+    const { currentViewingFile } = this.state;
+    if (currentViewingFile < mockPdfFiles.length) {
+      this.setState((prevState) => ({
+        currentViewingFile: prevState.currentViewingFile + 1,
+      }));
+    }
+  };
+
+  onDocumentLoadSuccess = ({ numPages }) => {
+    this.setState({
+      numPages,
+    });
+  };
 
   fetchUser = (value) => {
     this.setState({
@@ -59,10 +109,11 @@ export default class ViewDocument extends PureComponent {
   };
 
   render() {
-    const { fetching, data, value } = this.state;
-    const { onBackClick, selectedFile } = this.props;
+    const { fetching, data, value, numPages, currentViewingFile } = this.state;
+    const { onBackClick } = this.props;
+    // const { selectedFile } = this.props;
     // console.log('selected emails: ', value);
-    console.log('selectedFile', selectedFile);
+    // console.log('selectedFile', selectedFile);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -74,15 +125,28 @@ export default class ViewDocument extends PureComponent {
         </div>
         <div className={styles.tableContent}>
           <div className={styles.documentPreviewFrame}>
-            <Dragger>
-              <p className="ant-upload-text">
-                <img src={AttachmentIcon} alt="upload" />{' '}
-                <a style={{ color: '#2c6df9', fontWeight: 'bold' }}>Choose file</a> or drap files
-                here
-              </p>
-            </Dragger>
+            <Document
+              className={styles.pdfFrame}
+              onLoadSuccess={this.onDocumentLoadSuccess}
+              // eslint-disable-next-line no-console
+              onLoadError={console.error}
+              file={this.getCurrentViewingFileUrl()}
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <Page className={styles.pdfPage} key={`page_${index + 1}`} pageNumber={index + 1} />
+              ))}
+            </Document>
           </div>
-          <div className={styles.documentPages} />
+
+          <div className={styles.documentPagination}>
+            <div className={styles.numberOfFiles}>
+              <span>{currentViewingFile}</span>/{mockPdfFiles.length}
+            </div>
+            <div className={styles.filesPagination}>
+              <ArrowLeftOutlined onClick={this.handlePrevViewingFile} />
+              <ArrowRightOutlined onClick={this.handleNextViewingFile} />
+            </div>
+          </div>
           <div className={styles.documentInfo}>
             <Row className={styles.infoRow}>
               <Col className={styles.infoCol1} span={7}>
