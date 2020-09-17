@@ -54,10 +54,18 @@ const info = {
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
-      salaryStatus: 2,
+      filledCustomField: false,
+      salaryStatus: 3,
     },
     offerDetailField: {
       currency: true,
+    },
+    benefits: {},
+    customField: {
+      dental: 'tier1',
+      vision: 'tier1',
+      medical: 'tier1',
+      additionalInfo: '',
     },
   },
   effects: {

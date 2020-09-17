@@ -7,8 +7,8 @@ class Header extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      title: formatMessage({ id: 'component.jobDetail.title' }),
-      text: formatMessage({ id: 'component.jobDetail.subtitle' }),
+      title: 'Benefits',
+      text: 'The list of benefits the candidate is eligible for is populated below',
     };
   }
 

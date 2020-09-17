@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Typography, Space } from 'antd';
 import lightning from './assets/lightning.svg';
-
 import styles from './index.less';
 
 const NoteComponent = ({ note = {} }) => {
@@ -12,7 +11,7 @@ const NoteComponent = ({ note = {} }) => {
     <div className={styles.NoteComponent}>
       <Space size="middle">
         <div>
-          <img src={lightning} />
+          <img src={lightning} alt="lightning icon" />
         </div>
         <Typography.Title level={5}>{note.title}</Typography.Title>
       </Space>

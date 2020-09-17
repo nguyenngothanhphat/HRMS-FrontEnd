@@ -30,7 +30,7 @@ export default defineConfig({
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
     'table-font-size': '13px',
-    'pagination-item-link-bg': '#000000',
+    'pagination-item-link-bg': '#f0f2f6',
     // tabs
     'tabs-title-font-size': '18px',
   },
