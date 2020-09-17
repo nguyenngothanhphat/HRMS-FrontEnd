@@ -47,6 +47,7 @@ class DirectoryTable extends Component {
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
         width: '18%',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
@@ -90,7 +91,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : ''}</span>,
+        render: (manager) => (
+          <span>
+            {manager.generalInfo
+              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              : ''}
+          </span>
+        ),
         align: 'left',
         width: '15%',
       },
@@ -132,8 +139,8 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = () => {
-    history.push('/directory/employee-profile/0001');
+  handleProfileEmployee = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   render() {
