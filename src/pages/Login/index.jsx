@@ -81,8 +81,7 @@ class FormLogin extends Component {
           >
             <Input.Password
               iconRender={(visible) =>
-                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
-              }
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />}
               className={styles.inputPassword}
             />
           </Form.Item>
@@ -95,8 +94,7 @@ class FormLogin extends Component {
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
               prevValues.email !== currentValues.email ||
-              prevValues.password !== currentValues.password
-            }
+              prevValues.password !== currentValues.password}
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>

@@ -23,7 +23,7 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { currentPage, offerDetailField, checkMandatory } = this.props;
+    const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
@@ -62,6 +62,13 @@ class BottomBar extends PureComponent {
           {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
         </div>
       ) : (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
+    }
+    if (currentPage === 6) {
+      return (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
         </div>
@@ -122,29 +129,46 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
+    if (currentPage === 6) {
+      return (
+        <Button
+          type="primary"
+          onClick={this.onClickNext}
+          className={styles.bottomBar__button__primary}
+        >
+          Next
+        </Button>
+      );
+    }
+    return null;
+  };
+
+  _renderBottomBar = () => {
+    const { currentPage, checkMandatory } = this.props;
+    const { salaryStatus } = checkMandatory;
+    if (salaryStatus === 1 && currentPage !== 5) {
+      return (
+        <div className={styles.bottomBar}>
+          <Row align="middle">
+            <Col span={16}>
+              <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+            </Col>
+            <Col span={8}>
+              <div className={styles.bottomBar__button}>{this._renderBottomButton()}</div>
+            </Col>
+          </Row>
+        </div>
+      );
+    }
     return null;
   };
 
   render() {
-    const { className } = this.props;
-
-    return (
-      <div className={`${styles.bottomBar} ${className}`}>
-        <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-          </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>{this._renderBottomButton()}</div>
-          </Col>
-        </Row>
-      </div>
-    );
+    return <>{this._renderBottomBar()}</>;
   }
 }
 
 // export default BottomBar;
-export default connect(({ info: { offerDetailField = {}, checkMandatory = {} } = {} }) => ({
-  offerDetailField,
+export default connect(({ info: { checkMandatory = {} } = {} }) => ({
   checkMandatory,
 }))(BottomBar);

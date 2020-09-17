@@ -1,14 +1,24 @@
 .tab {
-  border: 1px solid #fff;
-  margin: 12px;
-  height: 257px;
-  border-radius: 6px;
-  background-color: #fff;
-  font-size: 18px;
-  padding: 20px;
+  border-bottom: solid 1px #d6dce0;
+  .dependent {
+    font-size: 16px;
+    font-weight: bold;
+    color: #161c29;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
 
   .info {
-    display: flex;
-    flex-wrap: wrap;
+    .items {
+      display: flex;
+      justify-content: space-between;
+      width: 60%;
+      height: 15px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    div:last-child {
+      margin-bottom: 24px;
+    }
   }
 }

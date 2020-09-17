@@ -3,40 +3,30 @@ import PropTypes from 'prop-types';
 import { formatMessage } from 'umi';
 import styles from './styles.less';
 
-export default function GroupInfoType2({ data, width, fullWidth }) {
+export default function GroupInfoType2({ data }) {
   return (
-    <div style={{ width: fullWidth ? '100%' : width }}>
-      <div className={styles.GroupInfoType2}>
-        <div className={styles.title}>
-          <p>{data.title}</p>
-        </div>
-        <div className={styles.subTitle}>
-          <p>{formatMessage({ id: 'component.GroupInfoType2.plan' })}</p>
-          <p>{formatMessage({ id: 'component.GroupInfoType2.active' })}</p>
-        </div>
-        <div>
-          {data.plans.map((x) => {
-            const temp = Object.entries(x);
-            return (
-              <div className={styles.content}>
-                <div>{temp[0][0]}</div>
-                <div>{temp[0][1]}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+    <div className={styles.GroupInfoType2}>
+      <div className={styles.title}>{data.title}</div>
+      {data.plans.map((item) => {
+        const temp = Object.entries(item);
+        return (
+          <div style={{ display: 'flex' }}>
+            <div className={styles.subTitle}>
+              <p>{formatMessage({ id: 'component.GroupInfoType2.plan' })}</p>
+              <p>{formatMessage({ id: 'component.GroupInfoType2.active' })}</p>
+            </div>
+
+            <div className={styles.content}>
+              <p style={{ width: '50%' }}>{temp[0][0]}</p>
+              <p style={{ width: '100%' }}>{temp[0][1]}</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 GroupInfoType2.propTypes = {
-  fullWidth: PropTypes.bool,
-  width: PropTypes.string,
   data: PropTypes.objectOf(PropTypes.object).isRequired,
-};
-
-GroupInfoType2.defaultProps = {
-  fullWidth: false,
-  width: '477px',
 };

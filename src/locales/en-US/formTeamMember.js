@@ -34,6 +34,25 @@ export default {
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
   'component.jobDetail.reminder.content2': '22nd September, 2020',
+  'component.offerDetail.title': 'Offer details',
+  'component.offerDetail.subtitle': `All documents supporting candidate's employment eligibility will be display here`,
+  'component.offerDetail.offerLetter': 'Offer letter',
+  'component.offerDetail.notInclude': 'Do not include offer letter',
+  'component.offerDetail.include': 'Use an existing offer letter',
+  'component.offerDetail.agreementTitle': 'Hiring agreements',
+  'component.offerDetail.agreement': 'Default YC IP / Confidentiality Agreement',
+  'component.offerDetail.handbookTitle': 'Company handbook',
+  'component.offerDetail.handbook': `My company's handbook`,
+  'component.offerDetail.compensationTitle': 'Compensation type',
+  'component.offerDetail.amountTitle': 'Amount in',
+  'component.offerDetail.timeoffTitle': 'Time off Policy',
+  'component.offerDetail.alertContent1': 'This offer letter will be sent in ',
+  'component.offerDetail.phase3': 'Phase 3',
+  'component.offerDetail.alertContent2': ' of the onboarding process. ',
+  'component.offerDetail.alertContent3': 'To view salary related insights, explore the ',
+  'component.offerDetail.alertContent4': 'Compensation Management App',
+  'component.offerDetail.alertContent5':
+    'Are you sure? This hire will not be able to submit any time off requests.',
   'component.previewOffer.title': 'employee agreement',
   'component.previewOffer.hrSignature': 'Signature of the HR',
   'component.previewOffer.undersigned': 'Undersigned - Ms Riddhima Chaudhary',
@@ -61,4 +80,20 @@ export default {
   )}
   working days for entire process to complete`,
   'component.noteComponent.title': 'Note',
+  'component.salaryStructureHeader.title': 'Salary Structure',
+  'component.salaryStructureHeader.subTitle':
+    'The pay division as per the position of ‘UX Designer’ has been given below.',
+  'component.salaryStructure.tableWrapper':
+    ' The table of salary structure should populate here. Need clarification here if this table or information is editable by the HR?',
+  'component.salaryAcceptanceContent.content': 'Acceptance of salary structure by candidate',
+  'component.salaryAcceptance.title1': 'I hereby accept this salary structure.',
+  'component.salaryAcceptance.note1':
+    'You have gone through all the contents of the table and accept the salary as terms of your employment.',
+  'component.salaryAcceptance.title2': 'I would like to re-negotiate the salary structure.',
+  'component.salaryAcceptance.note2':
+    'You have gone through all the contents of the table. However, I would like to renegotiate.',
+  'component.salaryAcceptance.title3': 'I would like to reject this offer.',
+  'component.salaryAcceptance.note3':
+    'You have gone through all the contents of the table and do not accept the offer given to me.',
+  'component.salaryAcceptance.closeCandidature': ' Close Candidature',
 };
