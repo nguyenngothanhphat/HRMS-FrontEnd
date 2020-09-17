@@ -96,8 +96,6 @@ class HandleChanges extends PureComponent {
 
   onDateChange = (value) => {
     const { changeData } = this.state;
-    console.log(moment(value._d));
-    console.log(changeData.stepOne);
     this.setState({ changeData: { ...changeData, stepOne: value._d } });
   };
 
