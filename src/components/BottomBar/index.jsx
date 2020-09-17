@@ -23,7 +23,7 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { currentPage, offerDetailField, checkMandatory } = this.props;
+    const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     if (currentPage === 1) {
       return !filledBasicInformation ? (
@@ -144,7 +144,6 @@ class BottomBar extends PureComponent {
 }
 
 // export default BottomBar;
-export default connect(({ info: { offerDetailField = {}, checkMandatory = {} } = {} }) => ({
-  offerDetailField,
+export default connect(({ info: { checkMandatory = {} } = {} }) => ({
   checkMandatory,
 }))(BottomBar);
