@@ -4,7 +4,7 @@ import styles from './styles.less';
 
 export default function ThirdStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch } = props;
+  const { onChange, onSearch, changeData } = props;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -12,6 +12,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Department</div>
         <Select
+          defaultValue={changeData.stepThree.department}
           showSearch
           placeholder="Select a department"
           optionFilterProp="children"
@@ -30,6 +31,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Position</div>
         <Input
+          defaultValue={changeData.stepThree.position}
           style={{ width: 300 }}
           placeholder="Enter the position"
           onChange={(e) => onChange(e.target.value, 'position')}
@@ -38,6 +40,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Reporting to</div>
         <Select
+          defaultValue={changeData.stepThree.reportTo}
           showSearch
           placeholder=""
           optionFilterProp="children"

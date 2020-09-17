@@ -54,9 +54,12 @@ class EmploymentTab extends PureComponent {
     console.log(data);
   };
 
-  nextTab = () => {
+  nextTab = (msg) => {
     const { current } = this.state;
-    if (current === 4) {
+    if (msg === 'STOP') {
+      // alert('Please enter a date');
+      this.setState({ current: 0 });
+    } else if (current === 4) {
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
     } else this.setState({ current: current + 1 });
@@ -89,6 +92,7 @@ class EmploymentTab extends PureComponent {
           </div>
           {isChanging ? (
             <HandleChanges
+              nextTab={this.nextTab}
               isChanging={isChanging}
               onSubmit={this.handleSubmit}
               data={currentData}

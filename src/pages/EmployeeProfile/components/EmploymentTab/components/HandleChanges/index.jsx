@@ -10,29 +10,36 @@ class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      radio: 1,
+      radio: 2,
       changeData: {
-        stepOne: '',
+        stepOne: 'Now',
         stepTwo: {
           title: '',
           wLocation: '',
-          employType: '',
-          compenType: '',
-          annual: '',
+          employment: '',
+          compensation: '',
+          salary: '',
         },
         stepThree: {
           department: '',
           position: '',
           reportTo: '',
         },
-        stepFour: [],
-        stepFive: {
-          promotedTo: '',
-          newSalary: Number,
-          location: '',
+        stepFour: {
+          toEmployee: false,
+          toManager: false,
+          toHR: false,
         },
       },
     };
+  }
+
+  componentDidUpdate() {
+    const { current, nextTab } = this.props;
+    const { changeData } = this.state;
+    if (changeData.stepOne === 'Before' || changeData.stepOne === 'Later') {
+      nextTab('STOP');
+    }
   }
 
   componentWillUnmount() {
@@ -43,37 +50,100 @@ class HandleChanges extends PureComponent {
 
   onRadioChange = (e) => {
     const { changeData } = this.state;
-    console.log(e.target.value);
-    if (e.target.checked) {
-      switch (e.target.value) {
-        case 1:
-          this.setState({ changeData: { ...changeData, stepOne: 'Before' } });
-          break;
-        case 2:
-          this.setState({ changeData: { ...changeData, stepOne: 'Now' } });
-          break;
-        case 3:
-          this.setState({ changeData: { ...changeData, stepOne: 'Later' } });
-          break;
-        case 4:
-          this.setState({
-            changeData: {
-              ...changeData,
-              stepFour: [...changeData.stepFour, 'Employee'],
-            },
-          });
-          break;
-        default:
-          break;
-      }
+    switch (Number(e.target.value)) {
+      case 1:
+        this.setState({ changeData: { ...changeData, stepOne: 'Before' } });
+        break;
+      case 2:
+        this.setState({ changeData: { ...changeData, stepOne: 'Now' } });
+        break;
+      case 3:
+        this.setState({ changeData: { ...changeData, stepOne: 'Later' } });
+        break;
+      case 4:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepFour: { ...changeData.stepFour, toEmployee: !changeData.stepFour.toEmployee },
+          },
+        });
+        break;
+      case 5:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepFour: { ...changeData.stepFour, toManager: !changeData.stepFour.toManager },
+          },
+        });
+        break;
+      case 6:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepFour: { ...changeData.stepFour, toHR: !changeData.stepFour.toHR },
+          },
+        });
+        break;
+      default:
+        break;
     }
-    console.log(changeData.stepFour);
-    this.setState({ radio: e.target.value });
+    if (e.target.value <= 3) this.setState({ radio: Number(e.target.value) });
+  };
+
+  onDateChange = (value) => {
+    const { changeData } = this.state;
+    this.setState({ changeData: { ...changeData, stepOne: value._d } });
   };
 
   onChange = (value, type) => {
+    const { changeData } = this.state;
     console.log(`selected ${value}`);
     console.log(`selected ${type}`);
+    switch (type) {
+      case 'title':
+        this.setState({
+          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, title: value } },
+        });
+        break;
+      case 'wLocation':
+        this.setState({
+          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, wLocation: value } },
+        });
+        break;
+      case 'employment':
+        this.setState({
+          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, employment: value } },
+        });
+        break;
+      case 'compensation':
+        this.setState({
+          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, compensation: value } },
+        });
+        break;
+      case 'salary':
+        this.setState({
+          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, salary: value } },
+        });
+        break;
+      case 'department':
+        this.setState({
+          changeData: { ...changeData, stepThree: { ...changeData.stepThree, department: value } },
+        });
+        break;
+      case 'position':
+        this.setState({
+          changeData: { ...changeData, stepThree: { ...changeData.stepThree, position: value } },
+        });
+        break;
+      case 'reportTo':
+        this.setState({
+          changeData: { ...changeData, stepThree: { ...changeData.stepThree, reportTo: value } },
+        });
+        break;
+
+      default:
+        break;
+    }
   };
 
   render() {
@@ -81,17 +151,25 @@ class HandleChanges extends PureComponent {
     const { radio, changeData } = this.state;
     return (
       <div className={styles.handleChanges}>
-        {current === 0 ? <FirstStep onRadioChange={this.onRadioChange} radio={radio} /> : null}
-        {current === 1 ? <SecondStep onChange={this.onChange} /> : null}
-        {current === 2 ? <ThirdStep onChange={this.onChange} /> : null}
-        {current === 3 ? <FourthStep onRadioChange={this.onRadioChange} radio={radio} /> : null}
+        {current === 0 ? (
+          <FirstStep
+            onRadioChange={this.onRadioChange}
+            onDateChange={this.onDateChange}
+            radio={radio}
+          />
+        ) : null}
+        {current === 1 ? <SecondStep changeData={changeData} onChange={this.onChange} /> : null}
+        {current === 2 ? <ThirdStep changeData={changeData} onChange={this.onChange} /> : null}
+        {current === 3 ? (
+          <FourthStep onRadioChange={this.onRadioChange} radio={changeData.stepFour} />
+        ) : null}
         {current === 4 ? (
           <FifthStep
             name={data.name}
             currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
             data={{
               newTitle: changeData.stepTwo.title,
-              newSalary: changeData.stepTwo.annual,
+              newSalary: changeData.stepTwo.salary,
               newLocation: changeData.stepTwo.wLocation,
             }}
           />
