@@ -15,7 +15,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Department</div>
         <Select
-          defaultValue={changeData.stepThree.department}
+          defaultValue={changeData.stepThree.department || null}
           showSearch
           placeholder="Select a department"
           optionFilterProp="children"
@@ -47,9 +47,9 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Reporting to</div>
         <Select
-          defaultValue={changeData.stepThree.reportTo}
+          defaultValue={changeData.stepThree.reportTo || null}
           showSearch
-          placeholder=""
+          placeholder="Select a manager"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'reportTo')}
           onSearch={onSearch}
