@@ -104,7 +104,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Linkedin"
-            name="Linkedin"
+            name="linkedIn"
             rules={[
               {
                 pattern: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/,
@@ -114,7 +114,7 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
-          <Form.Item label="Residence Address" name="residenceAddress">
+          <Form.Item label="Residence Address" name="residentAddress">
             <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
           </Form.Item>
           <Form.Item label="Current Address" name="currentAddress">
