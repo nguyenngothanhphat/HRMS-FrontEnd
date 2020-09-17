@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
+import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
@@ -50,7 +51,7 @@ class EmployeeProfile extends Component {
       {
         id: 3,
         name: 'Performance History',
-        component: <Test />,
+        component: <PerformanceHistory />,
       },
       { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
       { id: 5, name: 'Documents', component: <Documents /> },
