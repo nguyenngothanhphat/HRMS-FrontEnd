@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { EditFilled } from '@ant-design/icons';
 import View from './components/View';
 import Edit from './components/Edit';
 import styles from './index.less';
@@ -32,7 +31,11 @@ class ProfessionalAcademicBackground extends PureComponent {
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
           <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
-            <EditFilled className={styles.viewTitle__edit__icon} />
+            <img
+              src="/assets/images/edit.svg"
+              alt="edit"
+              className={styles.viewTitle__edit__icon}
+            />
             <p className={styles.viewTitle__edit__text}>Edit</p>
           </div>
         </div>

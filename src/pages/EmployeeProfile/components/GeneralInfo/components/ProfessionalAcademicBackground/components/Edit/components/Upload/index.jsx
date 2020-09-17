@@ -55,25 +55,26 @@ class UploadCertification extends Component {
           </Upload>
         ) : (
           <div className={styles.viewRow}>
-            <div>
-              <a
-                href={urlFile}
-                target="_blank"
-                rel="noopener noreferrer"
-                id="img-certification"
-                className={styles.nameCertification}
-              >
-                File Name
-              </a>
-              <img
-                src="/assets/images/iconFilePNG.svg"
-                alt="iconFilePNG"
-                className={styles.iconCertification}
-              />
-            </div>
-            <div className={styles.textDelete} onClick={this.handleDeleteBtn}>
-              Delete
-            </div>
+            <a
+              href={urlFile}
+              target="_blank"
+              rel="noopener noreferrer"
+              id="img-certification"
+              className={styles.nameCertification}
+            >
+              File Name
+            </a>
+            <img
+              src="/assets/images/iconFilePNG.svg"
+              alt="iconFilePNG"
+              className={styles.iconCertification}
+            />
+            <img
+              src="/assets/images/remove.svg"
+              alt="remove"
+              className={styles.iconDelete}
+              onClick={this.handleDeleteBtn}
+            />
           </div>
         )}
       </div>
