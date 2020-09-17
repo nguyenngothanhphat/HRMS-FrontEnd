@@ -60,7 +60,6 @@ class EmploymentTab extends PureComponent {
   nextTab = (msg) => {
     const { current } = this.state;
     if (msg === 'STOP') {
-      // alert('Please enter a date');
       this.setState({ current: 0 });
     } else if (current === 4) {
       this.setState({ current: 0 });

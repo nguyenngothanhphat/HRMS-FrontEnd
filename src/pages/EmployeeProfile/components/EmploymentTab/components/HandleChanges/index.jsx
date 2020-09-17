@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 import styles from './styles.less';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
@@ -38,7 +39,10 @@ class HandleChanges extends PureComponent {
     const { current, nextTab } = this.props;
     const { changeData } = this.state;
     if (changeData.stepOne === 'Before' || changeData.stepOne === 'Later') {
-      nextTab('STOP');
+      if (current > 0) {
+        nextTab('STOP');
+        alert('Please enter a date');
+      }
     }
   }
 
@@ -92,13 +96,13 @@ class HandleChanges extends PureComponent {
 
   onDateChange = (value) => {
     const { changeData } = this.state;
+    console.log(moment(value._d));
+    console.log(changeData.stepOne);
     this.setState({ changeData: { ...changeData, stepOne: value._d } });
   };
 
   onChange = (value, type) => {
     const { changeData } = this.state;
-    console.log(`selected ${value}`);
-    console.log(`selected ${type}`);
     switch (type) {
       case 'title':
         this.setState({
@@ -153,6 +157,7 @@ class HandleChanges extends PureComponent {
       <div className={styles.handleChanges}>
         {current === 0 ? (
           <FirstStep
+            changeData={changeData}
             onRadioChange={this.onRadioChange}
             onDateChange={this.onDateChange}
             radio={radio}

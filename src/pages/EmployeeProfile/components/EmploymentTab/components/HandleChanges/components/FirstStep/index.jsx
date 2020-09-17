@@ -1,10 +1,11 @@
 import React from 'react';
 import { Radio, DatePicker } from 'antd';
 import { CalendarOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import styles from './styles.less';
 
 export default function FirstStep(props) {
-  const { onDateChange, onRadioChange, radio } = props;
+  const { onDateChange, onRadioChange, changeData, radio } = props;
 
   return (
     <div>
@@ -14,6 +15,7 @@ export default function FirstStep(props) {
           A change that already happened.
           {radio === 1 ? (
             <DatePicker
+              defaultValue={changeData.stepOne === 'Before' ? null : moment(changeData.stepOne)}
               onChange={onDateChange}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
@@ -34,6 +36,7 @@ export default function FirstStep(props) {
           Scheduled change
           {radio === 3 ? (
             <DatePicker
+              defaultValue={changeData.stepOne === 'Later' ? null : moment(changeData.stepOne)}
               onChange={onDateChange}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
