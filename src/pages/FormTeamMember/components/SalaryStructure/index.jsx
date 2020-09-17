@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import NoteComponent from '../NoteComponent';
@@ -16,10 +16,7 @@ class SalaryStructure extends PureComponent {
   _renderTable = () => {
     return (
       <div className={styles.tableWrapper}>
-        <p>
-          The table of salary structure should populate here. Need clarification here if this table
-          or information is editable by the HR?
-        </p>
+        <p>{formatMessage({ id: 'component.salaryStructure.tableWrapper' })}</p>
       </div>
     );
   };

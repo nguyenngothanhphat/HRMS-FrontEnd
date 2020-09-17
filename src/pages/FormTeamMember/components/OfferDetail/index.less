@@ -19,6 +19,7 @@
   .offerDetail {
     font-family: 'Roboto', sans-serif;
     border: 0.5px solid @border-color;
+    border-bottom: none;
     border-radius: 2.5px;
     flex: 1;
     background-color: white;
@@ -93,6 +94,10 @@
         align-items: flex-start;
       }
 
+      .wrapper1 {
+        align-items: center;
+      }
+
       .wrapper2 {
         .compensationWrapper {
           display: flex;
@@ -133,19 +138,19 @@
       }
     }
 
-    .bottom {
-      .note {
-        font-style: italic;
-        color: @green;
-      }
-    }
+    // .bottom {
+    //   .note {
+    //     font-style: italic;
+    //     color: @green;
+    //   }
+    // }
 
     .timeoffWrapper {
       display: flex;
       flex-direction: column;
     }
 
-    @media (max-width: 650px) {
+    @media (max-width: 880px) {
       .middle {
         .wrapper1,
         .wrapper2,

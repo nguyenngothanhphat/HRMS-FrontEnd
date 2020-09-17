@@ -5,6 +5,7 @@ export default {
   'pages.directory.directory.activeEmployeesTab': 'Active Employees',
   'pages.directory.directory.myTeamTab': 'My Team',
   'pages.directory.directory.inactiveEmployeesTab': 'Inactive Employees',
+  'pages.directory.directory.setUpNewProfile': 'Set Up New Profile',
   'pages.directory.directory.addTeamMember': 'Add team member',
   //   'pages.directory.tableFilter.employmentType': 'Employment Type',
   //   'pages.directory.tableFilter.location': 'Location',

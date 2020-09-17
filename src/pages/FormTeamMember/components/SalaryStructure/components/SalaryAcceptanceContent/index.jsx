@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Typography, Space, Radio, Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 
 import lightning from './assets/lightning.svg';
 
@@ -15,7 +16,10 @@ class SalaryAcceptanceContent extends PureComponent {
           <div>
             <img src={lightning} alt="icon" />
           </div>
-          <Typography.Title level={5}>Acceptance of salary structure by candidate</Typography.Title>
+          <Typography.Title level={5}>
+            {' '}
+            {formatMessage({ id: 'component.salaryAcceptanceContent.content' })}
+          </Typography.Title>
         </Space>
         <div className={styles.salaryAcceptanceContent__select}>
           <Row>
