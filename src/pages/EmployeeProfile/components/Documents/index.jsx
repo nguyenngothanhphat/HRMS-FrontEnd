@@ -16,6 +16,7 @@ const data = [
             fileName: 'Offer Letter',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
         ],
       },
@@ -27,6 +28,7 @@ const data = [
             fileName: 'I-9 Form',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
         ],
       },
@@ -38,6 +40,7 @@ const data = [
             fileName: 'TDS Declaration',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
         ],
       },
@@ -49,6 +52,7 @@ const data = [
             fileName: 'Consent',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
         ],
       },
@@ -62,22 +66,25 @@ const data = [
         kind: 'Identity',
         files: [
           {
-            id: 1,
+            id: 5,
             fileName: 'Adhaar',
             generatedBy: 'Aditya Venkatesh',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
           {
-            id: 1,
+            id: 6,
             fileName: 'Passport',
             generatedBy: 'Aditya Venkatesh',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
           {
-            id: 1,
+            id: 7,
             fileName: 'Visa',
             generatedBy: 'Aditya Venkatesh',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
         ],
       },
@@ -91,16 +98,18 @@ const data = [
         kind: 'Agreement',
         files: [
           {
-            id: 1,
+            id: 8,
             fileName: 'Agreements',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
           {
-            id: 1,
+            id: 9,
             fileName: 'Employee Handbook',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
         ],
       },
@@ -114,16 +123,18 @@ const data = [
         kind: 'Agreement',
         files: [
           {
-            id: 1,
+            id: 10,
             fileName: 'PR Reports 2020',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
           {
-            id: 1,
+            id: 11,
             fileName: 'PR Report 2020',
             generatedBy: 'Terralogic',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
         ],
       },
@@ -137,16 +148,18 @@ const data = [
         kind: 'Certificates',
         files: [
           {
-            id: 1,
+            id: 12,
             fileName: 'HCI Certification',
             generatedBy: 'Aditya Venkatesh',
             date: 'December 10th, 2018',
+            source: '/sample_2.pdf',
           },
           {
-            id: 1,
+            id: 13,
             fileName: 'Graduation',
             generatedBy: 'Aditya Venkatesh',
             date: 'December 10th, 2018',
+            source: '/sample_1.pdf',
           },
         ],
       },
@@ -159,8 +172,9 @@ class Documents extends PureComponent {
     super(props);
     this.state = {
       isViewingDocument: false,
-      selectedFile: [],
+      files: [],
       typeOfSelectedFile: '',
+      selectedFile: 0,
     };
   }
 
@@ -171,33 +185,32 @@ class Documents extends PureComponent {
   };
 
   onFileClick = (value) => {
-    console.log('file: ', value);
-    // eslint-disable-next-line array-callback-return
     data.some((x) => {
-      // eslint-disable-next-line array-callback-return
-      x.body.some((y) => {
+      return x.body.some((y) => {
+        let count = 0;
         // eslint-disable-next-line array-callback-return
-        y.files.some((z) => {
+        return y.files.some((z) => {
+          count += 1;
           if (z.id === value) {
             this.setState({
               isViewingDocument: true,
-              selectedFile: z,
+              files: y.files,
+              selectedFile: count,
               typeOfSelectedFile: y.kind,
             });
-            return true;
           }
-          return false;
         });
       });
     });
   };
 
   render() {
-    const { isViewingDocument, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
     return (
       <div className={styles.Documents}>
         {isViewingDocument ? (
           <ViewDocument
+            files={files}
             selectedFile={selectedFile}
             typeOfSelectedFile={typeOfSelectedFile}
             onBackClick={this.onBackClick}
