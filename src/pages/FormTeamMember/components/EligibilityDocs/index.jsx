@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
+import { connect, formatMessage } from 'umi';
+
 import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -55,7 +57,7 @@ const listCollapse = [
 const defaultCheckListContainer = listCollapse.map((obj) =>
   obj.items.filter((item) => item.isRequired),
 );
-console.log(defaultCheckListContainer[0]);
+console.log(defaultCheckListContainer[0].map((item) => item.isRequired));
 
 const note = {
   title: 'Note',
@@ -73,15 +75,34 @@ const note = {
   ),
 };
 
-export default class EligibilityDocs extends PureComponent {
+@connect(({ info: { eligibilityDocs } = {} }) => ({
+  eligibilityDocs,
+}))
+class EligibilityDocs extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  static getDerivedStateFromProps(props) {
+    if ('eligibilityDocs' in props) {
+      return { eligibilityDocs: props.eligibilityDocs || {} };
+    }
+    return null;
+  }
+
   handleCheckBox = (value) => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs = {} } = this.state;
+
     console.log(value);
     // console.log(defaultCheckList);
+    dispatch({
+      type: 'info/eligibilityDocs',
+      payload: {
+        eligibilityDocs,
+      },
+    });
   };
 
   render() {
@@ -94,12 +115,14 @@ export default class EligibilityDocs extends PureComponent {
               <Warning />
               <Title />
               {listCollapse.map((item) => {
+                const checkHeader = item.items.find((obj) => obj.isRequired);
                 return (
                   <CollapseFields
                     key={item.id}
                     item={item}
                     handleCheckBox={this.handleCheckBox}
                     defaultCheckListContainer={defaultCheckListContainer}
+                    checkHeader={checkHeader}
                   />
                 );
               })}
@@ -114,3 +137,4 @@ export default class EligibilityDocs extends PureComponent {
     );
   }
 }
+export default EligibilityDocs;
