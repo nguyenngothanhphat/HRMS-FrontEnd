@@ -1,6 +1,7 @@
+/* eslint-disable global-require */
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+// import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
@@ -50,12 +51,12 @@ class EmploymentTab extends PureComponent {
     });
   };
 
-  handleSubmit = (data) => {
-    console.log(data);
-    alert(
-      "Submitted! No API yet so you won't see any changes. Check console to see the data you've just input",
-    );
-  };
+  // handleSubmit = (data) => {
+  //   console.log(data);
+  //   alert(
+  //     "Submitted! No API yet so you won't see any changes. Check console to see the data you've just input",
+  //   );
+  // };
 
   nextTab = (msg) => {
     const { current } = this.state;
@@ -120,12 +121,12 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon}>
+            {/* <div className={styles.employmentTab_changeIcon}>
               <EditOutlined
                 className={styles.employmentTab_iconEdit}
                 onClick={this.handleChangeHistory}
               />
-            </div>
+            </div> */}
           </div>
           <ChangeHistoryTable />
         </div>
