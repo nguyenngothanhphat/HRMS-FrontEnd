@@ -46,7 +46,7 @@ export default function CurrentInfo(props) {
             info = '';
         }
         return (
-          <div className={styles.items}>
+          <div key={Math.random().toString(36).substring(7)} className={styles.items}>
             <div>{info}</div>
             <div>{item === 'annualSalary' ? `$${data[item]}` : data[item]}</div>
           </div>

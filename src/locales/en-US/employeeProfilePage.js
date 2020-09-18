@@ -1,5 +1,8 @@
 export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
+  'pages.employeeProfile.validateWorkNumber': 'Just only number, please!',
+  'pages.employeeProfile.validateName': 'Just only word not number, please!',
+  'pages.employeeProfile.validateEmail': 'invalid email',
   'pages.employeeProfile.employmentAndCompensationTab': 'Employment & Compensation',
   'pages.employeeProfile.performanceHistoryTab': 'Performance History',
   'pages.employeeProfile.accountsAndPaychecksTab': 'Accounts and Paychecks',
