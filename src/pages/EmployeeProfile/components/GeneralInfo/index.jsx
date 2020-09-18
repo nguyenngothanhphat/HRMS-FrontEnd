@@ -27,7 +27,7 @@ class GeneralInfo extends PureComponent {
       loadingGeneral = false,
       employeeProfile: { tempData: { generalData = {} } = {} },
     } = this.props;
-
+    // console.log(generalData);
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>

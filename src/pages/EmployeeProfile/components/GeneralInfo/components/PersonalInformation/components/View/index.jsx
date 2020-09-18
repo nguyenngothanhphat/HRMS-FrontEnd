@@ -6,17 +6,18 @@ import styles from './index.less';
 
 class View extends PureComponent {
   render() {
+    const { dataAPI } = this.props;
     const dummyData = [
-      { label: 'Personal Number', value: '+91-8900445577' },
-      { label: 'Personal Email', value: 'aditya@gmail.com' },
-      { label: 'Blood Group', value: 'O+' },
-      { label: 'Marital Status', value: 'Married' },
-      { label: 'Linkedin', value: 'www.linkedin.com/adityavenkatesh' },
+      { label: 'Personal Number', value: dataAPI.personalNumber },
+      { label: 'Personal Email', value: dataAPI.personalEmail },
+      { label: 'Blood Group', value: dataAPI.Blood },
+      { label: 'Marital Status', value: dataAPI.maritalStatus },
+      { label: 'Linkedin', value: dataAPI.linkedIn },
       {
         label: 'Residence Address',
-        value: '4th Main, 18th Cross, Kochi, Belandur, Near Factory Layout, India, 230002',
+        value: dataAPI.residentAddress,
       },
-      { label: 'Current Address', value: '4th Main, 18th Cross, Kochi, Belandur, India, 230002' },
+      { label: 'Current Address', value: dataAPI.currentAddress },
     ];
     const content =
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
@@ -43,7 +44,7 @@ class View extends PureComponent {
             </Col>
             <Col
               span={16}
-              className={item.label === 'Linkedin' ? styles.Linkedin : styles.textLabel}
+              className={item.label === 'Linkedin' ? styles.Linkedin : styles.textValue}
             >
               {item.value}
             </Col>
