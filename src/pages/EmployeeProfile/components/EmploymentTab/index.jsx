@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+// import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import edit from './asset/edit.svg';
+import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
@@ -38,8 +40,9 @@ class EmploymentTab extends PureComponent {
     };
   }
 
-  handleMakeChanges = () => {
+  handleMakeChanges = async () => {
     const { isChanging } = this.state;
+    await this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
   };
 
@@ -49,10 +52,18 @@ class EmploymentTab extends PureComponent {
     });
   };
 
-  nextTab = () => {
+  handleSubmit = (data) => {
+    // console.log(data);
+    alert("Submitted! No API yet so you won't see any changes", JSON.stringify(data));
+  };
+
+  nextTab = (msg) => {
     const { current } = this.state;
-    if (current === 4) {
-      this.setState({ current });
+    if (msg === 'STOP') {
+      this.setState({ current: 0 });
+    } else if (current === 4) {
+      this.setState({ current: 0 });
+      this.setState({ isChanging: false });
     } else this.setState({ current: current + 1 });
   };
 
@@ -70,19 +81,25 @@ class EmploymentTab extends PureComponent {
             <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
 
             {isChanging ? (
-              <div style={{ display: 'flex' }}>
-                <img alt="" src={require('./asset/path.svg')} />
-                <div onClick={this.handleMakeChanges}>Cancel & Return</div>
+              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
+                <img alt="" src={path} />
+                <div>Cancel & Return</div>
               </div>
             ) : (
-              <div style={{ display: 'flex' }}>
-                <img alt="" src={require('./asset/edit.svg')} />
-                <div onClick={this.handleMakeChanges}>Make changes</div>
+              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
+                <img alt="" src={edit} />
+                <div>Make changes</div>
               </div>
             )}
           </div>
           {isChanging ? (
-            <HandleChanges data={currentData} current={current} />
+            <HandleChanges
+              nextTab={this.nextTab}
+              isChanging={isChanging}
+              onSubmit={this.handleSubmit}
+              data={currentData}
+              current={current}
+            />
           ) : (
             <CurrentInfo data={currentData} />
           )}
@@ -104,10 +121,10 @@ class EmploymentTab extends PureComponent {
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
             <div className={styles.employmentTab_changeIcon}>
-              <EditOutlined
+              {/* <EditOutlined
                 className={styles.employmentTab_iconEdit}
                 onClick={this.handleChangeHistory}
-              />
+              /> */}
             </div>
           </div>
           <ChangeHistoryTable />

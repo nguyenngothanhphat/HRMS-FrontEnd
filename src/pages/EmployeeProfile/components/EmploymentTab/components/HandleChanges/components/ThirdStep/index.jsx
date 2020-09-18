@@ -1,11 +1,13 @@
 import React from 'react';
 import { Select, Input } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import styles from './styles.less';
 
 export default function ThirdStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch } = props;
+  const { onChange, onSearch, changeData } = props;
+  const makeKey = () => {
+    return Math.random().toString(36).substring(7);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -13,7 +15,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Department</div>
         <Select
-          suffixIcon={<DownOutlined style={{ color: 'black' }} />}
+          defaultValue={changeData.stepThree.department || null}
           showSearch
           placeholder="Select a department"
           optionFilterProp="children"
@@ -24,7 +26,11 @@ export default function ThirdStep(props) {
           }
         >
           {['Engineer', 'HR', 'Support', 'Design'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
@@ -32,6 +38,7 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Position</div>
         <Input
+          defaultValue={changeData.stepThree.position}
           style={{ width: 300 }}
           placeholder="Enter the position"
           onChange={(e) => onChange(e.target.value, 'position')}
@@ -40,9 +47,9 @@ export default function ThirdStep(props) {
       <div className={styles.select}>
         <div>Reporting to</div>
         <Select
-          suffixIcon={<DownOutlined style={{ color: 'black' }} />}
+          defaultValue={changeData.stepThree.reportTo || null}
           showSearch
-          placeholder=""
+          placeholder="Select a manager"
           optionFilterProp="children"
           onChange={(value) => onChange(value, 'reportTo')}
           onSearch={onSearch}
@@ -51,7 +58,11 @@ export default function ThirdStep(props) {
           }
         >
           {['Anil Reddy'].map((item) => {
-            return <Option value={item}>{item}</Option>;
+            return (
+              <Option key={makeKey()} value={item}>
+                {item}
+              </Option>
+            );
           })}
           ]
         </Select>
