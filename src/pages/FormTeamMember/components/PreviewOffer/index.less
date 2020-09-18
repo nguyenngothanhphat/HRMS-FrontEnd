@@ -238,8 +238,14 @@
             color: white;
           }
 
-          &:hover {
-            background-color: @dark-orange;
+          &.active {
+            &:hover {
+              background-color: @dark-orange;
+            }
+          }
+
+          &.disable {
+            opacity: 0.5;
           }
         }
 

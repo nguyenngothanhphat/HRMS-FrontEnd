@@ -5,10 +5,11 @@ import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
 import logo from './components/images/brand-logo.png';
-// eslint-disable-next-line import/no-unresolved
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
+import ModalUpload from '../../../../components/ModalUpload';
+import SendEmail from '../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
 
@@ -20,6 +21,7 @@ const PreviewOffer = (props) => {
   // Get default value from "info" store
   const {
     file: fileProp,
+    fil2: file2Prop,
     day: dayProp,
     month: monthProp,
     year: yearProp,
@@ -35,8 +37,10 @@ const PreviewOffer = (props) => {
 
   const inputRefs = [];
   let fileRef = null;
+  let file2Ref = null;
 
   const [file, setFile] = useState(fileProp || null);
+  const [file2, setFile2] = useState(file2Prop || null);
 
   const [day, setDay] = useState(dayProp || '');
   const [month, setMonth] = useState(monthProp || '');
@@ -57,11 +61,16 @@ const PreviewOffer = (props) => {
     mailForm.resetFields();
   };
 
-  const imageHandler = (e) => {
+  const imageHandler = (e, fileKind) => {
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.readyState === 2) {
-        setFile(reader.result);
+        if (fileKind === 'hr') {
+          setFile(reader.result);
+        }
+        if (fileKind === 'manager') {
+          setFile2(reader.result);
+        }
       }
     };
     reader.readAsDataURL(e.target.files[0]);
@@ -69,6 +78,7 @@ const PreviewOffer = (props) => {
 
   const resetImg = () => {
     setFile(null);
+    setFile2(null);
   };
 
   const saveChanges = () => {
@@ -291,6 +301,7 @@ const PreviewOffer = (props) => {
       </div>
 
       <div className={styles.right}>
+        {/* HR signature */}
         <div className={styles.signature}>
           <header>
             <div className={styles.icon}>
@@ -332,16 +343,85 @@ const PreviewOffer = (props) => {
               fileRef = ref;
             }}
             onChange={(e) => {
-              imageHandler(e);
+              imageHandler(e, 'hr');
             }}
+            accept=".jpg, .png, .jpeg"
           />
 
           <div className={styles.submitContainer}>
-            <Button type="primary" onClick={handleSubmit}>
+            <Button
+              type="primary"
+              onClick={handleSubmit}
+              className={`${file ? styles.active : styles.disable}`}
+            >
               {formatMessage({ id: 'component.previewOffer.submit' })}
             </Button>
+
             <span className={styles.submitMessage}>
               {file ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+            </span>
+          </div>
+        </div>
+
+        {/* HR Manager signature */}
+        <div className={styles.signature}>
+          <header>
+            <div className={styles.icon}>
+              <div className={styles.bigGlow}>
+                <div className={styles.smallGlow}>
+                  <EditOutlined />
+                </div>
+              </div>
+            </div>
+            <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
+          </header>
+
+          <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p>
+
+          <div className={styles.upload}>
+            {!file2 ? (
+              // Default image
+              <img className={styles.signatureImg} src={whiteImg} alt="" />
+            ) : (
+              <img className={styles.signatureImg} src={file2} alt="" />
+            )}
+
+            <button
+              type="submit"
+              onClick={() => {
+                file2Ref.click();
+              }}
+            >
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+            </button>
+
+            <CancelIcon resetImg={resetImg} />
+          </div>
+
+          <input
+            className={styles.uploadInput}
+            type="file"
+            ref={(ref) => {
+              file2Ref = ref;
+            }}
+            onChange={(e) => {
+              imageHandler(e, 'manager');
+            }}
+            accept=".jpg, .png, .jpeg"
+          />
+
+          <div className={styles.submitContainer}>
+            <Button
+              type="primary"
+              disabled={file2 !== null}
+              onClick={handleSubmit}
+              className={`${file2 ? styles.active : styles.disable}`}
+            >
+              {formatMessage({ id: 'component.previewOffer.submit' })}
+            </Button>
+
+            <span className={styles.submitMessage}>
+              {file2 ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
             </span>
           </div>
         </div>
@@ -393,6 +473,10 @@ const PreviewOffer = (props) => {
             </Form>
           </div>
         </div>
+
+        <ModalUpload visible />
+        {/* Render Send Mail */}
+        {file && file2 && <SendEmail />}
       </div>
     </div>
   );

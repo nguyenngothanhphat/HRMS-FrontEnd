@@ -59,6 +59,7 @@ const info = {
     },
     previewOffer: {
       file: null,
+      file2: null,
       day: '',
       month: '',
       year: '',
