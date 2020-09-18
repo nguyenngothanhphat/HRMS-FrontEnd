@@ -61,21 +61,34 @@ const info = {
       currency: true,
     },
     benefits: {
-      medical: false,
-      life: false,
-      shortTerm: false,
-      employeeProvident: false,
-      checkboxHeader: [
+      globalEmployee: [
         {
-          key: 1,
-          value: '',
-          medical: false,
-          subCheckBox: [
-            {
-              key: 1,
-              value: '',
-            },
-          ],
+          medical: {
+            accessPlus: false,
+            basePlan: false,
+            isChecked: false,
+            checkedList: [],
+          },
+          dental: {
+            isChecked: false,
+            checkedList: [],
+          },
+          vision: {
+            isChecked: false,
+            checkedList: [],
+          },
+          life: {
+            basicLife: false,
+            volLife: false,
+            isChecked: false,
+            checkedList: [],
+          },
+          shortTerm: {
+            basicLife: false,
+            volLife: false,
+            isChecked: false,
+            checkedList: [],
+          },
         },
       ],
     },

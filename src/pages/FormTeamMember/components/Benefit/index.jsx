@@ -18,17 +18,21 @@ class Benefit extends PureComponent {
     return null;
   }
 
-  handleChange = (e) => {
-    const { benefits } = this.state;
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'info/saveBenefits',
-      payload: {
-        benefits,
-      },
-    });
-  };
+  // handleChange = (e) => {
+  //   const { target } = e;
+  //   const { name, value } = target;
+  //   const { benefits } = this.state;
+  //   const { dispatch } = this.props;
+  //   const { globalEmployee } = benefits;
+  //   const { medical, dental, }
+  //   globalEmployee[name] = value;
+  //   dispatch({
+  //     type: 'info/saveBenefits',
+  //     payload: {
+  //       benefits,
+  //     },
+  //   });
+  // };
 
   render() {
     const headerText = 'Coverage will take effect on 20/04/2020';
@@ -40,58 +44,71 @@ class Benefit extends PureComponent {
       checkBox: [
         {
           value: 'Medical',
+          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Open Access Plus - Choice Plan',
+              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] OAP - Base Plan',
+              isChecked: false,
             },
           ],
         },
         {
           value: 'Dental',
+          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Voluntary Dental',
+              isChecked: false,
             },
           ],
         },
         {
           value: 'Vision',
+          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Vision PRO',
+              isChecked: false,
             },
           ],
         },
         {
           value: 'Life',
+          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Basic Life / AD & D',
+              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] Vol life / AD & D',
+              isChecked: false,
             },
           ],
         },
         {
           value: 'Short-term disability',
+          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Basic Life / AD & D',
+              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] Vol life / AD & D',
+              isChecked: false,
             },
           ],
         },

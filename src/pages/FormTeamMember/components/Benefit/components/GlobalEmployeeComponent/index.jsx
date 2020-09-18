@@ -10,8 +10,13 @@ class GlobalEmpoyeeComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      checkedList: [],
-      checkAll: false,
+      status: [
+        { key: 1, isChecked: false },
+        { key: 2, isChecked: false },
+        { key: 3, isChecked: false },
+        { key: 4, isChecked: false },
+        { key: 5, isChecked: false },
+      ],
     };
   }
 
@@ -21,31 +26,33 @@ class GlobalEmpoyeeComponent extends PureComponent {
   //   }
   //   return null;
   // }
-  handleChange = (checkedList, itemArr) => {
-    this.setState({
-      checkedList,
-      checkAll: checkedList.length === itemArr.length,
-    });
-    console.log(checkedList);
-    console.log(itemArr);
-  };
 
-  handleCheckAllChange = (e, itemArr) => {
-    const { checkedList } = this.state;
-    this.setState({
-      checkedList: e.target.checked ? itemArr : [],
-      checkAll: e.target.checked,
-    });
-    console.log(checkedList);
-    console.log(itemArr);
-  };
+  // handleChange = checkedList => {
+  //   const { benefits } = this.state;
+  //   const { globalEmployee } = benefits;
+  //   globalEmployee.map((data) => (
+  //     this.setState({
+
+  //     })
+  //   ))
+  // };
+
+  // handleChange = () => {
+  //   const { status } = this.state;
+  //   status.map((data) => (
+  //     this.setState({
+
+  //     })
+  //   )
+  // };
 
   render() {
     const { globalEmployeesCheckbox, headerText } = this.props;
-    const { title, name, checkBox } = globalEmployeesCheckbox;
+    const { name, checkBox } = globalEmployeesCheckbox;
+    // const { benefits } = this.state;
+    // const { globalEmployee } = benefits;
+
     const CheckboxGroup = Checkbox.Group;
-    const { subCheckBox } = checkBox;
-    const { checkedList } = this.state;
     return (
       <div className={styles.GlobalEmpoyeeComponent}>
         <Typography.Title level={5} className={styles.headerPadding}>
@@ -58,7 +65,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 className={
                   item.value === 'Medical' ? styles.checkboxMedical : styles.checkBoxHeaderTop
                 }
-                onChange={(e) => this.handleCheckAllChange(e, item.subCheckBox)}
+                onChange={this.handleChange}
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
@@ -68,8 +75,8 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 </Typography.Title>
                 <CheckboxGroup
                   options={item.subCheckBox.map((data) => data.value)}
-                  value={checkedList}
-                  onChange={(e) => this.handleChange(e, item.subCheckBox)}
+                  // value={checkedList}
+                  // onChange={(e) => this.handleChange(e, item.subCheckBox)}
                 />
                 {/* {item.subCheckBox.map((data) => (
                   <Row>
