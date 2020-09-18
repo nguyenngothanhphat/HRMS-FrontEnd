@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import InfoCollapseType2 from './InfoCollapseType2';
+import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import ViewDocument from './ViewDocument';
 import styles from './index.less';
 
