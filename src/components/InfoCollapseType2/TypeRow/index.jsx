@@ -52,20 +52,20 @@ const CollapseRow = (props) => {
     </div>
   );
 
+  const onChange = () => {
+    setOpen(!open);
+  };
+
   const headerWithArrowIcon = (status, title) => (
     <div className={styles.headerWithArrowIcon}>
       <span>{title}</span>
       {status ? (
-        <img src={UpArrowIcon} alt="up-arrow" />
+        <img onClick={onChange} src={UpArrowIcon} alt="up-arrow" />
       ) : (
-        <img src={DownArrowIcon} alt="down-arrow" />
+        <img onClick={onChange} src={DownArrowIcon} alt="down-arrow" />
       )}
     </div>
   );
-
-  const onChange = () => {
-    setOpen(!open);
-  };
 
   return (
     <Collapse
