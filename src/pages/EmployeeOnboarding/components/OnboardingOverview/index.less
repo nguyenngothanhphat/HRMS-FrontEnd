@@ -1,0 +1,59 @@
+@orange: #ffa100;
+
+.overviewContainer {
+  .left {
+    width: 247px;
+    background-color: white;
+
+    .addMember {
+      // width: 200px;
+      background-color: white;
+      border-radius: 21px;
+      border: 1px solid @orange;
+      outline: none;
+      color: @orange;
+      height: 40px;
+      margin: 24px 12px;
+
+      .icon {
+        display: flex;
+        align-items: center;
+
+        span {
+          margin-left: 4px;
+          font-weight: 500;
+        }
+      }
+
+      // &:hover {
+      //   color: white;
+      //   background-color: @orange;
+      // }
+    }
+
+    .divider {
+      height: 2px;
+      width: 100%;
+      background-color: #e4e7eb;
+    }
+
+    .leftMenu {
+      header {
+        font-family: Roboto;
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: capitalize;
+        margin-left: 16px;
+        margin-top: 32px;
+      }
+
+      .menuItem {
+        margin-top: 24px;
+
+        &:active {
+          background-color: #e9f0ff;
+        }
+      }
+    }
+  }
+}
