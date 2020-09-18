@@ -60,7 +60,25 @@ const info = {
     offerDetailField: {
       currency: true,
     },
-    benefits: {},
+    benefits: {
+      medical: false,
+      life: false,
+      shortTerm: false,
+      employeeProvident: false,
+      checkboxHeader: [
+        {
+          key: 1,
+          value: '',
+          medical: false,
+          subCheckBox: [
+            {
+              key: 1,
+              value: '',
+            },
+          ],
+        },
+      ],
+    },
     customField: {
       dental: 'tier1',
       vision: 'tier1',
@@ -100,6 +118,12 @@ const info = {
       };
     },
     saveEligibilityRequirement(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveBenefits(state, action) {
       return {
         ...state,
         ...action.payload,

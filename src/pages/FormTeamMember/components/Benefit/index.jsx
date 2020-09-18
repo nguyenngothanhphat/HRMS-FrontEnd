@@ -3,12 +3,37 @@ import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
+import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 
+@connect(({ info: { benefits } = {} }) => ({
+  benefits,
+}))
 class Benefit extends PureComponent {
+  static getDerivedStateFromProps(props) {
+    if ('benefits' in props) {
+      return { benefits: props.benefits || {} };
+    }
+    return null;
+  }
+
+  handleChange = (e) => {
+    const { benefits } = this.state;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'info/saveBenefits',
+      payload: {
+        benefits,
+      },
+    });
+  };
+
   render() {
-    const header = formatMessage({ id: 'component.Benefit.EmployeeHeader' });
+    const headerText = 'Coverage will take effect on 20/04/2020';
+    const { dispatch } = this.props;
+    const { benefits = {} } = this.state;
     const globalEmployeesCheckbox = {
       title: 'global',
       name: 'For Global employees',
@@ -104,7 +129,7 @@ class Benefit extends PureComponent {
       title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
         <Typography.Text>
-          Please ensure with all your<span>benefit vendor</span> that the documents rolling out to
+          Please ensure with all your <span>benefit vendor</span> that the documents rolling out to
           the candidate informing about the terms and condition of all the benefits are{' '}
           <span className={styles.boldText}>up-to-date</span>
         </Typography.Text>
@@ -116,7 +141,16 @@ class Benefit extends PureComponent {
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.BenefitComponent}>
               <Header />
-              <GlobalEmployeeComponent globalEmployeesCheckbox={globalEmployeesCheckbox} />
+              <GlobalEmployeeComponent
+                globalEmployeesCheckbox={globalEmployeesCheckbox}
+                headerText={headerText}
+                handleChange={this.handleChange}
+              />
+              <IndiaEmployeeComponent
+                IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}
+                headerText={headerText}
+                handleChange={this.handleChange}
+              />
             </div>
           </Col>
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
