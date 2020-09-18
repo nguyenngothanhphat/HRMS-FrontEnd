@@ -1,111 +1,106 @@
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Collapse, Space, Checkbox, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { connect, formatMessage } from 'umi';
 import InputField from '../InputField';
 import styles from './index.less';
 
-const CollapseField = ({
-  item = [],
-  handleCheckBox,
-  defaultCheckListContainer = [],
-  checkHeader = {},
-}) => {
-  // const [checkList, setCheckList] = useState(defaultCheckListContainer[0]);
-  // const [checkList_, setCheckList_] = useState(defaultCheckListContainer[2]);
-  // const [checkAll, setCheckAll] = useState(false);
-  // const [indeterminate, setIndeterminate] = useState(true);
-  const [isCheck, setIsCheck] = useState(false);
-  const [isItemCheck, setIsItemCheck] = useState(false);
-
-  const handleChange = (e) => {
-    // setCheckList(checkedList);
-    // setCheckList_(checkedList);
-    // setIndeterminate(!!checkedList.length && checkedList.length < item.items.length);
-    // setCheckAll(checkedList.length === item.items.length);
-    // setIsCheck(!isCheck);
-    handleCheckBox(e.target.value);
+@connect(({ info: { eligibilityDocs } = {} }) => ({
+  eligibilityDocs,
+}))
+class CollapseField extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isCheck: false,
+      isCheckAll: false,
+      indeterminate: false
+    };
+  }
+  handleChange(e) {
+    this.setState {
+      e.target.
+    }
   };
 
-  // const handleCheckAllChange = (e) => {
-  //   setCheckList(e.target.checked ? item.items : []);
-  //   setCheckList_(e.target.checked ? item.items : []);
-  //   setIndeterminate(false);
-  //   setCheckAll(e.target.checked);
-  //   if (isCheck) setCheckAll(isCheck);
+  // handleCheckAllChange(e) {
+
   // };
 
-  // const checkHeader = item.items.find((obj) => obj.isRequired);
-  // const handleChange = (e) => {
-  //   console.log(checkHeader);
-  //   setIsCheck(e.target.checked);
-  // };
+  static getDerivedStateFromProps(props) {
+    if ('eligibilityDocs' in props) {
+      return { eligibilityDocs: props.eligibilityDocs || {} };
+    }
+    return null;
+  }
 
-  return (
-    <div className={styles.CollapseField}>
-      <Collapse
-        accordion
-        expandIconPosition="right"
-        expandIcon={(props) => {
-          return props.isActive ? <MinusOutlined /> : <PlusOutlined />;
-        }}
-      >
-        <Collapse.Panel
-          header={
-            <Checkbox
-              className={styles.checkbox}
-              onClick={(e) => e.stopPropagation()}
-              // onChange={handleCheckAllChange}
-              name={item.title}
-              // checked={checkHeader.isRequired}
-              defaultChecked={checkHeader.isRequired}
-              // indeterminate={indeterminate}
-            >
-              {item.title}
-            </Checkbox>
-          }
-          extra="[Can submit any of the below other than (*)mandatory]"
+  render() {
+    const { item, handleCheckBox, defaultCheckListContainer, checkHeader } = this.props;
+    // const {}
+    const { eligibilityDocs, isCheck } = this.state;
+
+    return (
+      <div className={styles.CollapseField}>
+        <Collapse
+          accordion
+          expandIconPosition="right"
+          expandIcon={(props) => {
+            return props.isActive ? <MinusOutlined /> : <PlusOutlined />;
+          }}
         >
-          {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
-          <Space direction="vertical">
-            {/* <Checkbox.Group
-              direction="vertical"
-              className={styles.checkboxItem}
-              // eslint-disable-next-line no-nested-ternary
-              defaultChecked={checkHeader.isRequired}
-              // value={}
-              options={item.items.map((obj) => obj.name)}
-              // onChange={handleChange}
-            /> */}
-            {item.items.map((obj) => (
+          <Collapse.Panel
+            header={
               <Checkbox
-                key={obj.key}
-                // indeterminate
-                className={styles.checkboxItem}
-                onChange={handleChange}
-                // checked={obj.isRequired}
-                // name={obj.name}
-                defaultChecked={obj.isRequired}
-                value={obj.name}
-                disabled={obj.isRequired}
+                className={styles.checkbox}
+                onClick={(e) => e.stopPropagation()}
+                onChange={this.handleCheckAllChange}
+                name={item.title}
+                check={isCheck}
               >
-                {obj.name}
-                {obj.isRequired ? '*' : <></>}
+                {item.title}
               </Checkbox>
-            ))}
-            {item.title === 'Type D: Technical Certifications' ? (
-              <Space direction="horizontal">
-                <PlusOutlined className={styles.plusIcon} />
-                <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
-              </Space>
-            ) : (
-              <></>
-            )}
-          </Space>
-        </Collapse.Panel>
-      </Collapse>
-    </div>
-  );
-};
+            }
+            extra="[Can submit any of the below other than (*)mandatory]"
+          >
+            {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
+            <Space direction="vertical">
+              <Checkbox.Group
+                direction="vertical"
+                className={styles.checkboxItem}
+                // eslint-disable-next-line no-nested-ternary
+                // defaultChecked={checkHeader.isRequired}
+                // value={}
+                options={item.items.map((obj) => obj.name)}
+                // onChange={handleChange}
+              />
+              {/* {item.items.map((obj) => (
+                <Checkbox
+                  key={obj.key}
+                  className={styles.checkboxItem}
+                  onChange={(e) => this.handleChange(e)}
+                  defaultChecked={!!obj.isRequired}
+                  // value={}
+                  disabled={obj.isRequired}
+                >
+                  {obj.name}
+                  {obj.isRequired ? '*' : <></>}
+                </Checkbox>
+              ))} */}
+              {item.title === 'Type D: Technical Certifications' ? (
+                <Space direction="horizontal">
+                  <PlusOutlined className={styles.plusIcon} />
+                  <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
+                </Space>
+              ) : (
+                <></>
+              )}
+            </Space>
+          </Collapse.Panel>
+        </Collapse>
+      </div>
+    );
+  }
+}
 
 export default CollapseField;

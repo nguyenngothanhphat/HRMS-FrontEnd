@@ -26,13 +26,35 @@ const info = {
       timeoff: 'can not',
     },
     eligibilityDocs: {
-      idProof: [],
-      addProof: [],
-      edu: [],
+      idProof: {
+        aadharCard : true,
+        PAN : true,
+        passport: false,
+        drivingLicense: false,
+        voterCard: false
+      },
+      addProof: {
+        rentalAgreement: false,
+        electricityBill: false,
+        telephoneBill: false
+      },
+      edu: {
+        sslc: true,
+        diploma: true,
+        graduation: true,
+        postGraduate: false,
+        phd: false
+      },
       techCerti: [{
         name: '',
         duration: '',
-        poe: []
+        poe: {
+          offerLetter: false,
+          appraisalLetter: false,
+          paystubs: false,
+          form16: false,
+          relievingLetter: false
+        }
       }]
     },
     jobDetail: {
