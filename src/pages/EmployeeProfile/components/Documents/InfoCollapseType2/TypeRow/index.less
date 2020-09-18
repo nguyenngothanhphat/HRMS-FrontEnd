@@ -1,56 +1,93 @@
 .eachCollapse {
+  padding: 0 0 0 20px;
+  background-color: white;
   :global {
     .ant-collapse-content > .ant-collapse-content-box {
       padding: 0;
+      border: none;
+    }
+    .ant-collapse-header {
+      font-weight: bold;
+      font-size: 13px;
+      padding-left: 0 !important;
+    }
+    .ant-collapse-arrow {
+      margin-left: -15px;
+      margin-top: -3px;
     }
   }
 
+  &:not(:last-child) {
+    .eachPanel {
+      border-bottom: 1px solid #d6dce0;
+    }
+  }
   .eachPanel {
-    border-radius: 2px;
     overflow: hidden;
     background-color: white;
     display: flex;
     flex-direction: column;
-    .eachRow:last-child {
-      margin-bottom: 0;
+    padding: 5px 0 2px 0;
+    border: none;
+    .headerWithArrowIcon {
+      display: inline;
+      img {
+        margin-left: 25px;
+      }
     }
-    margin-bottom: 10px;
     .eachRow {
-      padding: 17px 17px 0 17px;
+      font-size: 13px;
+      padding: 17px 0 0 0;
+      &:last-child {
+        padding-bottom: 25px;
+      }
       .fileName {
         display: flex;
+        margin-top: -3px;
         align-items: center;
+        cursor: pointer;
         span {
-          margin-left: 10px;
+          margin-left: 15px;
           font-weight: 500;
+          text-decoration: underline;
+          color: #2c6df9;
         }
         .fileIcon {
-          margin-left: 30px;
+          height: 30px;
           font-size: 20px;
           color: #2c6df9;
         }
         overflow: auto;
+        &:hover {
+          opacity: 0.8;
+        }
       }
-    }
-    .eachRow:last-child {
-      padding-bottom: 17px;
     }
   }
 
-  .statusAndDownload {
+  .statusAndButtons {
     display: flex;
     align-items: center;
+    position: relative;
     a {
       color: #00ba73;
-      margin-right: 10px;
+      margin-right: 20px;
       font-weight: 500;
+      font-size: 13px;
       align-self: center;
       margin-top: -3px;
     }
     .downloadButton {
-      color: #2c6df9;
+      height: 20px;
+      margin-right: 20px;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    .menuButton {
+      color: #bfbfbf;
       font-size: 25px;
-      :hover {
+      &:hover {
         opacity: 0.7;
       }
     }

@@ -10,13 +10,8 @@ class GlobalEmpoyeeComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      status: [
-        { key: 1, isChecked: false },
-        { key: 2, isChecked: false },
-        { key: 3, isChecked: false },
-        { key: 4, isChecked: false },
-        { key: 5, isChecked: false },
-      ],
+      checkedList: [],
+      isChecked: false,
     };
   }
 
@@ -37,17 +32,9 @@ class GlobalEmpoyeeComponent extends PureComponent {
   //   ))
   // };
 
-  // handleChange = () => {
-  //   const { status } = this.state;
-  //   status.map((data) => (
-  //     this.setState({
-
-  //     })
-  //   )
-  // };
-
   render() {
     const { globalEmployeesCheckbox, headerText } = this.props;
+    const { checkedList, isChecked } = this.state;
     const { name, checkBox } = globalEmployeesCheckbox;
     // const { benefits } = this.state;
     // const { globalEmployee } = benefits;
@@ -65,7 +52,6 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 className={
                   item.value === 'Medical' ? styles.checkboxMedical : styles.checkBoxHeaderTop
                 }
-                onChange={this.handleChange}
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
@@ -73,11 +59,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 <Typography.Title className={styles.headerText} level={4}>
                   {headerText}
                 </Typography.Title>
-                <CheckboxGroup
-                  options={item.subCheckBox.map((data) => data.value)}
-                  // value={checkedList}
-                  // onChange={(e) => this.handleChange(e, item.subCheckBox)}
-                />
+                <CheckboxGroup options={item.subCheckBox.map((data) => data.value)} />
                 {/* {item.subCheckBox.map((data) => (
                   <Row>
                     <Checkbox onChange={(e) => this.handleChange(e.target.value)}>

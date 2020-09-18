@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import SendEmail from '../../../EligibilityDocs/components/SendEmail';
@@ -44,8 +44,8 @@ class SalaryAcceptance extends PureComponent {
     if (salaryStatus === 1) {
       return (
         <SalaryAcceptanceContent
-          radioTitle="I hereby accept this salary structure."
-          note="You have gone through all the contents of the table and accept the salary as terms of your employment."
+          radioTitle={formatMessage({ id: 'component.salaryAcceptance.title1' })}
+          note={formatMessage({ id: 'component.salaryAcceptance.note1' })}
         />
       );
     }
@@ -53,9 +53,8 @@ class SalaryAcceptance extends PureComponent {
       return (
         <>
           <SalaryAcceptanceContent
-            radioTitle="I would like to re-negotiate the salary structure."
-            note="You have gone through all the contents of the table. However, I would like to
-        renegotiate."
+            radioTitle={formatMessage({ id: 'component.salaryAcceptance.title2' })}
+            note={formatMessage({ id: 'component.salaryAcceptance.note2' })}
           />
         </>
       );
@@ -66,8 +65,8 @@ class SalaryAcceptance extends PureComponent {
       return (
         <>
           <SalaryAcceptanceContent
-            radioTitle="I would like to reject this offer."
-            note="You have gone through all the contents of the table and do not accept the offer given to me."
+            radioTitle={formatMessage({ id: 'component.salaryAcceptance.title3' })}
+            note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
           />
           <hr />
           <Form
@@ -93,7 +92,7 @@ class SalaryAcceptance extends PureComponent {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Close Candidature
+                {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
               </Button>
             </Form.Item>
           </Form>

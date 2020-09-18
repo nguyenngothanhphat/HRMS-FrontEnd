@@ -1,7 +1,11 @@
 import React, { PureComponent } from 'react';
+import Icon from '@ant-design/icons';
+import DownloadIcon from './icon.js';
 import styles from './index.less';
 
 class PaySlipMonth extends PureComponent {
+  handleClick = () => {};
+
   render() {
     const monthNames = [
       { id: 1, name: 'January' },
@@ -22,9 +26,14 @@ class PaySlipMonth extends PureComponent {
       return (
         <div key={item.id} className={styles.PaySlipMonth}>
           <p className={styles.nameMonth}>{`Payslip for ${item.name}`}</p>
-          <a href="" className={styles.downLoad}>
-            Download
-          </a>
+          <div className={styles.downLoad}>
+            <p className={styles.downLoadText}>View</p>
+            <Icon
+              component={DownloadIcon}
+              onClick={this.handleClick}
+              className={styles.downLoadIcon}
+            />
+          </div>
         </div>
       );
     });

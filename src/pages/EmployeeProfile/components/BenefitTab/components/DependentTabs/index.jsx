@@ -18,7 +18,7 @@ export default function DependentTabs(props) {
   });
   return (
     <div className={styles.tab}>
-      <div style={{ fontWeight: '600' }}>
+      <div className={styles.dependent}>
         {formatMessage({
           id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
         })}{' '}
@@ -44,18 +44,11 @@ export default function DependentTabs(props) {
               return foo;
           }
           return (
-            <div
-              style={{
-                height: '64px',
-                width: item === 'Legal Name' ? '220px' : '150px',
-                fontSize: '16px',
-                marginBottom: '30px',
-              }}
-            >
-              <div style={{ fontWeight: '600', marginTop: '30px', marginBottom: '20px' }}>
-                {item}
+            <div className={styles.items}>
+              <div style={{ fontWeight: '500', width: '50%' }}>{item}</div>
+              <div style={{ color: '#707177', width: '50%' }}>
+                <p>{foo}</p>
               </div>
-              <div>{foo}</div>
             </div>
           );
         })}
