@@ -20,13 +20,15 @@ const CustomField = (props) => {
     additionalInfo: additionalInfoProp,
   } = customField;
 
-  const [dental, setDental] = useState(dentalProp || 'tier1');
-  const [vision, setVision] = useState(visionProp || 'tier1');
-  const [medical, setMedical] = useState(medicalProp || 'tier1');
+  // const [dental, setDental] = useState(dentalProp || 'tier1');
+  const [dental, setDental] = useState(dentalProp || undefined);
+  const [vision, setVision] = useState(visionProp || undefined);
+  const [medical, setMedical] = useState(medicalProp || undefined);
   const [text, setText] = useState(additionalInfoProp || '');
 
   useEffect(() => {
-    const allFilled = dental !== '' && vision !== '' && medical !== '';
+    // Check if all fields have value
+    const allFilled = dental !== undefined && vision !== undefined && medical !== undefined;
 
     if (dispatch) {
       dispatch({
@@ -95,7 +97,13 @@ const CustomField = (props) => {
                     {formatMessage({ id: 'component.customField.dentalLabel' })}
                   </p>
 
-                  <Select name="dental" value={dental} onChange={handleDentalChange}>
+                  <Select
+                    name="dental"
+                    placeholder="Please select a choice"
+                    value={dental}
+                    // value={undefined}
+                    onChange={handleDentalChange}
+                  >
                     <Option value="tier1">[ 2020 ] Voluntary Dental</Option>
                     <Option value="tier2">Dental Tier 2</Option>
                   </Select>
@@ -108,7 +116,11 @@ const CustomField = (props) => {
                     {formatMessage({ id: 'component.customField.visionLabel' })}
                   </p>
 
-                  <Select value={vision} onChange={handleVisionChange}>
+                  <Select
+                    placeholder="Please select a choice"
+                    value={vision}
+                    onChange={handleVisionChange}
+                  >
                     <Option value="tier1">[ 2020 ] Voluntary Vision</Option>
                     <Option value="tier2">Vision Tier 2</Option>
                   </Select>
@@ -119,7 +131,11 @@ const CustomField = (props) => {
                     {formatMessage({ id: 'component.customField.medicalLabel' })}
                   </p>
 
-                  <Select value={medical} onChange={handleMedicalChange}>
+                  <Select
+                    placeholder="Please select a choice"
+                    value={medical}
+                    onChange={handleMedicalChange}
+                  >
                     <Option value="tier1">[ 2020 ] Voluntary Medical</Option>
                     <Option value="tier2">Medical Tier 2</Option>
                   </Select>
