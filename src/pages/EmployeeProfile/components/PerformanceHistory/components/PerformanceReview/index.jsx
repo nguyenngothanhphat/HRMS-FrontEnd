@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card, Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import PerformanceReviewIndicator from './components/PerformanceReviewIndicator';
 import styles from './index.less';
 
@@ -35,32 +36,52 @@ class PerformanceReview extends PureComponent {
 
   render() {
     const dummyData = [
-      { id: 1, label: 'Date', value: '12th Dec 2020' },
-      { id: 2, label: 'Reporting to', value: 'Anil Reddy' },
+      {
+        id: 1,
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.date',
+        }),
+        value: '12th Dec 2020',
+      },
+      {
+        id: 2,
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.reportingTo',
+        }),
+        value: 'Anil Reddy',
+      },
       {
         id: 3,
-        label: 'Collaboration & TeamWork',
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.collaboration_teamwork',
+        }),
         value: {
           level: 4,
         },
       },
       {
         id: 4,
-        label: 'Problem solving',
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.problemSolving',
+        }),
         value: {
           level: 5,
         },
       },
       {
         id: 5,
-        label: 'Decision Making',
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.decisionMaking',
+        }),
         value: {
           level: 3,
         },
       },
       {
         id: 6,
-        label: 'Organising and Planning',
+        label: formatMessage({
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.organising',
+        }),
         value: {
           level: 2,
         },
