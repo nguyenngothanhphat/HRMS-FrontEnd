@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Upload, message, Spin } from 'antd';
+import { Button, Upload, message } from 'antd';
 import { connect } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -54,7 +54,6 @@ class UploadCertification extends Component {
       showUploadList: false,
     };
     const { item: { urlFile = '' } = {}, loading } = this.props;
-    if (loading) return <Spin />;
     return (
       <div className={styles.root}>
         {!urlFile ? (
@@ -63,7 +62,9 @@ class UploadCertification extends Component {
             beforeUpload={this.beforeUpload}
             action={(file) => this.handleUpload(file)}
           >
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
+            <Button loading={loading} icon={<UploadOutlined />}>
+              Click to upload
+            </Button>
           </Upload>
         ) : (
           <div className={styles.viewRow}>
