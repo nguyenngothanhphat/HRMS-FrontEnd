@@ -66,8 +66,9 @@ class Edit extends PureComponent {
       pastExp = 0,
       totalExp = 0,
       qualification = '',
-      certification = [],
     } = generalData;
+    let { certification = [{}] } = generalData;
+    certification = certification?.length > 0 ? certification : [{}];
     const getIdSkill = skills.map((item) => item._id);
     return (
       <div className={s.root}>
