@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs } from 'antd';
+import { Tabs, Button } from 'antd';
 
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
@@ -26,6 +26,15 @@ export default class EmployeeOnboarding extends PureComponent {
                 <CustomFields />
               </TabPane>
             </Tabs>
+
+            <div className={styles.options}>
+              <Button className={styles.generate} type="primary">
+                Generate Report for onboarding
+              </Button>
+              <Button className={styles.view} type="primary">
+                View Activity log (15)
+              </Button>
+            </div>
           </div>
         </div>
       </PageContainer>

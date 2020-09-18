@@ -93,9 +93,9 @@ class BottomBar extends PureComponent {
 
   _renderBottomButton = () => {
     const { pageId } = this.state;
-    const { basicInformation, jobDetails, offerDetails, salaryStructure } = pageId;
+    const { basicInformation, jobDetails, offerDetails, salaryStructure, customFields } = pageId;
     const { currentPage, checkMandatory } = this.props;
-    const { filledBasicInformation, filledJobDetail } = checkMandatory;
+    const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
 
     if (currentPage === basicInformation) {
       return (
@@ -154,6 +154,29 @@ class BottomBar extends PureComponent {
         >
           Next
         </Button>
+      );
+    }
+    if (currentPage === customFields) {
+      return (
+        <>
+          <Button
+            type="secondary"
+            onClick={this.onClickPrev}
+            className={styles.bottomBar__button__secondary}
+          >
+            Previous
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onClickNext}
+            className={`${styles.bottomBar__button__primary} ${
+              !filledCustomField ? styles.bottomBar__button__disabled : ''
+            }`}
+            disabled={!filledCustomField}
+          >
+            Next
+          </Button>
+        </>
       );
     }
     return null;

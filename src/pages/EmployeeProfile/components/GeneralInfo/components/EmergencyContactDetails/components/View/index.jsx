@@ -4,10 +4,11 @@ import styles from './index.less';
 
 class View extends PureComponent {
   render() {
+    const { dataAPI } = this.props;
     const dummyData = [
-      { label: 'Emergency Contact', value: '+91 9836583726' },
-      { label: 'Person’s Name', value: 'Elon Tusk' },
-      { label: 'Relation', value: 'Father' },
+      { label: 'Emergency Contact', value: dataAPI.emergencyContact },
+      { label: 'Person’s Name', value: dataAPI.personName },
+      { label: 'Relation', value: dataAPI.relation },
     ];
     return (
       <Row gutter={[0, 16]} className={styles.root}>

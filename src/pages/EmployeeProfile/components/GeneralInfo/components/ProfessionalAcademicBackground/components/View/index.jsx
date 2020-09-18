@@ -7,6 +7,13 @@ import styles from './index.less';
   generalData,
 }))
 class View extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchListSkill',
+    });
+  }
+
   formatListSkill = (skills, colors) => {
     let temp = 0;
     const listFormat = skills.map((item) => {
@@ -29,22 +36,24 @@ class View extends PureComponent {
       return (
         <div key={_id} className={styles.viewRow} style={{ marginBottom: '6px' }}>
           <div className={styles.textValue}>{`${index + 1} - ${name}`}</div>
-          <div className={styles.viewRow}>
-            <a
-              href={urlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              id="img-certification"
-              className={styles.nameCertification}
-            >
-              {name}
-            </a>
-            <img
-              src="/assets/images/iconFilePNG.svg"
-              alt="iconFilePNG"
-              className={styles.iconCertification}
-            />
-          </div>
+          {urlFile && (
+            <div className={styles.viewRow}>
+              <a
+                href={urlFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                id="img-certification"
+                className={styles.nameCertification}
+              >
+                {name}
+              </a>
+              <img
+                src="/assets/images/iconFilePNG.svg"
+                alt="iconFilePNG"
+                className={styles.iconCertification}
+              />
+            </div>
+          )}
         </div>
       );
     });

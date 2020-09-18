@@ -7,7 +7,6 @@ import React from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { MenuOutlined } from '@ant-design/icons';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
@@ -65,7 +64,7 @@ const BasicLayout = (props) => {
   const _renderTitleHeader = (
     <div className={styles.titleHeader}>
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
-        <MenuOutlined style={{ fontSize: '20px' }} />
+        <img src="/assets/images/menu.svg" alt="toggle-menu" />
       </div>
       <Link to="/">
         <img

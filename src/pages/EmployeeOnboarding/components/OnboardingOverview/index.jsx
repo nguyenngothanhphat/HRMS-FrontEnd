@@ -6,7 +6,7 @@ class OnboardingOverview extends PureComponent {
   render() {
     return (
       <div>
-        <p>OnboardingOverview</p>
+        <p>Onboarding overview</p>
         <Link to="/employee-onboarding/add">
           <Button type="primary">Add Team Member</Button>
         </Link>

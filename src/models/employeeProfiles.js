@@ -1,10 +1,11 @@
 import { dialog } from '@/utils/utils';
-import { getGeneralInfo, getCompensation } from '@/services/employeeProfiles';
+import { getGeneralInfo, getCompensation, getListSkill } from '@/services/employeeProfiles';
 
 const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
     isModified: false,
+    listSkill: [],
     originData: {
       generalData: {},
       compensationData: {},
@@ -49,8 +50,24 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *fetchListSkill(_, { call, put }) {
+      try {
+        const response = yield call(getListSkill);
+        const { statusCode, data: listSkill = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSkill } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
     saveOrigin(state, action) {
       const { originData } = state;
       return {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
+import { CaretDownOutlined } from '@ant-design/icons';
 import { Table, Avatar } from 'antd';
 import styles from './index.less';
 
@@ -9,6 +10,7 @@ class DirectoryTable extends Component {
     this.state = {
       sortedName: {},
       pageSelected: 1,
+      isSort: false,
     };
   }
 
@@ -33,9 +35,15 @@ class DirectoryTable extends Component {
   };
 
   generateColumns = (sortedName) => {
+    const { isSort } = this.state;
     const columns = [
       {
-        title: formatMessage({ id: 'component.directory.table.fullName' }),
+        title: (
+          <div className={styles.directoryTable_fullName}>
+            {formatMessage({ id: 'component.directory.table.fullName' })}
+            {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />}
+          </div>
+        ),
         dataIndex: 'generalInfo',
         key: 'generalInfo',
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
@@ -47,6 +55,7 @@ class DirectoryTable extends Component {
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
         width: '18%',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
@@ -90,7 +99,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
         dataIndex: 'manager',
         key: 'manager',
-        render: (manager) => <span>{manager ? manager.name : ''}</span>,
+        render: (manager) => (
+          <span>
+            {manager.generalInfo
+              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              : ''}
+          </span>
+        ),
         align: 'left',
         width: '15%',
       },
@@ -115,8 +130,15 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
+    const descend = 'descend';
+    const ascend = 'ascend';
+    let isSort = false;
+    if (sorter.order === descend || sorter.order === ascend) {
+      isSort = true;
+    }
     this.setState({
       sortedName: sorter,
+      isSort,
     });
   };
 
