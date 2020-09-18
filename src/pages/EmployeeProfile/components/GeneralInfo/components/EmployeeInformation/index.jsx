@@ -1,9 +1,15 @@
 import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
+import { Button } from 'antd';
+import { connect } from 'umi';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
+@connect(({ loading, employeeProfile }) => ({
+  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
+  employeeProfile,
+}))
 class EmployeeInformation extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,17 +19,23 @@ class EmployeeInformation extends PureComponent {
   }
 
   handleEdit = () => {
-    // console.log('click ne');
     this.setState({
       isEdit: true,
     });
   };
 
+  handleCancel = () => {
+    this.setState({
+      isEdit: false,
+    });
+  };
+
   render() {
-    // const { dataAPI = {} } = this.props;
-    // console.log('generalData', dataAPI);
+    const {
+      employeeProfile: { tempData: { generalData = {} } = {} },
+    } = this.props;
     const { isEdit } = this.state;
-    const renderComponent = isEdit ? <Edit /> : <View />;
+    const renderComponent = isEdit ? <Edit /> : <View dataAPI={generalData} />;
     return (
       <div className={styles.EmployeeInformation}>
         <div className={styles.spaceTitle}>
@@ -33,7 +45,19 @@ class EmployeeInformation extends PureComponent {
             <p className={styles.Edit}>Edit</p>
           </div>
         </div>
+
         <div className={styles.viewBottom}>{renderComponent}</div>
+
+        {isEdit ? (
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={this.handleCancel}>
+              Cancel
+            </div>
+            <Button className={styles.buttonFooter}>Save</Button>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     );
   }
