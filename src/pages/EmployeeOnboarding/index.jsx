@@ -14,7 +14,7 @@ export default class EmployeeOnboarding extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOnboarding}>
-          <div className={styles.employeeOnboarding__tab}>
+          <div className={styles.tabs}>
             <Tabs defaultActiveKey="1">
               <TabPane tab="Onboarding overview" key="1">
                 <OnboardingOverview />
