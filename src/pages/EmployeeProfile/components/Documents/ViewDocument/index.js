@@ -146,10 +146,16 @@ export default class ViewDocument extends PureComponent {
               // eslint-disable-next-line no-console
               onLoadError={console.error}
               file={this.getCurrentViewingFileUrl()}
-              noData="No Viewing Document"
+              loading=""
+              noData="Document Not Found"
             >
               {Array.from(new Array(numPages), (el, index) => (
-                <Page className={styles.pdfPage} key={`page_${index + 1}`} pageNumber={index + 1} />
+                <Page
+                  loading=""
+                  className={styles.pdfPage}
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                />
               ))}
             </Document>
           </div>
@@ -217,7 +223,6 @@ export default class ViewDocument extends PureComponent {
               {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.uploadNewBtn' })}
             </Button>
           </Upload>
-          ,
           <Button onClick={this.onSaveClick} className={styles.saveButton}>
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>

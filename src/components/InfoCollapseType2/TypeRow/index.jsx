@@ -10,19 +10,16 @@ import styles from './index.less';
 const { Panel } = Collapse;
 
 const CollapseRow = (props) => {
-  const { data, onFileClick } = props;
+  const { data = [], onFileClick } = props;
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
-  const preventCollapse = (event) => {
+
+  const handleDownloadClick = (event) => {
     event.stopPropagation();
   };
 
-  const handleDownloadClick = (event) => {
-    preventCollapse(event);
-  };
-
   const handleMenuClick = (event) => {
-    preventCollapse(event);
+    event.stopPropagation();
   };
 
   const menu = () => (
@@ -38,7 +35,7 @@ const CollapseRow = (props) => {
   );
 
   const statusAndButtons = () => (
-    <div className={styles.statusAndButtons}>
+    <div onClick={handleMenuClick} className={styles.statusAndButtons}>
       <a>Complete</a>
       <img
         alt="download"
