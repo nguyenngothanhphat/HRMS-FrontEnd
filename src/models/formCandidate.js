@@ -68,12 +68,38 @@ const info = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
+    salaryStructure: {
+      rejectComment: '',
+    },
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
+      filledCustomField: false,
+      salaryStatus: 2,
     },
-    offerDetailField: {
-      currency: true,
+    previewOffer: {
+      file: null,
+      day: '',
+      month: '',
+      year: '',
+      place: '',
+      city: '',
+      day2: '',
+      month2: '',
+      year2: '',
+      place2: '',
+      city2: '',
+      mail: '',
+    },
+    benefits: {},
+    customField: {
+      // dental: 'tier1',
+      // vision: 'tier1',
+      // medical: 'tier1',
+      dental: undefined,
+      vision: undefined,
+      medical: undefined,
+      additionalInfo: '',
     },
   },
   effects: {
@@ -110,9 +136,9 @@ const info = {
     saveEligibilityRequirement(state, action) {
       return {
         ...state,
-        ...action.payload
-      }
-    }
+        ...action.payload,
+      };
+    },
   },
 };
 export default info;

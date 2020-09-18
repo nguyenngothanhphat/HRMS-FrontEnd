@@ -1,0 +1,88 @@
+.root {
+  .Form {
+    width: 100%;
+    :global {
+      .ant-form-item-label {
+        text-align: left;
+      }
+      .ant-form-item-label > label {
+        font-size: 13px;
+        color: #000000;
+      }
+      .ant-form-item-label > label::after {
+        content: '';
+      }
+      .ant-form-item {
+        width: 100%;
+      }
+      .ant-input:focus {
+        border-color: #2c6df9;
+        outline: 0;
+        box-shadow: unset;
+      }
+      .ant-picker-focused {
+        border-color: #2c6df9;
+        box-shadow: unset;
+      }
+      .ant-picker-suffix {
+        color: #161c29;
+      }
+    }
+  }
+  .dateForm {
+    width: 100%;
+    border-radius: 5px;
+    border: solid 1px #d6dce4;
+    &:focus {
+      outline: 0;
+      box-shadow: unset;
+    }
+  }
+  .inputForm {
+    border-radius: 5px;
+    border: solid 1px #d6dce0;
+  }
+  .selectForm {
+    border-radius: 5px;
+    border-color: #d6dce0;
+    box-shadow: none;
+    :global {
+      .ant-select-selector {
+        box-shadow: none;
+        border-radius: 5px;
+      }
+      .ant-select-focused {
+        box-shadow: none;
+        border-color: #2c6df9;
+      }
+
+      .ant-select-selection-item {
+        opacity: 1;
+      }
+    }
+  }
+  .selectForm:focus {
+    box-shadow: none;
+    border-radius: 5px;
+  }
+  .arrowDown {
+    color: #161c29;
+  }
+  .arrowUP {
+    color: #161c29;
+  }
+  :global {
+    .ant-select-focused .ant-select-selector,
+    .ant-select-selector:focus,
+    .ant-select-selector:active,
+    .ant-select-open .ant-select-selector {
+      border-color: #2c6df9 !important;
+      box-shadow: none !important;
+    }
+  }
+  .line {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-top: solid 2px #d6dce0;
+  }
+}

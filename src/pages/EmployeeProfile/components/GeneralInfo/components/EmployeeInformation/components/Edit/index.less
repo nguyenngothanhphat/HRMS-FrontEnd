@@ -1,0 +1,71 @@
+.root {
+  .Form {
+    width: 100%;
+    :global {
+      .ant-form-item-label {
+        text-align: left;
+      }
+      .ant-form-item-label > label {
+        font-size: 13px;
+        color: #000000;
+      }
+      .ant-form-item-label > label::after {
+        content: '';
+      }
+      .ant-form-item {
+        width: 100%;
+      }
+      .ant-input:focus {
+        border-color: #2c6df9;
+        outline: 0;
+        box-shadow: unset;
+      }
+      .ant-picker-focused {
+        border-color: #2c6df9;
+        box-shadow: unset;
+      }
+      .ant-picker-suffix {
+        color: #161c29;
+      }
+    }
+  }
+  .dateForm {
+    width: 100%;
+    border-radius: 5px;
+    border: solid 1px #d6dce4;
+    &:focus {
+      outline: 0;
+      box-shadow: unset;
+    }
+  }
+  .inputForm {
+    border-radius: 5px;
+    border: solid 1px #d6dce0;
+  }
+
+  .textValue {
+    font-size: 13px;
+    color: #707177;
+  }
+  .iconQuestTion {
+    margin-top: 2px;
+    margin-left: 9px;
+  }
+}
+.GenEITooltip {
+  :global {
+    .ant-tooltip-content {
+      border-radius: 5px;
+    }
+    .ant-tooltip-inner {
+      font-size: 12px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      text-align: center;
+      color: #ffffff;
+    }
+  }
+}

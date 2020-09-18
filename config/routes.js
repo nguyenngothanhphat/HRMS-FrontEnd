@@ -46,14 +46,14 @@ const routes = [
           {
             path: '/dashboard',
             name: 'dashboard',
-            icon: 'home',
+            icon: '/assets/images/home.svg',
             component: './Dashboard',
             // authority: ['admin'],
           },
           {
             path: '/directory',
             name: 'directory',
-            icon: 'unordered-list',
+            icon: '/assets/images/directory.svg',
             component: './Directory',
           },
           {
@@ -65,7 +65,7 @@ const routes = [
           {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
-            icon: 'file',
+            icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
           },
           {

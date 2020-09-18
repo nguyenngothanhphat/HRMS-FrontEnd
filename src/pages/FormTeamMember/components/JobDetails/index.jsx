@@ -227,7 +227,7 @@ class JobDetails extends PureComponent {
               <Row>
                 <NoteComponent note={Note} />
               </Row>
-              <Row style={{ width: '100%' }}>
+              <Row className={styles.stepRow}>
                 <StepsComponent />
               </Row>
             </div>

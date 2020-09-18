@@ -1,38 +1,29 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Row, Col, Select, Typography } from 'antd';
-import ExternalStyle from './FirstFieldsComponent.less';
 import { connect } from 'umi';
+import InternalStyle from './FirstFieldsComponent.less';
+
 const { Option } = Select;
 
 @connect(({ info: { jobDetail } = {} }) => ({
   jobDetail,
 }))
 class FirstFieldsComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isNull: false,
-    };
-  }
   static getDerivedStateFromProps(props) {
     if ('jobDetail' in props) {
       return { jobDetail: props.jobDetail || {} };
     }
     return null;
   }
-  saveData = (e) => {
-    // if (name === 'department') {
-    //   console.log(e);
-    // }
-    console.log(e);
-  };
+
   render() {
     const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
     const { jobDetail = {} } = this.state;
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
     return (
       <>
-        <div className={ExternalStyle.FirstFieldsComponent}>
+        <div>
           <Row gutter={[24, 0]}>
             {dropdownField.map((item) => (
               <Col
@@ -65,9 +56,7 @@ class FirstFieldsComponent extends Component {
                 >
                   {item.Option.map((data) => (
                     <Option value={data.value}>
-                      <Typography.Text className={ExternalStyle.SelectedOption}>
-                        {data.value}
-                      </Typography.Text>
+                      <Typography.Text>{data.value}</Typography.Text>
                     </Option>
                   ))}
                 </Select>
@@ -75,7 +64,7 @@ class FirstFieldsComponent extends Component {
             ))}
           </Row>
         </div>
-        <div className={ExternalStyle.Line} />
+        <div className={InternalStyle.Line} />
       </>
     );
   }
