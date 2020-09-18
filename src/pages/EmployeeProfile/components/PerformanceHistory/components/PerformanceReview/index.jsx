@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card, Row, Col } from 'antd';
+import PerformanceReviewIndicator from './components/PerformanceReviewIndicator';
 import styles from './index.less';
 
 class PerformanceReview extends PureComponent {
@@ -52,13 +53,13 @@ class PerformanceReview extends PureComponent {
       },
       {
         id: 5,
-        label: 'Problem solving',
+        label: 'Decision Making',
         value: {
           level: 3,
         },
       },
       {
-        id: 5,
+        id: 6,
         label: 'Organising and Planning',
         value: {
           level: 2,
@@ -86,13 +87,7 @@ class PerformanceReview extends PureComponent {
                       {item.label}
                     </Col>
                     <Col span={13} className={styles.performanceReview_indicator}>
-                      <Row className={styles.performanceReview_marks}>
-                        <Col className={styles.performanceReview_rectangle} />
-                        <Col className={styles.performanceReview_rectangle} />
-                        <Col className={styles.performanceReview_rectangle} />
-                        <Col className={styles.performanceReview_rectangle} />
-                        <Col className={styles.performanceReview_rectangle} />
-                      </Row>
+                      <PerformanceReviewIndicator level={item.value.level} />
                     </Col>
                     <Col span={5} className={styles.textValue}>
                       {this._renderTypePerformanceReview(item.value.level)}
