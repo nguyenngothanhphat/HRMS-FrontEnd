@@ -21,6 +21,13 @@ export default {
   'pages.employeeProfile.documents.infoCollapseType2.uploadedBy': 'Uploaded By',
   'pages.employeeProfile.documents.infoCollapseType2.date': 'Date',
   'pages.employeeProfile.documents.infoCollapseType2.status': 'Status',
+  'pages.employeeProfile.documents.viewDocument.title': 'View Document',
+  'pages.employeeProfile.documents.viewDocument.goBack': 'Go back',
+  'pages.employeeProfile.documents.viewDocument.documentType': 'Document Type',
+  'pages.employeeProfile.documents.viewDocument.shareWith': 'Share with',
+  'pages.employeeProfile.documents.viewDocument.emailPlaceholder': 'Select emails...',
+  'pages.employeeProfile.documents.viewDocument.uploadNewBtn': 'Upload new',
+  'pages.employeeProfile.documents.viewDocument.saveBtn': 'Save',
 
   'pages.employeeProfile.BenefitTab.dependentDetails': 'Employee Dependent Details',
   'pages.employeeProfile.BenefitTab.kycDetails': 'KYC Details',
