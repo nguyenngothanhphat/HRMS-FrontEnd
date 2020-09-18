@@ -4,6 +4,7 @@ import { connect, formatMessage } from 'umi';
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
+import UploadImage from '@/components/UploadImage';
 import logo from './components/images/brand-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import whiteImg from './components/images/whiteImg.png';
@@ -52,6 +53,14 @@ const PreviewOffer = (props) => {
 
   const [mail, setMail] = useState(mailProp || '');
   const [mailForm] = Form.useForm();
+
+  const getResponse = (value) => {
+    const { statusCode, data = [] } = value;
+    if (statusCode === 200) {
+      const [first] = data;
+      console.log(first.url);
+    }
+  };
 
   const resetForm = () => {
     mailForm.resetFields();
@@ -313,14 +322,18 @@ const PreviewOffer = (props) => {
               <img className={styles.signatureImg} src={file} alt="" />
             )}
 
-            <button
+            {/* <button
               type="submit"
               onClick={() => {
                 fileRef.click();
               }}
             >
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-            </button>
+            </button> */}
+            <UploadImage
+              content={<div className={styles.test}>Upload</div>}
+              getResponse={getResponse}
+            />
 
             <CancelIcon resetImg={resetImg} />
           </div>
