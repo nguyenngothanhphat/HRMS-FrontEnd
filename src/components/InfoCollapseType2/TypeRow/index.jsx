@@ -9,7 +9,7 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 
-const CollapseTest = (props) => {
+const CollapseRow = (props) => {
   const { data, onFileClick } = props;
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
@@ -104,7 +104,7 @@ class TypeRow extends PureComponent {
     return (
       <div>
         {data.map((row) => (
-          <CollapseTest onFileClick={onFileClick} data={row} />
+          <CollapseRow onFileClick={onFileClick} data={row} />
         ))}
       </div>
     );
