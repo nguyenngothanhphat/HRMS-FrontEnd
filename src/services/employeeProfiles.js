@@ -18,3 +18,10 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
+
+export async function updateGeneralInfo(payload) {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

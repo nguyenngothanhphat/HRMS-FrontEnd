@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
@@ -12,22 +12,12 @@ import styles from './index.less';
   loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
   employeeProfile,
 }))
-class GeneralInfo extends PureComponent {
-  componentDidMount() {
-    // const compensationData = { a: '1' };
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeeProfile/saveTemp',
-    //   payload: { compensationData },
-    // });
-  }
-
+class GeneralInfo extends Component {
   render() {
     const {
       loadingGeneral = false,
       employeeProfile: { tempData: { generalData = {} } = {} },
     } = this.props;
-    // console.log(generalData);
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
