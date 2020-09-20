@@ -85,7 +85,7 @@ const BasicLayout = (props) => {
     <div className={styles.root}>
       <ProLayout
         logo={logo}
-        headerHeight={80}
+        headerHeight={76}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
