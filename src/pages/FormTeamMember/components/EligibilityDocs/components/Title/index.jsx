@@ -2,14 +2,14 @@ import React from 'react';
 import { Typography } from 'antd';
 import styles from './index.less';
 
-const Title = () => {
+const Title = ({ formatMessage = () => {} }) => {
   return (
     <div className={styles.Title}>
       <Typography.Title level={4} className={styles.title}>
-        Eligibility Documents
+        {formatMessage({ id: 'component.eligibilityDocs.title' })}
       </Typography.Title>
       <Typography.Text className={styles.text}>
-        All documents supporting candidate’s employment eligibility will be displayed here
+        {formatMessage({ id: 'component.eligibilityDocs.subtitle' })}
       </Typography.Text>
     </div>
   );
