@@ -5,7 +5,7 @@ import PerformanceReviewIndicator from './components/PerformanceReviewIndicator'
 import styles from './index.less';
 
 class PerformanceReview extends PureComponent {
-  _renderTypePerformanceReview = (level) => {
+  renderTypePerformanceReview = (level) => {
     if (level === 2) {
       return (
         <span role="img" aria-label="icon-smile-face">
@@ -111,7 +111,7 @@ class PerformanceReview extends PureComponent {
                       <PerformanceReviewIndicator level={item.value.level} />
                     </Col>
                     <Col span={5} className={styles.textValue}>
-                      {this._renderTypePerformanceReview(item.value.level)}
+                      {this.renderTypePerformanceReview(item.value.level)}
                     </Col>
                   </>
                 )}

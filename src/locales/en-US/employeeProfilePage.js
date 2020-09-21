@@ -56,4 +56,9 @@ export default {
   'pages.employeeProfile.performanceHistory.performanceReview.decisionMaking': 'Decision Making',
   'pages.employeeProfile.performanceHistory.performanceReview.organising':
     'Organising and Planning',
+  'pages.employeeProfile.performanceHistory.projectHistory.projectName': 'Project Name',
+  'pages.employeeProfile.performanceHistory.projectHistory.team': 'Team',
+  'pages.employeeProfile.performanceHistory.projectHistory.status': 'Status',
+  'pages.employeeProfile.performanceHistory.projectHistory.projectDuration': 'Project Duration',
+  'pages.employeeProfile.performanceHistory.projectHistory.engagement': 'Engagement',
 };
