@@ -25,3 +25,9 @@ export async function updateGeneralInfo(payload) {
     data: payload,
   });
 }
+
+export async function getListTitle() {
+  return request('/api/title/list', {
+    method: 'POST',
+  });
+}

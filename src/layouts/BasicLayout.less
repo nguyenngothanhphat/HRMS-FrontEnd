@@ -35,10 +35,18 @@
     .ant-pro-global-header-logo {
       display: none;
     }
-
+    .ant-pro-basicLayout-content {
+      position: relative;
+      padding-top: 40px;
+      /* margin: 24px; */
+    }
     .ant-page-header {
       background-color: #eee;
       padding: 10px 0 0 20px;
+      width: 100%;
+      position: fixed;
+      z-index: 100;
+      top: 76px;
     }
 
     .ant-breadcrumb {
@@ -48,7 +56,6 @@
     }
 
     .ant-breadcrumb > span:last-child a {
-      display: inline-block;
       color: #161c29;
       font-size: 13px;
       font-weight: 500;

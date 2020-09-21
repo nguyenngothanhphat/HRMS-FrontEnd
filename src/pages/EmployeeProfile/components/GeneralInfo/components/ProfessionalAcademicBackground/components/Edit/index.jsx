@@ -19,12 +19,14 @@ const { Option } = Select;
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
+      listTitle = [],
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
     listSkill,
+    listTitle,
   }),
 )
 class Edit extends PureComponent {
@@ -110,7 +112,13 @@ class Edit extends PureComponent {
   };
 
   render() {
-    const { generalData, handleCancel = () => {}, listSkill = [], loading } = this.props;
+    const {
+      generalData,
+      handleCancel = () => {},
+      listSkill = [],
+      loading,
+      listTitle = [],
+    } = this.props;
     const {
       preJobTitle = '',
       skills = [],
@@ -144,7 +152,17 @@ class Edit extends PureComponent {
           onValuesChange={this.handleFormChange}
         >
           <Form.Item label="Previous Job Tilte" name="preJobTitle">
-            <Input />
+            <Select
+              placeholder="Select title"
+              showArrow
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {listTitle.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item label="Previous Company" name="preCompany">
             <Input />
@@ -166,7 +184,6 @@ class Edit extends PureComponent {
               placeholder="Select skill"
               mode="multiple"
               tagRender={this.tagRender}
-              onKeyDown={this.handleOnKeyDown}
               showArrow
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
