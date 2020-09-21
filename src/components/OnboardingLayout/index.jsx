@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
-
-import AwaitingApprovalsFromHR from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovalsFromHR';
-
 import { Button } from 'antd';
 import { Link } from 'umi';
-import { SearchOutlined } from '@ant-design/icons';
+// import { SearchOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -42,16 +39,16 @@ class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      selectedId: '',
+      // selectedId: '',
       displayComponent: '',
     };
   }
 
   componentDidMount() {
-    const { listMenu: { menuItem = [] } = [] } = this.props;
+    const { listMenu = [] } = this.props;
     this.setState({
       //   selectedItemId: 0,
-      displayComponent: menuItem[0].component,
+      displayComponent: listMenu[0].menuItem[0].component,
     });
   }
 
