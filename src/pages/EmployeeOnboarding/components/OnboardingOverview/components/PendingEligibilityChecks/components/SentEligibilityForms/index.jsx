@@ -42,6 +42,7 @@ class SentEligibilityForms extends Component {
         title: 'Actions',
         dataIndex: 'actions',
         key: 'actions',
+        width: '12%',
         render: () => (
           <span className={styles.table_actions}>
             <p>View form</p>
