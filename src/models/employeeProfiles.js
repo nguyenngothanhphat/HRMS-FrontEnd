@@ -5,6 +5,8 @@ import {
   getListSkill,
   updateGeneralInfo,
   getListTitle,
+  addCertification,
+  updateCertification,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -109,6 +111,24 @@ const employeeProfile = {
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTitle } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addCertification({ payload }, { call }) {
+      try {
+        const response = yield call(addCertification, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateCertification({ payload }, { call }) {
+      try {
+        const response = yield call(updateCertification, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
       }

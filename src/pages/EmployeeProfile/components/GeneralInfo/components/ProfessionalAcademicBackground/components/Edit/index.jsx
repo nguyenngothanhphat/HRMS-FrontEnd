@@ -16,7 +16,7 @@ const { Option } = Select;
   ({
     loading,
     employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
+      originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
       listTitle = [],
@@ -27,6 +27,7 @@ const { Option } = Select;
     generalData,
     listSkill,
     listTitle,
+    compensationData,
   }),
 )
 class Edit extends PureComponent {
@@ -100,10 +101,38 @@ class Edit extends PureComponent {
     return newObj;
   };
 
-  handleSave = () => {
+  handleUpdateCertification = (list) => {
+    const { dispatch, compensationData } = this.props;
+    const { employee, company } = compensationData;
+    list.forEach((element) => {
+      if (element._id) {
+        dispatch({
+          type: 'employeeProfile/updateCertification',
+          payload: {
+            id: element._id,
+            urlFile: element.urlFile,
+          },
+        });
+      } else if (element.name || element.urlFile) {
+        dispatch({
+          type: 'employeeProfile/addCertification',
+          payload: {
+            name: element.name,
+            urlFile: element.urlFile,
+            employee,
+            company,
+          },
+        });
+      }
+    });
+  };
+
+  handleSave = async () => {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
+    const { certification } = payload;
+    await this.handleUpdateCertification(certification);
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
