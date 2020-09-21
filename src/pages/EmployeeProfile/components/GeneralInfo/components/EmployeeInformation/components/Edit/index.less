@@ -51,6 +51,56 @@
     margin-top: 2px;
     margin-left: 9px;
   }
+  .labelUpload {
+    .urlUpload {
+      font-size: 13px;
+      color: #2c6df9;
+      text-decoration: underline;
+    }
+    :global {
+      .ant-form-item-label > label {
+        font-size: 13px;
+        font-style: italic;
+        color: #707177;
+      }
+    }
+  }
+  .viewUpLoadData {
+    display: flex;
+    position: absolute;
+    top: 5px;
+    right: -240px;
+    .viewUpLoadDataURL {
+      text-decoration: underline;
+      margin-right: 16px;
+    }
+    .viewUpLoadDataText {
+      margin-right: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #47c97f;
+    }
+    .viewUpLoadDataIconCancel {
+      margin-bottom: 13px;
+      cursor: pointer;
+    }
+  }
+  .viewUpload {
+    position: relative;
+    .textUpload {
+      position: absolute;
+      top: 5px;
+      right: -142px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      :global {
+        .ant-upload {
+          color: #2c6df9;
+        }
+      }
+    }
+  }
 }
 .GenEITooltip {
   :global {

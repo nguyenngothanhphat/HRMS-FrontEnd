@@ -2,11 +2,20 @@ import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,25 +27,37 @@ class Edit extends PureComponent {
   };
 
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
   render() {
     const { Option } = Select;
+    const { generalData } = this.props;
     const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+      passportNo = '',
+      passportIssueCountry = '',
+      passportIssueOn = '',
+      passportValidTill = '',
+      visaNo = '',
+      visaType = '',
+      visaCountry = '',
+      visaEntryType = '',
+      visaIssuedOn = '',
+      visaValidTill = '',
+    } = generalData;
     const { dropdown } = this.state;
     const formItemLayout = {
       labelCol: {
@@ -44,17 +65,32 @@ class Edit extends PureComponent {
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
+    const formatDatePassportIssueOn = passportIssueOn && moment(passportIssueOn);
+    const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+    const formatDateVisaIssuedOn = visaIssuedOn && moment(visaIssuedOn);
+    const formatDateVisaValidTill = visaValidTill && moment(visaValidTill);
     const dateFormat = 'Do MMM YYYY';
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
-          initialValues={generalData}
+          initialValues={{
+            passportNo,
+            passportIssueCountry,
+            passportIssueOn: formatDatePassportIssueOn,
+            passportValidTill: formatDatePassportValidTill,
+            visaNo,
+            visaType,
+            visaCountry,
+            visaEntryType,
+            visaIssuedOn: formatDateVisaIssuedOn,
+            visaValidTill: formatDateVisaValidTill,
+          }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
         >
           <Form.Item
@@ -87,14 +123,14 @@ class Edit extends PureComponent {
               <Option value="VietNam">Viet Nam</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Issued On" name="issuedOnPassPort">
+          <Form.Item label="Issued On" name="passportIssueOn">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
               className={styles.dateForm}
             />
           </Form.Item>
-          <Form.Item label="Valid Till" name="validTillPassPort">
+          <Form.Item label="Valid Till" name="passportValidTill">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
@@ -106,7 +142,7 @@ class Edit extends PureComponent {
 
           <Form.Item
             label="Visa Number"
-            name="visaNumber"
+            name="visaNo"
             rules={[
               {
                 pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
@@ -133,7 +169,7 @@ class Edit extends PureComponent {
               <Option value="nothing">nothing...</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Country" name="country">
+          <Form.Item label="Country" name="visaCountry">
             <Select
               allowClear
               className={styles.selectForm}
@@ -151,7 +187,7 @@ class Edit extends PureComponent {
               <Option value="VietNam">Viet Nam</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Entry Type" name="entryType">
+          <Form.Item label="Entry Type" name="visaEntryType">
             <Select
               allowClear
               className={styles.selectForm}
@@ -168,14 +204,14 @@ class Edit extends PureComponent {
               <Option value="nothing">nothing....</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Issued On" name="issuedOnVisa">
+          <Form.Item label="Issued On" name="visaIssuedOn">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
               className={styles.dateForm}
             />
           </Form.Item>
-          <Form.Item label="Valid Till" name="validTillVisa">
+          <Form.Item label="Valid Till" name="visaValidTill">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
