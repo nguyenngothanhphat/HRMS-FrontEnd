@@ -14,15 +14,19 @@ const { Option } = Select;
 
 @connect(
   ({
+    loading,
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
+      listTitle = [],
     } = {},
   }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
     listSkill,
+    listTitle,
   }),
 )
 class Edit extends PureComponent {
@@ -41,24 +45,80 @@ class Edit extends PureComponent {
   };
 
   handleFormChange = (changedValues) => {
-    console.log('changedValues', changedValues);
-    const { generalData } = this.props;
+    const { generalDataOrigin, generalData, dispatch } = this.props;
     const payload = { ...generalData, ...changedValues };
-    const { dispatch } = this.props;
+    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: payload },
     });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+  };
+
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const {
+      preJobTitle = '',
+      skills = [],
+      preCompany = '',
+      pastExp = 0,
+      totalExp = 0,
+      qualification = '',
+      certification = [],
+      _id: id = '',
+    } = generalDataTemp;
+    const payloadChanges = {
+      // ...generalDataOrigin,
+      id,
+      preJobTitle,
+      skills,
+      preCompany,
+      pastExp,
+      totalExp,
+      qualification,
+      certification,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = [
+      'preJobTitle',
+      'skills',
+      'preCompany',
+      'pastExp',
+      'totalExp',
+      'qualification',
+      'certification',
+    ];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
   };
 
   handleSave = () => {
-    const { generalData, generalDataOrigin } = this.props;
-    const payloadUpdate = { ...generalDataOrigin, ...generalData };
-    console.log('payloadUpdate', payloadUpdate);
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+    });
   };
 
   render() {
-    const { generalData, handleCancel = () => {}, listSkill = [] } = this.props;
+    const {
+      generalData,
+      handleCancel = () => {},
+      listSkill = [],
+      loading,
+      listTitle = [],
+    } = this.props;
     const {
       preJobTitle = '',
       skills = [],
@@ -92,7 +152,17 @@ class Edit extends PureComponent {
           onValuesChange={this.handleFormChange}
         >
           <Form.Item label="Previous Job Tilte" name="preJobTitle">
-            <Input />
+            <Select
+              placeholder="Select title"
+              showArrow
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {listTitle.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item label="Previous Company" name="preCompany">
             <Input />
@@ -114,7 +184,6 @@ class Edit extends PureComponent {
               placeholder="Select skill"
               mode="multiple"
               tagRender={this.tagRender}
-              onKeyDown={this.handleOnKeyDown}
               showArrow
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -130,7 +199,7 @@ class Edit extends PureComponent {
           <div className={s.viewFooter__cancel} onClick={handleCancel}>
             Cancel
           </div>
-          <Button type="primary" htmlType="submit" onClick={this.handleSave}>
+          <Button type="primary" htmlType="submit" onClick={this.handleSave} loading={loading}>
             Save
           </Button>
         </div>

@@ -1,8 +1,20 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import View from './components/View';
 import Edit from './components/Edit';
 import styles from './index.less';
 
+@connect(
+  ({
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class ProfessionalAcademicBackground extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,8 +30,37 @@ class ProfessionalAcademicBackground extends PureComponent {
   };
 
   handleCancel = () => {
+    const { generalDataOrigin, generalData, dispatch } = this.props;
     this.setState({
       isEdit: false,
+    });
+    const {
+      preJobTitle = '',
+      skills = [],
+      preCompany = '',
+      pastExp = 0,
+      totalExp = 0,
+      qualification = '',
+      certification = [],
+    } = generalDataOrigin;
+    const reverseFields = {
+      preJobTitle,
+      skills,
+      preCompany,
+      pastExp,
+      totalExp,
+      qualification,
+      certification,
+    };
+    const payload = { ...generalData, ...reverseFields };
+    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: payload },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
