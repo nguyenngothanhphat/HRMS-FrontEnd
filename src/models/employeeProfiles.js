@@ -4,6 +4,7 @@ import {
   getCompensation,
   getListSkill,
   updateGeneralInfo,
+  getListTitle,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -13,6 +14,7 @@ const employeeProfile = {
     isModified: false,
     idCurrentEmployee: '',
     listSkill: [],
+    listTitle: [],
     originData: {
       generalData: {},
       compensationData: {},
@@ -97,6 +99,16 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListTitle(_, { call, put }) {
+      try {
+        const response = yield call(getListTitle);
+        const { statusCode, data: listTitle = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listTitle } });
       } catch (errors) {
         dialog(errors);
       }

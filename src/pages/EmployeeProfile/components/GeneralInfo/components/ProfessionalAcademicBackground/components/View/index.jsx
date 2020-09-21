@@ -3,14 +3,18 @@ import { Row, Col, Tag } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
+@connect(({ employeeProfile: { tempData: { generalData = {} } = {}, listTitle = [] } = {} }) => ({
   generalData,
+  listTitle,
 }))
 class View extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/fetchListSkill',
+    });
+    dispatch({
+      type: 'employeeProfile/fetchListTitle',
     });
   }
 
@@ -60,7 +64,7 @@ class View extends PureComponent {
   };
 
   render() {
-    const { generalData } = this.props;
+    const { generalData, listTitle = [] } = this.props;
     const {
       preJobTitle = '',
       skills = [],
@@ -70,8 +74,9 @@ class View extends PureComponent {
       qualification = '',
       certification = [],
     } = generalData;
+    const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle);
     const dummyData = [
-      { id: 1, label: 'Previous Job label', value: preJobTitle },
+      { id: 1, label: 'Previous Job Tilte', value: objPreviousJobTilte.name },
       { id: 2, label: 'Previous Company', value: preCompany },
       { id: 3, label: 'Past Experience', value: pastExp },
       { id: 4, label: 'Total Experience', value: totalExp },
@@ -79,6 +84,7 @@ class View extends PureComponent {
     ];
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         {dummyData.map((item) => (
