@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import { Link } from 'umi';
+import OnboardingLayout from '@/components/OnboardingLayout';
 
 class OnboardingOverview extends PureComponent {
   render() {
@@ -16,6 +17,7 @@ class OnboardingOverview extends PureComponent {
         >
           Link review member by rookieId =16003134
         </Link>
+        <OnboardingLayout />
       </div>
     );
   }
