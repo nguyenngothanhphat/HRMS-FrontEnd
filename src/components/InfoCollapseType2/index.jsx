@@ -4,6 +4,59 @@ import { formatMessage } from 'umi';
 import TypeRow from './TypeRow';
 import styles from './index.less';
 
+// const data = [
+//   {
+//     title: 'PR Reports',
+//     type: 1, // uploaded by
+//     body: [
+//       {
+//         kind: 'Agreement',
+//         files: [
+//           {
+//             id: 10,
+//             fileName: 'PR Reports 2020',
+//             generatedBy: 'Terralogic',
+//             date: 'December 10th, 2018',
+//             source: '/sample_2.pdf',
+//           },
+//           {
+//             id: 11,
+//             fileName: 'PR Report 2020',
+//             generatedBy: 'Terralogic',
+//             date: 'December 10th, 2018',
+//             source: '/sample_1.pdf',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     title: 'Qualifications/Certification',
+//     type: 2, // uploaded by
+//     body: [
+//       {
+//         kind: 'Certificates',
+//         files: [
+//           {
+//             id: 12,
+//             fileName: 'HCI Certification',
+//             generatedBy: 'Aditya Venkatesh',
+//             date: 'December 10th, 2018',
+//             source: '/sample_2.pdf',
+//           },
+//           {
+//             id: 13,
+//             fileName: 'Graduation',
+//             generatedBy: 'Aditya Venkatesh',
+//             date: 'December 10th, 2018',
+//             source: '/sample_1.pdf',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ];
+
 class InfoCollapseType2 extends PureComponent {
   render() {
     const { data = [], onFileClick } = this.props;

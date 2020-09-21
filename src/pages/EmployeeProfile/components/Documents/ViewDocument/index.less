@@ -86,10 +86,20 @@
   .operationButton {
     display: flex;
     justify-content: flex-end;
-    padding: 20px;
-    .uploadButton {
+    align-items: center;
+    padding: 25px;
+    :global {
+      .ant-upload {
+        color: #ffa100 !important;
+        font-weight: bold !important;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+    }
+    .loadingIcon {
       color: #ffa100;
-      font-weight: bold;
+      margin-left: 5px;
+      font-size: 20px;
     }
     .saveButton {
       font-weight: bold;
