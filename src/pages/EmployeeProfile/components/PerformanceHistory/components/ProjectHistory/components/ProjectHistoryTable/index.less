@@ -16,8 +16,19 @@
     .ant-avatar-group .ant-avatar:last-child {
       margin-left: -32px;
     }
+    .ant-avatar-group .ant-avatar:nth-child(3) {
+      position: relative;
+    }
+    .ant-avatar-group .ant-avatar:nth-child(3)::before {
+      position: absolute;
+      content: '';
+      width: 36px;
+      height: 36px;
+      background-color: rgba(0, 0, 0, 0.4);
+      left: 0;
+    }
     .ant-avatar-string {
-      color: red;
+      color: #ffffff;
       span {
         transform: scale(1) translateX(-200%);
       }
