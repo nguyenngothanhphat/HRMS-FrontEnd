@@ -47,4 +47,13 @@ export default {
   'pages.employeeProfile.BenefitTab.components.kyc.walletStat': 'Wallet Status',
   'pages.employeeProfile.BenefitTab.components.kyc.adhaar': 'Adhaar Number',
   'pages.employeeProfile.BenefitTab.components.kyc.paytm': 'Paytm Number',
+
+  'pages.employeeProfile.performanceHistory.performanceReview.date': 'Date',
+  'pages.employeeProfile.performanceHistory.performanceReview.reportingTo': 'Reporting To',
+  'pages.employeeProfile.performanceHistory.performanceReview.collaboration_teamwork':
+    'Collaboration & TeamWork',
+  'pages.employeeProfile.performanceHistory.performanceReview.problemSolving': 'Problem Solving',
+  'pages.employeeProfile.performanceHistory.performanceReview.decisionMaking': 'Decision Making',
+  'pages.employeeProfile.performanceHistory.performanceReview.organising':
+    'Organising and Planning',
 };
