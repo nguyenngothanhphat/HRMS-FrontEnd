@@ -74,7 +74,7 @@ class View extends PureComponent {
       qualification = '',
       certification = [],
     } = generalData;
-    const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle);
+    const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
     const dummyData = [
       { id: 1, label: 'Previous Job Tilte', value: objPreviousJobTilte.name },
       { id: 2, label: 'Previous Company', value: preCompany },
