@@ -1,17 +1,53 @@
 import React, { PureComponent } from 'react';
-import { Card, Row } from 'antd';
+import { Card, Row, Menu, Dropdown, Input } from 'antd';
 import ProjectHistoryTable from './components/ProjectHistoryTable';
 import noDataIcon from './assets/no_data.svg';
+import filterIcon from './assets/filter_icon.svg';
 import styles from './index.less';
 
 class ProjectHistory extends PureComponent {
-  renderExtraCard = () => {};
+  renderExtraCard = () => {
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
+            Lest than 1 months
+          </a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
+            1 Months
+          </a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+            2 Months
+          </a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+            3 Months
+          </a>
+        </Menu.Item>
+      </Menu>
+    );
+    const { Search } = Input;
+    const extraCard = (
+      <Row gutter={[16, 0]} className={styles.extraCard} align="middle">
+        <Dropdown overlay={menu} trigger={['click']}>
+          <div className={styles.extraCard_filter}>
+            <img className={styles.extraCard_filterImg} alt="" src={filterIcon} />
+            <span>Filter</span>
+          </div>
+        </Dropdown>
+        <Search className={styles.extraCard_search} />
+      </Row>
+    );
+    return extraCard;
+  };
 
   renderPrjectHistoryTable = (projectHistoryData) => {
-    let recentProjectHistoryTable = (
-      // <ProjectHistoryTable list={expenseData} pagination={false} rowSelection={null} />
-      <ProjectHistoryTable list={projectHistoryData} />
-    );
+    let recentProjectHistoryTable = <ProjectHistoryTable list={projectHistoryData} />;
     if (projectHistoryData.length < 1) {
       recentProjectHistoryTable = (
         <Row className={styles.recentEmptyBlocks}>
@@ -62,7 +98,11 @@ class ProjectHistory extends PureComponent {
     ];
     return (
       <div className={styles.projectHistory}>
-        <Card className={styles.projectHistory_card} title="Project History">
+        <Card
+          className={styles.projectHistory_card}
+          title="Project History"
+          extra={this.renderExtraCard()}
+        >
           {this.renderPrjectHistoryTable(projectHistoryData)}
         </Card>
       </div>

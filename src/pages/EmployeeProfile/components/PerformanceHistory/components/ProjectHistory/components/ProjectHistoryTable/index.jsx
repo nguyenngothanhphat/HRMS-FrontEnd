@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Dropdown, Row } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 import styles from './index.less';
 
@@ -7,6 +8,21 @@ class ProjectHistoryTable extends PureComponent {
   generateColumns = () => {};
 
   renderColumnTeam = () => {};
+
+  renderEngagementColumn = (engagement) => {
+    const engagementColumn = (
+      <Row className={styles.engagementColumn} justify="space-between">
+        <span>{engagement}</span>
+        <Dropdown overlay={this.menu}>
+          <EllipsisOutlined
+            onClick={this.handleMenuClick}
+            className={styles.engagementColumn_menu}
+          />
+        </Dropdown>
+      </Row>
+    );
+    return engagementColumn;
+  };
 
   render() {
     const columns = [
@@ -44,6 +60,8 @@ class ProjectHistoryTable extends PureComponent {
         }),
         dataIndex: 'engagement',
         key: 'engagement',
+        render: (engagement) => this.renderEngagementColumn(engagement),
+        width: '15%',
       },
     ];
 
