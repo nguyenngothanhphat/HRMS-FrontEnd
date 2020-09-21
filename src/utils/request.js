@@ -55,7 +55,6 @@ const request = (url, options = {}, noAuth) => {
   if (!noAuth) {
     const token = getToken();
     headers = {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
       ...headers,
     };
