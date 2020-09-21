@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
 import { Button, Input, Form } from 'antd';
-import { EditOutlined, SendOutlined } from '@ant-design/icons';
+import { EditOutlined, SendOutlined, LoadingOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
 import UploadImage from '@/components/UploadImage';
 import logo from './components/images/brand-logo.png';
@@ -16,7 +16,7 @@ import styles from './index.less';
 const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = (props) => {
-  const { dispatch, previewOffer = {} } = props;
+  const { dispatch, previewOffer = {}, loading } = props;
 
   // Get default value from "info" store
   const {
@@ -331,7 +331,12 @@ const PreviewOffer = (props) => {
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button> */}
             <UploadImage
-              content={<div className={styles.test}>Upload</div>}
+              content={
+                <div className={styles.test}>
+                  <span>Upload</span>
+                  {loading && <LoadingOutlined style={{ color: 'red' }} />}
+                </div>
+              }
               getResponse={getResponse}
             />
 
@@ -412,6 +417,7 @@ const PreviewOffer = (props) => {
 };
 
 // export default PreviewOffer;
-export default connect(({ info: { previewOffer = {} } = {} }) => ({
+export default connect(({ info: { previewOffer = {} } = {}, loading }) => ({
   previewOffer,
+  loading: loading.effects['upload/uploadFile'],
 }))(PreviewOffer);
