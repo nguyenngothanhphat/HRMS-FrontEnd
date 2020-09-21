@@ -1,72 +1,40 @@
 import React, { PureComponent } from 'react';
+
 import { Button } from 'antd';
 import { Link } from 'umi';
-// import { SearchOutlined } from '@ant-design/icons';
+
+import MenuItem from './components/MenuItem';
 
 import styles from './index.less';
-
-// const MenuItem = (props) => {
-//     const
-//     return (
-//         <p className={`${styles.menuItem} ${styles.active}`}>
-//         Pending Eligibility Checks <span>(14)</span>
-//       </p>
-//     )
-// }
-// const PHASE_DATA = [];
-
-const Phase = (props) => {
-  const { title, menuItem = [] } = props;
-  const { handleClick } = props;
-  // const {id, name, key, component} = menuItem;
-
-  return (
-    <div className={styles.phase}>
-      <h3>{title}</h3>
-      {menuItem.map((item) => {
-        const { id, name, quantity, key, component } = item;
-        return (
-          <p key={id} className={styles.menuItem} onClick={() => handleClick(item)}>
-            {name} <span>({quantity})</span>
-          </p>
-        );
-      })}
-    </div>
-  );
-};
 
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // selectedId: '',
-      displayComponent: '',
+      selectedId: 1,
+      displayComponent: null,
     };
   }
 
   componentDidMount() {
     const { listMenu = [] } = this.props;
     this.setState({
-      //   selectedItemId: 0,
+      selectedId: listMenu[0].menuItem[0].id,
       displayComponent: listMenu[0].menuItem[0].component,
     });
   }
 
   handleClick = (item) => {
-    // const { id, component } = item;
-    // console.log(id, component);
-    // this.setState({
-    //   selectedId: id,
-    //   displayComponent: component,
-    // });
-    console.log('HANDLE CLICK');
+    const { id = 1, component = null } = item;
+    this.setState({
+      selectedId: id,
+      displayComponent: component,
+    });
   };
 
   render() {
-    const { listMenu } = this.props;
-    const { displayComponent } = this.state;
-
-    console.log(displayComponent);
+    const { listMenu = [] } = this.props;
+    const { displayComponent = null } = this.state;
 
     return (
       <div className={styles.overviewContainer}>
@@ -86,9 +54,15 @@ class OnboardingLayout extends PureComponent {
           <div className={styles.leftMenu}>
             {listMenu.map((phase) => {
               const { id, title, menuItem } = phase;
+              const { selectedId } = this.state;
               return (
                 <div key={id}>
-                  <Phase title={title} menuItem={menuItem} handleClick={this.handleClick} />
+                  <MenuItem
+                    selectedId={selectedId}
+                    title={title}
+                    menuItem={menuItem}
+                    handleClick={this.handleClick}
+                  />
                 </div>
               );
             })}
