@@ -75,30 +75,42 @@ const info = {
       globalEmployee: [
         {
           medical: {
-            accessPlus: false,
-            basePlan: false,
             isChecked: false,
+            value: 'medical',
+            title: 'Medical',
             checkedList: [],
+            subCheckBox: [
+              { key: 1, value: '' },
+              { key: 2, value: '' },
+            ],
           },
           dental: {
             isChecked: false,
+            value: 'dental',
+            title: 'Dental',
             checkedList: [],
           },
           vision: {
             isChecked: false,
+            value: 'vision',
+            title: 'Vision',
             checkedList: [],
           },
           life: {
-            basicLife: false,
-            volLife: false,
             isChecked: false,
             checkedList: [],
+            subCheckBox: [
+              { key: 1, value: '' },
+              { key: 2, value: '' },
+            ],
           },
           shortTerm: {
-            basicLife: false,
-            volLife: false,
             isChecked: false,
             checkedList: [],
+            subCheckBox: [
+              { key: 1, value: '' },
+              { key: 2, value: '' },
+            ],
           },
         },
       ],

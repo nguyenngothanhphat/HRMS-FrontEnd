@@ -18,97 +18,81 @@ class Benefit extends PureComponent {
     return null;
   }
 
-  // handleChange = (e) => {
-  //   const { target } = e;
-  //   const { name, value } = target;
-  //   const { benefits } = this.state;
-  //   const { dispatch } = this.props;
-  //   const { globalEmployee } = benefits;
-  //   const { medical, dental, }
-  //   globalEmployee[name] = value;
-  //   dispatch({
-  //     type: 'info/saveBenefits',
-  //     payload: {
-  //       benefits,
-  //     },
-  //   });
-  // };
+  // handleChange = () => {
+
+  // }
+
+  // handleChangeAll = () => {
+
+  // }
+
+  // onChange = () => {
+
+  // }
 
   render() {
     const headerText = 'Coverage will take effect on 20/04/2020';
-    const { dispatch } = this.props;
-    const { benefits = {} } = this.state;
     const globalEmployeesCheckbox = {
       title: 'global',
       name: 'For Global employees',
       checkBox: [
         {
           value: 'Medical',
-          isChecked: false,
+          title: 'Medical',
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Open Access Plus - Choice Plan',
-              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] OAP - Base Plan',
-              isChecked: false,
             },
           ],
         },
         {
           value: 'Dental',
-          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Voluntary Dental',
-              isChecked: false,
             },
           ],
         },
         {
           value: 'Vision',
-          isChecked: false,
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Vision PRO',
-              isChecked: false,
             },
           ],
         },
         {
           value: 'Life',
-          isChecked: false,
+          title: 'Life',
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Basic Life / AD & D',
-              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] Vol life / AD & D',
-              isChecked: false,
             },
           ],
         },
         {
           value: 'Short-term disability',
-          isChecked: false,
+          title: 'shortTerm',
           subCheckBox: [
             {
               key: 1,
               value: '[ 2020 ] Basic Life / AD & D',
-              isChecked: false,
             },
             {
               key: 2,
               value: '[ 2020 ] Vol life / AD & D',
-              isChecked: false,
             },
           ],
         },
@@ -129,6 +113,7 @@ class Benefit extends PureComponent {
         },
         {
           value: 'Employee Provident Fund',
+          title: 'employeeProvident',
           subCheckBox: [
             {
               key: 1,
@@ -136,7 +121,7 @@ class Benefit extends PureComponent {
             },
             {
               key: 2,
-              value: '[ 2020 ] Open Access Plus - Choice Plan',
+              value: '[ 2020 ] Open Access Plus - Choice',
             },
           ],
         },
