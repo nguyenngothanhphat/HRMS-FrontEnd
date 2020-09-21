@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Row, Menu, Dropdown, Input } from 'antd';
+import { Card, Row, Menu, Dropdown, Input, message } from 'antd';
 import ProjectHistoryTable from './components/ProjectHistoryTable';
 import noDataIcon from './assets/no_data.svg';
 import filterIcon from './assets/filter_icon.svg';
@@ -8,33 +8,25 @@ import styles from './index.less';
 class ProjectHistory extends PureComponent {
   renderExtraCard = () => {
     const menu = (
-      <Menu>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-            Lest than 1 months
-          </a>
+      <Menu onClick={this.onClickItemFilter}>
+        <Menu.Item key="1">
+          <span>Lest than 1 months</span>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-            1 Months
-          </a>
+        <Menu.Item key="2">
+          <span>1 Months</span>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-            2 Months
-          </a>
+        <Menu.Item key="3">
+          <span>2 Months</span>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-            3 Months
-          </a>
+        <Menu.Item key="4">
+          <span>3 Months</span>
         </Menu.Item>
       </Menu>
     );
     const { Search } = Input;
     const extraCard = (
       <Row gutter={[16, 0]} className={styles.extraCard} align="middle">
-        <Dropdown overlay={menu} trigger={['click']}>
+        <Dropdown overlayClassName={styles.extraCard_dropdownMenu} overlay={menu}>
           <div className={styles.extraCard_filter}>
             <img className={styles.extraCard_filterImg} alt="" src={filterIcon} />
             <span>Filter</span>
@@ -44,6 +36,10 @@ class ProjectHistory extends PureComponent {
       </Row>
     );
     return extraCard;
+  };
+
+  onClickItemFilter = ({ key }) => {
+    message.info(`Click on item ${key}`);
   };
 
   renderPrjectHistoryTable = (projectHistoryData) => {
