@@ -34,6 +34,23 @@ const mockData = [
   },
 ];
 
+const identifyImageOrPdf = (fileName) => {
+  const parts = fileName.split('.');
+  const ext = parts[parts.length - 1];
+  switch (ext.toLowerCase()) {
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'bmp':
+    case 'png':
+      return 0;
+    case 'pdf':
+      return 1;
+    default:
+      return 2;
+  }
+};
+
 @connect(({ loading }) => ({
   loading: loading.effects['upload/uploadFile'],
 }))
@@ -153,24 +170,30 @@ class ViewDocument extends PureComponent {
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            <Document
-              className={styles.pdfFrame}
-              onLoadSuccess={this.onDocumentLoadSuccess}
-              // eslint-disable-next-line no-console
-              onLoadError={console.error}
-              file={this.getCurrentViewingFileUrl()}
-              loading=""
-              noData="Document Not Found"
-            >
-              {Array.from(new Array(numPages), (el, index) => (
-                <Page
-                  loading=""
-                  className={styles.pdfPage}
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                />
-              ))}
-            </Document>
+            {identifyImageOrPdf(this.getCurrentViewingFileUrl()) === 0 ? (
+              <div className={styles.imageFrame}>
+                <img alt="preview" src={this.getCurrentViewingFileUrl()} />
+              </div>
+            ) : (
+              <Document
+                className={styles.pdfFrame}
+                onLoadSuccess={this.onDocumentLoadSuccess}
+                // eslint-disable-next-line no-console
+                onLoadError={console.error}
+                file={this.getCurrentViewingFileUrl()}
+                loading=""
+                noData="Document Not Found"
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page
+                    loading=""
+                    className={styles.pdfPage}
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                  />
+                ))}
+              </Document>
+            )}
           </div>
 
           {/* PAGINATION OF DOCUMENT VIEWER */}
