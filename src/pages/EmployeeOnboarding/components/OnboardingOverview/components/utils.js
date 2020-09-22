@@ -8,6 +8,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Passport submission pending …',
     dateSent: '29th Sept, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '2',
@@ -18,6 +19,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '3rd Oct, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '3',
@@ -28,6 +30,7 @@ const rookieList = [
     location: 'Chennai',
     comments: 'Fake eligibility documents',
     dateSent: '30th Nov, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '4',
@@ -38,6 +41,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '29th Sept, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '5',
@@ -47,6 +51,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expireds',
     dateSent: '12th Jan, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '6',
@@ -56,6 +61,7 @@ const rookieList = [
     location: 'Bangalore',
     comments: 'Eligibility date expired',
     dateSent: '09th Aug, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '7',
@@ -65,6 +71,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '19th June, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '8',
@@ -74,6 +81,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '9',
@@ -83,6 +91,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '10',
@@ -92,6 +101,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   // Clone
   {
@@ -102,6 +112,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Passport submission pending …',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '12',
@@ -112,6 +123,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '13',
@@ -121,6 +133,7 @@ const rookieList = [
     location: 'Chennai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '14',
@@ -130,6 +143,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '15',
@@ -139,6 +153,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expireds',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '16',
@@ -149,6 +164,7 @@ const rookieList = [
     location: 'Bangalore',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '17',
@@ -159,6 +175,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '18',
@@ -168,6 +185,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '19',
@@ -177,6 +195,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
   {
     key: '20',
@@ -187,6 +206,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateJoin: '29th Sept, 2020',
   },
 ];
 
@@ -197,6 +217,7 @@ const COLUMN_NAME = {
   LOCATION: 'location',
   DATE_SENT: 'date_sent',
   COMMENT: 'comment',
+  DATE_JOIN: 'DATE_JOIN',
   ACTION: 'action',
 };
 

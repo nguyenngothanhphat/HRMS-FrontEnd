@@ -27,6 +27,7 @@ class ApprovedFinalOffers extends Component {
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION]}
         type={APPROVED_FINAL_OFFERS}
         inTab
+        hasCheckbox
       />
     );
   }

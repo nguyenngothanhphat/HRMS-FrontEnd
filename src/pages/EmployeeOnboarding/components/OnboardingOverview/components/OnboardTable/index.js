@@ -72,13 +72,14 @@ class OnboardTable extends Component {
   };
 
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
-    const { ID, NAME, POSITION, LOCATION, COMMENT, DATE_SENT, ACTION } = COLUMN_NAME;
+    const { ID, NAME, POSITION, LOCATION, COMMENT, DATE_SENT, DATE_JOIN, ACTION } = COLUMN_NAME;
     const actionText = getActionText(type);
     const columns = [
       {
         title: 'Rookie Id',
         dataIndex: 'rookieId',
         key: 'rookieId',
+        width: '11%',
         columnName: ID,
       },
       {
@@ -86,7 +87,7 @@ class OnboardTable extends Component {
         dataIndex: 'rookieId',
         key: 'rookieID2',
         render: (rookieId) => this.renderName(rookieId),
-        width: '17%',
+
         columnName: NAME,
       },
       {
@@ -100,6 +101,7 @@ class OnboardTable extends Component {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
+        width: '11%',
         columnName: LOCATION,
       },
       {
@@ -107,6 +109,13 @@ class OnboardTable extends Component {
         dataIndex: 'dateSent',
         key: 'dateSent',
         columnName: DATE_SENT,
+      },
+      {
+        title: 'Date of Joining',
+        dataIndex: 'dateJoin',
+        key: 'dateJoin',
+        // width: '23%',
+        columnName: DATE_JOIN,
       },
       {
         title: 'Comments',
@@ -176,16 +185,18 @@ class OnboardTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const { columnArr, type, inTab } = this.props;
+    const { columnArr, type, inTab, hasCheckbox } = this.props;
 
     return (
       <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
         <Table
           size="small"
-          rowSelection={{
-            type: 'checkbox',
-            ...rowSelection,
-          }}
+          rowSelection={
+            hasCheckbox && {
+              type: 'checkbox',
+              ...rowSelection,
+            }
+          }
           columns={this.generateColumns(columnArr, type)}
           dataSource={list}
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}

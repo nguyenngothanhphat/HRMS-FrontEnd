@@ -12,11 +12,11 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 
 import styles from './index.less';
 
-const list = rookieList.filter((rookie) => rookie.isNew != true);
-const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
-const { PENDING_APPROVALS } = TABLE_TYPE;
+const list = rookieList;
+const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+const { SENT_FINAL_OFFERS } = TABLE_TYPE;
 
-class PendingApprovals extends Component {
+class SentFinalOffers extends Component {
   constructor(props) {
     super(props);
   }
@@ -24,13 +24,12 @@ class PendingApprovals extends Component {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
-        type={PENDING_APPROVALS}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+        type={SENT_FINAL_OFFERS}
         inTab
-        hasCheckbox
       />
     );
   }
 }
 
-export default PendingApprovals;
+export default SentFinalOffers;
