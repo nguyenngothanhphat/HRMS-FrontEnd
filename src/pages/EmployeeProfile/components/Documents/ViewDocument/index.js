@@ -5,11 +5,11 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import { LoadingOutlined } from '@ant-design/icons';
-import GoBackButton from '../../../../../assets/goBack_icon.svg';
-import styles from './index.less';
+import GoBackButton from '@/assets/goBack_icon.svg';
 
-import ArrowLeftIcon from '../../../../../assets/arrow-left_icon.svg';
-import ArrowRightIcon from '../../../../../assets/arrow-right_icon.svg';
+import ArrowLeftIcon from '@/assets/arrow-left_icon.svg';
+import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
+import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -67,6 +67,10 @@ class ViewDocument extends PureComponent {
       currentViewingFile: selectedFile,
     };
   }
+
+  componentDidMount = () => {
+    this.fetchEmails('');
+  };
 
   // File Viewing
   getCurrentViewingFileUrl = () => {
@@ -226,7 +230,7 @@ class ViewDocument extends PureComponent {
               </Col>
             </Row>
             <Row className={styles.infoRow}>
-              <Col className={styles.infoCol1} span={7}>
+              <Col className={`${styles.infoCol1} ${styles.shareWithLabel}`} span={7}>
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.shareWith' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
@@ -238,8 +242,8 @@ class ViewDocument extends PureComponent {
                     id: 'pages.employeeProfile.documents.viewDocument.emailPlaceholder',
                   })}
                   notFoundContent={fetching ? <Spin size="small" /> : null}
-                  filterOption={false}
                   onSearch={this.fetchEmails}
+                  showArrow
                   onChange={this.handleChange}
                   className={styles.shareViaEmailInput}
                 >
