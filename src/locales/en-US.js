@@ -15,6 +15,9 @@ import forgotPasswordPage from './en-US/forgotPasswordPage';
 import loginPage from './en-US/loginPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
 
+// admin pages
+import usersManagementPage from './en-US/usersManagementPage';
+
 export default {
   'navBar.lang': 'Languages',
   'layout.user.link.help': 'Help',
@@ -39,4 +42,6 @@ export default {
   ...forgotPasswordPage,
   ...loginPage,
   ...resetPasswordPage,
+  // admin pages
+  ...usersManagementPage,
 };

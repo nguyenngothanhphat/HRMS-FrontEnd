@@ -40,6 +40,10 @@ const routes = [
         authority: ['admin', 'employee'],
         routes: [
           {
+            path: '/',
+            redirect: '/dashboard',
+          },
+          {
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/home.svg',
@@ -47,31 +51,27 @@ const routes = [
             authority: ['admin', 'customer'],
           },
           {
-            path: '/',
-            redirect: '/dashboard',
-          },
-          {
-            path: '/user-management',
-            name: 'userManagement',
+            path: '/users',
+            name: 'users',
             icon: '/assets/images/home.svg',
-            component: '../pages_admin/UserManagement',
+            component: '../pages_admin/UsersManagement',
             authority: ['admin'],
           },
           {
-            path: '/employees-management',
-            name: 'employeesManagement',
+            path: '/employees',
+            name: 'employees',
+            icon: '/assets/images/home.svg',
+            authority: ['admin'],
+          },
+          {
+            path: '/companies',
+            name: 'companies',
             icon: '/assets/images/home.svg',
             authority: ['admin'],
           },
           {
             path: '/candidates',
-            name: 'candidatesManagement',
-            icon: '/assets/images/home.svg',
-            authority: ['admin'],
-          },
-          {
-            path: '/company',
-            name: 'company',
+            name: 'candidates',
             icon: '/assets/images/home.svg',
             authority: ['admin'],
           },
@@ -87,7 +87,6 @@ const routes = [
             icon: '/assets/images/home.svg',
             authority: ['admin'],
           },
-
           {
             path: '/directory',
             name: 'directory',
