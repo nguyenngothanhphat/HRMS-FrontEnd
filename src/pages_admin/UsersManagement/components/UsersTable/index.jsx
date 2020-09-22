@@ -55,7 +55,7 @@ class UsersTable extends PureComponent {
       filterName: '',
       tabId: 1,
       changeTab: false,
-      collapsed: false,
+      collapsed: true,
       pageSelected: 1,
       bottabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeEmployeesTab' }) },
@@ -160,19 +160,18 @@ class UsersTable extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/directory" className={styles.buttonCreate}>
+        <NavLink to="/#" className={styles.buttonAddUser}>
           <Icon component={addUser} />
           <p className={styles.NameNewProfile}>
             {formatMessage({ id: 'pages_admin.users.userTable.addUser' })}
           </p>
         </NavLink>
         <div className={styles.filterSider} onClick={this.handleToggle}>
-          {collapsed ? (
-            <div className={styles.filterBackgroundButton_isCollapsed} />
-          ) : (
-            <div className={styles.filterBackgroundButton} />
-          )}
-          <div className={styles.filterButton}>
+          <div
+            className={`${styles.filterButton} ${
+              collapsed ? '' : `${styles.filterBackgroundButton}`
+            }`}
+          >
             <FilterOutlined />
             <p className={styles.textButtonFilter}>Filter</p>
           </div>

@@ -14,6 +14,7 @@ import employeeProfilePage from './en-US/employeeProfilePage';
 import forgotPasswordPage from './en-US/forgotPasswordPage';
 import loginPage from './en-US/loginPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
+import employeeOnboarding from './en-US/employeeOnboarding';
 
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
@@ -42,6 +43,7 @@ export default {
   ...forgotPasswordPage,
   ...loginPage,
   ...resetPasswordPage,
+  ...employeeOnboarding,
   // admin pages
   ...usersManagementPage,
 };
