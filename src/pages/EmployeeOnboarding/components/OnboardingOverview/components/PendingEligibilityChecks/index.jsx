@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-no-undef */
 import React, { Component } from 'react';
 import { Tabs } from 'antd';
+import { formatMessage } from 'umi';
 import ReceivedSubmittedDocuments from './components/ReceivedSubmittedDocuments';
 import SentEligibilityForms from './components/SentEligibilityForms';
 
@@ -15,10 +16,16 @@ class PendingEligibilityChecks extends Component {
       <div className={styles.PendingEligibilityChecks}>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1">
-            <TabPane tab="Sent Eligibility forms " key="1">
+            <TabPane
+              tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              key="1"
+            >
               <SentEligibilityForms />
             </TabPane>
-            <TabPane tab="Received Submitted Documents" key="2">
+            <TabPane
+              tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
+              key="2"
+            >
               <ReceivedSubmittedDocuments />
             </TabPane>
           </Tabs>
