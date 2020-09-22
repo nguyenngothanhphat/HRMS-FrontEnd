@@ -4,9 +4,17 @@ import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,17 +26,19 @@ class Edit extends PureComponent {
   };
 
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
@@ -42,19 +52,34 @@ class Edit extends PureComponent {
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
+    const { generalData } = this.props;
     const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+      personalNumber = '',
+      personalEmail = '',
+      Blood = '',
+      maritalStatus = '',
+      linkedIn = '',
+      residentAddress = '',
+      currentAddress = '',
+    } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
-          initialValues={generalData}
+          initialValues={{
+            personalNumber,
+            personalEmail,
+            Blood,
+            maritalStatus,
+            linkedIn,
+            residentAddress,
+            currentAddress,
+          }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
         >
           <Form.Item

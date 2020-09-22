@@ -1,10 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Modal } from 'antd';
+import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
-export default class CommonLayout extends PureComponent {
+const { confirm } = Modal;
+
+@connect(({ employeeProfile: { isModified } = {} }) => ({
+  isModified,
+}))
+class CommonLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,15 +27,36 @@ export default class CommonLayout extends PureComponent {
     });
   }
 
-  _handelClick = (item) => {
+  handleCLickItemMenu = (item) => {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
     });
   };
 
+  showConfirm = (item) => {
+    const _this = this;
+    confirm({
+      title: 'Save your changes ?',
+      onOk() {
+        _this.saveChanges(item);
+      },
+      onCancel() {
+        _this.onCancel(item);
+      },
+    });
+  };
+
+  saveChanges = (item) => {
+    console.log('item', item);
+  };
+
+  onCancel = (item) => {
+    console.log('item', item);
+  };
+
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], isModified } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -40,7 +67,7 @@ export default class CommonLayout extends PureComponent {
               <ItemMenu
                 key={item.id}
                 item={item}
-                handelClick={this._handelClick}
+                handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
                 selectedItemId={selectedItemId}
               />
             ))}
@@ -56,3 +83,5 @@ export default class CommonLayout extends PureComponent {
     );
   }
 }
+
+export default CommonLayout;

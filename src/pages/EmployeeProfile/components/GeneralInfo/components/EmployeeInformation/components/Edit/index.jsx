@@ -1,54 +1,99 @@
 import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Radio } from 'antd';
 import { connect, formatMessage } from 'umi';
+import UploadImage from '@/components/UploadImage';
+import moment from 'moment';
+import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { upFile: '' };
   }
 
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
-      // DOB: changedValues.DOB ? changedValues.DOB.format('YYYY-MM-DD') : '',
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
     });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+  };
+
+  handleUpLoadFile = (resp) => {
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      // console.log('first', first, first.url);
+      this.setState({ upFile: first.url });
+    }
+  };
+
+  handleCanCelIcon = () => {
+    this.setState({ upFile: '' });
   };
 
   render() {
+    const { generalData } = this.props;
+    const { upFile } = this.state;
     const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
-    console.log(generalData);
+      legalName = '',
+      DOB = '',
+      legalGender = '',
+      employeeId = '',
+      workEmail = '',
+      workNumber = '',
+      adhaarCardNumber = '',
+      uanNumber = '',
+    } = generalData;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
+    const formatDate = DOB && moment(DOB);
     const dateFormat = 'Do MMM YYYY';
+    const splitURL = upFile.split('/');
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
+          initialValues={{
+            legalName,
+            legalGender,
+            employeeId,
+            workEmail,
+            workNumber,
+            adhaarCardNumber,
+            uanNumber,
+            DOB: formatDate,
+          }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
         >
           <Form.Item
@@ -61,25 +106,20 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} defaultValue={generalData.legalName} />
+            <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item label="Date of Birth" name="DOB">
-            <DatePicker
-              format={dateFormat}
-              onChange={this.handleChangeDate}
-              className={styles.dateForm}
-              defaultValue={generalData.DOB}
-            />
+            <DatePicker format={dateFormat} className={styles.dateForm} />
           </Form.Item>
           <Form.Item label="Legal Gender" name="legalGender">
-            <Radio.Group defaultValue={generalData.legalGender} onChange={this.handleChange}>
-              <Radio value="male">Male</Radio>
-              <Radio value="female">Female</Radio>
-              <Radio value="other">Other</Radio>
+            <Radio.Group>
+              <Radio value="Male">Male</Radio>
+              <Radio value="Female">Female</Radio>
+              <Radio value="Other">Other</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item label="Employee ID" name="employeeId">
-            <Input className={styles.inputForm} defaultValue={generalData.employeeId} />
+            <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
             label="Work Email"
@@ -91,7 +131,7 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} defaultValue={generalData.workEmail} />
+            <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
             label="Work Number"
@@ -103,11 +143,11 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} defaultValue={generalData.workNumber} />
+            <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
             label="Adhaar Card Number"
-            name="cardNumber"
+            name="adhaarCardNumber"
             rules={[
               {
                 pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
@@ -115,8 +155,47 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} defaultValue={generalData.cardNumber} />
+            <div className={styles.viewUpload}>
+              <Input className={styles.inputForm} />
+              {upFile === '' ? (
+                <div className={styles.textUpload}>
+                  <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+                </div>
+              ) : (
+                <div className={styles.viewUpLoadData}>
+                  <a
+                    href={upFile}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.viewUpLoadDataURL}
+                  >
+                    {splitURL[6]}
+                  </a>
+                  <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                  <img
+                    src={cancelIcon}
+                    alt=""
+                    onClick={this.handleCanCelIcon}
+                    className={styles.viewUpLoadDataIconCancel}
+                  />
+                </div>
+              )}
+            </div>
           </Form.Item>
+          {upFile !== '' ? (
+            <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
+              <a
+                href={upFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.urlUpload}
+              >
+                {splitURL[6]}
+              </a>
+            </Form.Item>
+          ) : (
+            ''
+          )}
           <Form.Item
             label="UAN Number"
             name="uanNumber"
@@ -127,7 +206,7 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} defaultValue={generalData.uanNumber} />
+            <Input className={styles.inputForm} />
           </Form.Item>
         </Form>
         {/* Custom Col Here */}

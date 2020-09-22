@@ -6,10 +6,19 @@ import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(({ loading, employeeProfile }) => ({
-  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
-  employeeProfile,
-}))
+@connect(
+  ({
+    loading,
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class EmergencyContact extends PureComponent {
   constructor(props) {
     super(props);
@@ -24,16 +33,62 @@ class EmergencyContact extends PureComponent {
     });
   };
 
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const { emergencyContact = '', personName = '', relation = '', _id: id = '' } = generalDataTemp;
+    const payloadChanges = {
+      id,
+      emergencyContact,
+      personName,
+      relation,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = ['emergencyContact', 'personName', 'relation'];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+    });
+  };
+
   handleCancel = () => {
+    const { generalDataOrigin, generalData, dispatch } = this.props;
     this.setState({
       isEdit: false,
+    });
+    const { emergencyContact = '', personName = '', relation = '' } = generalDataOrigin;
+    const reverseFields = {
+      emergencyContact,
+      personName,
+      relation,
+    };
+    const payload = { ...generalData, ...reverseFields };
+    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: payload },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
   render() {
-    const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { generalData, loading } = this.props;
     const { isEdit } = this.state;
     const renderComponent = isEdit ? <Edit /> : <View dataAPI={generalData} />;
     return (
@@ -51,7 +106,15 @@ class EmergencyContact extends PureComponent {
             <div className={styles.cancelFooter} onClick={this.handleCancel}>
               Cancel
             </div>
-            <Button className={styles.buttonFooter}>Save</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+              onClick={this.handleSave}
+            >
+              Save
+            </Button>
           </div>
         ) : (
           ''
