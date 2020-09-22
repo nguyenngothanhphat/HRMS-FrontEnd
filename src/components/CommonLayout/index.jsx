@@ -94,7 +94,7 @@ export default class CommonLayout extends PureComponent {
             </div>
           </div>
         </div>
-        <div className={s.viewRight}>
+        <div className={s.viewRight} style={currentPage === 'settings' ? { padding: '0' } : {}}>
           {displayComponent}
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={24} lg={16} xl={16}>

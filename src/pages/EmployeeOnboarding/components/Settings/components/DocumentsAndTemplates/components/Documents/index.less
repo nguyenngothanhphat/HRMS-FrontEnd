@@ -1,0 +1,37 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+.Documents {
+  max-height: 500px;
+  font-family: 'Roboto';
+  // position: absolute;
+  padding: 25px;
+  width: 100%;
+  left: 0;
+  background-color: white;
+  overflow-y: scroll;
+
+  &_title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.14;
+    text-align: left;
+    color: #161c29;
+  }
+  .template {
+    &_info {
+      padding: 15px 0 15px 0;
+      display: grid;
+      grid-template-columns: 90% 10%;
+      p {
+        width: 117px;
+        height: 14px;
+        font-size: 12px;
+        line-height: 1.17;
+        letter-spacing: 0.11px;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+  }
+}
