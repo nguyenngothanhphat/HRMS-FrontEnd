@@ -8,10 +8,12 @@ import styles from './index.less';
 @connect(
   ({
     employeeProfile: {
+      editGeneral: { openPassportandVisa = false },
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
+    openPassportandVisa,
     generalDataOrigin,
     generalData,
   }),
@@ -25,16 +27,15 @@ class PassportVisaInformation extends PureComponent {
   }
 
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: true },
     });
   };
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    this.setState({
-      isEdit: false,
-    });
     const {
       passportNo = '',
       passportIssueCountry = '',
@@ -69,12 +70,16 @@ class PassportVisaInformation extends PureComponent {
       type: 'employeeProfile/save',
       payload: { isModified },
     });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: false },
+    });
   };
 
   render() {
-    const { generalData } = this.props;
+    const { generalData, openPassportandVisa } = this.props;
     const { isEdit } = this.state;
-    const renderComponent = isEdit ? (
+    const renderComponent = openPassportandVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View dataAPI={generalData} />

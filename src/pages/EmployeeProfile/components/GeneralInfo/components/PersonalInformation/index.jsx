@@ -8,10 +8,12 @@ import View from './components/View';
 @connect(
   ({
     employeeProfile: {
+      editGeneral: { openPersonnalInfor = false },
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
+    openPersonnalInfor,
     generalDataOrigin,
     generalData,
   }),
@@ -25,16 +27,15 @@ class PersonalInformation extends PureComponent {
   }
 
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPersonnalInfor: true },
     });
   };
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    this.setState({
-      isEdit: false,
-    });
     const {
       personalNumber = '',
       personalEmail = '',
@@ -63,12 +64,16 @@ class PersonalInformation extends PureComponent {
       type: 'employeeProfile/save',
       payload: { isModified },
     });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPersonnalInfor: false },
+    });
   };
 
   render() {
-    const { generalData } = this.props;
+    const { generalData, openPersonnalInfor } = this.props;
     const { isEdit } = this.state;
-    const renderComponent = isEdit ? (
+    const renderComponent = openPersonnalInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View dataAPI={generalData} />

@@ -8,10 +8,12 @@ import styles from './index.less';
 @connect(
   ({
     employeeProfile: {
+      editGeneral: { openEmployeeInfor = false },
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
+    openEmployeeInfor,
     generalDataOrigin,
     generalData,
   }),
@@ -25,16 +27,18 @@ class EmployeeInformation extends PureComponent {
   }
 
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openEmployeeInfor: true },
     });
   };
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    this.setState({
-      isEdit: false,
-    });
+    // this.setState({
+    //   isEdit: false,
+    // });
     const {
       legalGender = '',
       legalName = '',
@@ -65,12 +69,16 @@ class EmployeeInformation extends PureComponent {
       type: 'employeeProfile/save',
       payload: { isModified },
     });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openEmployeeInfor: false },
+    });
   };
 
   render() {
-    const { generalData } = this.props;
+    const { generalData, openEmployeeInfor } = this.props;
     const { isEdit } = this.state;
-    const renderComponent = isEdit ? (
+    const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View dataAPI={generalData} />

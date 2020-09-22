@@ -105,6 +105,7 @@ class Edit extends PureComponent {
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
+      key: 'openPassportandVisa',
     });
   };
 

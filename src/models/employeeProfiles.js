@@ -110,10 +110,28 @@ const employeeProfile = {
           dataTempKept,
         });
         switch (key) {
-          case key === 'openContactDetails':
+          case 'openContactDetails':
             yield put({
               type: 'saveOpenEdit',
               payload: { openContactDetails: false },
+            });
+            break;
+          case 'openEmployeeInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openEmployeeInfor: false },
+            });
+            break;
+          case 'openPassportandVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPassportandVisa: false },
+            });
+            break;
+          case 'openPersonnalInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPersonnalInfor: false },
             });
             break;
           default:
@@ -122,12 +140,6 @@ const employeeProfile = {
               payload: { openContactDetails: false },
             });
         }
-        // if (key === 'openContactDetails') {
-        //   yield put({
-        //     type: 'saveOpenEdit',
-        //     payload: { openContactDetails: false },
-        //   });
-        // }
       } catch (errors) {
         dialog(errors);
       }
