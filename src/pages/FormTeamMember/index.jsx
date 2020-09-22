@@ -72,7 +72,6 @@ export default class FormTeamMember extends PureComponent {
           isComplete: candidateProcess[key],
         };
       }) || [];
-
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>

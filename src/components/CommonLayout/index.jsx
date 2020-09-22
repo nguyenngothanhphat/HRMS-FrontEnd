@@ -59,12 +59,12 @@ export default class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], currentPage = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.containerCommonLayout}>
-        <div className={s.viewLeft}>
+        <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
           <div className={s.viewLeft__menu}>
             {listMenu.map((item) => (
               <ItemMenu
@@ -75,18 +75,21 @@ export default class CommonLayout extends PureComponent {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              <Button
-                type="primary"
-                ghost
-                onClick={() => {
-                  this.setState({
-                    selectedItemId: '',
-                    displayComponent: <PreviewOffer />,
-                  });
-                }}
-              >
-                Preview offer letter
-              </Button>
+              {currentPage !== 'settings' && (
+                <Button
+                  type="primary"
+                  ghost
+                  onClick={() => {
+                    this.setState({
+                      selectedItemId: '',
+                      displayComponent: <PreviewOffer />,
+                    });
+                  }}
+                >
+                  Preview offer letter
+                </Button>
+              )}
+
               {/* <button onClick={this.handleNext}> next </button> */}
             </div>
           </div>
@@ -95,11 +98,13 @@ export default class CommonLayout extends PureComponent {
           {displayComponent}
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              <BottomBar
-                onClickPrev={this.handlePrev}
-                onClickNext={this.handleNext}
-                currentPage={selectedItemId}
-              />
+              {currentPage !== 'settings' && (
+                <BottomBar
+                  onClickPrev={this.handlePrev}
+                  onClickNext={this.handleNext}
+                  currentPage={selectedItemId}
+                />
+              )}
             </Col>
           </Row>
         </div>
