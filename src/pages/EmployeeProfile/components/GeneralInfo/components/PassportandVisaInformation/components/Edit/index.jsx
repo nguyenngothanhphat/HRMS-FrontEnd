@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, DatePicker, Select } from 'antd';
+import { Row, Input, Form, DatePicker, Select, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import UploadImage from '@/components/UploadImage';
@@ -9,11 +9,13 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
   }),
@@ -45,6 +47,67 @@ class Edit extends PureComponent {
     });
   };
 
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const {
+      passportNo = '',
+      passportIssueCountry = '',
+      passportIssueOn = '',
+      passportValidTill = '',
+      visaNo = '',
+      visaType = '',
+      visaCountry = '',
+      visaEntryType = '',
+      visaIssuedOn = '',
+      visaValidTill = '',
+      _id: id = '',
+    } = generalDataTemp;
+    const payloadChanges = {
+      id,
+      passportNo,
+      passportIssueCountry,
+      passportIssueOn,
+      passportValidTill,
+      visaNo,
+      visaType,
+      visaCountry,
+      visaEntryType,
+      visaIssuedOn,
+      visaValidTill,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = [
+      'passportNo',
+      'passportIssueCountry',
+      'passportIssueOn',
+      'passportValidTill',
+      'visaNo',
+      'visaType',
+      'visaCountry',
+      'visaEntryType',
+      'visaIssuedOn',
+      'visaValidTill',
+    ];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+    });
+  };
+
   handleUpLoadFile = (resp) => {
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
@@ -63,7 +126,7 @@ class Edit extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { generalData } = this.props;
+    const { generalData, handleCancel = () => {}, loading } = this.props;
     const { upFile } = this.state;
     const splitURL = upFile.split('/');
     const {
@@ -112,6 +175,7 @@ class Edit extends PureComponent {
             visaValidTill: formatDateVisaValidTill,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
+          onFinish={this.handleSave}
         >
           <div className={styles.styleUpLoad}>
             <Form.Item
@@ -315,6 +379,19 @@ class Edit extends PureComponent {
               className={styles.dateForm}
             />
           </Form.Item>
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+            >
+              Save
+            </Button>
+          </div>
         </Form>
         {/* Custom Col Here */}
       </Row>

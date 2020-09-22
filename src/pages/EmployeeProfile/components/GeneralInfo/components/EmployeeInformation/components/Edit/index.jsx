@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, DatePicker, Radio } from 'antd';
+import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
@@ -8,11 +8,13 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
   }),
@@ -40,6 +42,61 @@ class Edit extends PureComponent {
     });
   };
 
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const {
+      legalGender = '',
+      legalName = '',
+      DOB = '',
+      employeeId = '',
+      workEmail = '',
+      workNumber = '',
+      adhaarCardNumber = '',
+      uanNumber = '',
+      _id: id = '',
+    } = generalDataTemp;
+    const payloadChanges = {
+      id,
+      legalGender,
+      legalName,
+      DOB,
+      employeeId,
+      workEmail,
+      workNumber,
+      adhaarCardNumber,
+      uanNumber,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = [
+      'legalGender',
+      'legalName',
+      'DOB',
+      'employeeId',
+      'workEmail',
+      'workNumber',
+      'adhaarCardNumber',
+      'uanNumber',
+    ];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+    });
+  };
+
   handleUpLoadFile = (resp) => {
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
@@ -57,7 +114,7 @@ class Edit extends PureComponent {
   };
 
   render() {
-    const { generalData } = this.props;
+    const { generalData, loading, handleCancel = () => {} } = this.props;
     const { upFile } = this.state;
     const {
       legalName = '',
@@ -98,6 +155,7 @@ class Edit extends PureComponent {
             DOB: formatDate,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
+          onFinish={this.handleSave}
         >
           <Form.Item
             label="Legal Name"
@@ -214,6 +272,19 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+            >
+              Save
+            </Button>
+          </div>
         </Form>
         {/* Custom Col Here */}
       </Row>

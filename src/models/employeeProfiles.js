@@ -14,6 +14,13 @@ const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
     isModified: false,
+    editGeneral: {
+      openContactDetails: false,
+      openEmployeeInfor: false,
+      openPassportandVisa: false,
+      openPersonnalInfor: false,
+      openAcademic: false,
+    },
     idCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
@@ -87,7 +94,8 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *updateGeneralInfo({ payload = {}, dataTempKept = {} }, { put, call, select }) {
+
+    *updateGeneralInfo({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateGeneralInfo, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
@@ -101,6 +109,25 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
+        switch (key) {
+          case key === 'openContactDetails':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+            break;
+          default:
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+        }
+        // if (key === 'openContactDetails') {
+        //   yield put({
+        //     type: 'saveOpenEdit',
+        //     payload: { openContactDetails: false },
+        //   });
+        // }
       } catch (errors) {
         dialog(errors);
       }
@@ -157,6 +184,16 @@ const employeeProfile = {
         ...state,
         tempData: {
           ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveOpenEdit(state, action) {
+      const { editGeneral } = state;
+      return {
+        ...state,
+        editGeneral: {
+          ...editGeneral,
           ...action.payload,
         },
       };
