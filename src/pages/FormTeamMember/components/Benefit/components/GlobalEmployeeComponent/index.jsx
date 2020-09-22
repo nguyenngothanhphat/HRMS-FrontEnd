@@ -133,6 +133,8 @@ class GlobalEmpoyeeComponent extends PureComponent {
       listSelectedMedical,
       listSelectedShortTerm,
       listSelectedLife,
+      dental,
+      vision,
     } = benefits;
     const { name, checkBox } = globalEmployeesCheckbox;
 
@@ -191,7 +193,11 @@ class GlobalEmpoyeeComponent extends PureComponent {
               </Typography.Title>
               {item.subCheckBox.map((data) => (
                 <Row>
-                  <Checkbox onChange={this.onChange} value={item.value}>
+                  <Checkbox
+                    onChange={this.onChange}
+                    value={item.value}
+                    checked={item.title === 'Dental' ? dental : vision}
+                  >
                     <Typography.Text className={styles.subCheckboxTitle}>
                       {data.value}
                     </Typography.Text>

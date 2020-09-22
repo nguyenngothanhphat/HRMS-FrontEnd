@@ -72,6 +72,8 @@ class IndiaEmployeeComponent extends PureComponent {
   render() {
     const { IndiaEmployeesCheckbox, headerText } = this.props;
     const { benefits } = this.state;
+    const { paytmWallet } = benefits;
+
     const { employeeProvident, listSelectedEmployee } = benefits;
     const { name, checkBox } = IndiaEmployeesCheckbox;
 
@@ -114,7 +116,7 @@ class IndiaEmployeeComponent extends PureComponent {
               </Typography.Title>
               {item.subCheckBox.map((data) => (
                 <Row>
-                  <Checkbox onChange={this.onChange} value={item.value}>
+                  <Checkbox onChange={this.onChange} checked={paytmWallet} value={item.value}>
                     <Typography.Text className={styles.subCheckboxTitle}>
                       {data.value}
                     </Typography.Text>

@@ -85,28 +85,6 @@ const info = {
       listSelectedEmployee: [],
     },
 
-    //   medicalCheckbox: {
-    //     isChecked: false,
-    //     choicePlan: false,
-    //     basePlan: false,
-    //     checkedList: [],
-    //   },
-    //   lifeCheckbox: {
-    //     isChecked: false,
-    //     basicLife: false,
-    //     volLife: false,
-    //     checkedList: [],
-    //   },
-    //   shortTermCheckbox: {
-    //     isChecked: false,
-    //     basicLife: false,
-    //     volLife: false,
-    //     checkedList: [],
-    //   },
-    //   visionCheckbox: false,
-    //   dentalCheckbox: false,
-    // },
-
     customField: {
       // dental: 'tier1',
       // vision: 'tier1',
