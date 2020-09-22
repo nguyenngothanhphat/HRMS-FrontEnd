@@ -58,6 +58,12 @@ class SentEligibilityForms extends Component {
     }));
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageSelected: pageNumber,
+    });
+  };
+
   render() {
     const { sortedName = {}, pageSelected } = this.state;
     const rowSize = 10;
@@ -82,6 +88,97 @@ class SentEligibilityForms extends Component {
         position: 'Sr. UX Designer',
         location: 'Chennai',
         dateSent: '14th Dec, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateSent: '11th June, 2020',
       },
       {
         rookieId: '#10928389',
@@ -116,7 +213,7 @@ class SentEligibilityForms extends Component {
           columns={this.generateColumns(sortedName)}
           dataSource={list}
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-
+          onChange={this.handleChangeTable}
           // scroll={{ x: 1000, y: 'max-content' }}
         />
       </div>

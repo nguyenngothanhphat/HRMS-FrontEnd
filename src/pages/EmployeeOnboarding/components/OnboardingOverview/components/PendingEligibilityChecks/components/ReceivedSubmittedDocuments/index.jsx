@@ -58,6 +58,12 @@ class ReceivedSubmittedDocuments extends Component {
     }));
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageSelected: pageNumber,
+    });
+  };
+
   render() {
     const { sortedName = {}, pageSelected } = this.state;
     const rowSize = 10;
@@ -116,6 +122,7 @@ class ReceivedSubmittedDocuments extends Component {
           columns={this.generateColumns(sortedName)}
           dataSource={list}
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+          onChange={this.handleChangeTable}
 
           // scroll={{ x: 1000, y: 'max-content' }}
         />
