@@ -11,6 +11,7 @@ import FinalOffers from './components/FinalOffers';
 import IneligibleCandidates from './components/IneligibleCandidates';
 import PendingEligibilityChecks from './components/PendingEligibilityChecks';
 import ProvisionalOffers from './components/ProvisionalOffers';
+import DiscardedFinalOffers from './components/DiscardedFinalOffers';
 
 import styles from './index.less';
 
@@ -76,6 +77,13 @@ const MENU_DATA_3 = [
     quantity: 9,
     key: 'finalOfferDrafts',
     component: <FinalOfferDrafts />,
+  },
+  {
+    id: 9,
+    name: 'Discarded Final Offers',
+    quantity: 12,
+    key: 'discardedFinalOffers',
+    component: <DiscardedFinalOffers />,
   },
 ];
 
