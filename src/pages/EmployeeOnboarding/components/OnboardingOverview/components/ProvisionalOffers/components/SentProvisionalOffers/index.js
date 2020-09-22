@@ -23,7 +23,7 @@ class SentProvisionalOffers extends Component {
   render() {
     return (
       <OnboardTable
-        list={rookieList}
+        list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION]}
         type={SENT_PROVISIONAL_OFFERS}
         inTab

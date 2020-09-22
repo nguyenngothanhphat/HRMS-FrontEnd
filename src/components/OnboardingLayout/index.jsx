@@ -38,7 +38,7 @@ class OnboardingLayout extends PureComponent {
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
-    console.log(listMenu);
+
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>

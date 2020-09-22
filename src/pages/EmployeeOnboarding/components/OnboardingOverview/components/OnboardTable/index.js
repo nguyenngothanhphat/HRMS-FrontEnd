@@ -23,7 +23,7 @@ const getActionText = (type) => {
     FINAL_OFFERS_DRAFTS,
     DISCARDED_FINAL_OFFERS,
   } = TABLE_TYPE;
-  console.log(type);
+
   switch (type) {
     case PENDING_ELIGIBILITY_CHECKS:
       return 'review';
@@ -74,7 +74,6 @@ class OnboardTable extends Component {
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
     const { ID, NAME, POSITION, LOCATION, COMMENT, DATE_SENT, ACTION } = COLUMN_NAME;
     const actionText = getActionText(type);
-    console.log(actionText);
     const columns = [
       {
         title: 'Rookie Id',
@@ -133,13 +132,8 @@ class OnboardTable extends Component {
 
     // Filter only columns that are needed
     let newColumns = columns.filter((column) => columnArr.includes(column.columnName));
-    console.log(newColumns);
 
     return newColumns;
-    // return columns.map((col) => ({
-    //   ...col,
-    //   title: col.title,
-    // }));
   };
 
   onChangePagination = (pageNumber) => {

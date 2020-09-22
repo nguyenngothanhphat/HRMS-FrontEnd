@@ -23,7 +23,7 @@ class ReceivedProvisionalOffers extends Component {
   render() {
     return (
       <OnboardTable
-        list={rookieList}
+        list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
         type={RECEIVED_PROVISIONAL_OFFERS}
         inTab

@@ -23,7 +23,7 @@ class IneligibleCandidates extends Component {
   render() {
     return (
       <OnboardTable
-        list={rookieList}
+        list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
         type={INELIGIBLE_CANDIDATES}
       />
