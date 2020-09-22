@@ -3,14 +3,14 @@ import s from './index.less';
 
 export default class ItemMenu extends PureComponent {
   render() {
-    const { item = {}, handelClick = () => {}, selectedItemId } = this.props;
+    const { item = {}, handleClick = () => {}, selectedItemId } = this.props;
     const { id = '', name = '' } = item;
     const isActive = selectedItemId === id;
     const className = isActive ? s.itemMenuActive : s.itemMenu;
     const isTabTopActive = id === selectedItemId - 1;
     return (
       <div
-        onClick={() => handelClick(item)}
+        onClick={() => handleClick(item)}
         className={className}
         style={isTabTopActive ? { borderBottom: 'none' } : {}}
       >

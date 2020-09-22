@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin, Upload } from 'antd';
+import { Button, Row, Col, Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import UploadImage from '@/components/UploadImage';
+import { LoadingOutlined } from '@ant-design/icons';
 import GoBackButton from '../../../../../assets/goBack_icon.svg';
 import styles from './index.less';
 
@@ -32,7 +34,10 @@ const mockData = [
   },
 ];
 
-export default class ViewDocument extends PureComponent {
+@connect(({ loading }) => ({
+  loading: loading.effects['upload/uploadFile'],
+}))
+class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
     this.fetchEmails = debounce(this.fetchEmails, 800);
@@ -119,9 +124,17 @@ export default class ViewDocument extends PureComponent {
     alert('Save');
   };
 
+  getUrl = (resp) => {
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      console.log('URL Image', first.url);
+    }
+  };
+
   render() {
     const { fetching, data, value, numPages, currentViewingFile } = this.state;
-    const { onBackClick, typeOfSelectedFile, files } = this.props;
+    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
 
     return (
       <div className={styles.ViewDocument}>
@@ -146,10 +159,16 @@ export default class ViewDocument extends PureComponent {
               // eslint-disable-next-line no-console
               onLoadError={console.error}
               file={this.getCurrentViewingFileUrl()}
-              noData="No Viewing Document"
+              loading=""
+              noData="Document Not Found"
             >
               {Array.from(new Array(numPages), (el, index) => (
-                <Page className={styles.pdfPage} key={`page_${index + 1}`} pageNumber={index + 1} />
+                <Page
+                  loading=""
+                  className={styles.pdfPage}
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                />
               ))}
             </Document>
           </div>
@@ -212,12 +231,20 @@ export default class ViewDocument extends PureComponent {
 
         {/* BUTTONS */}
         <div className={styles.operationButton}>
-          <Upload showUploadList={false}>
-            <Button className={styles.uploadButton} type="link">
-              {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.uploadNewBtn' })}
-            </Button>
-          </Upload>
-          ,
+          <UploadImage
+            content={
+              <>
+                <span>
+                  {formatMessage({
+                    id: 'pages.employeeProfile.documents.viewDocument.uploadNewBtn',
+                  })}
+                </span>
+                {loading && <LoadingOutlined className={styles.loadingIcon} />}
+              </>
+            }
+            getResponse={this.getUrl}
+          />
+
           <Button onClick={this.onSaveClick} className={styles.saveButton}>
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>
@@ -226,3 +253,5 @@ export default class ViewDocument extends PureComponent {
     );
   }
 }
+
+export default ViewDocument;

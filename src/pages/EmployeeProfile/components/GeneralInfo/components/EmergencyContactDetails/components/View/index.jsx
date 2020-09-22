@@ -7,8 +7,8 @@ class View extends PureComponent {
     const { dataAPI } = this.props;
     const dummyData = [
       { label: 'Emergency Contact', value: dataAPI.emergencyContact },
-      { label: 'Person’s Name', value: dataAPI.personName },
-      { label: 'Relation', value: dataAPI.relation },
+      { label: 'Person’s Name', value: dataAPI.emergencyPersonName },
+      { label: 'Relation', value: dataAPI.emergencyRelation },
     ];
     return (
       <Row gutter={[0, 16]} className={styles.root}>

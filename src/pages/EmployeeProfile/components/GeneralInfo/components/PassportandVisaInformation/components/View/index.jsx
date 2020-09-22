@@ -11,32 +11,32 @@ class View extends PureComponent {
       { label: 'Issued Country', value: dataAPI.passportIssueCountry },
       {
         label: 'Issued On',
-        value: dataAPI.issuedOnPassPort
-          ? Moment(dataAPI.issuedOnPassPort).locale('en').format('Do MMM YYYY')
+        value: dataAPI.passportIssueOn
+          ? Moment(dataAPI.passportIssueOn).locale('en').format('Do MMM YYYY')
           : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.validTillPassPort
-          ? Moment(dataAPI.validTillPassPort).locale('en').format('Do MMM YYYY')
+        value: dataAPI.passportValidTill
+          ? Moment(dataAPI.passportValidTill).locale('en').format('Do MMM YYYY')
           : '',
       },
     ];
     const dummyData2 = [
-      { label: 'Visa Number', value: dataAPI.visaNumber },
+      { label: 'Visa Number', value: dataAPI.visaNo },
       { label: 'Visa Type', value: dataAPI.visaType },
-      { label: 'Country', value: dataAPI.country },
-      { label: 'Entry Type', value: dataAPI.entryType },
+      { label: 'Country', value: dataAPI.visaCountry },
+      { label: 'Entry Type', value: dataAPI.visaEntryType },
       {
         label: 'Issued On',
-        value: dataAPI.issuedOnVisa
-          ? Moment(dataAPI.issuedOnVisa).locale('en').format('Do MMM YYYY')
+        value: dataAPI.visaIssuedOn
+          ? Moment(dataAPI.visaIssuedOn).locale('en').format('Do MMM YYYY')
           : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.validTillVisa
-          ? Moment(dataAPI.validTillVisa).locale('en').format('Do MMM YYYY')
+        value: dataAPI.visaValidTill
+          ? Moment(dataAPI.visaValidTill).locale('en').format('Do MMM YYYY')
           : '',
       },
     ];
