@@ -63,25 +63,32 @@ class ReceivedSubmittedDocuments extends Component {
     const rowSize = 10;
     const list = [
       {
-        rookieId: 123,
-        rookieName: 'name test',
-        position: 'Engineer',
-        location: 'Ho Chi Minh City',
-        dateReceived: '12/12/2020',
+        rookieId: '#16003134',
+        rookieName: 'Matt Wagoner',
+        position: 'Sr. UX Designer',
+        location: 'Mumbai',
+        dateReceived: '22nd June, 2020',
       },
       {
-        rookieId: 123,
-        rookieName: 'name test',
-        position: 'Engineer',
-        location: 'Ho Chi Minh City',
-        dateReceived: '12/12/2020',
+        rookieId: '#18001829',
+        rookieName: 'JT Grauke',
+        position: 'UI Designer',
+        location: 'Mumbai',
+        dateReceived: '24th Sept, 2020',
       },
       {
-        rookieId: 123,
-        rookieName: 'name test',
-        position: 'Engineer',
-        location: 'Ho Chi Minh City',
-        dateReceived: '12/12/2020',
+        rookieId: '#16210862',
+        rookieName: 'Ryan Jhonson',
+        position: 'Sr. UX Designer',
+        location: 'Chennai',
+        dateReceived: '14th Dec, 2020',
+      },
+      {
+        rookieId: '#10928389',
+        rookieName: 'Billy Hoffman',
+        position: 'Illustrator',
+        location: 'Mumbai',
+        dateReceived: '11th June, 2020',
       },
     ];
     const pagination = {

@@ -35,7 +35,7 @@ export default class EmployeeOnboarding extends PureComponent {
                   </Button>
                 </Col>
                 <Col>
-                  <Button className={styles.view} type="primary">
+                  <Button className={styles.view} type="secondary">
                     View Activity log (15)
                   </Button>
                 </Col>
