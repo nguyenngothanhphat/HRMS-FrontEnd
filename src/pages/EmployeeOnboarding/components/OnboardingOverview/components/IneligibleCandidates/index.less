@@ -1,4 +1,8 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
 @border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
 
 .mixin-border-bottom-row {
   border-bottom: solid 1px #d6dce0;
@@ -14,8 +18,7 @@
   .table_actions {
     display: flex;
     align-items: end;
-  }
-  span {
+
     p {
       cursor: pointer;
       text-align: left;
@@ -29,6 +32,30 @@
       margin-right: 10px;
     }
   }
+
+  p,
+  span {
+    margin: 0;
+  }
+
+  .new {
+    color: @orange;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 16px;
+    text-transform: capitalize;
+    font-family: 'Roboto';
+    display: inline-block;
+    background-color: @new-background;
+    padding: 0 8px;
+  }
+
+  svg {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   :global {
     .ant-table-row {
       height: 55px;

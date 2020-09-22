@@ -7,7 +7,7 @@ import styles from './index.less';
 
 const list = [
   {
-    rookieId: '#160031340',
+    rookieId: '#16003134',
     isNew: true,
     rookieName: 'Matt Wagoner',
     position: 'Sr. UX Designer',
@@ -16,6 +16,7 @@ const list = [
   },
   {
     rookieId: '#18001829',
+    isNew: true,
     rookieName: 'JT Grauke',
     position: 'UI Designer',
     location: 'Mumbai',
@@ -23,6 +24,7 @@ const list = [
   },
   {
     rookieId: '#16210862',
+    isNew: true,
     rookieName: 'Ryan Jhonson',
     position: 'Sr. UI Designer',
     location: 'Chennai',
@@ -30,48 +32,49 @@ const list = [
   },
   {
     rookieId: '#10928389',
+    isNew: true,
     rookieName: 'Billy Hoffman',
     position: 'Illustrator',
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#16003134',
+    rookieId: '#16013134',
     rookieName: 'Karthik Naren',
     position: 'Jr. UI Designer',
     location: 'Dubai',
     comments: 'Eligibility date expireds',
   },
   {
-    rookieId: '#16210862',
+    rookieId: '#16211862',
     rookieName: 'Ema Drek',
     position: 'Sr. UX Designer',
     location: 'Bangalore',
     comments: 'Eligibility date expired',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#11928389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#10978389',
     rookieName: 'Siddartha',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#10926389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Eligibility date expired',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#10928089',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
@@ -79,76 +82,82 @@ const list = [
   },
   // Clone
   {
-    rookieId: '#16003134',
+    rookieId: '#26003134',
+
     rookieName: 'Matt Wagoner',
     position: 'Sr. UX Designer',
     location: 'Mumbai',
     comments: 'Passport submission pending …',
   },
   {
-    rookieId: '#18001829',
+    rookieId: '#28001829',
+    isNew: true,
     rookieName: 'JT Grauke',
     position: 'UI Designer',
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#16210862',
+    rookieId: '#26210862',
+
     rookieName: 'Ryan Jhonson',
     position: 'Sr. UI Designer',
     location: 'Chennai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#20928389',
+
     rookieName: 'Billy Hoffman',
     position: 'Illustrator',
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#16003134',
+    rookieId: '#26013134',
     rookieName: 'Karthik Naren',
     position: 'Jr. UI Designer',
     location: 'Dubai',
     comments: 'Eligibility date expireds',
   },
   {
-    rookieId: '#16210862',
+    rookieId: '#26211862',
+    isNew: true,
     rookieName: 'Ema Drek',
     position: 'Sr. UX Designer',
     location: 'Bangalore',
     comments: 'Eligibility date expired',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#21928389',
+    isNew: true,
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#20978389',
     rookieName: 'Siddartha',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Fake eligibility documents',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#20926389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Eligibility date expired',
   },
   {
-    rookieId: '#10928389',
+    rookieId: '#20928089',
+    isNew: true,
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
     location: 'Dubai',
     comments: 'Eligibility date expired',
   },
-  // Clone
 ];
 
 class IneligibleCandidates extends Component {
@@ -161,9 +170,15 @@ class IneligibleCandidates extends Component {
     const selectedPerson = list.find((item) => item.rookieId === id);
     const { rookieName: name, isNew } = selectedPerson;
     if (isNew) {
-      return <span>{`${name} NEW`}</span>;
+      return (
+        // <p className={styles.name}>
+        <p>
+          {name}
+          <span className={styles.new}>new</span>
+        </p>
+      );
     }
-    return <span>{name}</span>;
+    return <p>{name}</p>;
   };
 
   generateColumns = () => {
@@ -178,6 +193,7 @@ class IneligibleCandidates extends Component {
         dataIndex: 'rookieId',
         key: 'rookieID2',
         render: (rookieId) => this.renderName(rookieId),
+        width: '18%',
       },
       {
         title: 'Position',
@@ -215,6 +231,12 @@ class IneligibleCandidates extends Component {
     }));
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageSelected: pageNumber,
+    });
+  };
+
   render() {
     const { sortedName = {}, pageSelected } = this.state;
     const rowSize = 10;
@@ -244,7 +266,6 @@ class IneligibleCandidates extends Component {
           columns={this.generateColumns(sortedName)}
           dataSource={list}
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-
           // scroll={{ x: 1000, y: 'max-content' }}
         />
       </div>
