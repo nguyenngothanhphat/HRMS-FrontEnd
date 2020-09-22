@@ -12,10 +12,10 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 import styles from './index.less';
 
 const list = rookieList;
-const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
-const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
+const { ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION } = COLUMN_NAME;
+const { SENT_PROVISIONAL_OFFERS } = TABLE_TYPE;
 
-class EligibleCandidates extends Component {
+class SentProvisionalOffers extends Component {
   constructor(props) {
     super(props);
   }
@@ -24,11 +24,12 @@ class EligibleCandidates extends Component {
     return (
       <OnboardTable
         list={rookieList}
-        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
-        type={ELIGIBLE_CANDIDATES}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION]}
+        type={SENT_PROVISIONAL_OFFERS}
+        inTab
       />
     );
   }
 }
 
-export default EligibleCandidates;
+export default SentProvisionalOffers;

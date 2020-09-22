@@ -9,26 +9,27 @@ import {
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+
 import styles from './index.less';
 
 const list = rookieList;
 const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
-const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
+const { RECEIVED_PROVISIONAL_OFFERS } = TABLE_TYPE;
 
-class EligibleCandidates extends Component {
+class ReceivedProvisionalOffers extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return (
       <OnboardTable
         list={rookieList}
         columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
-        type={ELIGIBLE_CANDIDATES}
+        type={RECEIVED_PROVISIONAL_OFFERS}
+        inTab
       />
     );
   }
 }
 
-export default EligibleCandidates;
+export default ReceivedProvisionalOffers;
