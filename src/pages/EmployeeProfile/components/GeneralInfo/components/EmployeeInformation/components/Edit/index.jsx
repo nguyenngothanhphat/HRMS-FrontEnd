@@ -44,13 +44,16 @@ class Edit extends PureComponent {
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       const [first] = data;
-      // console.log('first', first, first.url);
       this.setState({ upFile: first.url });
     }
   };
 
   handleCanCelIcon = () => {
+    const { dispatch } = this.props;
     this.setState({ upFile: '' });
+    dispatch({
+      type: 'upload/uploadFile',
+    });
   };
 
   render() {
@@ -145,18 +148,20 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
-          <Form.Item
-            label="Adhaar Card Number"
-            name="adhaarCardNumber"
-            rules={[
-              {
-                pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              },
-            ]}
-          >
-            <div className={styles.viewUpload}>
+          <div className={styles.styleUpLoad}>
+            <Form.Item
+              label="Adhaar Card Number"
+              name="adhaarCardNumber"
+              rules={[
+                {
+                  pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                },
+              ]}
+            >
               <Input className={styles.inputForm} />
+            </Form.Item>
+            <>
               {upFile === '' ? (
                 <div className={styles.textUpload}>
                   <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
@@ -169,7 +174,7 @@ class Edit extends PureComponent {
                     rel="noopener noreferrer"
                     className={styles.viewUpLoadDataURL}
                   >
-                    {splitURL[6]}
+                    fileName
                   </a>
                   <p className={styles.viewUpLoadDataText}>Uploaded</p>
                   <img
@@ -180,8 +185,9 @@ class Edit extends PureComponent {
                   />
                 </div>
               )}
-            </div>
-          </Form.Item>
+            </>
+          </div>
+
           {upFile !== '' ? (
             <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
               <a

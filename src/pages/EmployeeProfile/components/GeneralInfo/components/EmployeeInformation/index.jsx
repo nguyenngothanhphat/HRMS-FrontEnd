@@ -133,10 +133,14 @@ class EmployeeInformation extends PureComponent {
       <div className={styles.EmployeeInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Employee Information</p>
-          <div className={styles.flexEdit} onClick={this.handleEdit}>
-            <EditFilled className={styles.IconEdit} />
-            <p className={styles.Edit}>Edit</p>
-          </div>
+          {isEdit ? (
+            ''
+          ) : (
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <EditFilled className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
+          )}
         </div>
 
         <div className={styles.viewBottom}>{renderComponent}</div>

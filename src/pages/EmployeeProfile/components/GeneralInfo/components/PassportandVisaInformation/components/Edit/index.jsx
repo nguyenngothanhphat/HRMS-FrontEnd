@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
+import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import styles from './index.less';
 
 @connect(
@@ -19,7 +21,7 @@ import styles from './index.less';
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { dropdown: false };
+    this.state = { upFile: '', dropdown: false };
   }
 
   handleDropdown = (open) => {
@@ -43,9 +45,27 @@ class Edit extends PureComponent {
     });
   };
 
+  handleUpLoadFile = (resp) => {
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      this.setState({ upFile: first.url });
+    }
+  };
+
+  handleCanCelIcon = () => {
+    const { dispatch } = this.props;
+    this.setState({ upFile: '' });
+    dispatch({
+      type: 'upload/uploadFile',
+    });
+  };
+
   render() {
     const { Option } = Select;
     const { generalData } = this.props;
+    const { upFile } = this.state;
+    const splitURL = upFile.split('/');
     const {
       passportNo = '',
       passportIssueCountry = '',
@@ -93,18 +113,57 @@ class Edit extends PureComponent {
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
         >
-          <Form.Item
-            label="Passport Number"
-            name="passportNo"
-            rules={[
-              {
-                pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
+          <div className={styles.styleUpLoad}>
+            <Form.Item
+              label="Passport Number"
+              name="passportNo"
+              rules={[
+                {
+                  pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            {upFile === '' ? (
+              <div className={styles.textUpload}>
+                <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+              </div>
+            ) : (
+              <div className={styles.viewUpLoadData}>
+                <a
+                  href={upFile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.viewUpLoadDataURL}
+                >
+                  fileName
+                </a>
+                <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                <img
+                  src={cancelIcon}
+                  alt=""
+                  onClick={this.handleCanCelIcon}
+                  className={styles.viewUpLoadDataIconCancel}
+                />
+              </div>
+            )}
+          </div>
+          {upFile !== '' ? (
+            <Form.Item label="Uploaded file:" className={styles.labelUpload}>
+              <a
+                href={upFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.urlUpload}
+              >
+                {splitURL[6]}
+              </a>
+            </Form.Item>
+          ) : (
+            ''
+          )}
           <Form.Item label="Issued Country" name="passportIssueCountry">
             <Select
               allowClear
@@ -139,19 +198,57 @@ class Edit extends PureComponent {
           </Form.Item>
 
           <div className={styles.line} />
-
-          <Form.Item
-            label="Visa Number"
-            name="visaNo"
-            rules={[
-              {
-                pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
+          <div className={styles.styleUpLoad}>
+            <Form.Item
+              label="Visa Number"
+              name="visaNo"
+              rules={[
+                {
+                  pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            {upFile === '' ? (
+              <div className={styles.textUpload}>
+                <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+              </div>
+            ) : (
+              <div className={styles.viewUpLoadData}>
+                <a
+                  href={upFile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.viewUpLoadDataURL}
+                >
+                  fileName
+                </a>
+                <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                <img
+                  src={cancelIcon}
+                  alt=""
+                  onClick={this.handleCanCelIcon}
+                  className={styles.viewUpLoadDataIconCancel}
+                />
+              </div>
+            )}
+          </div>
+          {upFile !== '' ? (
+            <Form.Item label="Visa:" className={styles.labelUpload}>
+              <a
+                href={upFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.urlUpload}
+              >
+                {splitURL[6]}
+              </a>
+            </Form.Item>
+          ) : (
+            ''
+          )}
           <Form.Item label="Visa Type" name="visaType">
             <Select
               allowClear
