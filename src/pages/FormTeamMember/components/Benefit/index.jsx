@@ -18,17 +18,17 @@ class Benefit extends PureComponent {
     return null;
   }
 
-  // handleChange = () => {
-
-  // }
-
-  // handleChangeAll = () => {
-
-  // }
-
-  // onChange = () => {
-
-  // }
+  // onChange = (e) => {
+  //   const { target } = e;
+  //   const { name, value } = target;
+  //   const { dispatch } = this.props;
+  //   const { benefits = {} } = this.state;
+  //   benefits[name] = value;
+  //   dispatch({
+  //     type: 'info/saveBenefits',
+  //     benefits,
+  //   });
+  // };
 
   render() {
     const headerText = 'Coverage will take effect on 20/04/2020';
@@ -52,6 +52,7 @@ class Benefit extends PureComponent {
         },
         {
           value: 'Dental',
+          title: 'Dental',
           subCheckBox: [
             {
               key: 1,
@@ -61,6 +62,7 @@ class Benefit extends PureComponent {
         },
         {
           value: 'Vision',
+          title: 'Vision',
           subCheckBox: [
             {
               key: 1,
@@ -146,7 +148,8 @@ class Benefit extends PureComponent {
               <GlobalEmployeeComponent
                 globalEmployeesCheckbox={globalEmployeesCheckbox}
                 headerText={headerText}
-                handleChange={this.handleChange}
+                onChange={this.onChange}
+                handleCheckAll={this.handleCheckAll}
               />
               <IndiaEmployeeComponent
                 IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}

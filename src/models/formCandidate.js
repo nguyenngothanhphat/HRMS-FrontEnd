@@ -72,49 +72,36 @@ const info = {
       mail: '',
     },
     benefits: {
-      globalEmployee: [
-        {
-          medical: {
-            isChecked: false,
-            value: 'medical',
-            title: 'Medical',
-            checkedList: [],
-            subCheckBox: [
-              { key: 1, value: '' },
-              { key: 2, value: '' },
-            ],
-          },
-          dental: {
-            isChecked: false,
-            value: 'dental',
-            title: 'Dental',
-            checkedList: [],
-          },
-          vision: {
-            isChecked: false,
-            value: 'vision',
-            title: 'Vision',
-            checkedList: [],
-          },
-          life: {
-            isChecked: false,
-            checkedList: [],
-            subCheckBox: [
-              { key: 1, value: '' },
-              { key: 2, value: '' },
-            ],
-          },
-          shortTerm: {
-            isChecked: false,
-            checkedList: [],
-            subCheckBox: [
-              { key: 1, value: '' },
-              { key: 2, value: '' },
-            ],
-          },
-        },
-      ],
+      medical: false,
+      life: false,
+      shortTerm: false,
+      listSelectedMedical: [],
+      listSelectedLife: [],
+      listSelectedShortTerm: [],
     },
+
+    //   medicalCheckbox: {
+    //     isChecked: false,
+    //     choicePlan: false,
+    //     basePlan: false,
+    //     checkedList: [],
+    //   },
+    //   lifeCheckbox: {
+    //     isChecked: false,
+    //     basicLife: false,
+    //     volLife: false,
+    //     checkedList: [],
+    //   },
+    //   shortTermCheckbox: {
+    //     isChecked: false,
+    //     basicLife: false,
+    //     volLife: false,
+    //     checkedList: [],
+    //   },
+    //   visionCheckbox: false,
+    //   dentalCheckbox: false,
+    // },
+
     customField: {
       // dental: 'tier1',
       // vision: 'tier1',
