@@ -78,6 +78,11 @@ const info = {
       listSelectedMedical: [],
       listSelectedLife: [],
       listSelectedShortTerm: [],
+      dental: false,
+      vision: false,
+      employeeProvident: false,
+      paytmWallet: false,
+      listSelectedEmployee: [],
     },
 
     //   medicalCheckbox: {

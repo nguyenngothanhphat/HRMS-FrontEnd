@@ -2,42 +2,77 @@
 
 import React, { PureComponent } from 'react';
 import { Checkbox, Typography, Row } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ info: { benefits } = {} }) => ({
+  benefits,
+}))
 class IndiaEmployeeComponent extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      employee: false,
-      listSelectedEmployee: [],
-    };
+  static getDerivedStateFromProps(props) {
+    if ('benefits' in props) {
+      return { benefits: props.benefits || {} };
+    }
+    return null;
   }
 
   onChange = (e) => {
-    console.log(e.target.value);
+    const { target } = e;
+    const { value } = target;
+    const { benefits } = this.state;
+    const { paytmWallet } = benefits;
+    const { dispatch } = this.props;
+    if (value === 'Paytm Wallet') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            paytmWallet: !paytmWallet,
+          },
+        },
+      });
+    }
   };
 
   handleChange = (checkedList, arr, title) => {
+    const { benefits } = this.state;
+    const { dispatch } = this.props;
     if (title === 'employeeProvident') {
-      this.setState({
-        listSelectedEmployee: checkedList,
-        employee: checkedList.length === arr.length,
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedEmployee: checkedList,
+            employeeProvident: checkedList.length === arr.length,
+          },
+        },
       });
     }
   };
 
   handleCheckAll = (e, arr, title) => {
+    const { benefits } = this.state;
+    const { dispatch } = this.props;
     if (title === 'employeeProvident') {
-      this.setState({
-        listSelectedEmployee: e.target.checked ? arr.map((data) => data.value) : [],
-        employee: e.target.checked,
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedEmployee: e.target.checked ? arr.map((data) => data.value) : [],
+            employeeProvident: e.target.checked,
+          },
+        },
       });
     }
   };
 
   render() {
     const { IndiaEmployeesCheckbox, headerText } = this.props;
-    const { employee, listSelectedEmployee } = this.state;
+    const { benefits } = this.state;
+    const { employeeProvident, listSelectedEmployee } = benefits;
     const { name, checkBox } = IndiaEmployeesCheckbox;
 
     const CheckboxGroup = Checkbox.Group;
@@ -54,7 +89,7 @@ class IndiaEmployeeComponent extends PureComponent {
                   item.value === 'Paytm Wallet' ? styles.checkboxMedical : styles.checkBoxHeaderTop
                 }
                 onChange={(e) => this.handleCheckAll(e, item.subCheckBox, item.title)}
-                checked={item.title === 'employeeProvident' ? employee : null}
+                checked={item.title === 'employeeProvident' ? employeeProvident : null}
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
