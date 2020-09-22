@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
@@ -16,13 +17,19 @@ export default class EmployeeOnboarding extends PureComponent {
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
             <Tabs defaultActiveKey="1">
-              <TabPane tab="Onboarding overview" key="1">
+              <TabPane
+                tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
+                key="1"
+              >
                 <OnboardingOverview />
               </TabPane>
-              <TabPane tab="Settings" key="2">
+              <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
                 <Settings />
               </TabPane>
-              <TabPane tab="Custom field" key="3">
+              <TabPane
+                tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
+                key="3"
+              >
                 <CustomFields />
               </TabPane>
             </Tabs>
@@ -31,12 +38,12 @@ export default class EmployeeOnboarding extends PureComponent {
               <Row gutter={[24, 0]}>
                 <Col>
                   <Button className={styles.generate} type="primary">
-                    Generate Report for onboarding
+                    {formatMessage({ id: 'component.employeeOnboarding.generate' })}
                   </Button>
                 </Col>
                 <Col>
                   <Button className={styles.view} type="secondary">
-                    View Activity log (15)
+                    {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
                   </Button>
                 </Col>
               </Row>
