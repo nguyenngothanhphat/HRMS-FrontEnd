@@ -34,13 +34,32 @@
       }
     }
     .ant-space-horizontal {
-      padding-left: 33px;
+      padding-left: 16px;
     }
   }
   .checkbox {
     color: #161c29;
     padding-right: 1rem;
     font-size: 14px;
+    &:hover {
+      border-radius: 5px;
+    }
+    :global {
+      .ant-checkbox {
+        &.ant-checkbox-checked {
+          // .ant-checkbox-input {
+          .ant-checkbox-inner {
+            background-color: #f0f3f9;
+            border-radius: 5px;
+            &::after {
+              border: 2px solid #2c6df9;
+              border-top: none;
+              border-left: none;
+            }
+          }
+        }
+      }
+    }
     span {
       &:last-child {
         padding-left: 1rem;
@@ -54,6 +73,21 @@
     margin-bottom: 1rem;
     padding-left: 16px;
     :global {
+      .ant-checkbox.ant-checkbox-checked {
+        .ant-checkbox-input {
+        }
+        // .ant-checkbox-input {
+        .ant-checkbox-inner {
+          background-color: #f0f3f9;
+          border-radius: 5px;
+          &::after {
+            border: 2px solid #2c6df9;
+            border-top: none;
+            border-left: none;
+          }
+        }
+        // }
+      }
       .ant-checkbox-group-item {
         display: block;
         margin-bottom: 1rem;
@@ -87,5 +121,15 @@
     font-style: normal;
     line-height: normal;
     letter-spacing: 0.12px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .CollapseField {
+    :global {
+      .ant-collapse-extra {
+        display: none;
+      }
+    }
   }
 }

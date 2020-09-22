@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Typography, Space, Radio, Input, Form, Button, Row, Col } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import send from './Assets/path.svg';
+import send from './Assets/group-11.svg';
 import style from './index.less';
 import copy from './Assets/copy-office.svg';
 
-const index = () => {
+const index = ({ formatMessage = () => {} }) => {
   const [isEnable, setIsEnable] = useState(null);
   const [isInputEnable, setIsInputEnable] = useState(true);
 
@@ -30,22 +30,24 @@ const index = () => {
               <img src={send} alt="send-icon" className={style.send} />
             </div>
           </div>
-          <Typography.Text className={style.text}>Sent Form</Typography.Text>
+          <Typography.Text className={style.text}>
+            {formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
+          </Typography.Text>
         </Space>
       </div>
       <div className={style.body}>
         <Radio.Group className={style.radioContainer}>
           <Radio value={1} className={style.radioItem} onChange={handleEmailClick}>
-            Via Email
+            {formatMessage({ id: 'component.eligibilityDocs.viaEmail' })}
             <p className={style.radioHelper}>
-              The form will be sent on candidate’s private email id.
+              {formatMessage({ id: 'component.eligibilityDocs.emailSubtitle' })}
             </p>
           </Radio>
           <br />
           <Radio value={2} className={style.radioItem} onChange={handleLinkClick}>
-            Generate Link
+            {formatMessage({ id: 'component.eligibilityDocs.generateLink' })}
             <p className={style.radioHelper}>
-              The link to the form will be generated which can be shared.
+              {formatMessage({ id: 'component.eligibilityDocs.linkSubtitle' })}
             </p>
           </Radio>
         </Radio.Group>
@@ -53,13 +55,13 @@ const index = () => {
       <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
         <div className={style.line} />
         <Form layout="vertical" className={style.emailForm}>
-          <Form.Item label="Personal email id of the joinee">
+          <Form.Item label={formatMessage({ id: 'component.eligibilityDocs.emailLabel' })}>
             <Input defaultValue="Landonorris@gmail.com" disabled={isInputEnable} />
           </Form.Item>
           <Typography.Text className={style.change} onClick={handleClick}>
-            Change
+            {formatMessage({ id: 'component.eligibilityDocs.change' })}
           </Typography.Text>
-          <Button>Send email</Button>
+          <Button>{formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}</Button>
         </Form>
       </div>
       <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
@@ -70,9 +72,11 @@ const index = () => {
           </Form.Item>
         </Form>
         <div className={style.textBottom}>
-          <Typography.Text className={style.title}>Restricted access</Typography.Text>
+          <Typography.Text className={style.title}>
+            {formatMessage({ id: 'component.eligibilityDocs.restrictedAccess' })}
+          </Typography.Text>
           <Typography.Paragraph className={style.helper}>
-            Only authorised people can access this link
+            {formatMessage({ id: 'component.eligibilityDocs.restrictedHelper' })}
           </Typography.Paragraph>
           <Row gutter={[4, 0]}>
             <Col span={2}>
@@ -82,7 +86,9 @@ const index = () => {
               <Typography.Text>HR@terralogic.com</Typography.Text>
             </Col>
             <Col span={4}>
-              <Typography.Text>Owner</Typography.Text>
+              <Typography.Text>
+                {formatMessage({ id: 'component.eligibilityDocs.owner' })}
+              </Typography.Text>
             </Col>
           </Row>
           <Row>
@@ -101,7 +107,7 @@ const index = () => {
               <Typography.Text>Landonorris@gmail.com</Typography.Text>
             </Col>
           </Row>
-          <Button>Mark as done</Button>
+          <Button>{formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}</Button>
         </div>
       </div>
     </div>
