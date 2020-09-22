@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin } from 'antd';
-import debounce from 'lodash/debounce';
+import { Button, Row, Col, Select } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
@@ -32,6 +31,22 @@ const mockData = [
     id: 777,
     value: 'elonmusk@gmail.com',
   },
+  {
+    id: 433,
+    value: 'testemail1@gmail.com',
+  },
+  {
+    id: 889,
+    value: 'testemail2@gmail.com',
+  },
+  {
+    id: 232,
+    value: 'emailex1@hotmail.com',
+  },
+  {
+    id: 298,
+    value: 'emailex3@gmail.com',
+  },
 ];
 
 const identifyImageOrPdf = (fileName) => {
@@ -57,20 +72,12 @@ const identifyImageOrPdf = (fileName) => {
 class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
-    this.fetchEmails = debounce(this.fetchEmails, 800);
     const { selectedFile } = this.props;
     this.state = {
-      data: [],
-      value: [],
-      fetching: false,
       numPages: null,
       currentViewingFile: selectedFile,
     };
   }
-
-  componentDidMount = () => {
-    this.fetchEmails('');
-  };
 
   // File Viewing
   getCurrentViewingFileUrl = () => {
@@ -110,36 +117,6 @@ class ViewDocument extends PureComponent {
     });
   };
 
-  // search emails to share
-  fetchEmails = (value) => {
-    this.setState({
-      data: [],
-      fetching: true,
-    });
-    setTimeout(() => {
-      const searchResult = mockData.filter((row = {}) => row.value.includes(value));
-      if (searchResult.length > 0) {
-        this.setState({
-          data: searchResult,
-          fetching: false,
-        });
-      } else {
-        this.setState({
-          data: [],
-          fetching: false,
-        });
-      }
-    }, 500);
-  };
-
-  handleChange = (value) => {
-    this.setState({
-      value,
-      data: [],
-      fetching: false,
-    });
-  };
-
   // on Save button click
   onSaveClick = () => {
     alert('Save');
@@ -153,8 +130,12 @@ class ViewDocument extends PureComponent {
     }
   };
 
+  handleChange = (value) => {
+    console.log(`selected emails ${value}`);
+  };
+
   render() {
-    const { fetching, data, value, numPages, currentViewingFile } = this.state;
+    const { numPages, currentViewingFile } = this.state;
     const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
 
     return (
@@ -236,19 +217,15 @@ class ViewDocument extends PureComponent {
               <Col className={styles.infoCol2} span={17}>
                 <Select
                   mode="multiple"
-                  labelInValue
-                  value={value}
                   placeholder={formatMessage({
                     id: 'pages.employeeProfile.documents.viewDocument.emailPlaceholder',
                   })}
-                  notFoundContent={fetching ? <Spin size="small" /> : null}
-                  onSearch={this.fetchEmails}
-                  showArrow
                   onChange={this.handleChange}
+                  showArrow
                   className={styles.shareViaEmailInput}
                 >
-                  {data.map((d) => (
-                    <Option key={d.id}>{d.value}</Option>
+                  {mockData.map((d) => (
+                    <Option key={d.value}>{d.value}</Option>
                   ))}
                 </Select>
               </Col>
