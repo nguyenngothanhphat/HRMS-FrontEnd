@@ -61,18 +61,11 @@ const BasicLayout = (props) => {
       });
     }
   }; // get children authority
-  const _renderTitleHeader = (
+  const _renderBtnToggle = (
     <div className={styles.titleHeader}>
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
         <img src="/assets/images/menu.svg" alt="toggle-menu" />
       </div>
-      <Link to="/">
-        <img
-          className={styles.titleHeader__logo}
-          src="https://pritythings.co.uk/uploads/logo/logo_5f2892008249a.png"
-          alt="img-logo"
-        />
-      </Link>
     </div>
   );
 
@@ -89,7 +82,7 @@ const BasicLayout = (props) => {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
-        headerContentRender={() => _renderTitleHeader}
+        menuHeaderRender={() => _renderBtnToggle}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
