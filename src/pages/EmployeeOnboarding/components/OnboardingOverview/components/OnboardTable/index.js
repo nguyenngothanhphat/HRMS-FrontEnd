@@ -147,6 +147,17 @@ class OnboardTable extends Component {
     const { list, hasBorder } = this.props;
     const rowSize = 10;
 
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      getCheckboxProps: (record) => ({
+        disabled: record.name === 'Disabled User',
+        // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
+
     const pagination = {
       position: ['bottomRight'],
       total: list.length,
@@ -171,6 +182,10 @@ class OnboardTable extends Component {
       <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
         <Table
           size="small"
+          rowSelection={{
+            type: 'checkbox',
+            ...rowSelection,
+          }}
           columns={this.generateColumns(columnArr, type)}
           dataSource={list}
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}

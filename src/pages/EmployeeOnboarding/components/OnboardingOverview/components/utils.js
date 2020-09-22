@@ -1,5 +1,6 @@
 const rookieList = [
   {
+    key: '1',
     rookieId: '#16003134',
     isNew: true,
     rookieName: 'Matt Wagoner',
@@ -9,6 +10,7 @@ const rookieList = [
     dateSent: '29th Sept, 2020',
   },
   {
+    key: '2',
     rookieId: '#18001829',
     isNew: true,
     rookieName: 'JT Grauke',
@@ -18,6 +20,7 @@ const rookieList = [
     dateSent: '3rd Oct, 2020',
   },
   {
+    key: '3',
     rookieId: '#16210862',
     isNew: true,
     rookieName: 'Ryan Jhonson',
@@ -27,6 +30,7 @@ const rookieList = [
     dateSent: '30th Nov, 2020',
   },
   {
+    key: '4',
     rookieId: '#10928389',
     isNew: true,
     rookieName: 'Billy Hoffman',
@@ -36,6 +40,7 @@ const rookieList = [
     dateSent: '29th Sept, 2020',
   },
   {
+    key: '5',
     rookieId: '#16013134',
     rookieName: 'Karthik Naren',
     position: 'Jr. UI Designer',
@@ -44,6 +49,7 @@ const rookieList = [
     dateSent: '12th Jan, 2020',
   },
   {
+    key: '6',
     rookieId: '#16211862',
     rookieName: 'Ema Drek',
     position: 'Sr. UX Designer',
@@ -52,6 +58,7 @@ const rookieList = [
     dateSent: '09th Aug, 2020',
   },
   {
+    key: '7',
     rookieId: '#11928389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
@@ -60,6 +67,7 @@ const rookieList = [
     dateSent: '19th June, 2020',
   },
   {
+    key: '8',
     rookieId: '#10978389',
     rookieName: 'Siddartha',
     position: 'Sr. Illustrator',
@@ -68,6 +76,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '9',
     rookieId: '#10926389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
@@ -76,6 +85,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '10',
     rookieId: '#10928089',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
@@ -85,8 +95,8 @@ const rookieList = [
   },
   // Clone
   {
+    key: '11',
     rookieId: '#26003134',
-
     rookieName: 'Matt Wagoner',
     position: 'Sr. UX Designer',
     location: 'Mumbai',
@@ -94,6 +104,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '12',
     rookieId: '#28001829',
     isNew: true,
     rookieName: 'JT Grauke',
@@ -103,8 +114,8 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '13',
     rookieId: '#26210862',
-
     rookieName: 'Ryan Jhonson',
     position: 'Sr. UI Designer',
     location: 'Chennai',
@@ -112,8 +123,8 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '14',
     rookieId: '#20928389',
-
     rookieName: 'Billy Hoffman',
     position: 'Illustrator',
     location: 'Mumbai',
@@ -121,6 +132,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '15',
     rookieId: '#26013134',
     rookieName: 'Karthik Naren',
     position: 'Jr. UI Designer',
@@ -129,6 +141,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '16',
     rookieId: '#26211862',
     isNew: true,
     rookieName: 'Ema Drek',
@@ -138,6 +151,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '17',
     rookieId: '#21928389',
     isNew: true,
     rookieName: 'Suraj Bhatt',
@@ -147,6 +161,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '18',
     rookieId: '#20978389',
     rookieName: 'Siddartha',
     position: 'Sr. Illustrator',
@@ -155,6 +170,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '19',
     rookieId: '#20926389',
     rookieName: 'Suraj Bhatt',
     position: 'Sr. Illustrator',
@@ -163,6 +179,7 @@ const rookieList = [
     dateSent: '23th May, 2020',
   },
   {
+    key: '20',
     rookieId: '#20928089',
     isNew: true,
     rookieName: 'Suraj Bhatt',

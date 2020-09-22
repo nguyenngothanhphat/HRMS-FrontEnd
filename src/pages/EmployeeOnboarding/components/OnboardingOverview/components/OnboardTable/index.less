@@ -4,6 +4,8 @@
 @orange: #fe5d27;
 @new-background: #fff4f1;
 @border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
 
 .mixin-border-bottom-row {
   border-bottom: solid 1px #d6dce0;
@@ -88,6 +90,22 @@
     }
     .ant-table-tbody > tr > td {
       .mixin-border-bottom-row();
+    }
+
+    th.ant-table-selection-column {
+      width: 5%;
+    }
+
+    .ant-checkbox-inner {
+      background-color: @checkbox-background;
+
+      &:after {
+        border-color: blue;
+      }
+    }
+
+    .ant-checkbox-wrapper {
+      border-color: @checkbox-border;
     }
   }
 }

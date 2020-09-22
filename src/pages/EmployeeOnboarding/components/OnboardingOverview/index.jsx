@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { Link } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
 
-import AwaitingApprovalsFromHR from './components/AwaitingApprovalsFromHR';
+import AwaitingApprovals from './components/AwaitingApprovals';
 import DiscardedProvisionalOffers from './components/DiscardedProvisionalOffers';
 import EligibleCandidates from './components/EligibleCandidates';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
@@ -61,7 +61,7 @@ const MENU_DATA_3 = [
     name: 'Awaiting approvals from HR',
     quantity: 9,
     key: 'awaitingApprovals',
-    component: <AwaitingApprovalsFromHR />,
+    component: <AwaitingApprovals />,
   },
   {
     id: 7,
