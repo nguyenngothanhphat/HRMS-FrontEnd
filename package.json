@@ -51,6 +51,7 @@
     "@ant-design/pro-table": "^2.5.13",
     "antd": "^4.5.3",
     "babel-eslint": "^10.1.0",
+    "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
     "eslint": "^7.8.1",
     "eslint-config-prettier": "^6.11.0",
