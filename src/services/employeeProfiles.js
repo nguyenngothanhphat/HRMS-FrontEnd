@@ -46,7 +46,7 @@ export async function addCertification(payload) {
   });
 }
 
-export async function getPassPortVisa(payload) {
+export async function getPassPort(payload) {
   return request('/api/passport/get-by-employee', {
     method: 'POST',
     data: payload,
@@ -67,6 +67,20 @@ export async function updatePassPort(payload) {
 
 export async function getAddPassPort(payload) {
   return request('/api/passport/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getVisa(payload) {
+  return request('/api/visa/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getAddVisa(payload) {
+  return request('/api/visa/add', {
     method: 'POST',
     data: payload,
   });

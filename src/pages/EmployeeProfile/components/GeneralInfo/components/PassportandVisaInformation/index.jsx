@@ -9,13 +9,13 @@ import styles from './index.less';
   ({
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
-      originData: { passportvisaData: passportvisaDataOrigin = {} } = {},
-      tempData: { passportvisaData = {} } = {},
+      originData: { passportData: passportDataOrigin = {} } = {},
+      tempData: { passportData = {} } = {},
     } = {},
   }) => ({
     openPassportandVisa,
-    passportvisaDataOrigin,
-    passportvisaData,
+    passportDataOrigin,
+    passportData,
   }),
 )
 class PassportVisaInformation extends PureComponent {
@@ -28,36 +28,19 @@ class PassportVisaInformation extends PureComponent {
   };
 
   handleCancel = () => {
-    const { passportvisaDataOrigin, passportvisaData, dispatch } = this.props;
-    const {
-      number = '',
-      issuedCountry = '',
-      issuedOn = '',
-      validTill = '',
-      // visaNo = '',
-      // visaType = '',
-      // visaCountry = '',
-      // visaEntryType = '',
-      // visaIssuedOn = '',
-      // visaValidTill = '',
-    } = passportvisaDataOrigin;
+    const { passportDataOrigin, passportData, dispatch } = this.props;
+    const { number = '', issuedCountry = '', issuedOn = '', validTill = '' } = passportDataOrigin;
     const reverseFields = {
       number,
       issuedCountry,
       issuedOn,
       validTill,
-      // visaNo,
-      // visaType,
-      // visaCountry,
-      // visaEntryType,
-      // visaIssuedOn,
-      // visaValidTill,
     };
-    const payload = { ...passportvisaData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(passportvisaDataOrigin);
+    const payload = { ...passportData, ...reverseFields };
+    const isModified = JSON.stringify(payload) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportvisaData: payload },
+      payload: { passportData: payload },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -70,11 +53,11 @@ class PassportVisaInformation extends PureComponent {
   };
 
   render() {
-    const { passportvisaData, openPassportandVisa } = this.props;
+    const { passportData, openPassportandVisa } = this.props;
     const renderComponent = openPassportandVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={passportvisaData} />
+      <View dataAPI={passportData} />
     );
     return (
       <div className={styles.PassportVisaInformation}>

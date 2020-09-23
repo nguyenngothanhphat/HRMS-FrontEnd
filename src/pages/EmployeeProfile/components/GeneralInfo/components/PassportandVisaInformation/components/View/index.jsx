@@ -12,7 +12,6 @@ class View extends PureComponent {
   render() {
     const { dataAPI, urlImage = '' } = this.props;
     const viewCountry = dataAPI.issuedCountry ? dataAPI.issuedCountry.name : '';
-    console.log(dataAPI);
     const splitUrl = urlImage.split('/');
     const dummyData = [
       { label: 'Passport Number', value: dataAPI.number },
