@@ -10,6 +10,13 @@ const { Option } = Select;
   jobDetail,
 }))
 class FirstFieldsComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      toggleArrow: false,
+    };
+  }
+
   static getDerivedStateFromProps(props) {
     if ('jobDetail' in props) {
       return { jobDetail: props.jobDetail || {} };
@@ -17,9 +24,16 @@ class FirstFieldsComponent extends Component {
     return null;
   }
 
+  handleFocus = () => {
+    const { toggleArrow } = this.state;
+    this.setState({
+      toggleArrow: !toggleArrow,
+    });
+  };
+
   render() {
     const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
-    const { jobDetail = {} } = this.state;
+    const { jobDetail = {}, toggleArrow } = this.state;
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
     return (
       <>
@@ -38,8 +52,9 @@ class FirstFieldsComponent extends Component {
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
-                  className={styles}
+                  className={toggleArrow ? InternalStyle.arrow : styles}
                   onChange={(e) => handleSelect(e, item.title)}
+                  onDropdownVisibleChange={this.handleFocus}
                   defaultValue={
                     item.title === 'department'
                       ? department

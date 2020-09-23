@@ -27,6 +27,12 @@
         padding: 32px;
       }
     }
+    .ant-checkbox-disabled + span {
+      color: #161c29 !important;
+    }
+    .ant-checkbox-disabled {
+      opacity: 0.5;
+    }
     span.anticon-calendar {
       svg {
         margin-right: 0;
@@ -45,18 +51,28 @@
       border-radius: 5px;
     }
     :global {
-      .ant-checkbox {
-        &.ant-checkbox-checked {
-          // .ant-checkbox-input {
-          .ant-checkbox-inner {
-            background-color: #f0f3f9;
-            border-radius: 5px;
-            &::after {
-              border: 2px solid #2c6df9;
-              border-top: none;
-              border-left: none;
-            }
+      .ant-checkbox-checked {
+        &:hover {
+          border-radius: 4px;
+        }
+        .ant-checkbox-inner {
+          background: #f6f7f9;
+          border-radius: 4px;
+
+          &:hover {
+            border-radius: 4px;
           }
+          &:after {
+            border: 2px solid #2c6df9;
+            border-top: 0;
+            border-left: 0;
+          }
+        }
+      }
+      .ant-checkbox {
+        .ant-checkbox-inner {
+          background: #f6f7f9;
+          border-radius: 4px;
         }
       }
     }
@@ -73,20 +89,28 @@
     margin-bottom: 1rem;
     padding-left: 16px;
     :global {
-      .ant-checkbox.ant-checkbox-checked {
-        .ant-checkbox-input {
+      .ant-checkbox-checked {
+        &:hover {
+          border-radius: 4px;
         }
-        // .ant-checkbox-input {
         .ant-checkbox-inner {
-          background-color: #f0f3f9;
-          border-radius: 5px;
-          &::after {
+          background: #f6f7f9;
+          border-radius: 4px;
+          &:hover {
+            border-radius: 4px;
+          }
+          &:after {
             border: 2px solid #2c6df9;
-            border-top: none;
-            border-left: none;
+            border-top: 0;
+            border-left: 0;
           }
         }
-        // }
+      }
+      .ant-checkbox {
+        .ant-checkbox-inner {
+          background: #f6f7f9;
+          border-radius: 4px;
+        }
       }
       .ant-checkbox-group-item {
         display: block;

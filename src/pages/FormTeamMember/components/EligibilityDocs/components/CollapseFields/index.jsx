@@ -2,7 +2,7 @@
 import React from 'react';
 import { Collapse, Space, Checkbox, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import { connect } from 'umi';
 import InputField from '../InputField';
 import styles from './index.less';
 
@@ -10,16 +10,6 @@ import styles from './index.less';
   eligibilityDocs,
 }))
 class CollapseField extends React.Component {
-  constructor(props) {
-    super(props);
-    const { defaultCheckListContainer } = this.props;
-    this.state = {
-      checkList: defaultCheckListContainer,
-      isCheckAll: false,
-      indeterminate: true,
-    };
-  }
-
   static getDerivedStateFromProps(props) {
     if ('eligibilityDocs' in props) {
       return { eligibilityDocs: props.eligibilityDocs || {} };
@@ -27,36 +17,146 @@ class CollapseField extends React.Component {
     return null;
   }
 
-  handleChange(checkList) {
-    const { defaultCheckListContainer } = this.props;
-    this.setState({
-      checkList,
-      indeterminate: !!checkList.length && checkList.length < defaultCheckListContainer.length,
-      isCheckAll: checkList.length === defaultCheckListContainer.length,
-    });
-    console.log(this.state);
-  }
+  handleChange = (checkedList, arr, value) => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs } = this.state;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
+    if (value === 'typeA') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            identityProof: {
+              ...identityProof,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeB') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            addressProof: {
+              ...addressProof,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeC') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            educational: {
+              ...educational,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeD') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            technicalCertification: {
+              ...technicalCertification,
+              poe: {
+                ...poe,
+                listSelected: checkedList,
+                isChecked: checkedList.length === arr.length,
+              },
+            },
+          },
+        },
+      });
+    }
+  };
 
-  handleCheckAllChange(e) {
-    const { defaultCheckListContainer } = this.props;
-    this.setState({
-      checkList: e.target.checked ? defaultCheckListContainer : [],
-      indeterminate: false,
-      isCheckAll: e.target.checked,
-    });
-    console.log(this.state);
-  }
+  handleCheckAll = (e, arr, value) => {
+    const { eligibilityDocs } = this.state;
+    const { dispatch } = this.props;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
+    if (value === 'typeA') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            identityProof: {
+              ...identityProof,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeB') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            addressProof: {
+              ...addressProof,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeC') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            educational: {
+              ...educational,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeD') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            technicalCertification: {
+              ...technicalCertification,
+              poe: {
+                ...poe,
+                listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+                isChecked: e.target.checked,
+              },
+            },
+          },
+        },
+      });
+    }
+  };
 
   render() {
-    const { item, handleCheckBox, defaultCheckListContainer } = this.props;
-    // const {}
-    const {
-      // eligibilityDocs,
-      indeterminate,
-      isCheckAll,
-      checkList,
-    } = this.state;
-
+    const { item } = this.props;
+    console.log(item);
+    const { eligibilityDocs } = this.state;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
     return (
       <div className={styles.CollapseField}>
         <Collapse
@@ -71,9 +171,18 @@ class CollapseField extends React.Component {
               <Checkbox
                 className={styles.checkbox}
                 onClick={(e) => e.stopPropagation()}
-                indeterminate={indeterminate}
-                onChange={this.handleCheckAllChange}
-                checked={isCheckAll}
+                onChange={(e) => this.handleCheckAll(e, item.items, item.value)}
+                checked={
+                  item.value === 'typeA'
+                    ? identityProof.isChecked
+                    : item.value === 'typeB'
+                    ? addressProof.isChecked
+                    : item.value === 'typeC'
+                    ? educational.isChecked
+                    : item.value === 'typeD'
+                    ? poe.isChecked
+                    : null
+                }
               >
                 {item.title}
               </Checkbox>
@@ -82,27 +191,35 @@ class CollapseField extends React.Component {
           >
             {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
             <Space direction="vertical">
+              {item.defaultItems.map((data) =>
+                item.defaultItems.length > 1 ? (
+                  <Checkbox
+                    checked="true"
+                    disabled="true"
+                    value={data.name}
+                    className={styles.checkboxItem}
+                  >
+                    {data.name}*
+                  </Checkbox>
+                ) : null,
+              )}
               <Checkbox.Group
                 direction="vertical"
                 className={styles.checkboxItem}
                 options={item.items.map((obj) => obj.name)}
-                name={item.items.map((obj) => obj.name)}
-                onChange={() => this.handleChange(checkList)}
-                value={item.items.map((obj) => obj.isRequired)}
+                onChange={(e) => this.handleChange(e, item.items, item.value)}
+                value={
+                  item.value === 'typeA'
+                    ? identityProof.listSelected
+                    : item.value === 'typeB'
+                    ? addressProof.listSelected
+                    : item.value === 'typeC'
+                    ? educational.listSelected
+                    : item.value === 'typeD'
+                    ? poe.listSelected
+                    : []
+                }
               />
-              {/* {item.items.map((obj) => (
-                <Checkbox
-                  key={obj.key}
-                  className={styles.checkboxItem}
-                  onChange={(e) => this.handleChange(e)}
-                  defaultChecked={!!obj.isRequired}
-                  // value={}
-                  disabled={obj.isRequired}
-                >
-                  {obj.name}
-                  {obj.isRequired ? '*' : <></>}
-                </Checkbox>
-              ))} */}
               {item.title === 'Type D: Technical Certifications' ? (
                 <Space direction="horizontal">
                   <PlusOutlined className={styles.plusIcon} />

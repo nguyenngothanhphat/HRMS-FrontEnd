@@ -27,23 +27,29 @@ const info = {
     },
     eligibilityDocs: {
       identityProof: {
-        aadharCard : true,
-        PAN : true,
+        aadharCard: true,
+        PAN: true,
         passport: false,
         drivingLicense: false,
-        voterCard: false
+        voterCard: false,
+        listSelected: [],
+        isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
-        telephoneBill: false
+        telephoneBill: false,
+        listSelected: [],
+        isChecked: false,
       },
       educational: {
         sslc: true,
         diploma: true,
         graduation: true,
         postGraduate: false,
-        phd: false
+        phd: false,
+        listSelected: [],
+        isChecked: false,
       },
       technicalCertification: {
         name: '',
@@ -53,9 +59,11 @@ const info = {
           appraisalLetter: false,
           paystubs: false,
           form16: false,
-          relievingLetter: false
-        }
-      }
+          relievingLetter: false,
+          listSelected: [],
+          isChecked: false,
+        },
+      },
     },
     jobDetail: {
       position: 1,

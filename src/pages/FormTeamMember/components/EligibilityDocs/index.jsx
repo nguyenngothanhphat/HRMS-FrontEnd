@@ -17,28 +17,27 @@ const listCollapse = [
     items: [
       {
         key: '1',
+        name: formatMessage({ id: 'component.eligibilityDocs.passport' }),
+      },
+      {
+        key: '2',
+        name: formatMessage({ id: 'component.eligibilityDocs.drivingLicense' }),
+      },
+      {
+        key: '3',
+        name: formatMessage({ id: 'component.eligibilityDocs.voterCard' }),
+      },
+    ],
+    defaultItems: [
+      {
+        key: '1',
         name: formatMessage({ id: 'component.eligibilityDocs.aadharCard' }),
-        isRequired: true,
+        title: 'aaharCard',
       },
       {
         key: '2',
         name: formatMessage({ id: 'component.eligibilityDocs.pan' }),
-        isRequired: true,
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.passport' }),
-        isRequired: false,
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.drivingLicense' }),
-        isRequired: false,
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.voterCard' }),
-        isRequired: false,
+        title: 'pan',
       },
     ],
   },
@@ -50,19 +49,17 @@ const listCollapse = [
       {
         key: '1',
         name: formatMessage({ id: 'component.eligibilityDocs.rentalAgreement' }),
-        isRequired: false,
       },
       {
         key: '2',
         name: formatMessage({ id: 'component.eligibilityDocs.electricityUtilityBills' }),
-        isRequired: false,
       },
       {
         key: '3',
         name: formatMessage({ id: 'component.eligibilityDocs.telephoneBills' }),
-        isRequired: false,
       },
     ],
+    defaultItems: [],
   },
   {
     id: '3',
@@ -71,68 +68,60 @@ const listCollapse = [
     items: [
       {
         key: '1',
+        name: formatMessage({ id: 'component.eligibilityDocs.postGraduate' }),
+      },
+      {
+        key: '2',
+        name: formatMessage({ id: 'component.eligibilityDocs.phdDoctorate' }),
+      },
+    ],
+    defaultItems: [
+      {
+        key: '1',
         name: formatMessage({ id: 'component.eligibilityDocs.sslc' }),
-        isRequired: true,
+        title: 'sslc',
       },
       {
         key: '2',
         name: formatMessage({ id: 'component.eligibilityDocs.intermediateDiploma' }),
-        isRequired: true,
+        title: 'intermediateDiploma',
       },
       {
         key: '3',
         name: formatMessage({ id: 'component.eligibilityDocs.graduation' }),
-        isRequired: true,
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.postGraduate' }),
-        isRequired: false,
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.phdDoctorate' }),
-        isRequired: false,
+        title: 'graduation',
       },
     ],
   },
   {
     id: '4',
     title: formatMessage({ id: 'component.eligibilityDocs.TypeD' }),
+    value: 'typeD',
     items: [
       {
         key: '1',
         name: formatMessage({ id: 'component.eligibilityDocs.offerLetter' }),
-        isRequired: false,
       },
       {
         key: '2',
         name: formatMessage({ id: 'component.eligibilityDocs.appraisalLetter' }),
-        isRequired: false,
       },
       {
         key: '3',
         name: formatMessage({ id: 'component.eligibilityDocs.paystubs' }),
-        isRequired: false,
       },
       {
         key: '4',
         name: formatMessage({ id: 'component.eligibilityDocs.form16' }),
-        isRequired: false,
       },
       {
         key: '5',
         name: formatMessage({ id: 'component.eligibilityDocs.relievingCard' }),
-        isRequired: false,
       },
     ],
+    defaultItems: [],
   },
 ];
-
-const defaultCheckListContainer = listCollapse.map((obj) =>
-  obj.items.filter((item) => item.isRequired),
-);
-console.log(defaultCheckListContainer[0].map((item) => item.isRequired));
 
 const note = {
   title: 'Note',
@@ -154,11 +143,6 @@ const note = {
   eligibilityDocs,
 }))
 class EligibilityDocs extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   static getDerivedStateFromProps(props) {
     if ('eligibilityDocs' in props) {
       return { eligibilityDocs: props.eligibilityDocs || {} };
@@ -166,20 +150,20 @@ class EligibilityDocs extends PureComponent {
     return null;
   }
 
-  handleCheckBox = (value) => {
-    const { dispatch } = this.props;
-    const { eligibilityDocs = {} } = this.state;
-    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+  // handleCheckBox = (value) => {
+  //   const { dispatch } = this.props;
+  //   const { eligibilityDocs = {} } = this.state;
+  //   const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
 
-    console.log(value);
-    // console.log(defaultCheckList);
-    dispatch({
-      type: 'info/eligibilityDocs',
-      payload: {
-        eligibilityDocs,
-      },
-    });
-  };
+  //   console.log(value);
+  //   // console.log(defaultCheckList);
+  //   dispatch({
+  //     type: 'info/eligibilityDocs',
+  //     payload: {
+  //       eligibilityDocs,
+  //     },
+  //   });
+  // };
 
   render() {
     return (
@@ -187,20 +171,10 @@ class EligibilityDocs extends PureComponent {
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
-              {/* Warning will be shown as user is HR and disappear if user is candidate */}
               <Warning formatMessage={formatMessage} />
               <Title formatMessage={formatMessage} />
               {listCollapse.map((item) => {
-                const checkHeader = item.items.find((obj) => obj.isRequired);
-                return (
-                  <CollapseFields
-                    key={item.id}
-                    item={item}
-                    handleCheckBox={this.handleCheckBox}
-                    defaultCheckListContainer={defaultCheckListContainer}
-                    checkHeader={checkHeader}
-                  />
-                );
+                return <CollapseFields key={item.id} item={item} />;
               })}
             </div>
           </Col>
