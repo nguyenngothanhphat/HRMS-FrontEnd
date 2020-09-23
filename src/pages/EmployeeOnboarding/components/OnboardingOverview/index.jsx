@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
-import { Link } from 'umi';
+import { connect, Link } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
 
 import AwaitingApprovals from './components/AwaitingApprovals';
@@ -107,12 +107,23 @@ const PHASE_DATA = [
 
 class OnboardingOverview extends PureComponent {
   render() {
+    const { menu = {} } = this.props;
+    const { onboardingOverviewTab = {} } = menu;
+    const { phaseList = [] } = onboardingOverviewTab;
+
     return (
       <div>
-        <OnboardingLayout listMenu={PHASE_DATA} />
+        <OnboardingLayout listMenu={phaseList} />
       </div>
     );
   }
 }
 
-export default OnboardingOverview;
+// export default OnboardingOverview;
+export default connect((state) => {
+  const { onboard = {} } = state;
+  const { menu = {} } = onboard;
+  return {
+    menu,
+  };
+})(OnboardingOverview);

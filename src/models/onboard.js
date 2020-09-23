@@ -212,6 +212,139 @@ const rookieList = [
 
 const employeeList = rookieList.filter((rookie) => rookie.isNew != true);
 
+// Data for table
+const sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
+const receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
+const eligibleCandidatesData = rookieList;
+const ineligibleCandidatesData = rookieList;
+const sentProvisionalOffersData = rookieList; // Provisional Offers
+const receivedProvisionalOffersData = rookieList; // Provisional Offers
+const discardedProvisionalOffersData = employeeList;
+const approvedFinalOffersData = employeeList; // Awaiting Approvals
+const pendingApprovalsData = employeeList; // Awaiting Approvals
+const rejectFinalOfferData = employeeList; // Awaiting Approvals
+const acceptedFinalOffersData = employeeList; // Final Offers
+const sentFinalOffersData = rookieList; // Final Offers
+const finalOfferDraftsData = employeeList;
+const discardedFinalOffersData = rookieList;
+
+const MENU_DATA_1 = [
+  {
+    id: 1,
+    name: 'Pending Eligibility Checks',
+    quantity: 14,
+    key: 'pendingEligibilityChecks',
+    component: 'PendingEligibilityChecks',
+  },
+  {
+    id: 2,
+    name: 'Eligible Candidates',
+    quantity: 9,
+    key: 'eligibleCandidates',
+    component: 'EligibleCandidates',
+  },
+  {
+    id: 3,
+    name: 'Ineligible candidates',
+    quantity: 10,
+    key: 'ineligibleCandidates',
+    component: 'IneligibleCandidates',
+  },
+];
+
+const PHASE_DATA = [
+  {
+    id: 1,
+    title: 'phase 1',
+    menuItem: [
+      {
+        id: 1,
+        name: 'Pending Eligibility Checks',
+        quantity: 14,
+        key: 'pendingEligibilityChecks',
+        component: 'PendingEligibilityChecks',
+        quantity: sentEligibilityFormsData.length,
+      },
+      {
+        id: 2,
+        name: 'Eligible Candidates',
+        quantity: 9,
+        key: 'eligibleCandidates',
+        component: 'EligibleCandidates',
+        quantity: eligibleCandidatesData.length,
+      },
+      {
+        id: 3,
+        name: 'Ineligible candidates',
+        quantity: 10,
+        key: 'ineligibleCandidates',
+        component: 'IneligibleCandidates',
+        quantity: ineligibleCandidatesData.length,
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: 'phase 2',
+    menuItem: [
+      {
+        id: 4,
+        name: 'Provisional offers',
+        quantity: 10,
+        key: 'provisionalOffers',
+        component: 'ProvisionalOffers',
+        quantity: sentProvisionalOffersData.length,
+      },
+      {
+        id: 5,
+        name: 'Discarded Provisional offers',
+        quantity: 10,
+        key: 'discardedProvisionalOffers',
+        component: 'DiscardedProvisionalOffers',
+        quantity: discardedProvisionalOffersData.length,
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: 'phase 3',
+    menuItem: [
+      {
+        id: 6,
+        name: 'Awaiting approvals from HR',
+        quantity: 9,
+        key: 'awaitingApprovals',
+        component: 'AwaitingApprovals',
+        quantity: approvedFinalOffersData.length,
+      },
+      {
+        id: 7,
+        name: 'Final offers',
+        quantity: 10,
+        key: 'finalOffers',
+        component: 'FinalOffers',
+        quantity: acceptedFinalOffersData.length,
+      },
+      {
+        id: 8,
+        name: 'Final Offer Drafts',
+        quantity: 9,
+        key: 'finalOfferDrafts',
+        component: 'FinalOfferDrafts',
+        quantity: finalOfferDraftsData.length,
+      },
+      {
+        id: 9,
+        name: 'Discarded Final Offers',
+        quantity: 12,
+        key: 'discardedFinalOffers',
+        component: 'DiscardedFinalOffers',
+        quantity: discardedFinalOffersData.length,
+      },
+    ],
+  },
+];
+
 const onboard = {
   namespace: 'onboard',
   state: {
@@ -220,27 +353,32 @@ const onboard = {
         sentEligibilityForms: null,
         receivedSubmittedDocuments: null,
       },
-      eligibleCandidates: rookieList,
-      ineligibleCandidates: rookieList,
+      eligibleCandidates: eligibleCandidatesData,
+      ineligibleCandidates: ineligibleCandidatesData,
       provisionalOffers: {
-        sentProvisionalOffers: rookieList,
-        receivedProvisionalOffers: rookieList,
+        sentProvisionalOffers: sentProvisionalOffersData,
+        receivedProvisionalOffers: receivedProvisionalOffersData,
       },
-      discardedProvisionalOffers: employeeList,
+      discardedProvisionalOffers: discardedProvisionalOffersData,
       awaitingApprovals: {
-        approvedFinalOffers: employeeList,
-        pendingApprovals: employeeList,
-        rejectFinalOffer: employeeList,
+        approvedFinalOffers: approvedFinalOffersData,
+        pendingApprovals: pendingApprovalsData,
+        rejectFinalOffer: rejectFinalOfferData,
       },
       finalOffers: {
-        acceptedFinalOffers: employeeList,
-        sentFinalOffers: rookieList,
+        acceptedFinalOffers: acceptedFinalOffersData,
+        sentFinalOffers: sentFinalOffersData,
       },
-      finalOfferDrafts: employeeList,
-      discardedFinalOffers: rookieList,
+      finalOfferDrafts: finalOfferDraftsData,
+      discardedFinalOffers: discardedFinalOffersData,
     },
     settings: {},
     customFields: {},
+    menu: {
+      onboardingOverviewTab: {
+        phaseList: PHASE_DATA,
+      },
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
