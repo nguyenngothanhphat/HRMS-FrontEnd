@@ -3,7 +3,7 @@ import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
-import CheckBoxForms from '../CheckboxForm';
+import CheckList from '../CheckList';
 
 @connect(({ loading, employee }) => ({
   loading: loading.effects['login/login'],
@@ -128,7 +128,7 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckBoxForms
+              <CheckList
                 key={EmploymentState}
                 name={EmploymentState}
                 all={all}
@@ -138,7 +138,7 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckBoxForms
+              <CheckList
                 key={departmentState}
                 name={departmentState}
                 all={all}
@@ -148,7 +148,7 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckBoxForms
+              <CheckList
                 key={locationState}
                 name={locationState}
                 all={all}

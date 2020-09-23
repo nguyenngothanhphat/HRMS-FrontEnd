@@ -9,7 +9,7 @@ import styles from './index.less';
   loading: loading.effects['login/login'],
   employee,
 }))
-class CheckBoxForms extends PureComponent {
+class CheckList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +53,7 @@ class CheckBoxForms extends PureComponent {
     const { list } = this.state;
     const check = employee.clearFilter;
     return (
-      <div className={styles.CheckBoxForm}>
+      <div className={styles.CheckList}>
         <div className={styles.title}>
           <p className={styles.nameCheckBox}>{name}</p>
           <span className={styles.allCheckBox} onClick={this.onCheckAllChange}>
@@ -72,4 +72,4 @@ class CheckBoxForms extends PureComponent {
   }
 }
 
-export default CheckBoxForms;
+export default CheckList;
