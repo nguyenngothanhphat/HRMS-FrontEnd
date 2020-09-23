@@ -7,6 +7,7 @@ import {
   getListTitle,
   addCertification,
   updateCertification,
+  getEmploymentInfo,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -20,6 +21,7 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
+      employmentData: {},
     },
     tempData: {
       generalData: {},
@@ -131,6 +133,16 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *fetchEmploymentInfo({ payload: id = '' }, { call, put }) {
+      try {
+        const response = yield call(getEmploymentInfo, { id });
+        const { data, statusCode } = response;
+        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error.message);
       }
     },
   },
