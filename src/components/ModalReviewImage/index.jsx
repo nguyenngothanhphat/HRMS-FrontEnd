@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Image } from 'antd';
+import { Modal, Image } from 'antd';
 import s from './index.less';
 
 export default class ModalReviewImage extends Component {
@@ -13,16 +13,9 @@ export default class ModalReviewImage extends Component {
         onCancel={handleCancel}
         className={s.root}
         destroyOnClose
-        footer={[
-          <div className={s.btnCancel} onClick={handleCancel}>
-            Cancel
-          </div>,
-          <Button className={s.btnDownload} type="primary">
-            Download
-          </Button>,
-        ]}
+        footer={null}
       >
-        <Image style={{ cursor: 'pointer' }} width="100%" height="auto" src={link} placeholder />
+        <Image style={{ cursor: 'pointer' }} width="100%" height="auto" src={link} />
       </Modal>
     );
   }

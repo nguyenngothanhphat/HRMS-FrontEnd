@@ -84,6 +84,9 @@ class ModalUpload extends Component {
         onOk={this.handleUploadToServer}
         onCancel={this.handleCancel}
         footer={[
+          <div className={styles.btnCancel} onClick={this.handleCancel}>
+            Cancel
+          </div>,
           <Button
             key="submit"
             type="primary"
