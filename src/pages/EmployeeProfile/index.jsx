@@ -34,6 +34,10 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchCompensation',
       payload: { employee },
     });
+    dispatch({
+      type: 'employeeProfile/fetchEmploymentInfo',
+      payload: employee,
+    });
   }
 
   render() {
