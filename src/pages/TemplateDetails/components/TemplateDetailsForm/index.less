@@ -1,0 +1,41 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+.TemplateDetailsForm {
+  font-family: 'Roboto';
+  :global {
+    .ant-form-item-label {
+      label {
+        font-size: 13px;
+        line-height: 1.15;
+        text-align: left;
+        color: #707177;
+        height: 42px;
+      }
+    }
+    .ant-input {
+      height: 42px;
+      border-radius: 5px;
+      border: solid 1px #d6dce4;
+      background-color: #ffffff;
+    }
+  }
+  &_template {
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+    background-color: #ffffff;
+    padding: 50px;
+    &_header {
+      display: grid;
+      grid-template-columns: 85% 15%;
+      align-items: center;
+      img {
+        height: 50px;
+      }
+      p {
+        text-align: right;
+        margin: 0;
+      }
+    }
+  }
+}

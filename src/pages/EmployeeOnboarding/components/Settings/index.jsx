@@ -6,7 +6,7 @@ import CompanySignatory from './components/CompanySignatory';
 import CustomEmails from './components/CustomEmails';
 import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 import NonExtempNotice from './components/NonExtempNotice';
-import OptionalOnboardingQuestons from './components/OptionalOnboardingQuestions';
+import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 
 class Settings extends PureComponent {
   render() {
@@ -31,9 +31,9 @@ class Settings extends PureComponent {
       },
       {
         id: 4,
-        name: 'Optional Onboarding Questons',
-        key: 'optionalOnboardingQuestons',
-        component: <OptionalOnboardingQuestons />,
+        name: 'Optional Onboarding Questions',
+        key: 'optionalOnboardingQuestions',
+        component: <OptionalOnboardingQuestions />,
       },
       {
         id: 5,
