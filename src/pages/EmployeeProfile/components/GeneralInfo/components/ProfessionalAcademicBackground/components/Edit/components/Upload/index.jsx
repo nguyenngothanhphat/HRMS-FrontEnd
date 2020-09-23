@@ -54,6 +54,8 @@ class UploadCertification extends Component {
       showUploadList: false,
     };
     const { item: { urlFile = '' } = {}, loading } = this.props;
+    const nameFile = urlFile.split('/').pop();
+
     return (
       <div className={styles.root}>
         {!urlFile ? (
@@ -75,7 +77,7 @@ class UploadCertification extends Component {
               id="img-certification"
               className={styles.nameCertification}
             >
-              File Name
+              {nameFile}
             </a>
             <img
               src="/assets/images/iconFilePNG.svg"
