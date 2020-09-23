@@ -31,3 +31,17 @@ export async function getListTitle() {
     method: 'POST',
   });
 }
+
+export async function updateCertification(payload) {
+  return request('/api/certification/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addCertification(payload) {
+  return request('/api/certification/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

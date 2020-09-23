@@ -3,22 +3,32 @@ import { Row, Form, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class Edit extends PureComponent {
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
@@ -29,19 +39,18 @@ class Edit extends PureComponent {
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
-    const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { generalData } = this.props;
+    const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
-          initialValues={generalData}
+          initialValues={{ emergencyContact, emergencyPersonName, emergencyRelation }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
         >
           <Form.Item
@@ -58,7 +67,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Person’s Name"
-            name="personName"
+            name="emergencyPersonName"
             rules={[
               {
                 pattern: /^[a-zA-Z ]*$/,
@@ -70,7 +79,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Relation"
-            name="relation"
+            name="emergencyRelation"
             rules={[
               {
                 pattern: /^[a-zA-Z ]*$/,

@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Input, Row, Col } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import lodash from 'lodash';
 import UploadCertification from '../Upload';
 import s from './index.less';
 

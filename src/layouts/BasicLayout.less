@@ -1,7 +1,6 @@
 .root {
   .titleHeader {
     display: flex;
-    flex-direction: row;
     align-items: center;
     height: 100%;
     .buttonToggle {
@@ -12,12 +11,6 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-    }
-    &__logo {
-      margin-left: 20px;
-      width: 80px;
-      height: 50px;
-      object-fit: contain;
     }
   }
 
@@ -32,21 +25,36 @@
     .ant-pro-page-container-children-content {
       margin: 0;
     }
+
+    .ant-pro-sider.ant-layout-sider-collapsed .ant-pro-sider-logo {
+      padding: 0;
+    }
+    .ant-pro-sider-logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      line-height: 32px;
+      height: 76px;
+      cursor: pointer;
+      background-color: #161c29;
+    }
+
     .ant-pro-global-header-logo {
       display: none;
     }
     .ant-pro-basicLayout-content {
       position: relative;
-      padding-top: 40px;
+      // padding-top: 40px;
       /* margin: 24px; */
     }
     .ant-page-header {
       background-color: #eee;
       padding: 10px 0 0 20px;
       width: 100%;
-      position: fixed;
-      z-index: 100;
-      top: 76px;
+      // position: fixed;
+      // z-index: 100;
+      // top: 76px;
     }
 
     .ant-breadcrumb {

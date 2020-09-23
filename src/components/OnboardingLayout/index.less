@@ -1,0 +1,115 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@orange: #ffa100;
+@blue: #2c6df9;
+@gray: #707177;
+@border-color: #e4e7eb;
+@scrollbar-color: #e0e4e9;
+
+.overviewContainer {
+  display: flex;
+
+  .viewLeft {
+    width: 247px;
+    background-color: white;
+    .addMember {
+      // width: 200px;
+      background-color: white;
+      border-radius: 21px;
+      border: 1px solid @orange;
+      outline: none;
+      color: @orange;
+      height: 40px;
+      margin: 24px 12px;
+      //   padding: 13px 24px;
+
+      .icon {
+        display: flex;
+        align-items: center;
+        margin: 0 24px;
+
+        span {
+          margin-left: 4px;
+          font-weight: 500;
+        }
+      }
+
+      // &:hover {
+      //   color: white;
+      //   background-color: @orange;
+      // }
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background-color: #e4e7eb;
+    }
+
+    .leftMenu {
+      overflow-y: scroll;
+      height: 370px;
+
+      &::-webkit-scrollbar {
+        // display: none;
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        //   display: none;
+        // box-shadow: inset 0 0 5px grey;
+        // border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        //   display: none;
+        // background: red;
+        background-color: @scrollbar-color;
+        border-radius: 3px;
+      }
+
+      // .phase {
+      //   margin-top: 32px;
+      //   padding-bottom: 7px;
+      //   border-bottom: 1px solid @border-color;
+
+      //   h3 {
+      //     font-family: Roboto;
+      //     font-size: 16px;
+      //     font-weight: 500;
+      //     text-transform: capitalize;
+      //     margin-left: 29px;
+      //     color: black;
+      //     margin-bottom: 8px;
+      //   }
+
+      //   .menuItem {
+      //     margin-left: 13px;
+      //     padding: 16px 14px 16px 16px;
+      //     display: block;
+      //     color: @gray;
+      //     cursor: pointer;
+
+      //     &.active {
+      //       background-color: #e9f0ff;
+      //       color: @blue;
+      //       font-weight: bold;
+      //       border-top-left-radius: 100px;
+      //       border-bottom-left-radius: 100px;
+      //     }
+      //   }
+      // }
+    }
+  }
+
+  .viewRight {
+    flex: 1;
+    padding: 32px;
+    .pageTitle {
+      font-size: 16px;
+      font-weight: 500;
+      color: #000000;
+    }
+  }
+}
