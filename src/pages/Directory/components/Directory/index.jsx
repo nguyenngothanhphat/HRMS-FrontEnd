@@ -215,6 +215,12 @@ class DirectoryComponent extends PureComponent {
             {bottabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.directoryLayout_inner}>
+                  <Content className="site-layout-background">
+                    <DirectoryTable
+                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                      list={this.renderListEmployee(tab.id)}
+                    />
+                  </Content>
                   <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
@@ -222,12 +228,6 @@ class DirectoryComponent extends PureComponent {
                     FormBox={this.handleFormBox}
                     changeTab={changeTab}
                   />
-                  <Content className="site-layout-background">
-                    <DirectoryTable
-                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
-                      list={this.renderListEmployee(tab.id)}
-                    />
-                  </Content>
                 </Layout>
               </TabPane>
             ))}

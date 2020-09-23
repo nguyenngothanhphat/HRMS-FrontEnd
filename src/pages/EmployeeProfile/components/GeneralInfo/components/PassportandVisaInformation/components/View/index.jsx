@@ -11,20 +11,20 @@ import styles from './index.less';
 class View extends PureComponent {
   render() {
     const { dataAPI, urlImage = '' } = this.props;
+    const viewCountry = dataAPI.issuedCountry ? dataAPI.issuedCountry.name : '';
+    console.log(dataAPI);
     const splitUrl = urlImage.split('/');
     const dummyData = [
-      { label: 'Passport Number', value: dataAPI.passportNo },
-      { label: 'Issued Country', value: dataAPI.passportIssueCountry },
+      { label: 'Passport Number', value: dataAPI.number },
+      { label: 'Issued Country', value: viewCountry },
       {
         label: 'Issued On',
-        value: dataAPI.passportIssueOn
-          ? Moment(dataAPI.passportIssueOn).locale('en').format('Do MMM YYYY')
-          : '',
+        value: dataAPI.issuedOn ? Moment(dataAPI.issuedOn).locale('en').format('Do MMM YYYY') : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.passportValidTill
-          ? Moment(dataAPI.passportValidTill).locale('en').format('Do MMM YYYY')
+        value: dataAPI.validTill
+          ? Moment(dataAPI.validTill).locale('en').format('Do MMM YYYY')
           : '',
       },
     ];

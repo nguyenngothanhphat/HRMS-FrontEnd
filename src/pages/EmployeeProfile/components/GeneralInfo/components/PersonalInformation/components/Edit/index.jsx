@@ -46,7 +46,6 @@ class Edit extends PureComponent {
 
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
-    console.log(generalDataTemp);
     const {
       personalNumber = '',
       personalEmail = '',

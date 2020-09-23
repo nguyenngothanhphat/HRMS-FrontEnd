@@ -11,12 +11,15 @@ import styles from './index.less';
   ({
     loading,
     employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
+      countryList,
+      originData: { passportvisaData: passportvisaDataOrigin = {} } = {},
+      tempData: { passportvisaData = {}, generalData = {} } = {},
     } = {},
   }) => ({
-    loading: loading.effects['employeeProfile/updateGeneralInfo'],
-    generalDataOrigin,
+    loading: loading.effects['employeeProfile/updatePassPortVisa'],
+    countryList,
+    passportvisaDataOrigin,
+    passportvisaData,
     generalData,
   }),
 )
@@ -31,15 +34,16 @@ class Edit extends PureComponent {
   };
 
   handleChange = (changedValues) => {
-    const { dispatch, generalData, generalDataOrigin } = this.props;
-    const generalInfo = {
-      ...generalData,
+    const { dispatch, passportvisaData, passportvisaDataOrigin } = this.props;
+    const getPassportVisaData = {
+      ...passportvisaData,
       ...changedValues,
     };
-    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
+    const isModified =
+      JSON.stringify(getPassportVisaData) !== JSON.stringify(passportvisaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { generalData: generalInfo },
+      payload: { passportvisaData: getPassportVisaData },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -48,62 +52,103 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { passportvisaData: passportvisaDataTemp } = this.props;
     const {
-      passportNo = '',
-      passportIssueCountry = '',
-      passportIssueOn = '',
-      passportValidTill = '',
-      visaNo = '',
-      visaType = '',
-      visaCountry = '',
-      visaEntryType = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
+      number = '',
+      issuedCountry = '',
+      issuedOn = '',
+      validTill = '',
+      // visaNo = '',
+      // visaType = '',
+      // visaCountry = '',
+      // visaEntryType = '',
+      // visaIssuedOn = '',
+      // visaValidTill = '',
       _id: id = '',
-    } = generalDataTemp;
+    } = passportvisaDataTemp;
     const payloadChanges = {
       id,
-      passportNo,
-      passportIssueCountry,
-      passportIssueOn,
-      passportValidTill,
-      visaNo,
-      visaType,
-      visaCountry,
-      visaEntryType,
-      visaIssuedOn,
-      visaValidTill,
+      number,
+      issuedCountry,
+      issuedOn,
+      validTill,
+      // visaNo,
+      // visaType,
+      // visaCountry,
+      // visaEntryType,
+      // visaIssuedOn,
+      // visaValidTill,
+    };
+    return payloadChanges;
+  };
+
+  processDataAdd = () => {
+    const { passportvisaData: passportvisaDataTemp, generalData } = this.props;
+    const { employee = '' } = generalData;
+    const {
+      number = '',
+      issuedCountry = '',
+      issuedOn = '',
+      validTill = '',
+      // visaNo = '',
+      // visaType = '',
+      // visaCountry = '',
+      // visaEntryType = '',
+      // visaIssuedOn = '',
+      // visaValidTill = '',
+    } = passportvisaDataTemp;
+    const payloadChanges = {
+      number,
+      issuedCountry,
+      issuedOn,
+      validTill,
+      // visaNo,
+      // visaType,
+      // visaCountry,
+      // visaEntryType,
+      // visaIssuedOn,
+      // visaValidTill,
+      employee,
     };
     return payloadChanges;
   };
 
   processDataKept = () => {
-    const { generalData } = this.props;
-    const newObj = { ...generalData };
+    const { passportvisaData } = this.props;
+    const newObj = { ...passportvisaData };
     const listKey = [
-      'passportNo',
-      'passportIssueCountry',
-      'passportIssueOn',
-      'passportValidTill',
-      'visaNo',
-      'visaType',
-      'visaCountry',
-      'visaEntryType',
-      'visaIssuedOn',
-      'visaValidTill',
+      'number',
+      'issuedCountry',
+      'issuedOn',
+      'validTill',
+      // 'visaNo',
+      // 'visaType',
+      // 'visaCountry',
+      // 'visaEntryType',
+      // 'visaIssuedOn',
+      // 'visaValidTill',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
   };
 
   handleSave = () => {
-    const { dispatch } = this.props;
-    const payload = this.processDataChanges() || {};
+    const { dispatch, passportvisaData = {} } = this.props;
+    const { _id = '' } = passportvisaData;
+    const payloadAdd = this.processDataAdd() || {};
+    const payloadUpdate = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
-    dispatch({
-      type: 'employeeProfile/updateGeneralInfo',
-      payload,
+    if (_id) {
+      return dispatch({
+        type: 'employeeProfile/updatePassPortVisa',
+        payload: payloadUpdate,
+        dataTempKept,
+        key: 'openPassportandVisa',
+      });
+    }
+    return dispatch({
+      type: 'employeeProfile/addPassPortVisa',
+      payload: payloadAdd,
       dataTempKept,
       key: 'openPassportandVisa',
     });
@@ -127,21 +172,28 @@ class Edit extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { generalData, handleCancel = () => {}, loading } = this.props;
+    const { passportvisaData, handleCancel = () => {}, loading, countryList } = this.props;
+    const formatCountryList = countryList.map((item) => {
+      const { _id: value, name } = item;
+      return {
+        value,
+        name,
+      };
+    });
     const { upFile } = this.state;
     const splitURL = upFile.split('/');
     const {
-      passportNo = '',
-      passportIssueCountry = '',
-      passportIssueOn = '',
-      passportValidTill = '',
+      number = '',
+      issuedCountry = '',
+      issuedOn = '',
+      validTill = '',
       visaNo = '',
       visaType = '',
       visaCountry = '',
       visaEntryType = '',
       visaIssuedOn = '',
       visaValidTill = '',
-    } = generalData;
+    } = passportvisaData;
     const { dropdown } = this.state;
     const formItemLayout = {
       labelCol: {
@@ -153,21 +205,37 @@ class Edit extends PureComponent {
         sm: { span: 9 },
       },
     };
-    const formatDatePassportIssueOn = passportIssueOn && moment(passportIssueOn);
-    const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+    const formatDatePassportIssueOn = issuedOn && moment(issuedOn);
+    const formatDatePassportValidTill = validTill && moment(validTill);
     const formatDateVisaIssuedOn = visaIssuedOn && moment(visaIssuedOn);
     const formatDateVisaValidTill = visaValidTill && moment(visaValidTill);
     const dateFormat = 'Do MMM YYYY';
+    // const listVisa = [
+    //   {
+    //     labelnumber: 'Visa Number',
+    //     nameNumber: 'visaNo',
+    //     labelType: 'Visa Type',
+    //     nameType: 'visaType',
+    //     labelCountry: 'Country',
+    //     nameCountry: 'visaCountry',
+    //     labelEntryType: 'Entry Type',
+    //     nameEntryType: 'visaEntryType',
+    //     labelIssuedOn: 'Issued On',
+    //     nameIssuedOn: 'visaIssuedOn',
+    //     labelValidTill: 'Valid Till',
+    //     nameValidTill: 'visaValidTill',
+    //   },
+    // ];
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
           initialValues={{
-            passportNo,
-            passportIssueCountry,
-            passportIssueOn: formatDatePassportIssueOn,
-            passportValidTill: formatDatePassportValidTill,
+            number,
+            issuedCountry: issuedCountry._id,
+            issuedOn: formatDatePassportIssueOn,
+            validTill: formatDatePassportValidTill,
             visaNo,
             visaType,
             visaCountry,
@@ -181,7 +249,7 @@ class Edit extends PureComponent {
           <div className={styles.styleUpLoad}>
             <Form.Item
               label="Passport Number"
-              name="passportNo"
+              name="number"
               rules={[
                 {
                   pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
@@ -229,7 +297,7 @@ class Edit extends PureComponent {
           ) : (
             ''
           )}
-          <Form.Item label="Issued Country" name="passportIssueCountry">
+          <Form.Item label="Issued Country" name="issuedCountry">
             <Select
               allowClear
               className={styles.selectForm}
@@ -242,19 +310,23 @@ class Edit extends PureComponent {
                 )
               }
             >
-              <Option value="India">India</Option>
-              <Option value="USA">USA</Option>
-              <Option value="VietNam">Viet Nam</Option>
+              {formatCountryList.map((item) => {
+                return (
+                  <Option key={item.value} value={item.value}>
+                    {item.name}
+                  </Option>
+                );
+              })}
             </Select>
           </Form.Item>
-          <Form.Item label="Issued On" name="passportIssueOn">
+          <Form.Item label="Issued On" name="issuedOn">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
               className={styles.dateForm}
             />
           </Form.Item>
-          <Form.Item label="Valid Till" name="passportValidTill">
+          <Form.Item label="Valid Till" name="validTill">
             <DatePicker
               format={dateFormat}
               onChange={this.handleChangeDate}
@@ -263,6 +335,7 @@ class Edit extends PureComponent {
           </Form.Item>
 
           <div className={styles.line} />
+          {/* {listVisa.map((item,index))} */}
           <div className={styles.styleUpLoad}>
             <Form.Item
               label="Visa Number"

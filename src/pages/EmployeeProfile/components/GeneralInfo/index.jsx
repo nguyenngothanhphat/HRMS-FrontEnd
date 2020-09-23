@@ -8,16 +8,12 @@ import PassportVisaInformation from './components/PassportandVisaInformation';
 import EmergencyContact from './components/EmergencyContactDetails';
 import styles from './index.less';
 
-@connect(({ loading, employeeProfile }) => ({
+@connect(({ loading }) => ({
   loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
-  employeeProfile,
 }))
 class GeneralInfo extends Component {
   render() {
-    const {
-      loadingGeneral = false,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { loadingGeneral = false } = this.props;
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
@@ -26,10 +22,10 @@ class GeneralInfo extends Component {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation dataAPI={generalData} />
-        <PersonalInformation dataAPI={generalData} />
-        <PassportVisaInformation dataAPI={generalData} />
-        <EmergencyContact dataAPI={generalData} />
+        <EmployeeInformation />
+        <PersonalInformation />
+        <PassportVisaInformation />
+        <EmergencyContact />
         <ProfessionalAcademicBackground />
       </div>
     );

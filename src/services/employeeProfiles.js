@@ -45,3 +45,29 @@ export async function addCertification(payload) {
     data: payload,
   });
 }
+
+export async function getPassPortVisa(payload) {
+  return request('/api/passport/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getCountryList() {
+  return request('/api/country/list', {
+    method: 'POST',
+  });
+}
+
+export async function updatePassPort(payload) {
+  return request('/api/passport/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getAddPassPort(payload) {
+  return request('/api/passport/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

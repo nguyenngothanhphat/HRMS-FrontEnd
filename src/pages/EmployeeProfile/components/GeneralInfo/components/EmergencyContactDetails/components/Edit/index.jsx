@@ -17,10 +17,7 @@ import styles from './index.less';
   }),
 )
 class Edit extends Component {
-  formRef = React.createRef();
-
   handleChange = (changedValues) => {
-    // console.log(allValues);
     const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
@@ -64,7 +61,6 @@ class Edit extends Component {
 
   handleSave = () => {
     const { dispatch } = this.props;
-    // console.log(this.formRef, this.formRef.isFieldValidating(emergencyContact));
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
     dispatch({
@@ -151,7 +147,6 @@ class Edit extends Component {
             </Button>
           </div>
         </Form>
-        {/* Custom Col Here */}
       </Row>
     );
   }

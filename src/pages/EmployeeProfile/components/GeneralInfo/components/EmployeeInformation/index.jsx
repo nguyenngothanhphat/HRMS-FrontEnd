@@ -19,13 +19,6 @@ import styles from './index.less';
   }),
 )
 class EmployeeInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -36,9 +29,6 @@ class EmployeeInformation extends PureComponent {
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    // this.setState({
-    //   isEdit: false,
-    // });
     const {
       legalGender = '',
       legalName = '',
@@ -77,7 +67,6 @@ class EmployeeInformation extends PureComponent {
 
   render() {
     const { generalData, openEmployeeInfor } = this.props;
-    const { isEdit } = this.state;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
@@ -87,7 +76,7 @@ class EmployeeInformation extends PureComponent {
       <div className={styles.EmployeeInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Employee Information</p>
-          {isEdit ? (
+          {openEmployeeInfor ? (
             ''
           ) : (
             <div className={styles.flexEdit} onClick={this.handleEdit}>

@@ -19,13 +19,6 @@ import View from './components/View';
   }),
 )
 class PersonalInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -72,7 +65,6 @@ class PersonalInformation extends PureComponent {
 
   render() {
     const { generalData, openPersonnalInfor } = this.props;
-    const { isEdit } = this.state;
     const renderComponent = openPersonnalInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
@@ -82,7 +74,7 @@ class PersonalInformation extends PureComponent {
       <div className={styles.PersonalInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Personal Information</p>
-          {isEdit ? (
+          {openPersonnalInfor ? (
             ''
           ) : (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
