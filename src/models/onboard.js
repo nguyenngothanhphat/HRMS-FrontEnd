@@ -228,30 +228,6 @@ const sentFinalOffersData = rookieList; // Final Offers
 const finalOfferDraftsData = employeeList;
 const discardedFinalOffersData = rookieList;
 
-const MENU_DATA_1 = [
-  {
-    id: 1,
-    name: 'Pending Eligibility Checks',
-    quantity: 14,
-    key: 'pendingEligibilityChecks',
-    component: 'PendingEligibilityChecks',
-  },
-  {
-    id: 2,
-    name: 'Eligible Candidates',
-    quantity: 9,
-    key: 'eligibleCandidates',
-    component: 'EligibleCandidates',
-  },
-  {
-    id: 3,
-    name: 'Ineligible candidates',
-    quantity: 10,
-    key: 'ineligibleCandidates',
-    component: 'IneligibleCandidates',
-  },
-];
-
 const PHASE_DATA = [
   {
     id: 1,
@@ -323,7 +299,7 @@ const PHASE_DATA = [
         quantity: 10,
         key: 'finalOffers',
         component: 'FinalOffers',
-        quantity: acceptedFinalOffersData.length,
+        quantity: sentFinalOffersData.length,
       },
       {
         id: 8,
