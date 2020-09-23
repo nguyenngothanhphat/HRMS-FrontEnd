@@ -71,7 +71,20 @@ const info = {
       city2: '',
       mail: '',
     },
-    benefits: {},
+    benefits: {
+      medical: false,
+      life: false,
+      shortTerm: false,
+      listSelectedMedical: [],
+      listSelectedLife: [],
+      listSelectedShortTerm: [],
+      dental: false,
+      vision: false,
+      employeeProvident: false,
+      paytmWallet: false,
+      listSelectedEmployee: [],
+    },
+
     customField: {
       // dental: 'tier1',
       // vision: 'tier1',
@@ -114,6 +127,12 @@ const info = {
       };
     },
     saveEligibilityRequirement(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveBenefits(state, action) {
       return {
         ...state,
         ...action.payload,
