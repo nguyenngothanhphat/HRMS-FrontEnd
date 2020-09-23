@@ -369,12 +369,12 @@ const onboard = {
     // },
   },
   reducers: {
-    save(state, action) {
-      return {
-        ...state,
-        ...action.payload,
-      };
-    },
+    // save(state, action) {
+    //   return {
+    //     ...state,
+    //     ...action.payload,
+    //   };
+    // },
   },
 };
 export default onboard;

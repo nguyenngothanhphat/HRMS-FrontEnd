@@ -50,7 +50,6 @@ class OnboardingLayout extends PureComponent {
       pageTitle: '',
       displayComponent: null,
     };
-    console.log(this.props);
   }
 
   componentDidMount() {

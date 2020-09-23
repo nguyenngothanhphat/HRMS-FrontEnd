@@ -9,7 +9,6 @@ const MenuItem = (props) => {
     <div className={styles.phase}>
       <h3>{title}</h3>
       {menuItem.map((item) => {
-        console.log(item);
         const { id, name, quantity } = item;
         return (
           <p
