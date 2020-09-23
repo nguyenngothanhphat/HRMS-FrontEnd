@@ -4,6 +4,31 @@
 .TemplateDetailsForm {
   font-family: 'Roboto';
   :global {
+    .ant-typography {
+      font-size: 13px;
+      line-height: 1.31;
+      letter-spacing: 0.12px;
+      text-align: left;
+      color: #707177;
+    }
+    .ant-btn-primary {
+      // display: none;
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      background-color: #ffa100;
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.13px;
+      color: #ffffff;
+      &:hover {
+        background-color: #ffa100;
+        color: #ffffff;
+      }
+    }
     .ant-form-item-label {
       label {
         font-size: 13px;
@@ -25,6 +50,17 @@
     box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
     background-color: #ffffff;
     padding: 50px;
+    hr {
+      margin-top: 30px;
+      margin-bottom: 30px;
+      border-bottom: solid 1px #d6dce0;
+      border-top: none;
+    }
+    &_content {
+      height: 210px;
+      overflow-y: scroll;
+      margin-bottom: 30px;
+    }
     &_header {
       display: grid;
       grid-template-columns: 85% 15%;
@@ -35,6 +71,10 @@
       p {
         text-align: right;
         margin: 0;
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 1.14;
+        color: #161c29;
       }
     }
   }
