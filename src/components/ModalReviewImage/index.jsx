@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Image } from 'antd';
 import s from './index.less';
 
 export default class ModalReviewImage extends Component {
@@ -22,7 +22,7 @@ export default class ModalReviewImage extends Component {
           </Button>,
         ]}
       >
-        <p>{link}</p>
+        <Image style={{ cursor: 'pointer' }} width="100%" height="auto" src={link} placeholder />
       </Modal>
     );
   }
