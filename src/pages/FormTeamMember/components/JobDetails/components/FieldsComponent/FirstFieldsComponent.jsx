@@ -33,7 +33,7 @@ class FirstFieldsComponent extends Component {
 
   render() {
     const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
-    const { jobDetail = {}, toggleArrow } = this.state;
+    const { jobDetail = {} } = this.state;
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
     return (
       <>
@@ -52,7 +52,8 @@ class FirstFieldsComponent extends Component {
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
-                  className={toggleArrow ? InternalStyle.arrow : styles}
+                  // className={toggleArrow ? InternalStyle.arrow : styles}
+                  className={styles}
                   onChange={(e) => handleSelect(e, item.title)}
                   onDropdownVisibleChange={this.handleFocus}
                   defaultValue={
