@@ -13,6 +13,7 @@ const listCollapse = [
   {
     id: '1',
     title: formatMessage({ id: 'component.eligibilityDocs.TypeA' }),
+    value: 'typeA',
     items: [
       {
         key: '1',
@@ -43,6 +44,7 @@ const listCollapse = [
   },
   {
     id: '2',
+    value: 'typeB',
     title: formatMessage({ id: 'component.eligibilityDocs.TypeB' }),
     items: [
       {
@@ -65,6 +67,7 @@ const listCollapse = [
   {
     id: '3',
     title: formatMessage({ id: 'component.eligibilityDocs.TypeC' }),
+    value: 'typeC',
     items: [
       {
         key: '1',

@@ -6,135 +6,13 @@ import { connect, formatMessage } from 'umi';
 import InputField from '../InputField';
 import styles from './index.less';
 
-const listCollapse = [
-  {
-    id: '1',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeA' }),
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.aadharCard' }),
-        isRequired: true,
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.pan' }),
-        isRequired: true,
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.passport' }),
-        isRequired: false,
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.drivingLicense' }),
-        isRequired: false,
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.voterCard' }),
-        isRequired: false,
-      },
-    ],
-  },
-  {
-    id: '2',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeB' }),
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.rentalAgreement' }),
-        isRequired: false,
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.electricityUtilityBills' }),
-        isRequired: false,
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.telephoneBills' }),
-        isRequired: false,
-      },
-    ],
-  },
-  {
-    id: '3',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeC' }),
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.sslc' }),
-        isRequired: true,
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.intermediateDiploma' }),
-        isRequired: true,
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.graduation' }),
-        isRequired: true,
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.postGraduate' }),
-        isRequired: false,
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.phdDoctorate' }),
-        isRequired: false,
-      },
-    ],
-  },
-  {
-    id: '4',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeD' }),
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.offerLetter' }),
-        isRequired: false,
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.appraisalLetter' }),
-        isRequired: false,
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.paystubs' }),
-        isRequired: false,
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.form16' }),
-        isRequired: false,
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.relievingCard' }),
-        isRequired: false,
-      },
-    ],
-  },
-];
-
-const defaultCheckListContainer = listCollapse.map((obj) =>
-  obj.items.filter((item) => item.isRequired),
-);
-const Item = listCollapse.map((obj) => obj.items);
-console.log(Item);
-
 @connect(({ info: { eligibilityDocs } = {} }) => ({
   eligibilityDocs,
 }))
 class CollapseField extends React.Component {
   constructor(props) {
     super(props);
+    const { defaultCheckListContainer } = this.props;
     this.state = {
       checkList: defaultCheckListContainer,
       isCheckAll: false,
@@ -150,17 +28,19 @@ class CollapseField extends React.Component {
   }
 
   handleChange(checkList) {
+    const { defaultCheckListContainer } = this.props;
     this.setState({
       checkList,
-      indeterminate: !!checkList.length && checkList.length < Item.length,
-      isCheckAll: checkList.length === Item.length,
+      indeterminate: !!checkList.length && checkList.length < defaultCheckListContainer.length,
+      isCheckAll: checkList.length === defaultCheckListContainer.length,
     });
     console.log(this.state);
   }
 
   handleCheckAllChange(e) {
+    const { defaultCheckListContainer } = this.props;
     this.setState({
-      checkList: e.target.checked ? Item : [],
+      checkList: e.target.checked ? defaultCheckListContainer : [],
       indeterminate: false,
       isCheckAll: e.target.checked,
     });
@@ -168,7 +48,7 @@ class CollapseField extends React.Component {
   }
 
   render() {
-    const { item, handleCheckBox, defaultCheckListContainer, checkHeader } = this.props;
+    const { item, handleCheckBox, defaultCheckListContainer } = this.props;
     // const {}
     const {
       // eligibilityDocs,
@@ -193,7 +73,7 @@ class CollapseField extends React.Component {
                 onClick={(e) => e.stopPropagation()}
                 indeterminate={indeterminate}
                 onChange={this.handleCheckAllChange}
-                check={isCheckAll}
+                checked={isCheckAll}
               >
                 {item.title}
               </Checkbox>
