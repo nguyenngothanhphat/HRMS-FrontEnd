@@ -137,6 +137,7 @@ class Edit extends PureComponent {
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
+      key: 'openAcademic',
     });
   };
 
@@ -173,7 +174,7 @@ class Edit extends PureComponent {
             certification,
           }}
           {...formItemLayout}
-          onFinish={this.onFinish}
+          onFinish={this.handleSave}
           requiredMark={false}
           className={s.form}
           labelAlign="left"
@@ -223,15 +224,15 @@ class Edit extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-        </Form>
-        <div className={s.viewFooter}>
-          <div className={s.viewFooter__cancel} onClick={handleCancel}>
-            Cancel
+          <div className={s.viewFooter}>
+            <div className={s.viewFooter__cancel} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Save
+            </Button>
           </div>
-          <Button type="primary" htmlType="submit" onClick={this.handleSave} loading={loading}>
-            Save
-          </Button>
-        </div>
+        </Form>
       </div>
     );
   }

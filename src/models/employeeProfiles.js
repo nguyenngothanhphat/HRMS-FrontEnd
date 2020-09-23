@@ -134,6 +134,12 @@ const employeeProfile = {
               payload: { openPersonnalInfor: false },
             });
             break;
+          case 'openAcademic':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openAcademic: false },
+            });
+            break;
           default:
             yield put({
               type: 'saveOpenEdit',
