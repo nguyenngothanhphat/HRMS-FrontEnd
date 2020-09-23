@@ -15,24 +15,30 @@ class ProjectHistoryTable extends PureComponent {
           backgroundColor: 'unset',
         }}
       >
-        <Avatar
-          className={styles.teamColumn_avatar}
-          src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341724/hrms/smiling-woman-office_23-2147802011_vaf8ir.jpg"
-        />
-        <Avatar
-          className={styles.teamColumn_avatar}
-          src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341723/hrms/gettyimages-1178688517-612x612_w2cyyp.jpg"
-        />
-        <Tooltip overlayClassName={styles.teamColumn_toolTip} title="Ant User" placement="top">
+        <Tooltip overlayClassName={styles.teamColumn_toolTip} title="User Name" placement="top">
+          <Avatar
+            className={styles.teamColumn_avatar}
+            src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341724/hrms/smiling-woman-office_23-2147802011_vaf8ir.jpg"
+          />
+        </Tooltip>
+        <Tooltip overlayClassName={styles.teamColumn_toolTip} title="User Name" placement="top">
+          <Avatar
+            className={styles.teamColumn_avatar}
+            src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341723/hrms/gettyimages-1178688517-612x612_w2cyyp.jpg"
+          />
+        </Tooltip>
+        <Tooltip overlayClassName={styles.teamColumn_toolTip} title="User Name" placement="top">
           <Avatar
             className={styles.teamColumn_avatar}
             src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341723/hrms/800px_COLOURBOX3911959_smreob.jpg"
           />
         </Tooltip>
-        <Avatar
-          className={styles.teamColumn_avatar}
-          src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341723/hrms/gettyimages-1178688517-612x612_w2cyyp.jpg"
-        />
+        <Tooltip overlayClassName={styles.teamColumn_toolTip} title="User Name" placement="top">
+          <Avatar
+            className={styles.teamColumn_avatar}
+            src="https://res.cloudinary.com/dqcituopq/image/upload/v1600341723/hrms/gettyimages-1178688517-612x612_w2cyyp.jpg"
+          />
+        </Tooltip>
       </Avatar.Group>
     );
     return teamColumn;
@@ -124,7 +130,7 @@ class ProjectHistoryTable extends PureComponent {
         dataIndex: 'engagement',
         key: 'engagement',
         render: (engagement) => this.renderEngagementColumn(engagement),
-        width: '15%',
+        width: '18%',
       },
     ];
 

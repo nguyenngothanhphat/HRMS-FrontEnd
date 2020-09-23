@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Card, Row, Menu, Dropdown, Input, message } from 'antd';
+import { Card, Row, Menu, Dropdown, Input, message, Button } from 'antd';
 import ProjectHistoryTable from './components/ProjectHistoryTable';
 import noDataIcon from './assets/no_data.svg';
 import filterIcon from './assets/filter_icon.svg';
 import styles from './index.less';
 
 class ProjectHistory extends PureComponent {
-  renderExtraCard = () => {
+  renderExtraCard = (projectHistoryData) => {
     const menu = (
       <Menu onClick={this.onClickItemFilter}>
         <Menu.Item key="1">
@@ -24,15 +24,29 @@ class ProjectHistory extends PureComponent {
       </Menu>
     );
     const { Search } = Input;
+    const projectHistoryList = projectHistoryData.length;
+    let classNameButton = `${styles.extraCard_filterBtn} `;
+    let classNameSearch = `${styles.extraCard_search} `;
+    if (projectHistoryList === 0) {
+      classNameButton += `${styles.extraCard_filterBtnDisabled} `;
+      classNameSearch += `${styles.extraCard_searchDisabled} `;
+    }
     const extraCard = (
       <Row gutter={[16, 0]} className={styles.extraCard} align="middle">
-        <Dropdown overlayClassName={styles.extraCard_dropdownMenu} overlay={menu}>
+        <Dropdown
+          overlayClassName={styles.extraCard_dropdownMenu}
+          overlay={menu}
+          trigger={['click']}
+          disabled={!(projectHistoryList > 0)}
+        >
           <div className={styles.extraCard_filter}>
-            <img className={styles.extraCard_filterImg} alt="" src={filterIcon} />
-            <span>Filter</span>
+            <Button className={classNameButton}>
+              <img className={styles.extraCard_filterImg} alt="" src={filterIcon} />
+              <span>Filter</span>
+            </Button>
           </div>
         </Dropdown>
-        <Search className={styles.extraCard_search} />
+        <Search disabled={!(projectHistoryList > 0)} className={classNameSearch} />
       </Row>
     );
     return extraCard;
@@ -97,7 +111,7 @@ class ProjectHistory extends PureComponent {
         <Card
           className={styles.projectHistory_card}
           title="Project History"
-          extra={this.renderExtraCard()}
+          extra={this.renderExtraCard(projectHistoryData)}
         >
           {this.renderPrjectHistoryTable(projectHistoryData)}
         </Card>
