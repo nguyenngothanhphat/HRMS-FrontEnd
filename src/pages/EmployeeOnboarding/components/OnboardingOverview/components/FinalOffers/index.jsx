@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import SentFinalOffers from './components/SentFinalOffers';
@@ -11,9 +11,12 @@ import { rookieList } from '@/pages/EmployeeOnboarding/components/OnboardingOver
 
 import styles from './index.less';
 
+const { TabPane } = Tabs;
+
 class FinalOffers extends Component {
   render() {
-    const { TabPane } = Tabs;
+    const { finalOffers = {} } = this.props;
+    const { sentFinalOffers = [], acceptedFinalOffers = [] } = finalOffers;
 
     return (
       <div className={styles.FinalOffers}>
@@ -25,14 +28,14 @@ class FinalOffers extends Component {
               key="1"
             >
               {/* <OnboardTable list={rookieList} /> */}
-              <SentFinalOffers />
+              <SentFinalOffers list={sentFinalOffers} />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="accepted final offers"
               key="2"
             >
-              <AcceptedFinalOffers />
+              <AcceptedFinalOffers list={acceptedFinalOffers} />
             </TabPane>
           </Tabs>
         </div>
@@ -41,4 +44,13 @@ class FinalOffers extends Component {
   }
 }
 
-export default FinalOffers;
+// export default FinalOffers;
+export default connect((state) => {
+  const { onboard = {} } = state;
+  const { onboardingOverview = {} } = onboard;
+  const { finalOffers = {} } = onboardingOverview;
+
+  return {
+    finalOffers,
+  };
+})(FinalOffers);

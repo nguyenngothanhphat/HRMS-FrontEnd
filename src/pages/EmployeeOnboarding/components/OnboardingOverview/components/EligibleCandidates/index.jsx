@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import {
   rookieList,
@@ -11,7 +11,7 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import styles from './index.less';
 
-const list = rookieList;
+// const list = rookieList;
 const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
 const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
 
@@ -21,9 +21,10 @@ class EligibleCandidates extends Component {
   }
 
   render() {
+    const { eligibleCandidates } = this.props;
     return (
       <OnboardTable
-        list={rookieList}
+        list={eligibleCandidates}
         columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
         type={ELIGIBLE_CANDIDATES}
       />
@@ -31,4 +32,12 @@ class EligibleCandidates extends Component {
   }
 }
 
-export default EligibleCandidates;
+// export default EligibleCandidates;
+export default connect((state) => {
+  const { onboard = {} } = state;
+  const { onboardingOverview = {} } = onboard;
+  const { eligibleCandidates = [] } = onboardingOverview;
+  return {
+    eligibleCandidates,
+  };
+})(EligibleCandidates);

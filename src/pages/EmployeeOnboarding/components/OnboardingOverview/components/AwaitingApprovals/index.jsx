@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers';
@@ -12,22 +12,29 @@ import { rookieList } from '@/pages/EmployeeOnboarding/components/OnboardingOver
 
 import styles from './index.less';
 
-class ProvisionalOffers extends Component {
+const { TabPane } = Tabs;
+
+class AwaitingApprovals extends Component {
   render() {
-    const { TabPane } = Tabs;
+    const { awaitingApprovals = {} } = this.props;
+    const {
+      approvedFinalOffers = [],
+      pendingApprovals = [],
+      rejectFinalOffer = [],
+    } = awaitingApprovals;
 
     return (
       <div className={styles.AwaitingApprovals}>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1">
             <TabPane tab="pending aprrovals" key="1">
-              <PendingApprovals />
+              <PendingApprovals list={pendingApprovals} />
             </TabPane>
             <TabPane tab="approved final offers" key="2">
-              <ApprovedFinalOffers />
+              <ApprovedFinalOffers list={approvedFinalOffers} />
             </TabPane>
             <TabPane tab="reject final offers" key="3">
-              <RejectFinalOffers />
+              <RejectFinalOffers list={rejectFinalOffer} />
             </TabPane>
           </Tabs>
         </div>
@@ -36,4 +43,13 @@ class ProvisionalOffers extends Component {
   }
 }
 
-export default ProvisionalOffers;
+// export default AwaitingApprovals;
+export default connect((state) => {
+  const { onboard = {} } = state;
+  const { onboardingOverview = {} } = onboard;
+  const { awaitingApprovals = {} } = onboardingOverview;
+
+  return {
+    awaitingApprovals,
+  };
+})(AwaitingApprovals);

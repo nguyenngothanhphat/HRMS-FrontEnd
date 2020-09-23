@@ -11,7 +11,7 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import styles from './index.less';
 
-const list = rookieList.filter((rookie) => rookie.isNew != true);
+// const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION } = COLUMN_NAME;
 const { APPROVED_FINAL_OFFERS } = TABLE_TYPE;
 
@@ -21,6 +21,8 @@ class ApprovedFinalOffers extends Component {
   }
 
   render() {
+    const { list = [] } = this.props;
+
     return (
       <OnboardTable
         list={list}

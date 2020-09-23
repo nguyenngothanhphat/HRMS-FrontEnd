@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 
+import OnboardModal from '../OnboardModal';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
 import styles from './index.less';
@@ -130,7 +131,7 @@ class OnboardTable extends Component {
         key: 'actions',
         width: '12%',
         render: () => (
-          <span className={styles.tableActions}>
+          <span className={styles.tableActions} onClick={() => {}}>
             <p>{actionText}</p>
             <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
           </span>
@@ -188,21 +189,24 @@ class OnboardTable extends Component {
     const { columnArr, type, inTab, hasCheckbox } = this.props;
 
     return (
-      <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
-        <Table
-          size="small"
-          rowSelection={
-            hasCheckbox && {
-              type: 'checkbox',
-              ...rowSelection,
+      <>
+        <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
+          <Table
+            size="small"
+            rowSelection={
+              hasCheckbox && {
+                type: 'checkbox',
+                ...rowSelection,
+              }
             }
-          }
-          columns={this.generateColumns(columnArr, type)}
-          dataSource={list}
-          pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-          // scroll={{ x: 1000, y: 'max-content' }}
-        />
-      </div>
+            columns={this.generateColumns(columnArr, type)}
+            dataSource={list}
+            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            // scroll={{ x: 1000, y: 'max-content' }}
+          />
+        </div>
+        {/* <OnboardModal open={true} /> */}
+      </>
     );
   }
 }

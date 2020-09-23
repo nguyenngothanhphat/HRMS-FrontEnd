@@ -12,7 +12,7 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 
 import styles from './index.less';
 
-const list = rookieList.filter((rookie) => rookie.isNew != true);
+// const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
 const { PENDING_APPROVALS } = TABLE_TYPE;
 
@@ -21,6 +21,8 @@ class PendingApprovals extends Component {
     super(props);
   }
   render() {
+    const { list = [] } = this.props;
+
     return (
       <OnboardTable
         list={list}
