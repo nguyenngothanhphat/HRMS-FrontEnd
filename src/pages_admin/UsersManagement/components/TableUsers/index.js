@@ -181,7 +181,7 @@ export default class TableUsers extends PureComponent {
     {
       title: 'User ID',
       dataIndex: 'userId',
-      width: '9%',
+      width: '8%',
       align: 'center',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
@@ -278,6 +278,7 @@ export default class TableUsers extends PureComponent {
     super(props);
     this.state = {
       pageSelected: 1,
+      selectedRowKeys: [],
     };
   }
 
@@ -317,8 +318,13 @@ export default class TableUsers extends PureComponent {
   //   console.log('params', pagination, filters, sorter, extra);
   // };
 
+  onSelectChange = (selectedRowKeys) => {
+    // console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({ selectedRowKeys });
+  };
+
   render() {
-    const { pageSelected } = this.state;
+    const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100vw',
@@ -342,16 +348,17 @@ export default class TableUsers extends PureComponent {
       onChange: this.onChangePagination,
     };
 
+    const rowSelection = {
+      type: 'checkbox',
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+
     return (
       <div className={styles.tableUsers}>
         <Table
           size="small"
-          rowSelection={{
-            type: 'checkbox',
-            // onChange: (selectedRowKeys, selectedRows) => {
-            // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            // },
-          }}
+          rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
           dataSource={data}
