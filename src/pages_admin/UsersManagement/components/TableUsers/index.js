@@ -180,10 +180,10 @@ export default class TableUsers extends PureComponent {
   columns = [
     {
       title: 'User ID',
-      render: (text) => <a>{text}</a>,
       dataIndex: 'userId',
       width: '9%',
       align: 'center',
+      defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) => a.userId - b.userId,
@@ -239,11 +239,11 @@ export default class TableUsers extends PureComponent {
       dataIndex: 'password',
       width: '10%',
       align: 'center',
-      render: () => (
+      render: (text, record) => (
         <div className={styles.userPasswordReset}>
           <span className={styles.userPassword}>*******</span>
           <div>
-            <span onClick={this.resetPassword}>RESET</span>
+            <span onClick={(e) => this.resetPassword(record.key, e)}>RESET</span>
           </div>
         </div>
       ),
@@ -259,10 +259,16 @@ export default class TableUsers extends PureComponent {
       dataIndex: 'action',
       width: '6%',
       align: 'center',
-      render: () => (
+      render: (text, record) => (
         <div className={styles.userAction}>
-          <UserOutlined onClick={this.editUser} className={styles.editUserBtn} />
-          <DeleteOutlined onClick={this.deleteUser} className={styles.deleteUserBtn} />
+          <UserOutlined
+            onClick={(e) => this.editUser(record.key, e)}
+            className={styles.editUserBtn}
+          />
+          <DeleteOutlined
+            onClick={(e) => this.deleteUser(record.key, e)}
+            className={styles.deleteUserBtn}
+          />
         </div>
       ),
     },
@@ -276,16 +282,22 @@ export default class TableUsers extends PureComponent {
   }
 
   // user
-  deleteUser = () => {
+  deleteUser = (key, e) => {
+    e.preventDefault();
     alert('DELETE USER');
+    console.log('DELETE USER', key);
   };
 
-  editUser = () => {
+  editUser = (key, e) => {
+    e.preventDefault();
     alert('EDIT USER');
+    console.log('EDIT USER', key);
   };
 
-  resetPassword = () => {
+  resetPassword = (key, e) => {
+    e.preventDefault();
     alert('RESET PASSWORD');
+    console.log('RESET PASSWORD', key);
   };
 
   // pagination
@@ -301,9 +313,9 @@ export default class TableUsers extends PureComponent {
     });
   };
 
-  onSortChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-  };
+  // onSortChange = (pagination, filters, sorter, extra) => {
+  //   console.log('params', pagination, filters, sorter, extra);
+  // };
 
   render() {
     const { pageSelected } = this.state;
@@ -336,15 +348,15 @@ export default class TableUsers extends PureComponent {
           size="small"
           rowSelection={{
             type: 'checkbox',
-            onChange: (selectedRowKeys, selectedRows) => {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
+            // onChange: (selectedRowKeys, selectedRows) => {
+            // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            // },
           }}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
-          onChange={this.onSortChange}
+          // onChange={this.onSortChange}
         />
       </div>
     );
