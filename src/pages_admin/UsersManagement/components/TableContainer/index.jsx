@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
 import Icon, { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
-import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
+import TableUsers from '../TableUsers';
 import addUser from './icon.js';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
@@ -14,7 +14,7 @@ import TableFilter from '../TableFilter';
   loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
 }))
-class UsersTable extends PureComponent {
+class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
       const { employee: { filter = [] } = {} } = nextProps;
@@ -58,8 +58,8 @@ class UsersTable extends PureComponent {
       collapsed: true,
       pageSelected: 1,
       bottabs: [
-        { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeEmployeesTab' }) },
-        { id: 2, name: formatMessage({ id: 'pages_admin.users.userTable.inactiveEmployeesTab' }) },
+        { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeUsersTab' }) },
+        { id: 2, name: formatMessage({ id: 'pages_admin.users.userTable.inactiveUsersTab' }) },
       ],
     };
     this.setDebounce = debounce((query) => {
@@ -184,7 +184,6 @@ class UsersTable extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { bottabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
 
     return (
       <div className={styles.DirectoryComponent}>
@@ -199,10 +198,7 @@ class UsersTable extends PureComponent {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.directoryLayout_inner}>
                   <Content className="site-layout-background">
-                    <DirectoryTable
-                      loading={loadingListActive || loadingListInActive}
-                      list={this.renderListEmployee(tab.id)}
-                    />
+                    <TableUsers />
                   </Content>
                   <TableFilter
                     onToggle={this.handleToggle}
@@ -221,6 +217,6 @@ class UsersTable extends PureComponent {
   }
 }
 
-UsersTable.propTypes = {};
+TableContainer.propTypes = {};
 
-export default UsersTable;
+export default TableContainer;
