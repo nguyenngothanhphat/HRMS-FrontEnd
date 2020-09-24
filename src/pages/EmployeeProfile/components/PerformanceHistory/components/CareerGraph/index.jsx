@@ -3,7 +3,7 @@ import { Card, Row, Button } from 'antd';
 import Chart from 'react-google-charts';
 import styles from './index.less';
 
-class CareerPath extends PureComponent {
+class CareerGraph extends PureComponent {
   renderExtraCard = () => {
     return (
       <>
@@ -68,7 +68,7 @@ class CareerPath extends PureComponent {
                 chartType="LineChart"
                 loader={<div>Loading Chart</div>}
                 columns={[
-                  { type: 'string', label: 'Year' },
+                  { type: 'number', label: 'Year' },
                   { type: 'number', label: 'Performance Score' },
                   { type: 'boolean', role: 'certainty' },
                   { type: 'string', role: 'tooltip', p: { html: true } },
@@ -76,7 +76,7 @@ class CareerPath extends PureComponent {
                 rows={[
                   {
                     c: [
-                      { v: 0, f: '2018' },
+                      { v: 2018 },
                       { v: 4 },
                       { v: true },
                       this.createCustomHTMLContent('20%', 'Manager', 'PM'),
@@ -84,7 +84,7 @@ class CareerPath extends PureComponent {
                   },
                   {
                     c: [
-                      { v: 1, f: '2019' },
+                      { v: 2019 },
                       { v: 5 },
                       { v: true },
                       this.createCustomHTMLContent('30%', 'Manager', 'PM'),
@@ -92,7 +92,7 @@ class CareerPath extends PureComponent {
                   },
                   {
                     c: [
-                      { v: 2, f: '2020' },
+                      { v: 2020 },
                       { v: 7 },
                       { v: true },
                       this.createCustomHTMLContent('40%', 'Manager', 'PM'),
@@ -100,13 +100,12 @@ class CareerPath extends PureComponent {
                   },
                   {
                     c: [
-                      { v: 3, f: '2021' },
+                      { v: 2021 },
                       { v: 8 },
                       { v: false },
                       this.createCustomHTMLContent('50%', 'Manager', 'PM'),
                     ],
                   },
-                  // { c: [{ v: 4, f: '' }, null, null] },
                 ]}
                 options={{
                   hAxis: {
@@ -117,6 +116,7 @@ class CareerPath extends PureComponent {
                       bold: true,
                       italic: false,
                     },
+                    format: '####',
                   },
                   vAxis: {
                     title: 'Performance Score',
@@ -125,6 +125,9 @@ class CareerPath extends PureComponent {
                       fontSize: 13,
                       bold: true,
                       italic: false,
+                    },
+                    gridlines: {
+                      color: 'transparent',
                     },
                     minValue: 0,
                     maxValue: 10,
@@ -152,4 +155,4 @@ class CareerPath extends PureComponent {
   }
 }
 
-export default CareerPath;
+export default CareerGraph;
