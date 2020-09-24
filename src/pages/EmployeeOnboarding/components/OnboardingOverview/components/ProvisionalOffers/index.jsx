@@ -18,9 +18,6 @@ class ProvisionalOffers extends Component {
     const { TabPane } = Tabs;
     const { provisionalOffers = {} } = this.props;
     const { sentProvisionalOffers = [], receivedProvisionalOffers = [] } = provisionalOffers;
-    console.log(provisionalOffers);
-    console.log(sentProvisionalOffers);
-    console.log(receivedProvisionalOffers);
 
     return (
       <div className={styles.PendingEligibilityChecks}>

@@ -5,10 +5,10 @@ import img1 from './images/modal_img_1.png';
 
 import styles from './index.less';
 
-const OnboardModal = (props) => {
+const CustomModal = (props) => {
   const [visible, setVisible] = useState(false); // Modal visibility
 
-  const { open } = props;
+  const { open, closeModal } = props;
 
   const Content = props.children;
 
@@ -26,6 +26,7 @@ const OnboardModal = (props) => {
 
   const handleCancel = (e) => {
     setVisible(false);
+    closeModal();
   };
 
   return (
@@ -44,4 +45,4 @@ const OnboardModal = (props) => {
   );
 };
 
-export default OnboardModal;
+export default CustomModal;

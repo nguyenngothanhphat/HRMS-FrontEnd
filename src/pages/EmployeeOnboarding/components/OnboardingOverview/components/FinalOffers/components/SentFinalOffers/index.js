@@ -8,7 +8,6 @@ import {
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
-import OnboardModal from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardModal';
 import ModalContent from '../ModalContent';
 
 import styles from './index.less';
@@ -34,18 +33,12 @@ class SentFinalOffers extends Component {
     const { list = [] } = this.props;
 
     return (
-      <>
-        <OnboardModal open={this.state.openModal}>
-          <ModalContent closeModal={this.closeModal} />
-        </OnboardModal>
-
-        <OnboardTable
-          list={list}
-          columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-          type={SENT_FINAL_OFFERS}
-          inTab
-        />
-      </>
+      <OnboardTable
+        list={list}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+        type={SENT_FINAL_OFFERS}
+        inTab
+      />
     );
   }
 }

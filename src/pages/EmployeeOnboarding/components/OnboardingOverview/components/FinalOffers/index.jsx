@@ -27,7 +27,6 @@ class FinalOffers extends Component {
               tab="sent final offers"
               key="1"
             >
-              {/* <OnboardTable list={rookieList} /> */}
               <SentFinalOffers list={sentFinalOffers} />
             </TabPane>
             <TabPane

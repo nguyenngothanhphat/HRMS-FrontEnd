@@ -3,10 +3,10 @@ import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 
-import OnboardModal from '../OnboardModal';
+import CustomModal from '@/components/CustomModal';
+import ModalContent from '../FinalOffers/components/ModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
-// import img1 from './images/';
 import styles from './index.less';
 
 const getActionText = (type) => {
@@ -41,11 +41,11 @@ const getActionText = (type) => {
       return 'send offer';
     case PENDING_APPROVALS:
     case REJECTED_FINAL_OFFERS:
-    case SENT_FINAL_OFFERS:
     case DISCARDED_FINAL_OFFERS:
       return 'view draft';
     case FINAL_OFFERS_DRAFTS:
       return 'send for approval';
+    case SENT_FINAL_OFFERS:
     case ACCEPTED_FINAL_OFFERS:
       return 'create profile';
     default:
@@ -56,8 +56,24 @@ const getActionText = (type) => {
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { sortedName: {}, pageSelected: 1 };
+    this.state = { sortedName: {}, pageSelected: 1, openModal: false };
   }
+
+  handleActionClick = (tableType) => {
+    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
+    if (tableType === SENT_FINAL_OFFERS || tableType === ACCEPTED_FINAL_OFFERS) {
+      // if (true) {
+      this.setState({
+        openModal: !this.state.openModal,
+      });
+    }
+  };
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
 
   renderName = (id) => {
     const { list } = this.props;
@@ -304,7 +320,7 @@ class OnboardTable extends Component {
     if (tableType === DISCARDED_FINAL_OFFERS) {
       switch (columnName) {
         case 'rookieId':
-          return '12%';
+          return '13%';
         case 'rookieName':
           return '18%';
         case 'position':
@@ -402,17 +418,13 @@ class OnboardTable extends Component {
         render: () => (
           <span className={styles.tableActions} onClick={() => {}}>
             {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-              // <div className={styles.actionBtn}>
-              // <p>
               <>
                 <span>{actionText}</span>
 
                 <span className={styles.viewDraft}>View Draft</span>
               </>
             ) : (
-              // </p>
-              // </div>
-              <span>{actionText}</span>
+              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
             )}
 
             <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
@@ -441,7 +453,7 @@ class OnboardTable extends Component {
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       },
       getCheckboxProps: (record) => ({
         disabled: record.name === 'Disabled User',
@@ -487,15 +499,9 @@ class OnboardTable extends Component {
             // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
-        {/* <OnboardModal
-          open={this.state.isOpen}
-          bodyContent={bodyContent}
-          handleCancle={() => {
-            this.setState({
-              isOpen: false,
-            });
-          }}
-        /> */}
+        <CustomModal open={this.state.openModal} closeModal={this.closeModal}>
+          {this.state.openModal && <ModalContent closeModal={this.closeModal} />}
+        </CustomModal>
       </>
     );
   }

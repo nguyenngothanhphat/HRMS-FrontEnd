@@ -95,8 +95,6 @@ const ModalContent = (props) => {
     }
   };
 
-  console.log(props);
-
   return (
     <div className={styles.modalContent}>
       <span className={styles.step}>
