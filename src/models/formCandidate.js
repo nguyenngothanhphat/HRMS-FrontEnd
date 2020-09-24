@@ -27,6 +27,8 @@ const info = {
     },
     eligibilityDocs: {
       email: '',
+      generateLink: '',
+      isSentEmail: false,
       identityProof: {
         aadharCard: true,
         PAN: true,

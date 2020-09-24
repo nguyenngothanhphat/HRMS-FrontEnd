@@ -153,20 +153,173 @@ class EligibilityDocs extends PureComponent {
   handleSendEmail = (user) => {
     const { dispatch } = this.props;
     const { eligibilityDocs = {} } = this.state;
+    const { isSentEmail } = eligibilityDocs;
     dispatch({
       type: 'info/saveEligibilityRequirement',
       payload: {
         eligibilityDocs: {
           ...eligibilityDocs,
           email: user.email,
+          isSentEmail: !isSentEmail,
         },
       },
     });
-    console.log(eligibilityDocs);
-    // console.log(user);
+  };
+
+  handleSendFormAgain = () => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs = {} } = this.state;
+    const { isSentEmail } = eligibilityDocs;
+    dispatch({
+      type: 'info/saveEligibilityRequirement',
+      payload: {
+        eligibilityDocs: {
+          ...eligibilityDocs,
+          isSentEmail: !isSentEmail,
+        },
+      },
+    });
+  };
+
+  handleChange = (checkedList, arr, value) => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs } = this.state;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
+    if (value === 'typeA') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            identityProof: {
+              ...identityProof,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeB') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            addressProof: {
+              ...addressProof,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeC') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            educational: {
+              ...educational,
+              listSelected: checkedList,
+              isChecked: checkedList.length === arr.length,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeD') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            technicalCertification: {
+              ...technicalCertification,
+              poe: {
+                ...poe,
+                listSelected: checkedList,
+                isChecked: checkedList.length === arr.length,
+              },
+            },
+          },
+        },
+      });
+    }
+  };
+
+  handleCheckAll = (e, arr, value) => {
+    const { eligibilityDocs } = this.state;
+    const { dispatch } = this.props;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
+    if (value === 'typeA') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            identityProof: {
+              ...identityProof,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeB') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            addressProof: {
+              ...addressProof,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeC') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            educational: {
+              ...educational,
+              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              isChecked: e.target.checked,
+            },
+          },
+        },
+      });
+    } else if (value === 'typeD') {
+      dispatch({
+        type: 'info/saveEligibilityRequirement',
+        payload: {
+          eligibilityDocs: {
+            ...eligibilityDocs,
+            technicalCertification: {
+              ...technicalCertification,
+              poe: {
+                ...poe,
+                listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+                isChecked: e.target.checked,
+              },
+            },
+          },
+        },
+      });
+    }
   };
 
   render() {
+    const {
+      eligibilityDocs,
+      eligibilityDocs: { email, isSentEmail },
+    } = this.state;
     return (
       <>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -175,13 +328,28 @@ class EligibilityDocs extends PureComponent {
               <Warning formatMessage={formatMessage} />
               <Title formatMessage={formatMessage} />
               {listCollapse.map((item) => {
-                return <CollapseFields key={item.id} item={item} />;
+                return (
+                  <CollapseFields
+                    key={item.id}
+                    item={item}
+                    handleChange={this.handleChange}
+                    handleCheckAll={this.handleCheckAll}
+                    eligibilityDocs={eligibilityDocs}
+                  />
+                );
               })}
             </div>
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
-            <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
+            <SendEmail
+              formatMessage={formatMessage}
+              handleSendEmail={this.handleSendEmail}
+              handleChangeEmail={this.handleChangeEmail}
+              handleSendFormAgain={this.handleSendFormAgain}
+              email={email}
+              isSentEmail={isSentEmail}
+            />
           </Col>
         </Row>
       </>
