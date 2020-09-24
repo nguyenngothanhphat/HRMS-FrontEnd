@@ -67,10 +67,6 @@ const ModalContent = (props) => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
 
-  const handleNext = () => {
-    next();
-  };
-
   const handleShare = () => {
     next();
   };
@@ -92,7 +88,6 @@ const ModalContent = (props) => {
         return;
       default:
         next();
-        return;
     }
   };
 
@@ -103,7 +98,7 @@ const ModalContent = (props) => {
       </span>
 
       <div className={styles.imgContainer}>
-        <img src={image} alt="step 1 image" />
+        <img src={image} alt="step" />
       </div>
 
       <div className={styles.contentContainer}>

@@ -1,19 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import { connect } from 'umi';
 
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import SentProvisionalOffers from './components/SentProvisionalOffers';
 import ReceivedProvisionalOffers from './components/ReceivedProvisionalOffers';
 
 import styles from './index.less';
 
-class ProvisionalOffers extends Component {
-  constructor() {
-    super();
-  }
-
+class ProvisionalOffers extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { provisionalOffers = {} } = this.props;

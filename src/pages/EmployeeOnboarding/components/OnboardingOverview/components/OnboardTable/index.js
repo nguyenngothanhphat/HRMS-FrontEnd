@@ -14,16 +14,13 @@ import styles from './index.less';
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { sortedName: {}, pageSelected: 1, openModal: false };
+    this.state = { pageSelected: 1, openModal: false };
   }
 
   handleActionClick = (tableType) => {
     const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
     if (tableType === SENT_FINAL_OFFERS || tableType === ACCEPTED_FINAL_OFFERS) {
-      // if (true) {
-      this.setState({
-        openModal: !this.state.openModal,
-      });
+      this.setState((prevState) => ({ openModal: !prevState.openModal }));
     }
   };
 
@@ -60,7 +57,6 @@ class OnboardTable extends Component {
       DATE_JOIN,
       ACTION,
     } = COLUMN_NAME;
-    const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
     const actionText = getActionText(type);
 
     const columns = [
@@ -146,7 +142,7 @@ class OnboardTable extends Component {
     ];
 
     // Filter only columns that are needed
-    let newColumns = columns.filter((column) => columnArr.includes(column.columnName));
+    const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
 
     return newColumns;
   };
@@ -158,14 +154,14 @@ class OnboardTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected } = this.state;
-    const { list, hasBorder } = this.props;
+    const { pageSelected } = this.state;
+    const { list } = this.props;
     const rowSize = 10;
 
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
+      // onChange: (selectedRowKeys, selectedRows) => {
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      // },
       getCheckboxProps: (record) => ({
         disabled: record.name === 'Disabled User',
         // Column configuration not to be checked
@@ -192,7 +188,7 @@ class OnboardTable extends Component {
     };
 
     const { columnArr, type, inTab, hasCheckbox } = this.props;
-
+    const { openModal } = this.state;
     return (
       <>
         <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
@@ -210,8 +206,8 @@ class OnboardTable extends Component {
             // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
-        <CustomModal open={this.state.openModal} closeModal={this.closeModal}>
-          {this.state.openModal && <ModalContent closeModal={this.closeModal} />}
+        <CustomModal open={openModal} closeModal={this.closeModal}>
+          {openModal && <ModalContent closeModal={this.closeModal} />}
         </CustomModal>
       </>
     );

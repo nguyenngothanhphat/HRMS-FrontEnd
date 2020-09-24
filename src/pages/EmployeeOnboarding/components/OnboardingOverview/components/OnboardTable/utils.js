@@ -1,4 +1,4 @@
-import { COLUMN_NAME, TABLE_TYPE } from '../utils';
+import { TABLE_TYPE } from '../utils';
 
 const getActionText = (type) => {
   const {
@@ -333,6 +333,8 @@ const getColumnWidth = (columnName, tableType) => {
         return '';
     }
   }
+
+  return '';
 };
 
 export { getActionText, getColumnWidth };

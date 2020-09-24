@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { connect, Link } from 'umi';
+import { Link } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';

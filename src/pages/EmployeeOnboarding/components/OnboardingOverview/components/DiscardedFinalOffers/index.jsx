@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import { Table } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 
 import {
   // rookieList,
@@ -9,17 +7,12 @@ import {
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
-import styles from './index.less';
 
 // const list = rookieList;
 const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
 const { DISCARDED_FINAL_OFFERS } = TABLE_TYPE;
 
-class DiscardedFinalOffers extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+class DiscardedFinalOffers extends PureComponent {
   render() {
     const { discardedFinalOffers = [] } = this.props;
 
