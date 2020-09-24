@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Space } from 'antd';
 
 import ideaIcon from './assets/ideaIcon.svg';
+import checkIcon from './assets/checkIcon.svg';
 import styles from './index.less';
 
 class TemplateDetailsNote extends PureComponent {
@@ -19,7 +20,21 @@ class TemplateDetailsNote extends PureComponent {
 
           <div className={styles.TemplateDetailsNote_header_title}>Did you know?</div>
         </div>
-        {/* <div className={styles.TemplateDetailsNote_list}></div> */}
+        <div className={styles.TemplateDetailsNote_list}>
+          <div className={styles.TemplateDetailsNote_list_note}>
+            <img src={checkIcon} alt="icon" />
+            <div className={styles.content}>
+              You can now download the template, edit it and upload the contents to save time.
+            </div>
+          </div>
+          <div className={styles.TemplateDetailsNote_list_note}>
+            <img src={checkIcon} alt="icon" />
+            <div className={styles.content}>
+              Create your own directory to Auto-fill names for On-boarding candidates and Auto-fill
+              words for quick-fill.
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
