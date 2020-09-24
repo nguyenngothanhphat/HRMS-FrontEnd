@@ -46,15 +46,16 @@ export async function addCertification(payload) {
   });
 }
 
+export async function getCountryList() {
+  return request('/api/country/list', {
+    method: 'POST',
+  });
+}
+
 export async function getPassPort(payload) {
   return request('/api/passport/get-by-employee', {
     method: 'POST',
     data: payload,
-  });
-}
-export async function getCountryList() {
-  return request('/api/country/list', {
-    method: 'POST',
   });
 }
 
@@ -64,9 +65,14 @@ export async function updatePassPort(payload) {
     data: payload,
   });
 }
-
 export async function getAddPassPort(payload) {
   return request('/api/passport/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateVisa(payload) {
+  return request('/api/visa/update', {
     method: 'POST',
     data: payload,
   });

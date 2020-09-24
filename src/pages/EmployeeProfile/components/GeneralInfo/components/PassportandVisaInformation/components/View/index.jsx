@@ -5,44 +5,57 @@ import Moment from 'moment';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
 
-@connect(({ upload: { urlImage = '' } = {} }) => ({
-  urlImage,
-}))
+@connect(
+  ({
+    upload: { urlImage = '' } = {},
+    employeeProfile: { tempData: { visaData = [{}] } = {} } = {},
+  }) => ({
+    urlImage,
+    visaData,
+  }),
+)
 class View extends PureComponent {
   render() {
-    const { dataAPI, urlImage = '' } = this.props;
-    const viewCountry = dataAPI.issuedCountry ? dataAPI.issuedCountry.name : '';
+    const { dataAPI, visaData, urlImage = '' } = this.props;
+    const {
+      visaEntryType = '',
+      visaIssuedCountry = '',
+      visaIssuedOn = '',
+      visaNumber = '',
+      visaType = '',
+      visaValidTill = '',
+    } = visaData;
+    console.log(visaIssuedCountry, visaEntryType);
+    const viewCountry = dataAPI.passportIssuedCountry ? dataAPI.passportIssuedCountry.name : '';
     const splitUrl = urlImage.split('/');
     const dummyData = [
-      { label: 'Passport Number', value: dataAPI.number },
+      { label: 'Passport Number', value: dataAPI.passportNumber },
       { label: 'Issued Country', value: viewCountry },
       {
         label: 'Issued On',
-        value: dataAPI.issuedOn ? Moment(dataAPI.issuedOn).locale('en').format('Do MMM YYYY') : '',
+        value: dataAPI.passportIssuedOn
+          ? Moment(dataAPI.passportIssuedOn).locale('en').format('Do MMM YYYY')
+          : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.validTill
-          ? Moment(dataAPI.validTill).locale('en').format('Do MMM YYYY')
+        value: dataAPI.passportValidTill
+          ? Moment(dataAPI.passportValidTill).locale('en').format('Do MMM YYYY')
           : '',
       },
     ];
     const dummyData2 = [
-      { label: 'Visa Number', value: dataAPI.visaNo },
-      { label: 'Visa Type', value: dataAPI.visaType },
-      { label: 'Country', value: dataAPI.visaCountry },
-      { label: 'Entry Type', value: dataAPI.visaEntryType },
+      { label: 'Visa Number', value: visaNumber },
+      { label: 'Visa Type', value: visaType },
+      { label: 'Country', value: visaIssuedCountry },
+      { label: 'Entry Type', value: visaEntryType },
       {
         label: 'Issued On',
-        value: dataAPI.visaIssuedOn
-          ? Moment(dataAPI.visaIssuedOn).locale('en').format('Do MMM YYYY')
-          : '',
+        value: visaIssuedOn ? Moment(visaIssuedOn).locale('en').format('Do MMM YYYY') : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.visaValidTill
-          ? Moment(dataAPI.visaValidTill).locale('en').format('Do MMM YYYY')
-          : '',
+        value: visaValidTill ? Moment(visaValidTill).locale('en').format('Do MMM YYYY') : '',
       },
     ];
     return (

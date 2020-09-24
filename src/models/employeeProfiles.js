@@ -10,6 +10,7 @@ import {
   getPassPort,
   getCountryList,
   updatePassPort,
+  updateVisa,
   getAddPassPort,
   getVisa,
   getAddVisa,
@@ -144,7 +145,6 @@ const employeeProfile = {
     *fetchVisa({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getVisa, { employee });
-        console.log(response);
         const { statusCode, data: [visaData = {}] = [] } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
@@ -212,7 +212,6 @@ const employeeProfile = {
     *addVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(getAddVisa, payload);
-        console.log(response);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
@@ -220,7 +219,7 @@ const employeeProfile = {
           message,
         });
         yield put({
-          type: 'fetchPassPort',
+          type: 'fetchVisa',
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
@@ -245,6 +244,30 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openPassportandVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassportandVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(updateVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
