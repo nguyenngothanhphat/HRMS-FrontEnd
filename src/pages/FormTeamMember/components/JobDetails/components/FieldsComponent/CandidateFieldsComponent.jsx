@@ -1,25 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, DatePicker, Typography } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { formatMessage } from 'umi';
 import InternalStyle from './CandidateFieldsComponent.less';
 
 const { Option } = Select;
-@connect(({ info: { jobDetail } = {} }) => ({
-  jobDetail,
-}))
 class CandidateFieldsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isHidden: false,
     };
-  }
-
-  static getDerivedStateFromProps(props) {
-    if ('jobDetail' in props) {
-      return { jobDetail: props.jobDetail || {} };
-    }
-    return null;
   }
 
   handleClick = () => {
@@ -29,8 +19,8 @@ class CandidateFieldsComponent extends PureComponent {
   };
 
   render() {
-    const { styles, candidateField, handleSelect = () => {} } = this.props;
-    const { jobDetail = {}, isHidden } = this.state;
+    const { styles, candidateField, handleSelect = () => {}, jobDetail = {} } = this.props;
+    const { isHidden } = this.state;
     const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetail;
     return (
       <div className={InternalStyle.CandidateFields}>
