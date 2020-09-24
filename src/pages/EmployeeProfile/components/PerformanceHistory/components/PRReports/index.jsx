@@ -73,12 +73,14 @@ class PRReports extends PureComponent {
     return (
       <div className={styles.prReports}>
         {isViewingDocument ? (
-          <ViewDocument
-            files={files}
-            selectedFile={selectedFile}
-            typeOfSelectedFile={typeOfSelectedFile}
-            onBackClick={this.onBackClick}
-          />
+          <div className={styles.prReports_viewDocument}>
+            <ViewDocument
+              files={files}
+              selectedFile={selectedFile}
+              typeOfSelectedFile={typeOfSelectedFile}
+              onBackClick={this.onBackClick}
+            />
+          </div>
         ) : (
           dummyData.map((value) => (
             <InfoCollapseType2 onFileClick={this.onFileClick} data={value} />
