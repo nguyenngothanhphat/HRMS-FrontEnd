@@ -150,20 +150,21 @@ class EligibilityDocs extends PureComponent {
     return null;
   }
 
-  // handleCheckBox = (value) => {
-  //   const { dispatch } = this.props;
-  //   const { eligibilityDocs = {} } = this.state;
-  //   const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
-
-  //   console.log(value);
-  //   // console.log(defaultCheckList);
-  //   dispatch({
-  //     type: 'info/eligibilityDocs',
-  //     payload: {
-  //       eligibilityDocs,
-  //     },
-  //   });
-  // };
+  handleSendEmail = (user) => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs = {} } = this.state;
+    dispatch({
+      type: 'info/saveEligibilityRequirement',
+      payload: {
+        eligibilityDocs: {
+          ...eligibilityDocs,
+          email: user.email,
+        },
+      },
+    });
+    console.log(eligibilityDocs);
+    // console.log(user);
+  };
 
   render() {
     return (
@@ -180,7 +181,7 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
-            <SendEmail formatMessage={formatMessage} />
+            <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
           </Col>
         </Row>
       </>

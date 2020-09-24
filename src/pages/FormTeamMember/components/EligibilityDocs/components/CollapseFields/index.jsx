@@ -153,7 +153,6 @@ class CollapseField extends React.Component {
 
   render() {
     const { item } = this.props;
-    console.log(item);
     const { eligibilityDocs } = this.state;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;

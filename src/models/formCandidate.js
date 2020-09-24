@@ -26,6 +26,7 @@ const info = {
       timeoff: 'can not',
     },
     eligibilityDocs: {
+      email: '',
       identityProof: {
         aadharCard: true,
         PAN: true,

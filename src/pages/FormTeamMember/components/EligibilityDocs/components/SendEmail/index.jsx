@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Typography, Space, Radio, Input, Form, Button, Row, Col } from 'antd';
+import { Typography, Space, Radio, Input, Form, Button, Row, Col, message } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import send from './Assets/group-11.svg';
 import style from './index.less';
 import copy from './Assets/copy-office.svg';
 
-const index = ({ formatMessage = () => {} }) => {
+const index = ({ formatMessage = () => {}, handleSendEmail = () => {} }) => {
   const [isEnable, setIsEnable] = useState(null);
   const [isInputEnable, setIsInputEnable] = useState(true);
-
   const handleEmailClick = () => {
     setIsEnable(true);
   };
@@ -21,6 +20,14 @@ const index = ({ formatMessage = () => {} }) => {
     setIsInputEnable(false);
   };
 
+  const handleGenerate = () => {
+    message.success('Generated link sucessfully');
+  };
+
+  const onFinish = (values) => {
+    console.log(values);
+    handleSendEmail(values);
+  };
   return (
     <div className={style.SendEmail}>
       <div className={style.header}>
@@ -54,21 +61,30 @@ const index = ({ formatMessage = () => {} }) => {
       </div>
       <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
         <div className={style.line} />
-        <Form layout="vertical" className={style.emailForm}>
-          <Form.Item label={formatMessage({ id: 'component.eligibilityDocs.emailLabel' })}>
+        <Form onFinish={onFinish} layout="vertical" className={style.emailForm}>
+          <Form.Item
+            name="email"
+            label={formatMessage({ id: 'component.eligibilityDocs.emailLabel' })}
+          >
             <Input defaultValue="Landonorris@gmail.com" disabled={isInputEnable} />
           </Form.Item>
           <Typography.Text className={style.change} onClick={handleClick}>
             {formatMessage({ id: 'component.eligibilityDocs.change' })}
           </Typography.Text>
-          <Button>{formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}</Button>
+          <Form.Item>
+            <Button htmlType="submit">
+              {formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}
+            </Button>
+          </Form.Item>
         </Form>
       </div>
       <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
         <Form className={style.linkForm}>
           <Form.Item>
             <Input defaultValue="abc.xyz.com" />
-            <img src={copy} alt="copy item" className={style.copy} />
+            <Button onClick={handleGenerate} className={style.generateButton}>
+              <img src={copy} alt="copy item" className={style.copy} />
+            </Button>
           </Form.Item>
         </Form>
         <div className={style.textBottom}>
