@@ -1,11 +1,27 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Typography, Button } from 'antd';
+import CustomModal from '@/components/CustomModal';
+
 import FormOutlined from '@ant-design/icons';
 import brandLogo from './assets/brand-logo.svg';
 import styles from './index.less';
 
 class TemplateDetailsForm extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: true,
+    };
+  }
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
   render() {
+    const { openModal } = this.state;
     const templateDetail = {
       title: 'title',
       date: `17/18/2020`,
@@ -88,6 +104,9 @@ class TemplateDetailsForm extends PureComponent {
             </Button>
           </div>
         </div>
+        {/* <CustomModal open={openModal} closeModal={this.closeModal}>
+          hi
+        </CustomModal> */}
       </div>
     );
   }

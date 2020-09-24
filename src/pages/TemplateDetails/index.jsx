@@ -1,13 +1,30 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import PageContainer from '@/layouts/layout/src/PageContainer';
+import CustomModal from '@/components/CustomModal';
+
 import TemplateDetailsHeader from './components/TemplateDetailsHeader';
 import TemplateDetailsForm from './components/TemplateDetailsForm';
 import TemplateDetailsNote from './components/TemplateDetailsNote';
 import styles from './index.less';
 
 class TemplateDetails extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: true,
+    };
+  }
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
   render() {
+    const { openModal } = this.state;
+
     return (
       <PageContainer>
         <div className={styles.TemplateDetails}>
@@ -23,6 +40,9 @@ class TemplateDetails extends PureComponent {
             </Row>
           </div>
         </div>
+        <CustomModal open={openModal} closeModal={this.closeModal}>
+          hi
+        </CustomModal>
       </PageContainer>
     );
   }

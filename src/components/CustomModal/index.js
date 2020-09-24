@@ -32,14 +32,14 @@ const CustomModal = (props) => {
   return (
     <>
       <Modal
-        className={styles.onboardModal}
+        className={`${styles.onboardModal} ${styles.testFixed}`}
         title={null}
         visible={visible}
         centered
         onCancel={handleCancel}
         footer={null}
       >
-        <div class={styles.body}>{props.children}</div>
+        <div className={styles.body}>{props.children}</div>
       </Modal>
     </>
   );
