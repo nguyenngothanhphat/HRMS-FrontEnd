@@ -4,40 +4,41 @@ import { EllipsisOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 
 import {
+  // rookieList,
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
-
 import styles from './index.less';
 
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
+// const list = rookieList;
+const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
+const { DISCARDED_FINAL_OFFERS } = TABLE_TYPE;
 
-class FinalOfferDrafts extends Component {
+class DiscardedFinalOffers extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const { finalOfferDrafts = [] } = this.props;
+    const { discardedFinalOffers = [] } = this.props;
 
     return (
       <OnboardTable
-        list={finalOfferDrafts}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-        type={FINAL_OFFERS_DRAFTS}
+        list={discardedFinalOffers}
+        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
+        type={DISCARDED_FINAL_OFFERS}
       />
     );
   }
 }
 
-// export default FinalOfferDrafts;
+// export default DiscardedFinalOffers;
 export default connect((state) => {
   const { onboard = {} } = state;
   const { onboardingOverview = {} } = onboard;
-  const { finalOfferDrafts = [] } = onboardingOverview;
+  const { discardedFinalOffers = [] } = onboardingOverview;
   return {
-    finalOfferDrafts,
+    discardedFinalOffers,
   };
-})(FinalOfferDrafts);
+})(DiscardedFinalOffers);

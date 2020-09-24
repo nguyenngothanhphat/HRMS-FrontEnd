@@ -1,11 +1,46 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { Link } from 'umi';
+import { connect, Link } from 'umi';
+
+import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
+import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
+import EligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/EligibleCandidates';
+import FinalOfferDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOfferDrafts';
+import FinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOffers';
+import IneligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/IneligibleCandidates';
+import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/PendingEligibilityChecks';
+import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProvisionalOffers';
+import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
 
 import MenuItem from './components/MenuItem';
 
 import styles from './index.less';
+
+const getComponent = (name) => {
+  switch (name) {
+    case 'PendingEligibilityChecks':
+      return <PendingEligibilityChecks />;
+    case 'EligibleCandidates':
+      return <EligibleCandidates />;
+    case 'IneligibleCandidates':
+      return <IneligibleCandidates />;
+    case 'ProvisionalOffers':
+      return <ProvisionalOffers />;
+    case 'DiscardedProvisionalOffers':
+      return <DiscardedProvisionalOffers />;
+    case 'AwaitingApprovals':
+      return <AwaitingApprovals />;
+    case 'FinalOffers':
+      return <FinalOffers />;
+    case 'FinalOfferDrafts':
+      return <FinalOfferDrafts />;
+    case 'DiscardedFinalOffers':
+      return <DiscardedFinalOffers />;
+    default:
+      return <PendingEligibilityChecks />;
+  }
+};
 
 class OnboardingLayout extends PureComponent {
   constructor(props) {
@@ -19,18 +54,19 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     const { listMenu = [] } = this.props;
+    const firstComponent = listMenu[0].menuItem[0].component;
     this.setState({
       pageTitle: listMenu[0].menuItem[0].name,
       selectedId: listMenu[0].menuItem[0].id,
-      displayComponent: listMenu[0].menuItem[0].component,
+      displayComponent: getComponent(firstComponent),
     });
   }
 
   handleClick = (item) => {
-    const { id = 1, component = null, name = '' } = item;
+    const { id = 1, component = '', name = '' } = item;
     this.setState({
       selectedId: id,
-      displayComponent: component,
+      displayComponent: getComponent(component),
       pageTitle: name,
     });
   };
@@ -38,7 +74,7 @@ class OnboardingLayout extends PureComponent {
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
-    console.log(listMenu);
+
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>

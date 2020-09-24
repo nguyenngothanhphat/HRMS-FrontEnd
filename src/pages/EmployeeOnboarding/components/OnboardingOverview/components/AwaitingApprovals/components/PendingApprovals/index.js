@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import { formatMessage } from 'umi';
 
 import {
+  rookieList,
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
@@ -11,33 +12,27 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 
 import styles from './index.less';
 
+// const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
+const { PENDING_APPROVALS } = TABLE_TYPE;
 
-class FinalOfferDrafts extends Component {
+class PendingApprovals extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
-    const { finalOfferDrafts = [] } = this.props;
+    const { list = [] } = this.props;
 
     return (
       <OnboardTable
-        list={finalOfferDrafts}
+        list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-        type={FINAL_OFFERS_DRAFTS}
+        type={PENDING_APPROVALS}
+        inTab
+        hasCheckbox
       />
     );
   }
 }
 
-// export default FinalOfferDrafts;
-export default connect((state) => {
-  const { onboard = {} } = state;
-  const { onboardingOverview = {} } = onboard;
-  const { finalOfferDrafts = [] } = onboardingOverview;
-  return {
-    finalOfferDrafts,
-  };
-})(FinalOfferDrafts);
+export default PendingApprovals;
