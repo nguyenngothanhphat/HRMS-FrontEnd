@@ -20,6 +20,8 @@ class HandleChanges extends PureComponent {
       radio: 2,
       changeData: {
         changedBy: user.currentUser._id,
+        newTitle: '',
+        newLocation: '',
         stepOne: 'Now',
         stepTwo: {
           title: '',
@@ -118,12 +120,20 @@ class HandleChanges extends PureComponent {
     switch (type) {
       case 'title':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, title: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, title: value[1] },
+            newTitle: value[0],
+          },
         });
         break;
       case 'wLocation':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, wLocation: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, wLocation: value[1] },
+            newLocation: value[0],
+          },
         });
         break;
       case 'employment':
@@ -192,9 +202,9 @@ class HandleChanges extends PureComponent {
             name={data.name}
             currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
             data={{
-              newTitle: changeData.stepTwo.title,
+              newTitle: changeData.newTitle,
               newSalary: changeData.stepTwo.salary,
-              newLocation: changeData.stepTwo.wLocation,
+              newLocation: changeData.newLocation,
             }}
           />
         ) : null}

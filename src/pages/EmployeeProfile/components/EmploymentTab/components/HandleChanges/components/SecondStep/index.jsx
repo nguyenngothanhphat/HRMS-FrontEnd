@@ -16,7 +16,7 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div>Title</div>
         <Select
-          defaultValue={changeData.stepTwo.title || null}
+          defaultValue={changeData.newTitle || null}
           showSearch
           placeholder="Select a title"
           optionFilterProp="children"
@@ -28,7 +28,7 @@ export default function SecondStep(props) {
         >
           {fetchedState.listTitle.map((item) => {
             return (
-              <Option key={makeKey()} value={item._id}>
+              <Option key={makeKey()} value={[item.name, item._id]}>
                 {item.name}
               </Option>
             );
@@ -39,7 +39,7 @@ export default function SecondStep(props) {
       <div className={styles.select}>
         <div>Work Location</div>
         <Select
-          defaultValue={changeData.stepTwo.wLocation || null}
+          defaultValue={changeData.newLocation || null}
           showSearch
           placeholder="Select a location"
           optionFilterProp="children"
@@ -51,7 +51,7 @@ export default function SecondStep(props) {
         >
           {fetchedState.locations.map((item) => {
             return (
-              <Option key={makeKey()} value={item.id}>
+              <Option key={makeKey()} value={[item.name, item.id]}>
                 {item.name}
               </Option>
             );
