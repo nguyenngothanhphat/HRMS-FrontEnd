@@ -18,16 +18,7 @@ const { SENT_FINAL_OFFERS } = TABLE_TYPE;
 class SentFinalOffers extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      openModal: true,
-    };
   }
-
-  closeModal = () => {
-    this.setState({
-      openModal: false,
-    });
-  };
 
   render() {
     const { list = [] } = this.props;
