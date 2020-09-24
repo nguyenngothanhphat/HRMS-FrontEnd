@@ -1,109 +1,36 @@
 import React, { PureComponent } from 'react';
-import { Card } from 'antd';
-import Chart from 'chart.js';
+import { Card, Row, Button } from 'antd';
+import Chart from 'react-google-charts';
 import styles from './index.less';
 
 class CareerPath extends PureComponent {
-  chartRef = React.createRef();
-
-  componentDidMount() {
-    const myChartRef = this.chartRef.current.getContext('2d');
-    const labels = [1, 2, 3, 4, 5, 6];
-    const values = [12, 19, 3, 5, 2, 3, 8];
-    const data = labels.map((label, index) => ({ x: label, y: values[index] }));
-    // const lineChartData = {
-    //   labels: ['2018', '2019', '2020', '2021'],
-    //   datasets: [
-    //     {
-    //       label: 'My Dataset',
-    //       data,
-    //       borderColor: '#922893',
-    //       pointBackgroundColor: 'transparent',
-    //     },
-    //   ],
-    // };
-
-    // eslint-disable-next-line no-new
-    new Chart(myChartRef, {
-      type: 'line',
-      plugins: [
-        {
-          afterDraw: (chart) => {
-            const { ctx } = chart.chart;
-            console.log('ctx', ctx);
-            const xAxis = chart.scales['x-axis-0'];
-            const yAxis = chart.scales['y-axis-0'];
-            console.log('xAxis', xAxis);
-            console.log('yAxis', yAxis);
-            chart.config.data.datasets[0].data.forEach((value, index) => {
-              console.log('value', value);
-              console.log('index', index);
-
-              if (index > 0) {
-                // const valueFrom = data[index - 1];
-                // const xFrom = xAxis.getPixelForValue(valueFrom.x);
-                // const yFrom = yAxis.getPixelForValue(valueFrom.y);
-                // const xTo = xAxis.getPixelForValue(value.x);
-                // const yTo = yAxis.getPixelForValue(value.y);
-                // ctx.save();
-                // ctx.strokeStyle = '#2c6df9';
-                // ctx.lineWidth = 2;
-                if (index + 1 === data.length) {
-                  // ctx.setLineDash([5, 10]);
-                }
-                ctx.beginPath();
-                // ctx.moveTo(xFrom, yFrom);
-                // ctx.lineTo(xTo, yTo);
-                ctx.stroke();
-                ctx.restore();
-              }
-            });
-          },
-        },
-      ],
-      data: {
-        labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-        datasets: [
-          {
-            label: 'My Dataset',
-            data,
-            borderColor: '#2c6df9',
-            pointBackgroundColor: 'transparent',
-          },
-        ],
-      },
-      options: {
-        legend: {
-          display: false,
-        },
-        scales: {
-          xAxes: [
-            {
-              ticks: {
-                stepSize: 1,
-              },
-              gridLines: {
-                drawOnChartArea: false,
-              },
-            },
-          ],
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true,
-              },
-              gridLines: {
-                drawOnChartArea: false,
-              },
-            },
-          ],
-        },
-      },
-    });
-  }
-
   renderExtraCard = () => {
-    return <>Extra card</>;
+    return (
+      <>
+        <Button className={styles.btn_download} id="btn_download">
+          <img
+            className={styles.downloadIcon}
+            src="/assets/images/iconDownload.svg"
+            alt="download"
+          />
+          Download
+        </Button>
+      </>
+    );
+  };
+
+  createCustomHTMLContent = (salaryHike, promotedTo, roleChangedTo) => {
+    const toolTip = `${
+      `${`${
+        '<div ' +
+        'style="padding: 10px; width: 169px; text-align: center; ' +
+        'background-color: #568afa; color: #ffffff; border-radius: 5px; ' +
+        'border: none; font-size: 12px;font-weight: 500; "> ' +
+        '<span style="line-height: 1.5">Salary Hike: '
+      }${salaryHike} </span></br> <span style="line-height: 1.5">Promoted to : `}${promotedTo}</span></br> ` +
+      `<span style="line-height: 1.5">Role Changed to : `
+    }${roleChangedTo} </span> </div>`;
+    return toolTip;
   };
 
   render() {
@@ -132,18 +59,93 @@ class CareerPath extends PureComponent {
     return (
       <div className={styles.careerPath}>
         <Card className={styles.careerPath_card} title="Career Path" extra={this.renderExtraCard()}>
-          <div className={styles.careerPath_chart}>
-            <canvas
-              id="myChart"
-              ref={this.chartRef}
-              className={styles.careerPath_canvasChart}
-              height="125"
-            />
-          </div>
-          <div className={styles.careerPath_score}>
-            <span>{dummyData.averageScore}</span>
-            <p>Average score</p>
-          </div>
+          <Row justify="space-between" align="middle">
+            <div className={styles.careerPath_chart}>
+              <Chart
+                className={styles.chart}
+                width="500px"
+                height="300px"
+                chartType="LineChart"
+                loader={<div>Loading Chart</div>}
+                columns={[
+                  { type: 'string', label: 'Year' },
+                  { type: 'number', label: 'Performance Score' },
+                  { type: 'boolean', role: 'certainty' },
+                  { type: 'string', role: 'tooltip', p: { html: true } },
+                ]}
+                rows={[
+                  {
+                    c: [
+                      { v: 0, f: '2018' },
+                      { v: 4 },
+                      { v: true },
+                      this.createCustomHTMLContent('20%', 'Manager', 'PM'),
+                    ],
+                  },
+                  {
+                    c: [
+                      { v: 1, f: '2019' },
+                      { v: 5 },
+                      { v: true },
+                      this.createCustomHTMLContent('30%', 'Manager', 'PM'),
+                    ],
+                  },
+                  {
+                    c: [
+                      { v: 2, f: '2020' },
+                      { v: 7 },
+                      { v: true },
+                      this.createCustomHTMLContent('40%', 'Manager', 'PM'),
+                    ],
+                  },
+                  {
+                    c: [
+                      { v: 3, f: '2021' },
+                      { v: 8 },
+                      { v: false },
+                      this.createCustomHTMLContent('50%', 'Manager', 'PM'),
+                    ],
+                  },
+                  // { c: [{ v: 4, f: '' }, null, null] },
+                ]}
+                options={{
+                  hAxis: {
+                    title: 'Duration',
+                    titleTextStyle: {
+                      color: '#000000',
+                      fontSize: 13,
+                      bold: true,
+                      italic: false,
+                    },
+                  },
+                  vAxis: {
+                    title: 'Performance Score',
+                    titleTextStyle: {
+                      color: '#000000',
+                      fontSize: 13,
+                      bold: true,
+                      italic: false,
+                    },
+                    minValue: 0,
+                    maxValue: 10,
+                    ticks: [0, 2, 4, 6, 8, 10],
+                  },
+                  pointSize: 5,
+                  colors: ['#2c6df9'],
+                  curveType: 'function',
+                  legend: 'none',
+                  tooltip: { isHtml: true },
+                }}
+                rootProps={{ 'data-testid': '1' }}
+              />
+            </div>
+            <div className={styles.careerPath_score}>
+              <div className={styles.careerPath_scoreWrapper}>
+                <span>{dummyData.averageScore}</span>
+                <p>Average score</p>
+              </div>
+            </div>
+          </Row>
         </Card>
       </div>
     );

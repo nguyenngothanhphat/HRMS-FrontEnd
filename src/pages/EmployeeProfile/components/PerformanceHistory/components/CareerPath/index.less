@@ -21,19 +21,35 @@
     border-radius: 5px;
     font-size: 13px;
     .careerPath_score {
-      width: 360px;
-      height: 89px;
+      width: 120px;
+      height: 250px;
       border-radius: 5px;
       background-color: #fff7fa;
-      text-align: center;
       color: #ff6ca1;
-      span:first-child {
-        font-size: 32px;
-        font-weight: 700;
-        letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      margin: 0 auto;
+      .careerPath_scoreWrapper {
+        text-align: center;
+        width: inherit;
+        span:first-child {
+          font-size: 32px;
+          font-weight: 700;
+          letter-spacing: 0.3px;
+        }
+        p:last-child {
+          font-size: 14px;
+        }
       }
-      p:last-child {
-        font-size: 14px;
+    }
+    .btn_download {
+      color: #2c6df9;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      box-shadow: none;
+      img {
+        margin-right: 16px;
       }
     }
   }
