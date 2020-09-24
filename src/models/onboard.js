@@ -230,7 +230,9 @@ const rookieList = [
   },
 ];
 
-const employeeList = rookieList.filter((rookie) => rookie.isNew != true);
+const employeeList = rookieList.filter(
+  (rookie) => rookie.isNew === undefined || rookie.isNew === null,
+);
 
 // Data for table
 const sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
@@ -256,7 +258,6 @@ const PHASE_DATA = [
       {
         id: 1,
         name: 'Pending Eligibility Checks',
-        quantity: 14,
         key: 'pendingEligibilityChecks',
         component: 'PendingEligibilityChecks',
         quantity: sentEligibilityFormsData.length,
@@ -264,7 +265,6 @@ const PHASE_DATA = [
       {
         id: 2,
         name: 'Eligible Candidates',
-        quantity: 9,
         key: 'eligibleCandidates',
         component: 'EligibleCandidates',
         quantity: eligibleCandidatesData.length,
@@ -272,7 +272,6 @@ const PHASE_DATA = [
       {
         id: 3,
         name: 'Ineligible candidates',
-        quantity: 10,
         key: 'ineligibleCandidates',
         component: 'IneligibleCandidates',
         quantity: ineligibleCandidatesData.length,
@@ -286,7 +285,6 @@ const PHASE_DATA = [
       {
         id: 4,
         name: 'Provisional offers',
-        quantity: 10,
         key: 'provisionalOffers',
         component: 'ProvisionalOffers',
         quantity: sentProvisionalOffersData.length,
@@ -294,7 +292,6 @@ const PHASE_DATA = [
       {
         id: 5,
         name: 'Discarded Provisional offers',
-        quantity: 10,
         key: 'discardedProvisionalOffers',
         component: 'DiscardedProvisionalOffers',
         quantity: discardedProvisionalOffersData.length,
@@ -308,7 +305,6 @@ const PHASE_DATA = [
       {
         id: 6,
         name: 'Awaiting approvals from HR',
-        quantity: 9,
         key: 'awaitingApprovals',
         component: 'AwaitingApprovals',
         quantity: approvedFinalOffersData.length,
@@ -316,7 +312,6 @@ const PHASE_DATA = [
       {
         id: 7,
         name: 'Final offers',
-        quantity: 10,
         key: 'finalOffers',
         component: 'FinalOffers',
         quantity: sentFinalOffersData.length,
@@ -324,7 +319,6 @@ const PHASE_DATA = [
       {
         id: 8,
         name: 'Final Offer Drafts',
-        quantity: 9,
         key: 'finalOfferDrafts',
         component: 'FinalOfferDrafts',
         quantity: finalOfferDraftsData.length,
@@ -332,7 +326,6 @@ const PHASE_DATA = [
       {
         id: 9,
         name: 'Discarded Final Offers',
-        quantity: 12,
         key: 'discardedFinalOffers',
         component: 'DiscardedFinalOffers',
         quantity: discardedFinalOffersData.length,
