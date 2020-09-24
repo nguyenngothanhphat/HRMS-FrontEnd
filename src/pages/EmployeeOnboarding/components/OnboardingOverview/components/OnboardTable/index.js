@@ -7,65 +7,20 @@ import CustomModal from '@/components/CustomModal';
 import ModalContent from '../FinalOffers/components/ModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
+import { getActionText, getColumnWidth } from './utils';
+
 import styles from './index.less';
-
-const getActionText = (type) => {
-  const {
-    PENDING_ELIGIBILITY_CHECKS,
-    INELIGIBLE_CANDIDATES,
-    ELIGIBLE_CANDIDATES,
-    SENT_PROVISIONAL_OFFERS,
-    RECEIVED_PROVISIONAL_OFFERS,
-    DISCARDED_PROVISIONAL_OFFERS,
-    PENDING_APPROVALS,
-    APPROVED_FINAL_OFFERS,
-    REJECTED_FINAL_OFFERS,
-    SENT_FINAL_OFFERS,
-    ACCEPTED_FINAL_OFFERS,
-    FINAL_OFFERS_DRAFTS,
-    DISCARDED_FINAL_OFFERS,
-  } = TABLE_TYPE;
-
-  switch (type) {
-    case PENDING_ELIGIBILITY_CHECKS:
-      return 'review';
-    case ELIGIBLE_CANDIDATES:
-      return 'prepare provisial offer';
-    case SENT_PROVISIONAL_OFFERS:
-      return 'draft final offer';
-    case RECEIVED_PROVISIONAL_OFFERS:
-    case INELIGIBLE_CANDIDATES:
-    case DISCARDED_PROVISIONAL_OFFERS:
-      return 'view form';
-    case APPROVED_FINAL_OFFERS:
-      return 'send offer';
-    case PENDING_APPROVALS:
-    case REJECTED_FINAL_OFFERS:
-    case DISCARDED_FINAL_OFFERS:
-      return 'view draft';
-    case FINAL_OFFERS_DRAFTS:
-      return 'send for approval';
-    case SENT_FINAL_OFFERS:
-    case ACCEPTED_FINAL_OFFERS:
-      return 'create profile';
-    default:
-      return '';
-  }
-};
 
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { sortedName: {}, pageSelected: 1, openModal: false };
+    this.state = { pageSelected: 1, openModal: false };
   }
 
   handleActionClick = (tableType) => {
     const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
     if (tableType === SENT_FINAL_OFFERS || tableType === ACCEPTED_FINAL_OFFERS) {
-      // if (true) {
-      this.setState({
-        openModal: !this.state.openModal,
-      });
+      this.setState((prevState) => ({ openModal: !prevState.openModal }));
     }
   };
 
@@ -90,253 +45,6 @@ class OnboardTable extends Component {
     return <p>{name}</p>;
   };
 
-  getColumnWidth = (columnName, tableType) => {
-    const {
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-      SENT_PROVISIONAL_OFFERS,
-      RECEIVED_PROVISIONAL_OFFERS,
-      DISCARDED_PROVISIONAL_OFFERS,
-      PENDING_APPROVALS,
-      APPROVED_FINAL_OFFERS,
-      REJECTED_FINAL_OFFERS,
-      SENT_FINAL_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
-      FINAL_OFFERS_DRAFTS,
-      DISCARDED_FINAL_OFFERS,
-    } = TABLE_TYPE;
-
-    if (tableType === ELIGIBLE_CANDIDATES) {
-      switch (columnName) {
-        case 'rookieId':
-          return '';
-        case 'rookieName':
-          return '17%';
-        case 'position':
-          return '14%';
-        case 'location':
-          return '10%';
-        case 'comments':
-          return '24%';
-        case 'actions':
-          return '22%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === INELIGIBLE_CANDIDATES) {
-      switch (columnName) {
-        case 'rookieId':
-          return '13%';
-        case 'rookieName':
-          return '19%';
-        case 'position':
-          return '16%';
-        case 'location':
-          return '';
-        case 'comments':
-          return '24%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === SENT_PROVISIONAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '14%';
-        case 'rookieName':
-          return '20%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'dateSent':
-          return '18%';
-        case 'actions':
-          return '17%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === RECEIVED_PROVISIONAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '15%';
-        case 'rookieName':
-          return '20%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'dateReceived':
-          return '20%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === DISCARDED_PROVISIONAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '14%';
-        case 'rookieName':
-          return '18%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'comments':
-          return '24%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === PENDING_APPROVALS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '14%';
-        case 'rookieName':
-          return '15%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'dateJoin':
-          return '20%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === APPROVED_FINAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '14%';
-        case 'rookieName':
-          return '15%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'dateJoin':
-          return '20%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === REJECTED_FINAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '14%';
-        case 'rookieName':
-          return '17%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'comments':
-          return '25%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === SENT_FINAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '15%';
-        case 'rookieName':
-          return '20%';
-        case 'position':
-          return '18%';
-        case 'location':
-          return '';
-        case 'dateJoin':
-          return '20%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === ACCEPTED_FINAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '12%';
-        case 'rookieName':
-          return '17%';
-        case 'position':
-          return '17%';
-        case 'location':
-          return '';
-        case 'dateJoin':
-          return '17%';
-        case 'comments':
-          return '24%';
-        case 'actions':
-          return '12%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === FINAL_OFFERS_DRAFTS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '12%';
-        case 'rookieName':
-          return '17%';
-        case 'position':
-          return '16%';
-        case 'location':
-          return '';
-        case 'dateJoin':
-          return '16%';
-        case 'actions':
-          return '19%';
-        default:
-          return '';
-      }
-    }
-
-    if (tableType === DISCARDED_FINAL_OFFERS) {
-      switch (columnName) {
-        case 'rookieId':
-          return '13%';
-        case 'rookieName':
-          return '18%';
-        case 'position':
-          return '14%';
-        case 'location':
-          return '10%';
-        case 'comments':
-          return '24%';
-        case 'actions':
-          return '13%';
-        default:
-          return '';
-      }
-    }
-  };
-
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
     const {
       ID,
@@ -349,7 +57,6 @@ class OnboardTable extends Component {
       DATE_JOIN,
       ACTION,
     } = COLUMN_NAME;
-    const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
     const actionText = getActionText(type);
 
     const columns = [
@@ -357,7 +64,7 @@ class OnboardTable extends Component {
         title: 'Rookie Id',
         dataIndex: 'rookieId',
         key: 'rookieId',
-        width: this.getColumnWidth('rookieId', type),
+        width: getColumnWidth('rookieId', type),
         columnName: ID,
       },
       {
@@ -366,55 +73,55 @@ class OnboardTable extends Component {
         key: 'rookieID2',
         render: (rookieId) => this.renderName(rookieId),
         columnName: NAME,
-        width: this.getColumnWidth('rookieName', type),
+        width: getColumnWidth('rookieName', type),
       },
       {
         title: 'Position',
         dataIndex: 'position',
         key: 'position',
         columnName: POSITION,
-        width: this.getColumnWidth('position', type),
+        width: getColumnWidth('position', type),
       },
       {
         title: 'Location',
         dataIndex: 'location',
         key: 'location',
         columnName: LOCATION,
-        width: this.getColumnWidth('location', type),
+        width: getColumnWidth('location', type),
       },
       {
         title: 'Date sent',
         dataIndex: 'dateSent',
         key: 'dateSent',
         columnName: DATE_SENT,
-        width: this.getColumnWidth('dateSent', type),
+        width: getColumnWidth('dateSent', type),
       },
       {
         title: 'Date received',
         dataIndex: 'dateReceived',
         key: 'dateReceived',
         columnName: DATE_RECEIVED,
-        width: this.getColumnWidth('dateReceived', type),
+        width: getColumnWidth('dateReceived', type),
       },
       {
         title: 'Date of Joining',
         dataIndex: 'dateJoin',
         key: 'dateJoin',
         columnName: DATE_JOIN,
-        width: this.getColumnWidth('dateJoin', type),
+        width: getColumnWidth('dateJoin', type),
       },
       {
         title: 'Comments',
         dataIndex: 'comments',
         key: 'comments',
-        width: this.getColumnWidth('comments', type),
+        width: getColumnWidth('comments', type),
         columnName: COMMENT,
       },
       {
         title: 'Actions',
         dataIndex: 'actions',
         key: 'actions',
-        width: this.getColumnWidth('actions', type),
+        width: getColumnWidth('actions', type),
         render: () => (
           <span className={styles.tableActions} onClick={() => {}}>
             {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
@@ -435,7 +142,7 @@ class OnboardTable extends Component {
     ];
 
     // Filter only columns that are needed
-    let newColumns = columns.filter((column) => columnArr.includes(column.columnName));
+    const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
 
     return newColumns;
   };
@@ -447,14 +154,14 @@ class OnboardTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected } = this.state;
-    const { list, hasBorder } = this.props;
+    const { pageSelected } = this.state;
+    const { list } = this.props;
     const rowSize = 10;
 
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
+      // onChange: (selectedRowKeys, selectedRows) => {
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      // },
       getCheckboxProps: (record) => ({
         disabled: record.name === 'Disabled User',
         // Column configuration not to be checked
@@ -481,7 +188,7 @@ class OnboardTable extends Component {
     };
 
     const { columnArr, type, inTab, hasCheckbox } = this.props;
-
+    const { openModal } = this.state;
     return (
       <>
         <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
@@ -499,8 +206,8 @@ class OnboardTable extends Component {
             // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
-        <CustomModal open={this.state.openModal} closeModal={this.closeModal}>
-          {this.state.openModal && <ModalContent closeModal={this.closeModal} />}
+        <CustomModal open={openModal} closeModal={this.closeModal}>
+          {openModal && <ModalContent closeModal={this.closeModal} />}
         </CustomModal>
       </>
     );

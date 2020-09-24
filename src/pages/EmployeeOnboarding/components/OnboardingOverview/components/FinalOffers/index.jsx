@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import { connect } from 'umi';
 
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import SentFinalOffers from './components/SentFinalOffers';
 import AcceptedFinalOffers from './components/AcceptedFinalOffers';
-
-import { rookieList } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-class FinalOffers extends Component {
+class FinalOffers extends PureComponent {
   render() {
     const { finalOffers = {} } = this.props;
     const { sentFinalOffers = [], acceptedFinalOffers = [] } = finalOffers;

@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button } from 'antd';
-
-import img1 from './images/modal_img_1.png';
+import { Modal } from 'antd';
 
 import styles from './index.less';
 
 const CustomModal = (props) => {
   const [visible, setVisible] = useState(false); // Modal visibility
 
-  const { open, closeModal } = props;
-
-  const Content = props.children;
+  const { open, closeModal, children } = props;
 
   useEffect(() => {
     if (open) {
@@ -20,11 +16,7 @@ const CustomModal = (props) => {
     }
   }, [open]);
 
-  const showModal = () => {
-    setVisible(true);
-  };
-
-  const handleCancel = (e) => {
+  const handleCancel = () => {
     setVisible(false);
     closeModal();
   };
@@ -39,7 +31,7 @@ const CustomModal = (props) => {
         onCancel={handleCancel}
         footer={null}
       >
-        <div className={styles.body}>{props.children}</div>
+        <div className={styles.body}>{children}</div>
       </Modal>
     </>
   );

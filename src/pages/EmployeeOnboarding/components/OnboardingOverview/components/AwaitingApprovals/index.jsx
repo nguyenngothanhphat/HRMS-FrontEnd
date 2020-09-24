@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { connect, formatMessage } from 'umi';
+import { connect } from 'umi';
 
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers';
 import PendingApprovals from './components/PendingApprovals';
 import RejectFinalOffers from './components/RejectFinalOffers';
-
-import { rookieList } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-class AwaitingApprovals extends Component {
+class AwaitingApprovals extends PureComponent {
   render() {
     const { awaitingApprovals = {} } = this.props;
     const {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import img1 from './images/modal_img_1.png';
+import img2 from './images/modal_img_2.png';
 
 import styles from './index.less';
 // import './index.less';
@@ -21,7 +22,7 @@ const CONTENT_LIST = [
     header: 'Share the username for the Aditya’s employee profile ',
     body:
       'The company email id created while onboarding will be shared with the candidate. It will be used for login into the employee profile.',
-    image: img1,
+    image: img2,
     button: 'Share via candidate’s private e-mail',
     buttonType: 'share',
   },
@@ -66,10 +67,6 @@ const ModalContent = (props) => {
     setCurrentStep((prevStep) => prevStep + 1);
   };
 
-  const handleNext = () => {
-    next();
-  };
-
   const handleShare = () => {
     next();
   };
@@ -91,7 +88,6 @@ const ModalContent = (props) => {
         return;
       default:
         next();
-        return;
     }
   };
 
@@ -102,7 +98,7 @@ const ModalContent = (props) => {
       </span>
 
       <div className={styles.imgContainer}>
-        <img src={image} alt="step 1 image" />
+        <img src={image} alt="step" />
       </div>
 
       <div className={styles.contentContainer}>

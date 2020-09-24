@@ -1,25 +1,16 @@
-import React, { Component } from 'react';
-import { Table } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import React, { PureComponent } from 'react';
 
 import {
-  rookieList,
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 
-import styles from './index.less';
-
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
 const { PENDING_APPROVALS } = TABLE_TYPE;
 
-class PendingApprovals extends Component {
-  constructor(props) {
-    super(props);
-  }
+class PendingApprovals extends PureComponent {
   render() {
     const { list = [] } = this.props;
 

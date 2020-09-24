@@ -346,8 +346,8 @@ const onboard = {
   state: {
     onboardingOverview: {
       pendingEligibilityChecks: {
-        sentEligibilityForms: null,
-        receivedSubmittedDocuments: null,
+        sentEligibilityForms: sentEligibilityFormsData,
+        receivedSubmittedDocuments: receivedSubmittedDocumentsData,
       },
       eligibleCandidates: eligibleCandidatesData,
       ineligibleCandidates: ineligibleCandidatesData,
