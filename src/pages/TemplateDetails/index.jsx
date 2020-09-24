@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import PageContainer from '@/layouts/layout/src/PageContainer';
-import CustomModal from '@/components/CustomModal';
 
 import TemplateDetailsHeader from './components/TemplateDetailsHeader';
 import TemplateDetailsForm from './components/TemplateDetailsForm';
@@ -40,9 +39,6 @@ class TemplateDetails extends PureComponent {
             </Row>
           </div>
         </div>
-        <CustomModal open={openModal} closeModal={this.closeModal}>
-          hi
-        </CustomModal>
       </PageContainer>
     );
   }

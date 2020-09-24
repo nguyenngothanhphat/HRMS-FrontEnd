@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { Link } from 'umi';
 
 import Template from './components/Template';
 import consecteturMorbi from './assets/consecteturMorbi.png';
@@ -55,7 +56,9 @@ class Documents extends PureComponent {
     return templates.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Template template={template} />
+          <Link to={`/template-details/${template.templateId}`}>
+            <Template template={template} />
+          </Link>
         </Col>
       );
     });

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal';
-
 import FormOutlined from '@ant-design/icons';
+import EditForm from '../EditForm';
+
 import brandLogo from './assets/brand-logo.svg';
 import styles from './index.less';
 
@@ -104,9 +105,9 @@ class TemplateDetailsForm extends PureComponent {
             </Button>
           </div>
         </div>
-        {/* <CustomModal open={openModal} closeModal={this.closeModal}>
-          hi
-        </CustomModal> */}
+        <CustomModal open={openModal} closeModal={this.closeModal}>
+          <EditForm />
+        </CustomModal>
       </div>
     );
   }
