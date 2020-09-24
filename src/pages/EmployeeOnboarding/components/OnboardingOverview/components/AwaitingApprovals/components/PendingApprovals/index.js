@@ -13,7 +13,7 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 import styles from './index.less';
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
-const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
 const { PENDING_APPROVALS } = TABLE_TYPE;
 
 class PendingApprovals extends Component {
@@ -26,7 +26,7 @@ class PendingApprovals extends Component {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
         type={PENDING_APPROVALS}
         inTab
         hasCheckbox

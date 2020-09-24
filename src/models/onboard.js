@@ -8,6 +8,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Passport submission pending …',
     dateSent: '29th Sept, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -19,6 +20,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '3rd Oct, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -30,6 +32,7 @@ const rookieList = [
     location: 'Chennai',
     comments: 'Fake eligibility documents',
     dateSent: '30th Nov, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -41,6 +44,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '29th Sept, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -51,6 +55,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expireds',
     dateSent: '12th Jan, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -61,6 +66,7 @@ const rookieList = [
     location: 'Bangalore',
     comments: 'Eligibility date expired',
     dateSent: '09th Aug, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -71,6 +77,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '19th June, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -81,6 +88,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -91,6 +99,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -101,6 +110,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   // Clone
@@ -112,6 +122,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Passport submission pending …',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -123,6 +134,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -133,6 +145,7 @@ const rookieList = [
     location: 'Chennai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -143,6 +156,7 @@ const rookieList = [
     location: 'Mumbai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -153,6 +167,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expireds',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -164,6 +179,7 @@ const rookieList = [
     location: 'Bangalore',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -175,6 +191,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -185,6 +202,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Fake eligibility documents',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -195,6 +213,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
   {
@@ -206,6 +225,7 @@ const rookieList = [
     location: 'Dubai',
     comments: 'Eligibility date expired',
     dateSent: '23th May, 2020',
+    dateReceived: '11th October, 2020',
     dateJoin: '29th Sept, 2020',
   },
 ];

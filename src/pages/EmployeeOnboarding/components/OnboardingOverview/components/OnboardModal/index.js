@@ -1,46 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'antd';
 
+import img1 from './images/modal_img_1.png';
+
+import styles from './index.less';
+
 const OnboardModal = (props) => {
-  //   constructor(props) {
-  //     super(props);
-  //     const {open, close} = this.props;
-  //     this.state = { visible: false };
-  //   }
+  const [visible, setVisible] = useState(false); // Modal visibility
 
   const { open } = props;
 
-  const [visible, setVisible] = useState(false);
+  const Content = props.children;
 
   useEffect(() => {
     if (open) {
       setVisible(true);
+    } else {
+      setVisible(false);
     }
-  }, [open, close]);
+  }, [open]);
 
   const showModal = () => {
     setVisible(true);
   };
 
-  const handleOk = (e) => {
-    console.log(e);
-    setVisible(false);
-  };
-
   const handleCancel = (e) => {
-    console.log(e);
     setVisible(false);
   };
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Open Modal
-      </Button>
-      <Modal title={<span>asd123</span>} visible={visible} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+      <Modal
+        className={styles.onboardModal}
+        title={null}
+        visible={visible}
+        centered
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <div class={styles.body}>{props.children}</div>
       </Modal>
     </>
   );
