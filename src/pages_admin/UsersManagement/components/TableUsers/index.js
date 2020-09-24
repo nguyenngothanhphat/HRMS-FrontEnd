@@ -152,7 +152,7 @@ export default class TableUsers extends PureComponent {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -187,6 +187,7 @@ export default class TableUsers extends PureComponent {
       <div className={styles.tableUsers}>
         <Table
           size="small"
+          loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
