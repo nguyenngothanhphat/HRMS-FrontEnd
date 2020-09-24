@@ -23,7 +23,7 @@ export default class Directory extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
-          <Tabs defaultActiveKey="1" className={styles.Tab} tabBarExtraContent={this.operations()}>
+          <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
             <TabPane tab={formatMessage({ id: 'pages.directory.directoryTab' })} key="1">
               <DirectoryComponent />
             </TabPane>

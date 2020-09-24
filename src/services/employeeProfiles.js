@@ -18,3 +18,30 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
+
+export async function updateGeneralInfo(payload) {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListTitle() {
+  return request('/api/title/list', {
+    method: 'POST',
+  });
+}
+
+export async function updateCertification(payload) {
+  return request('/api/certification/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addCertification(payload) {
+  return request('/api/certification/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
