@@ -56,7 +56,8 @@ class Edit extends PureComponent {
 
   handleAddBtn = () => {
     const { listVisa } = this.state;
-    const newObj = { ...listVisa[0] };
+    const newObj = listVisa[0];
+    console.log([...listVisa, newObj]);
     this.setState({ listVisa: [...listVisa, newObj] });
   };
 
