@@ -38,6 +38,10 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchEmploymentInfo',
       payload: employee,
     });
+    dispatch({ type: 'employeeProfile/fetchLocations' });
+    dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
+    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({ type: 'employeeProfile/fetchEmployees' });
   }
 
   render() {

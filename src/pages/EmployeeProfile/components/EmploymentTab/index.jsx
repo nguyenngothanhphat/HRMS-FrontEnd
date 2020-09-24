@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
-// import { EditOutlined } from '@ant-design/icons';
+import { dialog } from '@/utils/utils';
 import { connect } from 'umi';
 import moment from 'moment';
 import edit from './asset/edit.svg';
@@ -69,8 +69,9 @@ class EmploymentTab extends PureComponent {
   };
 
   handleSubmit = (data) => {
-    // console.log(data);
-    alert("Submitted! No API yet so you won't see any changes", data);
+    console.log(data);
+    console.log(this.props.employeeProfile);
+    dialog({ message: "Submitted! No API yet so you won't see any changes", data });
   };
 
   nextTab = (msg) => {
@@ -136,7 +137,7 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon}></div>
+            <div className={styles.employmentTab_changeIcon} />
           </div>
           <ChangeHistoryTable />
         </div>

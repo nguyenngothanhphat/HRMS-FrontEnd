@@ -8,6 +8,10 @@ import {
   addCertification,
   updateCertification,
   getEmploymentInfo,
+  getLocationList,
+  getEmployeeTypeList,
+  getDepartmentList,
+  getEmployeeList,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -18,6 +22,11 @@ const employeeProfile = {
     idCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
+    locations: [],
+    employeeTypes: [],
+    departments: [],
+    compensationTypes: [],
+    employees: [],
     originData: {
       generalData: {},
       compensationData: {},
@@ -87,6 +96,54 @@ const employeeProfile = {
         yield put({ type: 'save', payload: { listSkill } });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *fetchLocations(_, { call, put }) {
+      try {
+        const response = yield call(getLocationList);
+        const { statusCode, data } = response;
+        const temp = data.map((item) => item);
+        const locations = temp.filter((item, index) => temp.indexOf(item) === index);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locations } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchEmployeeTypes(_, { call, put }) {
+      try {
+        const response = yield call(getEmployeeTypeList);
+        const { statusCode, data } = response;
+        const temp = data.map((item) => item);
+        const employeeTypes = temp.filter((item, index) => temp.indexOf(item) === index);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeTypes } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchDepartments(_, { call, put }) {
+      try {
+        const response = yield call(getDepartmentList);
+        const { statusCode, data } = response;
+        const temp = data.map((item) => item);
+        const departments = temp.filter((item, index) => temp.indexOf(item) === index);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { departments } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchEmployees(_, { call, put }) {
+      try {
+        const response = yield call(getEmployeeList);
+        const { statusCode, data } = response;
+        const temp = data.map((item) => item);
+        const employees = temp.filter((item, index) => temp.indexOf(item) === index);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employees } });
+      } catch (error) {
+        dialog(error);
       }
     },
     *updateGeneralInfo({ payload = {}, dataTempKept = {} }, { put, call, select }) {
