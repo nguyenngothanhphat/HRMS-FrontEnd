@@ -23,14 +23,12 @@ class ViewInformation extends PureComponent {
     super(props);
     this.state = {
       visible: false,
-      keyModal: '',
     };
   }
 
   openModalUpload = () => {
     this.setState({
       visible: true,
-      keyModal: Date.now(),
     });
   };
 
@@ -76,7 +74,7 @@ class ViewInformation extends PureComponent {
     const { generalData, compensationData, loading } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
-    const { visible, keyModal } = this.state;
+    const { visible } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
@@ -162,7 +160,6 @@ class ViewInformation extends PureComponent {
           </Dropdown>
         </div>
         <ModalUpload
-          key={keyModal}
           titleModal="Profile Picture Update"
           visible={visible}
           handleCancel={this.handleCancel}

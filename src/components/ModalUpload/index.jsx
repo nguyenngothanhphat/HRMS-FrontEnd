@@ -6,7 +6,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
 import styles from './index.less';
 
-// Component has 6 props: key="", handleCancel =()=>{}, getResponse = () => {}, titleModal = "", visible= boolean, widthImage =""
+// Component has 5 props:  handleCancel =()=>{}, getResponse = () => {}, titleModal = "", visible= boolean, widthImage =""
 
 @connect(({ loading }) => ({
   loading: loading.effects['upload/uploadFile'],
@@ -170,12 +170,11 @@ class ModalUpload extends Component {
   };
 
   render() {
-    const { visible = false, widthImage = '', loading, key } = this.props;
+    const { visible = false, widthImage = '', loading } = this.props;
     const width = widthImage || 'auto';
     const { imageUrl, crop } = this.state;
     return (
       <Modal
-        key={key}
         className={styles.modalUpload}
         visible={visible}
         title={this.renderHeaderModal()}
