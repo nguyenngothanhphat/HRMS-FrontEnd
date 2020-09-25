@@ -4,13 +4,13 @@ import {
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { APPROVED_FINAL_OFFERS } = TABLE_TYPE;
+const { PENDING_APPROVALS } = TABLE_TYPE;
 
-class ApprovedFinalOffers extends PureComponent {
+class PendingApprovals extends PureComponent {
   render() {
     const { list = [] } = this.props;
 
@@ -18,7 +18,7 @@ class ApprovedFinalOffers extends PureComponent {
       <OnboardTable
         list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-        type={APPROVED_FINAL_OFFERS}
+        type={PENDING_APPROVALS}
         inTab
         hasCheckbox
       />
@@ -26,4 +26,4 @@ class ApprovedFinalOffers extends PureComponent {
   }
 }
 
-export default ApprovedFinalOffers;
+export default PendingApprovals;

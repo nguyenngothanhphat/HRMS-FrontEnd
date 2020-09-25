@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { Link } from 'umi';
+import { formatMessage, Link } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
@@ -83,7 +83,8 @@ class OnboardingLayout extends PureComponent {
               <div className={styles.icon}>
                 <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
 
-                <span>Add Team Member</span>
+                {/* <span>Add Team Member</span> */}
+                <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
               </div>
             </Button>
           </Link>
