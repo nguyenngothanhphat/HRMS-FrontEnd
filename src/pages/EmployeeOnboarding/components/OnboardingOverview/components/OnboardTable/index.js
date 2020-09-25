@@ -5,6 +5,7 @@ import { formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
 import ModalContent from '../FinalOffers/components/ModalContent';
+
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
 import { getActionText, getColumnWidth } from './utils';

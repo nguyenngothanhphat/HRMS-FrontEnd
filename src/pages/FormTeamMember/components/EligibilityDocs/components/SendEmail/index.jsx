@@ -11,11 +11,14 @@ const index = ({
   handleSendEmail = () => {},
   email = '',
   isSentEmail,
+  generateLink = '',
+  handleMarkAsDone = () => {},
   handleSendFormAgain = () => {},
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
   const [initialEmail] = useState('Landonorris@gmail.com');
+  const [initialGenerateLink] = useState('abc.xyz.com');
   const handleEmailClick = () => {
     setIsEnable(true);
   };
@@ -108,52 +111,64 @@ const index = ({
             </Form>
           </div>
           <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
-            <Form className={style.linkForm}>
-              <Form.Item>
-                <Input defaultValue="abc.xyz.com" />
-                <Button onClick={handleGenerate} className={style.generateButton}>
-                  <img src={copy} alt="copy item" className={style.copy} />
-                </Button>
-              </Form.Item>
+            <Form
+              className={style.linkForm}
+              initialValues={{ generateLink: generateLink || initialGenerateLink }}
+              onFinish={(values) => handleMarkAsDone(values)}
+            >
+              <div className={style.wrapperInput}>
+                <Form.Item name="generateLink">
+                  <Input />
+                </Form.Item>
+                <Form.Item className={style.generateButton}>
+                  <Button onClick={handleGenerate} className={style.generateButtonItem}>
+                    <img src={copy} alt="copy item" className={style.copy} />
+                  </Button>
+                </Form.Item>
+              </div>
+              <div className={style.textBottom}>
+                <Typography.Text className={style.title}>
+                  {formatMessage({ id: 'component.eligibilityDocs.restrictedAccess' })}
+                </Typography.Text>
+                <Typography.Paragraph className={style.helper}>
+                  {formatMessage({ id: 'component.eligibilityDocs.restrictedHelper' })}
+                </Typography.Paragraph>
+                <Row gutter={[4, 0]}>
+                  <Col span={2}>
+                    <CheckOutlined />
+                  </Col>
+                  <Col span={18}>
+                    <Typography.Text>HR@terralogic.com</Typography.Text>
+                  </Col>
+                  <Col span={4}>
+                    <Typography.Text>
+                      {formatMessage({ id: 'component.eligibilityDocs.owner' })}
+                    </Typography.Text>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={2}>
+                    <CheckOutlined />
+                  </Col>
+                  <Col span={22}>
+                    <Typography.Text>HRmanager@terralogic.com</Typography.Text>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={2}>
+                    <CheckOutlined />
+                  </Col>
+                  <Col span={22}>
+                    <Typography.Text>Landonorris@gmail.com</Typography.Text>
+                  </Col>
+                </Row>
+                <Form.Item>
+                  <Button htmlType="submit">
+                    {formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}
+                  </Button>
+                </Form.Item>
+              </div>
             </Form>
-            <div className={style.textBottom}>
-              <Typography.Text className={style.title}>
-                {formatMessage({ id: 'component.eligibilityDocs.restrictedAccess' })}
-              </Typography.Text>
-              <Typography.Paragraph className={style.helper}>
-                {formatMessage({ id: 'component.eligibilityDocs.restrictedHelper' })}
-              </Typography.Paragraph>
-              <Row gutter={[4, 0]}>
-                <Col span={2}>
-                  <CheckOutlined />
-                </Col>
-                <Col span={18}>
-                  <Typography.Text>HR@terralogic.com</Typography.Text>
-                </Col>
-                <Col span={4}>
-                  <Typography.Text>
-                    {formatMessage({ id: 'component.eligibilityDocs.owner' })}
-                  </Typography.Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={2}>
-                  <CheckOutlined />
-                </Col>
-                <Col span={22}>
-                  <Typography.Text>HRmanager@terralogic.com</Typography.Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={2}>
-                  <CheckOutlined />
-                </Col>
-                <Col span={22}>
-                  <Typography.Text>Landonorris@gmail.com</Typography.Text>
-                </Col>
-              </Row>
-              <Button>{formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}</Button>
-            </div>
           </div>
         </>
       )}
