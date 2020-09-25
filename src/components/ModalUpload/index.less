@@ -53,9 +53,46 @@
       opacity: 0.5;
     }
   }
-  &__img {
-    width: 80%;
-    height: auto;
-    object-fit: contain;
+  .viewImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    &__img {
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+    .viewEmpty {
+      width: 40%;
+      object-fit: contain;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__text {
+      font-weight: 600;
+      font-size: 16px;
+      color: #161c29;
+      margin: 0;
+    }
+    &__upload {
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+      &__text {
+        color: #2c6df9;
+        font-size: 14px;
+        margin-left: 16px;
+      }
+    }
   }
 }

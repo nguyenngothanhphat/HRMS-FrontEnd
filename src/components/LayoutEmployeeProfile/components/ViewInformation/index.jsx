@@ -54,6 +54,14 @@ class ViewInformation extends PureComponent {
     return listFormat;
   };
 
+  getResponse = (resp) => {
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      console.log(first.url);
+    }
+  };
+
   render() {
     const { generalData, compensationData, loading } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
@@ -143,7 +151,13 @@ class ViewInformation extends PureComponent {
             </Button>
           </Dropdown>
         </div>
-        <ModalUpload visible={visible} handleCancel={this.handleCancel} />
+        <ModalUpload
+          titleModal="Profile Picture Update"
+          visible={visible}
+          handleCancel={this.handleCancel}
+          widthImage="40%"
+          getResponse={this.getResponse}
+        />
       </div>
     );
   }
