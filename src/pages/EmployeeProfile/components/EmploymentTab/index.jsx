@@ -69,9 +69,31 @@ class EmploymentTab extends PureComponent {
   };
 
   handleSubmit = (data) => {
-    console.log(data);
-    console.log(this.props.employeeProfile);
-    dialog({ message: "Submitted! No API yet so you won't see any changes", data });
+    const { dispatch } = this.props;
+    let takeEffect = '';
+    if (data.stepOne === 'Now') {
+      takeEffect = 'UPDATE_NOW';
+    } else if (Date.parse(data.stepOne) < Date.now()) {
+      takeEffect = 'UPDATED';
+    } else takeEffect = 'WILL_UPDATE';
+    const payload = {
+      title: data.stepTwo.title || null,
+      manager: data.stepThree.reportTo || null,
+      currentAnnualCTC: Number(data.stepTwo.salary) || null,
+      location: data.stepTwo.wLocation || null,
+      employeeType: data.stepTwo.employment || null,
+      department: data.stepThree.department || null,
+      effectiveDate: data.stepOne === 'Now' ? new Date() : null,
+      changeDate: new Date(),
+      takeEffect,
+      employee: data.employee || null,
+      changedBy: data.changedBy || null,
+    };
+    const array = Object.keys(payload);
+    for (let i = 0; i < array.length; i += 1) {
+      if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
+    }
+    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   nextTab = (msg) => {

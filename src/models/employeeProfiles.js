@@ -12,6 +12,7 @@ import {
   getEmployeeTypeList,
   getDepartmentList,
   getEmployeeList,
+  addChangeHistory,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -69,6 +70,15 @@ const employeeProfile = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *addNewChangeHistory({ payload }, { call }) {
+      try {
+        const response = yield call(addChangeHistory, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
       }
     },
     *fetchCompensation({ payload: { employee = '' } }, { call, put }) {

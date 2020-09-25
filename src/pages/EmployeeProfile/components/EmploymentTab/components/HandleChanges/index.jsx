@@ -15,11 +15,12 @@ import FifthStep from './components/FifthStep';
 class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
-    const { user } = this.props;
+    const { user, employeeProfile } = this.props;
     this.state = {
       radio: 2,
       changeData: {
         changedBy: user.currentUser._id,
+        employee: employeeProfile.idCurrentEmployee,
         newTitle: '',
         newLocation: '',
         stepOne: 'Now',

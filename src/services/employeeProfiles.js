@@ -70,3 +70,10 @@ export async function addCertification(payload) {
     data: payload,
   });
 }
+
+export async function addChangeHistory(payload) {
+  return request('/api/changehistory/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
