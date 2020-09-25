@@ -29,6 +29,7 @@ const info = {
       email: '',
       generateLink: '',
       isSentEmail: false,
+      isMarkAsDone: false,
       identityProof: {
         aadharCard: true,
         PAN: true,
