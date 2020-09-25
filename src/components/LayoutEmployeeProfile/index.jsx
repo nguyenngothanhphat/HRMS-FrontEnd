@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal, Affix } from 'antd';
+import { Row, Col, Modal } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
@@ -22,8 +22,8 @@ class CommonLayout extends PureComponent {
   componentDidMount() {
     const { listMenu } = this.props;
     this.setState({
-      selectedItemId: listMenu[2].id,
-      displayComponent: listMenu[2].component,
+      selectedItemId: listMenu[0].id,
+      displayComponent: listMenu[0].component,
     });
   }
 

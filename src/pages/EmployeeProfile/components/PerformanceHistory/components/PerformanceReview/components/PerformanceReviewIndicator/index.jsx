@@ -14,11 +14,11 @@ class PerformanceReviewIndicator extends PureComponent {
     const { maxPerformanceReview } = this.state;
     return (
       <Row type="flex" className={styles.performanceReview_content} justify="start" align="middle">
-        {Array.from(Array(level), () => {
-          return <Col className={this.renderActiveColorPRIndicator(level)} />;
+        {Array.from(Array(level), (index) => {
+          return <Col key={index} className={this.renderActiveColorPRIndicator(level)} />;
         })}
-        {Array.from(Array(maxPerformanceReview - level), () => {
-          return <Col className={this.renderBlurColorPRIndicator(level)} />;
+        {Array.from(Array(maxPerformanceReview - level), (index) => {
+          return <Col key={index} className={this.renderBlurColorPRIndicator(level)} />;
         })}
       </Row>
     );

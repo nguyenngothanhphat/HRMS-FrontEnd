@@ -82,8 +82,8 @@ class PRReports extends PureComponent {
             />
           </div>
         ) : (
-          dummyData.map((value) => (
-            <InfoCollapseType2 onFileClick={this.onFileClick} data={value} />
+          dummyData.map((value, index) => (
+            <InfoCollapseType2 keys={index} onFileClick={this.onFileClick} data={value} />
           ))
         )}
       </div>
