@@ -36,13 +36,13 @@ const employeeProfile = {
       generalData: {},
       compensationData: {},
       passportData: {},
-      visaData: {},
+      visaData: [],
     },
     tempData: {
       generalData: {},
       compensationData: {},
       passportData: {},
-      visaData: {},
+      visaData: [],
     },
   },
   effects: {
@@ -145,14 +145,11 @@ const employeeProfile = {
     *fetchVisa({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getVisa, { employee });
-        const { statusCode, data: [visaData = {}] = [] } = response;
+        const { statusCode, data: visaData = [] } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
-        let visaDataTemp = { ...visaData };
+        const visaDataTemp = [...visaData];
         if (!checkDataTempKept) {
-          visaDataTemp = { ...visaDataTemp, ...dataTempKept };
-          delete visaDataTemp.updatedAt;
-          delete visaData.updatedAt;
           const isModified = JSON.stringify(visaDataTemp) !== JSON.stringify(visaData);
           yield put({
             type: 'save',
@@ -165,7 +162,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'saveOrigin',
-          payload: { visaData },
+          payload: visaData,
         });
         yield put({
           type: 'saveTemp',

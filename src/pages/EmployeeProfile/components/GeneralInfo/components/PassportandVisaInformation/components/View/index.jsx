@@ -8,47 +8,57 @@ import styles from './index.less';
 @connect(
   ({
     upload: { urlImage = '' } = {},
-    employeeProfile: { tempData: { visaData = [{}] } = {} } = {},
+    employeeProfile: { tempData: { visaData = [{}], passportData = {} } = {} } = {},
   }) => ({
     urlImage,
     visaData,
+    passportData,
   }),
 )
 class View extends PureComponent {
   render() {
-    const { dataAPI, visaData, urlImage = '' } = this.props;
+    const { passportData, visaData, urlImage = '' } = this.props;
+    const dataVisa1 = visaData[0];
     const {
-      visaEntryType = '',
+      // visaEntryType='',
       visaIssuedCountry = '',
       visaIssuedOn = '',
       visaNumber = '',
       visaType = '',
       visaValidTill = '',
-    } = visaData;
-    console.log(visaIssuedCountry, visaEntryType);
-    const viewCountry = dataAPI.passportIssuedCountry ? dataAPI.passportIssuedCountry.name : '';
+    } = dataVisa1;
+    const {
+      passportIssuedCountry = '',
+      passportNumber = '',
+      passportValidTill = '',
+      passportIssuedOn = '',
+    } = passportData;
+    const viewCountry = passportIssuedCountry.name
+      ? passportIssuedCountry.name
+      : passportIssuedCountry;
     const splitUrl = urlImage.split('/');
     const dummyData = [
-      { label: 'Passport Number', value: dataAPI.passportNumber },
+      { label: 'Passport Number', value: passportNumber },
       { label: 'Issued Country', value: viewCountry },
       {
         label: 'Issued On',
-        value: dataAPI.passportIssuedOn
-          ? Moment(dataAPI.passportIssuedOn).locale('en').format('Do MMM YYYY')
-          : '',
+        value: passportIssuedOn ? Moment(passportIssuedOn).locale('en').format('Do MMM YYYY') : '',
       },
       {
         label: 'Valid Till',
-        value: dataAPI.passportValidTill
-          ? Moment(dataAPI.passportValidTill).locale('en').format('Do MMM YYYY')
+        value: passportValidTill
+          ? Moment(passportValidTill).locale('en').format('Do MMM YYYY')
           : '',
       },
     ];
     const dummyData2 = [
       { label: 'Visa Number', value: visaNumber },
       { label: 'Visa Type', value: visaType },
-      { label: 'Country', value: visaIssuedCountry },
-      { label: 'Entry Type', value: visaEntryType },
+      {
+        label: 'Country',
+        value: visaIssuedCountry.name ? visaIssuedCountry.name : visaIssuedCountry,
+      },
+      { label: 'Entry Type', value: '' },
       {
         label: 'Issued On',
         value: visaIssuedOn ? Moment(visaIssuedOn).locale('en').format('Do MMM YYYY') : '',

@@ -83,6 +83,20 @@ class Edit extends PureComponent {
       passportValidTill = '',
       _id: id = '',
     } = passportDataTemp;
+    // const {
+    //   number = '',
+    //   issuedCountry = '',
+    //   issuedOn = '',
+    //   validTill = '',
+    //   _id: id = '',
+    // } = passportDataTemp;
+    // const payloadChanges = {
+    //   id,
+    //   passportNumber: number,
+    //   passportIssuedCountry: issuedCountry,
+    //   passportIssuedOn: issuedOn,
+    //   passportValidTill: validTill,
+    // };
     const payloadChanges = {
       id,
       passportNumber,
@@ -94,19 +108,78 @@ class Edit extends PureComponent {
   };
 
   processDataChangesVisa = () => {
-    const {
-      visaData: { 0: visaDataTemp },
-    } = this.props;
-    // console.log(visaDataTemp);
+    const { visaData } = this.props;
+    if (visaData.length === 2) {
+      const formatData = visaData.map((item) => {
+        const {
+          _id: id,
+          visaNumber,
+          visaIssuedCountry,
+          visaIssuedOn,
+          visaType,
+          visaValidTill,
+          visaEntryType,
+        } = item;
+        return {
+          id,
+          visaNumber,
+          visaIssuedCountry,
+          visaIssuedOn,
+          visaType,
+          visaValidTill,
+          visaEntryType,
+        };
+      });
+      console.log(formatData);
+      // const {
+      //   visaNumber = '',
+      //   visaIssuedCountry = '',
+      //   visaIssuedOn = '',
+      //   visaValidTill = '',
+      //   visaEntryType = '',
+      //   visaType = '',
+      //   _id: id = '',
+      // } = data1;
+
+      // const payloadChanges1 = {
+      //   id,
+      //   visaNumber,
+      //   visaIssuedCountry,
+      //   visaIssuedOn,
+      //   visaValidTill,
+      //   visaEntryType,
+      //   visaType,
+      // };
+      // const {
+      //   visaNumber = '',
+      //   visaIssuedCountry = '',
+      //   visaIssuedOn = '',
+      //   visaValidTill = '',
+      //   visaEntryType = '',
+      //   visaType = '',
+      //   _id: id = '',
+      // } = data2;
+      // const payloadChanges2 = {
+      //   id,
+      //   visaNumber,
+      //   visaIssuedCountry,
+      //   visaIssuedOn,
+      //   visaValidTill,
+      //   visaEntryType,
+      //   visaType,
+      // };
+      return formatData;
+    }
+    const data1 = visaData[0];
     const {
       visaNumber = '',
       visaIssuedCountry = '',
       visaIssuedOn = '',
       visaValidTill = '',
       visaEntryType = '',
-      visaVisaType = '',
+      visaType = '',
       _id: id = '',
-    } = visaDataTemp;
+    } = data1;
     const payloadChanges = {
       id,
       visaNumber,
@@ -114,7 +187,7 @@ class Edit extends PureComponent {
       visaIssuedOn,
       visaValidTill,
       visaEntryType,
-      visaVisaType,
+      visaType,
     };
     return payloadChanges;
   };
@@ -139,11 +212,9 @@ class Edit extends PureComponent {
   };
 
   processDataAddVisa = () => {
-    const {
-      visaData: { 0: visaDataTemp },
-      generalData,
-    } = this.props;
+    const { visaData, generalData } = this.props;
     const { employee = '' } = generalData;
+    const itemData1 = visaData[0];
     const {
       visaNumber = '',
       visaIssuedCountry = '',
@@ -151,7 +222,7 @@ class Edit extends PureComponent {
       visaValidTill = '',
       visaEntryType = '',
       visaType = '',
-    } = visaDataTemp;
+    } = itemData1;
     const payloadChanges = {
       visaNumber,
       visaIssuedCountry,
@@ -181,32 +252,31 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    const { dispatch, passportData = {}, visaData = {} } = this.props;
+    const { dispatch, passportData = {}, visaData = [] } = this.props;
     const { _id: idPassPort = '' } = passportData;
-    const { _id: idVisa = '' } = visaData;
-    console.log(visaData);
-    console.log(idVisa);
-    // const payloadAddVisa = this.processDataAddVisa() || {};
+    const datavisa1 = visaData[0];
+    const { _id: idVisa = '' } = datavisa1;
     // const payloadAddPassPort = this.processDataAddPassPort() || {};
-    // const payloadUpdateVisa = this.processDataChangesVisa() || {};
-    const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
-    const dataTempKept = this.processDataKeptPassPort() || {};
+    // const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
+    // const dataTempKept = this.processDataKeptPassPort() || {};
+    // const payloadAddVisa = this.processDataAddVisa() || {};
+    const payloadUpdateVisa = this.processDataChangesVisa() || {};
     // const dataTempKeptVisa = this.processDataKeptVisa() || {};
-    if (idPassPort) {
-      dispatch({
-        type: 'employeeProfile/updatePassPort',
-        payload: payloadUpdatePassPort,
-        dataTempKept,
-        key: 'openPassportandVisa',
-      });
+    if (idPassPort && idVisa) {
       // dispatch({
-      //   type: 'employeeProfile/updateVisa',
-      //   payload: payloadUpdateVisa,
-      //   dataTempKeptVisa,
+      //   type: 'employeeProfile/updatePassPort',
+      //   payload: payloadUpdatePassPort,
+      //   dataTempKept,
       //   key: 'openPassportandVisa',
       // });
+      dispatch({
+        type: 'employeeProfile/updateVisa',
+        payload: payloadUpdateVisa,
+        // dataTempKeptVisa,
+        key: 'openPassportandVisa',
+      });
     }
-    // else {
+    //  else {
     // dispatch({
     //   type: 'employeeProfile/addPassPort',
     //   payload: payloadAddPassPort,
@@ -241,7 +311,7 @@ class Edit extends PureComponent {
   render() {
     const { Option } = Select;
     const { passportData, handleCancel = () => {}, loading, countryList, visaData } = this.props;
-    // console.log(visaData);
+    const dataVisa1 = visaData[0];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -257,14 +327,15 @@ class Edit extends PureComponent {
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportData;
+    // const { number = '', issuedCountry = '', issuedOn = '', validTill = '' } = passportData;
     const {
       visaNumber = '',
-      visaIssuedCountry = '',
+      visaIssuedCountry: { _id: getValuesCountryVisa },
       visaIssuedOn = '',
       visaValidTill = '',
       visaEntryType = '',
       visaType = '',
-    } = visaData;
+    } = dataVisa1;
     const { dropdown } = this.state;
     const formItemLayout = {
       labelCol: {
@@ -278,6 +349,8 @@ class Edit extends PureComponent {
     };
     const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
     const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+    // const formatDatePassportIssueOn = issuedOn && moment(issuedOn);
+    // const formatDatePassportValidTill = validTill && moment(validTill);
     const formatDateVisaIssueOn = visaIssuedOn && moment(visaIssuedOn);
     const formatDateVisaValidTill = visaValidTill && moment(visaValidTill);
     const dateFormat = 'Do MMM YYYY';
@@ -290,10 +363,12 @@ class Edit extends PureComponent {
           initialValues={{
             passportNumber,
             passportIssuedCountry: getValuesCountryPassPort,
+            // passportNumber: number,
+            // passportIssuedCountry: issuedCountry,
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
             visaNumber0: visaNumber,
-            visaIssuedCountry0: visaIssuedCountry,
+            visaIssuedCountry0: getValuesCountryVisa,
             visaIssuedOn0: formatDateVisaIssueOn,
             visaValidTill0: formatDateVisaValidTill,
             visaEntryType0: visaEntryType,
@@ -316,7 +391,7 @@ class Edit extends PureComponent {
                 className={styles.inputForm}
                 onChange={(event) => {
                   const { value: fieldValue } = event.target;
-                  this.handleChange('number', fieldValue);
+                  this.handleChange('passportNumber', fieldValue);
                 }}
               />
             </Form.Item>
@@ -364,7 +439,7 @@ class Edit extends PureComponent {
               className={styles.selectForm}
               onDropdownVisibleChange={this.handleDropdown}
               onChange={(value) => {
-                this.handleChange('issuedCountry', value);
+                this.handleChange('passportIssuedCountry', value);
               }}
               suffixIcon={
                 dropdown ? (
@@ -387,7 +462,7 @@ class Edit extends PureComponent {
             <DatePicker
               format={dateFormat}
               onChange={(dates) => {
-                this.handleChange('issuedOn', dates);
+                this.handleChange('passportIssuedOn', dates);
               }}
               className={styles.dateForm}
             />
@@ -396,7 +471,7 @@ class Edit extends PureComponent {
             <DatePicker
               format={dateFormat}
               onChange={(dates) => {
-                this.handleChange('validTill', dates);
+                this.handleChange('passportValidTill', dates);
               }}
               className={styles.dateForm}
             />

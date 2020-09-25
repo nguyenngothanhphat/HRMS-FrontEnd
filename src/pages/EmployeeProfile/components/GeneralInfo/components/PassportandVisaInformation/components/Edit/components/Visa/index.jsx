@@ -13,8 +13,8 @@ import styles from '../../index.less';
     loading,
     employeeProfile: {
       countryList,
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = {} } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = [{}] } = {},
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updatePassPortVisa'],
@@ -61,17 +61,17 @@ class VisaGeneral extends Component {
 
   handleFieldChange = (index, nameField, fieldValue) => {
     const { dispatch, visaDataOrigin, visaData } = this.props;
-    const { listItem } = this.state;
-    const item = listItem[index];
+    // const { listItem } = this.state;
+    const item = visaData[index];
     const newItem = { ...item, [nameField]: fieldValue };
-    const newList = [...listItem];
+    const newList = [...visaData];
     newList.splice(index, 1, newItem);
-    const getVisatData = { ...visaData, ...newList };
-    const isModified = JSON.stringify(getVisatData) !== JSON.stringify(visaDataOrigin);
-    this.setState({ listItem: newList });
+    // const getVisatData = { ...visaData, ...newList };
+    const isModified = JSON.stringify(newList) !== JSON.stringify(visaDataOrigin);
+    // this.setState({ listItem: newList });
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { visaData: getVisatData },
+      payload: { visaData: newList },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -100,7 +100,7 @@ class VisaGeneral extends Component {
               <div className={styles.line} />
               <div className={styles.styleUpLoad}>
                 <Form.Item
-                  label="Visa Type"
+                  label="Visa Number"
                   name={`visaNumber${index}`}
                   rules={[
                     {
@@ -242,9 +242,9 @@ class VisaGeneral extends Component {
             </Fragment>
           );
         })}
-        <Col span={9} offset={6}>
+        <Col span={9} offset={1} className={styles.addMoreButton}>
           <div onClick={this.handleAddBtn}>
-            <PlusOutlined />
+            <PlusOutlined className={styles.addMoreButtonIcon} />
             Add more
           </div>
         </Col>
