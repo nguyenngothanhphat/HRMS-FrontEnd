@@ -4,12 +4,7 @@ import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
-<<<<<<< HEAD:src/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index.jsx
 import ModalContent from '../FinalOffers/components/ModalContent/index';
-=======
-import ModalContent from '../FinalOffers/components/ModalContent';
-
->>>>>>> master:src/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index.js
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
 import { getActionText, getColumnWidth } from './utils';
