@@ -17,8 +17,8 @@ import styles from './index.less';
 )
 class View extends PureComponent {
   render() {
-    const { passportData, visaData, urlImage = '' } = this.props;
-    const dataVisa1 = visaData[0];
+    const { passportData = {}, visaData = [], urlImage = '' } = this.props;
+    const dataVisa1 = visaData[0] ? visaData[0] : '';
     const {
       // visaEntryType='',
       visaIssuedCountry = '',
@@ -33,9 +33,7 @@ class View extends PureComponent {
       passportValidTill = '',
       passportIssuedOn = '',
     } = passportData;
-    const viewCountry = passportIssuedCountry.name
-      ? passportIssuedCountry.name
-      : passportIssuedCountry;
+    const viewCountry = passportIssuedCountry.name ? passportIssuedCountry.name : '';
     const splitUrl = urlImage.split('/');
     const dummyData = [
       { label: 'Passport Number', value: passportNumber },
@@ -56,7 +54,7 @@ class View extends PureComponent {
       { label: 'Visa Type', value: visaType },
       {
         label: 'Country',
-        value: visaIssuedCountry.name ? visaIssuedCountry.name : visaIssuedCountry,
+        value: visaIssuedCountry.name ? visaIssuedCountry.name : '',
       },
       { label: 'Entry Type', value: '' },
       {

@@ -167,7 +167,6 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
-              allowClear
               className={styles.selectForm}
               onDropdownVisibleChange={this.handleDropdown}
               suffixIcon={

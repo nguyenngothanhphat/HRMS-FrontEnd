@@ -310,8 +310,14 @@ class Edit extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { passportData, handleCancel = () => {}, loading, countryList, visaData } = this.props;
-    const dataVisa1 = visaData[0];
+    const {
+      passportData = {},
+      handleCancel = () => {},
+      loading,
+      countryList,
+      visaData = [],
+    } = this.props;
+    const dataVisa1 = visaData[0] ? visaData[0] : [];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -435,7 +441,6 @@ class Edit extends PureComponent {
           )}
           <Form.Item label="Issued Country" name="passportIssuedCountry">
             <Select
-              allowClear
               className={styles.selectForm}
               onDropdownVisibleChange={this.handleDropdown}
               onChange={(value) => {
