@@ -88,6 +88,7 @@ class ModalUpload extends Component {
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
+      isUploadAvatar: true,
     }).then((resp) => {
       getResponse(resp);
     });

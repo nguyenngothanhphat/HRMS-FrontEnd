@@ -10,15 +10,17 @@ export default {
   },
 
   effects: {
-    *uploadFile({ payload }, { call, put }) {
+    *uploadFile({ payload, isUploadAvatar = false }, { call, put }) {
       let response = {};
       try {
         response = yield call(uploadFile, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message: 'Upload Image Successfully',
-        });
+        if (!isUploadAvatar) {
+          notification.success({
+            message: 'Upload Image Successfully',
+          });
+        }
         yield put({
           type: 'save',
           payload: { urlImage: data[0].url },
