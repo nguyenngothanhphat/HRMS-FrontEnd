@@ -24,7 +24,7 @@ const CustomModal = (props) => {
   return (
     <>
       <Modal
-        className={styles.onboardModal}
+        className={`${styles.onboardModal} ${styles.testFixed}`}
         title={null}
         visible={visible}
         centered

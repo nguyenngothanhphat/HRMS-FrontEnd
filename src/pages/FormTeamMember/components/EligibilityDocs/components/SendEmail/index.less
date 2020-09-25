@@ -9,29 +9,30 @@
   padding: 32px;
   padding-bottom: 0;
   overflow: hidden;
+  margin-top: 1rem;
   .header {
-    .icon {
-      width: 64px;
-      height: 64px;
-      line-height: 64px;
-      text-align: center;
-      border-radius: 50%;
-      background: @blue-background-outside;
-      opacity: 0.55;
-      margin-right: 0.5rem;
-      .inside {
-        width: 47px;
-        height: 47px;
-        line-height: 47px;
-        margin: auto;
-        border-radius: 50%;
-        transform: translate(0, 20%);
-        background-color: @blue-background-inside;
-        .send {
-          transform: translate(12%, -6%);
-        }
-      }
-    }
+    // .icon {
+    //   width: 64px;
+    //   height: 64px;
+    //   line-height: 64px;
+    //   text-align: center;
+    //   border-radius: 50%;
+    //   background: @blue-background-outside;
+    //   opacity: 0.55;
+    //   margin-right: 0.5rem;
+    //   .inside {
+    //     width: 47px;
+    //     height: 47px;
+    //     line-height: 47px;
+    //     margin: auto;
+    //     border-radius: 50%;
+    //     transform: translate(0, 20%);
+    //     background-color: @blue-background-inside;
+    //     .send {
+    //       transform: translate(12%, -6%);
+    //     }
+    //   }
+    // }
     .text {
       font-size: 14px;
       font-size: 14px;
@@ -131,6 +132,18 @@
     display: none;
     .linkForm {
       position: relative;
+      .wrapperInput {
+        position: relative;
+        .generateButton {
+          position: absolute;
+          top: 0;
+          right: 0;
+          .generateButtonItem {
+            border: 0;
+            background: transparent;
+          }
+        }
+      }
       :global {
         .ant-form-item {
           .ant-form-item-control {
@@ -149,6 +162,7 @@
                   color: #161c29;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                  border-radius: 5px;
                 }
               }
             }
@@ -254,5 +268,37 @@
     background-color: #dbe1e4;
     margin: auto;
     margin-bottom: 32px;
+  }
+  .anotherBody {
+    margin-top: 24px;
+    margin-bottom: 32px;
+    .text {
+      font-size: 13px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.77;
+      letter-spacing: normal;
+      color: #707177;
+      .specificText {
+        font-weight: 500;
+        color: #ffa100;
+      }
+    }
+
+    .buttonSend {
+      margin-top: 24px;
+      padding: 0;
+      .buttonText {
+        font-size: 13px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 0.12px;
+        color: #2c6df9;
+        text-decoration: underline;
+      }
+    }
   }
 }

@@ -61,6 +61,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
+        {/* <Affix offsetTop={90}> */}
         <div className={s.viewLeft}>
           <div className={s.viewLeft__menu}>
             {listMenu.map((item) => (
@@ -73,10 +74,13 @@ class CommonLayout extends PureComponent {
             ))}
           </div>
         </div>
+        {/* </Affix> */}
         <Row className={s.viewRight} gutter={[24, 0]}>
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
+            {/* <Affix offsetTop={115}> */}
             <ViewInformation />
+            {/* </Affix> */}
           </Col>
         </Row>
       </div>
