@@ -1,25 +1,13 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Row, Col, Select, Typography } from 'antd';
-import { connect } from 'umi';
 import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
 
-@connect(({ info: { jobDetail } = {} }) => ({
-  jobDetail,
-}))
 class FirstFieldsComponent extends Component {
-  static getDerivedStateFromProps(props) {
-    if ('jobDetail' in props) {
-      return { jobDetail: props.jobDetail || {} };
-    }
-    return null;
-  }
-
   render() {
-    const { styles, dropdownField = [], handleSelect = () => {} } = this.props;
-    const { jobDetail = {} } = this.state;
+    const { styles, dropdownField = [], handleSelect = () => {}, jobDetail = {} } = this.props;
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
     return (
       <>
@@ -40,6 +28,7 @@ class FirstFieldsComponent extends Component {
                   placeholder={item.placeholder}
                   className={styles}
                   onChange={(e) => handleSelect(e, item.title)}
+                  onDropdownVisibleChange={this.handleFocus}
                   defaultValue={
                     item.title === 'department'
                       ? department

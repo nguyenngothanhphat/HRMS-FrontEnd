@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
 // import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import moment from 'moment';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -23,26 +24,41 @@ const steps = [
 class EmploymentTab extends PureComponent {
   constructor(props) {
     super(props);
+    const { employeeProfile } = this.props;
+
+    const {
+      title,
+      joinDate,
+      location,
+      employeeType,
+      manager,
+    } = employeeProfile.originData.employmentData;
+    const { firstName } = employeeProfile.originData.generalData;
+    const {
+      compensationType,
+      currentAnnualCTC,
+      timeOffPolicy,
+    } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       current: 0,
       currentData: {
-        name: 'Aditya',
-        title: 'UX Lead',
-        joiningDate: '10th December 2018',
-        location: 'Bengaluru, India',
-        employType: 'Full Time Employee',
-        compenType: 'Salaried',
-        annualSalary: '75000',
-        manager: 'Anil Reddy',
-        timeOff: '20 Day PTO Applicable',
+        name: firstName,
+        title: title.name,
+        joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
+        location: location.name,
+        employType: employeeType.name,
+        compenType: compensationType || 'This person is missing payment method',
+        annualSalary: currentAnnualCTC || 0,
+        manager: manager.generalInfo.firstName,
+        timeOff: timeOffPolicy || 'This person is not allowed to take time off',
       },
     };
   }
 
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
-    await this.setState({ current: 0 });
+    this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
   };
 
@@ -54,7 +70,7 @@ class EmploymentTab extends PureComponent {
 
   handleSubmit = (data) => {
     // console.log(data);
-    alert("Submitted! No API yet so you won't see any changes", JSON.stringify(data));
+    alert("Submitted! No API yet so you won't see any changes", data);
   };
 
   nextTab = (msg) => {
@@ -120,12 +136,7 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon}>
-              {/* <EditOutlined
-                className={styles.employmentTab_iconEdit}
-                onClick={this.handleChangeHistory}
-              /> */}
-            </div>
+            <div className={styles.employmentTab_changeIcon}></div>
           </div>
           <ChangeHistoryTable />
         </div>
