@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal } from 'antd';
+import { Row, Col, Modal, Affix } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
