@@ -5,6 +5,7 @@ import {
   getLocationsList,
   getCompaniesList,
   getRolesList,
+  getUserProfile,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -73,6 +74,16 @@ const usersManagement = {
         dialog(errors);
       }
     },
+    *fetchUserProfile({ payload: userId = '' }, { call, put }) {
+      try {
+        const response = yield call(getUserProfile, { userId });
+        const { statusCode, data: listUserProfile = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'listUserProfile', payload: { listUserProfile } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     listLocations(state, action) {
@@ -100,6 +111,12 @@ const usersManagement = {
       };
     },
     listUsersInActive(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    listUserProfile(state, action) {
       return {
         ...state,
         ...action.payload,

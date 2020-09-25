@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
 import Icon, { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
-// import { debounce } from 'lodash';
+import { debounce } from 'lodash';
 import TableUsers from '../TableUsers';
 import addUser from './icon.js';
 import styles from './index.less';
@@ -54,11 +54,17 @@ class TableContainer extends PureComponent {
       role: [],
       location: [],
       company: [],
+      filterName: '',
       bottabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeUsersTab' }) },
         { id: 2, name: formatMessage({ id: 'pages_admin.users.userTable.inactiveUsersTab' }) },
       ],
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        filterName: query,
+      });
+    }, 500);
   }
 
   componentDidMount() {
@@ -66,9 +72,9 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { role, location, company, tabId } = this.state;
+    const { role, location, company, filterName, tabId } = this.state;
     const params = {
-      // name: filterName,
+      name: filterName,
       role,
       location,
       company,
@@ -78,8 +84,8 @@ class TableContainer extends PureComponent {
       prevState.tabId !== tabId ||
       prevState.role.length !== role.length ||
       prevState.location.length !== location.length ||
-      prevState.company.length !== company.length
-      // prevState.filterName !== filterName
+      prevState.company.length !== company.length ||
+      prevState.filterName !== filterName
     ) {
       this.getDataTable(params, tabId);
     }
@@ -126,6 +132,10 @@ class TableContainer extends PureComponent {
     this.setState({
       collapsed: !collapsed,
     });
+  };
+
+  handleChange = (valueInput) => {
+    this.setDebounce(valueInput);
   };
 
   handleClickTabPane = (tabId) => {
@@ -194,6 +204,7 @@ class TableContainer extends PureComponent {
                   <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
+                    onHandleChange={this.handleChange}
                     FormBox={this.handleFormBox}
                     changeTab={changeTab}
                   />

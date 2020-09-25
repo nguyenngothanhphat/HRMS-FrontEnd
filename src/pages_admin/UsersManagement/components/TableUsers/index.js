@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import EditUserModal from '../EditUserModal';
 import styles from './index.less';
 
-export default class TableUsers extends PureComponent {
+@connect(({ loading, usersManagement }) => ({
+  loadingUserProfile: loading.effects['usersManagement/fetchUserProfile'],
+  usersManagement,
+}))
+class TableUsers extends PureComponent {
   columns = [
     {
       title: 'User ID',
@@ -90,7 +95,7 @@ export default class TableUsers extends PureComponent {
       render: (text, record) => (
         <div className={styles.userAction}>
           <UserOutlined
-            onClick={(e) => this.editUser(record.key, e)}
+            onClick={(e) => this.editUser(record.userId, e)}
             className={styles.editUserBtn}
           />
           <DeleteOutlined
@@ -107,20 +112,35 @@ export default class TableUsers extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
+      editModalVisible: false,
+      selectedUserId: null,
     };
   }
 
+  closeEditModal = () => {
+    this.setState({
+      editModalVisible: false,
+      selectedUserId: null,
+    });
+  };
+
   // user
   deleteUser = (key, e) => {
-    e.preventDefault();
+    // e.preventDefault();
     alert('DELETE USER');
     console.log('DELETE USER', key);
   };
 
-  editUser = (key, e) => {
-    e.preventDefault();
-    alert('EDIT USER');
-    console.log('EDIT USER', key);
+  editUser = (userId, e) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchUserProfile',
+      payload: userId,
+    });
+    this.setState({
+      editModalVisible: true,
+      selectedUserId: userId,
+    });
   };
 
   resetPassword = (key, e) => {
@@ -153,7 +173,7 @@ export default class TableUsers extends PureComponent {
 
   render() {
     const { data = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
+    const { pageSelected, selectedRowKeys, editModalVisible, selectedUserId } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100vw',
@@ -183,8 +203,20 @@ export default class TableUsers extends PureComponent {
       onChange: this.onSelectChange,
     };
 
+    const {
+      usersManagement: { listUserProfile = [] },
+    } = this.props;
+
     return (
       <div className={styles.tableUsers}>
+        {selectedUserId && editModalVisible && (
+          <EditUserModal
+            userProfile={listUserProfile}
+            editModalVisible={editModalVisible}
+            closeEditModal={this.closeEditModal}
+          />
+        )}
+
         <Table
           size="small"
           loading={loading}
@@ -199,3 +231,4 @@ export default class TableUsers extends PureComponent {
     );
   }
 }
+export default TableUsers;

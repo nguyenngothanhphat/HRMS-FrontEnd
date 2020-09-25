@@ -18,6 +18,7 @@ class TableFilter extends PureComponent {
       companyState: 'Company',
       all: 'All',
       text: '',
+      clearText: '',
       reset: false,
     };
   }
@@ -41,17 +42,20 @@ class TableFilter extends PureComponent {
   };
 
   handleChange = (e) => {
-    const { dispatch } = this.props;
+    const { onHandleChange, dispatch } = this.props;
     dispatch({
       type: 'usersManagement/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
+    onHandleChange(inputvalue);
   };
 
   handleReset = () => {
     this.setState({ text: '', reset: true });
-    const { dispatch } = this.props;
+    const { onHandleChange, dispatch } = this.props;
+    const { clearText } = this.state;
+    onHandleChange(clearText);
     dispatch({
       type: 'usersManagement/clearFilter',
     });
