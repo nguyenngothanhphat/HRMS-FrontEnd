@@ -1,4 +1,4 @@
-const data_active = [
+const dataActive = [
   {
     key: '1',
     userId: '8097',
@@ -170,7 +170,7 @@ const data_active = [
   },
 ];
 
-const data_inactive = [
+const dataInActive = [
   {
     key: '14',
     userId: '8097',
@@ -227,13 +227,13 @@ const data_inactive = [
 export const getListUsersActive = async () => {
   return {
     statusCode: 200,
-    data: data_active,
+    data: dataActive,
   };
 };
 export const getListUsersInActive = async () => {
   return {
     statusCode: 200,
-    data: data_inactive,
+    data: dataInActive,
   };
 };
 

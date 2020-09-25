@@ -47,9 +47,12 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchListUsersActive(_, { call, put }) {
+    *fetchListUsersActive(
+      { payload: { company = [], location = [], role = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getListUsersActive);
+        const response = yield call(getListUsersActive, { company, location, role, name });
         const { statusCode, data: listUsersActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'listUsersActive', payload: { listUsersActive } });
@@ -57,9 +60,12 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchListUsersInActive(_, { call, put }) {
+    *fetchListUsersInActive(
+      { payload: { company = [], location = [], role = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getListUsersInActive);
+        const response = yield call(getListUsersInActive, { company, location, role, name });
         const { statusCode, data: listUsersInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'listUsersInActive', payload: { listUsersInActive } });

@@ -14,12 +14,46 @@ import TableFilter from '../TableFilter';
   usersManagement,
 }))
 class TableContainer extends PureComponent {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if ('usersManagement' in nextProps) {
+      const { usersManagement: { filter = [] } = {} } = nextProps;
+      let role = [];
+      let company = [];
+      let location = [];
+      const roleConst = 'Role';
+      const companyConst = 'Company';
+      const locationConst = 'Location';
+      filter.map((item) => {
+        if (item.actionFilter.name === roleConst) {
+          role = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        if (item.actionFilter.name === companyConst) {
+          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        if (item.actionFilter.name === locationConst) {
+          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { role, company, location };
+      });
+      return {
+        ...prevState,
+        role,
+        company,
+        location,
+      };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       tabId: 1,
       changeTab: false,
       collapsed: true,
+      role: [],
+      location: [],
+      company: [],
       bottabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeUsersTab' }) },
         { id: 2, name: formatMessage({ id: 'pages_admin.users.userTable.inactiveUsersTab' }) },
@@ -32,9 +66,22 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId } = this.state;
-    if (prevState.tabId !== tabId) {
-      this.getDataTable(tabId);
+    const { role, location, company, tabId } = this.state;
+    const params = {
+      // name: filterName,
+      role,
+      location,
+      company,
+    };
+
+    if (
+      prevState.tabId !== tabId ||
+      prevState.role.length !== role.length ||
+      prevState.location.length !== location.length ||
+      prevState.company.length !== company.length
+      // prevState.filterName !== filterName
+    ) {
+      this.getDataTable(params, tabId);
     }
   }
 
@@ -48,16 +95,18 @@ class TableContainer extends PureComponent {
     });
   };
 
-  getDataTable = (tabId) => {
+  getDataTable = (params, tabId) => {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
         type: 'usersManagement/fetchListUsersActive',
+        payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
         type: 'usersManagement/fetchListUsersInActive',
+        payload: params,
       });
     }
   };
@@ -77,6 +126,23 @@ class TableContainer extends PureComponent {
     this.setState({
       collapsed: !collapsed,
     });
+  };
+
+  handleClickTabPane = (tabId) => {
+    this.setState({
+      tabId: Number(tabId),
+      changeTab: true,
+      filterName: '',
+    });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/ClearFilter',
+    });
+    setTimeout(() => {
+      this.setState({
+        changeTab: false,
+      });
+    }, 5);
   };
 
   rightButton = (collapsed) => {
@@ -113,6 +179,7 @@ class TableContainer extends PureComponent {
           <Tabs
             defaultActiveKey="1"
             className={styles.TabComponent}
+            onTabClick={this.handleClickTabPane}
             tabBarExtraContent={this.rightButton(collapsed)}
           >
             {bottabs.map((tab) => (
