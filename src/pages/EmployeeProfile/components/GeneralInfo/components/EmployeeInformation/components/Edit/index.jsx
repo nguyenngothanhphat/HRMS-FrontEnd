@@ -22,7 +22,7 @@ import styles from './index.less';
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { upFile: '' };
+    this.state = { upFile: '', nameFileUp: '' };
   }
 
   handleChange = (changedValues) => {
@@ -98,11 +98,19 @@ class Edit extends PureComponent {
     });
   };
 
+  handleSaveFileUpload = (name, url) => {
+    const data = { [name]: url };
+    console.log(data);
+    const nameFile = data.cardData.split('/');
+    console.log(nameFile);
+    this.setState({ upFile: data, nameFileUp: nameFile });
+  };
+
   handleUpLoadFile = (resp) => {
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       const [first] = data;
-      this.setState({ upFile: first.url });
+      this.handleSaveFileUpload('cardData', first.url);
     }
   };
 
@@ -116,7 +124,7 @@ class Edit extends PureComponent {
 
   render() {
     const { generalData, loading, handleCancel = () => {} } = this.props;
-    const { upFile } = this.state;
+    const { upFile, nameFileUp } = this.state;
     const {
       legalName = '',
       DOB = '',
@@ -139,7 +147,7 @@ class Edit extends PureComponent {
     };
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'Do MMM YYYY';
-    const splitURL = upFile.split('/');
+    const splitURL = nameFileUp[7];
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -255,7 +263,7 @@ class Edit extends PureComponent {
                 rel="noopener noreferrer"
                 className={styles.urlUpload}
               >
-                {splitURL[6]}
+                {splitURL}
               </a>
             </Form.Item>
           ) : (

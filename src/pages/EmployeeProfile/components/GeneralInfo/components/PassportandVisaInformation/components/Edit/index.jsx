@@ -39,23 +39,6 @@ class Edit extends PureComponent {
     this.setState({ dropdown: open });
   };
 
-  // handleChange = (changedValues) => {
-  //   const { dispatch, passportData, passportDataOrigin } = this.props;
-  //   const getPassportData = {
-  //     ...passportData,
-  //     ...changedValues,
-  //   };
-  //   const isModified = JSON.stringify(getPassportData) !== JSON.stringify(passportDataOrigin);
-  //   dispatch({
-  //     type: 'employeeProfile/saveTemp',
-  //     payload: { passportData: getPassportData },
-  //   });
-  //   dispatch({
-  //     type: 'employeeProfile/save',
-  //     payload: { isModified },
-  //   });
-  // };
-
   handleChange = (name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
     const newItem = { [name]: value };
@@ -83,6 +66,13 @@ class Edit extends PureComponent {
       passportValidTill = '',
       _id: id = '',
     } = passportDataTemp;
+    const payloadChanges = {
+      id,
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
+    };
     // const {
     //   number = '',
     //   issuedCountry = '',
@@ -97,13 +87,7 @@ class Edit extends PureComponent {
     //   passportIssuedOn: issuedOn,
     //   passportValidTill: validTill,
     // };
-    const payloadChanges = {
-      id,
-      passportNumber,
-      passportIssuedCountry,
-      passportIssuedOn,
-      passportValidTill,
-    };
+
     return payloadChanges;
   };
 
@@ -130,44 +114,6 @@ class Edit extends PureComponent {
           visaEntryType,
         };
       });
-      console.log(formatData);
-      // const {
-      //   visaNumber = '',
-      //   visaIssuedCountry = '',
-      //   visaIssuedOn = '',
-      //   visaValidTill = '',
-      //   visaEntryType = '',
-      //   visaType = '',
-      //   _id: id = '',
-      // } = data1;
-
-      // const payloadChanges1 = {
-      //   id,
-      //   visaNumber,
-      //   visaIssuedCountry,
-      //   visaIssuedOn,
-      //   visaValidTill,
-      //   visaEntryType,
-      //   visaType,
-      // };
-      // const {
-      //   visaNumber = '',
-      //   visaIssuedCountry = '',
-      //   visaIssuedOn = '',
-      //   visaValidTill = '',
-      //   visaEntryType = '',
-      //   visaType = '',
-      //   _id: id = '',
-      // } = data2;
-      // const payloadChanges2 = {
-      //   id,
-      //   visaNumber,
-      //   visaIssuedCountry,
-      //   visaIssuedOn,
-      //   visaValidTill,
-      //   visaEntryType,
-      //   visaType,
-      // };
       return formatData;
     }
     const data1 = visaData[0];
@@ -238,17 +184,32 @@ class Edit extends PureComponent {
   processDataKeptPassPort = () => {
     const { passportData } = this.props;
     const newObj = { ...passportData };
-    const listKey = ['number', 'issuedCountry', 'issuedOn', 'validTill'];
+    const listKey = [
+      'passportNumber',
+      'passportIssuedCountry',
+      'passportIssuedOn',
+      'passportValidTill',
+    ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
   };
 
   processDataKeptVisa = () => {
     const { visaData } = this.props;
-    const newObj = { ...visaData };
-    const listKey = ['number', 'issuedCountry', 'issuedOn', 'validTill'];
-    listKey.forEach((item) => delete newObj[item]);
-    return newObj;
+    const dataKeptVisa = visaData.map((itemdata) => {
+      const newobj = { ...itemdata };
+      const listKey = [
+        'visaNumber',
+        'visaIssuedCountry',
+        'visaIssuedOn',
+        'visaValidTill',
+        'visaEntryType',
+        'visaType',
+      ];
+      listKey.forEach((item) => delete newobj[item]);
+      return newobj;
+    });
+    return dataKeptVisa;
   };
 
   handleSave = () => {
@@ -256,40 +217,39 @@ class Edit extends PureComponent {
     const { _id: idPassPort = '' } = passportData;
     const datavisa1 = visaData[0];
     const { _id: idVisa = '' } = datavisa1;
-    // const payloadAddPassPort = this.processDataAddPassPort() || {};
-    // const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
-    // const dataTempKept = this.processDataKeptPassPort() || {};
-    // const payloadAddVisa = this.processDataAddVisa() || {};
+    const payloadAddPassPort = this.processDataAddPassPort() || {};
+    const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
+    const dataTempKept = this.processDataKeptPassPort() || {};
+    const payloadAddVisa = this.processDataAddVisa() || {};
     const payloadUpdateVisa = this.processDataChangesVisa() || {};
-    // const dataTempKeptVisa = this.processDataKeptVisa() || {};
+    const dataTempKeptVisa = this.processDataKeptVisa() || {};
     if (idPassPort && idVisa) {
-      // dispatch({
-      //   type: 'employeeProfile/updatePassPort',
-      //   payload: payloadUpdatePassPort,
-      //   dataTempKept,
-      //   key: 'openPassportandVisa',
-      // });
+      dispatch({
+        type: 'employeeProfile/updatePassPort',
+        payload: payloadUpdatePassPort,
+        dataTempKept,
+        key: 'openPassportandVisa',
+      });
       dispatch({
         type: 'employeeProfile/updateVisa',
         payload: payloadUpdateVisa,
-        // dataTempKeptVisa,
+        dataTempKeptVisa,
+        key: 'openPassportandVisa',
+      });
+    } else {
+      dispatch({
+        type: 'employeeProfile/addPassPort',
+        payload: payloadAddPassPort,
+        dataTempKept,
+        key: 'openPassportandVisa',
+      });
+      dispatch({
+        type: 'employeeProfile/addVisa',
+        payload: payloadAddVisa,
+        dataTempKeptVisa,
         key: 'openPassportandVisa',
       });
     }
-    //  else {
-    // dispatch({
-    //   type: 'employeeProfile/addPassPort',
-    //   payload: payloadAddPassPort,
-    //   dataTempKept,
-    //   key: 'openPassportandVisa',
-    // });
-    // dispatch({
-    //   type: 'employeeProfile/addVisa',
-    //   payload: payloadAddVisa,
-    //   dataTempKeptVisa,
-    //   key: 'openPassportandVisa',
-    // });
-    // }
   };
 
   handleUpLoadFile = (resp) => {
@@ -329,14 +289,14 @@ class Edit extends PureComponent {
     const splitURL = upFile.split('/');
     const {
       passportNumber = '',
-      passportIssuedCountry: { _id: getValuesCountryPassPort },
+      passportIssuedCountry,
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportData;
     // const { number = '', issuedCountry = '', issuedOn = '', validTill = '' } = passportData;
     const {
       visaNumber = '',
-      visaIssuedCountry: { _id: getValuesCountryVisa },
+      visaIssuedCountry,
       visaIssuedOn = '',
       visaValidTill = '',
       visaEntryType = '',
@@ -368,13 +328,13 @@ class Edit extends PureComponent {
           {...formItemLayout}
           initialValues={{
             passportNumber,
-            passportIssuedCountry: getValuesCountryPassPort,
+            passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
             // passportNumber: number,
             // passportIssuedCountry: issuedCountry,
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
             visaNumber0: visaNumber,
-            visaIssuedCountry0: getValuesCountryVisa,
+            visaIssuedCountry0: visaIssuedCountry ? visaIssuedCountry._id : '',
             visaIssuedOn0: formatDateVisaIssueOn,
             visaValidTill0: formatDateVisaValidTill,
             visaEntryType0: visaEntryType,

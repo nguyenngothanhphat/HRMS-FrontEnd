@@ -76,14 +76,11 @@ class VisaGeneral extends Component {
 
   handleFieldChange = (index, nameField, fieldValue) => {
     const { dispatch, visaDataOrigin, visaData } = this.props;
-    // const { listItem } = this.state;
     const item = visaData[index];
     const newItem = { ...item, [nameField]: fieldValue };
     const newList = [...visaData];
     newList.splice(index, 1, newItem);
-    // const getVisatData = { ...visaData, ...newList };
     const isModified = JSON.stringify(newList) !== JSON.stringify(visaDataOrigin);
-    // this.setState({ listItem: newList });
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { visaData: newList },

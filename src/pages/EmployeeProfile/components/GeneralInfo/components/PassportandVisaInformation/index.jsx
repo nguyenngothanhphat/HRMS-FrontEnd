@@ -9,13 +9,15 @@ import styles from './index.less';
   ({
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
-      originData: { passportData: passportDataOrigin = {} } = {},
-      tempData: { passportData = {} } = {},
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, visaData = [] } = {},
     } = {},
   }) => ({
     openPassportandVisa,
     passportDataOrigin,
     passportData,
+    visaDataOrigin,
+    visaData,
   }),
 )
 class PassportVisaInformation extends PureComponent {
@@ -28,19 +30,31 @@ class PassportVisaInformation extends PureComponent {
   };
 
   handleCancel = () => {
-    const { passportDataOrigin, passportData, dispatch } = this.props;
-    const { number = '', issuedCountry = '', issuedOn = '', validTill = '' } = passportDataOrigin;
+    const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
+    const {
+      passportNumber = '',
+      passportIssuedCountry = '',
+      passportIssuedOn = '',
+      passportValidTill = '',
+    } = passportDataOrigin;
     const reverseFields = {
-      number,
-      issuedCountry,
-      issuedOn,
-      validTill,
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
     };
-    const payload = { ...passportData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(passportDataOrigin);
+    const payloadVisa = [...visaDataOrigin];
+    const payloadPassPort = { ...passportData, ...reverseFields };
+    const isModified =
+      JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin) ||
+      JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: payload },
+      payload: { passportData: payloadPassPort },
+    });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: payloadVisa },
     });
     dispatch({
       type: 'employeeProfile/save',

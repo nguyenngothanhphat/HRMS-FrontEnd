@@ -164,7 +164,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'saveOrigin',
-          payload: visaData,
+          payload: { visaData },
         });
         yield put({
           type: 'saveTemp',
