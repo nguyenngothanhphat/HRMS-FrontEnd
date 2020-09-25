@@ -12,7 +12,7 @@
 
   .viewLeft {
     width: 247px;
-    background-color: white;
+
     .addMember {
       // width: 200px;
       background-color: white;
@@ -49,7 +49,9 @@
 
     .leftMenu {
       overflow-y: scroll;
-      height: 370px;
+      background-color: white;
+      height: 482px;
+      // height: calc(~'100vh - 76px');
 
       &::-webkit-scrollbar {
         // display: none;
@@ -68,38 +70,6 @@
         background-color: @scrollbar-color;
         border-radius: 3px;
       }
-
-      // .phase {
-      //   margin-top: 32px;
-      //   padding-bottom: 7px;
-      //   border-bottom: 1px solid @border-color;
-
-      //   h3 {
-      //     font-family: Roboto;
-      //     font-size: 16px;
-      //     font-weight: 500;
-      //     text-transform: capitalize;
-      //     margin-left: 29px;
-      //     color: black;
-      //     margin-bottom: 8px;
-      //   }
-
-      //   .menuItem {
-      //     margin-left: 13px;
-      //     padding: 16px 14px 16px 16px;
-      //     display: block;
-      //     color: @gray;
-      //     cursor: pointer;
-
-      //     &.active {
-      //       background-color: #e9f0ff;
-      //       color: @blue;
-      //       font-weight: bold;
-      //       border-top-left-radius: 100px;
-      //       border-bottom-left-radius: 100px;
-      //     }
-      //   }
-      // }
     }
   }
 

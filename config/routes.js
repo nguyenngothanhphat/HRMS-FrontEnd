@@ -80,6 +80,14 @@ const routes = [
             hideInMenu: true,
             component: './FormTeamMember',
           },
+
+          {
+            path: '/template-details/:templateId',
+            name: 'templateDetails',
+            hideInMenu: true,
+            component: './TemplateDetails',
+          },
+
           {
             component: './404',
           },
