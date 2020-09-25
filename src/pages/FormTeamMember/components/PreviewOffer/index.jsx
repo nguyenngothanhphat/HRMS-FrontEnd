@@ -8,7 +8,7 @@ import logo from './components/images/brand-logo.png';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
-import ModalUpload from '../../../../components/ModalUpload';
+// import ModalUpload from '../../../../components/ModalUpload';
 import SendEmail from '../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
@@ -56,6 +56,7 @@ const PreviewOffer = (props) => {
 
   const [mail, setMail] = useState(mailProp || '');
   const [mailForm] = Form.useForm();
+  // const [uploadVisible, setUploadVisible] = useState(false);
 
   const resetForm = () => {
     mailForm.resetFields();
@@ -129,6 +130,11 @@ const PreviewOffer = (props) => {
     setMail('');
     resetForm();
   };
+
+  // const getImageUrl = (url) => {
+  //   setFile2(url);
+  //   console.log(url);
+  // };
 
   useEffect(() => {
     // Set width for each input
@@ -390,6 +396,7 @@ const PreviewOffer = (props) => {
               type="submit"
               onClick={() => {
                 file2Ref.click();
+                // setUploadVisible(true);
               }}
             >
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
@@ -474,7 +481,15 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        <ModalUpload visible />
+        {/* <ModalUpload
+          visible={uploadVisible}
+          handleCancel={(url) => {
+            // setFile2(url);
+            // console.log(url);
+            setUploadVisible(false);
+          }}
+        /> */}
+
         {/* Render Send Mail */}
         {file && file2 && <SendEmail />}
       </div>
