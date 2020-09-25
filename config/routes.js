@@ -10,6 +10,16 @@ const routes = [
     ],
   },
   {
+    path: '/signup1',
+    component: '../layouts/SignUpLayout1',
+    routes: [
+      {
+        path: '/signup1',
+        component: './SignUp',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
