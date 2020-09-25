@@ -184,11 +184,14 @@ class BottomBar extends PureComponent {
 
   _renderBottomBar = () => {
     const { pageId } = this.state;
-    const { benefits, salaryStructure } = pageId;
+    const { benefits, salaryStructure, eligibilityDocuments } = pageId;
     const { currentPage, checkMandatory } = this.props;
     const { salaryStatus } = checkMandatory;
-    console.log(benefits);
-    if ((salaryStatus !== 1 && currentPage === salaryStructure) || currentPage === benefits) {
+    if (
+      (salaryStatus !== 1 && currentPage === salaryStructure) ||
+      currentPage === benefits ||
+      currentPage === eligibilityDocuments
+    ) {
       return null;
     }
     return (

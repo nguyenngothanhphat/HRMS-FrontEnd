@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Typography } from 'antd';
-import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class Header extends PureComponent {
