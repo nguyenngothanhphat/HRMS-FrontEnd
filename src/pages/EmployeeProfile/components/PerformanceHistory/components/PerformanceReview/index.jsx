@@ -89,7 +89,12 @@ class PerformanceReview extends PureComponent {
     ];
     return (
       <div className={styles.performanceReview}>
-        <Card className={styles.performanceReview_card} title="Performance Reviews">
+        <Card
+          className={styles.performanceReview_card}
+          title={formatMessage({
+            id: 'pages.employeeProfile.performanceHistory.performanceReview',
+          })}
+        >
           <Row gutter={[16, 16]} className={styles.root}>
             {dummyData.map((item) => (
               <Fragment key={item.id}>

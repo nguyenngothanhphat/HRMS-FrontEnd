@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card, Row, Menu, Dropdown, Input, message, Button } from 'antd';
+import { formatMessage } from 'umi';
 import ProjectHistoryTable from './components/ProjectHistoryTable';
 import noDataIcon from './assets/no_data.svg';
 import filterIcon from './assets/filter_icon.svg';
@@ -110,7 +111,9 @@ class ProjectHistory extends PureComponent {
       <div className={styles.projectHistory}>
         <Card
           className={styles.projectHistory_card}
-          title="Project History"
+          title={formatMessage({
+            id: 'pages.employeeProfile.performanceHistory.projectHistory',
+          })}
           extra={this.renderExtraCard(projectHistoryData)}
         >
           {this.renderPrjectHistoryTable(projectHistoryData)}
