@@ -11,10 +11,10 @@ class EditForm extends PureComponent {
     return (
       <div className={styles.EditForm}>
         <Tabs defaultActiveKey="1">
-          <TabPane tab="Employment details" key="1">
+          <TabPane className={styles.tabs} tab="Employment details" key="1">
             <EmploymentDetails />
           </TabPane>
-          <TabPane tab="Your information" key="2">
+          <TabPane className={styles.tabs} tab="Your information" key="2">
             <YourInformation />
           </TabPane>
         </Tabs>
