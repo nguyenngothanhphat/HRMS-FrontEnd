@@ -48,6 +48,7 @@ export default {
   'pages.employeeProfile.BenefitTab.components.kyc.adhaar': 'Adhaar Number',
   'pages.employeeProfile.BenefitTab.components.kyc.paytm': 'Paytm Number',
 
+  'pages.employeeProfile.performanceTab.syncWithEPASS': 'Click here to Sync With EPASS',
   'pages.employeeProfile.performanceHistory.performanceReview': 'Performance Reviews',
   'pages.employeeProfile.performanceHistory.performanceReview.date': 'Date',
   'pages.employeeProfile.performanceHistory.performanceReview.reportingTo': 'Reporting To',

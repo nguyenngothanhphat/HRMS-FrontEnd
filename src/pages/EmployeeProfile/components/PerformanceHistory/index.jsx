@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
+import { formatMessage } from 'umi';
 import PerformanceReview from './components/PerformanceReview';
 import CareerGraph from './components/CareerGraph';
 import PRReports from './components/PRReports';
@@ -13,7 +14,7 @@ class PerformanceHistory extends PureComponent {
         <div className={styles.performanceHistory_syncEPASS}>
           <Button className={styles.performanceHistory_syncEPASS_btn} block>
             <img className={styles.iconSync} src="/assets/images/iconSync.svg" alt="iconSync" />
-            <u>Click here to Sync With EPASS</u>
+            <u>{formatMessage({ id: 'pages.employeeProfile.performanceTab.syncWithEPASS' })}</u>
           </Button>
         </div>
         <PerformanceReview />
