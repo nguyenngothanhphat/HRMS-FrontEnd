@@ -1,0 +1,81 @@
+.projectHistoryTable {
+  :global {
+    tbody.ant-table-tbody {
+      line-height: 1.46;
+      color: #707177;
+    }
+    .ant-avatar-group {
+      display: flex;
+    }
+    .ant-avatar-group .ant-avatar {
+      border: unset;
+    }
+    .ant-avatar-group .ant-avatar:not(:first-child) {
+      margin-left: -4px;
+    }
+    .ant-avatar-group .ant-avatar:last-child {
+      margin-left: -32px;
+    }
+    .ant-avatar-group .ant-avatar:nth-child(3) {
+      position: relative;
+    }
+    .ant-avatar-group .ant-avatar:nth-child(3)::before {
+      position: absolute;
+      content: '';
+      width: 36px;
+      height: 36px;
+      background-color: rgba(0, 0, 0, 0.4);
+      left: 0;
+    }
+    .ant-avatar-string {
+      color: #ffffff;
+      span {
+        transform: scale(1) translateX(-200%);
+      }
+    }
+  }
+  .statusColumn {
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .statusColumn_complete {
+    color: #00c598;
+  }
+  .statusColumn_onGoing {
+    color: #ff6565;
+  }
+  .teamColumn_avatar {
+    height: 36px;
+    width: 36px;
+  }
+  .engagementColumn {
+    .engagementColumn_menu {
+      color: #bfbfbf;
+      font-size: 25px;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+:global {
+  .ant-dropdown-menu {
+    width: 200px !important;
+  }
+}
+
+.teamColumn_toolTip {
+  :global {
+    .ant-tooltip-inner {
+      background-color: #568afa;
+      font-size: 12px;
+    }
+    .ant-tooltip-arrow-content {
+      background-color: #568afa;
+    }
+    .ant-tooltip-content {
+      border-radius: 5px;
+    }
+  }
+}
