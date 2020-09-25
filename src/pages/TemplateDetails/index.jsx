@@ -8,22 +8,7 @@ import TemplateDetailsNote from './components/TemplateDetailsNote';
 import styles from './index.less';
 
 class TemplateDetails extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      openModal: true,
-    };
-  }
-
-  closeModal = () => {
-    this.setState({
-      openModal: false,
-    });
-  };
-
   render() {
-    const { openModal } = this.state;
-
     return (
       <PageContainer>
         <div className={styles.TemplateDetails}>

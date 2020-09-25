@@ -6,6 +6,11 @@ import YourInformation from '../YourInformation';
 import styles from './index.less';
 
 class EditForm extends PureComponent {
+  onNext = () => {
+    const { onNext = {} } = this.props;
+    onNext();
+  };
+
   render() {
     const { TabPane } = Tabs;
     return (
@@ -18,7 +23,9 @@ class EditForm extends PureComponent {
             <YourInformation />
           </TabPane>
         </Tabs>
-        <Button type="primary">Next</Button>
+        <Button onClick={this.onNext} type="primary">
+          Next
+        </Button>
       </div>
     );
   }

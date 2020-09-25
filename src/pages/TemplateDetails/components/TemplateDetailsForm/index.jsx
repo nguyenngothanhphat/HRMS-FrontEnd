@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal';
-import FormOutlined from '@ant-design/icons';
+
 import EditForm from '../EditForm';
+import ModalContent from '../ModalContent';
 
 import brandLogo from './assets/brand-logo.svg';
+import formOutlined from './assets/form-outlined.svg';
+
 import styles from './index.less';
 
 class TemplateDetailsForm extends PureComponent {
@@ -12,8 +15,25 @@ class TemplateDetailsForm extends PureComponent {
     super(props);
     this.state = {
       openModal: true,
+      currentModal: 1,
     };
   }
+
+  onNext = () => {
+    const { currentModal } = this.state;
+    // const value = ;
+    this.setState({
+      currentModal: currentModal + 1,
+      openModal: currentModal !== 3,
+    });
+  };
+
+  onClickEdit = () => {
+    this.setState({
+      openModal: true,
+      currentModal: 1,
+    });
+  };
 
   closeModal = () => {
     this.setState({
@@ -21,8 +41,33 @@ class TemplateDetailsForm extends PureComponent {
     });
   };
 
+  _renderModal = () => {
+    const { currentModal, openModal } = this.state;
+    switch (currentModal) {
+      case 1:
+        return (
+          <CustomModal open={openModal} closeModal={this.closeModal}>
+            <EditForm onNext={this.onNext} />
+          </CustomModal>
+        );
+      case 2:
+        return (
+          <CustomModal open={openModal} closeModal={this.closeModal}>
+            <ModalContent onNext={this.onNext} content={0} />
+          </CustomModal>
+        );
+      case 3:
+        return (
+          <CustomModal open={openModal} closeModal={this.closeModal}>
+            <ModalContent onNext={this.onNext} content={1} />
+          </CustomModal>
+        );
+      default:
+        return null;
+    }
+  };
+
   render() {
-    const { openModal } = this.state;
     const templateDetail = {
       title: 'title',
       date: `17/18/2020`,
@@ -95,19 +140,18 @@ class TemplateDetailsForm extends PureComponent {
           </div>
           <div className={styles.TemplateDetailsForm_template_button}>
             {' '}
-            <FormOutlined style={{ color: '#000000' }} />
             <Button
               type="primary"
-              onClick={this.onClickPrev}
+              onClick={this.onClickEdit}
               className={styles.TemplateDetailsForm_template_button_primary}
             >
+              <img src={formOutlined} alt="form-outline" />
               Edit
             </Button>
           </div>
         </div>
-        <CustomModal open={openModal} closeModal={this.closeModal}>
-          <EditForm />
-        </CustomModal>
+
+        {this._renderModal()}
       </div>
     );
   }
