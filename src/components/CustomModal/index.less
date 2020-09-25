@@ -1,0 +1,63 @@
+@blue: #2c6df9;
+@dark-blue: #2964e6;
+@black: #161c29;
+@gray: #707177;
+@orange: #ffa100;
+@dark-orange: #eb9500;
+
+// .openBtn {
+//   display: none;
+// }
+.onboardModal {
+  font-family: 'Roboto';
+}
+
+:global {
+  .ant-modal-root {
+    // .testFixed & {
+    //   position: fixed;
+    // }
+    .ant-modal-mask {
+      background-color: #161c29;
+      opacity: 0.7;
+    }
+
+    .ant-modal-header {
+      //   padding: 16px 0;
+      //   padding-left: 16px;
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background-color: transparent;
+    }
+
+    .ant-modal-content {
+      width: 590px !important;
+      // height: 340px;
+      border-radius: 9px;
+      border-top-right-radius: 0;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+      background-color: @blue;
+      color: white;
+      height: 48px;
+      width: 54px;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ant-modal-body {
+      padding: 0;
+    }
+
+    &:hover {
+      background-color: @dark-blue;
+    }
+  }
+}

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
-
+import CustomModal from '@/components/CustomModal';
+import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -143,6 +144,13 @@ const note = {
   eligibilityDocs,
 }))
 class EligibilityDocs extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+    };
+  }
+
   static getDerivedStateFromProps(props) {
     if ('eligibilityDocs' in props) {
       return { eligibilityDocs: props.eligibilityDocs || {} };
@@ -150,19 +158,45 @@ class EligibilityDocs extends PureComponent {
     return null;
   }
 
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
   handleSendEmail = (user) => {
     const { dispatch } = this.props;
     const { eligibilityDocs = {} } = this.state;
-    const { isSentEmail } = eligibilityDocs;
     dispatch({
       type: 'info/saveEligibilityRequirement',
       payload: {
         eligibilityDocs: {
           ...eligibilityDocs,
           email: user.email,
-          isSentEmail: !isSentEmail,
+          isSentEmail: true,
         },
       },
+    });
+    this.setState({
+      openModal: true,
+    });
+  };
+
+  handleMarkAsDone = (user) => {
+    const { dispatch } = this.props;
+    const { eligibilityDocs = {} } = this.state;
+    dispatch({
+      type: 'info/saveEligibilityRequirement',
+      payload: {
+        eligibilityDocs: {
+          ...eligibilityDocs,
+          generateLink: user.generateLink,
+          isMarkAsDone: true,
+        },
+      },
+    });
+    this.setState({
+      openModal: true,
     });
   };
 
@@ -318,7 +352,8 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       eligibilityDocs,
-      eligibilityDocs: { email, isSentEmail },
+      eligibilityDocs: { email, isSentEmail, isMarkAsDone, generateLink },
+      openModal,
     } = this.state;
     return (
       <>
@@ -349,9 +384,21 @@ class EligibilityDocs extends PureComponent {
               handleSendFormAgain={this.handleSendFormAgain}
               email={email}
               isSentEmail={isSentEmail}
+              generateLink={generateLink}
+              handleMarkAsDone={this.handleMarkAsDone}
             />
           </Col>
         </Row>
+        <CustomModal open={openModal} closeModal={this.closeModal}>
+          {openModal && (
+            <ModalContentComponent
+              closeModal={this.closeModal}
+              isSentEmail={isSentEmail}
+              isMarkAsDone={isMarkAsDone}
+            />
+          )}
+        </CustomModal>
+        ;
       </>
     );
   }
