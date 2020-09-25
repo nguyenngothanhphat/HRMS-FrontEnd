@@ -7,6 +7,7 @@ import {
   getListTitle,
   addCertification,
   updateCertification,
+  getEmploymentInfo,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -14,12 +15,20 @@ const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
     isModified: false,
+    editGeneral: {
+      openContactDetails: false,
+      openEmployeeInfor: false,
+      openPassportandVisa: false,
+      openPersonnalInfor: false,
+      openAcademic: false,
+    },
     idCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
     originData: {
       generalData: {},
       compensationData: {},
+      employmentData: {},
     },
     tempData: {
       generalData: {},
@@ -87,7 +96,8 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *updateGeneralInfo({ payload = {}, dataTempKept = {} }, { put, call, select }) {
+
+    *updateGeneralInfo({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
         const response = yield call(updateGeneralInfo, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
@@ -101,6 +111,43 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
+        switch (key) {
+          case 'openContactDetails':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+            break;
+          case 'openEmployeeInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openEmployeeInfor: false },
+            });
+            break;
+          case 'openPassportandVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPassportandVisa: false },
+            });
+            break;
+          case 'openPersonnalInfor':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openPersonnalInfor: false },
+            });
+            break;
+          case 'openAcademic':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openAcademic: false },
+            });
+            break;
+          default:
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openContactDetails: false },
+            });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -133,6 +180,16 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *fetchEmploymentInfo({ payload: id = '' }, { call, put }) {
+      try {
+        const response = yield call(getEmploymentInfo, { id });
+        const { data, statusCode } = response;
+        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error.message);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -157,6 +214,16 @@ const employeeProfile = {
         ...state,
         tempData: {
           ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveOpenEdit(state, action) {
+      const { editGeneral } = state;
+      return {
+        ...state,
+        editGeneral: {
+          ...editGeneral,
           ...action.payload,
         },
       };

@@ -4,12 +4,15 @@ import { ExclamationOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import styles from './index.less';
 
-const Warning = () => {
+const Warning = ({ formatMessage = () => {} }) => {
   return (
     // <PageContainer>
     <div className={styles.Warning}>
       <ExclamationOutlined className={styles.icon} />
-      <Typography.Text> To be uploaded by candidate only </Typography.Text>
+      <Typography.Text>
+        {' '}
+        {formatMessage({ id: 'component.eligibilityDocs.headerReminder' })}{' '}
+      </Typography.Text>
     </div>
     // </PageContainer>
   );

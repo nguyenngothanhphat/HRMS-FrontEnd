@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Button } from 'antd';
+import { Button, Affix } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
-import PreviewOffer from './components/PreviewOffer';
 import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
@@ -75,17 +74,19 @@ export default class FormTeamMember extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
-          <div className={styles.titlePage}>
-            <p className={styles.titlePage__text}>{title}</p>
-            {action === 'add' && (
-              <div className={styles.titlePage__viewBtn}>
-                <Button type="primary" ghost>
-                  Finish Later
-                </Button>
-                <Button danger>Cancel</Button>
-              </div>
-            )}
-          </div>
+          <Affix offsetTop={40}>
+            <div className={styles.titlePage}>
+              <p className={styles.titlePage__text}>{title}</p>
+              {action === 'add' && (
+                <div className={styles.titlePage__viewBtn}>
+                  <Button type="primary" ghost>
+                    Finish Later
+                  </Button>
+                  <Button danger>Cancel</Button>
+                </div>
+              )}
+            </div>
+          </Affix>
           <CommonLayout listMenu={formatListMenu} />
         </div>
       </PageContainer>
