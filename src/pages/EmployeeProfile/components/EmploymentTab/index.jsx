@@ -72,7 +72,7 @@ class EmploymentTab extends PureComponent {
     const { dispatch } = this.props;
     let takeEffect = '';
     if (data.stepOne === 'Now') {
-      takeEffect = 'UPDATE_NOW';
+      takeEffect = 'UPDATED';
     } else if (Date.parse(data.stepOne) < Date.now()) {
       takeEffect = 'UPDATED';
     } else takeEffect = 'WILL_UPDATE';
@@ -83,7 +83,7 @@ class EmploymentTab extends PureComponent {
       location: data.stepTwo.wLocation || null,
       employeeType: data.stepTwo.employment || null,
       department: data.stepThree.department || null,
-      effectiveDate: data.stepOne === 'Now' ? new Date() : null,
+      effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
       changeDate: new Date(),
       takeEffect,
       employee: data.employee || null,
