@@ -1,11 +1,17 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
+import { connect } from 'umi';
 import Moment from 'moment';
+import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
 
+@connect(({ upload: { urlImage = '' } = {} }) => ({
+  urlImage,
+}))
 class View extends PureComponent {
   render() {
-    const { dataAPI } = this.props;
+    const { dataAPI, urlImage = '' } = this.props;
+    const splitUrl = urlImage.split('/');
     const dummyData = [
       { label: 'Passport Number', value: dataAPI.passportNo },
       { label: 'Issued Country', value: dataAPI.passportIssueCountry },
@@ -49,6 +55,21 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
+              {item.label === 'Passport Number' && urlImage ? (
+                <div className={styles.viewFileUpLoad}>
+                  <a
+                    href={urlImage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.urlData}
+                  >
+                    {splitUrl[6]}
+                  </a>
+                  <ConformIcondata data={splitUrl[6]} />
+                </div>
+              ) : (
+                ''
+              )}
             </Col>
           </Fragment>
         ))}
@@ -60,6 +81,21 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
+              {item.label === 'Visa Number' && urlImage ? (
+                <div className={styles.viewFileUpLoad}>
+                  <a
+                    href={urlImage}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.urlData}
+                  >
+                    {splitUrl[6]}
+                  </a>
+                  <ConformIcondata data={splitUrl[6]} />
+                </div>
+              ) : (
+                ''
+              )}
             </Col>
           </Fragment>
         ))}

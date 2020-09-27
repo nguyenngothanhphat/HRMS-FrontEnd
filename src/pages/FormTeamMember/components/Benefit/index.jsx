@@ -18,17 +18,145 @@ class Benefit extends PureComponent {
     return null;
   }
 
-  // onChange = (e) => {
-  //   const { target } = e;
-  //   const { name, value } = target;
-  //   const { dispatch } = this.props;
-  //   const { benefits = {} } = this.state;
-  //   benefits[name] = value;
-  //   dispatch({
-  //     type: 'info/saveBenefits',
-  //     benefits,
-  //   });
-  // };
+  handleChange = (checkedList, arr, title) => {
+    const { benefits } = this.state;
+    const { dispatch } = this.props;
+    if (title === 'Medical') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedMedical: checkedList,
+            medical: checkedList.length === arr.length,
+          },
+        },
+      });
+    } else if (title === 'Life') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedLife: checkedList,
+            life: checkedList.length === arr.length,
+          },
+        },
+      });
+    } else if (title === 'shortTerm') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedShortTerm: checkedList,
+            shortTerm: checkedList.length === arr.length,
+          },
+        },
+      });
+    } else if (title === 'employeeProvident') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedEmployee: checkedList,
+            employeeProvident: checkedList.length === arr.length,
+          },
+        },
+      });
+    }
+  };
+
+  onChange = (e) => {
+    const { target } = e;
+    const { value } = target;
+    const { benefits } = this.state;
+    const { vision, dental, paytmWallet } = benefits;
+    const { dispatch } = this.props;
+    if (value === 'Dental') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            dental: !dental,
+          },
+        },
+      });
+    } else if (value === 'Vision') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            vision: !vision,
+          },
+        },
+      });
+    }
+    if (value === 'Paytm Wallet') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            paytmWallet: !paytmWallet,
+          },
+        },
+      });
+    }
+  };
+
+  handleCheckAll = (e, arr, title) => {
+    const { benefits } = this.state;
+    const { dispatch } = this.props;
+    if (title === 'Medical') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedMedical: e.target.checked ? arr.map((data) => data.value) : [],
+            medical: e.target.checked,
+          },
+        },
+      });
+    } else if (title === 'Life') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedLife: e.target.checked ? arr.map((data) => data.value) : [],
+            life: e.target.checked,
+          },
+        },
+      });
+    } else if (title === 'shortTerm') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedShortTerm: e.target.checked ? arr.map((data) => data.value) : [],
+            shortTerm: e.target.checked,
+          },
+        },
+      });
+    } else if (title === 'employeeProvident') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedEmployee: e.target.checked ? arr.map((data) => data.value) : [],
+            employeeProvident: e.target.checked,
+          },
+        },
+      });
+    }
+  };
 
   render() {
     const headerText = formatMessage({ id: 'component.Benefits.subHeader' });
@@ -112,7 +240,7 @@ class Benefit extends PureComponent {
           ],
         },
         {
-          value: formatMessage({ id: 'component.Benefits.paytm' }),
+          value: formatMessage({ id: 'component.Benefits.Employee' }),
           title: formatMessage({ id: 'component.Benefits.employeeTitle' }),
           subCheckBox: [
             {
@@ -137,6 +265,7 @@ class Benefit extends PureComponent {
         </Typography.Text>
       ),
     };
+    const { benefits } = this.state;
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -148,11 +277,16 @@ class Benefit extends PureComponent {
                 headerText={headerText}
                 onChange={this.onChange}
                 handleCheckAll={this.handleCheckAll}
+                handleChange={this.handleChange}
+                benefits={benefits}
               />
               <IndiaEmployeeComponent
                 IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}
                 headerText={headerText}
+                onChange={this.onChange}
+                handleCheckAll={this.handleCheckAll}
                 handleChange={this.handleChange}
+                benefits={benefits}
               />
             </div>
           </Col>

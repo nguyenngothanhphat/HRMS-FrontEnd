@@ -5,7 +5,7 @@ import PerformanceReviewIndicator from './components/PerformanceReviewIndicator'
 import styles from './index.less';
 
 class PerformanceReview extends PureComponent {
-  _renderTypePerformanceReview = (level) => {
+  renderTypePerformanceReview = (level) => {
     if (level === 2) {
       return (
         <span role="img" aria-label="icon-smile-face">
@@ -89,7 +89,12 @@ class PerformanceReview extends PureComponent {
     ];
     return (
       <div className={styles.performanceReview}>
-        <Card className={styles.performanceReview_card} title="Performance Reviews">
+        <Card
+          className={styles.performanceReview_card}
+          title={formatMessage({
+            id: 'pages.employeeProfile.performanceHistory.performanceReview',
+          })}
+        >
           <Row gutter={[16, 16]} className={styles.root}>
             {dummyData.map((item) => (
               <Fragment key={item.id}>
@@ -111,7 +116,7 @@ class PerformanceReview extends PureComponent {
                       <PerformanceReviewIndicator level={item.value.level} />
                     </Col>
                     <Col span={5} className={styles.textValue}>
-                      {this._renderTypePerformanceReview(item.value.level)}
+                      {this.renderTypePerformanceReview(item.value.level)}
                     </Col>
                   </>
                 )}

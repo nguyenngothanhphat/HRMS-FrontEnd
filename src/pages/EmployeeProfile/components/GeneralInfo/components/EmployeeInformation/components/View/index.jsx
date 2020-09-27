@@ -3,7 +3,7 @@ import { Row, Col, Tooltip } from 'antd';
 import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
-import iconPDF from '@/assets/pdf-2.svg';
+import ConformIcondata from '../../../confirmIcon';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
@@ -13,7 +13,6 @@ import styles from './index.less';
 class View extends PureComponent {
   render() {
     const { dataAPI, urlImage } = this.props;
-    console.log(urlImage);
     const splitUrl = urlImage.split('/');
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
@@ -51,7 +50,7 @@ class View extends PureComponent {
             <Col span={18} className={styles.textValue}>
               {item.value}
               {item.label === 'Adhaar Card Number' && urlImage ? (
-                <>
+                <div className={styles.viewFileUpLoad}>
                   <a
                     href={urlImage}
                     target="_blank"
@@ -60,8 +59,8 @@ class View extends PureComponent {
                   >
                     {splitUrl[6]}
                   </a>
-                  <img src={iconPDF} alt="iconFilePDF" className={styles.iconData} />
-                </>
+                  <ConformIcondata data={splitUrl[6]} />
+                </div>
               ) : (
                 ''
               )}
