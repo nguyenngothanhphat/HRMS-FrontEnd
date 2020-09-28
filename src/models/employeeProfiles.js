@@ -144,20 +144,12 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchVisa({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+    *fetchVisa({ payload: { employee = '' } }, { call, put }) {
       try {
         const response = yield call(getVisa, { employee });
         const { statusCode, data: visaData = [] } = response;
         if (statusCode !== 200) throw response;
-        const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         const visaDataTemp = [...visaData];
-        if (!checkDataTempKept) {
-          const isModified = JSON.stringify(visaDataTemp) !== JSON.stringify(visaData);
-          yield put({
-            type: 'save',
-            payload: { isModified },
-          });
-        }
         yield put({
           type: 'save',
           payload: { idCurrentEmployee: employee },
