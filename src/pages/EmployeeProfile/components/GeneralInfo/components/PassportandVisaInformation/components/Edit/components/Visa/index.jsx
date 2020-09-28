@@ -11,6 +11,7 @@ import styles from '../../index.less';
 @connect(
   ({
     loading,
+    upload: { visa0URL = '', visa1URL = '' },
     employeeProfile: {
       countryList,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
@@ -24,13 +25,14 @@ import styles from '../../index.less';
     generalData,
     visaDataOrigin,
     visaData,
+    visa0URL,
+    visa1URL,
   }),
 )
 class VisaGeneral extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      upFile: '',
       dropdownEntry: false,
       dropdownCountry: false,
       dropdownType: false,
@@ -62,16 +64,19 @@ class VisaGeneral extends Component {
     }
   };
 
-  handleUpLoadFile = (resp) => {
-    const { statusCode, data = [] } = resp;
-    if (statusCode === 200) {
-      const [first] = data;
-      this.setState({ upFile: first.url });
+  handleCanCelIcon = (index) => {
+    const { dispatch } = this.props;
+    if (index === 0) {
+      dispatch({
+        type: 'upload/cancelUpload',
+        payload: { visa0URL: '' },
+      });
+    } else {
+      dispatch({
+        type: 'upload/cancelUpload',
+        payload: { visa1URL: '' },
+      });
     }
-  };
-
-  handleCanCelIcon = () => {
-    this.setState({ upFile: '' });
   };
 
   handleFieldChange = (index, nameField, fieldValue) => {
@@ -91,10 +96,22 @@ class VisaGeneral extends Component {
     });
   };
 
+  handleNameDataUpload = (index) => {
+    const { visa0URL, visa1URL } = this.props;
+    if (index === 0) {
+      const split0URL = visa0URL.split('/');
+      const nameData0URL = split0URL[split0URL.length - 1];
+      return nameData0URL;
+    }
+    const split1URL = visa1URL.split('/');
+    const nameData1URL = split1URL[split1URL.length - 1];
+    return nameData1URL;
+  };
+
   render() {
     const { Option } = Select;
-    const { dropdownCountry, dropdownType, dropdownEntry, upFile, listItem } = this.state;
-    const { countryList } = this.props;
+    const { dropdownCountry, dropdownType, dropdownEntry, listItem } = this.state;
+    const { countryList, visa0URL, visa1URL } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -102,7 +119,6 @@ class VisaGeneral extends Component {
         name,
       };
     });
-    const splitURL = upFile.split('/');
     const dateFormat = 'Do MMM YYYY';
     return (
       <>
@@ -130,14 +146,14 @@ class VisaGeneral extends Component {
                     }}
                   />
                 </Form.Item>
-                {upFile === '' ? (
+                {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
                   <div className={styles.textUpload}>
-                    <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+                    <UploadImage content="Choose file" name={`visa${index}`} />
                   </div>
                 ) : (
                   <div className={styles.viewUpLoadData}>
                     <a
-                      href={upFile}
+                      href={index === 0 ? visa0URL : visa1URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.viewUpLoadDataURL}
@@ -148,21 +164,21 @@ class VisaGeneral extends Component {
                     <img
                       src={cancelIcon}
                       alt=""
-                      onClick={this.handleCanCelIcon}
+                      onClick={() => this.handleCanCelIcon(index)}
                       className={styles.viewUpLoadDataIconCancel}
                     />
                   </div>
                 )}
               </div>
-              {upFile !== '' ? (
+              {(visa0URL !== '' && index === 0) || (visa1URL !== '' && index === 1) ? (
                 <Form.Item label="Visa:" className={styles.labelUpload}>
                   <a
-                    href={upFile}
+                    href={index === 0 ? visa0URL : visa1URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.urlUpload}
                   >
-                    {splitURL[6]}
+                    {this.handleNameDataUpload(index)}
                   </a>
                 </Form.Item>
               ) : (

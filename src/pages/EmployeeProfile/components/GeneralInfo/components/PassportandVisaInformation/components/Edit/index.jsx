@@ -11,6 +11,7 @@ import styles from './index.less';
 @connect(
   ({
     loading,
+    upload: { passPortURL = '' },
     employeeProfile: {
       countryList,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = {} } = {},
@@ -24,13 +25,13 @@ import styles from './index.less';
     generalData,
     visaDataOrigin,
     visaData,
+    passPortURL,
   }),
 )
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      upFile: '',
       dropdown: false,
     };
   }
@@ -252,19 +253,11 @@ class Edit extends PureComponent {
     }
   };
 
-  handleUpLoadFile = (resp) => {
-    const { statusCode, data = [] } = resp;
-    if (statusCode === 200) {
-      const [first] = data;
-      this.setState({ upFile: first.url });
-    }
-  };
-
   handleCanCelIcon = () => {
     const { dispatch } = this.props;
-    this.setState({ upFile: '' });
     dispatch({
-      type: 'upload/uploadFile',
+      type: 'upload/cancelUpload',
+      payload: { passPortURL: '' },
     });
   };
 
@@ -285,8 +278,9 @@ class Edit extends PureComponent {
         name,
       };
     });
-    const { upFile } = this.state;
-    const splitURL = upFile.split('/');
+    const { passPortURL } = this.props;
+    const splitURL = passPortURL.split('/');
+    const nameDataURL = splitURL[splitURL.length - 1];
     const {
       passportNumber = '',
       passportIssuedCountry,
@@ -361,14 +355,14 @@ class Edit extends PureComponent {
                 }}
               />
             </Form.Item>
-            {upFile === '' ? (
+            {passPortURL === '' ? (
               <div className={styles.textUpload}>
-                <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+                <UploadImage content="Choose file" name="passport" />
               </div>
             ) : (
               <div className={styles.viewUpLoadData}>
                 <a
-                  href={upFile}
+                  href={passPortURL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.viewUpLoadDataURL}
@@ -385,15 +379,15 @@ class Edit extends PureComponent {
               </div>
             )}
           </div>
-          {upFile !== '' ? (
+          {passPortURL !== '' ? (
             <Form.Item label="Uploaded file:" className={styles.labelUpload}>
               <a
-                href={upFile}
+                href={passPortURL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.urlUpload}
               >
-                {splitURL[6]}
+                {nameDataURL}
               </a>
             </Form.Item>
           ) : (

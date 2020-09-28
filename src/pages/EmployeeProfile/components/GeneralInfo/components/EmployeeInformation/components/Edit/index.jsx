@@ -13,16 +13,18 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
+    upload: { employeeInformationURL = '' },
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
+    employeeInformationURL,
   }),
 )
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { upFile: '', nameFileUp: '' };
+    this.state = {};
   }
 
   handleChange = (changedValues) => {
@@ -98,33 +100,18 @@ class Edit extends PureComponent {
     });
   };
 
-  handleSaveFileUpload = (name, url) => {
-    const data = { [name]: url };
-    console.log(data);
-    const nameFile = data.cardData.split('/');
-    console.log(nameFile);
-    this.setState({ upFile: data, nameFileUp: nameFile });
-  };
-
-  handleUpLoadFile = (resp) => {
-    const { statusCode, data = [] } = resp;
-    if (statusCode === 200) {
-      const [first] = data;
-      this.handleSaveFileUpload('cardData', first.url);
-    }
-  };
-
   handleCanCelIcon = () => {
     const { dispatch } = this.props;
-    this.setState({ upFile: '' });
     dispatch({
-      type: 'upload/uploadFile',
+      type: 'upload/cancelUpload',
+      payload: { employeeInformationURL: '' },
     });
   };
 
   render() {
-    const { generalData, loading, handleCancel = () => {} } = this.props;
-    const { upFile, nameFileUp } = this.state;
+    const { generalData, loading, handleCancel = () => {}, employeeInformationURL } = this.props;
+    const nameFile = employeeInformationURL.split('/');
+    const splitURL = nameFile[nameFile.length - 1];
     const {
       legalName = '',
       DOB = '',
@@ -147,7 +134,6 @@ class Edit extends PureComponent {
     };
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'Do MMM YYYY';
-    const splitURL = nameFileUp[7];
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -229,14 +215,14 @@ class Edit extends PureComponent {
               <Input className={styles.inputForm} />
             </Form.Item>
             <>
-              {upFile === '' ? (
+              {employeeInformationURL === '' ? (
                 <div className={styles.textUpload}>
-                  <UploadImage content="Choose file" getResponse={this.handleUpLoadFile} />
+                  <UploadImage content="Choose file" name="adhaarCard" />
                 </div>
               ) : (
                 <div className={styles.viewUpLoadData}>
                   <a
-                    href={upFile}
+                    href={employeeInformationURL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.viewUpLoadDataURL}
@@ -255,10 +241,10 @@ class Edit extends PureComponent {
             </>
           </div>
 
-          {upFile !== '' ? (
+          {employeeInformationURL !== '' ? (
             <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
               <a
-                href={upFile}
+                href={employeeInformationURL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.urlUpload}
