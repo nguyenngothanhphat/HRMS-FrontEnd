@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Layout } from 'antd';
-import RightImage from '../../public/assets/images/Group79@3x.png';
+import RightImage from '../../public/assets/images/Intranet_01@3x.png';
 import styles from './SignUpLayout2.less';
 
 const { Header, Content } = Layout;
