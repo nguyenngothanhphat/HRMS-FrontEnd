@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
-import SentProvisionalOffers from './components/SentProvisionalOffers';
-import ReceivedProvisionalOffers from './components/ReceivedProvisionalOffers';
+import SentProvisionalOffers from './components/SentProvisionalOffers/index';
+import ReceivedProvisionalOffers from './components/ReceivedProvisionalOffers/index';
 
 import styles from './index.less';
 

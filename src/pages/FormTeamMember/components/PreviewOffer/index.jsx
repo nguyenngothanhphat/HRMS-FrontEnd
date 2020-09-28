@@ -35,7 +35,7 @@ const PreviewOffer = (props) => {
   } = previewOffer;
 
   const inputRefs = [];
-  let fileRef = null;
+  // let fileRef = null;
 
   const [file, setFile] = useState(fileProp || null);
 
@@ -346,9 +346,9 @@ const PreviewOffer = (props) => {
           <input
             className={styles.uploadInput}
             type="file"
-            ref={(ref) => {
-              fileRef = ref;
-            }}
+            // ref={(ref) => {
+            //   fileRef = ref;
+            // }}
             onChange={(e) => {
               imageHandler(e);
             }}
