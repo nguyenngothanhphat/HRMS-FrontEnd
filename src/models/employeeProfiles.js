@@ -81,9 +81,11 @@ const employeeProfile = {
     },
     *addNewChangeHistory({ payload }, { call }) {
       try {
-        const response = yield call(addChangeHistory, payload);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
+        if (payload.employee && payload.changedBy) {
+          const response = yield call(addChangeHistory, payload);
+          const { statusCode } = response;
+          if (statusCode !== 200) throw response;
+        }
       } catch (error) {
         dialog(error);
       }

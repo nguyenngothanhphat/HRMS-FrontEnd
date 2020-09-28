@@ -68,7 +68,7 @@ class EmploymentTab extends PureComponent {
     });
   };
 
-  handleSubmit = (data) => {
+  handleSubmit = async (data) => {
     const { dispatch } = this.props;
     let takeEffect = '';
     if (data.stepOne === 'Now') {
@@ -86,14 +86,18 @@ class EmploymentTab extends PureComponent {
       effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
       changeDate: new Date(),
       takeEffect,
-      employee: data.employee || null,
-      changedBy: data.changedBy || null,
+      employee: data.employee,
+      changedBy: data.changedBy,
     };
     const array = Object.keys(payload);
     for (let i = 0; i < array.length; i += 1) {
       if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
     dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    dispatch({
+      type: 'employeeProfile/fetchEmploymentInfo',
+      payload: data.employee,
+    });
   };
 
   nextTab = (msg) => {
