@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-
 import {
   COLUMN_NAME,
   TABLE_TYPE,

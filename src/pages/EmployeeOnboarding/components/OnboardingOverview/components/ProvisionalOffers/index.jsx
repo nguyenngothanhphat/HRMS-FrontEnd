@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
-
 import SentProvisionalOffers from './components/SentProvisionalOffers/index';
 import ReceivedProvisionalOffers from './components/ReceivedProvisionalOffers/index';
 

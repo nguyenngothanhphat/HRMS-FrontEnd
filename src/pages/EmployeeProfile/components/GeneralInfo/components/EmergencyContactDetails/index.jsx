@@ -19,30 +19,16 @@ import styles from './index.less';
   }),
 )
 class EmergencyContact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-    this.editRef = React.createRef();
-  }
-
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openContactDetails: true },
     });
-    // this.setState({
-    //   isEdit: true,
-    // });
   };
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    // this.setState({
-    //   isEdit: false,
-    // });
     const {
       emergencyContact = '',
       emergencyPersonName = '',
@@ -71,7 +57,6 @@ class EmergencyContact extends Component {
 
   render() {
     const { generalData, openContactDetails } = this.props;
-    const { isEdit } = this.state;
     const renderComponent = openContactDetails ? (
       <Edit refForm={this.editRef} handleCancel={this.handleCancel} />
     ) : (
@@ -81,7 +66,7 @@ class EmergencyContact extends Component {
       <div className={styles.EmergencyContact}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Emergency Contact Details</p>
-          {isEdit ? (
+          {openContactDetails ? (
             ''
           ) : (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
