@@ -10,7 +10,7 @@ const routes = [
     ],
   },
   {
-    path: '/signup1',
+    path: '/signup',
     component: '../layouts/SignUpLayout1',
     routes: [
       {
