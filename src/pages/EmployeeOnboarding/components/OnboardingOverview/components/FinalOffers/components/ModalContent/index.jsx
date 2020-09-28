@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import img1 from './images/modal_img_1.png';
-import img2 from './images/modal_img_2.png';
+import img2 from './images/img_2.png';
 
 import styles from './index.less';
 // import './index.less';
