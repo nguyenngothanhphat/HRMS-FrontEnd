@@ -46,7 +46,6 @@ class Edit extends PureComponent {
 
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
-    console.log(generalDataTemp);
     const {
       personalNumber = '',
       personalEmail = '',
@@ -168,7 +167,6 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
-              allowClear
               className={styles.selectForm}
               onDropdownVisibleChange={this.handleDropdown}
               suffixIcon={

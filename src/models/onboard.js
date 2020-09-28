@@ -258,6 +258,7 @@ const PHASE_DATA = [
       {
         id: 1,
         name: 'Pending Eligibility Checks',
+        // name: {formatMessage({ id: 'component.onboardingOverview.new' })},
         key: 'pendingEligibilityChecks',
         component: 'PendingEligibilityChecks',
         quantity: sentEligibilityFormsData.length,

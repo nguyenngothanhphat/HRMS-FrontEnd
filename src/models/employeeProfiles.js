@@ -7,6 +7,13 @@ import {
   getListTitle,
   addCertification,
   updateCertification,
+  getPassPort,
+  getCountryList,
+  updatePassPort,
+  updateVisa,
+  getAddPassPort,
+  getVisa,
+  getAddVisa,
   getEmploymentInfo,
   getLocationList,
   getEmployeeTypeList,
@@ -27,6 +34,7 @@ const employeeProfile = {
       openPersonnalInfor: false,
       openAcademic: false,
     },
+    countryList: [],
     idCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
@@ -38,11 +46,15 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
+      passportData: {},
+      visaData: [],
       employmentData: {},
     },
     tempData: {
       generalData: {},
       compensationData: {},
+      passportData: {},
+      visaData: [],
     },
   },
   effects: {
@@ -107,6 +119,82 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *fetchCountryList(_, { call, put }) {
+      try {
+        const response = yield call(getCountryList);
+        const { statusCode, data: countryList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { countryList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchPassPort({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+      try {
+        const response = yield call(getPassPort, { employee });
+        const { statusCode, data: [passportData = {}] = [] } = response;
+        if (statusCode !== 200) throw response;
+        const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
+        let passportDataTemp = { ...passportData };
+        if (!checkDataTempKept) {
+          passportDataTemp = { ...passportDataTemp, ...dataTempKept };
+          delete passportDataTemp.updatedAt;
+          delete passportData.updatedAt;
+          const isModified = JSON.stringify(passportDataTemp) !== JSON.stringify(passportData);
+          yield put({
+            type: 'save',
+            payload: { isModified },
+          });
+        }
+        yield put({
+          type: 'save',
+          payload: { idCurrentEmployee: employee },
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { passportData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { passportData: passportDataTemp },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchVisa({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+      try {
+        const response = yield call(getVisa, { employee });
+        const { statusCode, data: visaData = [] } = response;
+        if (statusCode !== 200) throw response;
+        const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
+        const visaDataTemp = [...visaData];
+        if (!checkDataTempKept) {
+          const isModified = JSON.stringify(visaDataTemp) !== JSON.stringify(visaData);
+          yield put({
+            type: 'save',
+            payload: { isModified },
+          });
+        }
+        yield put({
+          type: 'save',
+          payload: { idCurrentEmployee: employee },
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { visaData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { visaData: visaDataTemp },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchListSkill(_, { call, put }) {
       try {
         const response = yield call(getListSkill);
@@ -163,6 +251,102 @@ const employeeProfile = {
         yield put({ type: 'save', payload: { employees } });
       } catch (error) {
         dialog(error);
+      }
+    },
+    *addPassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(getAddPassPort, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openPassportandVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassportandVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(getAddVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openPassportandVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassportandVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updatePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(updatePassPort, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchPassPort',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openPassportandVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassportandVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateVisa({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(updateVisa, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchVisa',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openPassportandVisa') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openPassportandVisa: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
       }
     },
 

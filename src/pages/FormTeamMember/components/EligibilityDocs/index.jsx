@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
-import CustomModal from '@/components/CustomModal';
+import CustomModal from '@/components/CustomModal/index';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';

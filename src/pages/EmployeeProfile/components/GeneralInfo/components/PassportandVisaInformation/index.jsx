@@ -7,25 +7,24 @@ import styles from './index.less';
 
 @connect(
   ({
+    upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, visaData = [] } = {},
     } = {},
   }) => ({
     openPassportandVisa,
-    generalDataOrigin,
-    generalData,
+    passportDataOrigin,
+    passportData,
+    visaDataOrigin,
+    visaData,
+    passPortURL,
+    visa0URL,
+    visa1URL,
   }),
 )
 class PassportVisaInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -35,36 +34,31 @@ class PassportVisaInformation extends PureComponent {
   };
 
   handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
+    const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
     const {
-      passportNo = '',
-      passportIssueCountry = '',
-      passportIssueOn = '',
+      passportNumber = '',
+      passportIssuedCountry = '',
+      passportIssuedOn = '',
       passportValidTill = '',
-      visaNo = '',
-      visaType = '',
-      visaCountry = '',
-      visaEntryType = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
-    } = generalDataOrigin;
+    } = passportDataOrigin;
     const reverseFields = {
-      passportNo,
-      passportIssueCountry,
-      passportIssueOn,
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
       passportValidTill,
-      visaNo,
-      visaType,
-      visaCountry,
-      visaEntryType,
-      visaIssuedOn,
-      visaValidTill,
     };
-    const payload = { ...generalData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+    const payloadVisa = [...visaDataOrigin];
+    const payloadPassPort = { ...passportData, ...reverseFields };
+    const isModified =
+      JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin) ||
+      JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { generalData: payload },
+      payload: { passportData: payloadPassPort },
+    });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: payloadVisa },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -74,21 +68,24 @@ class PassportVisaInformation extends PureComponent {
       type: 'employeeProfile/saveOpenEdit',
       payload: { openPassportandVisa: false },
     });
+    dispatch({
+      type: 'upload/cancelUpload',
+      payload: { passPortURL: '', visa0URL: '', visa1URL: '' },
+    });
   };
 
   render() {
-    const { generalData, openPassportandVisa } = this.props;
-    const { isEdit } = this.state;
+    const { passportData, openPassportandVisa } = this.props;
     const renderComponent = openPassportandVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={generalData} />
+      <View dataAPI={passportData} />
     );
     return (
       <div className={styles.PassportVisaInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport and Visa Information</p>
-          {isEdit ? (
+          {openPassportandVisa ? (
             ''
           ) : (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
