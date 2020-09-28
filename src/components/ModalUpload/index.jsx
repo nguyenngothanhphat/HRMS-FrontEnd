@@ -4,7 +4,15 @@ import { Modal, Button, Upload, message } from 'antd';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { connect } from 'umi';
+import { InboxOutlined } from '@ant-design/icons';
 import styles from './index.less';
+
+const { Dragger } = Upload;
+const propsUpload = {
+  name: 'file',
+  multiple: false,
+  showUploadList: false,
+};
 
 // Component has 5 props:  handleCancel =()=>{}, getResponse = () => {}, titleModal = "", visible= boolean, widthImage =""
 
@@ -96,24 +104,22 @@ class ModalUpload extends Component {
 
   renderHeaderModal = () => {
     const { titleModal = 'Your title' } = this.props;
-    const props = {
-      name: 'file',
-      multiple: false,
-      showUploadList: false,
-    };
+    const { imageUrl } = this.state;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
-        <Upload {...props} onChange={this.onChange} beforeUpload={this.beforeUpload}>
-          <div className={styles.header__upload}>
-            <img
-              className={styles.header__upload__icon}
-              src="/assets/images/iconUpload.svg"
-              alt="img-upload"
-            />
-            <span className={styles.header__upload__text}>Upload new</span>
-          </div>
-        </Upload>
+        {imageUrl && (
+          <Upload {...propsUpload} onChange={this.onChange} beforeUpload={this.beforeUpload}>
+            <div className={styles.header__upload}>
+              <img
+                className={styles.header__upload__icon}
+                src="/assets/images/iconUpload.svg"
+                alt="img-upload"
+              />
+              <span className={styles.header__upload__text}>Upload new</span>
+            </div>
+          </Upload>
+        )}
       </div>
     );
   };
@@ -210,11 +216,12 @@ class ModalUpload extends Component {
               onChange={this.onCropChange}
             />
           ) : (
-            <img
-              src="https://semantic-ui.com/images/wireframe/white-image.png"
-              alt="empty"
-              className={styles.viewEmpty}
-            />
+            <Dragger {...propsUpload} onChange={this.onChange} beforeUpload={this.beforeUpload}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            </Dragger>
           )}
         </div>
       </Modal>
