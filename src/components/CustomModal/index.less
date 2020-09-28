@@ -5,26 +5,13 @@
 @orange: #ffa100;
 @dark-orange: #eb9500;
 
-// .openBtn {
-//   display: none;
-// }
-.onboardModal {
-  font-family: 'Roboto';
-}
+.root {
+  .body {
+    min-height: 120px;
+  }
 
-:global {
-  .ant-modal-root {
-    // .testFixed & {
-    //   position: fixed;
-    // }
-    .ant-modal-mask {
-      background-color: #161c29;
-      opacity: 0.7;
-    }
-
+  :global {
     .ant-modal-header {
-      //   padding: 16px 0;
-      //   padding-left: 16px;
       position: absolute;
       top: 16px;
       left: 16px;
@@ -32,8 +19,6 @@
     }
 
     .ant-modal-content {
-      width: 590px !important;
-      // height: 340px;
       border-radius: 9px;
       border-top-right-radius: 0;
     }
@@ -56,8 +41,8 @@
       padding: 0;
     }
 
-    &:hover {
-      background-color: @dark-blue;
-    }
+    // &:hover {
+    //   background-color: @dark-blue;
+    // }
   }
 }
