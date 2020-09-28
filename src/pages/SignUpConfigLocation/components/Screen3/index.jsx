@@ -31,7 +31,7 @@ const Screen3 = () => {
         <div className={styles.titleAndDescription}>
           <p className={styles.title}>Last but not least, secure your account with a password</p>
           {arrText.map((item) => (
-            <div style={{ marginBottom: '18px' }}>
+            <div key={item} style={{ marginBottom: '18px' }}>
               <CheckCircleFilled style={{ color: '#13A951', marginRight: '10px' }} />
               <span className={styles.description}>{item}</span>
             </div>
