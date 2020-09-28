@@ -167,12 +167,12 @@ class TableUsers extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
-    // console.log('selectedRowKeys changed: ', selectedRowKeys);
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loading, loadingUserProfile } = this.props;
     const { pageSelected, selectedRowKeys, editModalVisible, selectedUserId } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -209,7 +209,7 @@ class TableUsers extends PureComponent {
 
     return (
       <div className={styles.tableUsers}>
-        {selectedUserId && editModalVisible && (
+        {!loadingUserProfile && selectedUserId && editModalVisible && (
           <EditUserModal
             userProfile={listUserProfile}
             editModalVisible={editModalVisible}
@@ -225,6 +225,7 @@ class TableUsers extends PureComponent {
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
+          rowKey="userId"
           // onChange={this.onSortChange}
         />
       </div>
