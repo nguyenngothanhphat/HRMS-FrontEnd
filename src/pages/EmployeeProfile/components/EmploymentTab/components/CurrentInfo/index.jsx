@@ -1,8 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import moment from 'moment';
+import { useParams, connect } from 'umi';
 import styles from './styles.less';
 
-export default function CurrentInfo(props) {
-  const { data } = props;
+function CurrentInfo(props) {
+  const { dispatch, employeeProfile } = props;
+  const params = useParams();
+
+  const {
+    title,
+    joinDate,
+    location,
+    employeeType,
+    manager,
+  } = employeeProfile.originData.employmentData;
+  const {
+    compensationType,
+    currentAnnualCTC,
+    timeOffPolicy,
+  } = employeeProfile.originData.compensationData;
+
+  const data = {
+    title: title.name,
+    joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
+    location: location.name,
+    employType: employeeType.name,
+    compenType: compensationType || 'This person is missing payment method',
+    annualSalary: currentAnnualCTC || 0,
+    manager: manager.generalInfo.firstName,
+    timeOff: timeOffPolicy || 'This person is not allowed to take time off',
+  };
+  useEffect(() => {
+    dispatch({
+      type: 'employeeProfile/fetchEmploymentInfo',
+      payload: params.reId,
+    });
+  }, [data]);
 
   return (
     <div style={{ margin: '24px' }}>
@@ -55,3 +88,4 @@ export default function CurrentInfo(props) {
     </div>
   );
 }
+export default connect(({ employeeProfile }) => ({ employeeProfile }))(CurrentInfo);

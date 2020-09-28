@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
-// import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import moment from 'moment';
 import edit from './asset/edit.svg';
@@ -26,32 +25,16 @@ class EmploymentTab extends PureComponent {
     super(props);
     const { employeeProfile } = this.props;
 
-    const {
-      title,
-      joinDate,
-      location,
-      employeeType,
-      manager,
-    } = employeeProfile.originData.employmentData;
+    const { title } = employeeProfile.originData.employmentData;
     const { firstName } = employeeProfile.originData.generalData;
-    const {
-      compensationType,
-      currentAnnualCTC,
-      timeOffPolicy,
-    } = employeeProfile.originData.compensationData;
+    const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       current: 0,
       currentData: {
         name: firstName,
         title: title.name,
-        joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
-        location: location.name,
-        employType: employeeType.name,
-        compenType: compensationType || 'This person is missing payment method',
         annualSalary: currentAnnualCTC || 0,
-        manager: manager.generalInfo.firstName,
-        timeOff: timeOffPolicy || 'This person is not allowed to take time off',
       },
     };
   }
@@ -62,15 +45,32 @@ class EmploymentTab extends PureComponent {
     this.setState({ isChanging: !isChanging });
   };
 
-  handleChangeHistory = () => {
-    this.setState({
-      isChanging: true,
-    });
-  };
-
-  handleSubmit = (data) => {
-    // console.log(data);
-    alert("Submitted! No API yet so you won't see any changes", data);
+  handleSubmit = async (data) => {
+    const { dispatch } = this.props;
+    let takeEffect = '';
+    if (data.stepOne === 'Now') {
+      takeEffect = 'UPDATED';
+    } else if (Date.parse(data.stepOne) < Date.now()) {
+      takeEffect = 'UPDATED';
+    } else takeEffect = 'WILL_UPDATE';
+    const payload = {
+      title: data.stepTwo.title || null,
+      manager: data.stepThree.reportTo || null,
+      currentAnnualCTC: Number(data.stepTwo.salary) || null,
+      location: data.stepTwo.wLocation || null,
+      employeeType: data.stepTwo.employment || null,
+      department: data.stepThree.department || null,
+      effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
+      changeDate: new Date(),
+      takeEffect,
+      employee: data.employee,
+      changedBy: data.changedBy,
+    };
+    const array = Object.keys(payload);
+    for (let i = 0; i < array.length; i += 1) {
+      if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
+    }
+    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   nextTab = (msg) => {
@@ -90,6 +90,7 @@ class EmploymentTab extends PureComponent {
 
   render() {
     const { isChanging, current, currentData } = this.state;
+    const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
@@ -117,7 +118,7 @@ class EmploymentTab extends PureComponent {
               current={current}
             />
           ) : (
-            <CurrentInfo data={currentData} />
+            <CurrentInfo dispatch={dispatch} data={currentData} />
           )}
           {isChanging ? (
             <div className={styles.footer}>
@@ -136,7 +137,7 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon}></div>
+            <div className={styles.employmentTab_changeIcon} />
           </div>
           <ChangeHistoryTable />
         </div>
