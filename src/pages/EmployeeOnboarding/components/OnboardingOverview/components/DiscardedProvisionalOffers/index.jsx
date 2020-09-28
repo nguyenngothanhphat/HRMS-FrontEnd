@@ -6,7 +6,7 @@ import {
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
 // console.log(list);

@@ -4,7 +4,7 @@ import {
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 const { ID, NAME, POSITION, LOCATION, DATE_SENT, ACTION } = COLUMN_NAME;
 const { SENT_ELIGIBILITY_FORMS } = TABLE_TYPE;

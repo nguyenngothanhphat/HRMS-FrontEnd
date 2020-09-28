@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
-import ApprovedFinalOffers from './components/ApprovedFinalOffers';
-import PendingApprovals from './components/PendingApprovals';
-import RejectFinalOffers from './components/RejectFinalOffers';
+import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
+import PendingApprovals from './components/PendingApprovals/index';
+import RejectFinalOffers from './components/RejectFinalOffers/index';
 
 import styles from './index.less';
 

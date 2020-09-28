@@ -1,3 +1,4 @@
+import { formatMessage } from 'umi';
 import { TABLE_TYPE } from '../utils';
 
 const getActionText = (type) => {
@@ -22,27 +23,27 @@ const getActionText = (type) => {
   switch (type) {
     case PENDING_ELIGIBILITY_CHECKS:
     case RECEIVED_SUBMITTED_DOCUMENTS:
-      return 'review';
+      return formatMessage({ id: 'component.onboardingOverview.review' });
     case ELIGIBLE_CANDIDATES:
-      return 'prepare provisial offer';
+      return formatMessage({ id: 'component.onboardingOverview.prepareProvisionalOffer' });
     case SENT_PROVISIONAL_OFFERS:
-      return 'draft final offer';
+      return formatMessage({ id: 'component.onboardingOverview.draftFinalOffer' });
     case SENT_ELIGIBILITY_FORMS:
     case RECEIVED_PROVISIONAL_OFFERS:
     case INELIGIBLE_CANDIDATES:
     case DISCARDED_PROVISIONAL_OFFERS:
-      return 'view form';
+      return formatMessage({ id: 'component.onboardingOverview.viewForm' });
     case APPROVED_FINAL_OFFERS:
-      return 'send offer';
+      return formatMessage({ id: 'component.onboardingOverview.sendOffer' });
     case PENDING_APPROVALS:
     case REJECTED_FINAL_OFFERS:
     case DISCARDED_FINAL_OFFERS:
-      return 'view draft';
+      return formatMessage({ id: 'component.onboardingOverview.viewDraft2' });
     case FINAL_OFFERS_DRAFTS:
-      return 'send for approval';
+      return formatMessage({ id: 'component.onboardingOverview.sendForApproval' });
     case SENT_FINAL_OFFERS:
     case ACCEPTED_FINAL_OFFERS:
-      return 'create profile';
+      return formatMessage({ id: 'component.onboardingOverview.createProfile' });
     default:
       return '';
   }
