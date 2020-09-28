@@ -78,7 +78,7 @@ export async function getAddPassPort(payload) {
   });
 }
 export async function updateVisa(payload) {
-  return request('/api/visa/update', {
+  return request('/api/visa/upsert', {
     method: 'POST',
     data: payload,
   });

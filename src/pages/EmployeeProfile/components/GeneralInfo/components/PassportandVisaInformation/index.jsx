@@ -7,6 +7,7 @@ import styles from './index.less';
 
 @connect(
   ({
+    upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
@@ -18,6 +19,9 @@ import styles from './index.less';
     passportData,
     visaDataOrigin,
     visaData,
+    passPortURL,
+    visa0URL,
+    visa1URL,
   }),
 )
 class PassportVisaInformation extends PureComponent {
@@ -63,6 +67,10 @@ class PassportVisaInformation extends PureComponent {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openPassportandVisa: false },
+    });
+    dispatch({
+      type: 'upload/cancelUpload',
+      payload: { passPortURL: '', visa0URL: '', visa1URL: '' },
     });
   };
 

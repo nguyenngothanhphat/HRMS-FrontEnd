@@ -7,6 +7,7 @@ import styles from './index.less';
 
 @connect(
   ({
+    upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
       editGeneral: { openEmployeeInfor = false },
       originData: { generalData: generalDataOrigin = {} } = {},
@@ -16,6 +17,7 @@ import styles from './index.less';
     openEmployeeInfor,
     generalDataOrigin,
     generalData,
+    employeeInformationURL,
   }),
 )
 class EmployeeInformation extends PureComponent {
@@ -62,6 +64,10 @@ class EmployeeInformation extends PureComponent {
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
       payload: { openEmployeeInfor: false },
+    });
+    dispatch({
+      type: 'upload/cancelUpload',
+      payload: { employeeInformationURL: '' },
     });
   };
 

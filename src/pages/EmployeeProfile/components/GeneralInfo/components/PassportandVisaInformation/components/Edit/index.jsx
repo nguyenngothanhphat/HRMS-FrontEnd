@@ -11,7 +11,7 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    upload: { passPortURL = '' },
+    upload: { passPortURL = '', visa0IDURL = '', visa1IDURL = '', passPortIDURL = '' },
     employeeProfile: {
       countryList,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = {} } = {},
@@ -26,6 +26,9 @@ import styles from './index.less';
     visaDataOrigin,
     visaData,
     passPortURL,
+    visa0IDURL,
+    visa1IDURL,
+    passPortIDURL,
   }),
 )
 class Edit extends PureComponent {
@@ -74,20 +77,6 @@ class Edit extends PureComponent {
       passportIssuedOn,
       passportValidTill,
     };
-    // const {
-    //   number = '',
-    //   issuedCountry = '',
-    //   issuedOn = '',
-    //   validTill = '',
-    //   _id: id = '',
-    // } = passportDataTemp;
-    // const payloadChanges = {
-    //   id,
-    //   passportNumber: number,
-    //   passportIssuedCountry: issuedCountry,
-    //   passportIssuedOn: issuedOn,
-    //   passportValidTill: validTill,
-    // };
 
     return payloadChanges;
   };
@@ -140,7 +129,7 @@ class Edit extends PureComponent {
   };
 
   processDataAddPassPort = () => {
-    const { passportData: passportDataTemp, generalData } = this.props;
+    const { passportData: passportDataTemp, generalData, passPortIDURL = '' } = this.props;
     const { employee = '' } = generalData;
     const {
       passportNumber = '',
@@ -153,14 +142,55 @@ class Edit extends PureComponent {
       passportIssuedCountry,
       passportIssuedOn,
       passportValidTill,
+      document: passPortIDURL,
       employee,
     };
     return payloadChanges;
   };
 
   processDataAddVisa = () => {
-    const { visaData, generalData } = this.props;
+    const { visaData, generalData, visa0IDURL, visa1IDURL } = this.props;
     const { employee = '' } = generalData;
+    if (visaData.length === 2) {
+      const formatData = visaData.map((item, index) => {
+        const {
+          visaNumber,
+          visaIssuedCountry,
+          visaIssuedOn,
+          visaType,
+          visaValidTill,
+          visaEntryType,
+        } = item;
+        const formVisa1 =
+          index === 0
+            ? {
+                document: visa0IDURL,
+                employee,
+                visaNumber,
+                visaIssuedCountry,
+                visaIssuedOn,
+                visaType,
+                visaValidTill,
+                visaEntryType,
+              }
+            : '';
+        const formVisa2 =
+          index === 0
+            ? {
+                document: visa1IDURL,
+                employee,
+                visaNumber,
+                visaIssuedCountry,
+                visaIssuedOn,
+                visaType,
+                visaValidTill,
+                visaEntryType,
+              }
+            : '';
+        return [formVisa1, formVisa2];
+      });
+      return formatData;
+    }
     const itemData1 = visaData[0];
     const {
       visaNumber = '',
@@ -177,6 +207,7 @@ class Edit extends PureComponent {
       visaValidTill,
       visaEntryType,
       visaType,
+      document: visa0IDURL,
       employee,
     };
     return payloadChanges;
@@ -287,7 +318,6 @@ class Edit extends PureComponent {
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportData;
-    // const { number = '', issuedCountry = '', issuedOn = '', validTill = '' } = passportData;
     const {
       visaNumber = '',
       visaIssuedCountry,
@@ -309,8 +339,6 @@ class Edit extends PureComponent {
     };
     const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
     const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-    // const formatDatePassportIssueOn = issuedOn && moment(issuedOn);
-    // const formatDatePassportValidTill = validTill && moment(validTill);
     const formatDateVisaIssueOn = visaIssuedOn && moment(visaIssuedOn);
     const formatDateVisaValidTill = visaValidTill && moment(visaValidTill);
     const dateFormat = 'Do MMM YYYY';
@@ -323,8 +351,6 @@ class Edit extends PureComponent {
           initialValues={{
             passportNumber,
             passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
-            // passportNumber: number,
-            // passportIssuedCountry: issuedCountry,
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
             visaNumber0: visaNumber,
