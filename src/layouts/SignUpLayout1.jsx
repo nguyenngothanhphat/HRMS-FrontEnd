@@ -1,20 +1,18 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'umi';
 import { Layout, Row, Col, InputNumber, Button } from 'antd';
 
 import gmail from '@/assets/gmail-icon.png';
 import outlook from '@/assets/outlook-icon.png';
 
-const { Header, Content } = Layout;
-
 import img from '@/assets/sign-up-img.png';
 
 import styles from './SignUpLayout1.less';
 
+const { Header, Content } = Layout;
+
 const SignUpLayout1 = (props) => {
   const { children } = props;
-
-  const 
 
   return (
     <Layout className={styles.root}>

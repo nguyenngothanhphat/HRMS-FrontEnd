@@ -11,7 +11,7 @@ const routes = [
   },
   {
     path: '/signup1',
-    component: '../layouts/SignUpLayout1',
+    component: '../layouts/SignUpLayout2',
     routes: [
       {
         path: '/signup1',
