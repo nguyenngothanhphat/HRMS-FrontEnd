@@ -1,4 +1,4 @@
-import { PageHeader, Tabs } from 'antd';
+import { PageHeader, Tabs, Affix } from 'antd';
 import React, { useContext, ReactNode } from 'react';
 import classNames from 'classnames';
 import { TabsProps, TabPaneProps } from 'antd/lib/tabs';
@@ -96,18 +96,20 @@ const defaultPageHeaderRender = (
     pageHeaderTitle = value.title;
   }
   return (
-    <PageHeader
-      {...value}
-      title={pageHeaderTitle}
-      {...restProps}
-      footer={renderFooter({
-        ...restProps,
-        prefixedClassName: value.prefixedClassName,
-      })}
-      prefixCls={prefixCls}
-    >
-      {renderPageHeader(content, extraContent, value.prefixedClassName)}
-    </PageHeader>
+    <Affix offsetTop={0}>
+      <PageHeader
+        {...value}
+        title={pageHeaderTitle}
+        {...restProps}
+        footer={renderFooter({
+          ...restProps,
+          prefixedClassName: value.prefixedClassName,
+        })}
+        prefixCls={prefixCls}
+      >
+        {renderPageHeader(content, extraContent, value.prefixedClassName)}
+      </PageHeader>
+    </Affix>
   );
 };
 

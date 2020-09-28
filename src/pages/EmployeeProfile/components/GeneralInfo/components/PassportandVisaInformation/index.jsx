@@ -1,173 +1,100 @@
 import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Button } from 'antd';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
 @connect(
   ({
-    loading,
+    upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
     employeeProfile: {
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
+      editGeneral: { openPassportandVisa = false },
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, visaData = [] } = {},
     } = {},
   }) => ({
-    loading: loading.effects['employeeProfile/updateGeneralInfo'],
-    generalDataOrigin,
-    generalData,
+    openPassportandVisa,
+    passportDataOrigin,
+    passportData,
+    visaDataOrigin,
+    visaData,
+    passPortURL,
+    visa0URL,
+    visa1URL,
   }),
 )
 class PassportVisaInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
-    });
-  };
-
-  processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
-    console.log(generalDataTemp);
-    const {
-      passportNo = '',
-      passportIssueCountry = '',
-      passportIssueOn = '',
-      passportValidTill = '',
-      visaNo = '',
-      visaType = '',
-      visaCountry = '',
-      visaEntryType = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
-      _id: id = '',
-    } = generalDataTemp;
-    const payloadChanges = {
-      id,
-      passportNo,
-      passportIssueCountry,
-      passportIssueOn,
-      passportValidTill,
-      visaNo,
-      visaType,
-      visaCountry,
-      visaEntryType,
-      visaIssuedOn,
-      visaValidTill,
-    };
-    return payloadChanges;
-  };
-
-  processDataKept = () => {
-    const { generalData } = this.props;
-    const newObj = { ...generalData };
-    const listKey = [
-      'passportNo',
-      'passportIssueCountry',
-      'passportIssueOn',
-      'passportValidTill',
-      'visaNo',
-      'visaType',
-      'visaCountry',
-      'visaEntryType',
-      'visaIssuedOn',
-      'visaValidTill',
-    ];
-    listKey.forEach((item) => delete newObj[item]);
-    return newObj;
-  };
-
-  handleSave = () => {
     const { dispatch } = this.props;
-    const payload = this.processDataChanges() || {};
-    const dataTempKept = this.processDataKept() || {};
     dispatch({
-      type: 'employeeProfile/updateGeneralInfo',
-      payload,
-      dataTempKept,
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: true },
     });
   };
 
   handleCancel = () => {
-    const { generalDataOrigin, generalData, dispatch } = this.props;
-    this.setState({
-      isEdit: false,
-    });
+    const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
     const {
-      passportNo = '',
-      passportIssueCountry = '',
-      passportIssueOn = '',
+      passportNumber = '',
+      passportIssuedCountry = '',
+      passportIssuedOn = '',
       passportValidTill = '',
-      visaNo = '',
-      visaType = '',
-      visaCountry = '',
-      visaEntryType = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
-    } = generalDataOrigin;
+    } = passportDataOrigin;
     const reverseFields = {
-      passportNo,
-      passportIssueCountry,
-      passportIssueOn,
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
       passportValidTill,
-      visaNo,
-      visaType,
-      visaCountry,
-      visaEntryType,
-      visaIssuedOn,
-      visaValidTill,
     };
-    const payload = { ...generalData, ...reverseFields };
-    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+    const payloadVisa = [...visaDataOrigin];
+    const payloadPassPort = { ...passportData, ...reverseFields };
+    const isModified =
+      JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin) ||
+      JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { generalData: payload },
+      payload: { passportData: payloadPassPort },
+    });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: payloadVisa },
     });
     dispatch({
       type: 'employeeProfile/save',
       payload: { isModified },
     });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: false },
+    });
+    dispatch({
+      type: 'upload/cancelUpload',
+      payload: { passPortURL: '', visa0URL: '', visa1URL: '' },
+    });
   };
 
   render() {
-    const { generalData, loading } = this.props;
-    const { isEdit } = this.state;
-    const renderComponent = isEdit ? <Edit /> : <View dataAPI={generalData} />;
+    const { passportData, openPassportandVisa } = this.props;
+    const renderComponent = openPassportandVisa ? (
+      <Edit handleCancel={this.handleCancel} />
+    ) : (
+      <View dataAPI={passportData} />
+    );
     return (
       <div className={styles.PassportVisaInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport and Visa Information</p>
-          <div className={styles.flexEdit} onClick={this.handleEdit}>
-            <EditFilled className={styles.IconEdit} />
-            <p className={styles.Edit}>Edit</p>
-          </div>
+          {openPassportandVisa ? (
+            ''
+          ) : (
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <EditFilled className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
+          )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
-        {isEdit ? (
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={this.handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              onClick={this.handleSave}
-              className={styles.buttonFooter}
-            >
-              Save
-            </Button>
-          </div>
-        ) : (
-          ''
-        )}
       </div>
     );
   }
