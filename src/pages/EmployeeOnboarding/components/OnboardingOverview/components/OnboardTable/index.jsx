@@ -4,8 +4,7 @@ import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
-import ModalContent from '../FinalOffers/components/ModalContent';
-
+import ModalContent from '../FinalOffers/components/ModalContent/index';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
 import { getActionText, getColumnWidth } from './utils';
@@ -39,7 +38,9 @@ class OnboardTable extends Component {
       return (
         <p>
           {name}
-          <span className={styles.new}>new</span>
+          <span className={styles.new}>
+            {formatMessage({ id: 'component.onboardingOverview.new' })}
+          </span>
         </p>
       );
     }
@@ -62,14 +63,16 @@ class OnboardTable extends Component {
 
     const columns = [
       {
-        title: 'Rookie Id',
+        // title: 'Rookie Id',
+        title: formatMessage({ id: 'component.onboardingOverview.rookieId' }),
         dataIndex: 'rookieId',
         key: 'rookieId',
         width: getColumnWidth('rookieId', type),
         columnName: ID,
       },
       {
-        title: 'Rookie Name',
+        // title: 'Rookie Name',
+        title: formatMessage({ id: 'component.onboardingOverview.rookieName' }),
         dataIndex: 'rookieId',
         key: 'rookieID2',
         render: (rookieId) => this.renderName(rookieId),
@@ -77,49 +80,56 @@ class OnboardTable extends Component {
         width: getColumnWidth('rookieName', type),
       },
       {
-        title: 'Position',
+        // title: 'Position',
+        title: formatMessage({ id: 'component.onboardingOverview.position' }),
         dataIndex: 'position',
         key: 'position',
         columnName: POSITION,
         width: getColumnWidth('position', type),
       },
       {
-        title: 'Location',
+        // title: 'Location',
+        title: formatMessage({ id: 'component.onboardingOverview.location' }),
         dataIndex: 'location',
         key: 'location',
         columnName: LOCATION,
         width: getColumnWidth('location', type),
       },
       {
-        title: 'Date sent',
+        // title: 'Date sent',
+        title: formatMessage({ id: 'component.onboardingOverview.dateSent' }),
         dataIndex: 'dateSent',
         key: 'dateSent',
         columnName: DATE_SENT,
         width: getColumnWidth('dateSent', type),
       },
       {
-        title: 'Date received',
+        // title: 'Date received',
+        title: formatMessage({ id: 'component.onboardingOverview.dateReceived' }),
         dataIndex: 'dateReceived',
         key: 'dateReceived',
         columnName: DATE_RECEIVED,
         width: getColumnWidth('dateReceived', type),
       },
       {
-        title: 'Date of Joining',
+        // title: 'Date of Joining',
+        title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
         dataIndex: 'dateJoin',
         key: 'dateJoin',
         columnName: DATE_JOIN,
         width: getColumnWidth('dateJoin', type),
       },
       {
-        title: 'Comments',
+        // title: 'Comments',
+        title: formatMessage({ id: 'component.onboardingOverview.comments' }),
         dataIndex: 'comments',
         key: 'comments',
         width: getColumnWidth('comments', type),
         columnName: COMMENT,
       },
       {
-        title: 'Actions',
+        // title: 'Actions',
+        title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
@@ -129,7 +139,9 @@ class OnboardTable extends Component {
               <>
                 <span>{actionText}</span>
 
-                <span className={styles.viewDraft}>View Draft</span>
+                <span className={styles.viewDraft}>
+                  {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+                </span>
               </>
             ) : (
               <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
