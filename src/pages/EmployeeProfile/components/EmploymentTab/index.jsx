@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Button, div } from 'antd';
-import { dialog } from '@/utils/utils';
 import { connect } from 'umi';
 import moment from 'moment';
 import edit from './asset/edit.svg';
@@ -26,32 +25,16 @@ class EmploymentTab extends PureComponent {
     super(props);
     const { employeeProfile } = this.props;
 
-    const {
-      title,
-      joinDate,
-      location,
-      employeeType,
-      manager,
-    } = employeeProfile.originData.employmentData;
+    const { title } = employeeProfile.originData.employmentData;
     const { firstName } = employeeProfile.originData.generalData;
-    const {
-      compensationType,
-      currentAnnualCTC,
-      timeOffPolicy,
-    } = employeeProfile.originData.compensationData;
+    const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       current: 0,
       currentData: {
         name: firstName,
         title: title.name,
-        joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
-        location: location.name,
-        employType: employeeType.name,
-        compenType: compensationType || 'This person is missing payment method',
         annualSalary: currentAnnualCTC || 0,
-        manager: manager.generalInfo.firstName,
-        timeOff: timeOffPolicy || 'This person is not allowed to take time off',
       },
     };
   }
@@ -60,12 +43,6 @@ class EmploymentTab extends PureComponent {
     const { isChanging } = this.state;
     this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
-  };
-
-  handleChangeHistory = () => {
-    this.setState({
-      isChanging: true,
-    });
   };
 
   handleSubmit = async (data) => {
@@ -94,10 +71,6 @@ class EmploymentTab extends PureComponent {
       if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
     }
     dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
-    dispatch({
-      type: 'employeeProfile/fetchEmploymentInfo',
-      payload: data.employee,
-    });
   };
 
   nextTab = (msg) => {
@@ -117,6 +90,7 @@ class EmploymentTab extends PureComponent {
 
   render() {
     const { isChanging, current, currentData } = this.state;
+    const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
@@ -144,7 +118,7 @@ class EmploymentTab extends PureComponent {
               current={current}
             />
           ) : (
-            <CurrentInfo data={currentData} />
+            <CurrentInfo dispatch={dispatch} data={currentData} />
           )}
           {isChanging ? (
             <div className={styles.footer}>
