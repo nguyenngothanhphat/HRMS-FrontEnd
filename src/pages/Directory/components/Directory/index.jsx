@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import Icon, { FilterOutlined } from '@ant-design/icons';
+import Icon from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
@@ -188,7 +188,7 @@ class DirectoryComponent extends PureComponent {
             <div className={styles.filterBackgroundButton} />
           )}
           <div className={styles.filterButton}>
-            <FilterOutlined />
+            <img src="/assets/images/iconFilter.svg" alt="filter" />
             <p className={styles.textButtonFilter}>Filter</p>
           </div>
         </div>

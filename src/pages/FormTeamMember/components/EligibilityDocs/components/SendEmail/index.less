@@ -132,6 +132,18 @@
     display: none;
     .linkForm {
       position: relative;
+      .wrapperInput {
+        position: relative;
+        .generateButton {
+          position: absolute;
+          top: 0;
+          right: 0;
+          .generateButtonItem {
+            border: 0;
+            background: transparent;
+          }
+        }
+      }
       :global {
         .ant-form-item {
           .ant-form-item-control {
@@ -150,6 +162,7 @@
                   color: #161c29;
                   overflow: hidden;
                   text-overflow: ellipsis;
+                  border-radius: 5px;
                 }
               }
             }
@@ -160,10 +173,6 @@
         position: absolute;
         top: 10px;
         right: 11px;
-      }
-      .generateButton {
-        position: static;
-        border: 0;
       }
     }
     .textBottom {

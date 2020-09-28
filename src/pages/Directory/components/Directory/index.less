@@ -1,7 +1,6 @@
 .DirectoryComponent {
-  max-width: 1150px;
   min-width: 1150px;
-  margin: 32px auto;
+  margin: 32px 60px;
   .TabComponent {
     :global {
       .ant-tabs-tab {
@@ -128,7 +127,11 @@
       left: 25%;
       content: '';
       display: flex;
+      align-items: flex-end;
       flex-flow: row;
+      img {
+        padding-right: 10px;
+      }
       :global {
         .anticon-filter {
           font-size: 14px;
