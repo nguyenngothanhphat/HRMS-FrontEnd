@@ -50,7 +50,8 @@ const SignUpLayout1 = (props) => {
 
           <div className={styles.rightContent}>
             {/* <SignUp2 /> */}
-            <SignUp1 />
+            {/* <SignUp1 /> */}
+            {children}
           </div>
         </div>
       </Content>
