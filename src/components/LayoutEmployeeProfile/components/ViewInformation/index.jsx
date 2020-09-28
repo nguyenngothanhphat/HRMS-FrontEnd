@@ -3,6 +3,7 @@ import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
+import CustomModal from '@/components/CustomModal';
 import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
@@ -23,8 +24,16 @@ class ViewInformation extends PureComponent {
     super(props);
     this.state = {
       visible: false,
+      openEditBio: false,
     };
   }
+
+  handleEditBio = () => {
+    const { openEditBio } = this.state;
+    this.setState({
+      openEditBio: !openEditBio,
+    });
+  };
 
   openModalUpload = () => {
     this.setState({
@@ -74,13 +83,13 @@ class ViewInformation extends PureComponent {
     const { generalData, compensationData, loading } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
-    const { visible } = this.state;
+    const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
     const menu = (
       <Menu>
-        <Item key="1" onClick={() => alert(1)}>
+        <Item key="1" onClick={this.handleEditBio}>
           <div className={s.itemDropdownMenu}>Edit bio</div>
         </Item>
         <Item key="2" onClick={() => alert(2)}>
@@ -165,6 +174,11 @@ class ViewInformation extends PureComponent {
           handleCancel={this.handleCancel}
           widthImage="40%"
           getResponse={this.getResponse}
+        />
+        <CustomModal
+          open={openEditBio}
+          closeModal={this.handleEditBio}
+          content={<div>Edit Bio</div>}
         />
       </div>
     );
