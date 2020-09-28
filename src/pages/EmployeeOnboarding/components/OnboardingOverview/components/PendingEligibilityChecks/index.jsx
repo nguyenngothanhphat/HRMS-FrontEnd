@@ -1,32 +1,38 @@
-/* eslint-disable react/prefer-stateless-function */
-/* eslint-disable react/jsx-no-undef */
-import React, { Component } from 'react';
+// /* eslint-disable react/prefer-stateless-function */
+// /* eslint-disable react/jsx-no-undef */
+import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
-import { formatMessage } from 'umi';
+import { connect } from 'umi';
+
 import ReceivedSubmittedDocuments from './components/ReceivedSubmittedDocuments';
 import SentEligibilityForms from './components/SentEligibilityForms';
 
 import styles from './index.less';
 
-class PendingEligibilityChecks extends Component {
+const { TabPane } = Tabs;
+
+class PendingEligibilityChecks extends PureComponent {
   render() {
-    const { TabPane } = Tabs;
+    const { pendingEligibilityChecks = {} } = this.props;
+    const { sentEligibilityForms = [], receivedSubmittedDocuments = [] } = pendingEligibilityChecks;
 
     return (
       <div className={styles.PendingEligibilityChecks}>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1">
             <TabPane
-              tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              tab="sent eligibility forms"
               key="1"
             >
-              <SentEligibilityForms />
+              <SentEligibilityForms list={sentEligibilityForms} />
             </TabPane>
             <TabPane
-              tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
+              // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
+              tab="received submitted documents"
               key="2"
             >
-              <ReceivedSubmittedDocuments />
+              <ReceivedSubmittedDocuments list={receivedSubmittedDocuments} />
             </TabPane>
           </Tabs>
         </div>
@@ -35,4 +41,13 @@ class PendingEligibilityChecks extends Component {
   }
 }
 
-export default PendingEligibilityChecks;
+// export default FinalOffers;
+export default connect((state) => {
+  const { onboard = {} } = state;
+  const { onboardingOverview = {} } = onboard;
+  const { pendingEligibilityChecks = {} } = onboardingOverview;
+
+  return {
+    pendingEligibilityChecks,
+  };
+})(PendingEligibilityChecks);

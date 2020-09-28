@@ -127,6 +127,14 @@ const routes = [
             component: './FormTeamMember',
             authority: ['customer'],
           },
+
+          {
+            path: '/template-details/:templateId',
+            name: 'templateDetails',
+            hideInMenu: true,
+            component: './TemplateDetails',
+          },
+
           {
             component: './404',
           },
