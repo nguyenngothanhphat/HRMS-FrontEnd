@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
@@ -140,22 +140,47 @@ const note = {
   ),
 };
 
-@connect(({ info: { eligibilityDocs } = {} }) => ({
+@connect(({ info: { eligibilityDocs, basicInformation, testEligibility } = {} }) => ({
   eligibilityDocs,
+  basicInformation,
+  testEligibility,
 }))
-class EligibilityDocs extends PureComponent {
+class EligibilityDocs extends Component {
   constructor(props) {
     super(props);
     this.state = {
       openModal: false,
+      listTypeASelected: [],
+      listTypeBSelected: [],
+      listTypeCSelected: [],
+      listTypeDSelected: [],
+      typeAIsChecked: false,
+      typeBIsChecked: false,
+      typeCIsChecked: false,
+      typeDIsChecked: false,
     };
   }
 
   static getDerivedStateFromProps(props) {
-    if ('eligibilityDocs' in props) {
-      return { eligibilityDocs: props.eligibilityDocs || {} };
+    if ('eligibilityDocs' in props || 'basicInformation' in props) {
+      return {
+        eligibilityDocs: props.eligibilityDocs,
+        basicInformation: props.basicInformation,
+        testEligibility: props.testEligibility || {},
+      };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { eligibilityDocs, testEligibility } = this.state;
+    dispatch({
+      type: 'info/fetchDocumentList',
+      payload: {
+        testEligibility,
+      },
+    });
   }
 
   closeModal = () => {
@@ -220,21 +245,25 @@ class EligibilityDocs extends PureComponent {
     const { eligibilityDocs } = this.state;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
-    if (value === 'typeA') {
-      dispatch({
-        type: 'info/saveEligibilityRequirement',
-        payload: {
-          eligibilityDocs: {
-            ...eligibilityDocs,
-            identityProof: {
-              ...identityProof,
-              listSelected: checkedList,
-              isChecked: checkedList.length === arr.length,
-            },
-          },
-        },
+    if (value === 'A') {
+      // dispatch({
+      //   type: 'info/saveEligibilityRequirement',
+      //   payload: {
+      //     eligibilityDocs: {
+      //       ...eligibilityDocs,
+      //       identityProof: {
+      //         ...identityProof,
+      //         listSelected: checkedList,
+      //         isChecked: checkedList.length === arr.length,
+      //       },
+      //     },
+      //   },
+      // });
+      this.setState({
+        listTypeASelected: checkedList,
+        typeAIsChecked: checkedList.length === arr.length,
       });
-    } else if (value === 'typeB') {
+    } else if (value === 'B') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -248,7 +277,11 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
-    } else if (value === 'typeC') {
+      this.setState({
+        listTypeBSelected: checkedList,
+        typeBIsChecked: checkedList.length === arr.length,
+      });
+    } else if (value === 'C') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -262,7 +295,11 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
-    } else if (value === 'typeD') {
+      this.setState({
+        listTypeCSelected: checkedList,
+        typeCIsChecked: checkedList.length === arr.length,
+      });
+    } else if (value === 'D') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -279,29 +316,59 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
+      this.setState({
+        listTypeDSelected: checkedList,
+        typeDIsChecked: checkedList.length === arr.length,
+      });
     }
   };
+
+  // handleChange2 = (checkedList, arr, type) => {
+  //   const {dispatch} = this.props;
+  //   const {eligibilityDocs} = this.state;
+  //   if(type==='A'){
+  //     this.setState({
+  //       listTypeASelected: checkedList,
+  //       typeAIsChecked: checkedList.length === arr.length,
+  //     })
+  //     dispatch({
+  //       type: 'info/saveEligibilityRequirement',
+  //       payload:{
+  //         eligibilityDocs:{
+  //           ...eligibilityDocs,
+
+  //         }
+  //       }
+  //     })
+  //   }
+  // };
 
   handleCheckAll = (e, arr, value) => {
     const { eligibilityDocs } = this.state;
     const { dispatch } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
-    if (value === 'typeA') {
-      dispatch({
-        type: 'info/saveEligibilityRequirement',
-        payload: {
-          eligibilityDocs: {
-            ...eligibilityDocs,
-            identityProof: {
-              ...identityProof,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
-              isChecked: e.target.checked,
-            },
-          },
-        },
+    if (value === 'A') {
+      // dispatch({
+      //   type: 'info/saveEligibilityRequirement',
+      //   payload: {
+      //     eligibilityDocs: {
+      //       ...eligibilityDocs,
+      //       identityProof: {
+      //         ...identityProof,
+      //         listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+      //         isChecked: e.target.checked,
+      //       },
+      //     },
+      //   },
+      // });
+      this.setState({
+        listTypeASelected: e.target.checked ? arr.map((data) => data.name) : [],
+        typeAIsChecked: e.target.checked,
       });
-    } else if (value === 'typeB') {
+      console.log(this.state.listTypeASelected);
+      console.log(this.state.typeAIsChecked);
+    } else if (value === 'B') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -315,7 +382,11 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
-    } else if (value === 'typeC') {
+      this.setState({
+        listTypeBSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        typeBIsChecked: e.target.checked,
+      });
+    } else if (value === 'C') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -329,7 +400,11 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
-    } else if (value === 'typeD') {
+      this.setState({
+        listTypeCSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        typeCIsChecked: e.target.checked,
+      });
+    } else if (value === 'D') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -346,6 +421,10 @@ class EligibilityDocs extends PureComponent {
           },
         },
       });
+      this.setState({
+        listTypeDSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        typeDIsChecked: e.target.checked,
+      });
     }
   };
 
@@ -354,7 +433,20 @@ class EligibilityDocs extends PureComponent {
       eligibilityDocs,
       eligibilityDocs: { email, isSentEmail, isMarkAsDone, generateLink },
       openModal,
+      basicInformation,
+      testEligibility,
+      listTypeASelected,
+      listTypeBSelected,
+      listTypeCSelected,
+      listTypeDSelected,
+      typeAIsChecked,
+      typeBIsChecked,
+      typeCIsChecked,
+      typeDIsChecked,
     } = this.state;
+    const { workEmail } = basicInformation;
+    console.log(testEligibility);
+
     return (
       <>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -362,17 +454,27 @@ class EligibilityDocs extends PureComponent {
             <div className={styles.eliContainer}>
               <Warning formatMessage={formatMessage} />
               <Title formatMessage={formatMessage} />
-              {listCollapse.map((item) => {
-                return (
-                  <CollapseFields
-                    key={item.id}
-                    item={item}
-                    handleChange={this.handleChange}
-                    handleCheckAll={this.handleCheckAll}
-                    eligibilityDocs={eligibilityDocs}
-                  />
-                );
-              })}
+              {testEligibility.length > 0 &&
+                testEligibility.map((item) => {
+                  return (
+                    <CollapseFields
+                      key={item.id}
+                      item={item}
+                      handleChange={this.handleChange}
+                      handleCheckAll={this.handleCheckAll}
+                      eligibilityDocs={eligibilityDocs}
+                      testEligibility={testEligibility}
+                      listTypeASelected={listTypeASelected}
+                      listTypeBSelected={listTypeBSelected}
+                      listTypeCSelected={listTypeCSelected}
+                      listTypeDSelected={listTypeDSelected}
+                      typeAIsChecked={typeAIsChecked}
+                      typeBIsChecked={typeBIsChecked}
+                      typeCIsChecked={typeCIsChecked}
+                      typeDIsChecked={typeDIsChecked}
+                    />
+                  );
+                })}
             </div>
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
@@ -386,6 +488,7 @@ class EligibilityDocs extends PureComponent {
               isSentEmail={isSentEmail}
               generateLink={generateLink}
               handleMarkAsDone={this.handleMarkAsDone}
+              workEmail={workEmail}
             />
           </Col>
         </Row>
@@ -395,6 +498,7 @@ class EligibilityDocs extends PureComponent {
               closeModal={this.closeModal}
               isSentEmail={isSentEmail}
               isMarkAsDone={isMarkAsDone}
+              eligibilityDocs={eligibilityDocs}
             />
           )}
         </CustomModal>

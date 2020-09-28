@@ -6,6 +6,8 @@
 //   getListEmployeeActive,
 //   getListEmployeeInActive,
 // } from '../services/employee';
+import { getDocumentList } from '@/services/addNewMember';
+import { dialog } from '@/utils/utils';
 
 const info = {
   namespace: 'info',
@@ -126,6 +128,7 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    testEligibility: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -138,6 +141,17 @@ const info = {
     //     dialog(errors);
     //   }
     // },
+
+    *fetchDocumentList(_, { call, put }) {
+      try {
+        const response = yield call(getDocumentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveEligibilityRequirement', payload: { testEligibility: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     saveBasicInformation(state, action) {
@@ -165,6 +179,12 @@ const info = {
       };
     },
     saveBenefits(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    getDocumentList(state, action) {
       return {
         ...state,
         ...action.payload,

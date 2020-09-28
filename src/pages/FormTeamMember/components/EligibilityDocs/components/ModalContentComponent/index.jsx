@@ -5,7 +5,7 @@ import img1 from './images/modal_img_1.png';
 
 const CONTENT_LIST = [
   {
-    header: 'The form has been successfully sent to Landonorris@gmail.com ',
+    header: `The form has been successfully sent to Abc `,
     body: 'The copy of the form has also been mailed to you and the HR manager',
     image: img1,
     button: 'Ok',

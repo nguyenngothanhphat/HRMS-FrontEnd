@@ -55,7 +55,7 @@ export default class FormTeamMember extends PureComponent {
     const candidateProcess = {
       basicInformation: true,
       jobDetails: false,
-      eligibilityDocuments: true,
+      eligibilityDocuments: false,
       offerDetails: false,
       benefits: false,
       salaryStructure: false,
