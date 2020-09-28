@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -8,6 +8,7 @@ import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
+const { TextArea } = Input;
 
 @connect(
   ({
@@ -25,11 +26,17 @@ class ViewInformation extends PureComponent {
     this.state = {
       visible: false,
       openEditBio: false,
+      bio: '',
     };
   }
 
   handleEditBio = () => {
     const { openEditBio } = this.state;
+    if (openEditBio) {
+      this.setState({
+        bio: '',
+      });
+    }
     this.setState({
       openEditBio: !openEditBio,
     });
@@ -77,6 +84,37 @@ class ViewInformation extends PureComponent {
         },
       });
     }
+  };
+
+  onChangeInput = ({ target: { value } }) => {
+    this.setState({
+      bio: value,
+    });
+  };
+
+  _renderFormEditBio = () => {
+    const { bio } = this.state;
+    const check = 170 - bio.length;
+    return (
+      <div className={s.formEditBio}>
+        <div className={s.formEditBio__title}>Edit Bio</div>
+        <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
+        <TextArea rows={3} value={bio} onChange={this.onChangeInput} />
+        <div className={s.formEditBio__description2}>
+          <span style={{ opacity: 0.5 }}> Remaining characters: </span>
+          {check >= 0 ? (
+            <span style={{ opacity: 0.5 }}>{check}</span>
+          ) : (
+            <span style={{ color: '#ff6c6c' }}>{check} (Limt exceeded)</span>
+          )}
+        </div>
+        <div className={s.viewBtnSave}>
+          <Button className={s.btnSave} type="primary" disabled={check < 0}>
+            Save
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -178,7 +216,7 @@ class ViewInformation extends PureComponent {
         <CustomModal
           open={openEditBio}
           closeModal={this.handleEditBio}
-          content={<div>Edit Bio</div>}
+          content={this._renderFormEditBio()}
         />
       </div>
     );

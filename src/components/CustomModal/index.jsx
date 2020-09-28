@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
-
 import styles from './index.less';
 
 const CustomModal = (props) => {
