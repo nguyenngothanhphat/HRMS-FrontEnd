@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 
-import CustomModal from '@/components/CustomModal';
+import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
@@ -220,7 +220,8 @@ class OnboardTable extends Component {
           />
         </div>
         <CustomModal open={openModal} closeModal={this.closeModal}>
-          {openModal && <ModalContent closeModal={this.closeModal} />}
+          <div>a</div>
+          {/* {openModal && <ModalContent closeModal={this.closeModal} />} */}
         </CustomModal>
       </>
     );
