@@ -8,12 +8,13 @@ const Screen3 = () => {
     const { password } = values;
     console.log('SIGN UP, PASSWORD: ', password);
   };
+
   const _renderButton = (getFieldValue) => {
     const valuePsw = getFieldValue('password');
     const valueConfirm = getFieldValue('confirmPassword');
     return (
       <Button type="primary" htmlType="submit" disabled={!valuePsw || !valueConfirm}>
-        SIGN UP
+        Sign up
       </Button>
     );
   };
