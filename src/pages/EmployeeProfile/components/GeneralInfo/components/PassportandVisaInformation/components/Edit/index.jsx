@@ -62,8 +62,9 @@ class Edit extends PureComponent {
   };
 
   processDataChangesPassPort = () => {
-    const { passportData: passportDataTemp } = this.props;
+    const { passportData: passportDataTemp, passPortIDURL } = this.props;
     const {
+      document = '',
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
@@ -72,6 +73,7 @@ class Edit extends PureComponent {
     } = passportDataTemp;
     const payloadChanges = {
       id,
+      document: document || passPortIDURL,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,
@@ -81,12 +83,25 @@ class Edit extends PureComponent {
     return payloadChanges;
   };
 
+  handleDocumentUpdate = (index, document) => {
+    const { visa1IDURL, visa0IDURL } = this.props;
+    if (document) {
+      return document;
+    }
+    if (index === 0) {
+      return visa0IDURL;
+    }
+    return visa1IDURL;
+  };
+
   processDataChangesVisa = () => {
-    const { visaData } = this.props;
+    const { visaData, generalData } = this.props;
+    const { employee = '' } = generalData;
     if (visaData.length === 2) {
-      const formatData = visaData.map((item) => {
+      const formatData = visaData.map((item, index) => {
         const {
           _id: id,
+          document,
           visaNumber,
           visaIssuedCountry,
           visaIssuedOn,
@@ -94,8 +109,10 @@ class Edit extends PureComponent {
           visaValidTill,
           visaEntryType,
         } = item;
-        return {
-          id,
+        const formVisa = {
+          id: id || '',
+          document: this.handleDocumentUpdate(index, document),
+          employee,
           visaNumber,
           visaIssuedCountry,
           visaIssuedOn,
@@ -103,11 +120,15 @@ class Edit extends PureComponent {
           visaValidTill,
           visaEntryType,
         };
+
+        return formVisa;
       });
+
       return formatData;
     }
     const data1 = visaData[0];
     const {
+      document = '',
       visaNumber = '',
       visaIssuedCountry = '',
       visaIssuedOn = '',
@@ -118,6 +139,8 @@ class Edit extends PureComponent {
     } = data1;
     const payloadChanges = {
       id,
+      employee,
+      document,
       visaNumber,
       visaIssuedCountry,
       visaIssuedOn,
@@ -148,8 +171,16 @@ class Edit extends PureComponent {
     return payloadChanges;
   };
 
+  handleDocumentAdd = (index) => {
+    const { visa0IDURL, visa1IDURL } = this.props;
+    if (index === 0) {
+      return visa0IDURL;
+    }
+    return visa1IDURL;
+  };
+
   processDataAddVisa = () => {
-    const { visaData, generalData, visa0IDURL, visa1IDURL } = this.props;
+    const { visaData, generalData, visa0IDURL } = this.props;
     const { employee = '' } = generalData;
     if (visaData.length === 2) {
       const formatData = visaData.map((item, index) => {
@@ -161,33 +192,18 @@ class Edit extends PureComponent {
           visaValidTill,
           visaEntryType,
         } = item;
-        const formVisa1 =
-          index === 0
-            ? {
-                document: visa0IDURL,
-                employee,
-                visaNumber,
-                visaIssuedCountry,
-                visaIssuedOn,
-                visaType,
-                visaValidTill,
-                visaEntryType,
-              }
-            : '';
-        const formVisa2 =
-          index === 0
-            ? {
-                document: visa1IDURL,
-                employee,
-                visaNumber,
-                visaIssuedCountry,
-                visaIssuedOn,
-                visaType,
-                visaValidTill,
-                visaEntryType,
-              }
-            : '';
-        return [formVisa1, formVisa2];
+        const formVisa = {
+          document: this.handleDocumentAdd(index),
+          employee,
+          visaNumber,
+          visaIssuedCountry,
+          visaIssuedOn,
+          visaType,
+          visaValidTill,
+          visaEntryType,
+        };
+
+        return formVisa;
       });
       return formatData;
     }
@@ -254,6 +270,7 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKeptPassPort() || {};
     const payloadAddVisa = this.processDataAddVisa() || {};
     const payloadUpdateVisa = this.processDataChangesVisa() || {};
+    console.log(payloadUpdateVisa);
     const dataTempKeptVisa = this.processDataKeptVisa() || {};
     if (idPassPort && idVisa) {
       dispatch({
@@ -302,6 +319,7 @@ class Edit extends PureComponent {
       visaData = [],
     } = this.props;
     const dataVisa1 = visaData[0] ? visaData[0] : [];
+    const dataVisa2 = visaData[1] ? visaData[1] : [];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -318,14 +336,7 @@ class Edit extends PureComponent {
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportData;
-    const {
-      visaNumber = '',
-      visaIssuedCountry,
-      visaIssuedOn = '',
-      visaValidTill = '',
-      visaEntryType = '',
-      visaType = '',
-    } = dataVisa1;
+
     const { dropdown } = this.state;
     const formItemLayout = {
       labelCol: {
@@ -339,8 +350,10 @@ class Edit extends PureComponent {
     };
     const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
     const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-    const formatDateVisaIssueOn = visaIssuedOn && moment(visaIssuedOn);
-    const formatDateVisaValidTill = visaValidTill && moment(visaValidTill);
+    const formatDateVisaIssueOn1 = dataVisa1.visaIssuedOn && moment(dataVisa1.visaIssuedOn);
+    const formatDateVisaValidTill1 = dataVisa1.visaValidTill && moment(dataVisa1.visaValidTill);
+    const formatDateVisaIssueOn2 = dataVisa2.visaIssuedOn && moment(dataVisa2.visaIssuedOn);
+    const formatDateVisaValidTill2 = dataVisa2.visaValidTill && moment(dataVisa2.visaValidTill);
     const dateFormat = 'Do MMM YYYY';
 
     return (
@@ -353,12 +366,18 @@ class Edit extends PureComponent {
             passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
-            visaNumber0: visaNumber,
-            visaIssuedCountry0: visaIssuedCountry ? visaIssuedCountry._id : '',
-            visaIssuedOn0: formatDateVisaIssueOn,
-            visaValidTill0: formatDateVisaValidTill,
-            visaEntryType0: visaEntryType,
-            visaType0: visaType,
+            visaNumber0: dataVisa1.visaNumber,
+            visaIssuedCountry0: dataVisa1.visaIssuedCountry ? dataVisa1.visaIssuedCountry._id : '',
+            visaIssuedOn0: formatDateVisaIssueOn1,
+            visaValidTill0: formatDateVisaValidTill1,
+            visaEntryType0: dataVisa1.visaEntryType,
+            visaType0: dataVisa1.visaType,
+            visaNumber1: dataVisa2.visaNumber,
+            visaIssuedCountry1: dataVisa2.visaIssuedCountry ? dataVisa2.visaIssuedCountry._id : '',
+            visaIssuedOn1: formatDateVisaIssueOn2,
+            visaValidTill1: formatDateVisaValidTill2,
+            visaEntryType1: dataVisa2.visaEntryType,
+            visaType1: dataVisa2.visaType,
           }}
           onFinish={this.handleSave}
         >
