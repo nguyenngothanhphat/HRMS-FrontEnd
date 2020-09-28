@@ -219,10 +219,12 @@ class OnboardTable extends Component {
             // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
-        <CustomModal open={openModal} closeModal={this.closeModal}>
-          <div>a</div>
-          {/* {openModal && <ModalContent closeModal={this.closeModal} />} */}
-        </CustomModal>
+        <CustomModal
+          open={openModal}
+          width={590}
+          closeModal={this.closeModal}
+          content={<ModalContent closeModal={this.closeModal} />}
+        />
       </>
     );
   }

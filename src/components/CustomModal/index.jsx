@@ -6,7 +6,7 @@ import styles from './index.less';
 const CustomModal = (props) => {
   const [visible, setVisible] = useState(false); // Modal visibility
 
-  const { open, closeModal, children } = props;
+  const { open, closeModal, width = 520, content } = props;
 
   useEffect(() => {
     if (open) {
@@ -28,11 +28,12 @@ const CustomModal = (props) => {
         className={styles.root}
         title={null}
         visible={visible}
+        width={width}
         centered
         onCancel={handleCancel}
         footer={null}
       >
-        <div className={styles.body}>{children}</div>
+        <div className={styles.body}>{visible && content}</div>
       </Modal>
     </>
   );
