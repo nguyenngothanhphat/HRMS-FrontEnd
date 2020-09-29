@@ -7,17 +7,11 @@ import Screen1 from './components/Screen1';
 
 const { Step } = Steps;
 
-@connect(({ country: { listCountry = [] } = {} }) => ({
+@connect(({ signup: { currentStep = 0 } = {}, country: { listCountry = [] } = {} }) => ({
+  currentStep,
   listCountry,
 }))
 class SignUpConfigLocation extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      displayScreen: 1,
-    };
-  }
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -26,22 +20,23 @@ class SignUpConfigLocation extends Component {
   }
 
   customStep = (number) => {
-    const { current = 0 } = this.props;
-    const check = number - 1 > current;
+    const { currentStep = 0 } = this.props;
+    const check = number > currentStep;
     return (
       <div className={styles.customStep} style={check ? { backgroundColor: '#d9e5ff' } : {}}>
-        {number}
+        {number + 1}
       </div>
     );
   };
 
   renderScreen = () => {
-    const { listCountry } = this.props;
-    const { displayScreen } = this.state;
-    switch (displayScreen) {
-      case 1:
+    const { listCountry, currentStep } = this.props;
+    switch (currentStep) {
+      case 0:
         return <Screen1 listCountry={listCountry} />;
-      case 3:
+      case 1:
+        return <div>Form 2</div>;
+      case 2:
         return <Screen3 />;
       default:
         return <Screen1 />;
@@ -49,15 +44,15 @@ class SignUpConfigLocation extends Component {
   };
 
   render() {
-    const { current = 0 } = this.props;
+    const { currentStep = 0 } = this.props;
 
     return (
       <div className={styles.root}>
         <div style={{ marginRight: '46px' }}>
-          <Steps className={styles.steps} current={current} direction="vertical">
+          <Steps className={styles.steps} current={currentStep} direction="vertical">
+            <Step icon={this.customStep(0)} />
             <Step icon={this.customStep(1)} />
             <Step icon={this.customStep(2)} />
-            <Step icon={this.customStep(3)} />
           </Steps>
         </div>
         {this.renderScreen()}
