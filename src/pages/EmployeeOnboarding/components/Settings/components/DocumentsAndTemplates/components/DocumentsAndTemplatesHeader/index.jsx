@@ -1,15 +1,16 @@
 import React, { PureComponent } from 'react';
+import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class DocumentsAndTemplatesHeader extends PureComponent {
   render() {
     return (
       <div className={styles.DocumentsAndTemplatesHeader}>
-        <div className={styles.title}>Document & Templates</div>
+        <div className={styles.title}>
+          {formatMessage({ id: 'component.documentAndTemplates.title' })}
+        </div>
         <div className={styles.subTitle}>
-          You can manage all of your documents , templates and custom emails here. The app can
-          generate and send your company’s offer letters, employee handbooks, hiring agreements and
-          custom emails to your new hires.
+          {formatMessage({ id: 'component.documentAndTemplates.subTitle' })}
         </div>
       </div>
     );
