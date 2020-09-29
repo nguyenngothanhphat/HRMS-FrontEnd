@@ -1,14 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
 
-import bin from './images/bin.svg';
+import { connect } from 'umi';
+import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 import LocationForm from './components/LocationForm';
+import bin from './images/bin.svg';
 
 import styles from './index.less';
 
 const Screen2 = (props) => {
   let [form] = Form.useForm();
-  let formRef = useRef();
+
+  const { headQuarterAddress } = props;
+
+  console.log(headQuarterAddress);
 
   const {
     headquarterInfo = {
@@ -28,7 +32,7 @@ const Screen2 = (props) => {
     },
   } = props;
 
-  const { address, state, zipCode, country } = headquarterInfo;
+  // const { address, state, zipCode, country } = headquarterInfo;
 
   const onFinish = (values) => {
     console.log('Success:', values);
@@ -69,10 +73,10 @@ const Screen2 = (props) => {
         name="headquarter"
         initialValues={{
           remember: true,
-          address,
-          state,
-          zipCode,
-          country,
+          address: headQuarterAddress.address,
+          country: headQuarterAddress.country,
+          state: headQuarterAddress.state,
+          zipCode: headQuarterAddress.zipCode,
           locations: [
             {
               address: 'a1',
@@ -102,9 +106,7 @@ const Screen2 = (props) => {
             rules={[{ required: true, message: 'Please input your address!' }]}
             className={styles.vertical}
           >
-            <Input
-            // disabled
-            />
+            <Input disabled />
           </Form.Item>
 
           <Form.Item
@@ -113,9 +115,7 @@ const Screen2 = (props) => {
             rules={[{ required: true, message: 'Please input your country!' }]}
             className={styles.vertical}
           >
-            <Input
-            //  disabled
-            />
+            <Input disabled />
           </Form.Item>
 
           <Row gutter={30}>
@@ -126,9 +126,7 @@ const Screen2 = (props) => {
                 className={styles.vertical}
                 rules={[{ required: true, message: 'Please select your state!' }]}
               >
-                <Select
-                //  disabled
-                >
+                <Select disabled>
                   <Select.Option value="california">California</Select.Option>
                   <Select.Option value="manhattan">Manhattan</Select.Option>
                   <Select.Option value="newyork">New York</Select.Option>
@@ -143,9 +141,7 @@ const Screen2 = (props) => {
                 name="zipCode"
                 rules={[{ required: true, message: 'Please input your Zip code!' }]}
               >
-                <InputNumber
-                //  disabled
-                />
+                <InputNumber disabled />
               </Form.Item>
             </Col>
           </Row>
@@ -171,4 +167,7 @@ const Screen2 = (props) => {
   );
 };
 
-export default Screen2;
+// export default Screen2;
+export default connect(({ signup: { headQuarterAddress = {} } = {} }) => ({
+  headQuarterAddress,
+}))(Screen2);

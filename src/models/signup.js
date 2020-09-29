@@ -7,7 +7,7 @@ import { notification } from 'antd';
 const signup = {
   namespace: 'signup',
   state: {
-    currentStep: 0,
+    currentStep: 1,
     checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
@@ -16,10 +16,10 @@ const signup = {
       ein: '',
     },
     headQuarterAddress: {
-      address: '',
-      country: '',
-      state: '',
-      zipCode: '',
+      address: '324',
+      country: '543',
+      state: '235',
+      zipCode: '68',
     },
     legalAddress: {
       address: '',
