@@ -17,7 +17,18 @@ export async function getUserInfo(data) {
     '/api/security-register',
     {
       method: 'POST',
-      data,
+      data, // {firstName, email}
+    },
+    true,
+  );
+}
+
+export async function getSecurityCode(data) {
+  return request(
+    '/api/resend-security-register',
+    {
+      method: 'POST',
+      data, // codeNumber
     },
     true,
   );

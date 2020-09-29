@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'umi';
+import { Link, connect } from 'umi';
 import { Layout, Row, Col, InputNumber, Button } from 'antd';
 
 import gmail from '@/assets/gmail-icon.png';
@@ -9,32 +9,62 @@ import img from '@/assets/sign-up-img.png';
 import styles from './index.less';
 
 const SignUp2 = (props) => {
-  // const
-  let ref1 = null;
-  let ref2 = null;
-  let ref3 = null;
+  const { codeNumber, dispatch } = props;
 
   let inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
 
   useEffect(() => {
-    console.log(inputRefs);
-    // if (inputRefs.length !== 0) {
-    //   inputRefs[1].focus();
-    // }
-  }, []);
+    const fetchSecurityCode = async () => {
+      const allFilled = !checkEmpty(inputVals);
+      if (allFilled) {
+        const securityCode = inputVals.join().replace(/,/g, ''); // Join all inputs to get a complete Code string
+
+        if (dispatch) {
+          // save to Store
+          await dispatch({
+            type: 'signup/save',
+            payload: {
+              codeNumber: securityCode,
+            },
+          });
+
+          // call API
+          await dispatch({
+            type: 'signup/fetchSecurityCode',
+            payload: {
+              codeNumber: securityCode,
+            },
+          });
+
+          setInputVals(['', '', '', '', '', '']); // Reset to default
+        }
+      }
+    };
+
+    fetchSecurityCode();
+  }, [inputVals]);
+
+  const checkEmpty = (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === '') return true;
+    }
+    return false;
+  };
 
   const onChange = (value, index) => {
-    if (!value) {
-      return;
+    if (value !== 0) {
+      if (!value) {
+        return;
+      }
     }
     const length = value.toString().length;
     if (index !== inputRefs.length - 1) {
       if (length >= 1) {
-        console.log('NEXT');
-
         inputRefs[index + 1].focus();
       }
+    } else {
+      inputRefs[index].blur();
     }
     setInputVals((prevState) => {
       let vals = prevState.filter((value, valueIndex) => index !== valueIndex);
@@ -145,4 +175,7 @@ const SignUp2 = (props) => {
   );
 };
 
-export default SignUp2;
+// export default SignUp2;
+export default connect(({ signup: { codeNumber = '' } = {} }) => ({
+  codeNumber,
+}))(SignUp2);
