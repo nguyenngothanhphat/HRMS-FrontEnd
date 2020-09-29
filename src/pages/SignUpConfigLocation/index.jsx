@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
 import styles from './index.less';
+import Screen2 from './components/Screen2';
 import Screen3 from './components/Screen3';
 
 const { Step } = Steps;
@@ -27,7 +28,8 @@ class SignUpConfigLocation extends PureComponent {
             <Step icon={this.customStep(3)} />
           </Steps>
         </div>
-        <Screen3 />
+        {/* <Screen3 /> */}
+        <Screen2 />
       </div>
     );
   }
