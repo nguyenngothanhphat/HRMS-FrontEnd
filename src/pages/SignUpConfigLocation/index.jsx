@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Steps } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
+import Screen2 from './components/Screen2';
 import Screen3 from './components/Screen3';
 import Screen1 from './components/Screen1';
 
@@ -35,7 +36,7 @@ class SignUpConfigLocation extends Component {
       case 0:
         return <Screen1 listCountry={listCountry} />;
       case 1:
-        return <div>Form 2</div>;
+        return <Screen2 />;
       case 2:
         return <Screen3 />;
       default:
