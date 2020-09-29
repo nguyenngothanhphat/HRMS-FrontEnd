@@ -30,6 +30,16 @@ const routes = [
     ],
   },
   {
+    path: '/signup-configlocation',
+    component: '../layouts/SignUpLayout2',
+    routes: [
+      {
+        path: '/signup-configlocation',
+        component: './SignUpConfigLocation',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -100,6 +110,14 @@ const routes = [
             hideInMenu: true,
             component: './FormTeamMember',
           },
+
+          {
+            path: '/template-details/:templateId',
+            name: 'templateDetails',
+            hideInMenu: true,
+            component: './TemplateDetails',
+          },
+
           {
             component: './404',
           },

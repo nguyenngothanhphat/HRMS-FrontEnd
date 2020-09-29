@@ -1,22 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Radio, Typography, Row, Col } from 'antd';
-import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ info: { jobDetail } = {} }) => ({
-  jobDetail,
-}))
 class RadioComponent extends PureComponent {
-  static getDerivedStateFromProps(props) {
-    if ('jobDetail' in props) {
-      return { jobDetail: props.jobDetail || {} };
-    }
-    return null;
-  }
-
   render() {
-    const { Tab, handleRadio } = this.props;
-    const { jobDetail = {} } = this.state;
+    const { Tab, handleRadio, jobDetail } = this.props;
     const { position, classification } = jobDetail;
     return (
       <div className={styles.RadioComponent}>
