@@ -10,9 +10,9 @@ import styles from './index.less';
 const Screen2 = (props) => {
   let [form] = Form.useForm();
 
-  const { headQuarterAddress } = props;
+  const { headQuarterAddress, listCountry, name: companyName, locations, dispatch } = props;
 
-  console.log(headQuarterAddress);
+  // console.log(props);
 
   const {
     headquarterInfo = {
@@ -36,10 +36,9 @@ const Screen2 = (props) => {
 
   const onFinish = (values) => {
     console.log('Success:', values);
-    const { address, country, state, zipCode, locations } = values;
+    const { locations } = values;
     // if (!address || !country || !state || !zipCode || !locations) {
-    console.log(locations);
-    if (locations) console.log('Form not valid');
+    // if (locations) console.log('Form not valid');
     return;
   };
 
@@ -66,6 +65,23 @@ const Screen2 = (props) => {
     console.log(values);
   };
 
+  const navigate = (type) => {
+    let step;
+    if (type === 'previous') {
+      step = 0;
+    }
+    if (type === 'next') {
+      step = 2;
+    }
+
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: { currentStep: step },
+      });
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Form
@@ -80,8 +96,8 @@ const Screen2 = (props) => {
           locations: [
             {
               address: 'a1',
-              country: 'c1',
-              state: 'manhattan',
+              country: '',
+              state: '',
               zipCode: 'z1',
             },
           ],
@@ -115,7 +131,11 @@ const Screen2 = (props) => {
             rules={[{ required: true, message: 'Please input your country!' }]}
             className={styles.vertical}
           >
-            <Input disabled />
+            {/* <Input disabled /> */}
+            <Select disabled>
+              <Select.Option value="america">America</Select.Option>
+              <Select.Option value="britain">Britain</Select.Option>
+            </Select>
           </Form.Item>
 
           <Row gutter={30}>
@@ -149,16 +169,20 @@ const Screen2 = (props) => {
 
         {/* Clone */}
         <Form.Item name="locations">
-          <LocationForm />
+          <LocationForm
+            listCountry={listCountry}
+            headQuarterAddress={headQuarterAddress}
+            locations={locations}
+            companyName={companyName}
+            dispatch={dispatch}
+          />
         </Form.Item>
 
         <div className={styles.btnWrapper}>
-          <Button className={styles.btn}>Back</Button>
-          <Button
-            className={styles.btn}
-            htmlType="submit"
-            //  onClick={submit}
-          >
+          <Button className={styles.btn} onClick={() => navigate('previous')}>
+            Back
+          </Button>
+          <Button className={styles.btn} htmlType="submit" onClick={() => navigate('next')}>
             Next
           </Button>
         </div>
@@ -168,6 +192,14 @@ const Screen2 = (props) => {
 };
 
 // export default Screen2;
-export default connect(({ signup: { headQuarterAddress = {} } = {} }) => ({
-  headQuarterAddress,
-}))(Screen2);
+export default connect(
+  ({
+    signup: { headQuarterAddress = {}, locations, company: { name = '' } = {} } = {},
+    country: { listCountry = [] } = {},
+  }) => ({
+    name,
+    headQuarterAddress,
+    locations,
+    listCountry,
+  }),
+)(Screen2);

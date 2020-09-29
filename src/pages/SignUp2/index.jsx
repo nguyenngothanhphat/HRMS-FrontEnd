@@ -9,7 +9,7 @@ import img from '@/assets/sign-up-img.png';
 import styles from './index.less';
 
 const SignUp2 = (props) => {
-  const { codeNumber, dispatch } = props;
+  const { codeNumber, email, dispatch } = props;
 
   let inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
@@ -78,7 +78,7 @@ const SignUp2 = (props) => {
       <h2>Check your mail for the code.</h2>
 
       <p className={styles.mail}>
-        We have sent a 6-digit code to<Link to="/">siddhartha@lollypop.design.</Link>
+        We have sent a 6-digit code to<Link to="/">{email}</Link>
       </p>
 
       <p className={styles.codeDescription}>Enter the security code</p>
@@ -176,6 +176,7 @@ const SignUp2 = (props) => {
 };
 
 // export default SignUp2;
-export default connect(({ signup: { codeNumber = '' } = {} }) => ({
+export default connect(({ signup: { codeNumber = '', user: { email = '' } = {} } = {} }) => ({
   codeNumber,
+  email,
 }))(SignUp2);

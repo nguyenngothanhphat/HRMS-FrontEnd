@@ -11,7 +11,7 @@ const signup = {
     checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
-      name: '',
+      name: 'COMPANY NAME',
       dba: '',
       ein: '',
     },
