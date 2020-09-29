@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from 'react';
-import { Form, Input, Select, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Select, Row, Col, Checkbox, Button } from 'antd';
 import { connect } from 'umi';
 import s from './index.less';
 
@@ -74,6 +74,16 @@ class Screen1 extends Component {
   onChangeCheckbox = (e) => {
     this.setState({
       checkSame: e.target.checked,
+    });
+  };
+
+  handleNext = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        currentStep: 1,
+      },
     });
   };
 
@@ -232,6 +242,11 @@ class Screen1 extends Component {
               </Row>
             </Fragment>
           </Form>
+        </div>
+        <div className={s.root__viewBtnNext}>
+          <Button className={s.btnNext} type="primary" onClick={this.handleNext}>
+            Next
+          </Button>
         </div>
       </div>
     );
