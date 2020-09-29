@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Upload, Button } from 'antd';
-import { PlusOutlined, UploadOutlined, InboxOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
+import { Row, Col, Form, Input, Upload } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -9,7 +10,7 @@ class YourInformation extends PureComponent {
     super(props);
 
     this.state = {
-      loading: false,
+      // loading: false,
     };
   }
 
@@ -22,13 +23,15 @@ class YourInformation extends PureComponent {
   };
 
   render() {
-    const { loading, imageUrl } = this.state;
-    const uploadButton = (
-      <div>
-        {loading ? <LoadingOutlined /> : <PlusOutlined />}
-        <div style={{ marginTop: 8 }}>Upload</div>
-      </div>
-    );
+    // const { loading, imageUrl } = this.state;
+    // const uploadButton = (
+    //   <div>
+    //     {loading ? <LoadingOutlined /> : <PlusOutlined />}
+    //     <div style={{ marginTop: 8 }}>
+    //       {formatMessage({ id: 'component.yourInformation.upload' })}
+    //     </div>
+    //   </div>
+    // );
     return (
       <div className={styles.YourInformation}>
         <Form
@@ -42,7 +45,7 @@ class YourInformation extends PureComponent {
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                label="Full name"
+                label={formatMessage({ id: 'component.yourInformation.fullName' })}
                 name="fullName"
               >
                 <Input
@@ -54,7 +57,7 @@ class YourInformation extends PureComponent {
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                label="Designation"
+                label={formatMessage({ id: 'component.yourInformation.designation' })}
                 name="designation"
               >
                 <Input
@@ -76,7 +79,9 @@ class YourInformation extends PureComponent {
                     <p className="ant-upload-drag-icon">
                       <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Drag you signature here, or browse</p>
+                    <p className="ant-upload-text">
+                      {formatMessage({ id: 'component.yourInformation.dragFile' })}
+                    </p>
                   </Upload.Dragger>
                 </Form.Item>
               </Form.Item>

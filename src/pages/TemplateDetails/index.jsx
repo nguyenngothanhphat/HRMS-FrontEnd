@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import PageContainer from '@/layouts/layout/src/PageContainer';
-
 import TemplateDetailsHeader from './components/TemplateDetailsHeader';
 import TemplateDetailsForm from './components/TemplateDetailsForm';
 import TemplateDetailsNote from './components/TemplateDetailsNote';

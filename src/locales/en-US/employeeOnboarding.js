@@ -31,4 +31,12 @@ export default {
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
   'component.onboardingOverview.addTeamMember': 'Add Team Member',
+  // Settings document and templates
+  'component.documentAndTemplates.title': 'Document & Templates',
+  'component.documentAndTemplates.subTitle':
+    'You can manage all of your documents , templates and custom emails here. The app can generate and send your company’s offer letters, employee handbooks, hiring agreements and custom emails to your new hires.',
+  'component.documentAndTemplates.download': 'Download',
+  'component.documentAndTemplates.delete': 'Delete',
+  'component.documentAndTemplates.defaultTemplate': 'System default templates',
+  'component.documentAndTemplates.recentDocuments': 'Recent documents',
 };
