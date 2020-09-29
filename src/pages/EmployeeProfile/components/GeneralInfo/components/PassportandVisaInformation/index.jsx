@@ -68,10 +68,6 @@ class PassportVisaInformation extends PureComponent {
       type: 'employeeProfile/saveOpenEdit',
       payload: { openPassportandVisa: false },
     });
-    dispatch({
-      type: 'upload/cancelUpload',
-      payload: { passPortURL: '', visa0URL: '', visa1URL: '' },
-    });
   };
 
   render() {

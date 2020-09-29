@@ -24,7 +24,26 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
-
+export async function getDepartmentList() {
+  return request('/api/department/list', {
+    method: 'POST',
+  });
+}
+export async function getEmployeeTypeList() {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+  });
+}
+export async function getLocationList() {
+  return request('/api/location/list', {
+    method: 'POST',
+  });
+}
+export async function getEmployeeList() {
+  return request('/api/employee/list-active', {
+    method: 'POST',
+  });
+}
 export async function updateGeneralInfo(payload) {
   return request('/api/generalinfo/update', {
     method: 'POST',
@@ -52,6 +71,9 @@ export async function addCertification(payload) {
   });
 }
 
+export async function addChangeHistory(payload) {
+  return request('/api/changehistory/add', { method: 'POST', data: payload });
+}
 export async function getCountryList() {
   return request('/api/country/list', {
     method: 'POST',
