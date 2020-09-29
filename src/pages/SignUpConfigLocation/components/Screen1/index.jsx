@@ -5,9 +5,11 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, country: { listState = [] } = {} }) => ({
+@connect(({ loading, country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
   loadingGetState: loading.effects['country/fetchListState'],
   listState,
+  listCountry,
+  signup,
 }))
 class Screen1 extends Component {
   constructor(props) {
@@ -88,13 +90,28 @@ class Screen1 extends Component {
   };
 
   render() {
-    const { listCountry = [], loadingGetState } = this.props;
+    const { listCountry = [], loadingGetState, signup = {} } = this.props;
     const { countryHeadquarter = '', countryLegal = '', checkSame } = this.state;
     const dummyState = [
       { _id: 'HoChiMinh', name: 'TP. Ho Chi Minh' },
       { _id: 'HaNoi', name: 'TP. Ha Noi' },
       { _id: 'DaNang', name: 'TP. Da Nang' },
     ];
+    const {
+      company: { name = '', dba = '', ein = '' } = {},
+      headQuarterAddress: {
+        address: addressHead = '',
+        country: countryHead = '',
+        state: stateHead = '',
+        zipCode: zipCodeHead = '',
+      } = {},
+      legalAddress: {
+        address: addressLegal = '',
+        country = '',
+        state: stateLegal = '',
+        zipCode: zipCodeLegal = '',
+      } = {},
+    } = signup;
     return (
       <div className={s.root}>
         <div className={s.root__form}>
@@ -103,6 +120,11 @@ class Screen1 extends Component {
             requiredMark={false}
             layout="vertical"
             colon={false}
+            initialValues={{
+              name,
+              dba,
+              ein,
+            }}
             onValuesChange={this.handleFormCompanyChange}
           >
             <Fragment>
@@ -131,6 +153,12 @@ class Screen1 extends Component {
             layout="vertical"
             colon={false}
             ref={this.formRef}
+            initialValues={{
+              address: addressHead,
+              country: countryHead,
+              state: stateHead,
+              zipCode: zipCodeHead,
+            }}
             onValuesChange={this.handleFormHeadquarter}
           >
             <Fragment>
@@ -188,6 +216,12 @@ class Screen1 extends Component {
             layout="vertical"
             colon={false}
             ref={this.formRefLegal}
+            initialValues={{
+              address: addressLegal,
+              country,
+              state: stateLegal,
+              zipCode: zipCodeLegal,
+            }}
             onValuesChange={this.handleFormLegal}
           >
             <Fragment>

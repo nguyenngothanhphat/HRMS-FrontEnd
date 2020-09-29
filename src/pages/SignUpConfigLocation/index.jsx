@@ -8,9 +8,8 @@ import Screen1 from './components/Screen1';
 
 const { Step } = Steps;
 
-@connect(({ signup: { currentStep = 0 } = {}, country: { listCountry = [] } = {} }) => ({
+@connect(({ signup: { currentStep = 0 } = {} }) => ({
   currentStep,
-  listCountry,
 }))
 class SignUpConfigLocation extends Component {
   componentDidMount() {
@@ -31,10 +30,10 @@ class SignUpConfigLocation extends Component {
   };
 
   renderScreen = () => {
-    const { listCountry, currentStep } = this.props;
+    const { currentStep } = this.props;
     switch (currentStep) {
       case 0:
-        return <Screen1 listCountry={listCountry} />;
+        return <Screen1 />;
       case 1:
         return <Screen2 />;
       case 2:
