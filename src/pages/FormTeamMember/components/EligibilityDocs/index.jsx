@@ -363,66 +363,24 @@ class EligibilityDocs extends Component {
       //   },
       // });
       this.setState({
-        listTypeASelected: e.target.checked ? arr.map((data) => data.name) : [],
+        listTypeASelected: e.target.checked ? arr.map((data) => data.alias) : [],
         typeAIsChecked: e.target.checked,
       });
       console.log(this.state.listTypeASelected);
       console.log(this.state.typeAIsChecked);
     } else if (value === 'B') {
-      dispatch({
-        type: 'info/saveEligibilityRequirement',
-        payload: {
-          eligibilityDocs: {
-            ...eligibilityDocs,
-            addressProof: {
-              ...addressProof,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
-              isChecked: e.target.checked,
-            },
-          },
-        },
-      });
       this.setState({
-        listTypeBSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        listTypeBSelected: e.target.checked ? arr.map((data) => data.alias) : [],
         typeBIsChecked: e.target.checked,
       });
     } else if (value === 'C') {
-      dispatch({
-        type: 'info/saveEligibilityRequirement',
-        payload: {
-          eligibilityDocs: {
-            ...eligibilityDocs,
-            educational: {
-              ...educational,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
-              isChecked: e.target.checked,
-            },
-          },
-        },
-      });
       this.setState({
-        listTypeCSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        listTypeCSelected: e.target.checked ? arr.map((data) => data.alias) : [],
         typeCIsChecked: e.target.checked,
       });
     } else if (value === 'D') {
-      dispatch({
-        type: 'info/saveEligibilityRequirement',
-        payload: {
-          eligibilityDocs: {
-            ...eligibilityDocs,
-            technicalCertification: {
-              ...technicalCertification,
-              poe: {
-                ...poe,
-                listSelected: e.target.checked ? arr.map((data) => data.name) : [],
-                isChecked: e.target.checked,
-              },
-            },
-          },
-        },
-      });
       this.setState({
-        listTypeDSelected: e.target.checked ? arr.map((data) => data.name) : [],
+        listTypeDSelected: e.target.checked ? arr.map((data) => data.alias) : [],
         typeDIsChecked: e.target.checked,
       });
     }

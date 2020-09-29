@@ -13,7 +13,6 @@ class CollapseField extends PureComponent {
   render() {
     const {
       item,
-      eligibilityDocs,
       handleCheckAll,
       handleChange,
       testEligibility,
@@ -26,9 +25,12 @@ class CollapseField extends PureComponent {
       typeCIsChecked,
       typeDIsChecked,
     } = this.props;
-    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
-    const { poe } = technicalCertification;
-    console.log(item);
+
+    const defaultValueArr = item.data.filter(
+      (obj) => obj.key === 'aaharCard' || obj.key === 'panCard',
+    );
+    console.log(defaultValueArr);
+
     return (
       <div className={styles.CollapseField}>
         <Collapse
@@ -64,31 +66,19 @@ class CollapseField extends PureComponent {
             {item.type === 'D' ? <InputField /> : <></>}
             <Space direction="vertical">
               {
-                /* {item.defaultItems.map((data) =>
-                item.defaultItems.length > 1 ? (
-                  <Checkbox
-                    checked="true"
-                    disabled="true"
-                    value={data.name}
-                    className={styles.checkboxItem}
-                  >
-                    {data.name}*
-                  </Checkbox>
-                ) : null, */
+                // /* {item.defaultItems.map((data) =>
+                // item.defaultItems.length > 1 ? (
+                //   <Checkbox
+                //     checked="true"
+                //     disabled="true"
+                //     value={data.name}
+                //     className={styles.checkboxItem}
+                //   >
+                //     {data.name}*
+                //   </Checkbox>
+                // ) : null, */
                 null
               }
-
-              {/* {item.data.map((obj) => (
-                <Checkbox
-                  className={styles.checkboxItem}
-                  direction="veritcal"
-                  checked={obj.value === true && 'true'}
-                  disabled={obj.value === true && 'true'}
-                  onChange={this.handleChange}
-                >
-                  {obj.alias}
-                </Checkbox>
-              ))} */}
 
               <Checkbox.Group
                 direction="vertical"
