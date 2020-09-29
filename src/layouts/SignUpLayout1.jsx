@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'umi';
 import { Layout, Row, Col, InputNumber, Button } from 'antd';
 
+import SignUp1 from '@/pages/SignUp1';
+import SignUp2 from '@/pages/SignUp2';
+
 import gmail from '@/assets/gmail-icon.png';
 import outlook from '@/assets/outlook-icon.png';
-
 import img from '@/assets/sign-up-img.png';
 
 import styles from './SignUpLayout1.less';
@@ -47,46 +49,9 @@ const SignUpLayout1 = (props) => {
           </div>
 
           <div className={styles.rightContent}>
-            <div className={styles.rightWrapper}>
-              <h2>Check your mail for the code.</h2>
-
-              <p className={styles.mail}>
-                We have sent a 6-digit code to<Link to="/">siddhartha@lollypop.design.</Link>
-              </p>
-
-              <p className={styles.codeDescription}>Enter the security code</p>
-
-              <div className={styles.code}>
-                <InputNumber className={styles.input} min={1} max={9} />
-                <InputNumber className={styles.input} min={1} max={9} />
-                <InputNumber className={styles.input} min={1} max={9} />
-                <InputNumber className={styles.input} min={1} max={9} />
-                <InputNumber className={styles.input} min={1} max={9} />
-                <InputNumber className={styles.input} min={1} max={9} />
-              </div>
-
-              <div className={styles.send}>
-                <p>
-                  Did not receive the code? <Link to="/">Send again</Link>{' '}
-                </p>
-              </div>
-
-              <div className={styles.btnContainer}>
-                <Button>
-                  <div className={styles.btn}>
-                    <img src={gmail} />
-                    <span>open gmail</span>
-                  </div>
-                </Button>
-
-                <Button>
-                  <div className={styles.btn}>
-                    <img src={outlook} />
-                    <span>open outlook</span>
-                  </div>
-                </Button>
-              </div>
-            </div>
+            {/* <SignUp2 /> */}
+            {/* <SignUp1 /> */}
+            {children}
           </div>
         </div>
       </Content>

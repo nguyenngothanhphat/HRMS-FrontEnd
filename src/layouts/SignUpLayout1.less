@@ -82,86 +82,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-
-      .rightWrapper {
-        display: block;
-        margin: 0 auto;
-
-        h2 {
-          font-size: 16px;
-          font-weight: 600;
-          color: @black;
-        }
-
-        p {
-          color: @gray;
-        }
-
-        a {
-          color: @blue;
-          font-weight: 500;
-        }
-
-        .mail {
-          a {
-            margin-left: 4px;
-          }
-        }
-
-        .codeDescription {
-          margin-top: 40px;
-        }
-
-        .code {
-          margin-top: 12px;
-          margin-bottom: 16px;
-          display: flex;
-
-          .input:not(:last-child) {
-            margin-right: 10px;
-          }
-        }
-
-        .send {
-          a {
-            text-decoration: underline;
-            font-weight: normal;
-          }
-        }
-
-        .btnContainer {
-          margin-top: 48.5px;
-
-          button {
-            height: fit-content;
-            width: fit-content;
-            border-radius: 20px;
-
-            &:first-child {
-              margin-right: 20px;
-            }
-
-            .btn {
-              margin: 7px 20px;
-              display: flex;
-              align-items: center;
-
-              img {
-                max-width: 20px;
-                height: auto;
-              }
-
-              span {
-                margin-left: 15px;
-                font-size: 14px;
-                color: @black;
-                font-weight: 500;
-                text-transform: capitalize;
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -200,6 +120,14 @@
       }
 
       svg {
+        display: none;
+      }
+    }
+  }
+
+  @media (max-width: 900px) {
+    .main {
+      .leftContent {
         display: none;
       }
     }

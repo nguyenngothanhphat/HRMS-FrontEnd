@@ -15,7 +15,17 @@ const routes = [
     routes: [
       {
         path: '/signup1',
-        component: './SignUp',
+        component: './SignUp1',
+      },
+    ],
+  },
+  {
+    path: '/signup2',
+    component: '../layouts/SignUpLayout1',
+    routes: [
+      {
+        path: '/signup2',
+        component: './SignUp2',
       },
     ],
   },
