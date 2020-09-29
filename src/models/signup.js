@@ -5,6 +5,7 @@ const signup = {
   namespace: 'signup',
   state: {
     currentStep: 0,
+    checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
       name: '',
