@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
@@ -16,7 +17,7 @@ class TableDocuments extends PureComponent {
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.documentId - b.documentId,
+        compare: (a, b) => a.documentId.localeCompare(b.documentId),
       },
     },
     {
@@ -59,6 +60,23 @@ class TableDocuments extends PureComponent {
       title: 'User ID',
       dataIndex: 'userId',
       align: 'center',
+      sorter: {
+        compare: (a, b) => a.userId - b.userId,
+      },
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      width: '5%',
+      align: 'center',
+      render: (text, record) => (
+        <div className={styles.documentAction}>
+          <DeleteOutlined
+            onClick={(e) => this.deleteDocument(record.key, e)}
+            className={styles.deleteDocumentBtn}
+          />
+        </div>
+      ),
     },
   ];
 
@@ -69,6 +87,13 @@ class TableDocuments extends PureComponent {
       selectedRowKeys: [],
     };
   }
+
+  // user
+  deleteDocument = (key, e) => {
+    // e.preventDefault();
+    alert('DELETE DOCUMENT');
+    console.log('DELETE DOCUMENT', key);
+  };
 
   // pagination
   onChangePagination = (pageNumber) => {
@@ -97,7 +122,7 @@ class TableDocuments extends PureComponent {
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
-      x: '100vw',
+      x: '100%',
       y: '',
     };
     const pagination = {
@@ -134,7 +159,7 @@ class TableDocuments extends PureComponent {
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
-          rowKey="userId"
+          rowKey="documentId"
           // onChange={this.onSortChange}
         />
       </div>

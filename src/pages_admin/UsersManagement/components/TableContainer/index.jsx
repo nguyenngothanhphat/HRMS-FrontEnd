@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import Icon, { FilterOutlined } from '@ant-design/icons';
+import { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableUsers from '../TableUsers';
@@ -192,7 +192,7 @@ class TableContainer extends PureComponent {
     const { bottabs, collapsed, changeTab } = this.state;
     const { loadingListActive, loadingListInActive } = this.props;
     return (
-      <div className={styles.DirectoryComponent}>
+      <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
           <Tabs
             defaultActiveKey="1"
