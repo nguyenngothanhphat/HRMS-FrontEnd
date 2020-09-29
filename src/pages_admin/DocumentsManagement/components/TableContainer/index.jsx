@@ -1,54 +1,22 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
-import { debounce } from 'lodash';
 import addDocument from '../../../../../public/assets/images/addMemberIcon.svg';
 import importDocuments from '../../../../../public/assets/images/import.svg';
 import TableDocuments from '../TableDocuments';
 import styles from './index.less';
-import TableFilter from '../TableFilter';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingListActive: loading.effects['usersManagement/fetchListUsersActive'],
-  loadingListInActive: loading.effects['usersManagement/fetchListUsersInActive'],
-  usersManagement,
+@connect(({ loading, documentsManagement }) => ({
+  loadingListActive: loading.effects['documentsManagement/fetchListDocumentsActive'],
+  loadingListInActive: loading.effects['documentsManagement/fetchListDocumentsInActive'],
+  documentsManagement,
 }))
 class TableContainer extends PureComponent {
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if ('usersManagement' in nextProps) {
-      const { usersManagement: { filter = [] } = {} } = nextProps;
-      let role = [];
-      let company = [];
-      let location = [];
-      const roleConst = 'Role';
-      const companyConst = 'Company';
-      const locationConst = 'Location';
-      filter.map((item) => {
-        if (item.actionFilter.name === roleConst) {
-          role = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
-        }
-        if (item.actionFilter.name === companyConst) {
-          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
-        }
-        if (item.actionFilter.name === locationConst) {
-          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
-        }
-        return { role, company, location };
-      });
-      return {
-        ...prevState,
-        role,
-        company,
-        location,
-      };
-    }
-    return null;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
       tabId: 1,
+      changeTab: false,
       bottabs: [
         {
           id: 1,
@@ -60,11 +28,6 @@ class TableContainer extends PureComponent {
         },
       ],
     };
-    this.setDebounce = debounce((query) => {
-      this.setState({
-        filterName: query,
-      });
-    }, 500);
   }
 
   componentDidMount() {
@@ -72,87 +35,45 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { role, location, company, filterName, tabId } = this.state;
-    const params = {
-      name: filterName,
-      role,
-      location,
-      company,
-    };
+    const { tabId } = this.state;
 
-    if (
-      prevState.tabId !== tabId ||
-      prevState.role.length !== role.length ||
-      prevState.location.length !== location.length ||
-      prevState.company.length !== company.length ||
-      prevState.filterName !== filterName
-    ) {
-      this.getDataTable(params, tabId);
+    if (prevState.tabId !== tabId) {
+      this.getDataTable(tabId);
     }
   }
 
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchListUsersActive',
+      type: 'documentsManagement/fetchListDocumentsActive',
     });
     dispatch({
-      type: 'usersManagement/fetchListUsersInActive',
+      type: 'documentsManagement/fetchListDocumentsInActive',
     });
   };
 
-  getDataTable = (params, tabId) => {
+  getDataTable = (tabId) => {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'usersManagement/fetchListUsersActive',
-        payload: params,
+        type: 'documentsManagement/fetchListDocumentsActive',
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'usersManagement/fetchListUsersInActive',
-        payload: params,
+        type: 'documentsManagement/fetchListDocumentsInActive',
       });
     }
   };
 
-  renderListUsers = (tabId) => {
+  renderListDocuments = (tabId) => {
     const {
-      usersManagement: { listUsersActive = [], listUsersInActive = [] },
+      documentsManagement: { listDocumentsActive = [], listDocumentsInActive = [] },
     } = this.props;
     if (tabId === 1) {
-      return listUsersActive;
+      return listDocumentsActive;
     }
-    return listUsersInActive;
-  };
-
-  handleToggle = () => {
-    const { collapsed } = this.state;
-    this.setState({
-      collapsed: !collapsed,
-    });
-  };
-
-  handleChange = (valueInput) => {
-    this.setDebounce(valueInput);
-  };
-
-  handleClickTabPane = (tabId) => {
-    this.setState({
-      tabId: Number(tabId),
-      changeTab: true,
-      filterName: '',
-    });
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/ClearFilter',
-    });
-    setTimeout(() => {
-      this.setState({
-        changeTab: false,
-      });
-    }, 5);
+    return listDocumentsInActive;
   };
 
   rightButton = () => {
@@ -180,12 +101,11 @@ class TableContainer extends PureComponent {
     const { bottabs } = this.state;
     const { loadingListActive, loadingListInActive } = this.props;
     return (
-      <div className={styles.DirectoryComponent}>
+      <div className={styles.DocumentTableContainer}>
         <div className={styles.contentContainer}>
           <Tabs
             defaultActiveKey="1"
             className={styles.TabComponent}
-            onTabClick={this.handleClickTabPane}
             tabBarExtraContent={this.rightButton()}
           >
             {bottabs.map((tab) => (
@@ -194,7 +114,7 @@ class TableContainer extends PureComponent {
                   <Content className="site-layout-background">
                     <TableDocuments
                       loading={loadingListActive || loadingListInActive}
-                      data={this.renderListUsers(tab.id)}
+                      data={this.renderListDocuments(tab.id)}
                     />
                   </Content>
                 </Layout>

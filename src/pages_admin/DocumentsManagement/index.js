@@ -12,7 +12,7 @@ export default class DocumentsManagement extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <div className={styles.containerUsers}>
+        <div className={styles.containerDocuments}>
           <div className={styles.headerText}>
             <span>{formatMessage({ id: 'pages_admin.documents.title' })}</span>
           </div>

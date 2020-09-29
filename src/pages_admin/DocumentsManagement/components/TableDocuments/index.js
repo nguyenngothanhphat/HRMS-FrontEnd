@@ -1,108 +1,64 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingUserProfile: loading.effects['usersManagement/fetchUserProfile'],
-  usersManagement,
+@connect(({ loading, documentsManagement }) => ({
+  loadingDocumentDetail: loading.effects['documentsManagement/fetchDocumentDetail'],
+  documentsManagement,
 }))
 class TableDocuments extends PureComponent {
   columns = [
     {
-      title: 'User ID',
-      dataIndex: 'userId',
-      width: '8%',
+      title: 'Document ID',
+      dataIndex: 'documentId',
       align: 'center',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.userId - b.userId,
+        compare: (a, b) => a.documentId - b.documentId,
       },
     },
     {
-      title: 'Employee ID',
-      dataIndex: 'employeeId',
-      align: 'center',
-      width: '10%',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
-      },
-    },
-    {
-      title: 'Joined date',
-      dataIndex: 'joinedDate',
-      width: '10%',
+      title: 'Document Type',
+      dataIndex: 'documentType',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
+        compare: (a, b) => a.documentType.localeCompare(b.documentType),
       },
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      width: '18%',
+      title: 'Document Name',
+      dataIndex: 'documentName',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.email.localeCompare(b.email),
+        compare: (a, b) => a.documentName.localeCompare(b.documentName),
       },
     },
     {
-      title: 'Full name',
-      dataIndex: 'fullName',
+      title: 'Uploaded By',
+      dataIndex: 'uploadedBy',
       align: 'center',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      },
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
+      title: 'Created Date',
+      dataIndex: 'createdDate',
       align: 'center',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
+      },
     },
     {
-      title: 'Location',
-      dataIndex: 'location',
+      title: 'User ID',
+      dataIndex: 'userId',
       align: 'center',
-    },
-    {
-      title: 'Password',
-      dataIndex: 'password',
-      width: '10%',
-      align: 'center',
-      render: (text, record) => (
-        <div className={styles.userPasswordReset}>
-          <span className={styles.userPassword}>*******</span>
-          <div>
-            <span onClick={(e) => this.resetPassword(record.key, e)}>RESET</span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      align: 'center',
-      render: (text) => <span style={{ fontWeight: '500' }}>{text}</span>,
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      width: '6%',
-      align: 'center',
-      render: (text, record) => (
-        <div className={styles.userAction}>
-          <UserOutlined
-            onClick={(e) => this.editUser(record.userId, e)}
-            className={styles.editUserBtn}
-          />
-          <DeleteOutlined
-            onClick={(e) => this.deleteUser(record.key, e)}
-            className={styles.deleteUserBtn}
-          />
-        </div>
-      ),
     },
   ];
 
@@ -113,19 +69,6 @@ class TableDocuments extends PureComponent {
       selectedRowKeys: [],
     };
   }
-
-  // user
-  deleteUser = (key, e) => {
-    // e.preventDefault();
-    alert('DELETE USER');
-    console.log('DELETE USER', key);
-  };
-
-  resetPassword = (key, e) => {
-    e.preventDefault();
-    alert('RESET PASSWORD');
-    console.log('RESET PASSWORD', key);
-  };
 
   // pagination
   onChangePagination = (pageNumber) => {
@@ -182,7 +125,7 @@ class TableDocuments extends PureComponent {
     };
 
     return (
-      <div className={styles.tableUsers}>
+      <div className={styles.tableDocuments}>
         <Table
           size="small"
           loading={loading}
