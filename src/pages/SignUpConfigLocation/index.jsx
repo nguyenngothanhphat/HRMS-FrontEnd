@@ -43,13 +43,28 @@ class SignUpConfigLocation extends Component {
     }
   };
 
+  onChangeStep = (current) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        currentStep: current,
+      },
+    });
+  };
+
   render() {
     const { currentStep = 0 } = this.props;
 
     return (
       <div className={styles.root}>
         <div style={{ marginRight: '46px' }}>
-          <Steps className={styles.steps} current={currentStep} direction="vertical">
+          <Steps
+            className={styles.steps}
+            current={currentStep}
+            onChange={this.onChangeStep}
+            direction="vertical"
+          >
             <Step icon={this.customStep(0)} />
             <Step icon={this.customStep(1)} />
             <Step icon={this.customStep(2)} />
