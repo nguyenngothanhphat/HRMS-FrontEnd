@@ -18,6 +18,7 @@ import employeeOnboarding from './en-US/employeeOnboarding';
 
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
+import documentsManagementPage from './en-US/documentsManagementPage';
 
 export default {
   'navBar.lang': 'Languages',
@@ -46,4 +47,5 @@ export default {
   ...employeeOnboarding,
   // admin pages
   ...usersManagementPage,
+  ...documentsManagementPage,
 };

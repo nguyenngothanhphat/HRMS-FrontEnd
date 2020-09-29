@@ -82,7 +82,7 @@ const routes = [
             path: '/documents',
             name: 'documents',
             icon: '/assets/images/home.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/DocumentsManagement',
             authority: ['admin'],
           },
           {
