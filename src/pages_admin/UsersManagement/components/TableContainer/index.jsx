@@ -4,7 +4,8 @@ import Icon, { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableUsers from '../TableUsers';
-import addUser from './icon.js';
+import addUser from '../../../../../public/assets/images/addMemberIcon.svg';
+import importUsers from '../../../../../public/assets/images/import.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -158,8 +159,15 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/#" className={styles.buttonAddUser}>
-          <Icon component={addUser} />
+        <NavLink to="/#" className={styles.buttonAdd}>
+          <img src={importUsers} alt="import-user" />
+          <span className={styles.NameNewProfile}>
+            {formatMessage({ id: 'pages_admin.users.userTable.importUsers' })}
+          </span>
+        </NavLink>
+
+        <NavLink to="/#" className={styles.buttonAdd}>
+          <img src={addUser} alt="import-user" />
           <p className={styles.NameNewProfile}>
             {formatMessage({ id: 'pages_admin.users.userTable.addUser' })}
           </p>

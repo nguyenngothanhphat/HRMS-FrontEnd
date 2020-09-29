@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import Icon, { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
+import addDocument from '../../../../../public/assets/images/addMemberIcon.svg';
+import importDocuments from '../../../../../public/assets/images/import.svg';
 import TableDocuments from '../TableDocuments';
-import addUser from './icon.js';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -49,12 +49,6 @@ class TableContainer extends PureComponent {
     super(props);
     this.state = {
       tabId: 1,
-      changeTab: false,
-      collapsed: true,
-      role: [],
-      location: [],
-      company: [],
-      filterName: '',
       bottabs: [
         {
           id: 1,
@@ -161,25 +155,21 @@ class TableContainer extends PureComponent {
     }, 5);
   };
 
-  rightButton = (collapsed) => {
+  rightButton = () => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/#" className={styles.buttonAddUser}>
-          <Icon component={addUser} />
-          <p className={styles.NameNewProfile}>
-            {formatMessage({ id: 'pages_admin.documents.documentTable.addDocument' })}
-          </p>
+        <NavLink to="/#" className={styles.buttonAdd}>
+          <img src={importDocuments} alt="import-documents" />
+          <span className={styles.NameNewProfile}>
+            {formatMessage({ id: 'pages_admin.documents.documentTable.importDocuments' })}
+          </span>
         </NavLink>
-        <div className={styles.filterSider} onClick={this.handleToggle}>
-          <div
-            className={`${styles.filterButton} ${
-              collapsed ? '' : `${styles.filterBackgroundButton}`
-            }`}
-          >
-            <FilterOutlined />
-            <p className={styles.textButtonFilter}>Filter</p>
-          </div>
-        </div>
+        <NavLink to="/#" className={styles.buttonAdd}>
+          <img src={addDocument} alt="add-document" />
+          <span className={styles.NameNewProfile}>
+            {formatMessage({ id: 'pages_admin.documents.documentTable.addDocument' })}
+          </span>
+        </NavLink>
       </div>
     );
   };
@@ -187,7 +177,7 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed, changeTab } = this.state;
+    const { bottabs } = this.state;
     const { loadingListActive, loadingListInActive } = this.props;
     return (
       <div className={styles.DirectoryComponent}>
@@ -196,7 +186,7 @@ class TableContainer extends PureComponent {
             defaultActiveKey="1"
             className={styles.TabComponent}
             onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton(collapsed)}
+            tabBarExtraContent={this.rightButton()}
           >
             {bottabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
@@ -207,13 +197,6 @@ class TableContainer extends PureComponent {
                       data={this.renderListUsers(tab.id)}
                     />
                   </Content>
-                  <TableFilter
-                    onToggle={this.handleToggle}
-                    collapsed={collapsed}
-                    onHandleChange={this.handleChange}
-                    FormBox={this.handleFormBox}
-                    changeTab={changeTab}
-                  />
                 </Layout>
               </TabPane>
             ))}
