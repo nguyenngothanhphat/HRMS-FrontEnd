@@ -96,7 +96,6 @@ class Edit extends Component {
           onFinish={this.handleSave}
         >
           <Form.Item
-            hasFeedback
             label="Emergency Contact"
             name="emergencyContact"
             rules={[

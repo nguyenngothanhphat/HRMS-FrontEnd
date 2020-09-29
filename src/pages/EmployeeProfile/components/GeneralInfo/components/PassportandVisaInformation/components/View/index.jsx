@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import Moment from 'moment';
 import ModalReviewImage from '@/components/ModalReviewImage';
+import iconPDF from '@/assets/pdf-2.svg';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
 
@@ -60,7 +61,7 @@ class View extends PureComponent {
         <Col span={6} className={styles.textLabel}>
           Visa Number
         </Col>
-        <Col span={18} className={styles.textValue}>
+        <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
           {item.visaNumber}
           {(index === 0 && visa0URL !== '') || (index === 1 && visa1URL !== '') ? (
             <div className={styles.viewFileUpLoad}>
@@ -73,10 +74,11 @@ class View extends PureComponent {
                   {this.handleNameDataUpload(index)}
                 </p>
               )}
+
               <ConformIcondata data={this.handleNameDataUpload(index)} />
             </div>
           ) : (
-            ''
+            <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
           )}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -115,28 +117,16 @@ class View extends PureComponent {
   };
 
   handleRenderDataDummyVisa = (dummyData2) => {
-    const { visa1URL = '', visa0URL = '' } = this.props;
     return dummyData2.map((item, index) => (
       <Fragment key={item.label}>
         <Col span={6} className={styles.textLabel}>
           {item.label}
         </Col>
-        <Col span={18} className={styles.textValue}>
+        <Col span={18} className={styles.EarlyIcon}>
           {item.value}
-          {(item.label === 'Visa Number' && index === 0 && visa0URL !== '') ||
-          (item.label === 'Visa Number' && index === 1 && visa1URL !== '') ? (
-            <div className={styles.viewFileUpLoad}>
-              {index === 0 ? (
-                <p onClick={() => this.handleOpenModalReview(visa0URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              ) : (
-                <p onClick={() => this.handleOpenModalReview(visa1URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              )}
-              <ConformIcondata data={this.handleNameDataUpload(index)} />
-            </div>
+          {(item.label === 'Visa Number' && index === 0) ||
+          (item.label === 'Visa Number' && index === 1) ? (
+            <img src={iconPDF} alt="iconFilePDF" />
           ) : (
             ''
           )}
@@ -198,7 +188,7 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
-              {item.label === 'Passport Number' && passPortURL ? (
+              {item.label === 'Passport Number' ? (
                 <div className={styles.viewFileUpLoad}>
                   <p
                     onClick={() => this.handleOpenModalReview(passPortURL)}
