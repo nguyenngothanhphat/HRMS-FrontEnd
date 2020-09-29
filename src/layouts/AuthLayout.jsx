@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
-import { formatMessage, useSelector, useHistory } from 'umi';
+import { formatMessage, useSelector, useHistory, Link } from 'umi';
 import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
 
@@ -25,9 +25,9 @@ const AuthLayout = ({ children }) => {
         </div>
         <div className={styles.rightContent}>
           <span>{formatMessage({ id: 'layout.authLayout.newUser' })}</span>
-          <span className={styles.textSignUp}>
+          <Link to="/signup" className={styles.textSignUp}>
             {formatMessage({ id: 'layout.authLayout.signUp' })}
-          </span>
+          </Link>
         </div>
       </Header>
       <Content className={styles.content}>
