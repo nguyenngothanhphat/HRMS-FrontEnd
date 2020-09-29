@@ -1,11 +1,19 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Steps } from 'antd';
 import styles from './index.less';
 import Screen3 from './components/Screen3';
+import Screen1 from './components/Screen1';
 
 const { Step } = Steps;
 
-class SignUpConfigLocation extends PureComponent {
+class SignUpConfigLocation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayScreen: 1,
+    };
+  }
+
   customStep = (number) => {
     const { current = 1 } = this.props;
     const check = number - 1 > current;
@@ -16,8 +24,21 @@ class SignUpConfigLocation extends PureComponent {
     );
   };
 
+  renderScreen = () => {
+    const { displayScreen } = this.state;
+    switch (displayScreen) {
+      case 1:
+        return <Screen1 />;
+      case 3:
+        return <Screen3 />;
+      default:
+        return <Screen1 />;
+    }
+  };
+
   render() {
     const { current = 1 } = this.props;
+
     return (
       <div className={styles.root}>
         <div style={{ marginRight: '46px' }}>
@@ -27,7 +48,7 @@ class SignUpConfigLocation extends PureComponent {
             <Step icon={this.customStep(3)} />
           </Steps>
         </div>
-        <Screen3 />
+        {this.renderScreen()}
       </div>
     );
   }
