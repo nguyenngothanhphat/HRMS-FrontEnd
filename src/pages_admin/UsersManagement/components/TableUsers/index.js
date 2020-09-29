@@ -68,6 +68,11 @@ class TableUsers extends PureComponent {
       align: 'center',
     },
     {
+      title: 'Company',
+      dataIndex: 'company',
+      align: 'center',
+    },
+    {
       title: 'Password',
       dataIndex: 'password',
       width: '10%',

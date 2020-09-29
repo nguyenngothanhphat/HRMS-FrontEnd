@@ -8,7 +8,7 @@ import styles from './index.less';
   loadingUserProfile: loading.effects['usersManagement/fetchUserProfile'],
   usersManagement,
 }))
-class TableUsers extends PureComponent {
+class TableDocuments extends PureComponent {
   columns = [
     {
       title: 'User ID',
@@ -198,4 +198,4 @@ class TableUsers extends PureComponent {
     );
   }
 }
-export default TableUsers;
+export default TableDocuments;

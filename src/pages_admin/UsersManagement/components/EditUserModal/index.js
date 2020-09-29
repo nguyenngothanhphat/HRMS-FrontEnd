@@ -22,7 +22,17 @@ class EditUserModal extends PureComponent {
 
   render() {
     const { editModalVisible, closeEditModal, userProfile } = this.props;
-    const { userId, employeeId, joinedDate, email, fullName, role, location, status } = userProfile;
+    const {
+      userId,
+      employeeId,
+      joinedDate,
+      email,
+      fullName,
+      role,
+      location,
+      company,
+      status,
+    } = userProfile;
     return (
       <>
         {userProfile && userProfile.userId && (
@@ -46,14 +56,14 @@ class EditUserModal extends PureComponent {
                 name="userId"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={userId} />
+                <Input disabled defaultValue={userId} />
               </Form.Item>
               <Form.Item
                 label="Employee ID"
                 name="employeeId"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={employeeId} />
+                <Input disabled defaultValue={employeeId} />
               </Form.Item>
               <Form.Item
                 label="Joined Date"
@@ -61,7 +71,11 @@ class EditUserModal extends PureComponent {
                 rules={[{ required: true, message: 'Please input!' }]}
               >
                 <Space direction="vertical" size={12}>
-                  <DatePicker defaultValue={moment(joinedDate, dateFormat)} format={dateFormat} />
+                  <DatePicker
+                    disabled
+                    defaultValue={moment(joinedDate, dateFormat)}
+                    format={dateFormat}
+                  />
                 </Space>
               </Form.Item>
               <Form.Item
@@ -93,11 +107,18 @@ class EditUserModal extends PureComponent {
                 <Input defaultValue={location} />
               </Form.Item>
               <Form.Item
+                label="Company"
+                name="company"
+                rules={[{ required: true, message: 'Please input!' }]}
+              >
+                <Input defaultValue={company} />
+              </Form.Item>
+              <Form.Item
                 label="Status"
                 name="status"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Select defaultValue={status}>
+                <Select disabled defaultValue={status}>
                   <Option value="Active">Active</Option>
                   <Option value="Inactive">Inactive</Option>
                 </Select>
