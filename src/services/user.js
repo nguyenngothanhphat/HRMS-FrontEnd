@@ -11,3 +11,14 @@ export async function queryCurrent() {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function getUserInfo(data) {
+  return request(
+    '/api/security-register',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}

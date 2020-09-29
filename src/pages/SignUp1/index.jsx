@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { connect } from 'umi';
 import { Form, Input, Button, Checkbox } from 'antd';
 
 import styles from './index.less';
@@ -8,8 +10,42 @@ const SignUp1 = (props) => {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    console.log(values);
+  const { user, dispatch } = props;
+
+  useEffect(() => {
+    // console.log(props);
+  }, []);
+
+  const storeData = (user) => {
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          user,
+        },
+      });
+    }
+  };
+
+  const onFinish = async (values) => {
+    const { email, fullname } = values;
+    const user = {
+      firstName: fullname,
+      email,
+    };
+
+    if (dispatch) {
+      const { firstName = '', email = '' } = user;
+      await dispatch({
+        type: 'signup/fetchUserInfo',
+        payload: {
+          firstName,
+          email,
+        },
+      });
+    }
+
+    storeData(user);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -76,4 +112,7 @@ const SignUp1 = (props) => {
   );
 };
 
-export default SignUp1;
+// export default SignUp1;
+export default connect(({ signup: { user = {} } = {} }) => ({
+  user,
+}))(SignUp1);

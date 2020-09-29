@@ -63,7 +63,8 @@
     border: none;
     margin-top: 38px;
 
-    &:hover {
+    &:hover,
+    &:focus {
       background-color: @dark-orange;
     }
   }
@@ -103,10 +104,8 @@
       margin: 0 !important;
     }
 
-    // .ant-form-item-label {
-    //   &:nth-child(2) {
-    //     display: none;
-    //   }
-    // }
+    .ant-form-item-required::before {
+      display: none !important;
+    }
   }
 }

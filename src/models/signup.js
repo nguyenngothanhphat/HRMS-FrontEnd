@@ -1,5 +1,7 @@
-// import { dialog } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
+import { history } from 'umi';
 // import { getListCountry, getListState } from '../services/country';
+import { getUserInfo } from '../services/user';
 
 const signup = {
   namespace: 'signup',
@@ -50,6 +52,19 @@ const signup = {
     //     dialog(errors);
     //   }
     // },
+    *fetchUserInfo({ payload }, { call, put }) {
+      console.log('fetch user info');
+      try {
+        const response = yield call(getUserInfo, payload);
+        const { statusCode, data: userInfo = [] } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { user: userInfo } });
+        history.replace('/signup-verify');
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
