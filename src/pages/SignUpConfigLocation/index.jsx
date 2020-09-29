@@ -1,35 +1,62 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Steps } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 import Screen2 from './components/Screen2';
 import Screen3 from './components/Screen3';
+import Screen1 from './components/Screen1';
 
 const { Step } = Steps;
 
-class SignUpConfigLocation extends PureComponent {
+@connect(({ signup: { currentStep = 0 } = {}, country: { listCountry = [] } = {} }) => ({
+  currentStep,
+  listCountry,
+}))
+class SignUpConfigLocation extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'country/fetchListCountry',
+    });
+  }
+
   customStep = (number) => {
-    const { current = 1 } = this.props;
-    const check = number - 1 > current;
+    const { currentStep = 0 } = this.props;
+    const check = number > currentStep;
     return (
       <div className={styles.customStep} style={check ? { backgroundColor: '#d9e5ff' } : {}}>
-        {number}
+        {number + 1}
       </div>
     );
   };
 
+  renderScreen = () => {
+    const { listCountry, currentStep } = this.props;
+    switch (currentStep) {
+      case 0:
+        return <Screen1 listCountry={listCountry} />;
+      case 1:
+        return <Screen2 />;
+      case 2:
+        return <Screen3 />;
+      default:
+        return <Screen1 />;
+    }
+  };
+
   render() {
-    const { current = 1 } = this.props;
+    const { currentStep = 0 } = this.props;
+
     return (
       <div className={styles.root}>
         <div style={{ marginRight: '46px' }}>
-          <Steps className={styles.steps} current={current} direction="vertical">
+          <Steps className={styles.steps} current={currentStep} direction="vertical">
+            <Step icon={this.customStep(0)} />
             <Step icon={this.customStep(1)} />
             <Step icon={this.customStep(2)} />
-            <Step icon={this.customStep(3)} />
           </Steps>
         </div>
-        {/* <Screen3 /> */}
-        <Screen2 />
+        {this.renderScreen()}
       </div>
     );
   }
