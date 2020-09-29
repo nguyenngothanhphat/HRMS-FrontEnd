@@ -1,8 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Button, Col, Row } from 'antd';
+import { connect } from 'umi';
 import { CheckCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
 
+@connect(({ loading, signup = {} }) => ({
+  loading: loading.effects['signup/signupAdmin'],
+  signup,
+}))
 class Screen3 extends PureComponent {
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
@@ -15,14 +20,38 @@ class Screen3 extends PureComponent {
         htmlType="submit"
         disabled={!valuePsw || !valueConfirm}
       >
-        Sign up
+        Create Password
       </Button>
     );
   };
 
   onFinish = (values) => {
+    const { dispatch } = this.props;
     const { password } = values;
-    console.log('SIGN UP, PASSWORD: ', password);
+    const payload = this.processData(password);
+    dispatch({
+      type: 'signup/signupAdmin',
+      payload,
+    });
+  };
+
+  processData = (psw) => {
+    const { signup = {} } = this.props;
+    const {
+      codeNumber = '',
+      company = {},
+      headQuarterAddress = {},
+      legalAddress = {},
+      locations = [],
+      user = {},
+    } = signup;
+    const payload = {
+      codeNumber,
+      company: { ...company, headQuarterAddress, legalAddress },
+      locations,
+      user: { ...user, password: psw },
+    };
+    return payload;
   };
 
   render() {

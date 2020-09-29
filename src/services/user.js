@@ -33,3 +33,14 @@ export async function getSecurityCode(data) {
     true,
   );
 }
+
+export async function signupAdmin(data) {
+  return request(
+    '/api/sign-up-admin',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}

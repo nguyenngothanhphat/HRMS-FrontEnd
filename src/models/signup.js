@@ -1,12 +1,14 @@
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 // import { getListCountry, getListState } from '../services/country';
-import { getUserInfo, getSecurityCode } from '../services/user';
+import { signupAdmin, getUserInfo, getSecurityCode } from '../services/user';
+import { notification } from 'antd';
 
 const signup = {
   namespace: 'signup',
   state: {
-    currentStep: 1,
+    currentStep: 0,
+    checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
       name: '',
@@ -32,26 +34,6 @@ const signup = {
     },
   },
   effects: {
-    // *fetchListCountry(_, { call, put }) {
-    //   try {
-    //     const response = yield call(getListCountry);
-    //     const { statusCode, data: listCountry = [] } = response;
-    //     if (statusCode !== 200) throw response;
-    //     yield put({ type: 'save', payload: { listCountry } });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
-    // *fetchListState({ payload }, { call, put }) {
-    //   try {
-    //     const response = yield call(getListState, payload);
-    //     const { statusCode, data: listState = [] } = response;
-    //     if (statusCode !== 200) throw response;
-    //     yield put({ type: 'save', payload: { listState } });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
     *fetchUserInfo({ payload }, { call, put }) {
       try {
         const response = yield call(getUserInfo, payload);
@@ -73,6 +55,19 @@ const signup = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { user: codeInfo } });
         history.replace('/signup-configlocation');
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *signupAdmin({ payload }, { call }) {
+      try {
+        const response = yield call(signupAdmin, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Signup Admin Successfully',
+        });
       } catch (errors) {
         dialog(errors);
       }

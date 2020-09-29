@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Fragment, Component } from 'react';
 import { Form, Input, Select, Row, Col, Checkbox, Button } from 'antd';
 import { connect } from 'umi';
@@ -5,8 +6,7 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
-  loadingGetState: loading.effects['country/fetchListState'],
+@connect(({ country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
   listState,
   listCountry,
   signup,
@@ -16,24 +16,27 @@ class Screen1 extends Component {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
-    this.state = {
-      countryHeadquarter: '',
-      countryLegal: '',
-      checkSame: false,
-    };
   }
 
   onChangeCountryHeadquarter = (value) => {
-    this.setState({ countryHeadquarter: value });
+    const { dispatch } = this.props;
     this.formRef.current.setFieldsValue({
       state: undefined,
+    });
+    dispatch({
+      type: 'signup/saveHeadQuarterAddress',
+      payload: { state: '' },
     });
   };
 
   onChangeSelectLegal = (value) => {
-    this.setState({ countryLegal: value });
+    const { dispatch } = this.props;
     this.formRefLegal.current.setFieldsValue({
       state: undefined,
+    });
+    dispatch({
+      type: 'signup/saveLegalAddress',
+      payload: { state: '' },
     });
   };
 
@@ -62,9 +65,22 @@ class Screen1 extends Component {
   };
 
   onChangeCheckbox = (e) => {
-    this.setState({
-      checkSame: e.target.checked,
+    const { dispatch, signup: { headQuarterAddress = {} } = {} } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        checkLegalSameHeadQuarter: e.target.checked,
+      },
     });
+    if (e.target.checked) {
+      dispatch({
+        type: 'signup/saveLegalAddress',
+        payload: { ...headQuarterAddress },
+      });
+      this.formRefLegal.current.setFieldsValue({
+        ...headQuarterAddress,
+      });
+    }
   };
 
   handleNext = () => {
@@ -85,8 +101,7 @@ class Screen1 extends Component {
   };
 
   render() {
-    const { listCountry = [], loadingGetState, signup = {} } = this.props;
-    const { countryHeadquarter = '', countryLegal = '', checkSame } = this.state;
+    const { listCountry = [], signup = {} } = this.props;
     const {
       company: { name = '', dba = '', ein = '' } = {},
       headQuarterAddress: {
@@ -101,6 +116,7 @@ class Screen1 extends Component {
         state: stateLegal = '',
         zipCode: zipCodeLegal = '',
       } = {},
+      checkLegalSameHeadQuarter = false,
     } = signup;
 
     const listStateHead = this.findListState(countryHead) || [];
@@ -181,9 +197,8 @@ class Screen1 extends Component {
                     <Select
                       placeholder="Select State"
                       showArrow
-                      loading={loadingGetState}
                       showSearch
-                      disabled={!countryHeadquarter}
+                      disabled={!countryHead}
                       filterOption={(input, option) =>
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
@@ -221,11 +236,16 @@ class Screen1 extends Component {
             <Fragment>
               <div className={s.viewRow}>
                 <p className={s.root__form__title}>Legal address</p>
-                <Checkbox onChange={this.onChangeCheckbox}>Same as Headquarters address</Checkbox>
+                <Checkbox
+                  onChange={this.onChangeCheckbox}
+                  defaultChecked={checkLegalSameHeadQuarter}
+                >
+                  Same as Headquarters address
+                </Checkbox>
               </div>
 
               <Form.Item label="Address*" name="address">
-                <Input disabled={checkSame} />
+                <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
               <Form.Item label="Country" name="country">
                 <Select
@@ -233,7 +253,7 @@ class Screen1 extends Component {
                   showArrow
                   showSearch
                   onChange={this.onChangeSelectLegal}
-                  disabled={checkSame}
+                  disabled={checkLegalSameHeadQuarter}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
@@ -249,9 +269,8 @@ class Screen1 extends Component {
                     <Select
                       placeholder="Select State"
                       showArrow
-                      loading={loadingGetState}
                       showSearch
-                      disabled={checkSame || !countryLegal}
+                      disabled={checkLegalSameHeadQuarter || !country}
                       filterOption={(input, option) =>
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
@@ -264,7 +283,7 @@ class Screen1 extends Component {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Zip Code" name="zipCode">
-                    <Input disabled={checkSame} />
+                    <Input disabled={checkLegalSameHeadQuarter} />
                   </Form.Item>
                 </Col>
               </Row>
