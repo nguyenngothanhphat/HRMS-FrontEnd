@@ -37,7 +37,7 @@ class EditUserModal extends PureComponent {
       <>
         {userProfile && userProfile.userId && (
           <Modal
-            title={`Edit ${fullName} profile`}
+            title="Edit user profile"
             centered
             visible={editModalVisible}
             onOk={closeEditModal}
@@ -47,7 +47,18 @@ class EditUserModal extends PureComponent {
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...layout}
               name="basic"
-              initialValues={{ remember: true }}
+              initialValues={{
+                remember: true,
+                userId,
+                employeeId,
+                joinedDate: moment(joinedDate, dateFormat),
+                email,
+                fullName,
+                role,
+                location,
+                company,
+                status,
+              }}
               onFinish={this.onFinish}
               onFinishFailed={this.onFinishFailed}
             >
@@ -56,69 +67,65 @@ class EditUserModal extends PureComponent {
                 name="userId"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input disabled defaultValue={userId} />
+                <Input disabled />
               </Form.Item>
               <Form.Item
                 label="Employee ID"
                 name="employeeId"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input disabled defaultValue={employeeId} />
+                <Input disabled />
               </Form.Item>
               <Form.Item
                 label="Joined Date"
                 name="joinedDate"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Space direction="vertical" size={12}>
-                  <DatePicker
-                    disabled
-                    defaultValue={moment(joinedDate, dateFormat)}
-                    format={dateFormat}
-                  />
-                </Space>
+                {/* <Space direction="vertical" size={12}> */}
+                <DatePicker disabled format={dateFormat} />
+                {/* </Space> */}
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={email} />
+                <Input />
               </Form.Item>
               <Form.Item
                 label="Full Name"
                 name="fullName"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={fullName} />
+                <Input />
               </Form.Item>
               <Form.Item
                 label="Role"
                 name="role"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={role} />
+                <Input />
               </Form.Item>
               <Form.Item
                 label="Location"
                 name="location"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={location} />
+                <Input />
               </Form.Item>
               <Form.Item
                 label="Company"
                 name="company"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Input defaultValue={company} />
+                <Input />
               </Form.Item>
               <Form.Item
                 label="Status"
                 name="status"
                 rules={[{ required: true, message: 'Please input!' }]}
               >
-                <Select disabled defaultValue={status}>
+                <Select disabled>
                   <Option value="Active">Active</Option>
                   <Option value="Inactive">Inactive</Option>
                 </Select>

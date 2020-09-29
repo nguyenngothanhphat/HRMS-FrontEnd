@@ -16,7 +16,6 @@ class TableContainer extends PureComponent {
     super(props);
     this.state = {
       tabId: 1,
-      changeTab: false,
       bottabs: [
         {
           id: 1,

@@ -34,6 +34,7 @@ class TableDocuments extends PureComponent {
       dataIndex: 'documentName',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
+      render: (text, record) => <a onClick={() => this.viewDocument(record)}>{text}</a>,
       sorter: {
         compare: (a, b) => a.documentName.localeCompare(b.documentName),
       },
@@ -72,7 +73,7 @@ class TableDocuments extends PureComponent {
       render: (text, record) => (
         <div className={styles.documentAction}>
           <DeleteOutlined
-            onClick={(e) => this.deleteDocument(record.key, e)}
+            onClick={() => this.deleteDocument(record)}
             className={styles.deleteDocumentBtn}
           />
         </div>
@@ -88,11 +89,14 @@ class TableDocuments extends PureComponent {
     };
   }
 
-  // user
-  deleteDocument = (key, e) => {
-    // e.preventDefault();
-    alert('DELETE DOCUMENT');
-    console.log('DELETE DOCUMENT', key);
+  // delete
+  deleteDocument = (record) => {
+    console.log('delete documentId', record.documentId);
+  };
+
+  // view document
+  viewDocument = (record) => {
+    console.log('view documentId', record.documentId);
   };
 
   // pagination

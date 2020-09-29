@@ -81,7 +81,7 @@ class TableUsers extends PureComponent {
         <div className={styles.userPasswordReset}>
           <span className={styles.userPassword}>*******</span>
           <div>
-            <span onClick={(e) => this.resetPassword(record.key, e)}>RESET</span>
+            <span onClick={() => this.resetPassword(record)}>RESET</span>
           </div>
         </div>
       ),
@@ -130,13 +130,11 @@ class TableUsers extends PureComponent {
   };
 
   // user
-  deleteUser = (key, e) => {
-    // e.preventDefault();
-    alert('DELETE USER');
-    console.log('DELETE USER', key);
+  deleteUser = (record) => {
+    console.log('delete userId', record.userId);
   };
 
-  editUser = (userId, e) => {
+  editUser = (userId) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'usersManagement/fetchUserProfile',
