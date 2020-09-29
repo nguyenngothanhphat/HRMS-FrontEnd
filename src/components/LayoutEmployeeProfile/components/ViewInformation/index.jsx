@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
+import CustomModal from '@/components/CustomModal';
 import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
+const { TextArea } = Input;
 
 @connect(
   ({
@@ -23,8 +25,22 @@ class ViewInformation extends PureComponent {
     super(props);
     this.state = {
       visible: false,
+      openEditBio: false,
+      bio: '',
     };
   }
+
+  handleEditBio = () => {
+    const { openEditBio } = this.state;
+    if (openEditBio) {
+      this.setState({
+        bio: '',
+      });
+    }
+    this.setState({
+      openEditBio: !openEditBio,
+    });
+  };
 
   openModalUpload = () => {
     this.setState({
@@ -70,17 +86,48 @@ class ViewInformation extends PureComponent {
     }
   };
 
+  onChangeInput = ({ target: { value } }) => {
+    this.setState({
+      bio: value,
+    });
+  };
+
+  _renderFormEditBio = () => {
+    const { bio } = this.state;
+    const check = 170 - bio.length;
+    return (
+      <div className={s.formEditBio}>
+        <div className={s.formEditBio__title}>Edit Bio</div>
+        <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
+        <TextArea rows={3} value={bio} onChange={this.onChangeInput} />
+        <div className={s.formEditBio__description2}>
+          <span style={{ opacity: 0.5 }}> Remaining characters: </span>
+          {check >= 0 ? (
+            <span style={{ opacity: 0.5 }}>{check}</span>
+          ) : (
+            <span style={{ color: '#ff6c6c' }}>{check} (Limt exceeded)</span>
+          )}
+        </div>
+        <div className={s.viewBtnSave}>
+          <Button className={s.btnSave} type="primary" disabled={check < 0}>
+            Save
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { generalData, compensationData, loading } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
-    const { visible } = this.state;
+    const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
     const menu = (
       <Menu>
-        <Item key="1" onClick={() => alert(1)}>
+        <Item key="1" onClick={this.handleEditBio}>
           <div className={s.itemDropdownMenu}>Edit bio</div>
         </Item>
         <Item key="2" onClick={() => alert(2)}>
@@ -165,6 +212,11 @@ class ViewInformation extends PureComponent {
           handleCancel={this.handleCancel}
           widthImage="40%"
           getResponse={this.getResponse}
+        />
+        <CustomModal
+          open={openEditBio}
+          closeModal={this.handleEditBio}
+          content={this._renderFormEditBio()}
         />
       </div>
     );

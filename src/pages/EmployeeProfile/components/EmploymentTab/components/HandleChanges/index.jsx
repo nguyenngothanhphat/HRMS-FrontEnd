@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import { dialog } from '@/utils/utils';
+import { connect } from 'umi';
 import styles from './styles.less';
 import FirstStep from './components/FirstStep';
 import SecondStep from './components/SecondStep';
@@ -6,12 +8,21 @@ import ThirdStep from './components/ThirdStep';
 import FourthStep from './components/FourthStep';
 import FifthStep from './components/FifthStep';
 
+@connect(({ employeeProfile, user }) => ({
+  employeeProfile,
+  user,
+}))
 class HandleChanges extends PureComponent {
   constructor(props) {
     super(props);
+    const { user, employeeProfile } = this.props;
     this.state = {
       radio: 2,
       changeData: {
+        changedBy: user.currentUser._id,
+        employee: employeeProfile.idCurrentEmployee,
+        newTitle: '',
+        newLocation: '',
         stepOne: 'Now',
         stepTwo: {
           title: '',
@@ -22,7 +33,6 @@ class HandleChanges extends PureComponent {
         },
         stepThree: {
           department: '',
-          position: '',
           reportTo: '',
         },
         stepFour: {
@@ -40,7 +50,7 @@ class HandleChanges extends PureComponent {
     if (changeData.stepOne === 'Before' || changeData.stepOne === 'Later') {
       if (current > 0) {
         nextTab('STOP');
-        alert('Please enter a date');
+        dialog({ message: 'Please enter a date' });
       }
     }
   }
@@ -93,9 +103,17 @@ class HandleChanges extends PureComponent {
     if (e.target.value <= 3) this.setState({ radio: Number(e.target.value) });
   };
 
-  onDateChange = (value) => {
+  onDateChange = (value, msg) => {
     const { changeData } = this.state;
-    this.setState({ changeData: { ...changeData, stepOne: value._d } });
+    if (msg === 'Before') {
+      if (Date.parse(value) < Date.now()) {
+        this.setState({ changeData: { ...changeData, stepOne: value._d } });
+      } else dialog({ message: 'Please enter an appropriate date' });
+    } else if (msg === 'Later') {
+      if (Date.parse(value) > Date.now()) {
+        this.setState({ changeData: { ...changeData, stepOne: value._d } });
+      } else dialog({ message: 'Please enter an appropriate date' });
+    }
   };
 
   onChange = (value, type) => {
@@ -103,12 +121,20 @@ class HandleChanges extends PureComponent {
     switch (type) {
       case 'title':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, title: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, title: value[1] },
+            newTitle: value[0],
+          },
         });
         break;
       case 'wLocation':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, wLocation: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, wLocation: value[1] },
+            newLocation: value[0],
+          },
         });
         break;
       case 'employment':
@@ -131,11 +157,6 @@ class HandleChanges extends PureComponent {
           changeData: { ...changeData, stepThree: { ...changeData.stepThree, department: value } },
         });
         break;
-      case 'position':
-        this.setState({
-          changeData: { ...changeData, stepThree: { ...changeData.stepThree, position: value } },
-        });
-        break;
       case 'reportTo':
         this.setState({
           changeData: { ...changeData, stepThree: { ...changeData.stepThree, reportTo: value } },
@@ -148,7 +169,7 @@ class HandleChanges extends PureComponent {
   };
 
   render() {
-    const { current, data } = this.props;
+    const { current, data, employeeProfile } = this.props;
     const { radio, changeData } = this.state;
     return (
       <div className={styles.handleChanges}>
@@ -160,8 +181,20 @@ class HandleChanges extends PureComponent {
             radio={radio}
           />
         ) : null}
-        {current === 1 ? <SecondStep changeData={changeData} onChange={this.onChange} /> : null}
-        {current === 2 ? <ThirdStep changeData={changeData} onChange={this.onChange} /> : null}
+        {current === 1 ? (
+          <SecondStep
+            fetchedState={employeeProfile}
+            changeData={changeData}
+            onChange={this.onChange}
+          />
+        ) : null}
+        {current === 2 ? (
+          <ThirdStep
+            fetchedState={employeeProfile}
+            changeData={changeData}
+            onChange={this.onChange}
+          />
+        ) : null}
         {current === 3 ? (
           <FourthStep onRadioChange={this.onRadioChange} radio={changeData.stepFour} />
         ) : null}
@@ -170,9 +203,9 @@ class HandleChanges extends PureComponent {
             name={data.name}
             currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
             data={{
-              newTitle: changeData.stepTwo.title,
+              newTitle: changeData.newTitle,
               newSalary: changeData.stepTwo.salary,
-              newLocation: changeData.stepTwo.wLocation,
+              newLocation: changeData.newLocation,
             }}
           />
         ) : null}

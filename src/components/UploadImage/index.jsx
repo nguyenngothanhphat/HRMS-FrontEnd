@@ -18,12 +18,13 @@ class UploadImage extends Component {
   };
 
   handleUpload = (file) => {
-    const { dispatch, getResponse = () => {} } = this.props;
+    const { dispatch, getResponse = () => {}, name = '' } = this.props;
     const formData = new FormData();
     formData.append('uri', file);
     dispatch({
-      type: 'upload/uploadFile',
+      type: 'upload/uploadFileCard',
       payload: formData,
+      name,
     }).then((resp) => {
       getResponse(resp);
     });

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Typography, Button } from 'antd';
-import CustomModal from '@/components/CustomModal';
+import CustomModal from '@/components/CustomModal/index';
 
 import EditForm from '../EditForm';
 import ModalContent from '../ModalContent';

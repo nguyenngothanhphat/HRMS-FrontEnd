@@ -36,9 +36,24 @@ class EmployeeProfile extends Component {
       payload: { employee },
     });
     dispatch({
+      type: 'employeeProfile/fetchPassPort',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchVisa',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchCountryList',
+    });
+    dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
       payload: employee,
     });
+    dispatch({ type: 'employeeProfile/fetchLocations' });
+    dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
+    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({ type: 'employeeProfile/fetchEmployees' });
   }
 
   render() {
