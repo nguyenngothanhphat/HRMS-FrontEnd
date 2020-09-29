@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+
+import NonExtempNoticeForm from './components/NonExtempNoticeForm';
 import styles from './index.less';
 
-class NonExtempNotice extends Component {
+class NonExtempNotice extends PureComponent {
   render() {
     return (
       <div className={styles.NonExtempNotice}>
-        <div className={styles.NonExtempNotice_title}>Non-Exempt Notice</div>
+        <div className={styles.NonExtempNotice_title}>Non-Extempt Notice</div>
+        <NonExtempNoticeForm />
       </div>
     );
   }
