@@ -1,25 +1,25 @@
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 // import { getListCountry, getListState } from '../services/country';
-import { signupAdmin, getUserInfo, getSecurityCode } from '../services/user';
 import { notification } from 'antd';
+import { signupAdmin, getUserInfo, getSecurityCode } from '../services/user';
 
 const signup = {
   namespace: 'signup',
   state: {
-    currentStep: 1,
+    currentStep: 0,
     checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
-      name: 'COMPANY NAME',
+      name: '',
       dba: '',
       ein: '',
     },
     headQuarterAddress: {
-      address: '324',
-      country: '543',
-      state: '235',
-      zipCode: '68',
+      address: '',
+      country: '',
+      state: '',
+      zipCode: '',
     },
     legalAddress: {
       address: '',
@@ -38,7 +38,6 @@ const signup = {
       try {
         const response = yield call(getUserInfo, payload);
         const { statusCode, data: userInfo = [] } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { user: userInfo } });
         history.replace('/signup-verify');
@@ -50,10 +49,9 @@ const signup = {
     *fetchSecurityCode({ payload }, { call, put }) {
       try {
         const response = yield call(getSecurityCode, payload);
-        const { statusCode, data: codeInfo = [] } = response;
-        console.log(response);
+        const { statusCode, data: { securityCode: { codeNumber } = {} } = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { user: codeInfo } });
+        yield put({ type: 'save', payload: { codeNumber } });
         history.replace('/signup-configlocation');
       } catch (errors) {
         dialog(errors);
