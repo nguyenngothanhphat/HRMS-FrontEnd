@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
-import { Link } from 'umi';
+import { Link, formatMessage } from 'umi';
 
 import Template from './components/Template';
 import consecteturMorbi from './assets/consecteturMorbi.png';
@@ -85,7 +85,9 @@ class Documents extends PureComponent {
     return templates.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Template template={template} />
+          <Link to={`/template-details/${template.templateId}`}>
+            <Template template={template} />
+          </Link>
         </Col>
       );
     });
@@ -94,9 +96,15 @@ class Documents extends PureComponent {
   render() {
     return (
       <div className={styles.Documents}>
-        <p className={styles.Documents_title}>System default templates</p>
+        <p className={styles.Documents_title}>
+          {' '}
+          {formatMessage({ id: 'component.documentAndTemplates.defaultTemplate' })}
+        </p>
         <Row gutter={[4, 12]}>{this._renderTemplates()}</Row>
-        <p className={styles.Documents_title}>Recent documents</p>
+        <p className={styles.Documents_title}>
+          {' '}
+          {formatMessage({ id: 'component.documentAndTemplates.recentDocuments' })}
+        </p>
         <Row gutter={[4, 12]}>{this._renderRecentDocuments()}</Row>
       </div>
     );

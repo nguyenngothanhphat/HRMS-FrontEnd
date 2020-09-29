@@ -10,21 +10,21 @@ const routes = [
     ],
   },
   {
-    path: '/signup1',
+    path: '/signup',
     component: '../layouts/SignUpLayout1',
     routes: [
       {
-        path: '/signup1',
+        path: '/signup',
         component: './SignUp1',
       },
     ],
   },
   {
-    path: '/signup2',
+    path: '/signup-verify',
     component: '../layouts/SignUpLayout1',
     routes: [
       {
-        path: '/signup2',
+        path: '/signup-verify',
         component: './SignUp2',
       },
     ],

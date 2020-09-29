@@ -1,13 +1,15 @@
 import React, { Fragment, Component } from 'react';
-import { Form, Input, Select, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Select, Row, Col, Checkbox, Button } from 'antd';
 import { connect } from 'umi';
 import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, country: { listState = [] } = {} }) => ({
+@connect(({ loading, country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
   loadingGetState: loading.effects['country/fetchListState'],
   listState,
+  listCountry,
+  signup,
 }))
 class Screen1 extends Component {
   constructor(props) {
@@ -22,29 +24,17 @@ class Screen1 extends Component {
   }
 
   onChangeCountryHeadquarter = (value) => {
-    // const { dispatch } = this.props;
     this.setState({ countryHeadquarter: value });
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    // const payload = { country: value };
-    // dispatch({
-    //   type: 'country/fetchListState',
-    //   payload,
-    // });
   };
 
   onChangeSelectLegal = (value) => {
-    // const { dispatch } = this.props;
     this.setState({ countryLegal: value });
     this.formRefLegal.current.setFieldsValue({
       state: undefined,
     });
-    // const payload = { country: value };
-    // dispatch({
-    //   type: 'country/fetchListState',
-    //   payload,
-    // });
   };
 
   handleFormCompanyChange = (changedValues) => {
@@ -77,14 +67,45 @@ class Screen1 extends Component {
     });
   };
 
+  handleNext = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        currentStep: 1,
+      },
+    });
+  };
+
+  findListState = (idCountry) => {
+    const { listCountry = [] } = this.props;
+    const itemCountry = listCountry.find((item) => item._id === idCountry) || {};
+    const listState = itemCountry.states || [];
+    return listState;
+  };
+
   render() {
-    const { listCountry = [], loadingGetState } = this.props;
+    const { listCountry = [], loadingGetState, signup = {} } = this.props;
     const { countryHeadquarter = '', countryLegal = '', checkSame } = this.state;
-    const dummyState = [
-      { _id: 'HoChiMinh', name: 'TP. Ho Chi Minh' },
-      { _id: 'HaNoi', name: 'TP. Ha Noi' },
-      { _id: 'DaNang', name: 'TP. Da Nang' },
-    ];
+    const {
+      company: { name = '', dba = '', ein = '' } = {},
+      headQuarterAddress: {
+        address: addressHead = '',
+        country: countryHead = '',
+        state: stateHead = '',
+        zipCode: zipCodeHead = '',
+      } = {},
+      legalAddress: {
+        address: addressLegal = '',
+        country = '',
+        state: stateLegal = '',
+        zipCode: zipCodeLegal = '',
+      } = {},
+    } = signup;
+
+    const listStateHead = this.findListState(countryHead) || [];
+    const listStateLegal = this.findListState(country) || [];
+
     return (
       <div className={s.root}>
         <div className={s.root__form}>
@@ -93,6 +114,11 @@ class Screen1 extends Component {
             requiredMark={false}
             layout="vertical"
             colon={false}
+            initialValues={{
+              name,
+              dba,
+              ein,
+            }}
             onValuesChange={this.handleFormCompanyChange}
           >
             <Fragment>
@@ -121,6 +147,12 @@ class Screen1 extends Component {
             layout="vertical"
             colon={false}
             ref={this.formRef}
+            initialValues={{
+              address: addressHead,
+              country: countryHead,
+              state: stateHead,
+              zipCode: zipCodeHead,
+            }}
             onValuesChange={this.handleFormHeadquarter}
           >
             <Fragment>
@@ -156,8 +188,8 @@ class Screen1 extends Component {
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      {dummyState.map((item) => (
-                        <Option key={item._id}>{item.name}</Option>
+                      {listStateHead.map((item) => (
+                        <Option key={item}>{item}</Option>
                       ))}
                     </Select>
                   </Form.Item>
@@ -178,6 +210,12 @@ class Screen1 extends Component {
             layout="vertical"
             colon={false}
             ref={this.formRefLegal}
+            initialValues={{
+              address: addressLegal,
+              country,
+              state: stateLegal,
+              zipCode: zipCodeLegal,
+            }}
             onValuesChange={this.handleFormLegal}
           >
             <Fragment>
@@ -218,8 +256,8 @@ class Screen1 extends Component {
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      {dummyState.map((item) => (
-                        <Option key={item._id}>{item.name}</Option>
+                      {listStateLegal.map((item) => (
+                        <Option key={item}>{item}</Option>
                       ))}
                     </Select>
                   </Form.Item>
@@ -232,6 +270,11 @@ class Screen1 extends Component {
               </Row>
             </Fragment>
           </Form>
+        </div>
+        <div className={s.root__viewBtnNext}>
+          <Button className={s.btnNext} type="primary" onClick={this.handleNext}>
+            Next
+          </Button>
         </div>
       </div>
     );

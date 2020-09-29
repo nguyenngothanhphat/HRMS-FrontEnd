@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Typography, Button } from 'antd';
+import { formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 
 import EditForm from '../EditForm';
@@ -14,7 +15,7 @@ class TemplateDetailsForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: true,
+      openModal: false,
       currentModal: 1,
     };
   }
@@ -46,21 +47,27 @@ class TemplateDetailsForm extends PureComponent {
     switch (currentModal) {
       case 1:
         return (
-          <CustomModal open={openModal} closeModal={this.closeModal}>
-            <EditForm onNext={this.onNext} />
-          </CustomModal>
+          <CustomModal
+            open={openModal}
+            closeModal={this.closeModal}
+            content={<EditForm onNext={this.onNext} />}
+          />
         );
       case 2:
         return (
-          <CustomModal open={openModal} closeModal={this.closeModal}>
-            <ModalContent onNext={this.onNext} content={0} />
-          </CustomModal>
+          <CustomModal
+            open={openModal}
+            closeModal={this.closeModal}
+            content={<ModalContent onNext={this.onNext} content={0} />}
+          />
         );
       case 3:
         return (
-          <CustomModal open={openModal} closeModal={this.closeModal}>
-            <ModalContent onNext={this.onNext} content={1} />
-          </CustomModal>
+          <CustomModal
+            open={openModal}
+            closeModal={this.closeModal}
+            content={<ModalContent onNext={this.onNext} content={1} />}
+          />
         );
       default:
         return null;
@@ -113,7 +120,7 @@ class TemplateDetailsForm extends PureComponent {
         <div className={styles.TemplateDetailsForm_header}>
           <Form>
             <Form.Item
-              label="Enter template title"
+              label={formatMessage({ id: 'component.templateDetails.inputName' })}
               name="templateTitle"
               required={false}
               rules={[{ required: true, message: 'Please input template title!' }]}

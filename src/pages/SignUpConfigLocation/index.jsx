@@ -8,9 +8,8 @@ import Screen1 from './components/Screen1';
 
 const { Step } = Steps;
 
-@connect(({ signup: { currentStep = 0 } = {}, country: { listCountry = [] } = {} }) => ({
+@connect(({ signup: { currentStep = 0 } = {} }) => ({
   currentStep,
-  listCountry,
 }))
 class SignUpConfigLocation extends Component {
   componentDidMount() {
@@ -31,10 +30,10 @@ class SignUpConfigLocation extends Component {
   };
 
   renderScreen = () => {
-    const { listCountry, currentStep } = this.props;
+    const { currentStep } = this.props;
     switch (currentStep) {
       case 0:
-        return <Screen1 listCountry={listCountry} />;
+        return <Screen1 />;
       case 1:
         return <Screen2 />;
       case 2:
@@ -44,13 +43,28 @@ class SignUpConfigLocation extends Component {
     }
   };
 
+  onChangeStep = (current) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        currentStep: current,
+      },
+    });
+  };
+
   render() {
     const { currentStep = 0 } = this.props;
 
     return (
       <div className={styles.root}>
         <div style={{ marginRight: '46px' }}>
-          <Steps className={styles.steps} current={currentStep} direction="vertical">
+          <Steps
+            className={styles.steps}
+            current={currentStep}
+            onChange={this.onChangeStep}
+            direction="vertical"
+          >
             <Step icon={this.customStep(0)} />
             <Step icon={this.customStep(1)} />
             <Step icon={this.customStep(2)} />
