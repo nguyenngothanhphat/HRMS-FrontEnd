@@ -11,3 +11,14 @@ export async function queryCurrent() {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function signupAdmin(data) {
+  return request(
+    '/api/sign-up-admin',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}

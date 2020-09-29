@@ -1,5 +1,6 @@
-// import { dialog } from '@/utils/utils';
-// import { getListCountry, getListState } from '../services/country';
+import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
+import { signupAdmin } from '../services/user';
 
 const signup = {
   namespace: 'signup',
@@ -31,26 +32,18 @@ const signup = {
     },
   },
   effects: {
-    // *fetchListCountry(_, { call, put }) {
-    //   try {
-    //     const response = yield call(getListCountry);
-    //     const { statusCode, data: listCountry = [] } = response;
-    //     if (statusCode !== 200) throw response;
-    //     yield put({ type: 'save', payload: { listCountry } });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
-    // *fetchListState({ payload }, { call, put }) {
-    //   try {
-    //     const response = yield call(getListState, payload);
-    //     const { statusCode, data: listState = [] } = response;
-    //     if (statusCode !== 200) throw response;
-    //     yield put({ type: 'save', payload: { listState } });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
+    *signupAdmin({ payload }, { call }) {
+      try {
+        const response = yield call(signupAdmin, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Signup Admin Successfully',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {

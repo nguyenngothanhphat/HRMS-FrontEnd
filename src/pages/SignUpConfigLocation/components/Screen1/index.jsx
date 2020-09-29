@@ -6,8 +6,7 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
-  loadingGetState: loading.effects['country/fetchListState'],
+@connect(({ country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
   listState,
   listCountry,
   signup,
@@ -102,7 +101,7 @@ class Screen1 extends Component {
   };
 
   render() {
-    const { listCountry = [], loadingGetState, signup = {} } = this.props;
+    const { listCountry = [], signup = {} } = this.props;
     const {
       company: { name = '', dba = '', ein = '' } = {},
       headQuarterAddress: {
@@ -198,7 +197,6 @@ class Screen1 extends Component {
                     <Select
                       placeholder="Select State"
                       showArrow
-                      loading={loadingGetState}
                       showSearch
                       disabled={!countryHead}
                       filterOption={(input, option) =>
@@ -271,7 +269,6 @@ class Screen1 extends Component {
                     <Select
                       placeholder="Select State"
                       showArrow
-                      loading={loadingGetState}
                       showSearch
                       disabled={checkLegalSameHeadQuarter || !country}
                       filterOption={(input, option) =>
