@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
@@ -34,6 +35,25 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchCompensation',
       payload: { employee },
     });
+    dispatch({
+      type: 'employeeProfile/fetchPassPort',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchVisa',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchCountryList',
+    });
+    dispatch({
+      type: 'employeeProfile/fetchEmploymentInfo',
+      payload: employee,
+    });
+    dispatch({ type: 'employeeProfile/fetchLocations' });
+    dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
+    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({ type: 'employeeProfile/fetchEmployees' });
   }
 
   render() {
@@ -63,9 +83,11 @@ class EmployeeProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <div className={styles.titlePage}>
-            <p className={styles.titlePage__text}>Employee Profile</p>
-          </div>
+          <Affix offsetTop={40}>
+            <div className={styles.titlePage}>
+              <p className={styles.titlePage__text}>Employee Profile</p>
+            </div>
+          </Affix>
           <LayoutEmployeeProfile listMenu={listMenu} />
         </div>
       </PageContainer>

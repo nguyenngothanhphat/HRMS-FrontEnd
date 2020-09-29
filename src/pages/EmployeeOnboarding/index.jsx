@@ -11,12 +11,14 @@ import styles from './index.less';
 
 export default class EmployeeOnboarding extends PureComponent {
   render() {
+    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
+    console.log(defaultActiveKey);
     const { TabPane } = Tabs;
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey="1">
+            <Tabs defaultActiveKey={defaultActiveKey}>
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"

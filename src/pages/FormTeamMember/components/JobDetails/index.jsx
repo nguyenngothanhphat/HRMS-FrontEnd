@@ -208,17 +208,19 @@ class JobDetails extends PureComponent {
         </Typography.Text>
       ),
     };
+    const { jobDetail } = this.state;
     return (
       <>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.JobDetailsComponent}>
               <Header />
-              <RadioComponent Tab={Tab} handleRadio={this.handleRadio} />
+              <RadioComponent Tab={Tab} handleRadio={this.handleRadio} jobDetail={jobDetail} />
               <FieldsComponent
                 dropdownField={dropdownField}
                 handleSelect={this.handleSelect}
                 candidateField={candidateField}
+                jobDetail={jobDetail}
               />
             </div>
           </Col>
