@@ -1,42 +1,68 @@
 import React, { PureComponent } from 'react';
 import Icon from '@ant-design/icons';
+import { connect } from 'umi';
+import ViewFile from './View';
 import DownloadIcon from './icon.js';
 import styles from './index.less';
 
+@connect(({ employeeProfile: { paySlip = [] } }) => ({
+  paySlip,
+}))
 class PaySlipMonth extends PureComponent {
+  constructor(props) {
+    super(props);
+    // const { selectedFile } = this.props;
+    this.state = {
+      url: '',
+      isView: false,
+      // currentViewingFile: selectedFile,
+    };
+  }
+
   handleClick = () => {};
 
-  render() {
-    const monthNames = [
-      { id: 1, name: 'January' },
-      { id: 2, name: 'February' },
-      { id: 3, name: 'March' },
-      { id: 4, name: 'April' },
-      { id: 5, name: 'May' },
-      { id: 6, name: 'June' },
-      { id: 7, name: 'July' },
-      { id: 8, name: 'August' },
-      //   'September',
-      //   'October',
-      //   'November',
-      //   'December',
-    ];
-    // const month = new Date();
-    return monthNames.reverse().map((item) => {
-      return (
-        <div key={item.id} className={styles.PaySlipMonth}>
-          <p className={styles.nameMonth}>{`Payslip for ${item.name}`}</p>
-          <div className={styles.downLoad}>
-            <p className={styles.downLoadText}>View</p>
-            <Icon
-              component={DownloadIcon}
-              onClick={this.handleClick}
-              className={styles.downLoadIcon}
-            />
-          </div>
-        </div>
-      );
+  handleViewFile = (urlFile) => {
+    this.setState({ isView: true, url: urlFile });
+  };
+
+  onBackClick = () => {
+    this.setState({
+      isView: false,
     });
+  };
+
+  render() {
+    const { paySlip } = this.props;
+    const { isView, url } = this.state;
+
+    return (
+      <>
+        {isView ? (
+          <ViewFile url={url} onBackClick={this.onBackClick} />
+        ) : (
+          paySlip.reverse().map((item, index) => {
+            return (
+              <div key={`${item.key} ${index + 1}`} className={styles.PaySlipMonth}>
+                <p className={styles.nameMonth}>{`${item.key}`}</p>
+                <div className={styles.downLoad}>
+                  <p
+                    className={styles.downLoadText}
+                    onClick={() => this.handleViewFile(item.attachment.url)}
+                  >
+                    View
+                  </p>
+                  <Icon
+                    component={DownloadIcon}
+                    onClick={this.handleClick}
+                    className={styles.downLoadIcon}
+                  />
+                </div>
+              </div>
+            );
+          })
+        )}
+      </>
+    );
   }
 }
 

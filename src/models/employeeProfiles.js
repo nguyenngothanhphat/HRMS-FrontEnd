@@ -20,6 +20,7 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getPayslip,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -34,6 +35,7 @@ const employeeProfile = {
       openPersonnalInfor: false,
       openAcademic: false,
     },
+    paySlip: [],
     countryList: [],
     idCurrentEmployee: '',
     listSkill: [],
@@ -127,6 +129,19 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { countryList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchPayslips({ payload: { employee = '', employeeGroup = '' } }, { call, put }) {
+      try {
+        const response = yield call(getPayslip, { employee, employeeGroup });
+        const { statusCode, data: paySlip = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { paySlip },
         });
       } catch (errors) {
         dialog(errors);

@@ -80,6 +80,13 @@ export async function getCountryList() {
   });
 }
 
+export async function getPayslip(payload) {
+  return request('/api/document/employee-group', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getPassPort(payload) {
   return request('/api/passport/get-by-employee', {
     method: 'POST',
