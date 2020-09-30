@@ -1,8 +1,18 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { formatMessage } from 'umi';
+import NonExtempNoticeForm from './components/NonExtempNoticeForm';
+import styles from './index.less';
 
-class NonExtempNotice extends Component {
+class NonExtempNotice extends PureComponent {
   render() {
-    return <div>NonExtempNotice</div>;
+    return (
+      <div className={styles.NonExtempNotice}>
+        <div className={styles.NonExtempNotice_title}>
+          {formatMessage({ id: 'component.nonExtempNotice.title' })}
+        </div>
+        <NonExtempNoticeForm />
+      </div>
+    );
   }
 }
 
