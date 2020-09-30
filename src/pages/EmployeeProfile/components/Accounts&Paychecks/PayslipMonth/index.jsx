@@ -32,13 +32,12 @@ class PaySlipMonth extends PureComponent {
   render() {
     const { paySlip } = this.props;
     const { isView, url } = this.state;
-
     return (
       <>
         {isView ? (
           <ViewFile url={url} onBackClick={this.onBackClick} />
         ) : (
-          paySlip.reverse().map((item, index) => {
+          paySlip.map((item, index) => {
             return (
               <div key={`${item.key} ${index + 1}`} className={styles.PaySlipMonth}>
                 <p className={styles.nameMonth}>{`${item.key}`}</p>
@@ -49,9 +48,12 @@ class PaySlipMonth extends PureComponent {
                   >
                     View
                   </p>
-                  <a href="/assets/files/sample_1.pdf" download="test">
-                    <Icon component={DownloadIcon} className={styles.downLoadIcon} />
-                  </a>
+                  {/* <a
+                    href={item.attachment.url ? item.attachment.url : ''}
+                    download="{item.attachment.name}"
+                  > */}
+                  <Icon component={DownloadIcon} className={styles.downLoadIcon} />
+                  {/* </a> */}
                 </div>
               </div>
             );

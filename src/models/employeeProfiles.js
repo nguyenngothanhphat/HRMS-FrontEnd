@@ -139,9 +139,10 @@ const employeeProfile = {
         const response = yield call(getPayslip, { employee, employeeGroup });
         const { statusCode, data: paySlip = [] } = response;
         if (statusCode !== 200) throw response;
+        const reversePayslip = paySlip.reverse();
         yield put({
           type: 'save',
-          payload: { paySlip },
+          payload: { paySlip: reversePayslip },
         });
       } catch (errors) {
         dialog(errors);

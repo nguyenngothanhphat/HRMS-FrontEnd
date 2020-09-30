@@ -21,8 +21,8 @@ class ViewFile extends PureComponent {
   };
 
   render() {
-    // const { url, onBackClick } = this.props;
-    const { onBackClick } = this.props;
+    const { url, onBackClick } = this.props;
+    // const { onBackClick } = this.props;
     const { numPages } = this.state;
     const test = new Array(numPages);
     return (
@@ -37,8 +37,8 @@ class ViewFile extends PureComponent {
           <Document
             loading=""
             noData="Document Not Found"
-            // file={url}
-            file="/assets/files/sample_1.pdf"
+            file={url}
+            // file="/assets/files/sample_1.pdf"
             onLoadSuccess={this.onDocumentLoadSuccess}
           >
             {Array.from(test).map((item, index) => (
