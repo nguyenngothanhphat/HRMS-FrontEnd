@@ -91,7 +91,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[0]}
+          value={inputVals[0] || ''}
           onChange={(e) => onChange(e, 0)}
         />
         <InputNumber
@@ -101,7 +101,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[1]}
+          value={inputVals[1] || ''}
           onChange={(e) => onChange(e, 1)}
         />
         <InputNumber
@@ -111,7 +111,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[2]}
+          value={inputVals[2] || ''}
           onChange={(e) => onChange(e, 2)}
         />
         <InputNumber

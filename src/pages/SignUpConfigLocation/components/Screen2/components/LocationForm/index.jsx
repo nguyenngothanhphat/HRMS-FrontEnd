@@ -12,13 +12,34 @@ const LocationForm = (props) => {
   const { headQuarterAddress, locations, listCountry, dispatch, companyName = '' } = props;
   const [countryId, setCountryId] = useState('');
   const [countryInfo, setCountryInfo] = useState({});
-  const [list, setList] = useState(locations.filter((item) => item.isheadQuarter === false));
+  // const [list, setList] = useState(locations.filter((item) => item.isheadQuarter === false));
+  const [list, setList] = useState([
+    ...locations,
+    { ...headQuarterAddress, isheadQuarter: true, name: companyName },
+  ]);
 
   // const stateArr = countryInfo.states || [];
+
+  // const getLocationList = () => {
+  //   const result = locations.filter((item) => item.isheadQuarter === false);
+  //   return result;
+  // }
 
   useEffect(() => {
     onChange(list);
   }, [list]);
+
+  useEffect(() => {
+    // console.log(countryInfo);
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          locations: list,
+        },
+      });
+    }
+  }, []);
 
   const onFinish = (values) => {
     console.log('Success:', values);
@@ -32,15 +53,6 @@ const LocationForm = (props) => {
     setFormIndex((prevIndex) => prevIndex + 1);
     const newList = [...list, {}];
     setList(newList);
-
-    // if (dispatch) {
-    //   dispatch({
-    //     type: 'signup/save',
-    //     payload: {
-    //       locations: [...locations, {}],
-    //     },
-    //   });
-    // }
   };
 
   const removeLocation = (index) => {
@@ -50,36 +62,37 @@ const LocationForm = (props) => {
   };
 
   const handleOnChange = (fieldValue, fieldName, formIndex) => {
-    // handleFieldChange(formIndex, fieldName, fieldValue);
     handleFieldChange(formIndex, fieldName, fieldValue);
 
+    // console.log(formIndex, fieldName, fieldValue);
+    // console.log(fieldValue);
     // console.log(list);
 
     let returnedLocations = [];
 
-    const headquarter = {
-      name: companyName,
-      address: headQuarterAddress.address,
-      country: headQuarterAddress.country,
-      state: headQuarterAddress.state,
-      zipCode: headQuarterAddress.zipCode,
-      isheadQuarter: true,
-    };
-    returnedLocations.push(headquarter);
+    // const headquarter = {
+    //   name: companyName,
+    //   address: headQuarterAddress.address,
+    //   country: headQuarterAddress.country,
+    //   state: headQuarterAddress.state,
+    //   zipCode: headQuarterAddress.zipCode,
+    //   isheadQuarter: true,
+    // };
+    // returnedLocations.push(headquarter);
 
     list.map((item) => {
-      const { address, country, state, zipCode } = item;
+      const { address = '', country = '', state = '', zipCode = '', isheadQuarter = false } = item;
       const data = {
         name: companyName,
         address,
         country,
         state,
         zipCode,
-        isheadQuarter: false,
+        isheadQuarter: isheadQuarter || false,
       };
       returnedLocations.push(data);
     });
-    console.log(returnedLocations);
+    // console.log(returnedLocations);
 
     // save data to Store
     if (dispatch) {
@@ -100,9 +113,31 @@ const LocationForm = (props) => {
     setList(newList);
   };
 
+  const _renderSelectState = (index) => {
+    const country = list[index].country || {};
+    const itemCountry = listCountry.find((item) => item._id === country) || {};
+    const listStateByItemCountry = itemCountry.states || [];
+    // console.log('listStateByItemCountry', listStateByItemCountry);
+    return (
+      <Form.Item
+        label="State"
+        className={styles.vertical}
+        rules={[{ required: true, message: 'Please select your state!' }]}
+      >
+        <Select onChange={(value) => handleOnChange(value, 'state', index)}>
+          {listStateByItemCountry.map((state) => (
+            <Select.Option value={state}>{state}</Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+    );
+  };
+
+  console.log(list);
+
   return (
     <>
-      {list.length > 0 &&
+      {list.length > 1 &&
         list.map((item, index) => {
           const { address, country, state, zipCode } = item;
           return (
@@ -134,50 +169,35 @@ const LocationForm = (props) => {
                 ]}
                 className={styles.vertical}
               >
-                {/* <Input
-                  defaultValue={country}
-                  value={country}
-                  onChange={(e) => handleOnChange(e.target.value, 'country')}
-                /> */}
                 <Select
                   // defaultValue={country}
                   // defaultValue={locations[index].country}
-                  value={country}
+                  // value={country}
                   onChange={(value) => {
                     handleOnChange(value, 'country', index);
                     // console.log(value);
-                    setCountryInfo(listCountry.find((item) => item.name === country)); // Get all info of selected country
+                    // const selectedCountry = listCountry.find((item) => item.name === country);
+                    // console.log('selected: ', selectedCountry);
+                    // setCountryInfo(selectedCountry);
+                    // Get all info of selected country
                     // console.log(countryInfo);
                   }}
+                  showArrow
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listCountry.map((item) => {
-                    const { name } = item;
-                    return <Select.Option value={name}>{name}</Select.Option>;
+                    const { name, _id } = item;
+                    return <Select.Option key={_id}>{name}</Select.Option>;
                   })}
                 </Select>
               </Form.Item>
 
               <Row gutter={30}>
                 <Col xm={24} sm={24} md={12} lg={12}>
-                  <Form.Item
-                    label="State"
-                    // name="state"
-                    className={styles.vertical}
-                    rules={[{ required: true, message: 'Please select your state!' }]}
-                  >
-                    <Select
-                      // defaultValue={state}
-                      // defaultValue={locations[index].state}
-                      value={state}
-                      onChange={(value) => handleOnChange(value, 'state', index)}
-                    >
-                      {countryInfo &&
-                        countryInfo.states &&
-                        countryInfo.states.map((item) => {
-                          return <Select.Option value={item}>{item}</Select.Option>;
-                        })}
-                    </Select>
-                  </Form.Item>
+                  {_renderSelectState(index)}
                 </Col>
 
                 <Col xm={24} sm={24} md={12} lg={12}>
@@ -200,8 +220,6 @@ const LocationForm = (props) => {
                   </Form.Item>
                 </Col>
               </Row>
-
-              {/* <Button htmlType="submit">SUBMIT</Button> */}
 
               <span className={styles.remove} onClick={() => removeLocation(index)}>
                 <img src={bin} alt="bin icon" />

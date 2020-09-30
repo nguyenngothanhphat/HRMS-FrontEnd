@@ -12,25 +12,19 @@ const Screen2 = (props) => {
 
   const { headQuarterAddress, listCountry, name: companyName, locations, dispatch } = props;
 
-  // console.log(props);
+  // const sort
 
-  const {
-    headquarterInfo = {
-      address: '240 E. Gish Rd, Suite 240, San Jose, CA',
-      state: 'california',
-      zipCode: '95112',
-      country: 'America',
-    },
-  } = props;
+  const sortedListCountry = listCountry.sort(function (a, b) {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
 
-  const {
-    workLocationInfo = {
-      address: 'address2',
-      state: 'mahattan',
-      zipCode: '12345',
-      country: 'US',
-    },
-  } = props;
+  // console.log(sortedListCountry);
 
   // const { address, state, zipCode, country } = headquarterInfo;
 
