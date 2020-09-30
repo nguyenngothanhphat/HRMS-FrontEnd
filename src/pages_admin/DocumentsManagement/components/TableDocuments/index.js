@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
+import ViewDocument from '../ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -73,7 +74,7 @@ class TableDocuments extends PureComponent {
       render: (text, record) => (
         <div className={styles.documentAction}>
           <FileTextOutlined
-            onClick={() => this.deleteDocument(record)}
+            onClick={() => this.viewDocument(record)}
             className={styles.viewDocumentBtn}
           />
           <DeleteOutlined
@@ -93,6 +94,8 @@ class TableDocuments extends PureComponent {
       confirmRemoveModalVisible: false,
       documentId: '',
       documentName: '',
+      isViewingDocument: false,
+      selectedDocumentId: null,
     };
   }
 
@@ -103,7 +106,6 @@ class TableDocuments extends PureComponent {
       documentId: record.documentId,
       documentName: record.documentName,
     });
-    console.log('delete documentId', record.documentId);
   };
 
   closeConfirmRemoveModal = () => {
@@ -114,9 +116,28 @@ class TableDocuments extends PureComponent {
     });
   };
 
+  getDataViewingDocument = (docId) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'documentsManagement/fetchDocumentDetail',
+      params: docId,
+    });
+  };
+
   // view document
   viewDocument = (record) => {
-    console.log('view documentId', record.documentId);
+    this.getDataViewingDocument(record.documentId);
+    this.setState({
+      isViewingDocument: true,
+      selectedDocumentId: record.documentId,
+    });
+  };
+
+  closeDocument = () => {
+    this.setState({
+      isViewingDocument: false,
+      selectedDocumentId: null,
+    });
   };
 
   // pagination
@@ -149,6 +170,8 @@ class TableDocuments extends PureComponent {
       documentId,
       documentName,
       confirmRemoveModalVisible,
+      isViewingDocument,
+      selectedDocumentId,
     } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -179,28 +202,37 @@ class TableDocuments extends PureComponent {
       onChange: this.onSelectChange,
     };
 
+    const {
+      documentsManagement: { listDocumentDetail = [] },
+    } = this.props;
+
     return (
-      <div className={styles.tableDocuments}>
-        {documentId !== '' && (
-          <ConfirmRemoveModal
-            visible={confirmRemoveModalVisible}
-            titleModal="Remove Document Confirm"
-            handleCancel={this.closeConfirmRemoveModal}
-            id={documentId}
-            name={documentName}
-          />
+      <div>
+        {isViewingDocument && selectedDocumentId && listDocumentDetail ? (
+          <ViewDocument data={listDocumentDetail} onBackClick={this.closeDocument} />
+        ) : (
+          <div className={styles.tableDocuments}>
+            {documentId !== '' && (
+              <ConfirmRemoveModal
+                visible={confirmRemoveModalVisible}
+                titleModal="Remove Document Confirm"
+                handleCancel={this.closeConfirmRemoveModal}
+                id={documentId}
+                name={documentName}
+              />
+            )}
+            <Table
+              size="small"
+              loading={loading}
+              rowSelection={rowSelection}
+              pagination={{ ...pagination, total: data.length }}
+              columns={this.columns}
+              dataSource={data}
+              scroll={scroll}
+              rowKey="documentId"
+            />
+          </div>
         )}
-        <Table
-          size="small"
-          loading={loading}
-          rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
-          columns={this.columns}
-          dataSource={data}
-          scroll={scroll}
-          rowKey="documentId"
-          // onChange={this.onSortChange}
-        />
       </div>
     );
   }
