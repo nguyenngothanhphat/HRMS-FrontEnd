@@ -26,6 +26,7 @@ const LocationForm = (props) => {
   useEffect(() => {
     // console.log(list);
     onChange(list);
+    updateLocations();
   }, [list]);
 
   const onFinish = (values) => {
@@ -52,7 +53,9 @@ const LocationForm = (props) => {
   const handleOnChange = (fieldValue, fieldName, formIndex) => {
     console.log(fieldValue, fieldName, formIndex);
     handleFieldChange(formIndex, fieldName, fieldValue);
+  };
 
+  const updateLocations = () => {
     const returnedLocations = [];
     console.log(list);
     list.map((item, index) => {
