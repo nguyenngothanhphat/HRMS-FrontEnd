@@ -1,63 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { connect } from 'umi';
 import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
-import LocationForm from './components/LocationForm';
-import bin from './images/bin.svg';
+import LocationForm from './components/LocationForm/index';
 
 import styles from './index.less';
 
 const Screen2 = (props) => {
-  let [form] = Form.useForm();
+  const [form] = Form.useForm();
 
   const { headQuarterAddress, listCountry, name: companyName, locations, dispatch } = props;
 
-  // const sort
-
-  const sortedListCountry = listCountry.sort(function (a, b) {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  });
-
-  // console.log(sortedListCountry);
-
-  // const { address, state, zipCode, country } = headquarterInfo;
-
   const onFinish = (values) => {
     console.log('Success:', values);
-    const { locations } = values;
+    // const { locations } = values;
     // if (!address || !country || !state || !zipCode || !locations) {
     // if (locations) console.log('Form not valid');
-    return;
+    return null;
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
 
-  const addLocation = () => {
-    console.log('ADD');
-  };
-
-  const submit = () => {
-    const errors = form.getFieldsError();
-    if (errors && errors.length > 0) {
-      // console.log('Form not valid');
-      console.log(errors);
-      return;
-    }
-    const values = form.getFieldsValue();
-    console.log(values);
-  };
-
-  const valueReturned = (values) => {
-    console.log(values);
-  };
+  // const submit = () => {
+  //   const errors = form.getFieldsError();
+  //   if (errors && errors.length > 0) {
+  //     // console.log('Form not valid');
+  //     console.log(errors);
+  //     return;
+  //   }
+  //   const values = form.getFieldsValue();
+  //   console.log(values);
+  // };
 
   const navigate = (type) => {
     let step;

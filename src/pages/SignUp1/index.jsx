@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-useless-escape */
+import React, { useEffect } from 'react';
 
 import { connect } from 'umi';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 
 import styles from './index.less';
 
 const SignUp1 = (props) => {
-  const [keepSignIn, setKeepSignIn] = useState(false);
+  // const [keepSignIn, setKeepSignIn] = useState(false);
 
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
 
-  const { user, dispatch } = props;
+  const { dispatch } = props;
 
   useEffect(() => {
     // console.log(props);
@@ -29,32 +30,30 @@ const SignUp1 = (props) => {
 
   const onFinish = async (values) => {
     const { email, fullname } = values;
-    const user = {
-      firstName: fullname,
-      email,
-    };
+    // const user = {
+    //   firstName: fullname,
+    //   email,
+    // };
 
     if (dispatch) {
-      const { firstName = '', email = '' } = user;
+      // const { firstName = '', email = '' } = user;
       await dispatch({
         type: 'signup/fetchUserInfo',
         payload: {
-          firstName,
+          firstName: fullname,
           email,
         },
       });
     }
 
-    storeData(user);
+    storeData({
+      firstName: fullname,
+      email,
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const onChange = (e) => {
-    const isChecked = e.target.checked;
-    setKeepSignIn(isChecked);
+    console.log('Failed :', errorInfo);
   };
 
   return (
@@ -98,11 +97,11 @@ const SignUp1 = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="keep-sign-in">
+        {/* <Form.Item name="keep-sign-in">
           <Checkbox checked={keepSignIn} onChange={onChange}>
             Keep me signed in
           </Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Button type="primary" htmlType="submit">
           get started
