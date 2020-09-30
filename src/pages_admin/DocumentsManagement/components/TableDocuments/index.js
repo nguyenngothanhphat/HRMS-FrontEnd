@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
+import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
 @connect(({ loading, documentsManagement }) => ({
@@ -86,12 +87,28 @@ class TableDocuments extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
+      confirmRemoveModalVisible: false,
+      documentId: '',
+      documentName: '',
     };
   }
 
   // delete
   deleteDocument = (record) => {
+    this.setState({
+      confirmRemoveModalVisible: true,
+      documentId: record.documentId,
+      documentName: record.documentName,
+    });
     console.log('delete documentId', record.documentId);
+  };
+
+  closeConfirmRemoveModal = () => {
+    this.setState({
+      confirmRemoveModalVisible: false,
+      documentId: '',
+      documentName: '',
+    });
   };
 
   // view document
@@ -123,7 +140,13 @@ class TableDocuments extends PureComponent {
 
   render() {
     const { data = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
+    const {
+      pageSelected,
+      selectedRowKeys,
+      documentId,
+      documentName,
+      confirmRemoveModalVisible,
+    } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100%',
@@ -155,6 +178,13 @@ class TableDocuments extends PureComponent {
 
     return (
       <div className={styles.tableDocuments}>
+        <ConfirmRemoveModal
+          visible={confirmRemoveModalVisible}
+          titleModal="Remove Document Confirm"
+          handleCancel={this.closeConfirmRemoveModal}
+          id={documentId}
+          name={documentName}
+        />
         <Table
           size="small"
           loading={loading}

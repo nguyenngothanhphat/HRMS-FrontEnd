@@ -242,8 +242,9 @@ class TableUsers extends PureComponent {
         )}
         {removingUserId && deleteConfirmModalVisible && (
           <ConfirmRemoveModal
-            userId={removingUserId}
-            fullName={removingFullName}
+            id={removingUserId}
+            name={removingFullName}
+            titleModal="Remove User Confirm"
             visible={deleteConfirmModalVisible}
             handleCancel={this.closeConfirmRemoveModal}
           />

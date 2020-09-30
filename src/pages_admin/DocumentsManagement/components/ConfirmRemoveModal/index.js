@@ -15,7 +15,7 @@ class ConfirmRemoveModal extends Component {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = 'Delete Confirm' } = this.props;
+    const { titleModal = '' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
@@ -53,7 +53,7 @@ class ConfirmRemoveModal extends Component {
             </Button>,
           ]}
         >
-          Are you sure to remove &quot;{id} - {name}&quot;?
+          Are you sure to remove &quot;{id} - {name}&quot; document?
         </Modal>
       </div>
     );
