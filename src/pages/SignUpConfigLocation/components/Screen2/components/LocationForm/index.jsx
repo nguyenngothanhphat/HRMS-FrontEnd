@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 
 import { array } from 'prop-types';
-import { isBuffer } from 'lodash';
 import bin from '../../images/bin.svg';
 
 import styles from './index.less';
 
 const LocationForm = (props) => {
-  const [formIndex, setFormIndex] = useState(-1);
-  const { value = [], onChange } = props;
+  // const [formIndex, setFormIndex] = useState(-1);
+  // const { value = [], onChange } = props;
+  const { onChange } = props;
   const { headQuarterAddress, locations, listCountry, dispatch, companyName = '' } = props;
-  const [countryId, setCountryId] = useState('');
-  const [countryInfo, setCountryInfo] = useState({});
+  // const [countryId, setCountryId] = useState('');
+  // const [countryInfo, setCountryInfo] = useState({});
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -23,42 +23,10 @@ const LocationForm = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    // console.log(list);
-    onChange(list);
-    updateLocations();
-  }, [list]);
-
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const addLocation = () => {
-    setFormIndex((prevIndex) => prevIndex + 1);
-    const newList = [...list, {}];
-    setList(newList);
-    console.log(newList);
-  };
-
-  const removeLocation = (index) => {
-    const newList = [...list];
-    newList.splice(index, 1);
-    setList(newList);
-  };
-
-  const handleOnChange = (fieldValue, fieldName, formIndex) => {
-    console.log(fieldValue, fieldName, formIndex);
-    handleFieldChange(formIndex, fieldName, fieldValue);
-  };
-
   const updateLocations = () => {
     const returnedLocations = [];
     console.log(list);
-    list.map((item, index) => {
+    list.map((item) => {
       // console.log(item);
       const { address = '', country = '', state = '', zipCode = '', isheadQuarter = false } = item;
       const data = {
@@ -70,6 +38,7 @@ const LocationForm = (props) => {
         isheadQuarter: isheadQuarter || false,
       };
       returnedLocations.push(data);
+      return null;
     });
 
     // save data to Store
@@ -83,6 +52,32 @@ const LocationForm = (props) => {
     }
   };
 
+  useEffect(() => {
+    onChange(list);
+    updateLocations();
+  }, [list]);
+
+  // const onFinish = (values) => {
+  //   console.log('Success:', values);
+  // };
+
+  // const onFinishFailed = (errorInfo) => {
+  //   console.log('Failed:', errorInfo);
+  // };
+
+  const addLocation = () => {
+    // setFormIndex((prevIndex) => prevIndex + 1);
+    const newList = [...list, {}];
+    setList(newList);
+    console.log(newList);
+  };
+
+  const removeLocation = (index) => {
+    const newList = [...list];
+    newList.splice(index, 1);
+    setList(newList);
+  };
+
   const handleFieldChange = (index, fieldName, fieldValue) => {
     const item = list[index];
     const newItem = { ...item, [fieldName]: fieldValue };
@@ -90,6 +85,11 @@ const LocationForm = (props) => {
     newList.splice(index, 1, newItem);
     console.log('newlist', newList);
     setList(newList);
+  };
+
+  const handleOnChange = (fieldValue, fieldName, formIndex) => {
+    console.log(fieldValue, fieldName, formIndex);
+    handleFieldChange(formIndex, fieldName, fieldValue);
   };
 
   const _renderSelectState = (index) => {
@@ -124,9 +124,9 @@ const LocationForm = (props) => {
           if (index === 0) {
             return null;
           }
-          const { address, country, state, zipCode } = item;
+          const { address, country, zipCode } = item;
           return (
-            <div key={index} className={styles.card}>
+            <div key={`${index + 1}`} className={styles.card}>
               <h2 className={styles.header}>Work location</h2>
 
               <Form.Item
@@ -134,13 +134,10 @@ const LocationForm = (props) => {
                 rules={[
                   { required: true, message: 'Please input your address!' },
                   { type: array, message: 'All fields must be filled' },
-                  //   { min: 0, message: 'Address should not be empty!' },
                 ]}
                 className={styles.vertical}
               >
                 <Input
-                  // defaultValue={address}
-                  // defaultValue={locations[index].address}
                   value={address}
                   onChange={(e) => handleOnChange(e.target.value, 'address', index)}
                 />
@@ -155,26 +152,20 @@ const LocationForm = (props) => {
                 className={styles.vertical}
               >
                 <Select
-                  // defaultValue={country}
-                  // defaultValue={locations[index].country}
                   value={country}
                   onChange={(value) => {
                     handleOnChange(value, 'country', index);
-                    // console.log(value);
-                    // const selectedCountry = listCountry.find((item) => item.name === country);
-                    // console.log('selected: ', selectedCountry);
-                    // setCountryInfo(selectedCountry);
-                    // Get all info of selected country
-                    // console.log(countryInfo);
                   }}
                   showArrow
                   showSearch
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  filterOption={
+                    (input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // eslint-disable-next-line react/jsx-curly-newline
                   }
                 >
-                  {listCountry.map((item) => {
-                    const { name, _id } = item;
+                  {listCountry.map((countryItem) => {
+                    const { name, _id } = countryItem;
                     return <Select.Option key={_id}>{name}</Select.Option>;
                   })}
                 </Select>
@@ -210,7 +201,6 @@ const LocationForm = (props) => {
                 <img src={bin} alt="bin icon" />
                 Remove location
               </span>
-              {/* </Form> */}
             </div>
           );
         })}
