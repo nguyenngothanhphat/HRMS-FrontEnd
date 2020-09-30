@@ -25,9 +25,7 @@ const LocationForm = (props) => {
 
   const updateLocations = () => {
     const returnedLocations = [];
-    console.log(list);
     list.map((item) => {
-      // console.log(item);
       const { address = '', country = '', state = '', zipCode = '', isheadQuarter = false } = item;
       const data = {
         name: companyName,
@@ -69,7 +67,6 @@ const LocationForm = (props) => {
     // setFormIndex((prevIndex) => prevIndex + 1);
     const newList = [...list, {}];
     setList(newList);
-    console.log(newList);
   };
 
   const removeLocation = (index) => {
@@ -83,12 +80,10 @@ const LocationForm = (props) => {
     const newItem = { ...item, [fieldName]: fieldValue };
     const newList = [...list];
     newList.splice(index, 1, newItem);
-    console.log('newlist', newList);
     setList(newList);
   };
 
   const handleOnChange = (fieldValue, fieldName, formIndex) => {
-    console.log(fieldValue, fieldName, formIndex);
     handleFieldChange(formIndex, fieldName, fieldValue);
   };
 
@@ -96,7 +91,7 @@ const LocationForm = (props) => {
     const country = list[index].country || {};
     const itemCountry = listCountry.find((item) => item._id === country) || {};
     const listStateByItemCountry = itemCountry.states || [];
-    // console.log('listStateByItemCountry', listStateByItemCountry);
+
     return (
       <Form.Item
         label="State"
@@ -114,8 +109,6 @@ const LocationForm = (props) => {
       </Form.Item>
     );
   };
-
-  // console.log(list);
 
   return (
     <>
