@@ -2,7 +2,7 @@ import React from 'react';
 
 import { connect } from 'umi';
 import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
-import LocationForm from './components/LocationForm';
+import LocationForm from './components/LocationForm/index';
 
 import styles from './index.less';
 
