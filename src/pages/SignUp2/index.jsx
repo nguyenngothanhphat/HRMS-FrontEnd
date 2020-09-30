@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, connect } from 'umi';
-import { Layout, Row, Col, InputNumber, Button } from 'antd';
+import { InputNumber, Button } from 'antd';
 
 import gmail from '@/assets/gmail-icon.png';
 import outlook from '@/assets/outlook-icon.png';
@@ -9,10 +9,17 @@ import img from '@/assets/sign-up-img.png';
 import styles from './index.less';
 
 const SignUp2 = (props) => {
-  const { codeNumber, email, dispatch } = props;
+  const { email, dispatch } = props;
 
   const inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
+
+  const checkEmpty = (arr) => {
+    for (let i = 0; i < arr.length; i += 1) {
+      if (arr[i] === '') return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     const fetchSecurityCode = async () => {
@@ -44,13 +51,6 @@ const SignUp2 = (props) => {
 
     fetchSecurityCode();
   }, [inputVals]);
-
-  const checkEmpty = (arr) => {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i] === '') return true;
-    }
-    return false;
-  };
 
   const onChange = (value, index) => {
     if (value !== 0) {
@@ -156,7 +156,7 @@ const SignUp2 = (props) => {
         <Button>
           <Link to="http://gmail.com/">
             <div className={styles.btn}>
-              <img src={gmail} />
+              <img src={gmail} alt="gmail icon" />
               <span>open gmail</span>
             </div>
           </Link>
@@ -165,7 +165,7 @@ const SignUp2 = (props) => {
         <Button>
           <Link to="https://outlook.office.com/">
             <div className={styles.btn}>
-              <img src={outlook} />
+              <img src={outlook} alt="outlook icon" />
               <span>open outlook</span>
             </div>
           </Link>
