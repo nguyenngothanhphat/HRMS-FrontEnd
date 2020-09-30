@@ -1,25 +1,20 @@
-import React, { PureComponent } from 'react';
-import { Form, Input, Button, Col, Row } from 'antd';
+import React, { Component } from 'react';
+import { Form, Input, Button, Col, Row, Spin } from 'antd';
 import { connect } from 'umi';
 import { CheckCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
 
 @connect(({ loading, signup = {} }) => ({
   loading: loading.effects['signup/signupAdmin'],
+  loadingActive: loading.effects['signup/loadingActive'],
   signup,
 }))
-class Screen3 extends PureComponent {
+class Screen3 extends Component {
   _renderButton = (getFieldValue) => {
-    const { loading } = this.props;
     const valuePsw = getFieldValue('password');
     const valueConfirm = getFieldValue('confirmPassword');
     return (
-      <Button
-        type="primary"
-        loading={loading}
-        htmlType="submit"
-        disabled={!valuePsw || !valueConfirm}
-      >
+      <Button type="primary" htmlType="submit" disabled={!valuePsw || !valueConfirm}>
         Create Password
       </Button>
     );
@@ -55,6 +50,8 @@ class Screen3 extends PureComponent {
   };
 
   render() {
+    const { loading, loadingActive } = this.props;
+    const loadingSignUp = loading || loadingActive;
     const arrText = [
       'Use a minimum of 8 characters.',
       'Avoid common words and repetition (eg. password, 12121212)',
@@ -144,6 +141,19 @@ class Screen3 extends PureComponent {
             </Form.Item>
           </div>
         </Form>
+        {loadingSignUp && (
+          <div className={styles.viewLoading}>
+            <div className={styles.viewLoading__content}>
+              <img
+                src="/assets/images/setting_up_admin.png"
+                alt="img_setting_up"
+                className={styles.viewLoading__content__img}
+              />
+              <p className={styles.viewLoading__content__text}>Setting up your admin account</p>
+              <Spin size="large" />
+            </div>
+          </div>
+        )}
       </div>
     );
   }
