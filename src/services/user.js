@@ -44,3 +44,14 @@ export async function signupAdmin(data) {
     true,
   );
 }
+
+export async function activeAdmin(data) {
+  return request(
+    '/api/active-user-security-register',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}
