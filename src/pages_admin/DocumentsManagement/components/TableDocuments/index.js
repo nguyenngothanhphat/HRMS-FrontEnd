@@ -178,13 +178,15 @@ class TableDocuments extends PureComponent {
 
     return (
       <div className={styles.tableDocuments}>
-        <ConfirmRemoveModal
-          visible={confirmRemoveModalVisible}
-          titleModal="Remove Document Confirm"
-          handleCancel={this.closeConfirmRemoveModal}
-          id={documentId}
-          name={documentName}
-        />
+        {documentId !== '' && (
+          <ConfirmRemoveModal
+            visible={confirmRemoveModalVisible}
+            titleModal="Remove Document Confirm"
+            handleCancel={this.closeConfirmRemoveModal}
+            id={documentId}
+            name={documentName}
+          />
+        )}
         <Table
           size="small"
           loading={loading}

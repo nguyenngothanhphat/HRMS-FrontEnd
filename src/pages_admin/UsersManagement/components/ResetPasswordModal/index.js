@@ -1,9 +1,10 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Input, Space } from 'antd';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import styles from './index.less';
 
-class ConfirmRemoveModal extends Component {
+class ResetPasswordModal extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -53,11 +54,25 @@ class ConfirmRemoveModal extends Component {
             </Button>,
           ]}
         >
-          Are you sure to remove &quot;{user.userId} - {user.fullName}&quot;?
+          <div className={styles.resetPasswordContent}>
+            <p>
+              Are you sure to reset the password of &quot;{user.userId} - {user.fullName}&quot;?
+            </p>
+            <Space direction="horizontal">
+              <Input disabled defaultValue={user.email} />
+              <Input.Password
+                placeholder="input password"
+                defaultValue="12345678@Tc"
+                iconRender={(eyeVisible) =>
+                  eyeVisible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+              />
+            </Space>
+          </div>
         </Modal>
       </div>
     );
   }
 }
 
-export default ConfirmRemoveModal;
+export default ResetPasswordModal;
