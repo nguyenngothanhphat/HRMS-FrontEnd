@@ -1,10 +1,26 @@
 import React, { PureComponent } from 'react';
 import InfoCollapseType2 from '@/components/InfoCollapseType2';
 import { connect } from 'umi';
+import moment from 'moment';
 import ViewDocument from '../../../Documents/ViewDocument';
 import styles from './index.less';
 
-@connect(({ employeeProfile: { listPRReport = [] } }) => ({ listPRReport }))
+@connect(
+  ({
+    upload: { employeeInformationURL = '' } = {},
+    employeeProfile: {
+      editGeneral: { openEmployeeInfor = false },
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    openEmployeeInfor,
+    generalDataOrigin,
+    generalData,
+    employeeInformationURL,
+  }),
+)
+@connect(({ employeeProfile }) => ({ employeeProfile }))
 class PRReports extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,6 +39,28 @@ class PRReports extends PureComponent {
   };
 
   onFileClick = (value) => {
+    const {
+      employeeProfile: { listPRReport = [] },
+    } = this.props;
+
+    const arrayAttachment = listPRReport.map((item) => {
+      if (item.attachment) {
+        const { id, name: fileName, createdAt: date, url: source } = item.attachment;
+        return {
+          id,
+          fileName,
+          date,
+          source,
+        };
+      }
+      return {
+        id: 8,
+        fileName: 'Agreements',
+        generatedBy: 'Terralogic',
+        date: 'December 10th, 2018',
+        source: '/assets/images/exampleCard.png',
+      };
+    });
     const dummyData = [
       {
         title: 'PR Reports',
@@ -30,22 +68,7 @@ class PRReports extends PureComponent {
         body: [
           {
             kind: 'Agreement',
-            files: [
-              {
-                id: 8,
-                fileName: 'Agreements',
-                generatedBy: 'Terralogic',
-                date: 'December 10th, 2018',
-                source: '/assets/images/exampleCard.png',
-              },
-              {
-                id: 9,
-                fileName: 'Employee Handbook',
-                generatedBy: 'Terralogic',
-                date: 'December 10th, 2018',
-                source: '/assets/files/sample_2.pdf',
-              },
-            ],
+            files: arrayAttachment,
           },
         ],
       },
@@ -71,7 +94,29 @@ class PRReports extends PureComponent {
 
   render() {
     const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
-    // const { listPRReport } =  this.props;
+    const {
+      employeeProfile: { listPRReport = [] },
+    } = this.props;
+
+    const arrayAttachment = listPRReport.map((item) => {
+      if (item.attachment) {
+        const { id, name: fileName, createdAt: date, url: source } = item.attachment;
+        const fileNameAfterSplit = fileName.split('.');
+        return {
+          id,
+          fileName: fileNameAfterSplit[0],
+          date: moment(date).locale('en').format('MMMM Do, YYYY'),
+          source,
+        };
+      }
+      return {
+        id: 8,
+        fileName: 'Agreements',
+        generatedBy: 'Terralogic',
+        date: 'December 10th, 2018',
+        source: '/assets/images/exampleCard.png',
+      };
+    });
     const dummyData = [
       {
         title: 'PR Reports',
@@ -79,22 +124,7 @@ class PRReports extends PureComponent {
         body: [
           {
             kind: 'Agreement',
-            files: [
-              {
-                id: 8,
-                fileName: 'Agreements',
-                generatedBy: 'Terralogic',
-                date: 'December 10th, 2018',
-                source: '/assets/images/exampleCard.png',
-              },
-              {
-                id: 9,
-                fileName: 'Employee Handbook',
-                generatedBy: 'Terralogic',
-                date: 'December 10th, 2018',
-                source: '/assets/files/sample_2.pdf',
-              },
-            ],
+            files: arrayAttachment,
           },
         ],
       },
@@ -112,7 +142,7 @@ class PRReports extends PureComponent {
           </div>
         ) : (
           dummyData.map((value, index) => (
-            <InfoCollapseType2 keys={index} onFileClick={this.onFileClick} data={value} />
+            <InfoCollapseType2 key={`${index + 1}`} onFileClick={this.onFileClick} data={value} />
           ))
         )}
       </div>

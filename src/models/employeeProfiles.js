@@ -491,6 +491,12 @@ const employeeProfile = {
         },
       };
     },
+    listPRReport(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
   },
 };
 export default employeeProfile;
