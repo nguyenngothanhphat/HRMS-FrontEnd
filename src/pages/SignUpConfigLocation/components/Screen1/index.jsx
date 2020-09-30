@@ -119,6 +119,19 @@ class Screen1 extends Component {
       checkLegalSameHeadQuarter = false,
     } = signup;
 
+    const checkDisableBtnNext =
+      !name ||
+      !dba ||
+      !ein ||
+      !addressHead ||
+      !countryHead ||
+      !stateHead ||
+      !zipCodeHead ||
+      !addressLegal ||
+      !country ||
+      !stateLegal ||
+      !zipCodeLegal;
+
     const listStateHead = this.findListState(countryHead) || [];
     const listStateLegal = this.findListState(country) || [];
 
@@ -291,7 +304,12 @@ class Screen1 extends Component {
           </Form>
         </div>
         <div className={s.root__viewBtnNext}>
-          <Button className={s.btnNext} type="primary" onClick={this.handleNext}>
+          <Button
+            className={s.btnNext}
+            type="primary"
+            onClick={this.handleNext}
+            disabled={checkDisableBtnNext}
+          >
             Next
           </Button>
         </div>
