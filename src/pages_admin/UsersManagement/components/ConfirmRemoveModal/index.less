@@ -1,4 +1,4 @@
-.modalEdit {
+.modalUpload {
   :global {
     .ant-modal-header {
       padding: 24px;
@@ -43,15 +43,25 @@
     opacity: 0.5;
   }
   .btnCancel {
-    border: none;
     display: inline-block;
     color: #ffa100;
     font-size: 14px;
     font-weight: 500;
-    margin-right: 20px;
+    margin-right: 40px;
     cursor: pointer;
     &:active {
       opacity: 0.5;
+    }
+  }
+  .viewImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    &__img {
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
     }
   }
 
@@ -64,6 +74,21 @@
       font-size: 16px;
       color: #161c29;
       margin: 0;
+    }
+    &__upload {
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+      &__text {
+        color: #2c6df9;
+        font-size: 14px;
+        margin-left: 16px;
+      }
     }
   }
 }

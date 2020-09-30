@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 import EditUserModal from '../EditUserModal';
+import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
 @connect(({ loading, usersManagement }) => ({
@@ -81,7 +82,7 @@ class TableUsers extends PureComponent {
         <div className={styles.userPasswordReset}>
           <span className={styles.userPassword}>*******</span>
           <div>
-            <span onClick={() => this.resetPassword(record)}>RESET</span>
+            <span onClick={(e) => this.resetPassword(record, e)}>RESET</span>
           </div>
         </div>
       ),
@@ -99,12 +100,9 @@ class TableUsers extends PureComponent {
       align: 'center',
       render: (text, record) => (
         <div className={styles.userAction}>
-          <UserOutlined
-            onClick={(e) => this.editUser(record.userId, e)}
-            className={styles.editUserBtn}
-          />
+          <UserOutlined onClick={(e) => this.editUser(record, e)} className={styles.editUserBtn} />
           <DeleteOutlined
-            onClick={(e) => this.deleteUser(record.key, e)}
+            onClick={(e) => this.deleteUser(record, e)}
             className={styles.deleteUserBtn}
           />
         </div>
@@ -118,9 +116,24 @@ class TableUsers extends PureComponent {
       pageSelected: 1,
       selectedRowKeys: [],
       editModalVisible: false,
+      deleteConfirmModalVisible: false,
       selectedUserId: null,
+      removingUserId: '',
+      removingFullName: '',
     };
   }
+
+  editUser = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchUserProfile',
+      payload: record.userId,
+    });
+    this.setState({
+      editModalVisible: true,
+      selectedUserId: record.userId,
+    });
+  };
 
   closeEditModal = () => {
     this.setState({
@@ -129,27 +142,27 @@ class TableUsers extends PureComponent {
     });
   };
 
-  // user
+  // delete user
   deleteUser = (record) => {
-    console.log('delete userId', record.userId);
+    this.setState({
+      removingUserId: record.userId,
+      removingFullName: record.fullName,
+      deleteConfirmModalVisible: true,
+    });
   };
 
-  editUser = (userId) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchUserProfile',
-      payload: userId,
-    });
+  closeConfirmRemoveModal = () => {
     this.setState({
-      editModalVisible: true,
-      selectedUserId: userId,
+      deleteConfirmModalVisible: false,
+      removingUserId: '',
+      removingFullName: '',
     });
   };
 
   resetPassword = (key, e) => {
     e.preventDefault();
     alert('RESET PASSWORD');
-    console.log('RESET PASSWORD', key);
+    console.log('RESET PASSWORD', key.userId);
   };
 
   // pagination
@@ -176,7 +189,15 @@ class TableUsers extends PureComponent {
 
   render() {
     const { data = [], loading, loadingUserProfile } = this.props;
-    const { pageSelected, selectedRowKeys, editModalVisible, selectedUserId } = this.state;
+    const {
+      pageSelected,
+      selectedRowKeys,
+      editModalVisible,
+      deleteConfirmModalVisible,
+      selectedUserId,
+      removingUserId,
+      removingFullName,
+    } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100vw',
@@ -219,7 +240,14 @@ class TableUsers extends PureComponent {
             closeEditModal={this.closeEditModal}
           />
         )}
-
+        {removingUserId && deleteConfirmModalVisible && (
+          <ConfirmRemoveModal
+            userId={removingUserId}
+            fullName={removingFullName}
+            visible={deleteConfirmModalVisible}
+            handleCancel={this.closeConfirmRemoveModal}
+          />
+        )}
         <Table
           size="small"
           loading={loading}

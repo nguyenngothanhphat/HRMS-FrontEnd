@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, Select, DatePicker, Space } from 'antd';
+import { Modal, Form, Input, DatePicker, Button } from 'antd';
 import moment from 'moment';
+import styles from './index.less';
 
 const dateFormat = 'MM/DD/YYYY';
-
-const { Option } = Select;
 
 const layout = {
   labelCol: { span: 6 },
@@ -13,11 +12,22 @@ const layout = {
 
 class EditUserModal extends PureComponent {
   onFinish = (values) => {
-    console.log('Success:', values);
+    const { email, fullName, role, location, company } = values;
+    const submitValues = { email, fullName, role, location, company };
+    console.log('Success:', submitValues);
   };
 
   onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
+  };
+
+  renderHeaderModal = () => {
+    const { titleModal = 'Edit User Profile' } = this.props;
+    return (
+      <div className={styles.header}>
+        <p className={styles.header__text}>{titleModal}</p>
+      </div>
+    );
   };
 
   render() {
@@ -37,16 +47,31 @@ class EditUserModal extends PureComponent {
       <>
         {userProfile && userProfile.userId && (
           <Modal
-            title="Edit user profile"
+            className={styles.modalEdit}
+            footer={[
+              <Button className={styles.btnCancel} onClick={closeEditModal}>
+                Cancel
+              </Button>,
+              <Button
+                className={styles.btnSubmit}
+                type="primary"
+                form="myForm"
+                key="submit"
+                htmlType="submit"
+              >
+                Save
+              </Button>,
+            ]}
+            title={this.renderHeaderModal()}
             centered
             visible={editModalVisible}
-            onOk={closeEditModal}
-            onCancel={closeEditModal}
           >
             <Form
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...layout}
               name="basic"
+              id="myForm"
+              onFinish={this.onFinish}
               initialValues={{
                 remember: true,
                 userId,
@@ -59,8 +84,6 @@ class EditUserModal extends PureComponent {
                 company,
                 status,
               }}
-              onFinish={this.onFinish}
-              onFinishFailed={this.onFinishFailed}
             >
               <Form.Item
                 label="User ID"
@@ -119,16 +142,6 @@ class EditUserModal extends PureComponent {
                 rules={[{ required: true, message: 'Please input!' }]}
               >
                 <Input />
-              </Form.Item>
-              <Form.Item
-                label="Status"
-                name="status"
-                rules={[{ required: true, message: 'Please input!' }]}
-              >
-                <Select disabled>
-                  <Option value="Active">Active</Option>
-                  <Option value="Inactive">Inactive</Option>
-                </Select>
               </Form.Item>
             </Form>
           </Modal>
