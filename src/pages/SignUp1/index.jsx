@@ -90,7 +90,7 @@ const SignUp1 = (props) => {
           rules={[
             { required: true, message: 'Please input your full name!' },
             {
-              pattern: /^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
+              pattern: /^[a-zA-Z ]*$/,
               message: 'Full name is not valid',
             },
           ]}
