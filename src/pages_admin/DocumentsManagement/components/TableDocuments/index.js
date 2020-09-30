@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
@@ -35,7 +35,6 @@ class TableDocuments extends PureComponent {
       dataIndex: 'documentName',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      render: (text, record) => <a onClick={() => this.viewDocument(record)}>{text}</a>,
       sorter: {
         compare: (a, b) => a.documentName.localeCompare(b.documentName),
       },
@@ -73,6 +72,10 @@ class TableDocuments extends PureComponent {
       align: 'center',
       render: (text, record) => (
         <div className={styles.documentAction}>
+          <FileTextOutlined
+            onClick={() => this.deleteDocument(record)}
+            className={styles.viewDocumentBtn}
+          />
           <DeleteOutlined
             onClick={() => this.deleteDocument(record)}
             className={styles.deleteDocumentBtn}
