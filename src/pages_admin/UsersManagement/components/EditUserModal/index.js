@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, DatePicker, Button } from 'antd';
+import { Modal, Form, Input, DatePicker, Button, Select } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
 
+const { Option } = Select;
 const dateFormat = 'MM/DD/YYYY';
 
 const layout = {
@@ -48,6 +49,7 @@ class EditUserModal extends PureComponent {
         {userProfile && userProfile.userId && (
           <Modal
             className={styles.modalEdit}
+            onCancel={closeEditModal}
             footer={[
               <Button className={styles.btnCancel} onClick={closeEditModal}>
                 Cancel
@@ -142,6 +144,16 @@ class EditUserModal extends PureComponent {
                 rules={[{ required: true, message: 'Please input!' }]}
               >
                 <Input />
+              </Form.Item>
+              <Form.Item
+                label="Status"
+                name="status"
+                rules={[{ required: true, message: 'Please input!' }]}
+              >
+                <Select disabled>
+                  <Option value="Active">Active</Option>
+                  <Option value="Inactive">Inactive</Option>
+                </Select>
               </Form.Item>
             </Form>
           </Modal>
