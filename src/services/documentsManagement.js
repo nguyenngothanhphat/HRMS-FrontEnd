@@ -73,8 +73,6 @@ export const getListDocumentsInActive = async () => {
 export const getDocumentDetail = async (params) => {
   let i = 0;
   for (i; i < dataActive.length; i += 1) {
-    console.log('compare: dataActive[i].documentId ', dataActive[i].documentId);
-    console.log('dataActive[i].documentId ', params.documentId);
     if (dataActive[i].documentId === params.documentId) {
       return {
         statusCode: 200,

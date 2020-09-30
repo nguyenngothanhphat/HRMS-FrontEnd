@@ -81,7 +81,7 @@ class ViewDocument extends PureComponent {
               </div>
             </Col>
             <Col xs={0} md={1} />
-            <Col xs={24} md={7}>
+            <Col xs={24} md={8}>
               {/* DOCUMENT INFORMATION & SHARING */}
               <div className={styles.documentInfo}>
                 <Row className={styles.infoRow}>
@@ -89,7 +89,7 @@ class ViewDocument extends PureComponent {
                     Document Name
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    Document Name
+                    {data.documentName}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -97,7 +97,7 @@ class ViewDocument extends PureComponent {
                     Document Type
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    Document Type
+                    {data.documentType}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -105,7 +105,7 @@ class ViewDocument extends PureComponent {
                     User ID
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    User ID
+                    {data.userId}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -113,7 +113,7 @@ class ViewDocument extends PureComponent {
                     Uploaded By
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    Uploaded By
+                    {data.uploadedBy}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -121,7 +121,7 @@ class ViewDocument extends PureComponent {
                     Document Info
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    Document Info
+                    None
                   </Col>
                 </Row>
               </div>

@@ -116,17 +116,13 @@ class TableDocuments extends PureComponent {
     });
   };
 
-  getDataViewingDocument = (docId) => {
+  // view document
+  viewDocument = (record) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/fetchDocumentDetail',
-      params: docId,
+      payload: record.documentId,
     });
-  };
-
-  // view document
-  viewDocument = (record) => {
-    this.getDataViewingDocument(record.documentId);
     this.setState({
       isViewingDocument: true,
       selectedDocumentId: record.documentId,
