@@ -6,30 +6,45 @@ import InputField from '../InputField';
 import styles from './index.less';
 
 class CollapseField extends PureComponent {
-  handleChange = (e) => {
-    console.log(e.target.checked);
-  };
-
   render() {
     const {
-      item,
+      item = {},
       handleCheckAll,
       handleChange,
       testEligibility,
-      listTypeASelected,
-      listTypeBSelected,
-      listTypeCSelected,
-      listTypeDSelected,
-      typeAIsChecked,
-      typeBIsChecked,
-      typeCIsChecked,
-      typeDIsChecked,
+      // listTypeASelected,
+      // listTypeBSelected,
+      // listTypeCSelected,
+      // listTypeDSelected,
+      // typeAIsChecked,
+      // typeBIsChecked,
+      // typeCIsChecked,
+      // typeDIsChecked,
+      eligibilityDocs,
     } = this.props;
+    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { poe } = technicalCertification;
+    const checkedArr = item.data
+      ? item.data.length
+        ? item.data.filter(
+            (data) =>
+              data.key === 'aadharCard' ||
+              data.key === 'panCard' ||
+              data.key === 'sslc' ||
+              data.key === 'intermediateDiploma' ||
+              data.key === 'graduation',
+          )
+        : null
+      : null;
 
-    const defaultValueArr = item.data.filter(
-      (obj) => obj.key === 'aaharCard' || obj.key === 'panCard',
+    const defaultArr = item.data.filter(
+      (data) =>
+        data.key !== 'aadharCard' &&
+        data.key !== 'panCard' &&
+        data.key !== 'sslc' &&
+        data.key !== 'intermediateDiploma' &&
+        data.key !== 'graduation',
     );
-    console.log(defaultValueArr);
 
     return (
       <div className={styles.CollapseField}>
@@ -45,16 +60,16 @@ class CollapseField extends PureComponent {
               <Checkbox
                 className={styles.checkbox}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(e) => handleCheckAll(e, item.data, item.type)}
+                onChange={(e) => handleCheckAll(e, defaultArr, item)}
                 checked={
                   item.type === 'A'
-                    ? typeAIsChecked
+                    ? identityProof.isChecked
                     : item.type === 'B'
-                    ? typeBIsChecked
+                    ? addressProof.isChecked
                     : item.type === 'C'
-                    ? typeCIsChecked
+                    ? educational.isChecked
                     : item.type === 'D'
-                    ? typeDIsChecked
+                    ? poe.isChecked
                     : null
                 }
               >
@@ -65,35 +80,31 @@ class CollapseField extends PureComponent {
           >
             {item.type === 'D' ? <InputField /> : <></>}
             <Space direction="vertical">
-              {
-                // /* {item.defaultItems.map((data) =>
-                // item.defaultItems.length > 1 ? (
-                //   <Checkbox
-                //     checked="true"
-                //     disabled="true"
-                //     value={data.name}
-                //     className={styles.checkboxItem}
-                //   >
-                //     {data.name}*
-                //   </Checkbox>
-                // ) : null, */
-                null
-              }
+              {checkedArr.map((data) => (
+                <Checkbox
+                  checked="true"
+                  disabled="true"
+                  value={data.alias}
+                  className={styles.checkboxItem}
+                >
+                  {data.alias}*
+                </Checkbox>
+              ))}
 
               <Checkbox.Group
                 direction="vertical"
                 className={styles.checkboxItem}
-                options={item.data.map((obj) => obj.alias)}
-                onChange={(e) => handleChange(e, item.data, item.type)}
+                options={defaultArr.map((data) => data.alias)}
+                onChange={(checkedList) => handleChange(checkedList, defaultArr, item, checkedArr)}
                 value={
                   item.type === 'A'
-                    ? listTypeASelected
+                    ? identityProof.listSelected
                     : item.type === 'B'
-                    ? listTypeBSelected
+                    ? addressProof.listSelected
                     : item.type === 'C'
-                    ? listTypeCSelected
+                    ? educational.listSelected
                     : item.type === 'D'
-                    ? listTypeDSelected
+                    ? poe.listSelected
                     : []
                 }
               />

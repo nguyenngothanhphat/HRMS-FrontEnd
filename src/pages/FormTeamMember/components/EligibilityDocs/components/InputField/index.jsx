@@ -17,7 +17,7 @@ const InputField = () => {
         <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colRight}>
           <Form labelCol={24} wrapperCol={24} layout="vertical">
             <Form.Item label="Work Duration (In year, months, days)">
-              <DatePicker format="YYYY/MM/DD" className={style.inputDate} />
+              <Input className={style.inputDate} />
             </Form.Item>
           </Form>
         </Col>

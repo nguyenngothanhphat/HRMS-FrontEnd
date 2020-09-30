@@ -128,7 +128,15 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
-    testEligibility: {},
+    testEligibility: [],
+    originData: {
+      generalData: {},
+      compensationData: {},
+    },
+    tempData: {
+      generalData: {},
+      compensationData: {},
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
