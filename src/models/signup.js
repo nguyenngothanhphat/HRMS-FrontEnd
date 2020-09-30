@@ -60,7 +60,7 @@ const signup = {
     *signupAdmin({ payload }, { call, put }) {
       try {
         const response = yield call(signupAdmin, payload);
-        const { statusCode, message, id } = response;
+        const { statusCode, message, data: { id = '' } = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
