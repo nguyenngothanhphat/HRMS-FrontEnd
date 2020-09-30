@@ -39,4 +39,15 @@ export default {
   'component.documentAndTemplates.delete': 'Delete',
   'component.documentAndTemplates.defaultTemplate': 'System default templates',
   'component.documentAndTemplates.recentDocuments': 'Recent documents',
+  // Settings non extemp notice
+  'component.nonExtempNotice.title': 'Non-Extempt Notice',
+  'component.nonExtempNotice.formTitle': `Worker's compensation`,
+  'component.nonExtempNotice.isSelfInsured': 'Are you self-insured?',
+  'component.nonExtempNotice.carrierName': `Insurance carrier's name`,
+  'component.nonExtempNotice.carrierAddress': `Insurance carrier's address`,
+  'component.nonExtempNotice.phoneNumber': `Phone number`,
+  'component.nonExtempNotice.policyNumber': `Policy number`,
+  'component.nonExtempNotice.save': `Save`,
+  'component.nonExtempNotice.yes': `Yes`,
+  'component.nonExtempNotice.no': `No`,
 };
