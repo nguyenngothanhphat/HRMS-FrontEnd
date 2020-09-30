@@ -67,7 +67,7 @@ const SignUp2 = (props) => {
       inputRefs[index].blur();
     }
     setInputVals((prevState) => {
-      const vals = prevState.filter((value, valueIndex) => index !== valueIndex);
+      const vals = prevState.filter((inputValue, valueIndex) => index !== valueIndex);
       vals.splice(index, 0, value);
       return vals;
     });

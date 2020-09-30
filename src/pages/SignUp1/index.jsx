@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import React, { useState, useEffect } from 'react';
 
 import { connect } from 'umi';
@@ -8,9 +9,9 @@ import styles from './index.less';
 const SignUp1 = (props) => {
   const [keepSignIn, setKeepSignIn] = useState(false);
 
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
 
-  const { user, dispatch } = props;
+  const { dispatch } = props;
 
   useEffect(() => {
     // console.log(props);
@@ -29,23 +30,26 @@ const SignUp1 = (props) => {
 
   const onFinish = async (values) => {
     const { email, fullname } = values;
-    const user = {
-      firstName: fullname,
-      email,
-    };
+    // const user = {
+    //   firstName: fullname,
+    //   email,
+    // };
 
     if (dispatch) {
-      const { firstName = '', email = '' } = user;
+      // const { firstName = '', email = '' } = user;
       await dispatch({
         type: 'signup/fetchUserInfo',
         payload: {
-          firstName,
+          firstName: fullname,
           email,
         },
       });
     }
 
-    storeData(user);
+    storeData({
+      firstName: fullname,
+      email,
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
