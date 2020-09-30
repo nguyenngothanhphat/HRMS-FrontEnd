@@ -1,13 +1,13 @@
 /* eslint-disable no-useless-escape */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { connect } from 'umi';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 
 import styles from './index.less';
 
 const SignUp1 = (props) => {
-  const [keepSignIn, setKeepSignIn] = useState(false);
+  // const [keepSignIn, setKeepSignIn] = useState(false);
 
   // const [form] = Form.useForm();
 
@@ -56,11 +56,6 @@ const SignUp1 = (props) => {
     console.log('Failed :', errorInfo);
   };
 
-  const onChange = (e) => {
-    const isChecked = e.target.checked;
-    setKeepSignIn(isChecked);
-  };
-
   return (
     <div className={styles.wrapper}>
       <h2>Sign Up for your account</h2>
@@ -102,11 +97,11 @@ const SignUp1 = (props) => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="keep-sign-in">
+        {/* <Form.Item name="keep-sign-in">
           <Checkbox checked={keepSignIn} onChange={onChange}>
             Keep me signed in
           </Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Button type="primary" htmlType="submit">
           get started
