@@ -7,6 +7,46 @@
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
   background-color: #ffffff;
   padding: 39px 35px;
+  :global {
+    .ant-radio-wrapper {
+      span {
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+        color: #707177;
+      }
+    }
+    .ant-radio-wrapper-checked {
+      span {
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+    .ant-form-item-control-input {
+      input {
+        height: 42px;
+        border: solid 1px #d6dce4;
+        background-color: #ffffff;
+      }
+    }
+    .ant-form-item-label {
+      padding-bottom: 0;
+      label {
+        font-size: 13px;
+        line-height: 1.15;
+        letter-spacing: 0.12px;
+        color: #707177;
+      }
+    }
+    .ant-radio-group {
+      padding-top: 15px;
+    }
+    .ant-form-item {
+      display: block;
+    }
+  }
   &_form {
     margin-top: 64px;
   }
