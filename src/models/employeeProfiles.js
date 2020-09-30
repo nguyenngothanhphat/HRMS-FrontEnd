@@ -20,6 +20,7 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getPRReport,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -56,6 +57,7 @@ const employeeProfile = {
       passportData: {},
       visaData: [],
     },
+    listPRReport: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -433,6 +435,22 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
+      }
+    },
+    *fetchPRReport(
+      { payload: { employee = '', employeeGroup = 'PR report' } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getPRReport, {
+          employee,
+          employeeGroup,
+        });
+        const { statusCode, data: listPRReport = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'listPRReport', payload: { listPRReport } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

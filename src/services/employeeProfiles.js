@@ -119,3 +119,10 @@ export async function getAddVisa(payload) {
     data: payload,
   });
 }
+
+export async function getPRReport(payload) {
+  return request('/api/document/employee-group', {
+    method: 'POST',
+    data: payload,
+  });
+}
