@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { formatMessage } from 'umi';
 import { Form, Radio } from 'antd';
 
 import styles from './index.less';
@@ -31,12 +32,16 @@ class EmploymentDetails extends PureComponent {
       return (
         <Form.Item name={radio.name} label={radio.label}>
           <Radio.Group>
-            <Radio value>Yes</Radio>
-            <Radio value={false}>No</Radio>
+            <Radio value>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
+            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
           </Radio.Group>
         </Form.Item>
       );
     });
+  };
+
+  onFinish = (values) => {
+    console.log('Success:', values);
   };
 
   render() {

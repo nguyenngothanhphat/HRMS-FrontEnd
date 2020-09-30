@@ -31,4 +31,23 @@ export default {
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
   'component.onboardingOverview.addTeamMember': 'Add Team Member',
+  // Settings document and templates
+  'component.documentAndTemplates.title': 'Document & Templates',
+  'component.documentAndTemplates.subTitle':
+    'You can manage all of your documents , templates and custom emails here. The app can generate and send your company’s offer letters, employee handbooks, hiring agreements and custom emails to your new hires.',
+  'component.documentAndTemplates.download': 'Download',
+  'component.documentAndTemplates.delete': 'Delete',
+  'component.documentAndTemplates.defaultTemplate': 'System default templates',
+  'component.documentAndTemplates.recentDocuments': 'Recent documents',
+  // Settings non extemp notice
+  'component.nonExtempNotice.title': 'Non-Extempt Notice',
+  'component.nonExtempNotice.formTitle': `Worker's compensation`,
+  'component.nonExtempNotice.isSelfInsured': 'Are you self-insured?',
+  'component.nonExtempNotice.carrierName': `Insurance carrier's name`,
+  'component.nonExtempNotice.carrierAddress': `Insurance carrier's address`,
+  'component.nonExtempNotice.phoneNumber': `Phone number`,
+  'component.nonExtempNotice.policyNumber': `Policy number`,
+  'component.nonExtempNotice.save': `Save`,
+  'component.nonExtempNotice.yes': `Yes`,
+  'component.nonExtempNotice.no': `No`,
 };

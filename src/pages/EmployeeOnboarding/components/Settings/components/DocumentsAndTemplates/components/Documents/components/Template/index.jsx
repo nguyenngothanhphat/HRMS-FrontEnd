@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Menu, Dropdown } from 'antd';
-
+import { formatMessage } from 'umi';
 import menuIcon from './assets/menuIcon.svg';
 import deleteIcon from './assets/deleteIcon.svg';
 import downloadIcon from './assets/downloadIcon.svg';
@@ -18,7 +18,8 @@ class Template extends PureComponent {
             rel="noopener noreferrer"
             href="http://www.alipay.com/"
           >
-            <img src={downloadIcon} alt="menu" /> Download
+            <img src={downloadIcon} alt="menu" />{' '}
+            {formatMessage({ id: 'component.documentAndTemplates.download' })}
           </a>
         </Menu.Item>
         <Menu.Item>
@@ -28,7 +29,8 @@ class Template extends PureComponent {
             rel="noopener noreferrer"
             href="http://www.taobao.com/"
           >
-            <img src={deleteIcon} alt="menu" /> Delete
+            <img src={deleteIcon} alt="menu" />{' '}
+            {formatMessage({ id: 'component.documentAndTemplates.delete' })}
           </a>
         </Menu.Item>
       </Menu>

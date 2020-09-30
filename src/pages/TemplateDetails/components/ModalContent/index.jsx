@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link, formatMessage } from 'umi';
 import { Button } from 'antd';
 import offerIcon from './assets/offer-icon.svg';
 import sentIcon from './assets/sent-icon.svg';
@@ -11,16 +12,15 @@ class ModalContent extends Component {
       modalContent: [
         {
           icon: offerIcon,
-          title: ' Offer letter template has been successfully created',
-          content:
-            'In order to use the template, it must be signed by the 2nd level authority. Template will be directly sent to the concerned 2nd level authority',
-          button: 'Send for approval',
+          title: formatMessage({ id: 'component.modalContent.title1' }),
+          content: formatMessage({ id: 'component.modalContent.content' }),
+          button: formatMessage({ id: 'component.modalContent.buttonApproval' }),
         },
         {
           icon: sentIcon,
-          title: 'Offer  letter template sent for approval',
+          title: formatMessage({ id: 'component.modalContent.title2' }),
           content: '',
-          button: 'OK',
+          button: formatMessage({ id: 'component.modalContent.buttonOK' }),
         },
       ],
     };
@@ -39,10 +39,22 @@ class ModalContent extends Component {
         <img src={modalContent[content].icon} alt="icon" />
         <div className={styles.ModalContent_title}>{modalContent[content].title}</div>
         <div className={styles.ModalContent_content}>{modalContent[content].content}</div>
-        <Button onClick={this.onNext} type="primary">
-          {' '}
-          {modalContent[content].button}
-        </Button>
+        {content === 0 ? (
+          <Button onClick={this.onNext} type="primary">
+            {modalContent[content].button}
+          </Button>
+        ) : (
+          <Link
+            to={{
+              pathname: '/employee-onboarding',
+              state: { defaultActiveKey: '2' },
+            }}
+          >
+            <Button onClick={this.onNext} type="primary">
+              {modalContent[content].button}
+            </Button>
+          </Link>
+        )}
       </div>
     );
   }
