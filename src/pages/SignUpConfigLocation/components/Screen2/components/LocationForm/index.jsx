@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 
+import { array } from 'prop-types';
+import { isBuffer } from 'lodash';
 import bin from '../../images/bin.svg';
 
 import styles from './index.less';
-import { array } from 'prop-types';
 
 const LocationForm = (props) => {
   const [formIndex, setFormIndex] = useState(-1);
@@ -12,34 +13,20 @@ const LocationForm = (props) => {
   const { headQuarterAddress, locations, listCountry, dispatch, companyName = '' } = props;
   const [countryId, setCountryId] = useState('');
   const [countryInfo, setCountryInfo] = useState({});
-  // const [list, setList] = useState(locations.filter((item) => item.isheadQuarter === false));
-  const [list, setList] = useState([
-    ...locations,
-    { ...headQuarterAddress, isheadQuarter: true, name: companyName },
-  ]);
-
-  // const stateArr = countryInfo.states || [];
-
-  // const getLocationList = () => {
-  //   const result = locations.filter((item) => item.isheadQuarter === false);
-  //   return result;
-  // }
+  const [list, setList] = useState([]);
 
   useEffect(() => {
-    onChange(list);
-  }, [list]);
-
-  useEffect(() => {
-    // console.log(countryInfo);
-    if (dispatch) {
-      dispatch({
-        type: 'signup/save',
-        payload: {
-          locations: list,
-        },
-      });
+    if (locations.length === 0) {
+      setList([...locations, { ...headQuarterAddress, isheadQuarter: true, name: companyName }]);
+    } else {
+      setList([...locations]);
     }
   }, []);
+
+  useEffect(() => {
+    // console.log(list);
+    onChange(list);
+  }, [list]);
 
   const onFinish = (values) => {
     console.log('Success:', values);
@@ -53,6 +40,7 @@ const LocationForm = (props) => {
     setFormIndex((prevIndex) => prevIndex + 1);
     const newList = [...list, {}];
     setList(newList);
+    console.log(newList);
   };
 
   const removeLocation = (index) => {
@@ -62,25 +50,13 @@ const LocationForm = (props) => {
   };
 
   const handleOnChange = (fieldValue, fieldName, formIndex) => {
+    console.log(fieldValue, fieldName, formIndex);
     handleFieldChange(formIndex, fieldName, fieldValue);
 
-    // console.log(formIndex, fieldName, fieldValue);
-    // console.log(fieldValue);
-    // console.log(list);
-
-    let returnedLocations = [];
-
-    // const headquarter = {
-    //   name: companyName,
-    //   address: headQuarterAddress.address,
-    //   country: headQuarterAddress.country,
-    //   state: headQuarterAddress.state,
-    //   zipCode: headQuarterAddress.zipCode,
-    //   isheadQuarter: true,
-    // };
-    // returnedLocations.push(headquarter);
-
-    list.map((item) => {
+    const returnedLocations = [];
+    console.log(list);
+    list.map((item, index) => {
+      // console.log(item);
       const { address = '', country = '', state = '', zipCode = '', isheadQuarter = false } = item;
       const data = {
         name: companyName,
@@ -92,7 +68,6 @@ const LocationForm = (props) => {
       };
       returnedLocations.push(data);
     });
-    // console.log(returnedLocations);
 
     // save data to Store
     if (dispatch) {
@@ -110,6 +85,7 @@ const LocationForm = (props) => {
     const newItem = { ...item, [fieldName]: fieldValue };
     const newList = [...list];
     newList.splice(index, 1, newItem);
+    console.log('newlist', newList);
     setList(newList);
   };
 
@@ -124,7 +100,10 @@ const LocationForm = (props) => {
         className={styles.vertical}
         rules={[{ required: true, message: 'Please select your state!' }]}
       >
-        <Select onChange={(value) => handleOnChange(value, 'state', index)}>
+        <Select
+          value={list[index].state}
+          onChange={(value) => handleOnChange(value, 'state', index)}
+        >
           {listStateByItemCountry.map((state) => (
             <Select.Option value={state}>{state}</Select.Option>
           ))}
@@ -133,12 +112,15 @@ const LocationForm = (props) => {
     );
   };
 
-  console.log(list);
+  // console.log(list);
 
   return (
     <>
       {list.length > 1 &&
         list.map((item, index) => {
+          if (index === 0) {
+            return null;
+          }
           const { address, country, state, zipCode } = item;
           return (
             <div key={index} className={styles.card}>
@@ -172,7 +154,7 @@ const LocationForm = (props) => {
                 <Select
                   // defaultValue={country}
                   // defaultValue={locations[index].country}
-                  // value={country}
+                  value={country}
                   onChange={(value) => {
                     handleOnChange(value, 'country', index);
                     // console.log(value);

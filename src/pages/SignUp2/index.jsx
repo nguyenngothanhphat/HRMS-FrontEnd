@@ -11,7 +11,7 @@ import styles from './index.less';
 const SignUp2 = (props) => {
   const { codeNumber, email, dispatch } = props;
 
-  let inputRefs = [];
+  const inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const SignUp2 = (props) => {
         return;
       }
     }
-    const length = value.toString().length;
+    const { length } = value.toString();
     if (index !== inputRefs.length - 1) {
       if (length >= 1) {
         inputRefs[index + 1].focus();
@@ -67,7 +67,7 @@ const SignUp2 = (props) => {
       inputRefs[index].blur();
     }
     setInputVals((prevState) => {
-      let vals = prevState.filter((value, valueIndex) => index !== valueIndex);
+      const vals = prevState.filter((value, valueIndex) => index !== valueIndex);
       vals.splice(index, 0, value);
       return vals;
     });
@@ -91,7 +91,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[0] || ''}
+          value={inputVals[0]}
           onChange={(e) => onChange(e, 0)}
         />
         <InputNumber
@@ -101,7 +101,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[1] || ''}
+          value={inputVals[1]}
           onChange={(e) => onChange(e, 1)}
         />
         <InputNumber
@@ -111,7 +111,7 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[2] || ''}
+          value={inputVals[2]}
           onChange={(e) => onChange(e, 2)}
         />
         <InputNumber
