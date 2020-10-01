@@ -19,6 +19,9 @@ class PaySlipMonth extends PureComponent {
     };
   }
 
+  // handleDownLoad = (item) => {
+  // };
+
   handleViewFile = (urlFile) => {
     this.setState({ isView: true, url: urlFile });
   };
@@ -52,7 +55,11 @@ class PaySlipMonth extends PureComponent {
                     href={item.attachment.url ? item.attachment.url : ''}
                     download="{item.attachment.name}"
                   > */}
-                  <Icon component={DownloadIcon} className={styles.downLoadIcon} />
+                  <Icon
+                    component={DownloadIcon}
+                    className={styles.downLoadIcon}
+                    // onClick={() => this.handleDownLoad(item)}
+                  />
                   {/* </a> */}
                 </div>
               </div>

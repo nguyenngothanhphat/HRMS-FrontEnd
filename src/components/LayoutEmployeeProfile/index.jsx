@@ -22,8 +22,8 @@ class CommonLayout extends PureComponent {
   componentDidMount() {
     const { listMenu } = this.props;
     this.setState({
-      selectedItemId: listMenu[3].id,
-      displayComponent: listMenu[3].component,
+      selectedItemId: listMenu[0].id,
+      displayComponent: listMenu[0].component,
     });
   }
 
@@ -47,13 +47,13 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  saveChanges = (item) => {
-    console.log('item', item);
-  };
+  // saveChanges = (item) => {
+  //   console.log('item', item);
+  // };
 
-  onCancel = (item) => {
-    console.log('item', item);
-  };
+  // onCancel = (item) => {
+  //   console.log('item', item);
+  // };
 
   render() {
     const { listMenu = [], isModified } = this.props;
