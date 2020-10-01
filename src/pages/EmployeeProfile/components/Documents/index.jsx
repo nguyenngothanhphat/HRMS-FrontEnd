@@ -27,8 +27,10 @@ class Documents extends Component {
   };
 
   getFiles = (item) => {
+    // console.log(item)
     if (item.attachment) {
-      const { id, name: fileName, createdAt: date, url: source } = item.attachment;
+      const id = item._id;
+      const { name: fileName, createdAt: date, url: source } = item.attachment;
       const fileNameSplit = fileName.split('.');
       return {
         id,
@@ -55,50 +57,42 @@ class Documents extends Component {
     const identity = [];
     const agreement = [];
     const employeeHandbook = [];
-    const prAreement = [];
+    const prAgreement = [];
     const certificates = [];
 
     // eslint-disable-next-line array-callback-return
     list.map((eachFile) => {
+      const file = this.getFiles(eachFile);
       if (eachFile.employeeGroup === 'Offer Letter') {
-        const file = this.getFiles(eachFile);
         offerLetters.push(file);
       }
       if (eachFile.employeeGroup === 'Employment Eligibility') {
-        const file = this.getFiles(eachFile);
         employmentEligibility.push(file);
       }
       if (eachFile.employeeGroup === 'Tax Documents') {
-        const file = this.getFiles(eachFile);
         taxDocuments.push(file);
       }
       if (eachFile.employeeGroup === 'Consent Forms') {
-        const file = this.getFiles(eachFile);
         consentForms.push(file);
       }
       if (eachFile.employeeGroup === 'Identity') {
-        const file = this.getFiles(eachFile);
         identity.push(file);
       }
       if (eachFile.employeeGroup === 'Agreement') {
-        const file = this.getFiles(eachFile);
         agreement.push(file);
       }
       if (eachFile.employeeGroup === 'Employee Handbook') {
-        const file = this.getFiles(eachFile);
         employeeHandbook.push(file);
       }
-      if (eachFile.employeeGroup === 'PR Agreement') {
-        const file = this.getFiles(eachFile);
-        prAreement.push(file);
+      if (eachFile.employeeGroup === 'PR Agreements') {
+        prAgreement.push(file);
       }
       if (eachFile.employeeGroup === 'Certificates') {
-        const file = this.getFiles(eachFile);
         certificates.push(file);
       }
     });
 
-    return [
+    const data = [
       {
         title: 'Hiring Documents',
         type: 1, // uploaded by
@@ -151,7 +145,7 @@ class Documents extends Component {
         body: [
           {
             kind: 'Agreement',
-            files: prAreement,
+            files: prAgreement,
           },
         ],
       },
@@ -166,16 +160,23 @@ class Documents extends Component {
         ],
       },
     ];
+
+    return data;
   };
 
-  onFileClick = (data, value) => {
+  onFileClick = (id) => {
+    const {
+      employeeProfile: { saveDocuments = [] },
+    } = this.props;
+    const data = this.generateArrayDocument(saveDocuments);
+
     data.some((x) => {
       return x.body.some((y) => {
         let count = 0;
         // eslint-disable-next-line array-callback-return
         return y.files.some((z) => {
           count += 1;
-          if (z.id === value) {
+          if (z.id === id) {
             this.setState({
               isViewingDocument: true,
               files: y.files,
@@ -195,7 +196,6 @@ class Documents extends Component {
       employeeProfile: { saveDocuments = [] },
     } = this.props;
     const data = this.generateArrayDocument(saveDocuments);
-
     return (
       <div className={styles.Documents}>
         {isViewingDocument ? (
