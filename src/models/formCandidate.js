@@ -6,7 +6,14 @@
 //   getListEmployeeActive,
 //   getListEmployeeInActive,
 // } from '../services/employee';
-import { getDocumentList } from '@/services/addNewMember';
+import {
+  getDocumentList,
+  getDepartmentList,
+  getTitleList,
+  getLocationList,
+  getEmployeeTypeList,
+  getManagerList,
+} from '@/services/addNewMember';
 import { dialog } from '@/utils/utils';
 
 const info = {
@@ -129,14 +136,12 @@ const info = {
       additionalInfo: '',
     },
     testEligibility: [],
-    originData: {
-      generalData: {},
-      compensationData: {},
-    },
-    tempData: {
-      generalData: {},
-      compensationData: {},
-    },
+    departmentList: [],
+    titleList: [],
+    locationList: [],
+    employeeTypeList: [],
+    company: {},
+    managerList: [],
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -156,6 +161,61 @@ const info = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveEligibilityRequirement', payload: { testEligibility: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchDepartmentList(_, { call, put }) {
+      try {
+        const response = yield call(getDepartmentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { departmentList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchTitleList(_, { call, put }) {
+      try {
+        const response = yield call(getTitleList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { titleList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchLocationList(_, { call, put }) {
+      try {
+        const response = yield call(getLocationList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchEmployeeTypeList(_, { call, put }) {
+      try {
+        const response = yield call(getEmployeeTypeList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeTypeList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchManagerList({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getManagerList, { company });
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { managerList: data } });
       } catch (errors) {
         dialog(errors);
       }

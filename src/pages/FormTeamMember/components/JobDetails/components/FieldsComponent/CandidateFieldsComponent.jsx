@@ -52,7 +52,8 @@ class CandidateFieldsComponent extends PureComponent {
             <DatePicker
               className={styles}
               placeholder=""
-              picker="week"
+              picker="date"
+              format="MM/DD/YYYY"
               onChange={(e) => handleSelect(e, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining}
             />

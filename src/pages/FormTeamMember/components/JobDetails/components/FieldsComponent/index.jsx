@@ -5,7 +5,16 @@ import styles from './index.less';
 
 class FieldsComponent extends PureComponent {
   render() {
-    const { dropdownField, handleSelect, candidateField, jobDetail } = this.props;
+    const {
+      dropdownField,
+      handleSelect,
+      candidateField,
+      jobDetail,
+      departmentList,
+      locationList,
+      titleList,
+      managerList,
+    } = this.props;
     return (
       <div className={styles.FieldsComponent}>
         <FirstFieldsComponent
@@ -13,6 +22,10 @@ class FieldsComponent extends PureComponent {
           dropdownField={dropdownField}
           handleSelect={handleSelect}
           jobDetail={jobDetail}
+          departmentList={departmentList}
+          locationList={locationList}
+          titleList={titleList}
+          managerList={managerList}
         />
         <CandidateFieldsComponent
           styles={styles.Input}

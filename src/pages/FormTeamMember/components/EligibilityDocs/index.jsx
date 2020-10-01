@@ -27,7 +27,7 @@ const note = {
   ),
 };
 
-@connect(({ info: { eligibilityDocs, basicInformation, testEligibility } = {} }) => ({
+@connect(({ info: { eligibilityDocs, basicInformation } = {}, info: { testEligibility } }) => ({
   eligibilityDocs,
   basicInformation,
   testEligibility,
@@ -55,7 +55,6 @@ class EligibilityDocs extends Component {
     const { dispatch } = this.props;
     const { eligibilityDocs, testEligibility } = this.state;
     if (isEmpty(testEligibility)) {
-      console.log('dispatch', testEligibility);
       dispatch({
         type: 'info/fetchDocumentList',
         payload: {
