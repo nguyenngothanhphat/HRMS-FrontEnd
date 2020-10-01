@@ -5,21 +5,6 @@ import moment from 'moment';
 import ViewDocument from '../../../Documents/ViewDocument';
 import styles from './index.less';
 
-@connect(
-  ({
-    upload: { employeeInformationURL = '' } = {},
-    employeeProfile: {
-      editGeneral: { openEmployeeInfor = false },
-      originData: { generalData: generalDataOrigin = {} } = {},
-      tempData: { generalData = {} } = {},
-    } = {},
-  }) => ({
-    openEmployeeInfor,
-    generalDataOrigin,
-    generalData,
-    employeeInformationURL,
-  }),
-)
 @connect(({ employeeProfile }) => ({ employeeProfile }))
 class PRReports extends PureComponent {
   constructor(props) {
@@ -32,36 +17,27 @@ class PRReports extends PureComponent {
     };
   }
 
-  onBackClick = () => {
-    this.setState({
-      isViewingDocument: false,
-    });
-  };
-
-  onFileClick = (value) => {
-    const {
-      employeeProfile: { listPRReport = [] },
-    } = this.props;
-
+  generateArrayDocument = (listPRReport) => {
     const arrayAttachment = listPRReport.map((item) => {
       if (item.attachment) {
         const { id, name: fileName, createdAt: date, url: source } = item.attachment;
+        const fileNameSplit = fileName.split('.');
         return {
           id,
-          fileName,
-          date,
+          fileName: fileNameSplit[0],
+          date: moment(date).locale('en').format('MMMM Do, YYYY'),
           source,
         };
       }
       return {
         id: 8,
-        fileName: 'Agreements',
+        fileName: 'Sample',
         generatedBy: 'Terralogic',
         date: 'December 10th, 2018',
         source: '/assets/images/exampleCard.png',
       };
     });
-    const dummyData = [
+    return [
       {
         title: 'PR Reports',
         type: 1, // uploaded by
@@ -73,7 +49,21 @@ class PRReports extends PureComponent {
         ],
       },
     ];
-    dummyData.some((x) => {
+  };
+
+  onBackClick = () => {
+    this.setState({
+      isViewingDocument: false,
+    });
+  };
+
+  onFileClick = (value) => {
+    const {
+      employeeProfile: { listPRReport = [] },
+    } = this.props;
+
+    const data = this.generateArrayDocument(listPRReport);
+    data.some((x) => {
       return x.body.some((y) => {
         let count = 0;
         // eslint-disable-next-line array-callback-return
@@ -98,37 +88,7 @@ class PRReports extends PureComponent {
       employeeProfile: { listPRReport = [] },
     } = this.props;
 
-    const arrayAttachment = listPRReport.map((item) => {
-      if (item.attachment) {
-        const { id, name: fileName, createdAt: date, url: source } = item.attachment;
-        const fileNameAfterSplit = fileName.split('.');
-        return {
-          id,
-          fileName: fileNameAfterSplit[0],
-          date: moment(date).locale('en').format('MMMM Do, YYYY'),
-          source,
-        };
-      }
-      return {
-        id: 8,
-        fileName: 'Agreements',
-        generatedBy: 'Terralogic',
-        date: 'December 10th, 2018',
-        source: '/assets/images/exampleCard.png',
-      };
-    });
-    const dummyData = [
-      {
-        title: 'PR Reports',
-        type: 1, // uploaded by
-        body: [
-          {
-            kind: 'Agreement',
-            files: arrayAttachment,
-          },
-        ],
-      },
-    ];
+    const data = this.generateArrayDocument(listPRReport);
     return (
       <div className={styles.prReports}>
         {isViewingDocument ? (
@@ -141,7 +101,7 @@ class PRReports extends PureComponent {
             />
           </div>
         ) : (
-          dummyData.map((value, index) => (
+          data.map((value, index) => (
             <InfoCollapseType2 key={`${index + 1}`} onFileClick={this.onFileClick} data={value} />
           ))
         )}
