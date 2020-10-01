@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect } from 'react';
 
-import { formatMessage, connect } from 'umi';
+import { useIntl, connect } from 'umi';
 import { Form, Input, Button } from 'antd';
 
 import styles from './index.less';
@@ -45,8 +45,12 @@ const SignUp1 = (props) => {
 
   return (
     <div className={styles.wrapper}>
-      <h2>{formatMessage({ id: 'pages.login.signIn' })}</h2>
-      <h2>{formatMessage({ id: 'pages.signUp.signUpHeader' })}</h2>
+      {/* <h2>{formatMessage({ id: 'pages.login.signIn' })}</h2> */}
+      <h2>
+        {useIntl().formatMessage({
+          id: 'app.pwa.serviceworker.updated',
+        })}
+      </h2>
 
       <Form
         className={styles.form}
