@@ -7,7 +7,7 @@ import { signupAdmin, getUserInfo, getSecurityCode } from '../services/user';
 const signup = {
   namespace: 'signup',
   state: {
-    currentStep: 1,
+    currentStep: 0,
     checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {

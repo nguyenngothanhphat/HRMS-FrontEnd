@@ -1,21 +1,13 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect } from 'react';
 
-import { connect } from 'umi';
+import { formatMessage, connect } from 'umi';
 import { Form, Input, Button } from 'antd';
 
 import styles from './index.less';
 
 const SignUp1 = (props) => {
-  // const [keepSignIn, setKeepSignIn] = useState(false);
-
-  // const [form] = Form.useForm();
-
   const { dispatch } = props;
-
-  useEffect(() => {
-    // console.log(props);
-  }, []);
 
   const storeData = (user) => {
     if (dispatch) {
@@ -30,13 +22,8 @@ const SignUp1 = (props) => {
 
   const onFinish = async (values) => {
     const { email, fullname } = values;
-    // const user = {
-    //   firstName: fullname,
-    //   email,
-    // };
 
     if (dispatch) {
-      // const { firstName = '', email = '' } = user;
       await dispatch({
         type: 'signup/fetchUserInfo',
         payload: {
@@ -58,7 +45,8 @@ const SignUp1 = (props) => {
 
   return (
     <div className={styles.wrapper}>
-      <h2>Sign Up for your account</h2>
+      <h2>{formatMessage({ id: 'pages.login.signIn' })}</h2>
+      <h2>{formatMessage({ id: 'pages.signUp.signUpHeader' })}</h2>
 
       <Form
         className={styles.form}
