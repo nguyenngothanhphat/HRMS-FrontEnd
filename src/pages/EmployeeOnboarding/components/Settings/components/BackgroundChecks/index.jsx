@@ -1,7 +1,8 @@
 /* eslint-disable react/prefer-stateless-function */
 /* eslint-disable no-undef */
 import React, { Component } from 'react';
-
+import BackgroundCheck from './components/BackgroundCheck';
+import MotorVehicleReports from './components/MotorVehicleReports';
 import styles from './index.less';
 
 class BackgroundChecks extends Component {
@@ -14,6 +15,8 @@ class BackgroundChecks extends Component {
         </div>
         <div className={styles.BackgroundChecks_forms}>
           <p className={styles.subTitle}>General Settings</p>
+          <BackgroundCheck />
+          <MotorVehicleReports />
         </div>
       </div>
     );
