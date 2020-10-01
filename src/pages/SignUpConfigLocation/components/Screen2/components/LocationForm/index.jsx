@@ -7,12 +7,8 @@ import bin from '../../images/bin.svg';
 import styles from './index.less';
 
 const LocationForm = (props) => {
-  // const [formIndex, setFormIndex] = useState(-1);
-  // const { value = [], onChange } = props;
   const { onChange } = props;
   const { headQuarterAddress, locations, listCountry, dispatch, companyName = '' } = props;
-  // const [countryId, setCountryId] = useState('');
-  // const [countryInfo, setCountryInfo] = useState({});
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -50,9 +46,16 @@ const LocationForm = (props) => {
     }
   };
 
+  const removeAutocomplete = () => {
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+    console.log(searchInputs);
+  };
+
   useEffect(() => {
     onChange(list);
     updateLocations();
+    removeAutocomplete();
   }, [list]);
 
   // const onFinish = (values) => {
@@ -149,6 +152,7 @@ const LocationForm = (props) => {
                   onChange={(value) => {
                     handleOnChange(value, 'country', index);
                   }}
+                  // autocomplete="nope"
                   showArrow
                   showSearch
                   filterOption={
