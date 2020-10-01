@@ -1,8 +1,12 @@
 /* eslint-disable react/prefer-stateless-function */
 /* eslint-disable no-undef */
 import React, { Component } from 'react';
+import { Row, Col } from 'antd';
 import BackgroundCheck from './components/BackgroundCheck';
 import MotorVehicleReports from './components/MotorVehicleReports';
+import Authorization from './components/Authorization';
+import BillingInformation from './components/BillingInformation';
+
 import styles from './index.less';
 
 class BackgroundChecks extends Component {
@@ -15,8 +19,22 @@ class BackgroundChecks extends Component {
         </div>
         <div className={styles.BackgroundChecks_forms}>
           <p className={styles.subTitle}>General Settings</p>
-          <BackgroundCheck />
-          <MotorVehicleReports />
+          <Row gutter={[0, 24]}>
+            <Col span={24}>
+              {' '}
+              <BackgroundCheck />
+            </Col>
+            <Col span={24}>
+              <MotorVehicleReports />
+            </Col>
+            <Col span={24}>
+              <Authorization />
+            </Col>
+            <Col span={24}>
+              {' '}
+              <BillingInformation />
+            </Col>
+          </Row>
         </div>
       </div>
     );
