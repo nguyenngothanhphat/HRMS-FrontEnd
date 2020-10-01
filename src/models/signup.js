@@ -1,7 +1,14 @@
+/* eslint-disable compat/compat */
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
 import { signupAdmin, getUserInfo, getSecurityCode, activeAdmin } from '../services/user';
+
+const delay = (timeout) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+};
 
 const signup = {
   namespace: 'signup',
@@ -59,6 +66,7 @@ const signup = {
 
     *signupAdmin({ payload }, { call, put }) {
       try {
+        yield call(delay, 2000);
         const response = yield call(signupAdmin, payload);
         const { statusCode, message, data: { id = '' } = {} } = response;
         if (statusCode !== 200) throw response;
