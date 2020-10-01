@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  flex-direction: row;
+  .steps {
+    height: 250px;
+    .customStep {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #2c6df9;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+  :global {
+    .ant-steps-vertical > .ant-steps-item > .ant-steps-item-container > .ant-steps-item-tail {
+      position: absolute;
+      top: 0;
+      left: 16px;
+      width: 3px !important;
+      height: 100%;
+      padding: 27px 0 0px;
+    }
+    .ant-steps-vertical
+      > .ant-steps-item
+      > .ant-steps-item-container
+      > .ant-steps-item-tail::after {
+      width: 3px;
+      height: 100%;
+    }
+
+    .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-tail::after {
+      background-color: #d9e5ff;
+    }
+  }
+}

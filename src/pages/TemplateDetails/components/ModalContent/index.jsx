@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { formatMessage } from 'umi';
+import { Link, formatMessage } from 'umi';
 import { Button } from 'antd';
 import offerIcon from './assets/offer-icon.svg';
 import sentIcon from './assets/sent-icon.svg';
@@ -39,10 +39,22 @@ class ModalContent extends Component {
         <img src={modalContent[content].icon} alt="icon" />
         <div className={styles.ModalContent_title}>{modalContent[content].title}</div>
         <div className={styles.ModalContent_content}>{modalContent[content].content}</div>
-        <Button onClick={this.onNext} type="primary">
-          {' '}
-          {modalContent[content].button}
-        </Button>
+        {content === 0 ? (
+          <Button onClick={this.onNext} type="primary">
+            {modalContent[content].button}
+          </Button>
+        ) : (
+          <Link
+            to={{
+              pathname: '/employee-onboarding',
+              state: { defaultActiveKey: '2' },
+            }}
+          >
+            <Button onClick={this.onNext} type="primary">
+              {modalContent[content].button}
+            </Button>
+          </Link>
+        )}
       </div>
     );
   }

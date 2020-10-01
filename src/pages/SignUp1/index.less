@@ -1,0 +1,111 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap');
+
+@black: #161c29;
+@gray: #707177;
+@blue: #2c6df9;
+@orange: #ffa100;
+@dark-orange: #e69303;
+
+.wrapper {
+  font-family: 'Roboto', sans-serif;
+
+  h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: @black;
+  }
+
+  .form {
+    margin-top: 38.5px;
+  }
+
+  label {
+    // -webkit-filter: blur(10px);
+    // filter: blur(10px);
+    font-size: 13px;
+    color: @gray;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  input[type='text'] {
+    width: 300px;
+    height: 42px;
+    border: solid 1px #d6dce4;
+    border-radius: 5px;
+    color: @black;
+    padding: 0 16px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease-in;
+
+    &:focus {
+      border-color: @blue;
+    }
+  }
+
+  .fullNameForm {
+    display: none;
+    margin-top: 27px !important;
+  }
+
+  button {
+    text-transform: capitalize;
+    background-color: @orange;
+    outline: none;
+    transition: background-color 0.2s ease-in;
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 25px;
+    border: none;
+    margin-top: 38px;
+
+    &:hover,
+    &:focus {
+      background-color: @dark-orange;
+    }
+  }
+
+  :global {
+    .ant-form-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ant-form-item-explain {
+      color: red;
+      font-size: 13px;
+    }
+
+    .ant-checkbox-wrapper {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+
+      input {
+        cursor: pointer;
+      }
+
+      span {
+        cursor: pointer;
+
+        &:nth-child(2) {
+          font-size: 13px;
+          margin-left: 6px;
+          color: @gray;
+        }
+      }
+    }
+
+    .ant-checkbox-inner {
+      margin: 0 !important;
+    }
+
+    .ant-form-item-required::before {
+      display: none !important;
+    }
+  }
+}

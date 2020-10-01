@@ -46,7 +46,6 @@ class Edit extends PureComponent {
   };
 
   handleFormChange = (changedValues) => {
-    console.log(changedValues);
     const { generalDataOrigin, generalData, dispatch } = this.props;
     const payload = { ...generalData, ...changedValues };
     const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
