@@ -30,7 +30,7 @@ class PRReports extends PureComponent {
         };
       }
       return {
-        id: 8,
+        id: 'sample',
         fileName: 'Sample',
         generatedBy: 'Terralogic',
         date: 'December 10th, 2018',
