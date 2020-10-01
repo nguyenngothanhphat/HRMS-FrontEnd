@@ -166,7 +166,7 @@ class ViewDocument extends PureComponent {
                 // eslint-disable-next-line no-console
                 onLoadError={console.error}
                 file={this.getCurrentViewingFileUrl()}
-                loading=""
+                loading="Loading document. Please wait!"
                 noData="Document Not Found"
               >
                 {Array.from(new Array(numPages), (el, index) => (
