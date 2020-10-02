@@ -127,9 +127,15 @@ const LocationForm = (props) => {
 
               <Form.Item
                 label="Address"
+                // rules={[
+                //   { required: true, message: 'Please input your address!' },
+                //   { type: array, message: 'All fields must be filled' },
+                // ]}
                 rules={[
-                  { required: true, message: 'Please input your address!' },
-                  { type: array, message: 'All fields must be filled' },
+                  {
+                    validator: (_, value) =>
+                      value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+                  },
                 ]}
                 className={styles.vertical}
               >

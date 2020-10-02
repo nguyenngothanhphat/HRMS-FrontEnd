@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React, { useEffect } from 'react';
 
-import { useIntl, connect } from 'umi';
+import { formatMessage, connect } from 'umi';
 import { Form, Input, Button } from 'antd';
 
 import styles from './index.less';
@@ -45,10 +45,9 @@ const SignUp1 = (props) => {
 
   return (
     <div className={styles.wrapper}>
-      {/* <h2>{formatMessage({ id: 'pages.login.signIn' })}</h2> */}
       <h2>
-        {useIntl().formatMessage({
-          id: 'app.pwa.serviceworker.updated',
+        {formatMessage({
+          id: 'page.signUp.signUpHeader',
         })}
       </h2>
 
@@ -61,13 +60,22 @@ const SignUp1 = (props) => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="Enter company email address"
+          label={formatMessage({
+            id: 'page.signUp.enterCompanyAddress',
+          })}
           name="email"
           rules={[
-            { required: true, message: 'Please input your email!' },
+            {
+              required: true,
+              message: formatMessage({
+                id: 'page.signUp.inputEmailMsg',
+              }),
+            },
             {
               pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,10})+$/,
-              message: 'Email is not valid',
+              message: formatMessage({
+                id: 'page.signUp.inputEmailInvalid',
+              }),
             },
           ]}
         >
@@ -76,13 +84,22 @@ const SignUp1 = (props) => {
 
         <Form.Item
           className={styles.fullNameForm}
-          label="Enter full name"
+          label={formatMessage({
+            id: 'page.signUp.enterFullName',
+          })}
           name="fullname"
           rules={[
-            { required: true, message: 'Please input your full name!' },
+            {
+              required: true,
+              message: formatMessage({
+                id: 'page.signUp.inputFullNameMsg',
+              }),
+            },
             {
               pattern: /^[a-zA-Z ]*$/,
-              message: 'Full name is not valid',
+              message: formatMessage({
+                id: 'page.signUp.inputFullNameInvalid',
+              }),
             },
           ]}
         >
@@ -96,7 +113,9 @@ const SignUp1 = (props) => {
         </Form.Item> */}
 
         <Button type="primary" htmlType="submit">
-          get started
+          {formatMessage({
+            id: 'page.signUp.getStarted',
+          })}
         </Button>
       </Form>
     </div>

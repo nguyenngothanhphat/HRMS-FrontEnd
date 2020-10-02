@@ -141,6 +141,57 @@ class Edit extends PureComponent {
     });
   };
 
+  checkCertification = (rule, certifications, callback) => {
+    let msg = '';
+    const isValid =
+      Array.isArray(certifications) &&
+      certifications.length > 0 &&
+      certifications.every((certification) => {
+        // console.log(certification);
+        // console.log(Object.keys(certification));
+        const keys = Object.keys(certification);
+
+        const flag = keys.every((key) => {
+          const value = certification.name; // Get "name" field
+          const checkMsg = this.buildValidator('name', value);
+          // console.log(checkMsg, value);
+          if (checkMsg.length > 0) {
+            msg = checkMsg;
+            console.log('Have error message', msg);
+            return false;
+          }
+          console.log('No error');
+          return true;
+        });
+        return flag;
+        // const flag = Object.keys(certification).every((fieldName) => {
+        //   console.log(fieldName);
+        // const value = certification.name;
+        // const checkMsg = this.buildValidator('name', value);
+        // console.log('value', value);
+        // console.log('checkMsg', checkMsg);
+        // if (checkMsg) msg = checkMsg;
+        // return checkMsg;
+        // });
+        // return flag;
+      });
+
+    console.log('isValid', isValid);
+    console.log('message', msg);
+    if (!isValid) callback(msg);
+  };
+
+  buildValidator = (fieldName, value) => {
+    // console.log('fieldName', fieldName);
+    // console.log('value', value);
+
+    let msg = '';
+    if (fieldName === 'name') {
+      msg = value.length === 0 ? 'Name is required' : '';
+    }
+    return msg;
+  };
+
   render() {
     const {
       generalData,
@@ -206,7 +257,15 @@ class Edit extends PureComponent {
           <Form.Item label="Qualification" name="qualification">
             <Input />
           </Form.Item>
-          <Form.Item name="certification" className={s.certificationContainer}>
+          <Form.Item
+            name="certification"
+            className={s.certificationContainer}
+            rules={[
+              {
+                validator: this.checkCertification,
+              },
+            ]}
+          >
             <FormCertification />
           </Form.Item>
           <Form.Item label="Skills" name="skills">
