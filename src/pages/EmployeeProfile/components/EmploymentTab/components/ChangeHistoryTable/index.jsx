@@ -23,38 +23,50 @@ class ChangeHistoryTable extends PureComponent {
         title: 'Changed Infomation',
         dataIndex: 'changedInfomation',
         key: 'changedInfomation',
-        render: (changedInfomation) => (
-          <div>
-            {changedInfomation.promotedPosition ? (
-              <div>
-                {employee} is promoted to {changedInfomation.promotedPosition} postion
-              </div>
-            ) : null}
-            {changedInfomation.salary ? (
-              <div>
-                Revised Salary:{' '}
-                <b>${String(changedInfomation.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-              </div>
-            ) : null}
-            {changedInfomation.location ? <div>Location: {changedInfomation.location}</div> : null}
-            {changedInfomation.deparment ? (
-              <div>
-                {employee} switched to department: {changedInfomation.deparment}
-              </div>
-            ) : null}
-            {changedInfomation.employment ? (
-              <div>New employment: {changedInfomation.employment}</div>
-            ) : null}
-            {changedInfomation.compensation ? (
-              <div>New payment: {changedInfomation.compensation}</div>
-            ) : null}
-            {changedInfomation.manager ? (
-              <div>
-                {employee} is now reporting to: <b>{changedInfomation.manager}</b>
-              </div>
-            ) : null}
-          </div>
-        ),
+        render: (changedInfomation) => {
+          const info = changedInfomation;
+          const keys = Object.keys(info);
+          for (let i = 0; i < keys.length; i += 1) {
+            if (info[keys[i]] === undefined) delete info[keys[i]];
+          }
+          return (
+            <div>
+              {info.promotedPosition ? (
+                <div>
+                  {employee} is promoted to {info.promotedPosition} postion
+                </div>
+              ) : null}
+              {info.salary ? (
+                <div>
+                  Revised Salary:{' '}
+                  <b>${String(info.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                </div>
+              ) : null}
+              {info.location ? <div>Location: {info.location}</div> : null}
+              {info.deparment ? (
+                <div>
+                  {employee} switched to department: {info.deparment}
+                </div>
+              ) : null}
+              {info.employment ? (
+                <div>
+                  New employment: <b>{info.employment}</b>
+                </div>
+              ) : null}
+              {info.compensation ? (
+                <div>
+                  New payment: <b>{info.compensation}</b>
+                </div>
+              ) : null}
+              {info.manager ? (
+                <div>
+                  {employee} is now reporting to: <b>{info.manager}</b>
+                </div>
+              ) : null}
+              {Object.keys(info).length === 0 ? <b>Nothing changed</b> : null}
+            </div>
+          );
+        },
         align: 'left',
         width: '25%',
       },
