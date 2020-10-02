@@ -83,7 +83,7 @@ const info = {
       classification: 1,
       department: '',
       jobTitle: '',
-      jobCategory: '',
+
       workLocation: '',
       reportingManager: '',
       candidatesNoticePeriod: '',

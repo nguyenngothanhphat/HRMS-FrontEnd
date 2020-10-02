@@ -19,7 +19,7 @@ class CandidateFieldsComponent extends PureComponent {
   };
 
   render() {
-    const { styles, candidateField, handleSelect = () => {}, jobDetail = {} } = this.props;
+    const { styles, candidateField, _handleSelect = () => {}, jobDetail = {} } = this.props;
     const { isHidden } = this.state;
     const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetail;
     return (
@@ -33,7 +33,7 @@ class CandidateFieldsComponent extends PureComponent {
             <Select
               placeholder={candidateField[0].placeholder}
               className={styles}
-              onChange={(e) => handleSelect(e, candidateField[0].title)}
+              onChange={(value) => _handleSelect(value, candidateField[0].title)}
               defaultValue={candidatesNoticePeriod}
             >
               {candidateField[0].Option.map((data) => (
@@ -54,7 +54,7 @@ class CandidateFieldsComponent extends PureComponent {
               placeholder=""
               picker="date"
               format="MM/DD/YYYY"
-              onChange={(e) => handleSelect(e, candidateField[1].title)}
+              onChange={(value) => _handleSelect(value, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining}
             />
           </Col>

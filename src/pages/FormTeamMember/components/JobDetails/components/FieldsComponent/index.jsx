@@ -14,6 +14,7 @@ class FieldsComponent extends PureComponent {
       locationList,
       titleList,
       managerList,
+      _handleSelect,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -26,6 +27,7 @@ class FieldsComponent extends PureComponent {
           locationList={locationList}
           titleList={titleList}
           managerList={managerList}
+          _handleSelect={_handleSelect}
         />
         <CandidateFieldsComponent
           styles={styles.Input}
@@ -33,6 +35,7 @@ class FieldsComponent extends PureComponent {
           handleSelect={handleSelect}
           candidateField={candidateField}
           jobDetail={jobDetail}
+          _handleSelect={_handleSelect}
         />
       </div>
     );

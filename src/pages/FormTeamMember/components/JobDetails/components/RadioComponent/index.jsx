@@ -31,7 +31,7 @@ class RadioComponent extends PureComponent {
         </Typography.Title>
         <Radio.Group
           className={styles.paddingRadio}
-          // defaultValue={employeeTypeList[0]._id}
+          defaultValue={classification}
           onChange={(e) => handleRadio(e)}
           name={Tab.classificationTab.name}
         >

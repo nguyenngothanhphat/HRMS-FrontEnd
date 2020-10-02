@@ -16,6 +16,7 @@ class FirstFieldsComponent extends PureComponent {
       locationList,
       titleList,
       managerList,
+      _handleSelect,
     } = this.props;
     console.log(departmentList.map((data) => data.name));
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
@@ -40,7 +41,11 @@ class FirstFieldsComponent extends PureComponent {
                 <Select
                   placeholder={item.placeholder}
                   className={styles}
-                  onChange={(value) => handleSelect(value, item.title)}
+                  onChange={
+                    item.title === 'workLocation'
+                      ? (value) => handleSelect(value, item.title)
+                      : (value) => _handleSelect(value, item.title)
+                  }
                   defaultValue={
                     item.title === 'department'
                       ? department
@@ -73,7 +78,7 @@ class FirstFieldsComponent extends PureComponent {
                           <Typography.Text>{data.name}</Typography.Text>
                         </Option>
                       ))
-                    : item.title === 'jobTitle' && managerList.length > 1
+                    : item.title === 'reportingManager' && managerList.length > 1
                     ? managerList.map((data, index) => (
                         <Option value={data._id} key={index}>
                           <Typography.Text>{data.generalinfos.firstName}</Typography.Text>
