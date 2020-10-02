@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Input } from 'antd';
+import { Select, InputNumber } from 'antd';
 import styles from './styles.less';
 
 export default function SecondStep(props) {
@@ -107,12 +107,14 @@ export default function SecondStep(props) {
       </div>
       <div className={styles.select}>
         <div>Annual Salary</div>
-        <Input
+        <InputNumber
           defaultValue={changeData.stepTwo.salary}
           style={{ width: 300 }}
+          min={0}
+          formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
           placeholder="Enter an amount"
-          onChange={(e) => onChange(e.target.value, 'salary')}
-          prefix="$"
+          onChange={(value) => onChange(value, 'salary')}
         />
       </div>
     </div>
