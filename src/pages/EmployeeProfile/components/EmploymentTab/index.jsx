@@ -64,6 +64,7 @@ class EmploymentTab extends Component {
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
         department: data.stepThree.department || null,
+        compensationType: data.stepTwo.compensation || null,
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,

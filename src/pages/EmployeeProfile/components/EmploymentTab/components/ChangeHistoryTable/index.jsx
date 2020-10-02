@@ -25,15 +25,20 @@ class ChangeHistoryTable extends PureComponent {
         key: 'changedInfomation',
         render: (changedInfomation) => (
           <div>
-            <span>
-              {employee} is promoted to {changedInfomation.promotedPosition} postion
-            </span>
-            <br />
-            <span>
-              Revised Salary: <b>{changedInfomation.salary}</b>
-            </span>
-            <br />
-            <span>Location: {changedInfomation.location}</span>
+            {changedInfomation.promotedPosition ? (
+              <div>
+                {employee} is promoted to {changedInfomation.promotedPosition} postion
+              </div>
+            ) : null}
+            {changedInfomation.salary ? (
+              <div>
+                Revised Salary:{' '}
+                <b>${changedInfomation.salary.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+              </div>
+            ) : null}
+            <div>
+              {changedInfomation.location ? `Location: ${changedInfomation.location}` : null}
+            </div>
           </div>
         ),
         align: 'left',
@@ -79,10 +84,9 @@ class ChangeHistoryTable extends PureComponent {
     const newData = employeeProfile.originData.changeHistories.map((item, index) => ({
       key: `${index + 1}`,
       changedInfomation: {
-        promotedPosition:
-          item.title?.name || employeeProfile.originData.employmentData.title?.name || 'Loading...',
-        salary: item.salary || employeeProfile.originData.compensationData.currentAnnualCTC || 0,
-        location: item.location?.name || employeeProfile.originData.employmentData.location?.name,
+        promotedPosition: item.title?.name,
+        salary: item.currentAnnualCTC,
+        location: item.location?.name,
       },
       effectiveDate: moment(item.effectiveDate).locale('en').format('Do MMMM YYYY'),
       changedBy: 'HR Admin',

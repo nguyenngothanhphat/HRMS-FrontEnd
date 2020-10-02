@@ -108,6 +108,16 @@ const employeeProfile = {
             const employment = yield call(getEmploymentInfo, { id: payload.employee });
             yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
             if (employment.statusCode !== 200) throw response;
+            const compensation = yield call(getCompensation, { employee: payload.employee });
+            if (compensation.statusCode !== 200) throw response;
+            yield put({
+              type: 'saveOrigin',
+              payload: { compensationData: compensation.data },
+            });
+            yield put({
+              type: 'saveTemp',
+              payload: { compensationData: compensation.data },
+            });
           }
         }
       } catch (error) {
