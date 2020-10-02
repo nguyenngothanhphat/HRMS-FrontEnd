@@ -6,6 +6,7 @@ import s from './index.less';
 
 const CertificationInput = ({ value = [{}], onChange }) => {
   const [list, setList] = useState(value);
+  console.log(list);
   const [idInput, setIdInput] = useState(Date.now());
 
   const handleAddBtn = () => {
@@ -25,6 +26,7 @@ const CertificationInput = ({ value = [{}], onChange }) => {
     const newItem = { ...item, [nameField]: fieldValue };
     const newList = [...list];
     newList.splice(index, 1, newItem);
+    console.log(newList);
     setList(newList);
   };
 

@@ -24,6 +24,7 @@ class UploadImage extends Component {
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
+      // name,
     }).then((resp) => {
       getResponse(resp);
     });

@@ -1,0 +1,100 @@
+.projectHistory {
+  :global {
+    .ant-card-bordered {
+      border: 1px solid #d6dce0;
+    }
+    .ant-card-head {
+      border-color: #d6dce0;
+    }
+    .ant-card-head-title {
+      height: 67px;
+      line-height: 67px;
+      padding: 0 !important;
+      font-weight: bold;
+    }
+    .ant-card-extra {
+      padding-right: 8px;
+    }
+  }
+  .projectHistory_card {
+    border-radius: 5px;
+    font-size: 13px;
+    .textValue {
+      color: #707177;
+    }
+    .extraCard {
+      .extraCard_search {
+        width: 220px;
+        height: 42px;
+        border-radius: 5px;
+        border: solid 1px #d6dce4;
+        background-color: #ffffff;
+        margin-left: 16px;
+        :global {
+          .ant-input-search-icon::before {
+            display: none;
+          }
+          .ant-input-suffix {
+            font-size: 20px;
+          }
+        }
+      }
+      .extraCard_searchDisabled {
+        opacity: 0.5;
+      }
+      :global {
+        .ant-input-affix-wrapper-focused {
+          box-shadow: none;
+        }
+      }
+      .extraCard_filter {
+        .extraCard_filterBtn {
+          width: 111px;
+          height: 42px;
+          text-align: center;
+          border-radius: 5px;
+          border: unset;
+          box-shadow: unset;
+          &:focus {
+            background-color: rgba(86, 138, 250, 0.07);
+          }
+        }
+        .extraCard_filterBtnDisabled {
+          opacity: 0.5;
+        }
+        span {
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #2c6df9;
+          margin-left: 11px;
+        }
+      }
+    }
+  }
+
+  .recentEmptyBlocks {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.extraCard_dropdownMenu {
+  :global {
+    .ant-dropdown-menu {
+      width: 245px;
+    }
+    .ant-dropdown-menu-item > span,
+    .ant-dropdown-menu-submenu-title > span {
+      font-size: 14px;
+      color: #707177;
+    }
+    .ant-dropdown-menu-item:hover,
+    .ant-dropdown-menu-submenu-title:hover {
+      background-color: rgba(86, 138, 250, 0.07);
+      span {
+        color: #2c6df9;
+      }
+    }
+  }
+}

@@ -1,30 +1,56 @@
-import React, { PureComponent } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar } from 'antd';
+import React, { Component } from 'react';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
+import CustomModal from '@/components/CustomModal';
 import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
+const { TextArea } = Input;
 
 @connect(
   ({
     loading,
-    employeeProfile: { tempData: { generalData = {}, compensationData = {} } = {} } = {},
+    employeeProfile: {
+      tempData: { generalData = {}, compensationData = {} } = {},
+      originData: { generalData: originGeneralData = {} } = {},
+    } = {},
   }) => ({
     generalData,
     compensationData,
+    originGeneralData,
     loading: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )
-class ViewInformation extends PureComponent {
+class ViewInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      openEditBio: false,
+      bio: '',
     };
   }
+
+  shouldComponentUpdate(nextProps) {
+    const { generalData: { bioInfo = '' } = {} } = this.props;
+    const { generalData: { bioInfo: nextBioInfo = '' } = {} } = nextProps;
+    if (bioInfo !== nextBioInfo) {
+      this.setState({
+        bio: nextBioInfo,
+      });
+    }
+    return true;
+  }
+
+  handleEditBio = () => {
+    const { openEditBio } = this.state;
+    this.setState({
+      openEditBio: !openEditBio,
+    });
+  };
 
   openModalUpload = () => {
     this.setState({
@@ -54,17 +80,89 @@ class ViewInformation extends PureComponent {
     return listFormat;
   };
 
+  getResponse = (resp) => {
+    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      this.handleCancel();
+      dispatch({
+        type: 'employeeProfile/updateGeneralInfo',
+        payload: {
+          id,
+          avatar: first.url,
+        },
+      });
+    }
+  };
+
+  handleSaveBio = () => {
+    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const { bio } = this.state;
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload: {
+        id,
+        bioInfo: bio,
+      },
+    });
+    this.handleEditBio();
+  };
+
+  onChangeInput = ({ target: { value } }) => {
+    this.setState({
+      bio: value,
+    });
+  };
+
+  _renderFormEditBio = () => {
+    const { loading } = this.props;
+    const { bio } = this.state;
+    const check = 170 - bio.length;
+    return (
+      <div className={s.formEditBio}>
+        <div className={s.formEditBio__title}>Edit Bio</div>
+        <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
+        <TextArea rows={3} defaultValue={bio} onChange={this.onChangeInput} />
+        <div className={s.formEditBio__description2}>
+          <span style={{ opacity: 0.5 }}> Remaining characters: </span>
+          {check >= 0 ? (
+            <span style={{ opacity: 0.5 }}>{check}</span>
+          ) : (
+            <span style={{ color: '#ff6c6c' }}>{check} (Limt exceeded)</span>
+          )}
+        </div>
+        <div className={s.viewBtnSave}>
+          <Button
+            onClick={this.handleSaveBio}
+            className={s.btnSave}
+            type="primary"
+            disabled={check < 0}
+            loading={loading}
+          >
+            Save
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
   render() {
-    const { generalData, compensationData, loading } = this.props;
+    const {
+      generalData,
+      compensationData,
+      loading,
+      originGeneralData: { bioInfo = '' } = {},
+    } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
-    const { visible } = this.state;
+    const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
     const menu = (
       <Menu>
-        <Item key="1" onClick={() => alert(1)}>
+        <Item key="1" onClick={this.handleEditBio}>
           <div className={s.itemDropdownMenu}>Edit bio</div>
         </Item>
         <Item key="2" onClick={() => alert(2)}>
@@ -103,11 +201,7 @@ class ViewInformation extends PureComponent {
           <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
         </div>
         <div className={s.infoEmployee__viewBottom}>
-          <p className={s.infoEmployee__viewBottom__description}>
-            With his friendly smile and a simple `hi`, Adi is someone you can`t easily fail to
-            notice. His energy is contagious and can make the conversation take a super interesting
-            turn!
-          </p>
+          <p className={s.infoEmployee__viewBottom__description}>{bioInfo}</p>
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
@@ -143,7 +237,18 @@ class ViewInformation extends PureComponent {
             </Button>
           </Dropdown>
         </div>
-        <ModalUpload visible={visible} handleCancel={this.handleCancel} />
+        <ModalUpload
+          titleModal="Profile Picture Update"
+          visible={visible}
+          handleCancel={this.handleCancel}
+          widthImage="40%"
+          getResponse={this.getResponse}
+        />
+        <CustomModal
+          open={openEditBio}
+          closeModal={this.handleEditBio}
+          content={this._renderFormEditBio()}
+        />
       </div>
     );
   }

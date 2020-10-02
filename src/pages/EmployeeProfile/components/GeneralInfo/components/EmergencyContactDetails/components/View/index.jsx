@@ -22,7 +22,6 @@ class View extends PureComponent {
             </Col>
           </Fragment>
         ))}
-        {/* Custom Col Here */}
       </Row>
     );
   }

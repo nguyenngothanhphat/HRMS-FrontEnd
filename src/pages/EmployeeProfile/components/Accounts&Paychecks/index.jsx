@@ -37,10 +37,10 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataBankDetails.map((item) => {
+              {dataBankDetails.map((item, index) => {
                 return (
-                  <div>
-                    <Col key={item.id} span={24} className={styles.flexbox}>
+                  <div key={`bank ${index + 1}`}>
+                    <Col key={`bank ${index + 1}`} span={24} className={styles.flexbox}>
                       <Col span={8}>
                         <p className={styles.Name}>{item.name}</p>
                       </Col>
@@ -65,9 +65,9 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataTaxDetails.map((item) => {
+              {dataTaxDetails.map((item, index) => {
                 return (
-                  <Col key={item.id} span={24} className={styles.flexbox}>
+                  <Col key={`Tax ${index + 1}`} span={24} className={styles.flexbox}>
                     <Col span={8}>
                       <p className={styles.Name}>{item.name}</p>
                     </Col>

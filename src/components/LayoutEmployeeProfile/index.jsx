@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Modal } from 'antd';
+import { Row, Col, Modal, Affix } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
@@ -32,6 +32,11 @@ class CommonLayout extends PureComponent {
       selectedItemId: item.id,
       displayComponent: item.component,
     });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   showConfirm = (item) => {
@@ -47,13 +52,13 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  saveChanges = (item) => {
-    console.log('item', item);
-  };
+  // saveChanges = (item) => {
+  //   console.log('item', item);
+  // };
 
-  onCancel = (item) => {
-    console.log('item', item);
-  };
+  // onCancel = (item) => {
+  //   console.log('item', item);
+  // };
 
   render() {
     const { listMenu = [], isModified } = this.props;
@@ -61,22 +66,26 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <div className={s.viewLeft}>
-          <div className={s.viewLeft__menu}>
-            {listMenu.map((item) => (
-              <ItemMenu
-                key={item.id}
-                item={item}
-                handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
-                selectedItemId={selectedItemId}
-              />
-            ))}
+        <Affix offsetTop={90}>
+          <div className={s.viewLeft}>
+            <div className={s.viewLeft__menu}>
+              {listMenu.map((item) => (
+                <ItemMenu
+                  key={item.id}
+                  item={item}
+                  handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  selectedItemId={selectedItemId}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
+            {/* <Affix offsetTop={115}> */}
             <ViewInformation />
+            {/* </Affix> */}
           </Col>
         </Row>
       </div>
