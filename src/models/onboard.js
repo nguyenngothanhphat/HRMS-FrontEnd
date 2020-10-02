@@ -362,7 +362,15 @@ const onboard = {
       finalOfferDrafts: finalOfferDraftsData,
       discardedFinalOffers: discardedFinalOffersData,
     },
-    settings: {},
+    settings: {
+      backgroundChecks: {
+        typeOfBackgroundCheck: '',
+        checksPerform: '',
+        resultViewer: '',
+        vehicleReportsRequested: '',
+        vehicleNotObtained: '',
+      },
+    },
     customFields: {},
     menu: {
       onboardingOverviewTab: {
@@ -383,12 +391,12 @@ const onboard = {
     // },
   },
   reducers: {
-    // save(state, action) {
-    //   return {
-    //     ...state,
-    //     ...action.payload,
-    //   };
-    // },
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
   },
 };
 export default onboard;
