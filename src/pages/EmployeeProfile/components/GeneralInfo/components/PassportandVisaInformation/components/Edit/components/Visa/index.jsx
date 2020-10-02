@@ -3,7 +3,7 @@ import { Col, DatePicker, Form, Input, Select } from 'antd';
 import { DownOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import UploadImage from '@/components/UploadImage';
-// import moment from 'moment';
+import moment from 'moment';
 // import debounce from 'lodash/debounce';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import styles from '../../index.less';
@@ -11,7 +11,7 @@ import styles from '../../index.less';
 @connect(
   ({
     loading,
-    upload: { visa0URL = '', visa1URL = '' },
+    upload: { urlImage = '', visa0URL = '', visa1URL = '' },
     employeeProfile: {
       countryList,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
@@ -27,6 +27,7 @@ import styles from '../../index.less';
     visaData,
     visa0URL,
     visa1URL,
+    urlImage,
   }),
 )
 class VisaGeneral extends Component {
@@ -68,18 +69,20 @@ class VisaGeneral extends Component {
   };
 
   handleCanCelIcon = (index) => {
-    const { dispatch } = this.props;
-    if (index === 0) {
-      dispatch({
-        type: 'upload/cancelUpload',
-        payload: { visa0URL: '' },
-      });
-    } else {
-      dispatch({
-        type: 'upload/cancelUpload',
-        payload: { visa1URL: '' },
-      });
-    }
+    const { dispatch, visaDataOrigin, visaData } = this.props;
+    const item = visaData[index];
+    const newItem = { ...item, urlFile: '' };
+    const newList = [...visaData];
+    newList.splice(index, 1, newItem);
+    const isModified = JSON.stringify(newList) !== JSON.stringify(visaDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: newList },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
   };
 
   handleFieldChange = (index, nameField, fieldValue) => {
@@ -99,14 +102,15 @@ class VisaGeneral extends Component {
     });
   };
 
-  handleNameDataUpload = (index) => {
-    const { visa0URL, visa1URL } = this.props;
-    if (index === 0) {
-      const split0URL = visa0URL.split('/');
-      const nameData0URL = split0URL[split0URL.length - 1];
-      return nameData0URL;
-    }
-    const split1URL = visa1URL.split('/');
+  handleGetUpLoad = (index, resp) => {
+    const { data = [] } = resp;
+    const [first] = data;
+    const value = { url: first.url, id: first.id };
+    this.handleFieldChange(index, 'urlFile', value);
+  };
+
+  handleNameDataUpload = (url) => {
+    const split1URL = url.split('/');
     const nameData1URL = split1URL[split1URL.length - 1];
     return nameData1URL;
   };
@@ -128,10 +132,11 @@ class VisaGeneral extends Component {
         {visaData.length === 0
           ? listItem.map((item, index) => {
               return (
-                <Fragment key={`${index + 1}`}>
+                <Fragment key={`edit${index + 1}`}>
                   <div className={styles.line} />
                   <div className={styles.styleUpLoad}>
                     <Form.Item
+                      key={`visaNumber${index + 1}`}
                       label="Visa Number"
                       name={`visaNumber${index}`}
                       rules={[
@@ -154,7 +159,11 @@ class VisaGeneral extends Component {
                     </Form.Item>
                     {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
                       <div className={styles.textUpload}>
-                        <UploadImage content="Choose file" name={`visa${index}`} />
+                        <UploadImage
+                          content="Choose file"
+                          name={`visa${index}`}
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                        />
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
@@ -277,12 +286,12 @@ class VisaGeneral extends Component {
             })
           : visaData.map((item, index) => {
               return (
-                <Fragment key={`${index + 1}`}>
+                <Fragment key={`visa${index + 1}`}>
                   <div className={styles.line} />
                   <div className={styles.styleUpLoad}>
                     <Form.Item
                       label="Visa Number"
-                      name={`visaNumber${index}`}
+                      name={`visaNumber${index + 1}`}
                       rules={[
                         {
                           pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
@@ -293,7 +302,7 @@ class VisaGeneral extends Component {
                       ]}
                     >
                       <Input
-                        defaultValue={item.name}
+                        defaultValue={item.visaNumber}
                         className={styles.inputForm}
                         onChange={(event) => {
                           const { value: fieldValue } = event.target;
@@ -301,14 +310,18 @@ class VisaGeneral extends Component {
                         }}
                       />
                     </Form.Item>
-                    {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
+                    {!item.urlFile ? (
                       <div className={styles.textUpload}>
-                        <UploadImage content="Choose file" name={`visa${index}`} />
+                        <UploadImage
+                          content="Choose file"
+                          name={`visa${index}`}
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                        />
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
                         <a
-                          href={index === 0 ? visa0URL : visa1URL}
+                          href={item.urlFile.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={styles.viewUpLoadDataURL}
@@ -325,22 +338,23 @@ class VisaGeneral extends Component {
                       </div>
                     )}
                   </div>
-                  {(visa0URL !== '' && index === 0) || (visa1URL !== '' && index === 1) ? (
+                  {item.urlFile ? (
                     <Form.Item label="Visa:" className={styles.labelUpload}>
                       <a
-                        href={index === 0 ? visa0URL : visa1URL}
+                        href={item.urlFile.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.urlUpload}
                       >
-                        {this.handleNameDataUpload(index)}
+                        {this.handleNameDataUpload(item.urlFile.url)}
                       </a>
                     </Form.Item>
                   ) : (
                     ''
                   )}
-                  <Form.Item label="Visa Type" name={`visaType${index}`}>
+                  <Form.Item label="Visa Type" name={`visaType${index + 1}`}>
                     <Select
+                      defaultValue={item.visaType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
@@ -358,8 +372,9 @@ class VisaGeneral extends Component {
                       <Option value="nothing">nothing...</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Country" name={`visaIssuedCountry${index}`}>
+                  <Form.Item label="Country" name={`visaIssuedCountry${index + 1}`}>
                     <Select
+                      defaultValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) =>
                         this.handleDropdown('visaIssuedCountry', open)
@@ -384,8 +399,9 @@ class VisaGeneral extends Component {
                       })}
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Entry Type" name={`visaEntryType${index}`}>
+                  <Form.Item label="Entry Type" name={`visaEntryType${index + 1}`}>
                     <Select
+                      defaultValue={item.visaEntryType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaEntryType', open)}
                       onChange={(value) => {
@@ -403,8 +419,9 @@ class VisaGeneral extends Component {
                       <Option value="nothing">nothing....</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Issued On" name={`visaIssuedOn${index}`}>
+                  <Form.Item label="Issued On" name={`visaIssuedOn${index + 1}`}>
                     <DatePicker
+                      defaultValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaIssuedOn', dates);
@@ -412,8 +429,9 @@ class VisaGeneral extends Component {
                       className={styles.dateForm}
                     />
                   </Form.Item>
-                  <Form.Item label="Valid Till" name={`visaValidTill${index}`}>
+                  <Form.Item label="Valid Till" name={`visaValidTill${index + 1}`}>
                     <DatePicker
+                      defaultValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaValidTill', dates);
@@ -425,16 +443,12 @@ class VisaGeneral extends Component {
               );
             })}
 
-        {visaData.length >= 2 ? (
-          ''
-        ) : (
-          <Col span={9} offset={1} className={styles.addMoreButton}>
-            <div onClick={this.handleAddBtn}>
-              <PlusOutlined className={styles.addMoreButtonIcon} />
-              Add more
-            </div>
-          </Col>
-        )}
+        <Col span={9} offset={1} className={styles.addMoreButton}>
+          <div onClick={this.handleAddBtn}>
+            <PlusOutlined className={styles.addMoreButtonIcon} />
+            Add more
+          </div>
+        </Col>
       </>
     );
   }

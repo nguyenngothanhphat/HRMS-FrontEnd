@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import moment from 'moment';
-import { useParams, connect } from 'umi';
+import { connect } from 'umi';
 import styles from './styles.less';
 
 function CurrentInfo(props) {
-  const { dispatch, employeeProfile } = props;
-  const params = useParams();
+  const { employeeProfile } = props;
 
   const {
     title,
@@ -21,22 +20,15 @@ function CurrentInfo(props) {
   } = employeeProfile.originData.compensationData;
 
   const data = {
-    title: title.name,
+    title: title?.name || 'Missing title',
     joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
-    location: location.name,
-    employType: employeeType.name,
+    location: location?.name || 'Missing location',
+    employType: employeeType?.name || 'Missing employment type',
     compenType: compensationType || 'This person is missing payment method',
-    annualSalary: currentAnnualCTC || 0,
-    manager: manager.generalInfo.firstName,
+    annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    manager: manager?.generalInfo.firstName || 'Missing reporting manager',
     timeOff: timeOffPolicy || 'This person is not allowed to take time off',
   };
-  useEffect(() => {
-    dispatch({
-      type: 'employeeProfile/fetchEmploymentInfo',
-      payload: params.reId,
-    });
-  }, [data]);
-
   return (
     <div style={{ margin: '24px' }}>
       {[

@@ -36,12 +36,14 @@ class PassportVisaInformation extends PureComponent {
   handleCancel = () => {
     const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
     const {
+      urlFile = '',
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportDataOrigin;
     const reverseFields = {
+      urlFile,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,

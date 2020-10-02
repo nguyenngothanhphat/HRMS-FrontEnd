@@ -14,8 +14,8 @@ import styles from './index.less';
     upload: { passPortURL = '', visa0IDURL = '', visa1IDURL = '', passPortIDURL = '' },
     employeeProfile: {
       countryList,
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = {} } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = {} } = {},
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updatePassPortVisa'],
@@ -61,9 +61,17 @@ class Edit extends PureComponent {
     });
   };
 
+  handleGetUpLoad = (resp) => {
+    const { data = [] } = resp;
+    const [first] = data;
+    const value = { url: first.url, id: first.id };
+    this.handleChange('urlFile', value);
+  };
+
   processDataChangesPassPort = () => {
-    const { passportData: passportDataTemp, passPortIDURL } = this.props;
+    const { passportData: passportDataTemp } = this.props;
     const {
+      urlFile = '',
       document = '',
       passportNumber = '',
       passportIssuedCountry = '',
@@ -73,7 +81,7 @@ class Edit extends PureComponent {
     } = passportDataTemp;
     const payloadChanges = {
       id,
-      document: document || passPortIDURL,
+      document: urlFile ? urlFile.id : document,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,
@@ -81,80 +89,46 @@ class Edit extends PureComponent {
     };
 
     return payloadChanges;
-  };
-
-  handleDocumentUpdate = (index, document) => {
-    const { visa1IDURL, visa0IDURL } = this.props;
-    if (document) {
-      return document;
-    }
-    if (index === 0) {
-      return visa0IDURL;
-    }
-    return visa1IDURL;
   };
 
   processDataChangesVisa = () => {
     const { visaData, generalData } = this.props;
     const { employee = '' } = generalData;
-    if (visaData.length === 2) {
-      const formatData = visaData.map((item, index) => {
-        const {
-          _id: id,
-          document,
-          visaNumber,
-          visaIssuedCountry,
-          visaIssuedOn,
-          visaType,
-          visaValidTill,
-          visaEntryType,
-        } = item;
-        const formVisa = {
-          id: id || '',
-          document: this.handleDocumentUpdate(index, document),
-          employee,
-          visaNumber,
-          visaIssuedCountry,
-          visaIssuedOn,
-          visaType,
-          visaValidTill,
-          visaEntryType,
-        };
+    const formatData = visaData.map((item) => {
+      const {
+        _id: id,
+        document,
+        urlFile,
+        visaNumber,
+        visaIssuedCountry,
+        visaIssuedOn,
+        visaType,
+        visaValidTill,
+        visaEntryType,
+      } = item;
+      const formVisa = {
+        id,
+        document: urlFile ? urlFile.id : document,
+        employee,
+        visaNumber,
+        visaIssuedCountry,
+        visaIssuedOn,
+        visaType,
+        visaValidTill,
+        visaEntryType,
+      };
 
-        return formVisa;
-      });
+      return formVisa;
+    });
 
-      return formatData;
-    }
-    const data1 = visaData[0];
-    const {
-      document = '',
-      visaNumber = '',
-      visaIssuedCountry = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
-      visaEntryType = '',
-      visaType = '',
-      _id: id = '',
-    } = data1;
-    const payloadChanges = {
-      id,
-      employee,
-      document,
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaValidTill,
-      visaEntryType,
-      visaType,
-    };
-    return payloadChanges;
+    return formatData;
   };
 
   processDataAddPassPort = () => {
-    const { passportData: passportDataTemp, generalData, passPortIDURL = '' } = this.props;
+    const { passportData: passportDataTemp, generalData } = this.props;
     const { employee = '' } = generalData;
     const {
+      urlFile = '',
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
@@ -165,74 +139,46 @@ class Edit extends PureComponent {
       passportIssuedCountry,
       passportIssuedOn,
       passportValidTill,
-      document: passPortIDURL,
+      document: urlFile ? urlFile.id : '',
       employee,
     };
     return payloadChanges;
-  };
-
-  handleDocumentAdd = (index) => {
-    const { visa0IDURL, visa1IDURL } = this.props;
-    if (index === 0) {
-      return visa0IDURL;
-    }
-    return visa1IDURL;
   };
 
   processDataAddVisa = () => {
-    const { visaData, generalData, visa0IDURL } = this.props;
+    const { visaData, generalData } = this.props;
     const { employee = '' } = generalData;
-    if (visaData.length === 2) {
-      const formatData = visaData.map((item, index) => {
-        const {
-          visaNumber,
-          visaIssuedCountry,
-          visaIssuedOn,
-          visaType,
-          visaValidTill,
-          visaEntryType,
-        } = item;
-        const formVisa = {
-          document: this.handleDocumentAdd(index),
-          employee,
-          visaNumber,
-          visaIssuedCountry,
-          visaIssuedOn,
-          visaType,
-          visaValidTill,
-          visaEntryType,
-        };
+    const formatData = visaData.map((item) => {
+      const {
+        visaNumber,
+        urlFile,
+        visaIssuedCountry,
+        visaIssuedOn,
+        visaType,
+        visaValidTill,
+        visaEntryType,
+      } = item;
+      const formVisa = {
+        document: urlFile ? urlFile.id : '',
+        employee,
+        visaNumber,
+        visaIssuedCountry,
+        visaIssuedOn,
+        visaType,
+        visaValidTill,
+        visaEntryType,
+      };
 
-        return formVisa;
-      });
-      return formatData;
-    }
-    const itemData1 = visaData[0];
-    const {
-      visaNumber = '',
-      visaIssuedCountry = '',
-      visaIssuedOn = '',
-      visaValidTill = '',
-      visaEntryType = '',
-      visaType = '',
-    } = itemData1;
-    const payloadChanges = {
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaValidTill,
-      visaEntryType,
-      visaType,
-      document: visa0IDURL,
-      employee,
-    };
-    return payloadChanges;
+      return formVisa;
+    });
+    return formatData;
   };
 
   processDataKeptPassPort = () => {
     const { passportData } = this.props;
     const newObj = { ...passportData };
     const listKey = [
+      'urlFile',
       'passportNumber',
       'passportIssuedCountry',
       'passportIssuedOn',
@@ -248,6 +194,7 @@ class Edit extends PureComponent {
       const newobj = { ...itemdata };
       const listKey = [
         'visaNumber',
+        'urlFile',
         'visaIssuedCountry',
         'visaIssuedOn',
         'visaValidTill',
@@ -270,7 +217,6 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKeptPassPort() || {};
     const payloadAddVisa = this.processDataAddVisa() || {};
     const payloadUpdateVisa = this.processDataChangesVisa() || {};
-    console.log(payloadUpdateVisa);
     const dataTempKeptVisa = this.processDataKeptVisa() || {};
     if (idPassPort && idVisa) {
       dispatch({
@@ -302,10 +248,16 @@ class Edit extends PureComponent {
   };
 
   handleCanCelIcon = () => {
-    const { dispatch } = this.props;
+    const { dispatch, passportData, passportDataOrigin } = this.props;
+    const item = { ...passportData, urlFile: '' };
+    const isModified = JSON.stringify(item) !== JSON.stringify(passportDataOrigin);
     dispatch({
-      type: 'upload/cancelUpload',
-      payload: { passPortURL: '' },
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: item },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
@@ -316,10 +268,10 @@ class Edit extends PureComponent {
       handleCancel = () => {},
       loading,
       countryList,
-      visaData = [],
+      visaData = [{}],
     } = this.props;
-    const dataVisa1 = visaData[0] ? visaData[0] : [];
-    const dataVisa2 = visaData[1] ? visaData[1] : [];
+    // const dataVisa1 = visaData[0] ? visaData[0] : [];
+    // const dataVisa2 = visaData[1] ? visaData[1] : [];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -327,15 +279,16 @@ class Edit extends PureComponent {
         name,
       };
     });
-    const { passPortURL } = this.props;
-    const splitURL = passPortURL.split('/');
-    const nameDataURL = splitURL[splitURL.length - 1];
+
     const {
+      urlFile = '',
       passportNumber = '',
       passportIssuedCountry,
       passportIssuedOn = '',
       passportValidTill = '',
     } = passportData;
+    const splitURL = urlFile ? urlFile.url.split('/') : '';
+    const nameDataURL = splitURL[splitURL.length - 1];
 
     const { dropdown } = this.state;
     const formItemLayout = {
@@ -348,12 +301,9 @@ class Edit extends PureComponent {
         sm: { span: 9 },
       },
     };
+
     const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
     const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-    const formatDateVisaIssueOn1 = dataVisa1.visaIssuedOn && moment(dataVisa1.visaIssuedOn);
-    const formatDateVisaValidTill1 = dataVisa1.visaValidTill && moment(dataVisa1.visaValidTill);
-    const formatDateVisaIssueOn2 = dataVisa2.visaIssuedOn && moment(dataVisa2.visaIssuedOn);
-    const formatDateVisaValidTill2 = dataVisa2.visaValidTill && moment(dataVisa2.visaValidTill);
     const dateFormat = 'Do MMM YYYY';
 
     return (
@@ -366,18 +316,7 @@ class Edit extends PureComponent {
             passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
-            visaNumber0: dataVisa1.visaNumber,
-            visaIssuedCountry0: dataVisa1.visaIssuedCountry ? dataVisa1.visaIssuedCountry._id : '',
-            visaIssuedOn0: formatDateVisaIssueOn1,
-            visaValidTill0: formatDateVisaValidTill1,
-            visaEntryType0: dataVisa1.visaEntryType,
-            visaType0: dataVisa1.visaType,
-            visaNumber1: dataVisa2.visaNumber,
-            visaIssuedCountry1: dataVisa2.visaIssuedCountry ? dataVisa2.visaIssuedCountry._id : '',
-            visaIssuedOn1: formatDateVisaIssueOn2,
-            visaValidTill1: formatDateVisaValidTill2,
-            visaEntryType1: dataVisa2.visaEntryType,
-            visaType1: dataVisa2.visaType,
+            visaData,
           }}
           onFinish={this.handleSave}
         >
@@ -400,14 +339,18 @@ class Edit extends PureComponent {
                 }}
               />
             </Form.Item>
-            {passPortURL === '' ? (
+            {!urlFile ? (
               <div className={styles.textUpload}>
-                <UploadImage content="Choose file" name="passport" />
+                <UploadImage
+                  content="Choose file"
+                  name="passport"
+                  getResponse={(resp) => this.handleGetUpLoad(resp)}
+                />
               </div>
             ) : (
               <div className={styles.viewUpLoadData}>
                 <a
-                  href={passPortURL}
+                  href={urlFile.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.viewUpLoadDataURL}
@@ -424,10 +367,10 @@ class Edit extends PureComponent {
               </div>
             )}
           </div>
-          {passPortURL !== '' ? (
+          {urlFile !== '' ? (
             <Form.Item label="Uploaded file:" className={styles.labelUpload}>
               <a
-                href={passPortURL}
+                href={urlFile.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.urlUpload}

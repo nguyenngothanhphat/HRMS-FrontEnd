@@ -56,6 +56,8 @@ export default {
   'component.previewOffer.title': 'employee agreement',
   'component.previewOffer.hrSignature': 'Signature of the HR',
   'component.previewOffer.undersigned': 'Undersigned - Ms Riddhima Chaudhary',
+  'component.previewOffer.managerSignature': 'Signature of the HR Manager',
+  'component.previewOffer.managerUndersigned': 'Undersigned - Ms. Bhumika Vaidya',
   'component.previewOffer.uploadNew': 'Upload new',
   'component.previewOffer.submit': 'Submit',
   'component.previewOffer.submitted': 'Signature submitted',

@@ -1,7 +1,7 @@
 import { Tooltip, Tag } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { CalendarOutlined, BellOutlined } from '@ant-design/icons';
 import React from 'react';
-import { connect, SelectLang } from 'umi';
+import { connect } from 'umi';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import styles from './index.less';
@@ -22,7 +22,7 @@ const GlobalHeaderRight = (props) => {
 
   return (
     <div className={className}>
-      {/* <HeaderSearch
+      <HeaderSearch
         className={`${styles.action} ${styles.search}`}
         placeholder="站内搜索"
         defaultValue="umi ui"
@@ -44,10 +44,16 @@ const GlobalHeaderRight = (props) => {
             value: 'Pro Layout',
           },
         ]}
-        onSearch={value => {
-          //console.log('input', value);
+        onSearch={(value) => {
+          console.log('input', value);
         }}
-       /> */}
+      />
+      <div className={`${styles.action} ${styles.calendar}`}>
+        <CalendarOutlined />
+      </div>
+      <div className={`${styles.action} ${styles.notify}`}>
+        <BellOutlined />
+      </div>
       {/* <Tooltip title="使用文档">
         <a
           style={{
@@ -62,12 +68,6 @@ const GlobalHeaderRight = (props) => {
         </a>
       </Tooltip> */}
       <Avatar />
-      {/* {REACT_APP_ENV && (
-        <span>
-          <Tag color={ENVTagColor[REACT_APP_ENV]}>{REACT_APP_ENV}</Tag>
-        </span>
-      )} */}
-      {/* <SelectLang className={styles.action} /> */}
     </div>
   );
 };

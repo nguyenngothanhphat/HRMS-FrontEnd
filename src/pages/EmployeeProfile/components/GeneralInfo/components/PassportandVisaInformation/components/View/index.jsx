@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import Moment from 'moment';
 import ModalReviewImage from '@/components/ModalReviewImage';
+import iconPDF from '@/assets/pdf-2.svg';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
 
@@ -41,42 +42,33 @@ class View extends PureComponent {
     });
   };
 
-  handleNameDataUpload = (index) => {
-    const { visa0URL = '', visa1URL = '' } = this.props;
-    if (index === 0) {
-      const split0URL = visa0URL.split('/');
-      const nameData0URL = split0URL[split0URL.length - 1];
-      return nameData0URL;
-    }
-    const split1URL = visa1URL.split('/');
+  handleNameDataUpload = (url) => {
+    const split1URL = url.split('/');
     const nameData1URL = split1URL[split1URL.length - 1];
     return nameData1URL;
   };
 
   handleRenderDataVisa = () => {
-    const { visaData, visa1URL = '', visa0URL = '' } = this.props;
+    const { visaData } = this.props;
     return visaData.map((item, index) => (
       <Fragment key={`formVisa${index + 1}`}>
         <Col span={6} className={styles.textLabel}>
           Visa Number
         </Col>
-        <Col span={18} className={styles.textValue}>
+        <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
           {item.visaNumber}
-          {(index === 0 && visa0URL !== '') || (index === 1 && visa1URL !== '') ? (
+          {item.urlFile ? (
             <div className={styles.viewFileUpLoad}>
-              {index === 0 ? (
-                <p onClick={() => this.handleOpenModalReview(visa0URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              ) : (
-                <p onClick={() => this.handleOpenModalReview(visa1URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              )}
-              <ConformIcondata data={this.handleNameDataUpload(index)} />
+              <p
+                onClick={() => this.handleOpenModalReview(item.urlFile.url)}
+                className={styles.urlData}
+              >
+                {this.handleNameDataUpload(item.urlFile.url)}
+              </p>
+              <ConformIcondata data={this.handleNameDataUpload(item.urlFile.url)} />
             </div>
           ) : (
-            ''
+            <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
           )}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -115,28 +107,16 @@ class View extends PureComponent {
   };
 
   handleRenderDataDummyVisa = (dummyData2) => {
-    const { visa1URL = '', visa0URL = '' } = this.props;
     return dummyData2.map((item, index) => (
       <Fragment key={item.label}>
         <Col span={6} className={styles.textLabel}>
           {item.label}
         </Col>
-        <Col span={18} className={styles.textValue}>
+        <Col span={18} className={styles.EarlyIcon}>
           {item.value}
-          {(item.label === 'Visa Number' && index === 0 && visa0URL !== '') ||
-          (item.label === 'Visa Number' && index === 1 && visa1URL !== '') ? (
-            <div className={styles.viewFileUpLoad}>
-              {index === 0 ? (
-                <p onClick={() => this.handleOpenModalReview(visa0URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              ) : (
-                <p onClick={() => this.handleOpenModalReview(visa1URL)} className={styles.urlData}>
-                  {this.handleNameDataUpload(index)}
-                </p>
-              )}
-              <ConformIcondata data={this.handleNameDataUpload(index)} />
-            </div>
+          {(item.label === 'Visa Number' && index === 0) ||
+          (item.label === 'Visa Number' && index === 1) ? (
+            <img src={iconPDF} alt="iconFilePDF" />
           ) : (
             ''
           )}
@@ -146,16 +126,17 @@ class View extends PureComponent {
   };
 
   render() {
-    const { passportData = {}, visaData = [], passPortURL = '' } = this.props;
+    const { passportData = {}, visaData = [] } = this.props;
     const { visible, linkImage } = this.state;
     const {
+      urlFile = '',
       passportIssuedCountry = '',
       passportNumber = '',
       passportValidTill = '',
       passportIssuedOn = '',
     } = passportData;
     const viewCountry = passportIssuedCountry.name ? passportIssuedCountry.name : '';
-    const splitUrlPassPort = passPortURL.split('/');
+    const splitUrlPassPort = urlFile ? urlFile.url.split('/') : '';
     const dummyData = [
       { label: 'Passport Number', value: passportNumber },
       { label: 'Issued Country', value: viewCountry },
@@ -198,10 +179,10 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
-              {item.label === 'Passport Number' && passPortURL ? (
+              {item.label === 'Passport Number' ? (
                 <div className={styles.viewFileUpLoad}>
                   <p
-                    onClick={() => this.handleOpenModalReview(passPortURL)}
+                    onClick={() => this.handleOpenModalReview(urlFile.url)}
                     className={styles.urlData}
                   >
                     {splitUrlPassPort[splitUrlPassPort.length - 1]}

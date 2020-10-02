@@ -12,7 +12,7 @@ import styles from './index.less';
 export default class EmployeeOnboarding extends PureComponent {
   render() {
     const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
-    console.log(defaultActiveKey);
+
     const { TabPane } = Tabs;
     return (
       <PageContainer>
