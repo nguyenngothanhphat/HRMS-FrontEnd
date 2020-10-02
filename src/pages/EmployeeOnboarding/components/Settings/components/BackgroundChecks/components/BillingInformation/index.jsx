@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { formatMessage } from 'umi';
 
 import styles from './index.less';
 
@@ -13,7 +14,7 @@ class BillingInformation extends Component {
     return (
       <div className={styles.BillingInformation}>
         <div className={styles.BillingInformation_title}>
-          Billing information for background check
+          {formatMessage({ id: 'component.billingInformation.title' })}
         </div>
         <hr />
         <div className={styles.BillingInformation_content}>

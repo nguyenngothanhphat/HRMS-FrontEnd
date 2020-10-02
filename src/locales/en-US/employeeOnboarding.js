@@ -57,4 +57,6 @@ export default {
   'component.backgroundChecks.generalSettings': `General Settings`,
   'component.authorization.title': `Authorization`,
   'component.authorization.link': `Change signatory`,
+  'component.backgroundCheck.title': `Background Check`,
+  'component.billingInformation.title': `  Billing information for background check`,
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { formatMessage, connect } from 'umi';
 import { Form, Radio } from 'antd';
-import { connect } from 'umi';
 
 import styles from './index.less';
 
@@ -42,7 +42,9 @@ class BackgroundCheck extends Component {
     } = this.state;
     return (
       <div className={styles.BackgroundCheck}>
-        <div className={styles.BackgroundCheck_title}>Background Check</div>
+        <div className={styles.BackgroundCheck_title}>
+          {formatMessage({ id: 'component.backgroundCheck.title' })}
+        </div>
         <hr />
         <div className={styles.BackgroundCheck_form}>
           {' '}
