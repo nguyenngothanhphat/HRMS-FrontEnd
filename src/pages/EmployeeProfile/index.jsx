@@ -58,6 +58,7 @@ class EmployeeProfile extends Component {
     dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
     dispatch({ type: 'employeeProfile/fetchDepartments' });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
+    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
   }
 
   render() {

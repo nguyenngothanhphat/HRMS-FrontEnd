@@ -1,7 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
-import moment from 'moment';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -20,21 +19,23 @@ const steps = [
 @connect(({ employeeProfile }) => ({
   employeeProfile,
 }))
-class EmploymentTab extends PureComponent {
+class EmploymentTab extends Component {
   constructor(props) {
     super(props);
     const { employeeProfile } = this.props;
 
-    const { title } = employeeProfile.originData.employmentData;
-    const { firstName } = employeeProfile.originData.generalData;
+    const { title, location } = employeeProfile.originData.employmentData;
+    const { firstName, legalName } = employeeProfile.originData.generalData;
     const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
+      submitted: false,
       current: 0,
       currentData: {
-        name: firstName,
-        title: title.name,
+        name: legalName || firstName || null,
+        title: title?.name || null,
         annualSalary: currentAnnualCTC || 0,
+        location: location?.name || null,
       },
     };
   }
@@ -43,34 +44,38 @@ class EmploymentTab extends PureComponent {
     const { isChanging } = this.state;
     this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
+    this.setState({ submitted: false });
   };
 
   handleSubmit = async (data) => {
-    const { dispatch } = this.props;
-    let takeEffect = '';
-    if (data.stepOne === 'Now') {
-      takeEffect = 'UPDATED';
-    } else if (Date.parse(data.stepOne) < Date.now()) {
-      takeEffect = 'UPDATED';
-    } else takeEffect = 'WILL_UPDATE';
-    const payload = {
-      title: data.stepTwo.title || null,
-      manager: data.stepThree.reportTo || null,
-      currentAnnualCTC: Number(data.stepTwo.salary) || null,
-      location: data.stepTwo.wLocation || null,
-      employeeType: data.stepTwo.employment || null,
-      department: data.stepThree.department || null,
-      effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
-      changeDate: new Date(),
-      takeEffect,
-      employee: data.employee,
-      changedBy: data.changedBy,
-    };
-    const array = Object.keys(payload);
-    for (let i = 0; i < array.length; i += 1) {
-      if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
+    const { submitted } = this.state;
+    if (submitted) {
+      const { dispatch } = this.props;
+      let takeEffect = '';
+      if (data.stepOne === 'Now') {
+        takeEffect = 'UPDATED';
+      } else if (Date.parse(data.stepOne) < Date.now()) {
+        takeEffect = 'UPDATED';
+      } else takeEffect = 'WILL_UPDATE';
+      const payload = {
+        title: data.stepTwo.title || null,
+        manager: data.stepThree.reportTo || null,
+        currentAnnualCTC: Number(data.stepTwo.salary) || null,
+        location: data.stepTwo.wLocation || null,
+        employeeType: data.stepTwo.employment || null,
+        department: data.stepThree.department || null,
+        effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
+        changeDate: new Date(),
+        takeEffect,
+        employee: data.employee,
+        changedBy: data.changedBy,
+      };
+      const array = Object.keys(payload);
+      for (let i = 0; i < array.length; i += 1) {
+        if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
+      }
+      dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
     }
-    dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
   };
 
   nextTab = (msg) => {
@@ -78,6 +83,7 @@ class EmploymentTab extends PureComponent {
     if (msg === 'STOP') {
       this.setState({ current: 0 });
     } else if (current === 4) {
+      this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
     } else this.setState({ current: current + 1 });
@@ -118,7 +124,7 @@ class EmploymentTab extends PureComponent {
               current={current}
             />
           ) : (
-            <CurrentInfo dispatch={dispatch} data={currentData} />
+            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
           )}
           {isChanging ? (
             <div className={styles.footer}>
