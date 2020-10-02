@@ -1,8 +1,10 @@
+/* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { isEmpty, map } from 'lodash';
+import { PageLoading } from '@/layouts/layout/src';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -27,11 +29,17 @@ const note = {
   ),
 };
 
-@connect(({ info: { eligibilityDocs, basicInformation } = {}, info: { testEligibility } }) => ({
-  eligibilityDocs,
-  basicInformation,
-  testEligibility,
-}))
+@connect(
+  ({
+    info: { eligibilityDocs, basicInformation } = {},
+    info: { testEligibility, loadingDocumentList },
+  }) => ({
+    eligibilityDocs,
+    basicInformation,
+    testEligibility,
+    loadingDocumentList,
+  }),
+)
 class EligibilityDocs extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +53,8 @@ class EligibilityDocs extends Component {
       return {
         eligibilityDocs: props.eligibilityDocs,
         basicInformation: props.basicInformation,
-        testEligibility: props.testEligibility || {},
+        testEligibility: props.testEligibility,
+        loadingDocumentList: props.loadingDocumentList || {},
       };
     }
     return null;
@@ -53,15 +62,27 @@ class EligibilityDocs extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { eligibilityDocs, testEligibility } = this.state;
+    const { eligibilityDocs, testEligibility, basicInformation, loadingDocumentList } = this.state;
+    const { workEmail } = basicInformation;
     if (isEmpty(testEligibility)) {
       dispatch({
         type: 'info/fetchDocumentList',
         payload: {
           testEligibility,
+          loadingDocumentList,
         },
       });
     }
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        eligibilityDocs: {
+          ...eligibilityDocs,
+          email: workEmail,
+        },
+      },
+    });
   }
 
   closeModal = () => {
@@ -121,13 +142,13 @@ class EligibilityDocs extends Component {
     });
   };
 
-  handleChange = (checkedList, arr, item, checkedArr) => {
+  handleChange = (checkedList, arr, item) => {
     const { dispatch } = this.props;
-    const { testEligibility, eligibilityDocs } = this.state;
+    const { eligibilityDocs } = this.state;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
     if (item.type === 'A') {
-      const isCheckedArray = arr.map((data) => {
+      arr.map((data) => {
         if (checkedList.includes(data.alias)) {
           data.value = true;
         } else {
@@ -135,10 +156,6 @@ class EligibilityDocs extends Component {
         }
         return data;
       });
-      const finalArray = checkedArr.concat(isCheckedArray);
-      const testArr = [...testEligibility];
-      testArr[0].data = finalArray;
-      console.log(testArr);
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -154,7 +171,7 @@ class EligibilityDocs extends Component {
       });
       // console.log(testEligibility);
     } else if (item.type === 'B') {
-      const isCheckedArray = arr.map((data) => {
+      arr.map((data) => {
         if (checkedList.includes(data.alias)) {
           data.value = true;
         } else {
@@ -162,7 +179,7 @@ class EligibilityDocs extends Component {
         }
         return data;
       });
-      const finalArray = checkedArr.concat(isCheckedArray);
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -177,7 +194,7 @@ class EligibilityDocs extends Component {
         },
       });
     } else if (item.type === 'C') {
-      const isCheckedArray = arr.map((data) => {
+      arr.map((data) => {
         if (checkedList.includes(data.alias)) {
           data.value = true;
         } else {
@@ -185,7 +202,7 @@ class EligibilityDocs extends Component {
         }
         return data;
       });
-      const finalArray = checkedArr.concat(isCheckedArray);
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -200,7 +217,7 @@ class EligibilityDocs extends Component {
         },
       });
     } else if (item.type === 'D') {
-      const isCheckedArray = arr.map((data) => {
+      arr.map((data) => {
         if (checkedList.includes(data.alias)) {
           data.value = true;
         } else {
@@ -208,7 +225,7 @@ class EligibilityDocs extends Component {
         }
         return data;
       });
-      const finalArray = checkedArr.concat(isCheckedArray);
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -229,7 +246,7 @@ class EligibilityDocs extends Component {
   };
 
   handleCheckAll = (e, arr, item) => {
-    const { eligibilityDocs, selectAllArr = [], testEligibility } = this.state;
+    const { eligibilityDocs, testEligibility } = this.state;
     const { dispatch } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
@@ -244,8 +261,6 @@ class EligibilityDocs extends Component {
       });
     }
 
-    console.log('arr ', arr);
-    console.log(item);
     if (item.type === 'A') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
@@ -261,19 +276,6 @@ class EligibilityDocs extends Component {
         },
         testEligibility: [...testEligibility],
       });
-      // if(e.target.checked){
-      //   dispatch({
-      //     type:'info/saveEligibilityRequirement',
-      //     payload:{
-      //       testEligibility:[
-
-      //       ]
-      //     }
-      //   })
-      // }
-      // console.log(item);
-      // console.log(arr);
-      // console.log(e.target.checked);
     } else if (item.type === 'B') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
@@ -327,63 +329,55 @@ class EligibilityDocs extends Component {
       eligibilityDocs,
       eligibilityDocs: { email, isSentEmail, isMarkAsDone, generateLink },
       openModal,
-      basicInformation,
       testEligibility,
-      listTypeASelected,
-      listTypeBSelected,
-      listTypeCSelected,
-      listTypeDSelected,
-      typeAIsChecked,
-      typeBIsChecked,
-      typeCIsChecked,
-      typeDIsChecked,
+      loadingDocumentList,
     } = this.state;
-    const { workEmail } = basicInformation;
     return (
       <>
-        <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
-          <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
-            <div className={styles.eliContainer}>
-              <Warning formatMessage={formatMessage} />
-              <Title formatMessage={formatMessage} />
-              {testEligibility.length > 0 &&
-                testEligibility.map((item) => {
-                  return (
-                    <CollapseFields
-                      key={item.id}
-                      item={item && item}
-                      handleChange={this.handleChange}
-                      handleCheckAll={this.handleCheckAll}
-                      testEligibility={testEligibility}
-                      listTypeASelected={listTypeASelected}
-                      listTypeBSelected={listTypeBSelected}
-                      listTypeCSelected={listTypeCSelected}
-                      listTypeDSelected={listTypeDSelected}
-                      typeAIsChecked={typeAIsChecked}
-                      typeBIsChecked={typeBIsChecked}
-                      typeCIsChecked={typeCIsChecked}
-                      typeDIsChecked={typeDIsChecked}
-                      eligibilityDocs={eligibilityDocs}
-                    />
-                  );
-                })}
-            </div>
-          </Col>
-          <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
-            <NoteComponent note={note} />
-            <SendEmail
-              formatMessage={formatMessage}
-              handleSendEmail={this.handleSendEmail}
-              handleChangeEmail={this.handleChangeEmail}
-              handleSendFormAgain={this.handleSendFormAgain}
-              email={email}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={this.handleMarkAsDone}
-              workEmail={workEmail}
-            />
-          </Col>
-        </Row>
+        {loadingDocumentList === true ? (
+          <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+            <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
+              <div className={styles.eliContainer}>
+                <PageLoading />
+              </div>
+            </Col>
+          </Row>
+        ) : (
+          <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+            <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
+              <div className={styles.eliContainer}>
+                <Warning formatMessage={formatMessage} />
+                <Title formatMessage={formatMessage} />
+                {testEligibility.length > 0 &&
+                  testEligibility.map((item) => {
+                    return (
+                      <CollapseFields
+                        key={item.id}
+                        item={item && item}
+                        handleChange={this.handleChange}
+                        handleCheckAll={this.handleCheckAll}
+                        testEligibility={testEligibility}
+                        eligibilityDocs={eligibilityDocs}
+                      />
+                    );
+                  })}
+              </div>
+            </Col>
+            <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
+              <NoteComponent note={note} />
+              <SendEmail
+                formatMessage={formatMessage}
+                handleSendEmail={this.handleSendEmail}
+                handleChangeEmail={this.handleChangeEmail}
+                handleSendFormAgain={this.handleSendFormAgain}
+                email={email}
+                isSentEmail={isSentEmail}
+                generateLink={generateLink}
+                handleMarkAsDone={this.handleMarkAsDone}
+              />
+            </Col>
+          </Row>
+        )}
         <CustomModal open={openModal} closeModal={this.closeModal}>
           {openModal && (
             <ModalContentComponent
@@ -394,7 +388,6 @@ class EligibilityDocs extends Component {
             />
           )}
         </CustomModal>
-        ;
       </>
     );
   }

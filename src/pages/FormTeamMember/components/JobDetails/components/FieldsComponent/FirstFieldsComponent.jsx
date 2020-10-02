@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent */
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Typography } from 'antd';
@@ -18,11 +20,7 @@ class FirstFieldsComponent extends PureComponent {
       managerList,
       _handleSelect,
     } = this.props;
-    console.log(departmentList.map((data) => data.name));
     const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
-    {
-      managerList.length > 1 && console.log(managerList.map((data) => data.generalinfos.firstName));
-    }
     return (
       <>
         <div>
@@ -46,6 +44,7 @@ class FirstFieldsComponent extends PureComponent {
                       ? (value) => handleSelect(value, item.title)
                       : (value) => _handleSelect(value, item.title)
                   }
+                  disabled={!!(item.title === 'reportingManager' && managerList.length <= 0)}
                   defaultValue={
                     item.title === 'department'
                       ? department

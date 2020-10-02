@@ -15,6 +15,7 @@ class FieldsComponent extends PureComponent {
       titleList,
       managerList,
       _handleSelect,
+      loadingE,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -28,6 +29,7 @@ class FieldsComponent extends PureComponent {
           titleList={titleList}
           managerList={managerList}
           _handleSelect={_handleSelect}
+          loadingE={loadingE}
         />
         <CandidateFieldsComponent
           styles={styles.Input}

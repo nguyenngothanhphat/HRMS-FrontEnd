@@ -7,21 +7,7 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const {
-      item = {},
-      handleCheckAll,
-      handleChange,
-      testEligibility,
-      // listTypeASelected,
-      // listTypeBSelected,
-      // listTypeCSelected,
-      // listTypeDSelected,
-      // typeAIsChecked,
-      // typeBIsChecked,
-      // typeCIsChecked,
-      // typeDIsChecked,
-      eligibilityDocs,
-    } = this.props;
+    const { item = {}, handleCheckAll, handleChange, eligibilityDocs } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
     const checkedArr = item.data
@@ -95,7 +81,7 @@ class CollapseField extends PureComponent {
                 direction="vertical"
                 className={styles.checkboxItem}
                 options={defaultArr.map((data) => data.alias)}
-                onChange={(checkedList) => handleChange(checkedList, defaultArr, item, checkedArr)}
+                onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
                 value={
                   item.type === 'A'
                     ? identityProof.listSelected
