@@ -1,61 +1,96 @@
 import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Button } from 'antd';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-@connect(({ loading, employeeProfile }) => ({
-  loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
-  employeeProfile,
-}))
+@connect(
+  ({
+    upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
+    employeeProfile: {
+      editGeneral: { openPassportandVisa = false },
+      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = {}, visaData = [] } = {},
+    } = {},
+  }) => ({
+    openPassportandVisa,
+    passportDataOrigin,
+    passportData,
+    visaDataOrigin,
+    visaData,
+    passPortURL,
+    visa0URL,
+    visa1URL,
+  }),
+)
 class PassportVisaInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: true },
     });
   };
 
   handleCancel = () => {
-    this.setState({
-      isEdit: false,
+    const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
+    const {
+      passportNumber = '',
+      passportIssuedCountry = '',
+      passportIssuedOn = '',
+      passportValidTill = '',
+    } = passportDataOrigin;
+    const reverseFields = {
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
+    };
+    const payloadVisa = [...visaDataOrigin];
+    const payloadPassPort = { ...passportData, ...reverseFields };
+    const isModified =
+      JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin) ||
+      JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: payloadPassPort },
+    });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { visaData: payloadVisa },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openPassportandVisa: false },
     });
   };
 
   render() {
-    const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
-    const { isEdit } = this.state;
-    const renderComponent = isEdit ? <Edit /> : <View dataAPI={generalData} />;
+    const { passportData, openPassportandVisa } = this.props;
+    const renderComponent = openPassportandVisa ? (
+      <Edit handleCancel={this.handleCancel} />
+    ) : (
+      <View dataAPI={passportData} />
+    );
     return (
       <div className={styles.PassportVisaInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Passport and Visa Information</p>
-          <div className={styles.flexEdit} onClick={this.handleEdit}>
-            <EditFilled className={styles.IconEdit} />
-            <p className={styles.Edit}>Edit</p>
-          </div>
+          {openPassportandVisa ? (
+            ''
+          ) : (
+            <div className={styles.flexEdit} onClick={this.handleEdit}>
+              <EditFilled className={styles.IconEdit} />
+              <p className={styles.Edit}>Edit</p>
+            </div>
+          )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
-        {isEdit ? (
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={this.handleCancel}>
-              Cancel
-            </div>
-            <Button className={styles.buttonFooter}>Save</Button>
-          </div>
-        ) : (
-          ''
-        )}
       </div>
     );
   }

@@ -1,10 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Modal, Affix } from 'antd';
+import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
-export default class CommonLayout extends PureComponent {
+const { confirm } = Modal;
+
+@connect(({ employeeProfile: { isModified } = {} }) => ({
+  isModified,
+}))
+class CommonLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,38 +27,70 @@ export default class CommonLayout extends PureComponent {
     });
   }
 
-  _handelClick = (item) => {
+  handleCLickItemMenu = (item) => {
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
     });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  showConfirm = (item) => {
+    const _this = this;
+    confirm({
+      title: 'Save your changes ?',
+      onOk() {
+        _this.saveChanges(item);
+      },
+      onCancel() {
+        _this.onCancel(item);
+      },
+    });
+  };
+
+  saveChanges = (item) => {
+    console.log('item', item);
+  };
+
+  onCancel = (item) => {
+    console.log('item', item);
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], isModified } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.root}>
-        <div className={s.viewLeft}>
-          <div className={s.viewLeft__menu}>
-            {listMenu.map((item) => (
-              <ItemMenu
-                key={item.id}
-                item={item}
-                handelClick={this._handelClick}
-                selectedItemId={selectedItemId}
-              />
-            ))}
+        <Affix offsetTop={90}>
+          <div className={s.viewLeft}>
+            <div className={s.viewLeft__menu}>
+              {listMenu.map((item) => (
+                <ItemMenu
+                  key={item.id}
+                  item={item}
+                  handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  selectedItemId={selectedItemId}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
+            {/* <Affix offsetTop={115}> */}
             <ViewInformation />
+            {/* </Affix> */}
           </Col>
         </Row>
       </div>
     );
   }
 }
+
+export default CommonLayout;

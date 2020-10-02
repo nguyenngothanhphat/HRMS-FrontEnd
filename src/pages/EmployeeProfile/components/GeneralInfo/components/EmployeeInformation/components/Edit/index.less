@@ -14,6 +14,10 @@
       }
       .ant-form-item {
         width: 100%;
+        padding: 0px 48px;
+      }
+      .ant-form-item:first-child {
+        margin-top: 35px;
       }
       .ant-input:focus {
         border-color: #2c6df9;
@@ -50,6 +54,92 @@
   .iconQuestTion {
     margin-top: 2px;
     margin-left: 9px;
+  }
+  .styleUpLoad {
+    position: relative;
+  }
+  .labelUpload {
+    .urlUpload {
+      font-size: 13px;
+      color: #2c6df9;
+      text-decoration: underline;
+    }
+    :global {
+      .ant-form-item-label > label {
+        font-size: 13px;
+        font-style: italic;
+        color: #707177;
+      }
+    }
+  }
+  .viewUpLoadData {
+    position: absolute;
+    top: 5px;
+    right: 24px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    .viewUpLoadDataURL {
+      margin-right: 16px;
+      text-decoration: underline;
+    }
+    .viewUpLoadDataText {
+      display: inline;
+      margin-right: 20px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #47c97f;
+    }
+    .viewUpLoadDataIconCancel {
+      cursor: pointer;
+    }
+  }
+
+  .textUpload {
+    position: absolute;
+    top: 5px;
+    right: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    :global {
+      .ant-upload {
+        color: #2c6df9;
+      }
+    }
+  }
+  .spaceFooter {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 24px;
+    border-top: solid 1px #d6dce0;
+  }
+  .cancelFooter {
+    margin-right: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffa100;
+    cursor: pointer;
+  }
+  .cancelFooter:hover {
+    color: #b1740c;
+  }
+  .buttonFooter {
+    width: 95px;
+    height: 40px;
+    font-size: 14px;
+    color: #ffffff;
+    border-radius: 25px;
+    border: solid 1px #ffa100;
+    background-color: #ffa100;
+  }
+  .buttonFooter:hover {
+    border: solid 1px #b1740c;
+    background-color: #b1740c;
   }
 }
 .GenEITooltip {

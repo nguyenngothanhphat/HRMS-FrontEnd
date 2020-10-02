@@ -16,7 +16,7 @@ class DirectoryTable extends Component {
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
-    if (prevProps.list.length !== list.length) {
+    if (prevProps.list !== list) {
       this.setFirstPage();
     }
   }
@@ -66,15 +66,9 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
-        dataIndex: 'compensation',
-        key: 'compensation',
-        render: (compensation) => (
-          <span>
-            {compensation && Object.prototype.hasOwnProperty.call(compensation, 'tittle')
-              ? compensation.tittle.name
-              : ''}
-          </span>
-        ),
+        dataIndex: 'title',
+        key: 'title',
+        render: (title) => <span>{title ? title.name : ''}</span>,
         align: 'left',
       },
       {
@@ -111,13 +105,9 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
-        dataIndex: 'compensation',
+        dataIndex: 'employeeType',
         key: 'employmentType',
-        render: (compensation) => (
-          <span>
-            {compensation && compensation.employeeType ? compensation.employeeType.name : ''}
-          </span>
-        ),
+        render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
         width: '15%',
       },
@@ -163,7 +153,7 @@ class DirectoryTable extends Component {
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
-      position: ['bottomRight'],
+      position: ['bottomLeft'],
       total: list.length,
       showTotal: (total, range) => (
         <span>

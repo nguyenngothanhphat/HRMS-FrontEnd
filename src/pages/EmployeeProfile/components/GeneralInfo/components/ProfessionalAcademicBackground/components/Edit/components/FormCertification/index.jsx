@@ -1,12 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Input, Row, Col } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import lodash from 'lodash';
 import UploadCertification from '../Upload';
 import s from './index.less';
 
 const CertificationInput = ({ value = [{}], onChange }) => {
   const [list, setList] = useState(value);
+  console.log(list);
+  const [idInput, setIdInput] = useState(Date.now());
 
   const handleAddBtn = () => {
     const newList = [...list, {}];
@@ -17,22 +18,24 @@ const CertificationInput = ({ value = [{}], onChange }) => {
     const newList = [...list];
     newList.splice(index, 1);
     setList(newList);
+    setIdInput(Date.now());
   };
 
-  const handleFieldChange = lodash.debounce((index, nameField, fieldValue) => {
+  const handleFieldChange = (index, nameField, fieldValue) => {
     const item = list[index];
     const newItem = { ...item, [nameField]: fieldValue };
     const newList = [...list];
     newList.splice(index, 1, newItem);
+    console.log(newList);
     setList(newList);
-  }, 600);
+  };
 
   useEffect(() => {
     onChange(list);
   }, [list]);
 
   return (
-    <div className={s.root}>
+    <div key={idInput} className={s.root}>
       {list.map((item, index) => {
         return (
           <Fragment key={`certification${index + 1}`}>
@@ -42,7 +45,6 @@ const CertificationInput = ({ value = [{}], onChange }) => {
                 <div className={s.viewRemoveField}>
                   <Input
                     defaultValue={item.name}
-                    value={item.name}
                     onChange={(event) => {
                       const { value: fieldValue } = event.target;
                       handleFieldChange(index, 'name', fieldValue);

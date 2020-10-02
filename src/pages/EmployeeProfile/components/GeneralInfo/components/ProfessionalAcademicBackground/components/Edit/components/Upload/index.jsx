@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
 import { Button, Upload, message } from 'antd';
+import ModalReviewImage from '@/components/ModalReviewImage';
+import { connect } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
+@connect(({ loading }) => ({
+  loading: loading.effects['upload/uploadFile'],
+}))
 class UploadCertification extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      linkImage: '',
+    };
+  }
+
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
+
   beforeUpload = (file) => {
     const checkType =
       file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
@@ -17,21 +44,24 @@ class UploadCertification extends Component {
     return checkType && isLt2M;
   };
 
-  handleUpload = (info) => {
+  handleUpload = (file) => {
+    const { dispatch } = this.props;
+    const formData = new FormData();
+    formData.append('uri', file);
+    dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    }).then((resp) => {
+      this.triggerChangeUpload(resp);
+    });
+  };
+
+  triggerChangeUpload = (resp) => {
     const { handleFieldChange = () => {}, index } = this.props;
-    const { status, originFileObj } = info.file;
-    if (status === 'done') {
-      const formData = new FormData();
-      formData.append('file', originFileObj);
-      // call API upload with data is formData
-      // console.log('formData', formData);
-      handleFieldChange(
-        index,
-        'urlFile',
-        'https://binaries.templates.cdn.office.net/support/templates/en-us/lt22671785_quantized.png',
-      );
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      handleFieldChange(index, 'urlFile', first.url);
     }
   };
 
@@ -46,24 +76,30 @@ class UploadCertification extends Component {
       multiple: false,
       showUploadList: false,
     };
-    const { item: { urlFile = '' } = {} } = this.props;
+    const { visible, linkImage } = this.state;
+    const { item: { urlFile = '' } = {}, loading } = this.props;
+    const nameFile = urlFile.split('/').pop();
+
     return (
       <div className={styles.root}>
         {!urlFile ? (
-          <Upload {...props} onChange={this.handleUpload} beforeUpload={this.beforeUpload}>
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
+          <Upload
+            {...props}
+            beforeUpload={this.beforeUpload}
+            action={(file) => this.handleUpload(file)}
+          >
+            <Button loading={loading} icon={<UploadOutlined />}>
+              Click to upload
+            </Button>
           </Upload>
         ) : (
           <div className={styles.viewRow}>
-            <a
-              href={urlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              id="img-certification"
+            <p
+              onClick={() => this.handleOpenModalReview(urlFile)}
               className={styles.nameCertification}
             >
-              File Name
-            </a>
+              {nameFile}
+            </p>
             <img
               src="/assets/images/iconFilePNG.svg"
               alt="iconFilePNG"
@@ -77,6 +113,7 @@ class UploadCertification extends Component {
             />
           </div>
         )}
+        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
       </div>
     );
   }

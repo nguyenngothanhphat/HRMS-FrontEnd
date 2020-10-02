@@ -10,6 +10,36 @@ const routes = [
     ],
   },
   {
+    path: '/signup',
+    component: '../layouts/SignUpLayout1',
+    routes: [
+      {
+        path: '/signup',
+        component: './SignUp1',
+      },
+    ],
+  },
+  {
+    path: '/signup-verify',
+    component: '../layouts/SignUpLayout1',
+    routes: [
+      {
+        path: '/signup-verify',
+        component: './SignUp2',
+      },
+    ],
+  },
+  {
+    path: '/signup-configlocation',
+    component: '../layouts/SignUpLayout2',
+    routes: [
+      {
+        path: '/signup-configlocation',
+        component: './SignUpConfigLocation',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -80,6 +110,14 @@ const routes = [
             hideInMenu: true,
             component: './FormTeamMember',
           },
+
+          {
+            path: '/template-details/:templateId',
+            name: 'templateDetails',
+            hideInMenu: true,
+            component: './TemplateDetails',
+          },
+
           {
             component: './404',
           },

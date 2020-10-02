@@ -1,0 +1,74 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@orange: #ffa100;
+@blue: #2c6df9;
+@gray: #707177;
+@border-color: #e4e7eb;
+@scrollbar-color: #e0e4e9;
+
+.overviewContainer {
+  display: flex;
+
+  .viewLeft {
+    width: 255px;
+
+    .addMember {
+      background-color: white;
+      border-radius: 21px;
+      border: 1px solid @orange;
+      outline: none;
+      color: @orange;
+      height: 40px;
+      margin: 24px 12px;
+      //   padding: 13px 24px;
+
+      .icon {
+        display: flex;
+        align-items: center;
+        margin: 0 24px;
+
+        span {
+          margin-left: 4px;
+          font-weight: 500;
+        }
+      }
+
+      // &:hover {
+      //   color: white;
+      //   background-color: @orange;
+      // }
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background-color: #e4e7eb;
+    }
+
+    .leftMenu {
+      overflow-y: scroll;
+      background-color: white;
+      height: 482px;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: @scrollbar-color;
+        border-radius: 3px;
+      }
+    }
+  }
+
+  .viewRight {
+    flex: 1;
+    padding: 32px;
+    .pageTitle {
+      font-size: 16px;
+      font-weight: 500;
+      color: #000000;
+    }
+  }
+}

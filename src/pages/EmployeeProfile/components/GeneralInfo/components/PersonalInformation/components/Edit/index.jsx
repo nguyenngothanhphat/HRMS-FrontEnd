@@ -1,12 +1,22 @@
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, Select } from 'antd';
+import { Row, Input, Form, Select, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    loading,
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
+    generalDataOrigin,
+    generalData,
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,17 +28,72 @@ class Edit extends PureComponent {
   };
 
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+  };
+
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const {
+      personalNumber = '',
+      personalEmail = '',
+      Blood = '',
+      maritalStatus = '',
+      linkedIn = '',
+      residentAddress = '',
+      currentAddress = '',
+      _id: id = '',
+    } = generalDataTemp;
+    const payloadChanges = {
+      id,
+      personalNumber,
+      personalEmail,
+      Blood,
+      maritalStatus,
+      linkedIn,
+      residentAddress,
+      currentAddress,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = [
+      'personalNumber',
+      'personalEmail',
+      'Blood',
+      'maritalStatus',
+      'linkedIn',
+      'residentAddress',
+      'currentAddress',
+    ];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+      key: 'openPersonnalInfor',
     });
   };
 
@@ -42,20 +107,36 @@ class Edit extends PureComponent {
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
+    const { generalData, loading, handleCancel = () => {} } = this.props;
     const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+      personalNumber = '',
+      personalEmail = '',
+      Blood = '',
+      maritalStatus = '',
+      linkedIn = '',
+      residentAddress = '',
+      currentAddress = '',
+    } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
           {...formItemLayout}
-          initialValues={generalData}
+          initialValues={{
+            personalNumber,
+            personalEmail,
+            Blood,
+            maritalStatus,
+            linkedIn,
+            residentAddress,
+            currentAddress,
+          }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
+          onFinish={this.handleSave}
         >
           <Form.Item
             label="Personal Number"
@@ -86,7 +167,6 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
-              allowClear
               className={styles.selectForm}
               onDropdownVisibleChange={this.handleDropdown}
               suffixIcon={
@@ -120,6 +200,19 @@ class Edit extends PureComponent {
           <Form.Item label="Current Address" name="currentAddress">
             <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
           </Form.Item>
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+            >
+              Save
+            </Button>
+          </div>
         </Form>
         {/* Custom Col Here */}
       </Row>

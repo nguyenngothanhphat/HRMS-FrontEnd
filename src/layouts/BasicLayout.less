@@ -1,7 +1,6 @@
 .root {
   .titleHeader {
     display: flex;
-    flex-direction: row;
     align-items: center;
     height: 100%;
     .buttonToggle {
@@ -13,17 +12,11 @@
       align-items: center;
       cursor: pointer;
     }
-    &__logo {
-      margin-left: 20px;
-      width: 80px;
-      height: 50px;
-      object-fit: contain;
-    }
   }
 
   :global {
     .ant-layout {
-      background-color: #fff;
+      background-color: #f6f7f9;
     }
 
     .ant-pro-global-header-layout-mix {
@@ -32,37 +25,57 @@
     .ant-pro-page-container-children-content {
       margin: 0;
     }
+
+    .ant-pro-sider.ant-layout-sider-collapsed .ant-pro-sider-logo {
+      padding: 0;
+    }
+    .ant-pro-sider-logo {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      line-height: 32px;
+      height: 76px;
+      cursor: pointer;
+      background-color: #161c29;
+    }
+
     .ant-pro-global-header-logo {
       display: none;
     }
-
+    .ant-pro-basicLayout-content {
+      position: relative;
+      // padding-top: 40px;
+      /* margin: 24px; */
+    }
     .ant-page-header {
       background-color: #eee;
-      padding: 15px 0 10px 20px;
-      position: relative;
+      padding: 10px 0 0 20px;
+      width: 100%;
+      // position: fixed;
+      // z-index: 100;
+      // top: 76px;
     }
 
     .ant-breadcrumb {
-      padding-top: 10px;
-      height: 2rem;
+      height: 30px;
       display: flex;
       align-items: center;
     }
 
     .ant-breadcrumb > span:last-child a {
-      display: inline-block;
       color: #161c29;
       font-size: 13px;
       font-weight: 500;
-      height: 2.5rem;
+      height: 30px;
       background-color: #fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      padding: 10px 15px;
+      align-items: center;
+      display: flex;
+      padding: 0 15px;
       opacity: 1;
       margin-left: -24px;
-      position: absolute;
-      bottom: 0;
     }
 
     .ant-breadcrumb a {
@@ -92,7 +105,7 @@
     }
     .ant-menu-item-selected {
       background-image: linear-gradient(to right, #2c6df9, #144ecb);
-      border-right: 3px solid #fca00a;
+      border-right: 3px solid #fff;
     }
 
     .ant-pro-sider .ant-menu-inline-collapsed .ant-menu-item {

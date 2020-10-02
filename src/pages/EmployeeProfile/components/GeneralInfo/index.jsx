@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import EmployeeInformation from './components/EmployeeInformation';
@@ -8,26 +8,12 @@ import PassportVisaInformation from './components/PassportandVisaInformation';
 import EmergencyContact from './components/EmergencyContactDetails';
 import styles from './index.less';
 
-@connect(({ loading, employeeProfile }) => ({
+@connect(({ loading }) => ({
   loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
-  employeeProfile,
 }))
-class GeneralInfo extends PureComponent {
-  componentDidMount() {
-    // const compensationData = { a: '1' };
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeeProfile/saveTemp',
-    //   payload: { compensationData },
-    // });
-  }
-
+class GeneralInfo extends Component {
   render() {
-    const {
-      loadingGeneral = false,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
-    // console.log(generalData);
+    const { loadingGeneral = false } = this.props;
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
@@ -36,10 +22,10 @@ class GeneralInfo extends PureComponent {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation dataAPI={generalData} />
-        <PersonalInformation dataAPI={generalData} />
-        <PassportVisaInformation dataAPI={generalData} />
-        <EmergencyContact dataAPI={generalData} />
+        <EmployeeInformation />
+        <PersonalInformation />
+        <PassportVisaInformation />
+        <EmergencyContact />
         <ProfessionalAcademicBackground />
       </div>
     );

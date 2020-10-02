@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
 import { Button, Input, Form } from 'antd';
-import { EditOutlined, SendOutlined } from '@ant-design/icons';
+import { EditOutlined, SendOutlined, LoadingOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
+import UploadImage from '@/components/UploadImage';
 import logo from './components/images/brand-logo.png';
 import whiteImg from './components/images/whiteImg.png';
 
@@ -16,7 +17,7 @@ import styles from './index.less';
 const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = (props) => {
-  const { dispatch, previewOffer = {} } = props;
+  const { dispatch, previewOffer = {}, loading } = props;
 
   // Get default value from "info" store
   const {
@@ -57,6 +58,14 @@ const PreviewOffer = (props) => {
   const [mail, setMail] = useState(mailProp || '');
   const [mailForm] = Form.useForm();
   // const [uploadVisible, setUploadVisible] = useState(false);
+
+  const getResponse = (value) => {
+    const { statusCode, data = [] } = value;
+    if (statusCode === 200) {
+      const [first] = data;
+      console.log(first.url);
+    }
+  };
 
   const resetForm = () => {
     mailForm.resetFields();
@@ -339,15 +348,25 @@ const PreviewOffer = (props) => {
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
+            {/* <UploadImage
+              content={
+                <div className={styles.test}>
+                  <span>Upload</span>
+                  {loading && <LoadingOutlined style={{ color: 'red' }} />}
+                </div>
+              }
+              getResponse={getResponse}
+            /> */}
+
             <CancelIcon resetImg={resetImg} />
           </div>
 
           <input
             className={styles.uploadInput}
             type="file"
-            ref={(ref) => {
-              fileRef = ref;
-            }}
+            // ref={(ref) => {
+            //   fileRef = ref;
+            // }}
             onChange={(e) => {
               imageHandler(e, 'hr');
             }}
@@ -498,6 +517,7 @@ const PreviewOffer = (props) => {
 };
 
 // export default PreviewOffer;
-export default connect(({ info: { previewOffer = {} } = {} }) => ({
+export default connect(({ info: { previewOffer = {} } = {}, loading }) => ({
   previewOffer,
+  loading: loading.effects['upload/uploadFile'],
 }))(PreviewOffer);

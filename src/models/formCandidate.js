@@ -26,16 +26,48 @@ const info = {
       timeoff: 'can not',
     },
     eligibilityDocs: {
-      idProof: [],
-      addProof: [],
-      edu: [],
-      techCerti: [
-        {
-          name: '',
-          duration: '',
-          poe: [],
+      email: '',
+      generateLink: '',
+      isSentEmail: false,
+      isMarkAsDone: false,
+      identityProof: {
+        aadharCard: true,
+        PAN: true,
+        passport: false,
+        drivingLicense: false,
+        voterCard: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      addressProof: {
+        rentalAgreement: false,
+        electricityBill: false,
+        telephoneBill: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      educational: {
+        sslc: true,
+        diploma: true,
+        graduation: true,
+        postGraduate: false,
+        phd: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      technicalCertification: {
+        name: '',
+        duration: '',
+        poe: {
+          offerLetter: false,
+          appraisalLetter: false,
+          paystubs: false,
+          form16: false,
+          relievingLetter: false,
+          listSelected: [],
+          isChecked: false,
         },
-      ],
+      },
     },
     jobDetail: {
       position: 1,
@@ -72,11 +104,27 @@ const info = {
       city2: '',
       mail: '',
     },
-    benefits: {},
+    benefits: {
+      medical: false,
+      life: false,
+      shortTerm: false,
+      listSelectedMedical: [],
+      listSelectedLife: [],
+      listSelectedShortTerm: [],
+      dental: false,
+      vision: false,
+      employeeProvident: false,
+      paytmWallet: false,
+      listSelectedEmployee: [],
+    },
+
     customField: {
-      dental: 'tier1',
-      vision: 'tier1',
-      medical: 'tier1',
+      // dental: 'tier1',
+      // vision: 'tier1',
+      // medical: 'tier1',
+      dental: undefined,
+      vision: undefined,
+      medical: undefined,
       additionalInfo: '',
     },
   },
@@ -112,6 +160,12 @@ const info = {
       };
     },
     saveEligibilityRequirement(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    saveBenefits(state, action) {
       return {
         ...state,
         ...action.payload,

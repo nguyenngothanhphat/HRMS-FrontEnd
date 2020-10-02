@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
+import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
@@ -33,6 +35,25 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchCompensation',
       payload: { employee },
     });
+    dispatch({
+      type: 'employeeProfile/fetchPassPort',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchVisa',
+      payload: { employee },
+    });
+    dispatch({
+      type: 'employeeProfile/fetchCountryList',
+    });
+    dispatch({
+      type: 'employeeProfile/fetchEmploymentInfo',
+      payload: employee,
+    });
+    dispatch({ type: 'employeeProfile/fetchLocations' });
+    dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
+    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({ type: 'employeeProfile/fetchEmployees' });
   }
 
   render() {
@@ -51,7 +72,7 @@ class EmployeeProfile extends Component {
       {
         id: 3,
         name: 'Performance History',
-        component: <Test />,
+        component: <PerformanceHistory />,
       },
       { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
       { id: 5, name: 'Documents', component: <Documents /> },
@@ -62,9 +83,11 @@ class EmployeeProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <div className={styles.titlePage}>
-            <p className={styles.titlePage__text}>Employee Profile</p>
-          </div>
+          <Affix offsetTop={40}>
+            <div className={styles.titlePage}>
+              <p className={styles.titlePage__text}>Employee Profile</p>
+            </div>
+          </Affix>
           <LayoutEmployeeProfile listMenu={listMenu} />
         </div>
       </PageContainer>

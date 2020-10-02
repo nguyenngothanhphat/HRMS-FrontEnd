@@ -1,24 +1,73 @@
-import React, { PureComponent } from 'react';
-import { Row, Form, Input } from 'antd';
+import React, { Component } from 'react';
+import { Row, Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
-class Edit extends PureComponent {
+@connect(
+  ({
+    loading,
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    generalDataOrigin,
+    generalData,
+  }),
+)
+class Edit extends Component {
   handleChange = (changedValues) => {
-    const {
-      dispatch,
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
+    const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+  };
+
+  processDataChanges = () => {
+    const { generalData: generalDataTemp } = this.props;
+    const {
+      emergencyContact = '',
+      emergencyPersonName = '',
+      emergencyRelation = '',
+      _id: id = '',
+    } = generalDataTemp;
+    const payloadChanges = {
+      id,
+      emergencyContact,
+      emergencyPersonName,
+      emergencyRelation,
+    };
+    return payloadChanges;
+  };
+
+  processDataKept = () => {
+    const { generalData } = this.props;
+    const newObj = { ...generalData };
+    const listKey = ['emergencyContact', 'emergencyPersonName', 'emergencyRelation'];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch } = this.props;
+    const payload = this.processDataChanges() || {};
+    const dataTempKept = this.processDataKept() || {};
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+      key: 'openContactDetails',
     });
   };
 
@@ -29,20 +78,22 @@ class Edit extends PureComponent {
         sm: { span: 6 },
       },
       wrapperCol: {
-        xs: { span: 10 },
-        sm: { span: 10 },
+        xs: { span: 9 },
+        sm: { span: 9 },
       },
     };
-    const {
-      employeeProfile: { tempData: { generalData = {} } = {} },
-    } = this.props;
+
+    const { generalData, loading, handleCancel = () => {} } = this.props;
+    const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
+          ref={this.formRef}
           className={styles.Form}
           {...formItemLayout}
-          initialValues={generalData}
-          onValuesChange={(changedValues) => this.handleChange(changedValues)}
+          initialValues={{ emergencyContact, emergencyPersonName, emergencyRelation }}
+          onValuesChange={this.handleChange}
+          onFinish={this.handleSave}
         >
           <Form.Item
             label="Emergency Contact"
@@ -58,7 +109,8 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Person’s Name"
-            name="personName"
+            name="emergencyPersonName"
+            validateTrigger="onChange"
             rules={[
               {
                 pattern: /^[a-zA-Z ]*$/,
@@ -70,7 +122,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Relation"
-            name="relation"
+            name="emergencyRelation"
             rules={[
               {
                 pattern: /^[a-zA-Z ]*$/,
@@ -80,8 +132,20 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+            >
+              Save
+            </Button>
+          </div>
         </Form>
-        {/* Custom Col Here */}
       </Row>
     );
   }

@@ -14,6 +14,8 @@ import employeeProfilePage from './en-US/employeeProfilePage';
 import forgotPasswordPage from './en-US/forgotPasswordPage';
 import loginPage from './en-US/loginPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
+import employeeOnboarding from './en-US/employeeOnboarding';
+import templateDetails from './en-US/templateDetails';
 
 export default {
   'navBar.lang': 'Languages',
@@ -39,4 +41,6 @@ export default {
   ...forgotPasswordPage,
   ...loginPage,
   ...resetPasswordPage,
+  ...employeeOnboarding,
+  ...templateDetails,
 };

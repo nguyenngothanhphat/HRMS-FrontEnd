@@ -47,4 +47,25 @@ export default {
   'pages.employeeProfile.BenefitTab.components.kyc.walletStat': 'Wallet Status',
   'pages.employeeProfile.BenefitTab.components.kyc.adhaar': 'Adhaar Number',
   'pages.employeeProfile.BenefitTab.components.kyc.paytm': 'Paytm Number',
+
+  'pages.employeeProfile.performanceTab.syncWithEPASS': 'Click here to Sync With EPASS',
+  'pages.employeeProfile.performanceHistory.performanceReview': 'Performance Reviews',
+  'pages.employeeProfile.performanceHistory.performanceReview.date': 'Date',
+  'pages.employeeProfile.performanceHistory.performanceReview.reportingTo': 'Reporting To',
+  'pages.employeeProfile.performanceHistory.performanceReview.collaboration_teamwork':
+    'Collaboration & TeamWork',
+  'pages.employeeProfile.performanceHistory.performanceReview.problemSolving': 'Problem Solving',
+  'pages.employeeProfile.performanceHistory.performanceReview.decisionMaking': 'Decision Making',
+  'pages.employeeProfile.performanceHistory.performanceReview.organising':
+    'Organising and Planning',
+  'pages.employeeProfile.performanceHistory.projectHistory': 'Project History',
+  'pages.employeeProfile.performanceHistory.projectHistory.projectName': 'Project Name',
+  'pages.employeeProfile.performanceHistory.projectHistory.team': 'Team',
+  'pages.employeeProfile.performanceHistory.projectHistory.status': 'Status',
+  'pages.employeeProfile.performanceHistory.projectHistory.projectDuration': 'Project Duration',
+  'pages.employeeProfile.performanceHistory.projectHistory.engagement': 'Engagement',
+  'pages.employeeProfile.performanceHistory.career.careerGraph': 'Career Graph',
+  'pages.employeeProfile.performanceHistory.career.averageScore': 'Average Score',
+  'pages.employeeProfile.performanceHistory.career.duration': 'Duration',
+  'pages.employeeProfile.performanceHistory.career.performanceScore': 'Performance Score',
 };

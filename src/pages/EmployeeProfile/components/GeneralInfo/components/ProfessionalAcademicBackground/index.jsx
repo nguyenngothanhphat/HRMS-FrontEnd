@@ -1,31 +1,70 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import View from './components/View';
 import Edit from './components/Edit';
 import styles from './index.less';
 
+@connect(
+  ({
+    employeeProfile: {
+      editGeneral: { openAcademic = false },
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    generalDataOrigin,
+    generalData,
+    openAcademic,
+  }),
+)
 class ProfessionalAcademicBackground extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEdit: false,
-    };
-  }
-
   handleEdit = () => {
-    this.setState({
-      isEdit: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openAcademic: true },
     });
   };
 
   handleCancel = () => {
-    this.setState({
-      isEdit: false,
+    const { generalDataOrigin, generalData, dispatch } = this.props;
+    const {
+      preJobTitle = '',
+      skills = [],
+      preCompany = '',
+      pastExp = 0,
+      totalExp = 0,
+      qualification = '',
+      certification = [],
+    } = generalDataOrigin;
+    const reverseFields = {
+      preJobTitle,
+      skills,
+      preCompany,
+      pastExp,
+      totalExp,
+      qualification,
+      certification,
+    };
+    const payload = { ...generalData, ...reverseFields };
+    const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: payload },
+    });
+    dispatch({
+      type: 'employeeProfile/saveOpenEdit',
+      payload: { openAcademic: false },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
   render() {
-    const { isEdit } = this.state;
-    const renderComponent = isEdit ? <Edit handleCancel={this.handleCancel} /> : <View />;
+    const { openAcademic } = this.props;
+    const renderComponent = openAcademic ? <Edit handleCancel={this.handleCancel} /> : <View />;
     return (
       <div className={styles.root}>
         <div className={styles.viewTitle}>
@@ -39,7 +78,7 @@ class ProfessionalAcademicBackground extends PureComponent {
             <p className={styles.viewTitle__edit__text}>Edit</p>
           </div>
         </div>
-        <div className={styles.viewBottom} style={isEdit ? { padding: 0 } : {}}>
+        <div className={styles.viewBottom} style={openAcademic ? { padding: 0 } : {}}>
           {renderComponent}
         </div>
       </div>

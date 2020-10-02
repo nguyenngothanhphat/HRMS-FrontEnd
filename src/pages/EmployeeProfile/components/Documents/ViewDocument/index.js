@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin, Upload } from 'antd';
-import debounce from 'lodash/debounce';
+import { Button, Row, Col, Select } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { formatMessage } from 'umi';
-import GoBackButton from '../../../../../assets/goBack_icon.svg';
-import styles from './index.less';
+import { formatMessage, connect } from 'umi';
+import UploadImage from '@/components/UploadImage';
+import { LoadingOutlined } from '@ant-design/icons';
+import GoBackButton from '@/assets/goBack_icon.svg';
 
-import ArrowLeftIcon from '../../../../../assets/arrow-left_icon.svg';
-import ArrowRightIcon from '../../../../../assets/arrow-right_icon.svg';
+import ArrowLeftIcon from '@/assets/arrow-left_icon.svg';
+import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
+import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -30,17 +31,49 @@ const mockData = [
     id: 777,
     value: 'elonmusk@gmail.com',
   },
+  {
+    id: 433,
+    value: 'testemail1@gmail.com',
+  },
+  {
+    id: 889,
+    value: 'testemail2@gmail.com',
+  },
+  {
+    id: 232,
+    value: 'emailex1@hotmail.com',
+  },
+  {
+    id: 298,
+    value: 'emailex3@gmail.com',
+  },
 ];
 
-export default class ViewDocument extends PureComponent {
+const identifyImageOrPdf = (fileName) => {
+  const parts = fileName.split('.');
+  const ext = parts[parts.length - 1];
+  switch (ext.toLowerCase()) {
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'bmp':
+    case 'png':
+      return 0;
+    case 'pdf':
+      return 1;
+    default:
+      return 2;
+  }
+};
+
+@connect(({ loading }) => ({
+  loading: loading.effects['upload/uploadFile'],
+}))
+class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
-    this.fetchEmails = debounce(this.fetchEmails, 800);
     const { selectedFile } = this.props;
     this.state = {
-      data: [],
-      value: [],
-      fetching: false,
       numPages: null,
       currentViewingFile: selectedFile,
     };
@@ -84,44 +117,26 @@ export default class ViewDocument extends PureComponent {
     });
   };
 
-  // search emails to share
-  fetchEmails = (value) => {
-    this.setState({
-      data: [],
-      fetching: true,
-    });
-    setTimeout(() => {
-      const searchResult = mockData.filter((row = {}) => row.value.includes(value));
-      if (searchResult.length > 0) {
-        this.setState({
-          data: searchResult,
-          fetching: false,
-        });
-      } else {
-        this.setState({
-          data: [],
-          fetching: false,
-        });
-      }
-    }, 500);
-  };
-
-  handleChange = (value) => {
-    this.setState({
-      value,
-      data: [],
-      fetching: false,
-    });
-  };
-
   // on Save button click
   onSaveClick = () => {
     alert('Save');
   };
 
+  getUrl = (resp) => {
+    const { statusCode, data = [] } = resp;
+    if (statusCode === 200) {
+      const [first] = data;
+      console.log('URL Image', first.url);
+    }
+  };
+
+  handleChange = (value) => {
+    console.log(`selected emails ${value}`);
+  };
+
   render() {
-    const { fetching, data, value, numPages, currentViewingFile } = this.state;
-    const { onBackClick, typeOfSelectedFile, files } = this.props;
+    const { numPages, currentViewingFile } = this.state;
+    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
 
     return (
       <div className={styles.ViewDocument}>
@@ -140,18 +155,30 @@ export default class ViewDocument extends PureComponent {
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            <Document
-              className={styles.pdfFrame}
-              onLoadSuccess={this.onDocumentLoadSuccess}
-              // eslint-disable-next-line no-console
-              onLoadError={console.error}
-              file={this.getCurrentViewingFileUrl()}
-              noData="No Viewing Document"
-            >
-              {Array.from(new Array(numPages), (el, index) => (
-                <Page className={styles.pdfPage} key={`page_${index + 1}`} pageNumber={index + 1} />
-              ))}
-            </Document>
+            {identifyImageOrPdf(this.getCurrentViewingFileUrl()) === 0 ? (
+              <div className={styles.imageFrame}>
+                <img alt="preview" src={this.getCurrentViewingFileUrl()} />
+              </div>
+            ) : (
+              <Document
+                className={styles.pdfFrame}
+                onLoadSuccess={this.onDocumentLoadSuccess}
+                // eslint-disable-next-line no-console
+                onLoadError={console.error}
+                file={this.getCurrentViewingFileUrl()}
+                loading=""
+                noData="Document Not Found"
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page
+                    loading=""
+                    className={styles.pdfPage}
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                  />
+                ))}
+              </Document>
+            )}
           </div>
 
           {/* PAGINATION OF DOCUMENT VIEWER */}
@@ -184,25 +211,21 @@ export default class ViewDocument extends PureComponent {
               </Col>
             </Row>
             <Row className={styles.infoRow}>
-              <Col className={styles.infoCol1} span={7}>
+              <Col className={`${styles.infoCol1} ${styles.shareWithLabel}`} span={7}>
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.shareWith' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
                 <Select
                   mode="multiple"
-                  labelInValue
-                  value={value}
                   placeholder={formatMessage({
                     id: 'pages.employeeProfile.documents.viewDocument.emailPlaceholder',
                   })}
-                  notFoundContent={fetching ? <Spin size="small" /> : null}
-                  filterOption={false}
-                  onSearch={this.fetchEmails}
                   onChange={this.handleChange}
+                  showArrow
                   className={styles.shareViaEmailInput}
                 >
-                  {data.map((d) => (
-                    <Option key={d.id}>{d.value}</Option>
+                  {mockData.map((d) => (
+                    <Option key={d.value}>{d.value}</Option>
                   ))}
                 </Select>
               </Col>
@@ -212,12 +235,20 @@ export default class ViewDocument extends PureComponent {
 
         {/* BUTTONS */}
         <div className={styles.operationButton}>
-          <Upload showUploadList={false}>
-            <Button className={styles.uploadButton} type="link">
-              {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.uploadNewBtn' })}
-            </Button>
-          </Upload>
-          ,
+          <UploadImage
+            content={
+              <>
+                <span>
+                  {formatMessage({
+                    id: 'pages.employeeProfile.documents.viewDocument.uploadNewBtn',
+                  })}
+                </span>
+                {loading && <LoadingOutlined className={styles.loadingIcon} />}
+              </>
+            }
+            getResponse={this.getUrl}
+          />
+
           <Button onClick={this.onSaveClick} className={styles.saveButton}>
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>
@@ -226,3 +257,5 @@ export default class ViewDocument extends PureComponent {
     );
   }
 }
+
+export default ViewDocument;

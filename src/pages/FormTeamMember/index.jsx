@@ -1,16 +1,17 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Button } from 'antd';
+import { Button, Affix } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
-import PreviewOffer from './components/PreviewOffer';
 import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
 import EligibilityDocs from './components/EligibilityDocs';
+import Payroll from './components/Payroll';
+import Additional from './components/Additional';
 
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {
@@ -42,20 +43,20 @@ export default class FormTeamMember extends PureComponent {
       { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 5, name: 'Benefits', key: 'benefits', component: <Benefit /> },
       { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
-      { id: 7, name: 'Payroll Settings', key: 'payrollSettings', component: <BasicInformation /> },
+      { id: 7, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },
       { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       {
         id: 9,
         name: 'Additional Options',
         key: 'additionalOptions',
-        component: <BasicInformation />,
+        component: <Additional />,
       },
     ];
 
     const candidateProcess = {
-      basicInformation: true,
+      basicInformation: false,
       jobDetails: false,
-      eligibilityDocuments: true,
+      eligibilityDocuments: false,
       offerDetails: false,
       benefits: false,
       salaryStructure: false,
@@ -72,21 +73,22 @@ export default class FormTeamMember extends PureComponent {
           isComplete: candidateProcess[key],
         };
       }) || [];
-
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
-          <div className={styles.titlePage}>
-            <p className={styles.titlePage__text}>{title}</p>
-            {action === 'add' && (
-              <div className={styles.titlePage__viewBtn}>
-                <Button type="primary" ghost>
-                  Finish Later
-                </Button>
-                <Button danger>Cancel</Button>
-              </div>
-            )}
-          </div>
+          <Affix offsetTop={40}>
+            <div className={styles.titlePage}>
+              <p className={styles.titlePage__text}>{title}</p>
+              {action === 'add' && (
+                <div className={styles.titlePage__viewBtn}>
+                  <Button type="primary" ghost>
+                    Finish Later
+                  </Button>
+                  <Button danger>Cancel</Button>
+                </div>
+              )}
+            </div>
+          </Affix>
           <CommonLayout listMenu={formatListMenu} />
         </div>
       </PageContainer>
