@@ -105,11 +105,10 @@ class Documents extends Component {
     } = this.props;
     const data = this.generateArrayDocument(saveDocuments);
 
-    data.some((x) => {
-      return x.body.some((y) => {
+    data.forEach((x) => {
+      x.body.forEach((y) => {
         let count = 0;
-        // eslint-disable-next-line array-callback-return
-        return y.files.some((z) => {
+        y.files.forEach((z) => {
           count += 1;
           if (z.id === id) {
             this.setState({
