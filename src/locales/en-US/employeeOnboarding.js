@@ -50,4 +50,13 @@ export default {
   'component.nonExtempNotice.save': `Save`,
   'component.nonExtempNotice.yes': `Yes`,
   'component.nonExtempNotice.no': `No`,
+  // Background checks
+  'component.backgroundChecks.title': `Background checks`,
+  'component.backgroundChecks.subTitle': `Run background checks on new and existing workers.`,
+  'component.backgroundChecks.learnMore': `Learn more`,
+  'component.backgroundChecks.generalSettings': `General Settings`,
+  'component.authorization.title': `Authorization`,
+  'component.authorization.link': `Change signatory`,
+  'component.backgroundCheck.title': `Background Check`,
+  'component.billingInformation.title': `  Billing information for background check`,
 };
