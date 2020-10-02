@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -13,14 +13,18 @@ const { TextArea } = Input;
 @connect(
   ({
     loading,
-    employeeProfile: { tempData: { generalData = {}, compensationData = {} } = {} } = {},
+    employeeProfile: {
+      tempData: { generalData = {}, compensationData = {} } = {},
+      originData: { generalData: originGeneralData = {} } = {},
+    } = {},
   }) => ({
     generalData,
     compensationData,
+    originGeneralData,
     loading: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )
-class ViewInformation extends PureComponent {
+class ViewInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,13 +34,19 @@ class ViewInformation extends PureComponent {
     };
   }
 
-  handleEditBio = () => {
-    const { openEditBio } = this.state;
-    if (openEditBio) {
+  shouldComponentUpdate(nextProps) {
+    const { generalData: { bioInfo = '' } = {} } = this.props;
+    const { generalData: { bioInfo: nextBioInfo = '' } = {} } = nextProps;
+    if (bioInfo !== nextBioInfo) {
       this.setState({
-        bio: '',
+        bio: nextBioInfo,
       });
     }
+    return true;
+  }
+
+  handleEditBio = () => {
+    const { openEditBio } = this.state;
     this.setState({
       openEditBio: !openEditBio,
     });
@@ -86,6 +96,19 @@ class ViewInformation extends PureComponent {
     }
   };
 
+  handleSaveBio = () => {
+    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const { bio } = this.state;
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload: {
+        id,
+        bioInfo: bio,
+      },
+    });
+    this.handleEditBio();
+  };
+
   onChangeInput = ({ target: { value } }) => {
     this.setState({
       bio: value,
@@ -93,13 +116,14 @@ class ViewInformation extends PureComponent {
   };
 
   _renderFormEditBio = () => {
+    const { loading } = this.props;
     const { bio } = this.state;
     const check = 170 - bio.length;
     return (
       <div className={s.formEditBio}>
         <div className={s.formEditBio__title}>Edit Bio</div>
         <div className={s.formEditBio__description1}>Only 170 chracter allowed!</div>
-        <TextArea rows={3} value={bio} onChange={this.onChangeInput} />
+        <TextArea rows={3} defaultValue={bio} onChange={this.onChangeInput} />
         <div className={s.formEditBio__description2}>
           <span style={{ opacity: 0.5 }}> Remaining characters: </span>
           {check >= 0 ? (
@@ -109,7 +133,13 @@ class ViewInformation extends PureComponent {
           )}
         </div>
         <div className={s.viewBtnSave}>
-          <Button className={s.btnSave} type="primary" disabled={check < 0}>
+          <Button
+            onClick={this.handleSaveBio}
+            className={s.btnSave}
+            type="primary"
+            disabled={check < 0}
+            loading={loading}
+          >
             Save
           </Button>
         </div>
@@ -118,7 +148,12 @@ class ViewInformation extends PureComponent {
   };
 
   render() {
-    const { generalData, compensationData, loading } = this.props;
+    const {
+      generalData,
+      compensationData,
+      loading,
+      originGeneralData: { bioInfo = '' } = {},
+    } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
@@ -166,11 +201,7 @@ class ViewInformation extends PureComponent {
           <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
         </div>
         <div className={s.infoEmployee__viewBottom}>
-          <p className={s.infoEmployee__viewBottom__description}>
-            With his friendly smile and a simple `hi`, Adi is someone you can`t easily fail to
-            notice. His energy is contagious and can make the conversation take a super interesting
-            turn!
-          </p>
+          <p className={s.infoEmployee__viewBottom__description}>{bioInfo}</p>
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
