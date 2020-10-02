@@ -68,12 +68,12 @@ class Documents extends Component {
     );
 
     const data = [];
-    parentList.map((parent) => {
+    parentList.forEach((parent) => {
       const body = [];
-      typeList.map((value) => {
+      typeList.forEach((value) => {
         if (value.parentEmployeeGroup === parent) {
           const files = [];
-          filesList.map((file) => {
+          filesList.forEach((file) => {
             if (
               file.parentEmployeeGroup === value.parentEmployeeGroup &&
               file.employeeGroup === value.employeeGroup
