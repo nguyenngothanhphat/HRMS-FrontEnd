@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { each } from 'lodash';
+import { Button } from 'antd';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import ViewDocument from './ViewDocument';
 import styles from './index.less';
@@ -131,19 +131,42 @@ class Documents extends Component {
       employeeProfile: { saveDocuments = [] },
     } = this.props;
     const data = this.generateArrayDocument(saveDocuments);
+
+    const emptyData = {
+      title: 'There is no any documents',
+      type: 2,
+      body: [],
+    };
     return (
       <div className={styles.Documents}>
-        {isViewingDocument ? (
-          <ViewDocument
-            files={files}
-            selectedFile={selectedFile}
-            typeOfSelectedFile={typeOfSelectedFile}
-            onBackClick={this.onBackClick}
-          />
+        {data.length === 0 ? (
+          <div className={styles.noDocumentContainer}>
+            <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
+            <div className={styles.buttonContainer}>
+              <Button className={styles.uploadNewBtn} type="primary">
+                Upload new
+              </Button>
+            </div>
+          </div>
         ) : (
-          data.map((value, index) => (
-            <InfoCollapseType2 key={`${index + 1}`} onFileClick={this.onFileClick} data={value} />
-          ))
+          <div>
+            {isViewingDocument ? (
+              <ViewDocument
+                files={files}
+                selectedFile={selectedFile}
+                typeOfSelectedFile={typeOfSelectedFile}
+                onBackClick={this.onBackClick}
+              />
+            ) : (
+              data.map((value, index) => (
+                <InfoCollapseType2
+                  key={`${index + 1}`}
+                  onFileClick={this.onFileClick}
+                  data={value}
+                />
+              ))
+            )}
+          </div>
         )}
       </div>
     );
