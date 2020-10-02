@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
 import { Button, Input, Form } from 'antd';
-import { EditOutlined, SendOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, SendOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/NumericInput';
-import UploadImage from '@/components/UploadImage';
+// import UploadImage from '@/components/UploadImage';
 import logo from './components/images/brand-logo.png';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
-// import ModalUpload from '../../../../components/ModalUpload';
-import SendEmail from '../EligibilityDocs/components/SendEmail';
+import ModalUpload from '../../../../components/ModalUpload';
+// import SendEmail from '../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
 
 const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const PreviewOffer = (props) => {
-  const { dispatch, previewOffer = {}, loading } = props;
+  const { dispatch, previewOffer = {} } = props;
 
   // Get default value from "info" store
   const {
@@ -37,11 +37,9 @@ const PreviewOffer = (props) => {
   } = previewOffer;
 
   const inputRefs = [];
-  let fileRef = null;
-  let file2Ref = null;
 
-  const [file, setFile] = useState(fileProp || null);
-  const [file2, setFile2] = useState(file2Prop || null);
+  const [file, setFile] = useState(fileProp || '');
+  const [file2, setFile2] = useState(file2Prop || '');
 
   const [day, setDay] = useState(dayProp || '');
   const [month, setMonth] = useState(monthProp || '');
@@ -55,40 +53,23 @@ const PreviewOffer = (props) => {
   const [place2, setPlace2] = useState(place2Prop || '');
   const [city2, setCity2] = useState(city2Prop || '');
 
+  const [uploadVisible1, setUploadVisible1] = useState(false);
+  const [uploadVisible2, setUploadVisible2] = useState(false);
+
   const [mail, setMail] = useState(mailProp || '');
   const [mailForm] = Form.useForm();
-  // const [uploadVisible, setUploadVisible] = useState(false);
-
-  const getResponse = (value) => {
-    const { statusCode, data = [] } = value;
-    if (statusCode === 200) {
-      const [first] = data;
-      console.log(first.url);
-    }
-  };
 
   const resetForm = () => {
     mailForm.resetFields();
   };
 
-  const imageHandler = (e, fileKind) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        if (fileKind === 'hr') {
-          setFile(reader.result);
-        }
-        if (fileKind === 'manager') {
-          setFile2(reader.result);
-        }
-      }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
-
-  const resetImg = () => {
-    setFile(null);
-    setFile2(null);
+  const resetImg = (type) => {
+    if (type === 'hr') {
+      setFile('');
+    }
+    if (type === 'hrManager') {
+      setFile2('');
+    }
   };
 
   const saveChanges = () => {
@@ -140,10 +121,17 @@ const PreviewOffer = (props) => {
     resetForm();
   };
 
-  // const getImageUrl = (url) => {
-  //   setFile2(url);
-  //   console.log(url);
-  // };
+  const loadImage = (type, response) => {
+    const { data = [] } = response;
+    const { url } = data[0];
+
+    if (type === 'hr') {
+      setFile(url);
+    }
+    if (type === 'hrManager') {
+      setFile2(url);
+    }
+  };
 
   useEffect(() => {
     // Set width for each input
@@ -342,36 +330,14 @@ const PreviewOffer = (props) => {
             <button
               type="submit"
               onClick={() => {
-                fileRef.click();
+                setUploadVisible1(true);
               }}
             >
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
-            {/* <UploadImage
-              content={
-                <div className={styles.test}>
-                  <span>Upload</span>
-                  {loading && <LoadingOutlined style={{ color: 'red' }} />}
-                </div>
-              }
-              getResponse={getResponse}
-            /> */}
-
-            <CancelIcon resetImg={resetImg} />
+            <CancelIcon resetImg={() => resetImg('hr')} />
           </div>
-
-          <input
-            className={styles.uploadInput}
-            type="file"
-            // ref={(ref) => {
-            //   fileRef = ref;
-            // }}
-            onChange={(e) => {
-              imageHandler(e, 'hr');
-            }}
-            accept=".jpg, .png, .jpeg"
-          />
 
           <div className={styles.submitContainer}>
             <Button
@@ -414,27 +380,14 @@ const PreviewOffer = (props) => {
             <button
               type="submit"
               onClick={() => {
-                file2Ref.click();
-                // setUploadVisible(true);
+                setUploadVisible2(true);
               }}
             >
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
-            <CancelIcon resetImg={resetImg} />
+            <CancelIcon resetImg={() => resetImg('hrManager')} />
           </div>
-
-          <input
-            className={styles.uploadInput}
-            type="file"
-            ref={(ref) => {
-              file2Ref = ref;
-            }}
-            onChange={(e) => {
-              imageHandler(e, 'manager');
-            }}
-            accept=".jpg, .png, .jpeg"
-          />
 
           <div className={styles.submitContainer}>
             <Button
@@ -500,17 +453,28 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {/* <ModalUpload
-          visible={uploadVisible}
-          handleCancel={(url) => {
-            // setFile2(url);
-            // console.log(url);
-            setUploadVisible(false);
+        <ModalUpload
+          visible={uploadVisible1}
+          getResponse={(response) => {
+            loadImage('hr', response);
           }}
-        /> */}
+          handleCancel={() => {
+            setUploadVisible1(false);
+          }}
+        />
+
+        <ModalUpload
+          visible={uploadVisible2}
+          getResponse={(response) => {
+            loadImage('hrManager', response);
+          }}
+          handleCancel={() => {
+            setUploadVisible2(false);
+          }}
+        />
 
         {/* Render Send Mail */}
-        {file && file2 && <SendEmail />}
+        {/* {file && file2 && <SendEmail />} */}
       </div>
     </div>
   );

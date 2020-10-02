@@ -90,8 +90,8 @@ const info = {
       salaryStatus: 2,
     },
     previewOffer: {
-      file: null,
-      file2: null,
+      file: '',
+      file2: '',
       day: '',
       month: '',
       year: '',
