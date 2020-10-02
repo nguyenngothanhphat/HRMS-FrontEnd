@@ -41,6 +41,16 @@
       border: 1px solid #2c6df9;
       margin-bottom: 0;
       .pdfFrame {
+        .documentWarning {
+          display: flex;
+          justify-content: center;
+          align-content: center;
+          height: 100%;
+          margin-top: 30px;
+          p {
+            font-size: 13px;
+          }
+        }
         .pdfPage {
           margin-bottom: 20px;
           canvas {
@@ -99,9 +109,10 @@
       .shareViaEmailInput {
         position: relative;
         border: none;
+        width: 60%;
         :global {
           .ant-select-selector {
-            width: 299px;
+            width: 100%;
             padding: 7px;
             object-fit: contain;
             border-radius: 5px;
@@ -116,9 +127,12 @@
               .anticon,
               .anticon-close {
                 margin-right: 8px;
-                border-radius: 30px;
-                border: 1px solid #676767;
+                margin-top: 5px;
                 svg {
+                  border-radius: 30px;
+                  height: 12px;
+                  width: 12px;
+                  border: 1px solid #676767;
                   color: #676767;
                 }
               }

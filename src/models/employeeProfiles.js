@@ -20,6 +20,7 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getDocuments,
   getPayslip,
   getChangeHistories,
 } from '@/services/employeeProfiles';
@@ -468,6 +469,21 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
+      }
+    },
+    *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocuments, {
+          employee,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { saveDocuments: data },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
     *fetchChangeHistories({ payload: employee = '' }, { call, put }) {
