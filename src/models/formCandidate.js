@@ -21,7 +21,7 @@ const info = {
       file: 'Template.docx',
       agreement: false,
       handbook: false,
-      compensation: 'Salary',
+      compensation: 'salary',
       currency: 'Dollar',
       timeoff: 'can not',
     },
