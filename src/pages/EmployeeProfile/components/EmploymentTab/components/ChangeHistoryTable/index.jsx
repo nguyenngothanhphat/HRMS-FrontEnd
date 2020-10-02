@@ -33,7 +33,7 @@ class ChangeHistoryTable extends PureComponent {
             {changedInfomation.salary ? (
               <div>
                 Revised Salary:{' '}
-                <b>${changedInfomation.salary.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
+                <b>${String(changedInfomation.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
               </div>
             ) : null}
             <div>
