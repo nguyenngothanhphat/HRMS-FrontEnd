@@ -15,7 +15,9 @@ export default function FifthStep(props) {
       <div className={styles.item}>
         <div>Revised Salary :</div>
         <div>
-          <div>${data.newSalary || currentData.salary}</div>
+          <div>
+            ${String(data.newSalary || currentData.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          </div>
         </div>
       </div>
       <div className={styles.item}>

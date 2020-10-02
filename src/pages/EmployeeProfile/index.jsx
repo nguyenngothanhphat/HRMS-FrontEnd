@@ -54,10 +54,15 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchDocuments',
       payload: { employee },
     });
+    dispatch({
+      type: 'employeeProfile/fetchPayslips',
+      payload: { employee, employeeGroup: 'Payslip' },
+    });
     dispatch({ type: 'employeeProfile/fetchLocations' });
     dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
     dispatch({ type: 'employeeProfile/fetchDepartments' });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
+    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
   }
 
   render() {

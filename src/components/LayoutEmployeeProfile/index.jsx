@@ -52,13 +52,13 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  saveChanges = (item) => {
-    console.log('item', item);
-  };
+  // saveChanges = (item) => {
+  //   console.log('item', item);
+  // };
 
-  onCancel = (item) => {
-    console.log('item', item);
-  };
+  // onCancel = (item) => {
+  //   console.log('item', item);
+  // };
 
   render() {
     const { listMenu = [], isModified } = this.props;
