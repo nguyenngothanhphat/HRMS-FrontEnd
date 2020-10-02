@@ -121,7 +121,7 @@ export async function getAddVisa(payload) {
 }
 
 export async function getDocuments(payload) {
-  return request('/api/document/get-by-employee', {
+  return request('/api/document/list', {
     method: 'POST',
     data: payload,
   });

@@ -29,12 +29,10 @@ class Documents extends Component {
   getFiles = (item) => {
     // console.log(item)
     if (item.attachment) {
-      const id = item._id;
-      const { name: fileName, createdAt: date, url: source } = item.attachment;
-      const fileNameSplit = fileName.split('.');
+      const { createdAt: date, url: source } = item.attachment;
       return {
-        id,
-        fileName: fileNameSplit[0],
+        id: item._id,
+        fileName: item.key,
         generatedBy: 'Terralogic',
         date: moment(date).locale('en').format('MMMM Do, YYYY'),
         source,
@@ -49,119 +47,56 @@ class Documents extends Component {
     };
   };
 
-  generateArrayDocument = (list) => {
-    const offerLetters = [];
-    const employmentEligibility = [];
-    const taxDocuments = [];
-    const consentForms = [];
-    const identity = [];
-    const agreement = [];
-    const employeeHandbook = [];
-    const prAgreement = [];
-    const certificates = [];
+  generateArrayDocument = (filesList) => {
+    // PARENT EMPLOYEE GROUP
+    const list1 = filesList.filter((value) => {
+      return value.parentEmployeeGroup !== undefined;
+    });
+    const parentList = [...new Set(list1.map((value) => value.parentEmployeeGroup))];
 
-    // eslint-disable-next-line array-callback-return
-    list.map((eachFile) => {
-      const file = this.getFiles(eachFile);
-      if (eachFile.employeeGroup === 'Offer Letter') {
-        offerLetters.push(file);
-      }
-      if (eachFile.employeeGroup === 'Employment Eligibility') {
-        employmentEligibility.push(file);
-      }
-      if (eachFile.employeeGroup === 'Tax Documents') {
-        taxDocuments.push(file);
-      }
-      if (eachFile.employeeGroup === 'Consent Forms') {
-        consentForms.push(file);
-      }
-      if (eachFile.employeeGroup === 'Identity') {
-        identity.push(file);
-      }
-      if (eachFile.employeeGroup === 'Agreement') {
-        agreement.push(file);
-      }
-      if (eachFile.employeeGroup === 'Employee Handbook') {
-        employeeHandbook.push(file);
-      }
-      if (eachFile.employeeGroup === 'PR Agreements') {
-        prAgreement.push(file);
-      }
-      if (eachFile.employeeGroup === 'Certificates') {
-        certificates.push(file);
-      }
+    // EMPLOYEE GROUP
+    const list2 = filesList.filter((value) => {
+      return value.employeeGroup !== undefined;
     });
 
-    const data = [
-      {
-        title: 'Hiring Documents',
-        type: 1, // uploaded by
-        body: [
-          {
-            kind: 'Offer Letter',
-            files: offerLetters,
-          },
-          {
-            kind: 'Employment Eligibility',
-            files: employmentEligibility,
-          },
-          {
-            kind: 'Tax Documents',
-            files: taxDocuments,
-          },
-          {
-            kind: 'Consent Forms',
-            files: consentForms,
-          },
-        ],
-      },
-      {
-        title: 'Indentification Documents',
-        type: 2,
-        body: [
-          {
-            kind: 'Identity',
-            files: identity,
-          },
-        ],
-      },
-      {
-        title: 'Handbooks & Agreements',
-        type: 1,
-        body: [
-          {
-            kind: 'Agreement',
-            files: agreement,
-          },
-          {
-            kind: 'Employee Handbook',
-            files: employeeHandbook,
-          },
-        ],
-      },
-      {
-        title: 'PR Reports',
-        type: 1,
-        body: [
-          {
-            kind: 'Agreement',
-            files: prAgreement,
-          },
-        ],
-      },
-      {
-        title: 'Qualifications/Certification',
-        type: 2,
-        body: [
-          {
-            kind: 'Certificates',
-            files: certificates,
-          },
-        ],
-      },
-    ];
+    const typeList = list2.filter(
+      (v, i, a) =>
+        a.findIndex(
+          (t) =>
+            t.parentEmployeeGroup === v.parentEmployeeGroup && t.employeeGroup === v.employeeGroup,
+        ) === i,
+    );
 
-    return data;
+    const data = [];
+    parentList.map((parent) => {
+      const body = [];
+      typeList.map((value) => {
+        if (value.parentEmployeeGroup === parent) {
+          const files = [];
+          filesList.map((file) => {
+            if (
+              file.parentEmployeeGroup === value.parentEmployeeGroup &&
+              file.employeeGroup === value.employeeGroup
+            ) {
+              files.push(this.getFiles(file));
+            }
+          });
+          const bodyElement = {
+            kind: value.employeeGroup,
+            files,
+          };
+          body.push(bodyElement);
+        }
+      });
+      const dataElement = {
+        title: parent,
+        type: 2, // uploaded by
+        body,
+      };
+      data.push(dataElement);
+    });
+
+    return data.reverse();
   };
 
   onFileClick = (id) => {
