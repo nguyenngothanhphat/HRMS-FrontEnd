@@ -126,3 +126,10 @@ export async function getAddVisa(payload) {
     data: payload,
   });
 }
+
+export async function getChangeHistories(payload) {
+  return request('/api/changehistory/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
