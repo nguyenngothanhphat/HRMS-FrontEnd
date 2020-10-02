@@ -36,9 +36,23 @@ class ChangeHistoryTable extends PureComponent {
                 <b>${String(changedInfomation.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
               </div>
             ) : null}
-            <div>
-              {changedInfomation.location ? `Location: ${changedInfomation.location}` : null}
-            </div>
+            {changedInfomation.location ? <div>Location: {changedInfomation.location}</div> : null}
+            {changedInfomation.deparment ? (
+              <div>
+                {employee} switched to department: {changedInfomation.deparment}
+              </div>
+            ) : null}
+            {changedInfomation.employment ? (
+              <div>New employment: {changedInfomation.employment}</div>
+            ) : null}
+            {changedInfomation.compensation ? (
+              <div>New payment: {changedInfomation.compensation}</div>
+            ) : null}
+            {changedInfomation.manager ? (
+              <div>
+                {employee} is now reporting to: <b>{changedInfomation.manager}</b>
+              </div>
+            ) : null}
           </div>
         ),
         align: 'left',
@@ -87,6 +101,10 @@ class ChangeHistoryTable extends PureComponent {
         promotedPosition: item.title?.name,
         salary: item.currentAnnualCTC,
         location: item.location?.name,
+        department: item.department?.name,
+        employment: item.employeeType?.name,
+        compensation: item.compensationType,
+        manager: item.manager?.generalInfo.legalName || item.manager?.generalInfo.firstName,
       },
       effectiveDate: moment(item.effectiveDate).locale('en').format('Do MMMM YYYY'),
       changedBy: 'HR Admin',
