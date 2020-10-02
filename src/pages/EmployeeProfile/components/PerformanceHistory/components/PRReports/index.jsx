@@ -25,6 +25,7 @@ class PRReports extends PureComponent {
         return {
           id,
           fileName: fileNameSplit[0],
+          generatedBy: 'Terralogic',
           date: moment(date).locale('en').format('MMMM Do, YYYY'),
           source,
         };

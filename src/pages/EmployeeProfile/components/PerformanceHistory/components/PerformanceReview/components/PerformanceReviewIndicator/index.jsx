@@ -10,14 +10,20 @@ class PerformanceReviewIndicator extends PureComponent {
     };
   }
 
-  renderPRIndicator = (level) => {
+  renderPRIndicator = (level, key) => {
     const { maxPerformanceReview } = this.state;
     return (
-      <Row type="flex" className={styles.performanceReview_content} justify="start" align="middle">
-        {Array.from(Array(level), (index) => {
+      <Row
+        key={key}
+        type="flex"
+        className={styles.performanceReview_content}
+        justify="start"
+        align="middle"
+      >
+        {Array.from(Array(level), (_, index) => {
           return <Col key={index} className={this.renderActiveColorPRIndicator(level)} />;
         })}
-        {Array.from(Array(maxPerformanceReview - level), (index) => {
+        {Array.from(Array(maxPerformanceReview - level), (_, index) => {
           return <Col key={index} className={this.renderBlurColorPRIndicator(level)} />;
         })}
       </Row>
@@ -53,8 +59,12 @@ class PerformanceReviewIndicator extends PureComponent {
   };
 
   render() {
-    const { level } = this.props;
-    return <div className={styles.performanceReviewIndicator}>{this.renderPRIndicator(level)}</div>;
+    const { level, keyIndex } = this.props;
+    return (
+      <div className={styles.performanceReviewIndicator}>
+        {this.renderPRIndicator(level, keyIndex)}
+      </div>
+    );
   }
 }
 export default PerformanceReviewIndicator;
