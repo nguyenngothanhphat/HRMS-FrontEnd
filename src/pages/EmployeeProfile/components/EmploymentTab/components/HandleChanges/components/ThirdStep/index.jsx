@@ -50,7 +50,7 @@ export default function ThirdStep(props) {
           {fetchedState.employees.map((item) => {
             return (
               <Option key={makeKey()} value={item._id}>
-                {item.generalInfo.firstName}
+                {item.generalInfo.firstName || item.generalInfo.legalName || null}
               </Option>
             );
           })}

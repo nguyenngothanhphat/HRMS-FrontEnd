@@ -22,16 +22,18 @@ const OfferDetail = (props) => {
   const {
     includeOffer: includeOfferProp,
     file: fileProp,
-    agreement: agreementProp,
-    handbook: handbookProp,
+    // agreement: agreementProp,
+    // handbook: handbookProp,
     currency: currencyProp,
     timeoff: timeoffProp,
+    compensation: compensationProp,
   } = offerDetail;
 
   const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
   const [file, setFile] = useState(fileProp);
-  const [agreement, setAgreement] = useState(agreementProp);
-  const [handbook, setHandbook] = useState(handbookProp);
+  const [agreement, setAgreement] = useState(true);
+  const [handbook, setHandbook] = useState(true);
+  const [compensation, setCompensation] = useState(compensationProp);
   const [currency, setCurrency] = useState(currencyProp);
   const [timeoff, setTimeoff] = useState(timeoffProp);
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
@@ -49,12 +51,13 @@ const OfferDetail = (props) => {
             agreement,
             handbook,
             currency,
+            compensation,
             timeoff,
           },
         },
       });
     }
-  }, [includeOffer, file, agreement, handbook, currency, timeoff]);
+  }, [includeOffer, file, agreement, handbook, compensation, currency, timeoff]);
 
   const handleRadio = (e) => {
     const { value } = e.target;
@@ -84,6 +87,10 @@ const OfferDetail = (props) => {
 
   const handleCurrencyChange = (value) => {
     setCurrency(value);
+  };
+
+  const handleCompensationChange = (value) => {
+    setCompensation(value);
   };
 
   return (
@@ -137,6 +144,7 @@ const OfferDetail = (props) => {
           </p>
 
           <Checkbox
+            disabled
             className="checkbox"
             checked={agreement}
             onChange={(e) => handleAgreementChange(e.target.value)}
@@ -148,7 +156,11 @@ const OfferDetail = (props) => {
             {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
           </p>
 
-          <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
+          <Checkbox
+            disabled
+            checked={handbook}
+            onChange={(e) => handleHandbookChange(e.target.value)}
+          >
             {formatMessage({ id: 'component.offerDetail.handbook' })}
           </Checkbox>
 
@@ -158,7 +170,11 @@ const OfferDetail = (props) => {
                 {formatMessage({ id: 'component.offerDetail.compensationTitle' })}
               </p>
 
-              <Select className={styles.select} value="salary" disabled>
+              <Select
+                className={styles.select}
+                value={compensation}
+                onChange={(value) => handleCompensationChange(value)}
+              >
                 <Option value="salary">Salary</Option>
                 <Option value="salary2">Salary2</Option>
                 <Option value="salary3">Salary3</Option>
