@@ -164,16 +164,6 @@ class Edit extends PureComponent {
           return true;
         });
         return flag;
-        // const flag = Object.keys(certification).every((fieldName) => {
-        //   console.log(fieldName);
-        // const value = certification.name;
-        // const checkMsg = this.buildValidator('name', value);
-        // console.log('value', value);
-        // console.log('checkMsg', checkMsg);
-        // if (checkMsg) msg = checkMsg;
-        // return checkMsg;
-        // });
-        // return flag;
       });
 
     console.log('isValid', isValid);

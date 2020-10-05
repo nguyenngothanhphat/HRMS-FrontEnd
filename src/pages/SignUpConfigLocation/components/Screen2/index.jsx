@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { connect } from 'umi';
-import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
+import { Form, Input, Select, InputNumber, Row, Col, Button, message } from 'antd';
 import LocationForm from './components/LocationForm/index';
 
 import styles from './index.less';
@@ -23,16 +23,81 @@ const Screen2 = (props) => {
     console.log('Failed:', errorInfo);
   };
 
-  // const submit = () => {
-  //   const errors = form.getFieldsError();
-  //   if (errors && errors.length > 0) {
-  //     // console.log('Form not valid');
-  //     console.log(errors);
-  //     return;
-  //   }
-  //   const values = form.getFieldsValue();
-  //   console.log(values);
-  // };
+  const buildValidator = (fieldName, value) => {
+    // console.log('fieldName', fieldName);
+    // console.log('value', value);
+
+    let message = '';
+
+    // if (!value) {
+    //   return message;
+    // }
+
+    if (fieldName === 'address') {
+      // msg = value.length === 0 ? 'Name is required' : '';
+      if (!value) {
+        message = 'Address is required!';
+      }
+    }
+
+    if (fieldName === 'zipCode') {
+      const regEx = new RegExp(/^[0-9]{6}$/);
+      if (!value) {
+        message = 'Zip code is required!';
+      } else if (!regEx.exec(value)) {
+        message = 'Zip code must contain 6 digits!';
+      }
+    }
+
+    if (fieldName === 'country') {
+      if (!value) {
+        message = 'Please select country!';
+      }
+    }
+
+    if (fieldName === 'country') {
+      if (!value) {
+        message = 'Please select state!';
+      }
+    }
+
+    return message;
+    // return `\n${msg}`;
+  };
+
+  const locationValidate = (rule, locations, callback) => {
+    let msg = '';
+    if (Array.isArray(locations) && locations.length > 0) {
+      locations.every((location, index) => {
+        if (index === 0) {
+          // Skip headquarter location
+          return true;
+        }
+        console.log(location);
+        const keys = Object.keys(location);
+
+        const flag = keys.every((key) => {
+          const value = location[key];
+          const errorMessage = buildValidator(key, value);
+
+          if (errorMessage) {
+            if (!msg.includes(errorMessage)) {
+              // If final error message hasn't had this error message
+              msg = errorMessage;
+            }
+            return false;
+          }
+          return true;
+        });
+
+        return flag;
+      });
+    }
+
+    if (msg.length > 0) {
+      callback(msg);
+    }
+  };
 
   const navigate = (type) => {
     let step;
@@ -137,7 +202,14 @@ const Screen2 = (props) => {
         </div>
 
         {/* Clone */}
-        <Form.Item name="locations">
+        <Form.Item
+          name="locations"
+          rules={[
+            {
+              validator: locationValidate,
+            },
+          ]}
+        >
           <LocationForm
             listCountry={listCountry}
             headQuarterAddress={headQuarterAddress}

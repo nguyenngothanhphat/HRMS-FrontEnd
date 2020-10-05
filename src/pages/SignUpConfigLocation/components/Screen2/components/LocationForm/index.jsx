@@ -49,7 +49,6 @@ const LocationForm = (props) => {
   const removeAutocomplete = () => {
     const searchInputs = document.querySelectorAll(`input[type='search']`);
     searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
-    console.log(searchInputs);
   };
 
   useEffect(() => {
@@ -96,11 +95,8 @@ const LocationForm = (props) => {
     const listStateByItemCountry = itemCountry.states || [];
 
     return (
-      <Form.Item
-        label="State"
-        className={styles.vertical}
-        rules={[{ required: true, message: 'Please select your state!' }]}
-      >
+      <div className={styles.vertical}>
+        <span className={styles.label}>State</span>
         <Select
           value={list[index].state}
           onChange={(value) => handleOnChange(value, 'state', index)}
@@ -109,7 +105,7 @@ const LocationForm = (props) => {
             <Select.Option value={state}>{state}</Select.Option>
           ))}
         </Select>
-      </Form.Item>
+      </div>
     );
   };
 
@@ -125,34 +121,16 @@ const LocationForm = (props) => {
             <div key={`${index + 1}`} className={styles.card}>
               <h2 className={styles.header}>Work location</h2>
 
-              <Form.Item
-                label="Address"
-                // rules={[
-                //   { required: true, message: 'Please input your address!' },
-                //   { type: array, message: 'All fields must be filled' },
-                // ]}
-                rules={[
-                  {
-                    validator: (_, value) =>
-                      value ? Promise.resolve() : Promise.reject('Should accept agreement'),
-                  },
-                ]}
-                className={styles.vertical}
-              >
+              <div className={styles.vertical}>
+                <span className={styles.label}>Address</span>
                 <Input
                   value={address}
                   onChange={(e) => handleOnChange(e.target.value, 'address', index)}
                 />
-              </Form.Item>
+              </div>
 
-              <Form.Item
-                label="Country"
-                rules={[
-                  { required: true, message: 'Please input your country!' },
-                  { min: 0, message: 'Country should not be empty!' },
-                ]}
-                className={styles.vertical}
-              >
+              <div className={styles.vertical}>
+                <span className={styles.label}>Country</span>
                 <Select
                   value={country}
                   onChange={(value) => {
@@ -172,7 +150,7 @@ const LocationForm = (props) => {
                     return <Select.Option key={_id}>{name}</Select.Option>;
                   })}
                 </Select>
-              </Form.Item>
+              </div>
 
               <Row gutter={30}>
                 <Col xm={24} sm={24} md={12} lg={12}>
@@ -180,23 +158,13 @@ const LocationForm = (props) => {
                 </Col>
 
                 <Col xm={24} sm={24} md={12} lg={12}>
-                  <Form.Item
-                    className={styles.vertical}
-                    label="Zip code"
-                    // name="zipCode"
-                    rules={[
-                      { required: true, message: 'Please input your Zip code!' },
-                      { min: 0, message: 'Zip code should not be empty!' },
-                      { min: 5, message: 'Zip code max length is 5!' },
-                    ]}
-                  >
+                  <div className={styles.vertical}>
+                    <span className={styles.label}>Zip code</span>
                     <InputNumber
-                      // defaultValue={zipCode}
-                      // defaultValue={locations[index].zipCode}
                       value={zipCode}
                       onChange={(value) => handleOnChange(value, 'zipCode', index)}
                     />
-                  </Form.Item>
+                  </div>
                 </Col>
               </Row>
 
