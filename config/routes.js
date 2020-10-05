@@ -99,6 +99,18 @@ const routes = [
             component: './EmployeeOnboarding',
           },
           {
+            path: '/employee-offboarding',
+            name: 'employeeOffBoarding',
+            icon: 'file-image',
+            component: './OffBoarding',
+          },
+          {
+            path: '/setting',
+            name: 'setting',
+            icon: 'setting',
+            component: './Setting',
+          },
+          {
             path: '/employee-onboarding/:action(add)',
             name: 'addTeamMember',
             hideInMenu: true,
