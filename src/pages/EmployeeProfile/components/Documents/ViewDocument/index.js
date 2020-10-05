@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select } from 'antd';
+import { Button, Row, Col, Select, Spin } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
@@ -66,8 +66,9 @@ const identifyImageOrPdf = (fileName) => {
   }
 };
 
-@connect(({ loading }) => ({
+@connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['upload/uploadFile'],
+  employeeProfile,
 }))
 class ViewDocument extends PureComponent {
   constructor(props) {
@@ -76,6 +77,7 @@ class ViewDocument extends PureComponent {
     this.state = {
       numPages: null,
       currentViewingFile: selectedFile,
+      fileLoading: false,
     };
   }
 
@@ -97,8 +99,14 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile > 1) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile - 1,
+        fileLoading: true,
       }));
     }
+    setTimeout(() => {
+      this.setState({
+        fileLoading: false,
+      });
+    }, 1000);
   };
 
   handleNextViewingFile = () => {
@@ -107,8 +115,14 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile < files.length) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile + 1,
+        fileLoading: true,
       }));
     }
+    setTimeout(() => {
+      this.setState({
+        fileLoading: false,
+      });
+    }, 2000);
   };
 
   onDocumentLoadSuccess = ({ numPages }) => {
@@ -144,10 +158,28 @@ class ViewDocument extends PureComponent {
     return str1.toLowerCase().includes(str2.toLowerCase());
   };
 
-  render() {
-    const { numPages, currentViewingFile } = this.state;
-    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+  // get visa information
+  getVisaInformation = (visaData, files) => {
+    let visaNumber = '';
+    visaData.forEach((visa) => {
+      files.forEach((file) => {
+        if (visa.document._id === file.id) {
+          visaNumber = visa.visaNumber;
+        }
+      });
+    });
+    return visaNumber;
+  };
 
+  render() {
+    const { numPages, currentViewingFile, fileLoading } = this.state;
+    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+    const {
+      employeeProfile: {
+        tempData: { passportData = {}, visaData = [] },
+      },
+    } = this.props;
+    const visaNumber = this.getVisaInformation(visaData, files);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -192,6 +224,15 @@ class ViewDocument extends PureComponent {
               <span>{currentViewingFile}</span>/{files.length}
             </div>
             <div className={styles.filesPagination}>
+              <div>
+                {fileLoading ? (
+                  <div>
+                    <Spin />
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
               <img src={ArrowLeftIcon} alt="prev-file" onClick={this.handlePrevViewingFile} />
               <img src={ArrowRightIcon} alt="next-file" onClick={this.handleNextViewingFile} />
             </div>
@@ -223,7 +264,12 @@ class ViewDocument extends PureComponent {
                   {files[currentViewingFile - 1].fileName} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  0000-0000-0000-0000
+                  {this.includeString(files[currentViewingFile - 1].fileName, 'passport')
+                    ? passportData.passportNumber
+                    : ''}
+                  {this.includeString(files[currentViewingFile - 1].fileName, 'visa')
+                    ? visaNumber
+                    : ''}
                 </Col>
               </Row>
             ) : (
