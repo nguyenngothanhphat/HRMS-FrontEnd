@@ -26,7 +26,7 @@ class EmployeeProfile extends Component {
               </div>
             </div>
           </Affix>
-          <Row className={styles.content} gutter={[24, 0]}>
+          <Row className={styles.content} gutter={[40, 0]}>
             <Col span={18}>
               <ViewLeft />
             </Col>
