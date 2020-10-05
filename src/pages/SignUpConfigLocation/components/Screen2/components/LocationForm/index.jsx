@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 
-import { array } from 'prop-types';
+import { formatMessage } from 'umi';
+import { Input, Select, InputNumber, Row, Col, Button } from 'antd';
 import bin from '../../images/bin.svg';
 
 import styles from './index.less';
@@ -170,7 +170,7 @@ const LocationForm = (props) => {
 
               <span className={styles.remove} onClick={() => removeLocation(index)}>
                 <img src={bin} alt="bin icon" />
-                Remove location
+                {formatMessage({ id: 'page.signUp.step2.remove' })}
               </span>
             </div>
           );

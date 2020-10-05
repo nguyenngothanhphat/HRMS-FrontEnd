@@ -17,4 +17,21 @@ export default {
   'page.signUp.openGmail': 'open gmail',
   'page.signUp.openOutlook': 'open outlook',
   // SignUpConfiguration
+  //   - Step 2
+  'page.signUp.step2.workLocations': 'Work locations',
+  'page.signUp.step2.description':
+    'We need to collect this information to assign your employees to the right office. We will allow you to office specific administrators, filter employees per work location.',
+  'page.signUp.step2.headquarter': 'Headquarter address',
+  'page.signUp.step2.address': 'address',
+  'page.signUp.step2.addressError': 'Please input your address!',
+  'page.signUp.step2.country': 'country',
+  'page.signUp.step2.countryError': 'Please input your country!',
+  'page.signUp.step2.state': 'state',
+  'page.signUp.step2.stateError': 'Please input your state!',
+  'page.signUp.step2.zipCode': 'zip code',
+  'page.signUp.step2.zipCodeError': 'Please input your Zip code!',
+  'page.signUp.step2.add': 'Add work location',
+  'page.signUp.step2.remove': 'Remove work location',
+  'page.signUp.step2.back': 'back',
+  'page.signUp.step2.next': 'next',
 };

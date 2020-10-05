@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { connect } from 'umi';
-import { Form, Input, Select, InputNumber, Row, Col, Button, message } from 'antd';
+import { connect, formatMessage } from 'umi';
+import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 import LocationForm from './components/LocationForm/index';
+// import TestForm from './components/TestForm/index';
 
 import styles from './index.less';
 
@@ -65,10 +66,10 @@ const Screen2 = (props) => {
     // return `\n${msg}`;
   };
 
-  const locationValidate = (rule, locations, callback) => {
+  const locationValidate = (rule, locationArr, callback) => {
     let msg = '';
-    if (Array.isArray(locations) && locations.length > 0) {
-      locations.every((location, index) => {
+    if (Array.isArray(locationArr) && locationArr.length > 0) {
+      locationArr.every((location, index) => {
         if (index === 0) {
           // Skip headquarter location
           return true;
@@ -141,28 +142,35 @@ const Screen2 = (props) => {
         className={styles.form}
       >
         <div className={styles.card}>
-          <h2 className={styles.header}>Work locations</h2>
+          <h2 className={styles.header}>
+            {formatMessage({ id: 'page.signUp.step2.workLocations' })}
+          </h2>
 
           <p className={styles.description}>
-            We need to collect this information to assign your employees to the right office. We
-            will allow you to office specific administrators, filter employees per work location.
+            {formatMessage({ id: 'page.signUp.step2.description' })}
           </p>
 
-          <h2 className={styles.header}>Headquarter address</h2>
+          <h2 className={styles.header}>
+            {formatMessage({ id: 'page.signUp.step2.headquarter' })}
+          </h2>
 
           <Form.Item
-            label="Address"
+            label={formatMessage({ id: 'page.signUp.step2.address' })}
             name="address"
-            rules={[{ required: true, message: 'Please input your address!' }]}
+            rules={[
+              { required: true, message: formatMessage({ id: 'page.signUp.step2.addressError' }) },
+            ]}
             className={styles.vertical}
           >
             <Input disabled />
           </Form.Item>
 
           <Form.Item
-            label="Country"
+            label={formatMessage({ id: 'page.signUp.step2.country' })}
             name="country"
-            rules={[{ required: true, message: 'Please input your country!' }]}
+            rules={[
+              { required: true, message: formatMessage({ id: 'page.signUp.step2.countryError' }) },
+            ]}
             className={styles.vertical}
           >
             {/* <Input disabled /> */}
@@ -175,10 +183,15 @@ const Screen2 = (props) => {
           <Row gutter={30}>
             <Col xm={24} sm={24} md={12} lg={12}>
               <Form.Item
-                label="State"
+                label={formatMessage({ id: 'page.signUp.step2.state' })}
                 name="state"
                 className={styles.vertical}
-                rules={[{ required: true, message: 'Please select your state!' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'page.signUp.step2.stateError' }),
+                  },
+                ]}
               >
                 <Select disabled>
                   <Select.Option value="california">California</Select.Option>
@@ -191,9 +204,14 @@ const Screen2 = (props) => {
             <Col xm={24} sm={24} md={12} lg={12}>
               <Form.Item
                 className={styles.vertical}
-                label="Zip code"
+                label={formatMessage({ id: 'page.signUp.step2.zipCode' })}
                 name="zipCode"
-                rules={[{ required: true, message: 'Please input your Zip code!' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
+                  },
+                ]}
               >
                 <InputNumber disabled />
               </Form.Item>
@@ -217,14 +235,15 @@ const Screen2 = (props) => {
             companyName={companyName}
             dispatch={dispatch}
           />
+          {/* <TestForm /> */}
         </Form.Item>
 
         <div className={styles.btnWrapper}>
           <Button className={styles.btn} onClick={() => navigate('previous')}>
-            Back
+            {formatMessage({ id: 'page.signUp.step2.back' })}
           </Button>
           <Button className={styles.btn} htmlType="submit" onClick={() => navigate('next')}>
-            Next
+            {formatMessage({ id: 'page.signUp.step2.next' })}
           </Button>
         </div>
       </Form>
