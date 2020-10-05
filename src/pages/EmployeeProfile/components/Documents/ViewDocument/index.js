@@ -62,7 +62,7 @@ const identifyImageOrPdf = (fileName) => {
     case 'pdf':
       return 1;
     default:
-      return 2;
+      return 0;
   }
 };
 
@@ -140,6 +140,10 @@ class ViewDocument extends PureComponent {
     </div>
   );
 
+  includeString = (str1, str2) => {
+    return str1.toLowerCase().includes(str2.toLowerCase());
+  };
+
   render() {
     const { numPages, currentViewingFile } = this.state;
     const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
@@ -147,10 +151,7 @@ class ViewDocument extends PureComponent {
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
-          <span>
-            {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.title' })} -{' '}
-            {files[currentViewingFile - 1].fileName}
-          </span>
+          <span>{formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.title' })}</span>
           <div onClick={onBackClick} className={styles.goBackButton}>
             <img src={GoBackButton} alt="back" />
             <span>
@@ -206,14 +207,29 @@ class ViewDocument extends PureComponent {
                 {typeOfSelectedFile}
               </Col>
             </Row>
+
             <Row className={styles.infoRow}>
               <Col className={styles.infoCol1} span={7}>
-                Adhaar Card Number
+                Document Name
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                9999-0000-0000-0000
+                {files[currentViewingFile - 1].fileName}
               </Col>
             </Row>
+
+            {this.includeString(typeOfSelectedFile, 'identity') ? (
+              <Row className={styles.infoRow}>
+                <Col className={styles.infoCol1} span={7}>
+                  {files[currentViewingFile - 1].fileName} Number
+                </Col>
+                <Col className={styles.infoCol2} span={17}>
+                  0000-0000-0000-0000
+                </Col>
+              </Row>
+            ) : (
+              ''
+            )}
+
             <Row className={styles.infoRow}>
               <Col className={`${styles.infoCol1} ${styles.shareWithLabel}`} span={7}>
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.shareWith' })}

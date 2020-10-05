@@ -1,10 +1,11 @@
 import React, { useState, PureComponent } from 'react';
 import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import FileIcon from '../../../assets/pdf_icon.png';
-import DownloadIcon from '../../../assets/download_icon.svg';
-import DownArrowIcon from '../../../assets/downArrow.svg';
-import UpArrowIcon from '../../../assets/upArrow.svg';
+import FileIcon from '@/assets/pdf_icon.png';
+import ImageIcon from '@/assets/imageIcon.png';
+import DownloadIcon from '@/assets/download_icon.svg';
+import DownArrowIcon from '@/assets/downArrow.svg';
+import UpArrowIcon from '@/assets/upArrow.svg';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -64,6 +65,23 @@ const CollapseRow = (props) => {
     </div>
   );
 
+  const identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      default:
+        return 2;
+    }
+  };
+
   return (
     <Collapse
       defaultActiveKey={['1']}
@@ -82,7 +100,11 @@ const CollapseRow = (props) => {
           <Row id={file.id} className={styles.eachRow}>
             <Col span={8} className={styles.fileName}>
               <div onClick={() => onFileClick(file.id)}>
-                <img src={FileIcon} alt="file" className={styles.fileIcon} />
+                {identifyImageOrPdf(file.source) === 1 ? (
+                  <img src={FileIcon} alt="file" className={styles.fileIcon} />
+                ) : (
+                  <img src={ImageIcon} alt="img" className={styles.fileIcon} />
+                )}
                 <span>{file.fileName}</span>
               </div>
             </Col>
