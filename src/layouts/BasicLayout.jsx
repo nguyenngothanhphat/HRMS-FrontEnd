@@ -82,6 +82,14 @@ const BasicLayout = (props) => {
     </div>
   );
 
+  const _renderLogo = (
+    <img
+      src="/assets/images/terralogic-logo.png"
+      alt="logo"
+      style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
+    />
+  );
+
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -95,6 +103,7 @@ const BasicLayout = (props) => {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
+        headerContentRender={() => _renderLogo}
         menuHeaderRender={() => _renderBtnToggle}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {

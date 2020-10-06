@@ -61,4 +61,6 @@ export default {
   'menu.companies': 'Companies',
   'menu.documents': 'Documents',
   'menu.settings': 'Settings',
+  'menu.employeeOffBoarding': 'Off Boarding',
+  'menu.setting': 'Setting',
 };
