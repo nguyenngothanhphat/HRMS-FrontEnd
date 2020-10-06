@@ -40,7 +40,8 @@ export function getEmployeeTypeList() {
 }
 
 export function getManagerList(params) {
-  return request('/api/employee/list-manager', {
+  console.log(params);
+  return request('/api/employee/list-active', {
     method: 'POST',
     data: params,
   });

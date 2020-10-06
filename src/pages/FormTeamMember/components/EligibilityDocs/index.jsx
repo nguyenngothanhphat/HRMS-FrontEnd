@@ -31,13 +31,15 @@ const note = {
 
 @connect(
   ({
-    info: { eligibilityDocs, basicInformation } = {},
-    info: { testEligibility, loadingDocumentList },
+    info: { eligibilityDocs, basicInformation, jobDetail } = {},
+    info: { testEligibility, loadingDocumentList, data },
   }) => ({
     eligibilityDocs,
     basicInformation,
     testEligibility,
     loadingDocumentList,
+    jobDetail,
+    data,
   }),
 )
 class EligibilityDocs extends Component {
@@ -54,6 +56,8 @@ class EligibilityDocs extends Component {
         eligibilityDocs: props.eligibilityDocs,
         basicInformation: props.basicInformation,
         testEligibility: props.testEligibility,
+        jobDetail: props.jobDetail,
+        data: props.data,
         loadingDocumentList: props.loadingDocumentList || {},
       };
     }
@@ -93,7 +97,8 @@ class EligibilityDocs extends Component {
 
   handleSendEmail = (user) => {
     const { dispatch } = this.props;
-    const { eligibilityDocs = {} } = this.state;
+    const { eligibilityDocs = {}, jobDetail, basicInformation, testEligibility } = this.state;
+    const { position, employeeType, department, title, workLocation, reportingManager } = jobDetail;
     dispatch({
       type: 'info/saveEligibilityRequirement',
       payload: {
@@ -106,6 +111,27 @@ class EligibilityDocs extends Component {
     });
     this.setState({
       openModal: true,
+    });
+    dispatch({
+      type: 'info/save',
+      payload: {
+        data: {
+          jobDetail: {
+            position,
+            employeeType,
+            department,
+            title,
+            workLocation,
+            reportingManager,
+          },
+          basicInformation: {
+            ...basicInformation,
+          },
+          documents: {
+            ...testEligibility,
+          },
+        },
+      },
     });
   };
 
@@ -332,7 +358,9 @@ class EligibilityDocs extends Component {
       testEligibility,
       loadingDocumentList,
       basicInformation: { fullName },
+      data,
     } = this.state;
+    console.log(data);
     return (
       <>
         {loadingDocumentList === true ? (
@@ -380,8 +408,10 @@ class EligibilityDocs extends Component {
             </Col>
           </Row>
         )}
-        <CustomModal open={openModal} closeModal={this.closeModal}>
-          {openModal && (
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={
             <ModalContentComponent
               closeModal={this.closeModal}
               isSentEmail={isSentEmail}
@@ -389,8 +419,8 @@ class EligibilityDocs extends Component {
               eligibilityDocs={eligibilityDocs}
               email={email}
             />
-          )}
-        </CustomModal>
+          }
+        />
       </>
     );
   }

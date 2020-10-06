@@ -143,7 +143,8 @@ const info = {
     employeeTypeList: [],
     managerList: [],
     company: {},
-    department: {},
+    department: [],
+    location: [],
     loading: null,
     loadingA: true,
     loadingB: true,
@@ -151,6 +152,7 @@ const info = {
     loadingD: true,
     loadingE: null,
     loadingDocumentList: true,
+    loadingReportingManager: true,
     data: {},
   },
   effects: {
@@ -189,7 +191,14 @@ const info = {
         const response = yield call(getDepartmentList, { company });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { departmentList: data, loadingA: false } });
+        yield put({
+          type: 'save',
+          payload: {
+            departmentList: data,
+            loadingA: false,
+            loadingReportingManager: info.state.loadingA && info.state.loadingC,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -228,12 +237,13 @@ const info = {
       }
     },
 
-    *fetchManagerList({ payload: { department = '' } }, { call, put }) {
+    *fetchManagerList({ payload = {} }, { call, put }) {
+      console.log(payload);
       try {
-        const response = yield call(getManagerList, { department });
+        const response = yield call(getManagerList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { managerList: data, loadingE: false } });
+        yield put({ type: 'save', payload: { managerList: data } });
       } catch (errors) {
         dialog(errors);
       }

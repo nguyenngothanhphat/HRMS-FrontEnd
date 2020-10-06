@@ -74,7 +74,7 @@ class FirstFieldsComponent extends PureComponent {
                     : item.title === 'reportingManager' && managerList.length > 1
                     ? managerList.map((data, index) => (
                         <Option value={data._id} key={index}>
-                          <Typography.Text>{data.generalinfos.firstName}</Typography.Text>
+                          <Typography.Text>{data.generalInfo.firstName}</Typography.Text>
                         </Option>
                       ))
                     : null}

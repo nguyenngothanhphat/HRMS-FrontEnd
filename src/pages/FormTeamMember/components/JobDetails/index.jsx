@@ -13,7 +13,7 @@ import styles from './index.less';
 @connect(
   ({
     info: { jobDetail, checkMandatory, company } = {},
-    info: { departmentList, titleList, locationList, employeeTypeList, managerList } = [],
+    info: { departmentList, titleList, locationList, employeeTypeList, managerList, location } = [],
     info: { loading, loadingA, loadingB, loadingC, loadingD, loadingE },
   }) => ({
     jobDetail,
@@ -30,6 +30,7 @@ import styles from './index.less';
     loadingC,
     loadingD,
     loadingE,
+    location,
   }),
 )
 class JobDetails extends PureComponent {
@@ -47,6 +48,7 @@ class JobDetails extends PureComponent {
         locationList: props.locationList,
         employeeTypeList: props.employeeTypeList,
         managerList: props.managerList,
+        location: props.location,
         loading: props.loadingC || props.loadingD,
         loadingA: props.loadingA,
         loadingB: props.loadingB,
@@ -71,26 +73,7 @@ class JobDetails extends PureComponent {
           loadingC,
         },
       });
-      console.log('Fetched');
     }
-    // if (isEmpty(departmentList)) {
-    //   dispatch({
-    //     type: 'info/fetchDepartmentList',
-    //     payload: {
-    //       departmentList,
-    //       loadingA,
-    //     },
-    //   });
-    // }
-    // if (isEmpty(titleList)) {
-    //   dispatch({
-    //     type: 'info/fetchTitleList',
-    //     payload: {
-    //       titleList,
-    //       loadingB,
-    //     },
-    //   });
-    // }
     if (isEmpty(employeeTypeList)) {
       dispatch({
         type: 'info/fetchEmployeeTypeList',
@@ -160,25 +143,25 @@ class JobDetails extends PureComponent {
       locationList,
       departmentList,
       loadingA,
-      loadingE,
       loadingB,
-      titleList,
-      managerList,
+      loadingC,
     } = this.state;
     jobDetail[name] = value;
     if (name === 'workLocation' || name === 'jobTitle') {
       const changedWorkLocation = [...locationList];
       const selectedWorkLocation = changedWorkLocation.filter((data) => data._id === value);
       const obj = selectedWorkLocation[0];
+      const obj1 = obj._id;
+      const locationArr = [obj1];
       const { company } = obj;
       const { _id } = company;
       dispatch({
         type: 'info/save',
         payload: {
           company: _id,
+          location: locationArr,
         },
       });
-      console.log('company id', _id);
       if (!isEmpty(company)) {
         dispatch({
           type: 'info/fetchDepartmentList',
@@ -187,7 +170,6 @@ class JobDetails extends PureComponent {
             loadingA,
           },
         });
-        console.log('department List', departmentList);
         dispatch({
           type: 'info/fetchTitleList',
           payload: {
@@ -195,27 +177,26 @@ class JobDetails extends PureComponent {
             loadingB,
           },
         });
-        console.log('Title List', titleList);
       }
-    } else if (loadingA === false || name === 'department') {
+    } else if ((loadingA && loadingC === false) || name === 'department') {
+      const { location } = this.state;
       const changedDepartmentList = [...departmentList];
       const selectedDepartment = changedDepartmentList.filter((data) => data._id === value);
-      console.log('selectedList', selectedDepartment);
-      const obj3 = selectedDepartment[0];
-      console.log('departmentId', obj3._id);
+      const department = [selectedDepartment[0]._id];
       dispatch({
         type: 'info/save',
         payload: {
-          department: obj3._id,
+          department,
         },
       });
-      if (!isEmpty(obj3._id)) {
+      if (!isEmpty(department)) {
         dispatch({
           type: 'info/fetchManagerList',
-          department: obj3._id,
-          loadingE,
+          payload: {
+            department,
+            location,
+          },
         });
-        console.log('manager List', managerList);
       }
     }
   };
@@ -231,14 +212,14 @@ class JobDetails extends PureComponent {
             position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }),
           },
           {
-            value: 'CONTINGENTWORKER',
+            value: 'CONTINGENT-WORKER',
             position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }),
           },
         ],
       },
       classificationTab: {
         title: formatMessage({ id: 'component.jobDetail.classificationTab' }),
-        name: 'classification',
+        name: 'employeeType',
         arr: [
           {
             value: 1,
@@ -321,7 +302,7 @@ class JobDetails extends PureComponent {
       loading,
       loadingE,
     } = this.state;
-    console.log(locationList);
+
     return (
       <>
         {loading === true ? (
