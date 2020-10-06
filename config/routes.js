@@ -103,6 +103,25 @@ const routes = [
             name: 'employeeOffBoarding',
             icon: 'file-image',
             component: './OffBoarding',
+            // routes: [
+            //   {
+            //     path: '/employee-offboarding/sendrequest',
+            //     name: 'Resignation Request',
+            //     component: './Dashboard',
+            //   },
+            // ],
+          },
+          {
+            path: '/employee-offboarding/resignation-request',
+            name: 'Resignation Request',
+            icon: 'file-image',
+            component: './ResignationRequest',
+          },
+          {
+            path: '/directory/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
           },
           {
             path: '/setting',

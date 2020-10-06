@@ -15,7 +15,7 @@ class Benefit extends PureComponent {
     if ('benefits' in props) {
       return { benefits: props.benefits || {} };
     }
-    return null;
+    return null; 
   }
 
   handleChange = (checkedList, arr, title) => {
