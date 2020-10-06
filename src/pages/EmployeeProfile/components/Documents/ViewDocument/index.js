@@ -78,6 +78,7 @@ class ViewDocument extends PureComponent {
       numPages: null,
       currentViewingFile: selectedFile,
       fileLoading: false,
+      selectedfileId: '',
     };
   }
 
@@ -159,11 +160,15 @@ class ViewDocument extends PureComponent {
   };
 
   // get visa information
-  getVisaInformation = (visaData, files) => {
+  getVisaInformation = (visaData, files, currentViewingFile) => {
     let visaNumber = '';
     visaData.forEach((visa) => {
-      files.forEach((file) => {
-        if (visa.document._id === file.id && visa.visaNumber !== undefined) {
+      files.forEach((file, index) => {
+        if (
+          visa.document._id === file.id &&
+          visa.visaNumber !== undefined &&
+          currentViewingFile === index
+        ) {
           visaNumber = visa.visaNumber;
         }
       });
@@ -179,7 +184,6 @@ class ViewDocument extends PureComponent {
         tempData: { passportData = {}, visaData = [] },
       },
     } = this.props;
-    const visaNumber = this.getVisaInformation(visaData, files);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -268,7 +272,7 @@ class ViewDocument extends PureComponent {
                     ? passportData.passportNumber
                     : ''}
                   {this.includeString(files[currentViewingFile - 1].fileName, 'visa')
-                    ? visaNumber
+                    ? this.getVisaInformation(visaData, files, currentViewingFile - 1)
                     : ''}
                 </Col>
               </Row>
