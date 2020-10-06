@@ -163,7 +163,7 @@ class ViewDocument extends PureComponent {
     let visaNumber = '';
     visaData.forEach((visa) => {
       files.forEach((file) => {
-        if (visa.document._id === file.id) {
+        if (visa.document._id === file.id && visa.visaNumber !== undefined) {
           visaNumber = visa.visaNumber;
         }
       });
