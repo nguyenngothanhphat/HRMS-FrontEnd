@@ -156,7 +156,6 @@ const info = {
     loadingReportingManager: true,
     item: {},
     Obj: {},
-    loadingAdd: true,
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {

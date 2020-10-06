@@ -32,7 +32,7 @@ const note = {
 @connect(
   ({
     info: { eligibilityDocs, basicInformation, jobDetail } = {},
-    info: { testEligibility, loadingDocumentList, item, loadingAdd },
+    info: { testEligibility, loadingDocumentList, item },
   }) => ({
     eligibilityDocs,
     basicInformation,
@@ -40,7 +40,6 @@ const note = {
     loadingDocumentList,
     jobDetail,
     item,
-    loadingAdd,
   }),
 )
 class EligibilityDocs extends Component {
@@ -59,7 +58,7 @@ class EligibilityDocs extends Component {
         testEligibility: props.testEligibility,
         jobDetail: props.jobDetail,
         item: props.item,
-        loadingAdd: props.loadingAdd,
+
         loadingDocumentList: props.loadingDocumentList || {},
       };
     }
@@ -134,7 +133,6 @@ class EligibilityDocs extends Component {
     dispatch({
       type: 'info/save',
       payload: {
-        loadingAdd: false,
         item: {
           ...item,
           documents: testEligibility,
