@@ -1,7 +1,10 @@
-import React, { PureComponent } from 'react';
+/* eslint-disable no-param-reassign */
+import React, { Component } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
-import CustomModal from '@/components/CustomModal/index';
+import CustomModal from '@/components/CustomModal';
+import { isEmpty, map } from 'lodash';
+import { PageLoading } from '@/layouts/layout/src';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -9,120 +12,6 @@ import CollapseFields from './components/CollapseFields';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
 import styles from './styles.less';
-
-const listCollapse = [
-  {
-    id: '1',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeA' }),
-    value: 'typeA',
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.passport' }),
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.drivingLicense' }),
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.voterCard' }),
-      },
-    ],
-    defaultItems: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.aadharCard' }),
-        title: 'aaharCard',
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.pan' }),
-        title: 'pan',
-      },
-    ],
-  },
-  {
-    id: '2',
-    value: 'typeB',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeB' }),
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.rentalAgreement' }),
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.electricityUtilityBills' }),
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.telephoneBills' }),
-      },
-    ],
-    defaultItems: [],
-  },
-  {
-    id: '3',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeC' }),
-    value: 'typeC',
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.postGraduate' }),
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.phdDoctorate' }),
-      },
-    ],
-    defaultItems: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.sslc' }),
-        title: 'sslc',
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.intermediateDiploma' }),
-        title: 'intermediateDiploma',
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.graduation' }),
-        title: 'graduation',
-      },
-    ],
-  },
-  {
-    id: '4',
-    title: formatMessage({ id: 'component.eligibilityDocs.TypeD' }),
-    value: 'typeD',
-    items: [
-      {
-        key: '1',
-        name: formatMessage({ id: 'component.eligibilityDocs.offerLetter' }),
-      },
-      {
-        key: '2',
-        name: formatMessage({ id: 'component.eligibilityDocs.appraisalLetter' }),
-      },
-      {
-        key: '3',
-        name: formatMessage({ id: 'component.eligibilityDocs.paystubs' }),
-      },
-      {
-        key: '4',
-        name: formatMessage({ id: 'component.eligibilityDocs.form16' }),
-      },
-      {
-        key: '5',
-        name: formatMessage({ id: 'component.eligibilityDocs.relievingCard' }),
-      },
-    ],
-    defaultItems: [],
-  },
-];
 
 const note = {
   title: 'Note',
@@ -140,10 +29,18 @@ const note = {
   ),
 };
 
-@connect(({ info: { eligibilityDocs } = {} }) => ({
-  eligibilityDocs,
-}))
-class EligibilityDocs extends PureComponent {
+@connect(
+  ({
+    info: { eligibilityDocs, basicInformation } = {},
+    info: { testEligibility, loadingDocumentList },
+  }) => ({
+    eligibilityDocs,
+    basicInformation,
+    testEligibility,
+    loadingDocumentList,
+  }),
+)
+class EligibilityDocs extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -152,10 +49,40 @@ class EligibilityDocs extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if ('eligibilityDocs' in props) {
-      return { eligibilityDocs: props.eligibilityDocs || {} };
+    if ('eligibilityDocs' in props || 'basicInformation' in props) {
+      return {
+        eligibilityDocs: props.eligibilityDocs,
+        basicInformation: props.basicInformation,
+        testEligibility: props.testEligibility,
+        loadingDocumentList: props.loadingDocumentList || {},
+      };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { eligibilityDocs, testEligibility, basicInformation, loadingDocumentList } = this.state;
+    const { workEmail } = basicInformation;
+    if (isEmpty(testEligibility)) {
+      dispatch({
+        type: 'info/fetchDocumentList',
+        payload: {
+          testEligibility,
+          loadingDocumentList,
+        },
+      });
+    }
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        eligibilityDocs: {
+          ...eligibilityDocs,
+          email: workEmail,
+        },
+      },
+    });
   }
 
   closeModal = () => {
@@ -215,12 +142,20 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
-  handleChange = (checkedList, arr, value) => {
+  handleChange = (checkedList, arr, item) => {
     const { dispatch } = this.props;
     const { eligibilityDocs } = this.state;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
-    if (value === 'typeA') {
+    if (item.type === 'A') {
+      arr.map((data) => {
+        if (checkedList.includes(data.alias)) {
+          data.value = true;
+        } else {
+          data.value = false;
+        }
+        return data;
+      });
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -228,13 +163,23 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             identityProof: {
               ...identityProof,
-              listSelected: checkedList,
               isChecked: checkedList.length === arr.length,
+              listSelected: checkedList,
             },
           },
         },
       });
-    } else if (value === 'typeB') {
+      // console.log(testEligibility);
+    } else if (item.type === 'B') {
+      arr.map((data) => {
+        if (checkedList.includes(data.alias)) {
+          data.value = true;
+        } else {
+          data.value = false;
+        }
+        return data;
+      });
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -242,13 +187,22 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             addressProof: {
               ...addressProof,
-              listSelected: checkedList,
               isChecked: checkedList.length === arr.length,
+              listSelected: checkedList,
             },
           },
         },
       });
-    } else if (value === 'typeC') {
+    } else if (item.type === 'C') {
+      arr.map((data) => {
+        if (checkedList.includes(data.alias)) {
+          data.value = true;
+        } else {
+          data.value = false;
+        }
+        return data;
+      });
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -256,13 +210,22 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             educational: {
               ...educational,
-              listSelected: checkedList,
               isChecked: checkedList.length === arr.length,
+              listSelected: checkedList,
             },
           },
         },
       });
-    } else if (value === 'typeD') {
+    } else if (item.type === 'D') {
+      arr.map((data) => {
+        if (checkedList.includes(data.alias)) {
+          data.value = true;
+        } else {
+          data.value = false;
+        }
+        return data;
+      });
+
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -272,8 +235,8 @@ class EligibilityDocs extends PureComponent {
               ...technicalCertification,
               poe: {
                 ...poe,
-                listSelected: checkedList,
                 isChecked: checkedList.length === arr.length,
+                listSelected: checkedList,
               },
             },
           },
@@ -282,12 +245,23 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
-  handleCheckAll = (e, arr, value) => {
-    const { eligibilityDocs } = this.state;
+  handleCheckAll = (e, arr, item) => {
+    const { eligibilityDocs, testEligibility } = this.state;
     const { dispatch } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
-    if (value === 'typeA') {
+
+    if (e.target.checked) {
+      map(arr, (data) => {
+        data.value = true;
+      });
+    } else {
+      map(arr, (data) => {
+        data.value = false;
+      });
+    }
+
+    if (item.type === 'A') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -295,13 +269,14 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             identityProof: {
               ...identityProof,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              listSelected: e.target.checked ? arr.map((data) => data.alias) : [],
               isChecked: e.target.checked,
             },
           },
         },
+        testEligibility: [...testEligibility],
       });
-    } else if (value === 'typeB') {
+    } else if (item.type === 'B') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -309,13 +284,13 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             addressProof: {
               ...addressProof,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              listSelected: e.target.checked ? arr.map((data) => data.alias) : [],
               isChecked: e.target.checked,
             },
           },
         },
       });
-    } else if (value === 'typeC') {
+    } else if (item.type === 'C') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -323,13 +298,13 @@ class EligibilityDocs extends PureComponent {
             ...eligibilityDocs,
             educational: {
               ...educational,
-              listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+              listSelected: e.target.checked ? arr.map((data) => data.alias) : [],
               isChecked: e.target.checked,
             },
           },
         },
       });
-    } else if (value === 'typeD') {
+    } else if (item.type === 'D') {
       dispatch({
         type: 'info/saveEligibilityRequirement',
         payload: {
@@ -339,7 +314,7 @@ class EligibilityDocs extends PureComponent {
               ...technicalCertification,
               poe: {
                 ...poe,
-                listSelected: e.target.checked ? arr.map((data) => data.name) : [],
+                listSelected: e.target.checked ? arr.map((data) => data.alias) : [],
                 isChecked: e.target.checked,
               },
             },
@@ -354,51 +329,65 @@ class EligibilityDocs extends PureComponent {
       eligibilityDocs,
       eligibilityDocs: { email, isSentEmail, isMarkAsDone, generateLink },
       openModal,
+      testEligibility,
+      loadingDocumentList,
     } = this.state;
     return (
       <>
-        <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
-          <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
-            <div className={styles.eliContainer}>
-              <Warning formatMessage={formatMessage} />
-              <Title formatMessage={formatMessage} />
-              {listCollapse.map((item) => {
-                return (
-                  <CollapseFields
-                    key={item.id}
-                    item={item}
-                    handleChange={this.handleChange}
-                    handleCheckAll={this.handleCheckAll}
-                    eligibilityDocs={eligibilityDocs}
-                  />
-                );
-              })}
-            </div>
-          </Col>
-          <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
-            <NoteComponent note={note} />
-            <SendEmail
-              formatMessage={formatMessage}
-              handleSendEmail={this.handleSendEmail}
-              handleChangeEmail={this.handleChangeEmail}
-              handleSendFormAgain={this.handleSendFormAgain}
-              email={email}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={this.handleMarkAsDone}
-            />
-          </Col>
-        </Row>
+        {loadingDocumentList === true ? (
+          <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+            <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
+              <div className={styles.eliContainer}>
+                <PageLoading />
+              </div>
+            </Col>
+          </Row>
+        ) : (
+          <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+            <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
+              <div className={styles.eliContainer}>
+                <Warning formatMessage={formatMessage} />
+                <Title formatMessage={formatMessage} />
+                {testEligibility.length > 0 &&
+                  testEligibility.map((item) => {
+                    return (
+                      <CollapseFields
+                        key={item.id}
+                        item={item && item}
+                        handleChange={this.handleChange}
+                        handleCheckAll={this.handleCheckAll}
+                        testEligibility={testEligibility}
+                        eligibilityDocs={eligibilityDocs}
+                      />
+                    );
+                  })}
+              </div>
+            </Col>
+            <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
+              <NoteComponent note={note} />
+              <SendEmail
+                formatMessage={formatMessage}
+                handleSendEmail={this.handleSendEmail}
+                handleChangeEmail={this.handleChangeEmail}
+                handleSendFormAgain={this.handleSendFormAgain}
+                email={email}
+                isSentEmail={isSentEmail}
+                generateLink={generateLink}
+                handleMarkAsDone={this.handleMarkAsDone}
+              />
+            </Col>
+          </Row>
+        )}
         <CustomModal open={openModal} closeModal={this.closeModal}>
           {openModal && (
             <ModalContentComponent
               closeModal={this.closeModal}
               isSentEmail={isSentEmail}
               isMarkAsDone={isMarkAsDone}
+              eligibilityDocs={eligibilityDocs}
             />
           )}
         </CustomModal>
-        ;
       </>
     );
   }

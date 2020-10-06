@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Form, Checkbox } from 'antd';
+import { Checkbox, Button } from 'antd';
+import CustomModal from '@/components/CustomModal';
 import Option from './components/Option';
+import CustomFieldsContent from './components/CustomFieldsContent';
+
 import styles from './index.less';
 
 class OptionalOnboardingQuestions extends PureComponent {
@@ -8,67 +11,74 @@ class OptionalOnboardingQuestions extends PureComponent {
     super(props);
 
     this.state = {
+      openModal: true,
       optionData: [
         {
           title: 'Equal employee opportunity (EEO Information)',
-          name: 'Equal employee opportunity (EEO Information)',
-          link: 'Learn more about EEO',
-          description: '',
+          name: 'equalEmployeeOpportunity',
+          link: 'abc',
+          checked: true,
+          description: 'Learn more about EEO',
         },
         {
           title: 'Preferred payment method',
-          name: 'Preferred payment method',
+          name: 'preferredPaymentMethod',
           link: '',
+          checked: true,
           description: 'Check or direct deposit',
         },
         {
           title: 'T-shirt size',
-          name: 'T-shirt size',
+          name: 'size',
           link: '',
+          checked: true,
           description: 'XX small - xx large both for men and women',
         },
         {
           title: 'Dietary restrictions',
-          name: 'Dietary restrictions',
+          name: 'dietaryRestrictions',
           link: '',
+          checked: true,
           description: 'Vegetarian, Non vegitraian ',
         },
       ],
     };
   }
 
-  handleChange = (e, name) => {
-    const { target } = e;
-    // const { name } = target;
-    const { value } = target;
-
-    console.log(name);
-  };
-
   _renderOptionList = () => {
     const { optionData } = this.state;
     return optionData.map((option) => {
-      return (
-        <Form.Item onChange={(e) => this.handleChange(e, option.name)}>
-          <Option option={option} />
-        </Form.Item>
-      );
+      return <Option option={option} />;
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
     });
   };
 
   render() {
+    const { openModal } = this.state;
     return (
       <div className={styles.OptionalOnboardingQuestions}>
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<CustomFieldsContent />}
+        />
         <div className={styles.OptionalOnboardingQuestions_title}>
           Optional Onboarding Questions
         </div>
         <div className={styles.OptionalOnboardingQuestions_subTitle}>
           During onboarding we will collect information from your new hires
         </div>
-        <div className={styles.OptionalOnboardingQuestions_list}>
-          <Form>
-            <Checkbox.Group>{this._renderOptionList()}</Checkbox.Group>
-          </Form>
+
+        <Checkbox.Group className={styles.OptionalOnboardingQuestions_list}>
+          {this._renderOptionList()}
+        </Checkbox.Group>
+        <div className={styles.OptionalOnboardingQuestions_button}>
+          <Button>+ Add custom fields</Button>
         </div>
       </div>
     );

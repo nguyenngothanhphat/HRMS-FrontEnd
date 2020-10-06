@@ -4,6 +4,20 @@
 .OptionalOnboardingQuestions {
   font-family: 'Roboto';
   padding: 42px;
+  :global {
+    .ant-btn {
+      border: none;
+      background-color: transparent;
+      box-shadow: none;
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.19;
+        text-align: left;
+        color: #2c6df9;
+      }
+    }
+  }
   &_title {
     font-size: 16px;
     font-weight: bold;
@@ -24,5 +38,6 @@
   }
   &_list {
     margin-top: 32px;
+    width: 100%;
   }
 }

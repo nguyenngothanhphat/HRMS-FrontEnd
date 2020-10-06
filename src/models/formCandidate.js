@@ -6,6 +6,15 @@
 //   getListEmployeeActive,
 //   getListEmployeeInActive,
 // } from '../services/employee';
+import {
+  getDocumentList,
+  getDepartmentList,
+  getTitleList,
+  getLocationList,
+  getEmployeeTypeList,
+  getManagerList,
+} from '@/services/addNewMember';
+import { dialog } from '@/utils/utils';
 
 const info = {
   namespace: 'info',
@@ -71,10 +80,9 @@ const info = {
     },
     jobDetail: {
       position: 1,
-      classification: 1,
+      classification: '5f50c2541513a742582206f9',
       department: '',
       jobTitle: '',
-      jobCategory: '',
       workLocation: '',
       reportingManager: '',
       candidatesNoticePeriod: '',
@@ -127,6 +135,20 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    testEligibility: [],
+    departmentList: [],
+    titleList: [],
+    locationList: [],
+    employeeTypeList: [],
+    managerList: [],
+    company: {},
+    loading: null,
+    loadingA: true,
+    loadingB: true,
+    loadingC: true,
+    loadingD: true,
+    loadingE: null,
+    loadingDocumentList: true,
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -139,6 +161,81 @@ const info = {
     //     dialog(errors);
     //   }
     // },
+    // *fetchPageData(_,{call,put}) {
+    //   try {
+
+    //   }
+    // },
+
+    *fetchDocumentList(_, { call, put }) {
+      try {
+        const response = yield call(getDocumentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveEligibilityRequirement',
+          payload: { testEligibility: data, loadingDocumentList: false },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchDepartmentList(_, { call, put }) {
+      try {
+        const response = yield call(getDepartmentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { departmentList: data, loadingA: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchTitleList(_, { call, put }) {
+      try {
+        const response = yield call(getTitleList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { titleList: data, loadingB: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchLocationList(_, { call, put }) {
+      try {
+        const response = yield call(getLocationList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationList: data, loadingC: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchEmployeeTypeList(_, { call, put }) {
+      try {
+        const response = yield call(getEmployeeTypeList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeTypeList: data, loadingD: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchManagerList({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getManagerList, { company });
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { managerList: data, loadingE: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     saveBasicInformation(state, action) {
@@ -166,6 +263,12 @@ const info = {
       };
     },
     saveBenefits(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    getDocumentList(state, action) {
       return {
         ...state,
         ...action.payload,

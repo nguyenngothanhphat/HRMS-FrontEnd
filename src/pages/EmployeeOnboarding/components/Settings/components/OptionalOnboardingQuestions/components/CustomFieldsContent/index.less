@@ -1,0 +1,59 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+.CustomFieldsContent {
+  padding: 40px;
+  font-family: 'Roboto';
+  :global {
+    .ant-btn {
+      padding: 0;
+      margin-left: 20px;
+      height: 21px;
+      border: none;
+      background-color: transparent;
+      box-shadow: none;
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.19;
+        text-align: left;
+        color: #2c6df9;
+      }
+    }
+  }
+  .subTitle {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.14;
+    text-align: left;
+    color: #161c29;
+  }
+  &_header {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    &_title {
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1.17;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #161c29;
+    }
+    &_buttons {
+      display: flex;
+      justify-content: flex-end;
+      // position: absolute;
+      // right: 0;
+    }
+  }
+  &_form {
+    display: grid;
+    grid-template-columns: 35% 65%;
+  }
+  hr {
+    border-top: none;
+    border-bottom: solid 1px #d6dce0;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+}

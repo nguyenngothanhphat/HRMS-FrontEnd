@@ -4,7 +4,7 @@ import styles from './index.less';
 
 class RadioComponent extends PureComponent {
   render() {
-    const { Tab, handleRadio, jobDetail } = this.props;
+    const { Tab, handleRadio, jobDetail, employeeTypeList } = this.props;
     const { position, classification } = jobDetail;
     return (
       <div className={styles.RadioComponent}>
@@ -37,9 +37,9 @@ class RadioComponent extends PureComponent {
         >
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-              {Tab.classificationTab.arr.map((data) => (
-                <Radio className={styles.Radio} value={data.value}>
-                  <Typography.Text>{data.classification}</Typography.Text>
+              {employeeTypeList.map((data) => (
+                <Radio className={styles.Radio} value={data._id}>
+                  <Typography.Text>{data.name}</Typography.Text>
                 </Radio>
               ))}
             </Col>

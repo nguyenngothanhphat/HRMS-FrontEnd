@@ -17,7 +17,7 @@ const index = ({
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
-  const [initialEmail] = useState('Landonorris@gmail.com');
+  const [initialEmail] = email;
   const [initialGenerateLink] = useState('abc.xyz.com');
   const handleEmailClick = () => {
     setIsEnable(true);
