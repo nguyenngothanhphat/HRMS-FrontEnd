@@ -1,6 +1,6 @@
 import React, { useState, PureComponent } from 'react';
 import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { UploadOutlined, EllipsisOutlined } from '@ant-design/icons';
 import FileIcon from '@/assets/pdf_icon.png';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownArrowIcon from '@/assets/downArrow.svg';
@@ -14,12 +14,17 @@ const CollapseRow = (props) => {
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
 
-  const handleDownloadClick = (event) => {
-    event.stopPropagation();
+  const handleDownloadClick = () => {
+    alert('Downloading');
   };
 
   const handleMenuClick = (event) => {
     event.stopPropagation();
+  };
+
+  const handleUploadClick = () => {
+    alert('Uploading');
+    // event.stopPropagation();
   };
 
   const menu = () => (
@@ -35,14 +40,11 @@ const CollapseRow = (props) => {
   );
 
   const statusAndButtons = () => (
-    <div onClick={handleMenuClick} className={styles.statusAndButtons}>
+    <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
       <a>Complete</a>
-      <img
-        alt="download"
-        src={DownloadIcon}
-        className={styles.downloadButton}
-        onClick={handleDownloadClick}
-      />
+      <div onClick={handleUploadClick}>
+        <UploadOutlined className={styles.uploadButton} />
+      </div>
       <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
       </Dropdown>
@@ -110,7 +112,16 @@ const CollapseRow = (props) => {
             </Col>
             <Col span={7}>{file.generatedBy}</Col>
             <Col span={7}>{file.date}</Col>
-            <Col span={2} />
+            <Col span={2}>
+              <div className={styles.downloadFile}>
+                <img
+                  alt="download"
+                  src={DownloadIcon}
+                  className={styles.downloadButton}
+                  onClick={handleDownloadClick}
+                />
+              </div>
+            </Col>
           </Row>
         ))}
       </Panel>
