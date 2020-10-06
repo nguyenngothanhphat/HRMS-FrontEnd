@@ -47,7 +47,7 @@ class JobDetails extends PureComponent {
         locationList: props.locationList,
         employeeTypeList: props.employeeTypeList,
         managerList: props.managerList,
-        loading: props.loadingA || props.loadingB || props.loadingC || props.loadingD,
+        loading: props.loadingC || props.loadingD,
         loadingA: props.loadingA,
         loadingB: props.loadingB,
         loadingC: props.loadingC,
@@ -61,35 +61,8 @@ class JobDetails extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const {
-      departmentList,
-      titleList,
-      locationList,
-      employeeTypeList,
-      loadingA,
-      loadingB,
-      loadingC,
-      loadingD,
-    } = this.state;
+    const { locationList, employeeTypeList, loadingC, loadingD } = this.state;
 
-    if (isEmpty(departmentList)) {
-      dispatch({
-        type: 'info/fetchDepartmentList',
-        payload: {
-          departmentList,
-          loadingA,
-        },
-      });
-    }
-    if (isEmpty(titleList)) {
-      dispatch({
-        type: 'info/fetchTitleList',
-        payload: {
-          titleList,
-          loadingB,
-        },
-      });
-    }
     if (isEmpty(locationList)) {
       dispatch({
         type: 'info/fetchLocationList',
@@ -98,7 +71,26 @@ class JobDetails extends PureComponent {
           loadingC,
         },
       });
+      console.log('Fetched');
     }
+    // if (isEmpty(departmentList)) {
+    //   dispatch({
+    //     type: 'info/fetchDepartmentList',
+    //     payload: {
+    //       departmentList,
+    //       loadingA,
+    //     },
+    //   });
+    // }
+    // if (isEmpty(titleList)) {
+    //   dispatch({
+    //     type: 'info/fetchTitleList',
+    //     payload: {
+    //       titleList,
+    //       loadingB,
+    //     },
+    //   });
+    // }
     if (isEmpty(employeeTypeList)) {
       dispatch({
         type: 'info/fetchEmployeeTypeList',
@@ -131,7 +123,7 @@ class JobDetails extends PureComponent {
     jobDetail[name] = value;
     const {
       department,
-      jobTitle,
+      title,
       workLocation,
       reportingManager,
       candidatesNoticePeriod,
@@ -140,7 +132,7 @@ class JobDetails extends PureComponent {
 
     if (
       department !== '' &&
-      jobTitle !== '' &&
+      title !== '' &&
       workLocation !== '' &&
       reportingManager !== '' &&
       candidatesNoticePeriod !== '' &&
@@ -163,31 +155,68 @@ class JobDetails extends PureComponent {
 
   handleSelect = (value, name) => {
     const { dispatch } = this.props;
-    const { jobDetail = {}, locationList, managerList, loadingE } = this.state;
+    const {
+      jobDetail = {},
+      locationList,
+      departmentList,
+      loadingA,
+      loadingE,
+      loadingB,
+      titleList,
+      managerList,
+    } = this.state;
     jobDetail[name] = value;
-    const changedWorkLocation = [...locationList];
-    const checkedArr = changedWorkLocation.filter((data) => data._id === value);
-    const obj = checkedArr[0];
-
-    const { company } = obj;
-    const { _id } = company;
-
-    dispatch({
-      type: 'info/save',
-      payload: {
-        company: _id,
-      },
-    });
-    console.log('company id', _id);
-    if (!isEmpty(company)) {
+    if (name === 'workLocation' || name === 'jobTitle') {
+      const changedWorkLocation = [...locationList];
+      const selectedWorkLocation = changedWorkLocation.filter((data) => data._id === value);
+      const obj = selectedWorkLocation[0];
+      const { company } = obj;
+      const { _id } = company;
       dispatch({
-        type: 'info/fetchManagerList',
+        type: 'info/save',
         payload: {
           company: _id,
-          loadingE,
         },
       });
-      console.log('manager List', managerList);
+      console.log('company id', _id);
+      if (!isEmpty(company)) {
+        dispatch({
+          type: 'info/fetchDepartmentList',
+          payload: {
+            company: _id,
+            loadingA,
+          },
+        });
+        console.log('department List', departmentList);
+        dispatch({
+          type: 'info/fetchTitleList',
+          payload: {
+            company: _id,
+            loadingB,
+          },
+        });
+        console.log('Title List', titleList);
+      }
+    } else if (loadingA === false || name === 'department') {
+      const changedDepartmentList = [...departmentList];
+      const selectedDepartment = changedDepartmentList.filter((data) => data._id === value);
+      console.log('selectedList', selectedDepartment);
+      const obj3 = selectedDepartment[0];
+      console.log('departmentId', obj3._id);
+      dispatch({
+        type: 'info/save',
+        payload: {
+          department: obj3._id,
+        },
+      });
+      if (!isEmpty(obj3._id)) {
+        dispatch({
+          type: 'info/fetchManagerList',
+          department: obj3._id,
+          loadingE,
+        });
+        console.log('manager List', managerList);
+      }
     }
   };
 
@@ -197,8 +226,14 @@ class JobDetails extends PureComponent {
         title: formatMessage({ id: 'component.jobDetail.positionTab' }),
         name: 'position',
         arr: [
-          { value: 1, position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }) },
-          { value: 2, position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }) },
+          {
+            value: 'EMPLOYEE',
+            position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }),
+          },
+          {
+            value: 'CONTINGENTWORKER',
+            position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }),
+          },
         ],
       },
       classificationTab: {
@@ -222,27 +257,27 @@ class JobDetails extends PureComponent {
     };
     const dropdownField = [
       {
-        title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
+        title: 'workLocation',
+        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
         id: 1,
-        placeholder: 'Select a job title',
+        placeholder: 'Select a work location',
       },
       {
-        title: 'jobTitle',
-        name: formatMessage({ id: 'component.jobDetail.jobTitle' }),
+        title: 'department',
+        name: formatMessage({ id: 'component.jobDetail.department' }),
         id: 2,
         placeholder: 'Select a job title',
       },
       {
-        title: 'workLocation',
-        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
-        id: 4,
-        placeholder: 'Select a work location',
+        title: 'title',
+        name: 'Job Title',
+        id: 3,
+        placeholder: 'Select a job title',
       },
       {
         title: 'reportingManager',
         name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
-        id: 5,
+        id: 4,
         placeholder: 'Select',
       },
     ];
@@ -286,6 +321,7 @@ class JobDetails extends PureComponent {
       loading,
       loadingE,
     } = this.state;
+    console.log(locationList);
     return (
       <>
         {loading === true ? (

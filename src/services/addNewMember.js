@@ -13,20 +13,22 @@ export function getDocumentList() {
   });
 }
 
-export function getDepartmentList() {
-  return request('/api/department/list', {
+export function getDepartmentList(params) {
+  return request('/api/department/list-by-company', {
     method: 'POST',
+    data: params,
   });
 }
 
-export function getTitleList() {
-  return request('/api/title/list', {
+export function getTitleList(params) {
+  return request('/api/title/list-by-company', {
     method: 'POST',
+    data: params,
   });
 }
 
-export function getLocationList() {
-  return request('/api/location/list', {
+export function getLocation() {
+  return request('/api/location/list-all', {
     method: 'POST',
   });
 }

@@ -81,9 +81,9 @@ const info = {
     },
     jobDetail: {
       position: 'EMPLOYEE',
-      classification: '5f50c2541513a742582206f9',
+      employeeType: '5f50c2541513a742582206f9',
       department: '',
-      jobTitle: '',
+      title: '',
       workLocation: '',
       reportingManager: '',
       candidatesNoticePeriod: '',
@@ -143,7 +143,7 @@ const info = {
     employeeTypeList: [],
     managerList: [],
     company: {},
-    departmentId: {},
+    department: {},
     loading: null,
     loadingA: true,
     loadingB: true,
@@ -210,7 +210,6 @@ const info = {
       try {
         const response = yield call(getLocation);
         const { statusCode, data } = response;
-        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList: data, loadingC: false } });
       } catch (errors) {
@@ -229,9 +228,9 @@ const info = {
       }
     },
 
-    *fetchManagerList({ payload: { departmentId = '' } }, { call, put }) {
+    *fetchManagerList({ payload: { department = '' } }, { call, put }) {
       try {
-        const response = yield call(getManagerList, { departmentId });
+        const response = yield call(getManagerList, { department });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { managerList: data, loadingE: false } });

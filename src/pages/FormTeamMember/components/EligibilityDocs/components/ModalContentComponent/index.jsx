@@ -5,13 +5,6 @@ import img1 from './images/modal_img_1.png';
 
 const CONTENT_LIST = [
   {
-    header: `The form has been successfully sent to Abc `,
-    body: 'The copy of the form has also been mailed to you and the HR manager',
-    image: img1,
-    button: 'Ok',
-    buttonType: 'sendEmail',
-  },
-  {
     header: 'The form has been successfully been shared',
     body: 'The copy of the form has also been mailed to you and the HR manager',
     image: img1,
@@ -35,14 +28,20 @@ class ModalContentComponent extends PureComponent {
   }
 
   componentDidMount() {
-    const { isSentEmail, isMarkAsDone } = this.props;
+    const { isSentEmail, isMarkAsDone, email } = this.props;
     if (isSentEmail) {
       this.setState({
-        content: CONTENT_LIST[0],
+        content: {
+          header: `The form has been successfully sent to ${email} `,
+          body: 'The copy of the form has also been mailed to you and the HR manager',
+          image: img1,
+          button: 'Ok',
+          buttonType: 'sendEmail',
+        },
       });
     } else if (isMarkAsDone) {
       this.setState({
-        content: CONTENT_LIST[1],
+        content: CONTENT_LIST[0],
       });
     }
   }

@@ -331,6 +331,7 @@ class EligibilityDocs extends Component {
       openModal,
       testEligibility,
       loadingDocumentList,
+      basicInformation: { fullName },
     } = this.state;
     return (
       <>
@@ -374,6 +375,7 @@ class EligibilityDocs extends Component {
                 isSentEmail={isSentEmail}
                 generateLink={generateLink}
                 handleMarkAsDone={this.handleMarkAsDone}
+                fullName={fullName}
               />
             </Col>
           </Row>
@@ -385,6 +387,7 @@ class EligibilityDocs extends Component {
               isSentEmail={isSentEmail}
               isMarkAsDone={isMarkAsDone}
               eligibilityDocs={eligibilityDocs}
+              email={email}
             />
           )}
         </CustomModal>

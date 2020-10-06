@@ -14,6 +14,7 @@ const index = ({
   generateLink = '',
   handleMarkAsDone = () => {},
   handleSendFormAgain = () => {},
+  fullName = '',
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
@@ -59,7 +60,7 @@ const index = ({
       {isSentEmail ? (
         <div className={style.anotherBody}>
           <Typography.Text className={style.text}>
-            We are waiting for <span className={style.specificText}>Ms. Ashwini Narayana</span> to
+            We are waiting for <span className={style.specificText}>Mr / Mrs. {fullName}</span> to
             upload all requested documents for eligibility check.
           </Typography.Text>
           <br />
