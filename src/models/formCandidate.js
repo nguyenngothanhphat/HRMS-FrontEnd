@@ -6,6 +6,16 @@
 //   getListEmployeeActive,
 //   getListEmployeeInActive,
 // } from '../services/employee';
+import {
+  getDocumentList,
+  getDepartmentList,
+  getTitleList,
+  getLocation,
+  getEmployeeTypeList,
+  getManagerList,
+  addCandidate,
+} from '@/services/addNewMember';
+import { dialog } from '@/utils/utils';
 
 const info = {
   namespace: 'info',
@@ -28,6 +38,7 @@ const info = {
     eligibilityDocs: {
       email: '',
       generateLink: '',
+      fullName: '',
       isSentEmail: false,
       isMarkAsDone: false,
       identityProof: {
@@ -70,11 +81,10 @@ const info = {
       },
     },
     jobDetail: {
-      position: 1,
-      classification: 1,
+      position: 'EMPLOYEE',
+      employeeType: '5f50c2541513a742582206f9',
       department: '',
-      jobTitle: '',
-      jobCategory: '',
+      title: '',
       workLocation: '',
       reportingManager: '',
       candidatesNoticePeriod: '',
@@ -127,6 +137,25 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    testEligibility: [],
+    departmentList: [],
+    titleList: [],
+    locationList: [],
+    employeeTypeList: [],
+    managerList: [],
+    company: {},
+    department: [],
+    location: [],
+    loading: null,
+    loadingA: true,
+    loadingB: true,
+    loadingC: true,
+    loadingD: true,
+    loadingE: null,
+    loadingDocumentList: true,
+    loadingReportingManager: true,
+    item: {},
+    Obj: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -139,6 +168,99 @@ const info = {
     //     dialog(errors);
     //   }
     // },
+    // *fetchPageData(_,{call,put}) {
+    //   try {
+
+    //   }
+    // },
+
+    *fetchDocumentList(_, { call, put }) {
+      try {
+        const response = yield call(getDocumentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveEligibilityRequirement',
+          payload: { testEligibility: data, loadingDocumentList: false },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getDepartmentList, { company });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            departmentList: data,
+            loadingA: false,
+            loadingReportingManager: info.state.loadingA && info.state.loadingC,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchTitleList({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getTitleList, { company });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { titleList: data, loadingB: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchLocationList(_, { call, put }) {
+      try {
+        const response = yield call(getLocation);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationList: data, loadingC: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchEmployeeTypeList(_, { call, put }) {
+      try {
+        const response = yield call(getEmployeeTypeList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeTypeList: data, loadingD: false } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchManagerList({ payload = {} }, { call, put }) {
+      console.log(payload);
+      try {
+        const response = yield call(getManagerList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { managerList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addCandidateByHR({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(addCandidate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { Obj: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     saveBasicInformation(state, action) {
@@ -166,6 +288,12 @@ const info = {
       };
     },
     saveBenefits(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    getDocumentList(state, action) {
       return {
         ...state,
         ...action.payload,
