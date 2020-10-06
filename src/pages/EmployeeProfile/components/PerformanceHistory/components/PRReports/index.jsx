@@ -20,23 +20,16 @@ class PRReports extends PureComponent {
   generateArrayDocument = (listPRReport) => {
     const arrayAttachment = listPRReport.map((item) => {
       if (item.attachment) {
-        const { id, name: fileName, createdAt: date, url: source } = item.attachment;
-        const fileNameSplit = fileName.split('.');
+        const { _id: id, createdAt: date, url: source } = item.attachment;
         return {
           id,
-          fileName: fileNameSplit[0],
+          fileName: item.key,
           generatedBy: 'Terralogic',
           date: moment(date).locale('en').format('MMMM Do, YYYY'),
           source,
         };
       }
-      return {
-        id: 'sample',
-        fileName: 'Sample',
-        generatedBy: 'Terralogic',
-        date: 'December 10th, 2018',
-        source: '/assets/images/exampleCard.png',
-      };
+      return null;
     });
     return [
       {
@@ -58,19 +51,18 @@ class PRReports extends PureComponent {
     });
   };
 
-  onFileClick = (value) => {
+  onFileClick = (id) => {
     const {
       employeeProfile: { listPRReport = [] },
     } = this.props;
 
     const data = this.generateArrayDocument(listPRReport);
-    data.some((x) => {
-      return x.body.some((y) => {
+    data.forEach((x) => {
+      x.body.forEach((y) => {
         let count = 0;
-        // eslint-disable-next-line array-callback-return
-        return y.files.some((z) => {
+        y.files.forEach((z) => {
           count += 1;
-          if (z.id === value) {
+          if (z.id === id) {
             this.setState({
               isViewingDocument: true,
               files: y.files,

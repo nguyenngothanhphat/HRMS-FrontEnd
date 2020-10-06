@@ -128,7 +128,7 @@ export async function getAddVisa(payload) {
 }
 
 export async function getPRReport(payload) {
-  return request('/api/document/employee-group', {
+  return request('/api/document/list', {
     method: 'POST',
     data: payload,
   });

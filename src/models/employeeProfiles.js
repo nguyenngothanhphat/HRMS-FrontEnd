@@ -474,17 +474,17 @@ const employeeProfile = {
       }
     },
     *fetchPRReport(
-      { payload: { employee = '', employeeGroup = 'PR report' } = {} },
+      { payload: { employee = '', parentEmployeeGroup = 'PR Reports' } = {} },
       { call, put },
     ) {
       try {
         const response = yield call(getPRReport, {
           employee,
-          employeeGroup,
+          parentEmployeeGroup,
         });
         const { statusCode, data: listPRReport = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'listPRReport', payload: { listPRReport } });
+        yield put({ type: 'save', payload: { listPRReport } });
       } catch (errors) {
         dialog(errors);
       }
@@ -550,12 +550,6 @@ const employeeProfile = {
           ...editGeneral,
           ...action.payload,
         },
-      };
-    },
-    listPRReport(state, action) {
-      return {
-        ...state,
-        ...action.payload,
       };
     },
   },
