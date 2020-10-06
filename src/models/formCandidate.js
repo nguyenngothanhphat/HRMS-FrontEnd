@@ -13,6 +13,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  addCandidate,
 } from '@/services/addNewMember';
 import { dialog } from '@/utils/utils';
 
@@ -153,7 +154,9 @@ const info = {
     loadingE: null,
     loadingDocumentList: true,
     loadingReportingManager: true,
-    data: {},
+    item: {},
+    Obj: {},
+    loadingAdd: true,
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -244,6 +247,17 @@ const info = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { managerList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addCandidateByHR({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(addCandidate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
         dialog(errors);
       }

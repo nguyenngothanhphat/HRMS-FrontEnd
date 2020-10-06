@@ -46,3 +46,11 @@ export function getManagerList(params) {
     data: params,
   });
 }
+
+export function addCandidate(params) {
+  console.log(params);
+  return request('/api/candidate/add-by-hr', {
+    method: 'POST',
+    data: params,
+  });
+}

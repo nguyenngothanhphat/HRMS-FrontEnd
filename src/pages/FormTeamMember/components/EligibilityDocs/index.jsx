@@ -32,14 +32,15 @@ const note = {
 @connect(
   ({
     info: { eligibilityDocs, basicInformation, jobDetail } = {},
-    info: { testEligibility, loadingDocumentList, data },
+    info: { testEligibility, loadingDocumentList, item, loadingAdd },
   }) => ({
     eligibilityDocs,
     basicInformation,
     testEligibility,
     loadingDocumentList,
     jobDetail,
-    data,
+    item,
+    loadingAdd,
   }),
 )
 class EligibilityDocs extends Component {
@@ -57,7 +58,8 @@ class EligibilityDocs extends Component {
         basicInformation: props.basicInformation,
         testEligibility: props.testEligibility,
         jobDetail: props.jobDetail,
-        data: props.data,
+        item: props.item,
+        loadingAdd: props.loadingAdd,
         loadingDocumentList: props.loadingDocumentList || {},
       };
     }
@@ -66,7 +68,14 @@ class EligibilityDocs extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { eligibilityDocs, testEligibility, basicInformation, loadingDocumentList } = this.state;
+    const {
+      eligibilityDocs,
+      testEligibility,
+      basicInformation,
+      loadingDocumentList,
+      jobDetail,
+    } = this.state;
+    const { position, employeeType, department, title, workLocation, reportingManager } = jobDetail;
     const { workEmail } = basicInformation;
     if (isEmpty(testEligibility)) {
       dispatch({
@@ -85,6 +94,19 @@ class EligibilityDocs extends Component {
           ...eligibilityDocs,
           email: workEmail,
         },
+        item: {
+          basicInformation: {
+            ...basicInformation,
+          },
+          jobDetail: {
+            position,
+            employeeType,
+            department,
+            title,
+            workLocation,
+            reportingManager,
+          },
+        },
       },
     });
   }
@@ -97,8 +119,7 @@ class EligibilityDocs extends Component {
 
   handleSendEmail = (user) => {
     const { dispatch } = this.props;
-    const { eligibilityDocs = {}, jobDetail, basicInformation, testEligibility } = this.state;
-    const { position, employeeType, department, title, workLocation, reportingManager } = jobDetail;
+    const { eligibilityDocs = {}, testEligibility, item } = this.state;
     dispatch({
       type: 'info/saveEligibilityRequirement',
       payload: {
@@ -109,30 +130,27 @@ class EligibilityDocs extends Component {
         },
       },
     });
-    this.setState({
-      openModal: true,
-    });
+
     dispatch({
       type: 'info/save',
       payload: {
-        data: {
-          jobDetail: {
-            position,
-            employeeType,
-            department,
-            title,
-            workLocation,
-            reportingManager,
-          },
-          basicInformation: {
-            ...basicInformation,
-          },
-          documents: {
-            ...testEligibility,
-          },
+        loadingAdd: false,
+        item: {
+          ...item,
+          documents: testEligibility,
         },
       },
     });
+    dispatch({
+      type: 'info/addCandidateByHR',
+      payload: { ...item, documents: testEligibility },
+    });
+
+    dispatch(
+      this.setState({
+        openModal: true,
+      }),
+    );
   };
 
   handleMarkAsDone = (user) => {
@@ -358,9 +376,7 @@ class EligibilityDocs extends Component {
       testEligibility,
       loadingDocumentList,
       basicInformation: { fullName },
-      data,
     } = this.state;
-    console.log(data);
     return (
       <>
         {loadingDocumentList === true ? (

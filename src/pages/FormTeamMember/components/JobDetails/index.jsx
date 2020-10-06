@@ -104,23 +104,9 @@ class JobDetails extends PureComponent {
     const { dispatch, checkMandatory } = this.props;
     const { jobDetail = {} } = this.state;
     jobDetail[name] = value;
-    const {
-      department,
-      title,
-      workLocation,
-      reportingManager,
-      candidatesNoticePeriod,
-      prefferedDateOfJoining,
-    } = jobDetail;
+    const { department, title, workLocation, reportingManager } = jobDetail;
 
-    if (
-      department !== '' &&
-      title !== '' &&
-      workLocation !== '' &&
-      reportingManager !== '' &&
-      candidatesNoticePeriod !== '' &&
-      prefferedDateOfJoining !== ''
-    ) {
+    if (department !== '' && title !== '' && workLocation !== '' && reportingManager !== '') {
       checkMandatory.filledJobDetail = true;
     } else {
       checkMandatory.filledJobDetail = false;

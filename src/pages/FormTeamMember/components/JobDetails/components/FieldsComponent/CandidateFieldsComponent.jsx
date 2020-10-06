@@ -35,6 +35,7 @@ class CandidateFieldsComponent extends PureComponent {
               className={styles}
               onChange={(value) => _handleSelect(value, candidateField[0].title)}
               defaultValue={candidatesNoticePeriod}
+              disabled="true"
             >
               {candidateField[0].Option.map((data) => (
                 <Option value={data.value}>
@@ -54,6 +55,7 @@ class CandidateFieldsComponent extends PureComponent {
               placeholder=""
               picker="date"
               format="MM/DD/YYYY"
+              disabled="true"
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining}
             />
