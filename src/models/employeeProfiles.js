@@ -24,6 +24,8 @@ import {
   getDocuments,
   getPayslip,
   getChangeHistories,
+  getDocumentAdd,
+  getDocumentUpdate,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -61,6 +63,7 @@ const employeeProfile = {
       compensationData: {},
       passportData: {},
       visaData: [],
+      document: {},
     },
     listPRReport: [],
   },
@@ -514,7 +517,37 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *fetchDocumentAdd({ payload = {} }, { call }) {
+      let idDocument = '';
+      try {
+        const response = yield call(getDocumentAdd, payload);
+        const {
+          statusCode,
+          data: { _id: id },
+        } = response;
+
+        if (statusCode !== 200) throw response;
+        idDocument = id;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return idDocument;
+    },
+    *fetchDocumentUpdate({ payload }, { call, put }) {
+      let doc = {};
+      try {
+        const response = yield call(getDocumentUpdate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { document: data } });
+        doc = data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return doc;
+    },
   },
+
   reducers: {
     save(state, action) {
       return {
