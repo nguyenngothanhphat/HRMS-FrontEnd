@@ -3,18 +3,52 @@ import { Row, Col, Tooltip } from 'antd';
 import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
-import iconPDF from '@/assets/pdf-2.svg';
+import ModalReviewImage from '@/components/ModalReviewImage';
+import ConformIcondata from '../../../confirmIcon';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
-@connect(({ upload: { urlImage = '' } = {} }) => ({
-  urlImage,
-}))
+@connect(
+  ({
+    upload: { employeeInformationURL = '' } = {},
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    employeeInformationURL,
+    generalData,
+    generalDataOrigin,
+  }),
+)
 class View extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      linkImage: '',
+    };
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
+
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
   render() {
-    const { dataAPI, urlImage } = this.props;
-    console.log(urlImage);
-    const splitUrl = urlImage.split('/');
+    const { visible, linkImage } = this.state;
+    const { dataAPI, generalData } = this.props;
+    const { urlFile } = generalData;
+    const splitUrl = urlFile ? urlFile.url.split('/') : '';
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
@@ -50,18 +84,16 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
-              {item.label === 'Adhaar Card Number' && urlImage ? (
-                <>
-                  <a
-                    href={urlImage}
-                    target="_blank"
-                    rel="noopener noreferrer"
+              {item.label === 'Adhaar Card Number' && urlFile ? (
+                <div className={styles.viewFileUpLoad}>
+                  <p
+                    onClick={() => this.handleOpenModalReview(urlFile.url)}
                     className={styles.urlData}
                   >
                     {splitUrl[6]}
-                  </a>
-                  <img src={iconPDF} alt="iconFilePDF" className={styles.iconData} />
-                </>
+                  </p>
+                  <ConformIcondata data={splitUrl[6]} />
+                </div>
               ) : (
                 ''
               )}
@@ -69,6 +101,7 @@ class View extends PureComponent {
           </Fragment>
         ))}
         {/* Custom Col Here */}
+        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
       </Row>
     );
   }

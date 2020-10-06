@@ -10,21 +10,21 @@ class PerformanceReviewIndicator extends PureComponent {
     };
   }
 
-  _renderPRIndicator = (level) => {
+  renderPRIndicator = (level) => {
     const { maxPerformanceReview } = this.state;
     return (
       <Row type="flex" className={styles.performanceReview_content} justify="start" align="middle">
-        {Array.from(Array(level), () => {
-          return <Col className={this._renderActiveColorPRIndicator(level)} />;
+        {Array.from(Array(level), (index) => {
+          return <Col key={index} className={this.renderActiveColorPRIndicator(level)} />;
         })}
-        {Array.from(Array(maxPerformanceReview - level), () => {
-          return <Col className={this._renderBlurColorPRIndicator(level)} />;
+        {Array.from(Array(maxPerformanceReview - level), (index) => {
+          return <Col key={index} className={this.renderBlurColorPRIndicator(level)} />;
         })}
       </Row>
     );
   };
 
-  _renderActiveColorPRIndicator = (level) => {
+  renderActiveColorPRIndicator = (level) => {
     let className = `${styles.performanceReview_shape}`;
     if (level === 4 || level === 5) {
       className += ` ${styles.performanceReview_woah}`;
@@ -38,7 +38,7 @@ class PerformanceReviewIndicator extends PureComponent {
     return className;
   };
 
-  _renderBlurColorPRIndicator = (level) => {
+  renderBlurColorPRIndicator = (level) => {
     let className = `${styles.performanceReview_shape}`;
     if (level === 4 || level === 5) {
       className += ` ${styles.performanceReview_woah_blur}`;
@@ -54,9 +54,7 @@ class PerformanceReviewIndicator extends PureComponent {
 
   render() {
     const { level } = this.props;
-    return (
-      <div className={styles.performanceReviewIndicator}>{this._renderPRIndicator(level)}</div>
-    );
+    return <div className={styles.performanceReviewIndicator}>{this.renderPRIndicator(level)}</div>;
   }
 }
 export default PerformanceReviewIndicator;

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Select, Input } from 'antd';
+import { Select, InputNumber } from 'antd';
 import styles from './styles.less';
 
 export default function SecondStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData } = props;
+  const { onChange, onSearch, changeData, fetchedState } = props;
 
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
@@ -15,17 +15,31 @@ export default function SecondStep(props) {
       <div className={styles.headings}>What do you wish to change?</div>
       <div className={styles.select}>
         <div>Title</div>
-        <Input
-          defaultValue={changeData.stepTwo.title}
-          style={{ width: 300 }}
-          placeholder="Enter a title"
-          onChange={(e) => onChange(e.target.value, 'title')}
-        />
+        <Select
+          defaultValue={changeData.newTitle || null}
+          showSearch
+          placeholder="Select a title"
+          optionFilterProp="children"
+          onChange={(value) => onChange(value, 'title')}
+          onSearch={onSearch}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {fetchedState.listTitle.map((item) => {
+            return (
+              <Option key={makeKey()} value={[item.name, item._id]}>
+                {item.name}
+              </Option>
+            );
+          })}
+          ]
+        </Select>
       </div>
       <div className={styles.select}>
         <div>Work Location</div>
         <Select
-          defaultValue={changeData.stepTwo.wLocation || null}
+          defaultValue={changeData.newLocation || null}
           showSearch
           placeholder="Select a location"
           optionFilterProp="children"
@@ -35,10 +49,10 @@ export default function SecondStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Bengaluru', 'Ho Chi Minh', 'Sillicon Valley'].map((item) => {
+          {fetchedState.locations.map((item) => {
             return (
-              <Option key={makeKey()} value={item}>
-                {item}
+              <Option key={makeKey()} value={[item.name, item.id]}>
+                {item.name}
               </Option>
             );
           })}
@@ -58,10 +72,10 @@ export default function SecondStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Full-Time', 'Part-Time'].map((item) => {
+          {fetchedState.employeeTypes.map((item) => {
             return (
-              <Option key={makeKey()} value={item}>
-                {item}
+              <Option key={makeKey()} value={item._id}>
+                {item.name}
               </Option>
             );
           })}
@@ -93,12 +107,14 @@ export default function SecondStep(props) {
       </div>
       <div className={styles.select}>
         <div>Annual Salary</div>
-        <Input
+        <InputNumber
           defaultValue={changeData.stepTwo.salary}
           style={{ width: 300 }}
+          min={0}
+          formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
           placeholder="Enter an amount"
-          onChange={(e) => onChange(e.target.value, 'salary')}
-          prefix="$"
+          onChange={(value) => onChange(value, 'salary')}
         />
       </div>
     </div>

@@ -153,7 +153,7 @@ class DirectoryTable extends Component {
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
-      position: ['bottomRight'],
+      position: ['bottomLeft'],
       total: list.length,
       showTotal: (total, range) => (
         <span>

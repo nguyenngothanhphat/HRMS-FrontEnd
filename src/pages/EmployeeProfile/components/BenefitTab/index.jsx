@@ -49,7 +49,13 @@ export default class BenefitTab extends PureComponent {
                 </h3>
                 <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
                   {dependentData.map((item, idx) => {
-                    return <DependentTabs index={idx} data={item} />;
+                    return (
+                      <DependentTabs
+                        key={Math.random().toString(36).substring(7)}
+                        index={idx}
+                        data={item}
+                      />
+                    );
                   })}
                 </div>
               </div>
@@ -73,7 +79,7 @@ export default class BenefitTab extends PureComponent {
             </h3>
             <div className={styles.content}>
               {data.map((item) => {
-                return <GroupInfoType2 data={item} />;
+                return <GroupInfoType2 key={Math.random().toString(36).substring(7)} data={item} />;
               })}
             </div>
           </div>
@@ -102,7 +108,9 @@ export default class BenefitTab extends PureComponent {
                   </h1>
                   <div className={styles.content}>
                     {data.map((item) => {
-                      return <GroupInfoType2 data={item} />;
+                      return (
+                        <GroupInfoType2 key={Math.random().toString(36).substring(7)} data={item} />
+                      );
                     })}
                   </div>
                 </div>
@@ -112,7 +120,9 @@ export default class BenefitTab extends PureComponent {
                   </h1>
                   <div className={styles.content}>
                     {data.map((item) => {
-                      return <GroupInfoType2 data={item} />;
+                      return (
+                        <GroupInfoType2 key={Math.random().toString(36).substring(7)} data={item} />
+                      );
                     })}
                   </div>
                 </div>

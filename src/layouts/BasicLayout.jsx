@@ -53,6 +53,15 @@ const BasicLayout = (props) => {
    * init variables
    */
 
+  const handleCollapse = () => {
+    if (!collapsed) {
+      dispatch({
+        type: 'global/changeLayoutCollapsed',
+        payload: true,
+      });
+    }
+  };
+
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
@@ -64,9 +73,21 @@ const BasicLayout = (props) => {
   const _renderBtnToggle = (
     <div className={styles.titleHeader}>
       <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
-        <img src="/assets/images/menu.svg" alt="toggle-menu" />
+        <img
+          src="/assets/images/menu.svg"
+          alt="toggle-menu"
+          style={{ width: '45px', height: '20px' }}
+        />
       </div>
     </div>
+  );
+
+  const _renderLogo = (
+    <img
+      src="/assets/images/terralogic-logo.png"
+      alt="logo"
+      style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
+    />
   );
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
@@ -82,6 +103,7 @@ const BasicLayout = (props) => {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
+        headerContentRender={() => _renderLogo}
         menuHeaderRender={() => _renderBtnToggle}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
@@ -106,7 +128,9 @@ const BasicLayout = (props) => {
         {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
-          {children}
+          <div onMouseOver={() => handleCollapse()} onFocus={() => handleCollapse()}>
+            {children}
+          </div>
         </Authorized>
       </ProLayout>
     </div>

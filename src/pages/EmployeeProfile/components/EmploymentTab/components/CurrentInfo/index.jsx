@@ -1,9 +1,34 @@
 import React from 'react';
+import moment from 'moment';
+import { connect } from 'umi';
 import styles from './styles.less';
 
-export default function CurrentInfo(props) {
-  const { data } = props;
+function CurrentInfo(props) {
+  const { employeeProfile } = props;
 
+  const {
+    title,
+    joinDate,
+    location,
+    employeeType,
+    manager,
+  } = employeeProfile.originData.employmentData;
+  const {
+    compensationType,
+    currentAnnualCTC,
+    timeOffPolicy,
+  } = employeeProfile.originData.compensationData;
+
+  const data = {
+    title: title?.name || 'Missing title',
+    joiningDate: moment(joinDate).locale('en').format('Do MMMM YYYY'),
+    location: location?.name || 'Missing location',
+    employType: employeeType?.name || 'Missing employment type',
+    compenType: compensationType || 'This person is missing payment method',
+    annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    manager: manager?.generalInfo.firstName || 'Missing reporting manager',
+    timeOff: timeOffPolicy || 'This person is not allowed to take time off',
+  };
   return (
     <div style={{ margin: '24px' }}>
       {[
@@ -55,3 +80,4 @@ export default function CurrentInfo(props) {
     </div>
   );
 }
+export default connect(({ employeeProfile }) => ({ employeeProfile }))(CurrentInfo);

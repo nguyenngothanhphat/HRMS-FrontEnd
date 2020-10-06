@@ -4,8 +4,8 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
-import ReceivedSubmittedDocuments from './components/ReceivedSubmittedDocuments';
-import SentEligibilityForms from './components/SentEligibilityForms';
+import ReceivedSubmittedDocuments from './components/ReceivedSubmittedDocuments/index';
+import SentEligibilityForms from './components/SentEligibilityForms/index';
 
 import styles from './index.less';
 

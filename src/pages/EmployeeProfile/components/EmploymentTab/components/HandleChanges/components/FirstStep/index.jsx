@@ -18,7 +18,7 @@ export default function FirstStep(props) {
           {radio === 1 ? (
             <DatePicker
               defaultValue={changeData.stepOne === 'Before' ? null : moment(changeData.stepOne)}
-              onChange={onDateChange}
+              onChange={(value) => onDateChange(value, 'Before')}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '250px',
@@ -44,7 +44,7 @@ export default function FirstStep(props) {
           {radio === 3 ? (
             <DatePicker
               defaultValue={changeData.stepOne === 'Later' ? null : moment(changeData.stepOne)}
-              onChange={onDateChange}
+              onChange={(value) => onDateChange(value, 'Later')}
               suffixIcon={<CalendarOutlined style={{ color: '#161c29' }} />}
               style={{
                 width: '250px',

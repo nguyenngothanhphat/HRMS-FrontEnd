@@ -258,6 +258,7 @@ const PHASE_DATA = [
       {
         id: 1,
         name: 'Pending Eligibility Checks',
+        // name: {formatMessage({ id: 'component.onboardingOverview.new' })},
         key: 'pendingEligibilityChecks',
         component: 'PendingEligibilityChecks',
         quantity: sentEligibilityFormsData.length,
@@ -361,7 +362,15 @@ const onboard = {
       finalOfferDrafts: finalOfferDraftsData,
       discardedFinalOffers: discardedFinalOffersData,
     },
-    settings: {},
+    settings: {
+      backgroundChecks: {
+        typeOfBackgroundCheck: '',
+        checksPerform: '',
+        resultViewer: '',
+        vehicleReportsRequested: '',
+        vehicleNotObtained: '',
+      },
+    },
     customFields: {},
     menu: {
       onboardingOverviewTab: {
@@ -382,12 +391,12 @@ const onboard = {
     // },
   },
   reducers: {
-    // save(state, action) {
-    //   return {
-    //     ...state,
-    //     ...action.payload,
-    //   };
-    // },
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
   },
 };
 export default onboard;

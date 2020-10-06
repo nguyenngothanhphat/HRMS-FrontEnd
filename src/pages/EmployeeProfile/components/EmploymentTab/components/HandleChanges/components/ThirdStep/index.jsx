@@ -1,14 +1,13 @@
 import React from 'react';
-import { Select, Input } from 'antd';
+import { Select } from 'antd';
 import styles from './styles.less';
 
 export default function ThirdStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData } = props;
+  const { onChange, onSearch, changeData, fetchedState } = props;
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div className={styles.headings}>What do you wish to change?</div>
@@ -25,24 +24,15 @@ export default function ThirdStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Engineer', 'HR', 'Support', 'Design'].map((item) => {
+          {fetchedState.departments.map((item) => {
             return (
-              <Option key={makeKey()} value={item}>
-                {item}
+              <Option key={makeKey()} value={item._id}>
+                {item.name}
               </Option>
             );
           })}
           ]
         </Select>
-      </div>
-      <div className={styles.select}>
-        <div>Position</div>
-        <Input
-          defaultValue={changeData.stepThree.position}
-          style={{ width: 300 }}
-          placeholder="Enter the position"
-          onChange={(e) => onChange(e.target.value, 'position')}
-        />
       </div>
       <div className={styles.select}>
         <div>Reporting to</div>
@@ -57,10 +47,10 @@ export default function ThirdStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Anil Reddy'].map((item) => {
+          {fetchedState.employees.map((item) => {
             return (
-              <Option key={makeKey()} value={item}>
-                {item}
+              <Option key={makeKey()} value={item._id}>
+                {item.generalInfo.firstName || item.generalInfo.legalName || null}
               </Option>
             );
           })}

@@ -1,16 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { formatMessage } from 'umi';
 import styles from './styles.less';
 
-export default function GroupInfoType2({ data }) {
+export default function GroupInfoType2(props) {
+  const { data } = props;
   return (
     <div className={styles.GroupInfoType2}>
       <div className={styles.title}>{data.title}</div>
       {data.plans.map((item) => {
         const temp = Object.entries(item);
         return (
-          <div style={{ display: 'flex' }}>
+          <div key={Math.random().toString(36).substring(7)} style={{ display: 'flex' }}>
             <div className={styles.subTitle}>
               <p>{formatMessage({ id: 'component.GroupInfoType2.plan' })}</p>
               <p>{formatMessage({ id: 'component.GroupInfoType2.active' })}</p>
@@ -26,7 +26,3 @@ export default function GroupInfoType2({ data }) {
     </div>
   );
 }
-
-GroupInfoType2.propTypes = {
-  data: PropTypes.objectOf(PropTypes.object).isRequired,
-};

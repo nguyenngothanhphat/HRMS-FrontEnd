@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Row, Col, Form, Input, DatePicker } from 'antd';
+import { Typography, Row, Col, Form, Input } from 'antd';
 import style from './index.less';
 
 const InputField = () => {

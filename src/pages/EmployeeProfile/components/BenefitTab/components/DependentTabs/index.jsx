@@ -44,7 +44,7 @@ export default function DependentTabs(props) {
               return foo;
           }
           return (
-            <div className={styles.items}>
+            <div key={Math.random().toString(36).substring(7)} className={styles.items}>
               <div style={{ fontWeight: '500', width: '50%' }}>{item}</div>
               <div style={{ color: '#707177', width: '50%' }}>
                 <p>{foo}</p>

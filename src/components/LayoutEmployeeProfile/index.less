@@ -139,3 +139,55 @@
     color: #2c6df9;
   }
 }
+
+.formEditBio {
+  padding: 24px;
+  &__title {
+    text-align: center;
+    color: #161c29;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  &__description1 {
+    text-align: center;
+    color: #707177;
+    font-size: 13px;
+    line-height: 1.38;
+    margin-bottom: 24px;
+  }
+
+  &__description2 {
+    margin-top: 8px;
+    color: #707177;
+    font-style: italic;
+    line-height: 1.38;
+  }
+
+  .viewBtnSave {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+    .btnSave {
+      font-size: 14px;
+      width: 80px;
+      height: 40px;
+      font-weight: 500;
+      border-radius: 30px;
+      color: #fff;
+      background-color: #ffa100;
+      border: none;
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
+  :global {
+    textarea.ant-input {
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #000;
+    }
+  }
+}

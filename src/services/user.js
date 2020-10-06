@@ -11,3 +11,47 @@ export async function queryCurrent() {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+export async function getUserInfo(data) {
+  return request(
+    '/api/security-register',
+    {
+      method: 'POST',
+      data, // {firstName, email}
+    },
+    true,
+  );
+}
+
+export async function getSecurityCode(data) {
+  return request(
+    '/api/resend-security-register',
+    {
+      method: 'POST',
+      data, // codeNumber
+    },
+    true,
+  );
+}
+
+export async function signupAdmin(data) {
+  return request(
+    '/api/sign-up-admin',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}
+
+export async function activeAdmin(data) {
+  return request(
+    '/api/active-user-security-register',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}

@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-
 import {
   COLUMN_NAME,
   TABLE_TYPE,
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 // const list = rookieList;
 const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;

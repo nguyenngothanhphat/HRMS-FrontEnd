@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Upload, message } from 'antd';
+import ModalReviewImage from '@/components/ModalReviewImage';
 import { connect } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -8,6 +9,28 @@ import styles from './index.less';
   loading: loading.effects['upload/uploadFile'],
 }))
 class UploadCertification extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      linkImage: '',
+    };
+  }
+
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
+
   beforeUpload = (file) => {
     const checkType =
       file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
@@ -53,7 +76,10 @@ class UploadCertification extends Component {
       multiple: false,
       showUploadList: false,
     };
+    const { visible, linkImage } = this.state;
     const { item: { urlFile = '' } = {}, loading } = this.props;
+    const nameFile = urlFile.split('/').pop();
+
     return (
       <div className={styles.root}>
         {!urlFile ? (
@@ -68,15 +94,12 @@ class UploadCertification extends Component {
           </Upload>
         ) : (
           <div className={styles.viewRow}>
-            <a
-              href={urlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              id="img-certification"
+            <p
+              onClick={() => this.handleOpenModalReview(urlFile)}
               className={styles.nameCertification}
             >
-              File Name
-            </a>
+              {nameFile}
+            </p>
             <img
               src="/assets/images/iconFilePNG.svg"
               alt="iconFilePNG"
@@ -90,6 +113,7 @@ class UploadCertification extends Component {
             />
           </div>
         )}
+        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import Icon, { FilterOutlined } from '@ant-design/icons';
+import Icon from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
@@ -188,7 +188,7 @@ class DirectoryComponent extends PureComponent {
             <div className={styles.filterBackgroundButton} />
           )}
           <div className={styles.filterButton}>
-            <FilterOutlined />
+            <img src="/assets/images/iconFilter.svg" alt="filter" />
             <p className={styles.textButtonFilter}>Filter</p>
           </div>
         </div>
@@ -215,6 +215,12 @@ class DirectoryComponent extends PureComponent {
             {bottabs.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.directoryLayout_inner}>
+                  <Content className="site-layout-background">
+                    <DirectoryTable
+                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
+                      list={this.renderListEmployee(tab.id)}
+                    />
+                  </Content>
                   <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
@@ -222,12 +228,6 @@ class DirectoryComponent extends PureComponent {
                     FormBox={this.handleFormBox}
                     changeTab={changeTab}
                   />
-                  <Content className="site-layout-background">
-                    <DirectoryTable
-                      loading={loadingListActive || loadingListMyTeam || loadingListInActive}
-                      list={this.renderListEmployee(tab.id)}
-                    />
-                  </Content>
                 </Layout>
               </TabPane>
             ))}

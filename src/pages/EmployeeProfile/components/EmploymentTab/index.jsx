@@ -1,6 +1,5 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button, div } from 'antd';
-// import { EditOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
@@ -20,41 +19,64 @@ const steps = [
 @connect(({ employeeProfile }) => ({
   employeeProfile,
 }))
-class EmploymentTab extends PureComponent {
+class EmploymentTab extends Component {
   constructor(props) {
     super(props);
+    const { employeeProfile } = this.props;
+
+    const { title, location } = employeeProfile.originData.employmentData;
+    const { firstName, legalName } = employeeProfile.originData.generalData;
+    const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
+      submitted: false,
       current: 0,
       currentData: {
-        name: 'Aditya',
-        title: 'UX Lead',
-        joiningDate: '10th December 2018',
-        location: 'Bengaluru, India',
-        employType: 'Full Time Employee',
-        compenType: 'Salaried',
-        annualSalary: '75000',
-        manager: 'Anil Reddy',
-        timeOff: '20 Day PTO Applicable',
+        name: legalName || firstName || null,
+        title: title?.name || null,
+        annualSalary: currentAnnualCTC || 0,
+        location: location?.name || null,
       },
     };
   }
 
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
-    await this.setState({ current: 0 });
+    this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
+    this.setState({ submitted: false });
   };
 
-  handleChangeHistory = () => {
-    this.setState({
-      isChanging: true,
-    });
-  };
-
-  handleSubmit = (data) => {
-    // console.log(data);
-    alert("Submitted! No API yet so you won't see any changes", JSON.stringify(data));
+  handleSubmit = async (data) => {
+    const { submitted } = this.state;
+    if (submitted) {
+      const { dispatch } = this.props;
+      let takeEffect = '';
+      if (data.stepOne === 'Now') {
+        takeEffect = 'UPDATED';
+      } else if (Date.parse(data.stepOne) < Date.now()) {
+        takeEffect = 'UPDATED';
+      } else takeEffect = 'WILL_UPDATE';
+      const payload = {
+        title: data.stepTwo.title || null,
+        manager: data.stepThree.reportTo || null,
+        currentAnnualCTC: Number(data.stepTwo.salary) || null,
+        location: data.stepTwo.wLocation || null,
+        employeeType: data.stepTwo.employment || null,
+        department: data.stepThree.department || null,
+        compensationType: data.stepTwo.compensation || null,
+        effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
+        changeDate: new Date(),
+        takeEffect,
+        employee: data.employee,
+        changedBy: data.changedBy,
+      };
+      const array = Object.keys(payload);
+      for (let i = 0; i < array.length; i += 1) {
+        if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
+      }
+      dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+    }
   };
 
   nextTab = (msg) => {
@@ -62,6 +84,7 @@ class EmploymentTab extends PureComponent {
     if (msg === 'STOP') {
       this.setState({ current: 0 });
     } else if (current === 4) {
+      this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
     } else this.setState({ current: current + 1 });
@@ -74,6 +97,7 @@ class EmploymentTab extends PureComponent {
 
   render() {
     const { isChanging, current, currentData } = this.state;
+    const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
@@ -101,7 +125,7 @@ class EmploymentTab extends PureComponent {
               current={current}
             />
           ) : (
-            <CurrentInfo data={currentData} />
+            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
           )}
           {isChanging ? (
             <div className={styles.footer}>
@@ -120,12 +144,7 @@ class EmploymentTab extends PureComponent {
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title} align="middle">
             <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon}>
-              {/* <EditOutlined
-                className={styles.employmentTab_iconEdit}
-                onClick={this.handleChangeHistory}
-              /> */}
-            </div>
+            <div className={styles.employmentTab_changeIcon} />
           </div>
           <ChangeHistoryTable />
         </div>
