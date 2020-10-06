@@ -20,10 +20,8 @@
   padding: 10px;
   text-align: center;
   border-radius: 4%;
-  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5),
-  0 9px 28px 0 rgba(0, 0, 0, 0.05),
-  0 12px 48px 16px rgba(0, 0, 0, 0.03);
-
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
+    0 12px 48px 16px rgba(0, 0, 0, 0.03);
 
   .menuItemLink {
     margin-top: @margin-xs + 2px;
@@ -103,7 +101,7 @@
     cursor: pointer;
     transition: all 0.3s;
 
-    >span {
+    > span {
       vertical-align: middle;
     }
 
@@ -117,8 +115,41 @@
   }
 
   .search {
-    padding: 0 12px;
+    padding-left: 13px;
+    margin: 0 12px;
+    cursor: pointer;
+    font-size: 17px;
+    color: #161c29;
+    &:hover {
+      background: transparent;
+    }
+  }
 
+  .calendar {
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    background-color: #f3f6fc;
+    margin: 0 12px;
+    padding-left: 13px;
+    cursor: pointer;
+    font-size: 17px;
+    color: #161c29;
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  .notify {
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    background-color: #f3f6fc;
+    padding-left: 13px;
+    margin: 0 12px;
+    cursor: pointer;
+    font-size: 17px;
+    color: #161c29;
     &:hover {
       background: transparent;
     }
@@ -126,7 +157,7 @@
 
   .account {
     .avatar {
-      margin:~'calc((@{layout-header-height} - 24px) / 2)'0;
+      margin: ~'calc((@{layout-header-height} - 24px) / 2)' 0;
       margin-right: 8px;
       color: @primary-color;
       vertical-align: top;
@@ -139,7 +170,7 @@
   .action {
     color: rgba(255, 255, 255, 0.85);
 
-    >span {
+    > span {
       color: rgba(255, 255, 255, 0.85);
     }
 
@@ -155,14 +186,14 @@
     .action {
       color: @text-color;
 
-      >span {
+      > span {
         color: @text-color;
       }
 
       &:hover {
         color: rgba(255, 255, 255, 0.85);
 
-        >span {
+        > span {
           color: rgba(255, 255, 255, 0.85);
         }
       }

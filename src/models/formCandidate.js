@@ -21,7 +21,7 @@ const info = {
       file: 'Template.docx',
       agreement: false,
       handbook: false,
-      compensation: 'Salary',
+      compensation: 'salary',
       currency: 'Dollar',
       timeoff: 'can not',
     },
@@ -90,7 +90,8 @@ const info = {
       salaryStatus: 2,
     },
     previewOffer: {
-      file: null,
+      file: '',
+      file2: '',
       day: '',
       month: '',
       year: '',

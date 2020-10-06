@@ -47,6 +47,7 @@ class Edit extends PureComponent {
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
     const {
+      urlFile = '',
       legalGender = '',
       legalName = '',
       DOB = '',
@@ -59,6 +60,7 @@ class Edit extends PureComponent {
     } = generalDataTemp;
     const payloadChanges = {
       id,
+      urlFile,
       legalGender,
       legalName,
       DOB,
@@ -75,6 +77,7 @@ class Edit extends PureComponent {
     const { generalData } = this.props;
     const newObj = { ...generalData };
     const listKey = [
+      'urlFile',
       'legalGender',
       'legalName',
       'DOB',
@@ -100,19 +103,32 @@ class Edit extends PureComponent {
     });
   };
 
+  handleGetUpLoad = (resp) => {
+    const { data = [] } = resp;
+    const [first] = data;
+    const value = { url: first.url, id: first.id };
+    const url = { urlFile: value };
+    this.handleChange(url);
+  };
+
   handleCanCelIcon = () => {
-    const { dispatch } = this.props;
+    const { dispatch, generalData, generalDataOrigin } = this.props;
+    const item = { ...generalData, urlFile: '' };
+    const isModified = JSON.stringify(item) !== JSON.stringify(generalDataOrigin);
     dispatch({
-      type: 'upload/cancelUpload',
-      payload: { employeeInformationURL: '' },
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: item },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
     });
   };
 
   render() {
-    const { generalData, loading, handleCancel = () => {}, employeeInformationURL } = this.props;
-    const nameFile = employeeInformationURL.split('/');
-    const splitURL = nameFile[nameFile.length - 1];
+    const { generalData, loading, handleCancel = () => {} } = this.props;
     const {
+      urlFile = '',
       legalName = '',
       DOB = '',
       legalGender = '',
@@ -122,6 +138,8 @@ class Edit extends PureComponent {
       adhaarCardNumber = '',
       uanNumber = '',
     } = generalData;
+    const nameFile = urlFile ? urlFile.url.split('/') : '';
+    const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -215,14 +233,18 @@ class Edit extends PureComponent {
               <Input className={styles.inputForm} />
             </Form.Item>
             <>
-              {employeeInformationURL === '' ? (
+              {urlFile === '' ? (
                 <div className={styles.textUpload}>
-                  <UploadImage content="Choose file" name="adhaarCard" />
+                  <UploadImage
+                    content="Choose file"
+                    name="adhaarCard"
+                    getResponse={(resp) => this.handleGetUpLoad(resp)}
+                  />
                 </div>
               ) : (
                 <div className={styles.viewUpLoadData}>
                   <a
-                    href={employeeInformationURL}
+                    href={urlFile ? urlFile.url : ''}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.viewUpLoadDataURL}
@@ -241,10 +263,10 @@ class Edit extends PureComponent {
             </>
           </div>
 
-          {employeeInformationURL !== '' ? (
+          {urlFile !== '' ? (
             <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
               <a
-                href={employeeInformationURL}
+                href={urlFile ? urlFile.url : ''}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.urlUpload}

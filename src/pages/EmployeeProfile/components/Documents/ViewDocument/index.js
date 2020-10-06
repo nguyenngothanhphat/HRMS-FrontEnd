@@ -134,6 +134,12 @@ class ViewDocument extends PureComponent {
     console.log(`selected emails ${value}`);
   };
 
+  documentWarning = (msg) => (
+    <div className={styles.documentWarning}>
+      <p>{msg}</p>
+    </div>
+  );
+
   render() {
     const { numPages, currentViewingFile } = this.state;
     const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
@@ -163,11 +169,9 @@ class ViewDocument extends PureComponent {
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
-                // eslint-disable-next-line no-console
-                onLoadError={console.error}
                 file={this.getCurrentViewingFileUrl()}
-                loading=""
-                noData="Document Not Found"
+                loading={this.documentWarning('Loading document. Please wait...')}
+                noData={this.documentWarning('URL is not available.')}
               >
                 {Array.from(new Array(numPages), (el, index) => (
                   <Page

@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 
-const HeaderSearch = props => {
+const HeaderSearch = (props) => {
   const {
     className,
     defaultValue,
@@ -30,6 +30,11 @@ const HeaderSearch = props => {
   return (
     <div
       className={classNames(className, styles.headerSearch)}
+      style={
+        !searchMode
+          ? { backgroundColor: '#f3f6fc', borderRadius: '50%', width: '44px', height: '44px' }
+          : {}
+      }
       onClick={() => {
         setSearchMode(true);
 
@@ -67,7 +72,7 @@ const HeaderSearch = props => {
           defaultValue={defaultValue}
           aria-label={placeholder}
           placeholder={placeholder}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === 'Enter') {
               if (restProps.onSearch) {
                 restProps.onSearch(value);

@@ -56,9 +56,9 @@ class HandleChanges extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { onSubmit, current } = this.props;
+    const { onSubmit } = this.props;
     const { changeData } = this.state;
-    if (current === 4) onSubmit(changeData);
+    onSubmit(changeData);
   }
 
   onRadioChange = (e) => {
