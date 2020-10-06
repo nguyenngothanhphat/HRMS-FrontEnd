@@ -20,6 +20,7 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getPRReport,
   getDocuments,
   getPayslip,
   getChangeHistories,
@@ -61,6 +62,7 @@ const employeeProfile = {
       passportData: {},
       visaData: [],
     },
+    listPRReport: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -469,6 +471,22 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
+      }
+    },
+    *fetchPRReport(
+      { payload: { employee = '', parentEmployeeGroup = 'PR Reports' } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getPRReport, {
+          employee,
+          parentEmployeeGroup,
+        });
+        const { statusCode, data: listPRReport = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listPRReport } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
     *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
