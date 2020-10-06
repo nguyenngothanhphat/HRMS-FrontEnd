@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
@@ -14,11 +14,12 @@ import styles from './index.less';
     upload: { passPortURL = '', visa0IDURL = '', visa1IDURL = '', passPortIDURL = '' },
     employeeProfile: {
       countryList,
+      idCurrentEmployee,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
+      tempData: { passportData = {}, generalData = {}, visaData = [], document = {} } = {},
     } = {},
   }) => ({
-    loading: loading.effects['employeeProfile/updatePassPortVisa'],
+    loading: loading.effects['upload/uploadFile'],
     countryList,
     passportDataOrigin,
     passportData,
@@ -29,9 +30,11 @@ import styles from './index.less';
     visa0IDURL,
     visa1IDURL,
     passPortIDURL,
+    document,
+    idCurrentEmployee,
   }),
 )
-class Edit extends PureComponent {
+class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,10 +65,32 @@ class Edit extends PureComponent {
   };
 
   handleGetUpLoad = (resp) => {
+    const { dispatch, idCurrentEmployee } = this.props;
     const { data = [] } = resp;
     const [first] = data;
-    const value = { url: first.url, id: first.id };
-    this.handleChange('urlFile', value);
+
+    dispatch({
+      type: 'employeeProfile/fetchDocumentAdd',
+      payload: {
+        key: 'PassPort',
+        attachment: first.id,
+        employeeGroup: 'Identity',
+        parentEmployeeGroup: 'Indentification Documents',
+        employee: idCurrentEmployee,
+      },
+    }).then((id) => this.handleUpdate(id));
+  };
+
+  handleUpdate = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocumentUpdate',
+      payload: { id },
+    }).then((doc) => {
+      const { _id, attachment: { url } = {} } = doc;
+      const value = { id: _id, url };
+      this.handleChange('urlFile', value);
+    });
   };
 
   processDataChangesPassPort = () => {
@@ -183,6 +208,7 @@ class Edit extends PureComponent {
       'passportIssuedCountry',
       'passportIssuedOn',
       'passportValidTill',
+      'document',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -200,6 +226,7 @@ class Edit extends PureComponent {
         'visaValidTill',
         'visaEntryType',
         'visaType',
+        'document',
       ];
       listKey.forEach((item) => delete newobj[item]);
       return newobj;
@@ -266,12 +293,10 @@ class Edit extends PureComponent {
     const {
       passportData = {},
       handleCancel = () => {},
-      loading,
       countryList,
       visaData = [{}],
+      loading,
     } = this.props;
-    // const dataVisa1 = visaData[0] ? visaData[0] : [];
-    // const dataVisa2 = visaData[1] ? visaData[1] : [];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -343,8 +368,8 @@ class Edit extends PureComponent {
               <div className={styles.textUpload}>
                 <UploadImage
                   content="Choose file"
-                  name="passport"
                   getResponse={(resp) => this.handleGetUpLoad(resp)}
+                  loading={loading}
                 />
               </div>
             ) : (
@@ -428,12 +453,7 @@ class Edit extends PureComponent {
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
             </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-            >
+            <Button type="primary" htmlType="submit" className={styles.buttonFooter}>
               Save
             </Button>
           </div>
