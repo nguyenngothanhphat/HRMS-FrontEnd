@@ -27,7 +27,6 @@ class Option extends Component {
   render() {
     const { option = {} } = this.props;
     const { checked, name = '', title = '', description = '', link = '' } = option;
-    console.log(checked);
     return (
       <div className={styles.Option}>
         <Checkbox

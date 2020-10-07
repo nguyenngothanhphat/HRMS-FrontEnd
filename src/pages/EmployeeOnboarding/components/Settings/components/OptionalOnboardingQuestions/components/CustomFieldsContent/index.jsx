@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import FieldName from '../FieldName';
@@ -59,20 +59,35 @@ class CustomFieldsContent extends Component {
     return (
       <div className={styles.CustomFieldsContent}>
         <div className={styles.CustomFieldsContent_header}>
-          <div className={styles.CustomFieldsContent_header_title}>Custom fields</div>
+          <div className={styles.CustomFieldsContent_header_title}>
+            {' '}
+            {formatMessage({ id: 'component.optionalOnboardingQuestions.customFields' })}
+          </div>
           <div className={styles.CustomFieldsContent_header_buttons}>
-            <Button type="secondary">+ New Section</Button>
-            <Button type="secondary">+ New Field</Button>
+            <Button type="secondary">
+              {' '}
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.newSection' })}
+            </Button>
+            <Button type="secondary">
+              {' '}
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.newField' })}
+            </Button>
           </div>
         </div>
         <hr />
         <div className={styles.CustomFieldsContent_form}>
           <div className={styles.CustomFieldsContent_form_section}>
-            <div className={styles.subTitle}>Section name</div>
+            <div className={styles.subTitle}>
+              {' '}
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.sectionName' })}
+            </div>
           </div>
 
           <div className={styles.CustomFieldsContent_form_name}>
-            <div className={styles.subTitle}>Field name</div>
+            <div className={styles.subTitle}>
+              {' '}
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.fieldName' })}
+            </div>
             <div className={styles.list}>
               <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="droppable">
@@ -109,7 +124,7 @@ class CustomFieldsContent extends Component {
         </div>
         <div className={styles.saveButton}>
           <Button type="primary" onClick={this.onNextModal}>
-            Save ordering
+            {formatMessage({ id: 'component.optionalOnboardingQuestions.saveOrdering' })}
           </Button>
         </div>
       </div>

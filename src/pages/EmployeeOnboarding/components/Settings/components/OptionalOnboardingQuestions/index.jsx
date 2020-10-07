@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Checkbox, Button } from 'antd';
+import { formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import Option from './components/Option';
 import CustomFieldsContent from './components/CustomFieldsContent';
@@ -79,18 +80,17 @@ class OptionalOnboardingQuestions extends PureComponent {
       <div className={styles.OptionalOnboardingQuestions}>
         <CustomModal open={openModal} closeModal={this.closeModal} content={currentModal} />
         <div className={styles.OptionalOnboardingQuestions_title}>
-          Optional Onboarding Questions
+          {formatMessage({ id: 'component.optionalOnboardingQuestions.title' })}
         </div>
         <div className={styles.OptionalOnboardingQuestions_subTitle}>
-          During onboarding we will collect information from your new hires
+          {formatMessage({ id: 'component.optionalOnboardingQuestions.subTitle' })}
         </div>
-
         <Checkbox.Group className={styles.OptionalOnboardingQuestions_list}>
           {this._renderOptionList()}
         </Checkbox.Group>
         <div className={styles.OptionalOnboardingQuestions_button}>
           <Button type="primary" onClick={this.openModal}>
-            + Add custom fields
+            {formatMessage({ id: 'component.optionalOnboardingQuestions.addCustomFields' })}
           </Button>
         </div>
       </div>
