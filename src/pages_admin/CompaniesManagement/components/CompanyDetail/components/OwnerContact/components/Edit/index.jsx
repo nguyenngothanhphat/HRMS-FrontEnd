@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
 import { formatMessage } from 'umi';

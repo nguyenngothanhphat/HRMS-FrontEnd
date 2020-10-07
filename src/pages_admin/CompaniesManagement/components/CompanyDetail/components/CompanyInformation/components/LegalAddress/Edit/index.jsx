@@ -66,17 +66,15 @@ class Edit extends PureComponent {
             layout="vertical"
             colon={false}
             ref={this.formRef}
-            initialValues={
-              {
-                // address: addressHead,
-                // country: countryHead,
-                // state: stateHead,
-                // zipCode: zipCodeHead,
-              }
-            }
+            initialValues={{
+              address: addressLegal,
+              country: countryLegal,
+              state: stateLegal,
+              zipCode: zipCodeLegal,
+            }}
             onValuesChange={this.handleFormLegalAddress}
           >
-            <Fragment>
+            <>
               <Form.Item label="Address*" name="address">
                 <Input />
               </Form.Item>
@@ -86,8 +84,10 @@ class Edit extends PureComponent {
                   showArrow
                   showSearch
                   onChange={this.onChangeCountryLegalAddress}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  filterOption={
+                    (input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // eslint-disable-next-line react/jsx-curly-newline
                   }
                 >
                   {listCountry.map((item) => (
@@ -103,8 +103,10 @@ class Edit extends PureComponent {
                       showArrow
                       showSearch
                       disabled={!countryLegal}
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      filterOption={
+                        (input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        // eslint-disable-next-line react/jsx-curly-newline
                       }
                     >
                       {listStateHead.map((item) => (
@@ -119,7 +121,7 @@ class Edit extends PureComponent {
                   </Form.Item>
                 </Col>
               </Row>
-            </Fragment>
+            </>
             <div className={styles.edit_btn}>
               <Button type="text" className={styles.edit_btn_cancel} onClick={handleCancelEdit}>
                 Cancel

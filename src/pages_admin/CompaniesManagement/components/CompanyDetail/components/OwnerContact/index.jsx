@@ -29,59 +29,6 @@ class OwnerContact extends PureComponent {
   };
 
   render() {
-    // const companyDetail = [
-    //   {
-    //     id: 1,
-    //     label: 'Company Name',
-    //     value: 'Terralogic',
-    //   },
-    //   {
-    //     id: 2,
-    //     label: 'Company Logo',
-    //     value: 'Terralogic',
-    //   },
-    //   {
-    //     id: 3,
-    //     label: 'DBA',
-    //     value: 'DBA',
-    //   },
-    //   {
-    //     id: 4,
-    //     label: 'EIN',
-    //     value: 'EIN',
-    //   },
-    //   {
-    //     id: 5,
-    //     label: 'Head Quarter Add',
-    //     value: 'Head Quarter Add',
-    //   },
-    //   {
-    //     id: 6,
-    //     label: 'Work Location',
-    //     value: 'Work Location',
-    //   },
-    //   {
-    //     id: 7,
-    //     label: 'Employee Number',
-    //     value: 'Employee Number',
-    //   },
-    //   {
-    //     id: 8,
-    //     label: 'Owner Contact',
-    //     value: 'Terralogic',
-    //   },
-    //   {
-    //     id: 9,
-    //     label: 'License',
-    //     value: 'License',
-    //   },
-    //   {
-    //     id: 10,
-    //     label: 'Payment',
-    //     value: 'Payment',
-    //   },
-    // ];
-
     const { isOpenEditOwnerContact } = this.state;
 
     const renderContentCompanyDetail = isOpenEditOwnerContact ? (

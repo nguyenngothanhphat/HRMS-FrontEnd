@@ -8,7 +8,7 @@ class View extends PureComponent {
     return (
       <div className={styles.view}>
         <Row gutter={[0, 16]} className={styles.root}>
-          <Fragment>
+          <>
             <Col span={6} className={styles.textLabel}>
               Address
             </Col>
@@ -33,7 +33,7 @@ class View extends PureComponent {
             <Col span={18} className={styles.textValue}>
               {location.zipCode}
             </Col>
-          </Fragment>
+          </>
           {/* Custom Col Here */}
         </Row>
       </div>

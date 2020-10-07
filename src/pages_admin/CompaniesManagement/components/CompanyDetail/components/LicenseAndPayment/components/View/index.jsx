@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
-import styles from './index.less';
+import styles from '../../../CompanyInformation/components/HeadquaterAddress/View/index.less';
 
 class View extends PureComponent {
   render() {

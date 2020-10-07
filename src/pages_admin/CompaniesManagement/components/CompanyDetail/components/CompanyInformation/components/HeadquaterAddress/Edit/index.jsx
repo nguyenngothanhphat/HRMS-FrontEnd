@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Row, Col } from 'antd';
 import { connect } from 'umi';
 import styles from '../../../../WorkLocation/components/Edit/index.less';
@@ -67,60 +67,60 @@ class Edit extends PureComponent {
             layout="vertical"
             colon={false}
             ref={this.formRef}
-            initialValues={
-              {
-                // address: addressHead,
-                // country: countryHead,
-                // state: stateHead,
-                // zipCode: zipCodeHead,
-              }
-            }
+            initialValues={{
+              address: addressHead,
+              country: countryHead,
+              state: stateHead,
+              zipCode: zipCodeHead,
+            }}
             onValuesChange={this.handleFormHeadquarter}
           >
-            <Fragment>
-              <Form.Item label="Address*" name="address">
-                <Input />
-              </Form.Item>
-              <Form.Item label="Country" name="country">
-                <Select
-                  placeholder="Select Country"
-                  showArrow
-                  showSearch
-                  onChange={this.onChangeCountryHeadquarter}
-                  filterOption={(input, option) =>
+            <Form.Item label="Address*" name="address">
+              <Input />
+            </Form.Item>
+            <Form.Item label="Country" name="country">
+              <Select
+                placeholder="Select Country"
+                showArrow
+                showSearch
+                onChange={this.onChangeCountryHeadquarter}
+                filterOption={
+                  (input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {listCountry.map((item) => (
-                    <Option key={item._id}>{item.name}</Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Row gutter={[30, 0]}>
-                <Col span={12}>
-                  <Form.Item label="State" name="state">
-                    <Select
-                      placeholder="Select State"
-                      showArrow
-                      showSearch
-                      disabled={!countryHead}
-                      filterOption={(input, option) =>
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
+              >
+                {listCountry.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Row gutter={[30, 0]}>
+              <Col span={12}>
+                <Form.Item label="State" name="state">
+                  <Select
+                    placeholder="Select State"
+                    showArrow
+                    showSearch
+                    disabled={!countryHead}
+                    filterOption={
+                      (input, option) =>
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {listStateHead.map((item) => (
-                        <Option key={item}>{item}</Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Zip Code" name="zipCode">
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Fragment>
+                      // eslint-disable-next-line react/jsx-curly-newline
+                    }
+                  >
+                    {listStateHead.map((item) => (
+                      <Option key={item}>{item}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Zip Code" name="zipCode">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
             <div className={styles.edit_btn}>
               <Button type="text" className={styles.edit_btn_cancel} onClick={handleCancelEdit}>
                 Cancel
