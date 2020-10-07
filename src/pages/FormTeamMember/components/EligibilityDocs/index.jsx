@@ -31,13 +31,15 @@ const note = {
 
 @connect(
   ({
-    info: { eligibilityDocs, basicInformation } = {},
-    info: { testEligibility, loadingDocumentList },
+    info: { eligibilityDocs, basicInformation, jobDetail } = {},
+    info: { testEligibility, loadingDocumentList, item },
   }) => ({
     eligibilityDocs,
     basicInformation,
     testEligibility,
     loadingDocumentList,
+    jobDetail,
+    item,
   }),
 )
 class EligibilityDocs extends Component {
@@ -54,6 +56,9 @@ class EligibilityDocs extends Component {
         eligibilityDocs: props.eligibilityDocs,
         basicInformation: props.basicInformation,
         testEligibility: props.testEligibility,
+        jobDetail: props.jobDetail,
+        item: props.item,
+
         loadingDocumentList: props.loadingDocumentList || {},
       };
     }
@@ -62,7 +67,14 @@ class EligibilityDocs extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { eligibilityDocs, testEligibility, basicInformation, loadingDocumentList } = this.state;
+    const {
+      eligibilityDocs,
+      testEligibility,
+      basicInformation,
+      loadingDocumentList,
+      jobDetail,
+    } = this.state;
+    const { position, employeeType, department, title, workLocation, reportingManager } = jobDetail;
     const { workEmail } = basicInformation;
     if (isEmpty(testEligibility)) {
       dispatch({
@@ -81,6 +93,19 @@ class EligibilityDocs extends Component {
           ...eligibilityDocs,
           email: workEmail,
         },
+        item: {
+          basicInformation: {
+            ...basicInformation,
+          },
+          jobDetail: {
+            position,
+            employeeType,
+            department,
+            title,
+            workLocation,
+            reportingManager,
+          },
+        },
       },
     });
   }
@@ -93,7 +118,7 @@ class EligibilityDocs extends Component {
 
   handleSendEmail = (user) => {
     const { dispatch } = this.props;
-    const { eligibilityDocs = {} } = this.state;
+    const { eligibilityDocs = {}, testEligibility, item } = this.state;
     dispatch({
       type: 'info/saveEligibilityRequirement',
       payload: {
@@ -104,9 +129,26 @@ class EligibilityDocs extends Component {
         },
       },
     });
-    this.setState({
-      openModal: true,
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        item: {
+          ...item,
+          documents: testEligibility,
+        },
+      },
     });
+    dispatch({
+      type: 'info/addCandidateByHR',
+      payload: { ...item, documents: testEligibility },
+    });
+
+    dispatch(
+      this.setState({
+        openModal: true,
+      }),
+    );
   };
 
   handleMarkAsDone = (user) => {
@@ -331,6 +373,7 @@ class EligibilityDocs extends Component {
       openModal,
       testEligibility,
       loadingDocumentList,
+      basicInformation: { fullName },
     } = this.state;
     return (
       <>
@@ -374,20 +417,24 @@ class EligibilityDocs extends Component {
                 isSentEmail={isSentEmail}
                 generateLink={generateLink}
                 handleMarkAsDone={this.handleMarkAsDone}
+                fullName={fullName}
               />
             </Col>
           </Row>
         )}
-        <CustomModal open={openModal} closeModal={this.closeModal}>
-          {openModal && (
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={
             <ModalContentComponent
               closeModal={this.closeModal}
               isSentEmail={isSentEmail}
               isMarkAsDone={isMarkAsDone}
               eligibilityDocs={eligibilityDocs}
+              email={email}
             />
-          )}
-        </CustomModal>
+          }
+        />
       </>
     );
   }

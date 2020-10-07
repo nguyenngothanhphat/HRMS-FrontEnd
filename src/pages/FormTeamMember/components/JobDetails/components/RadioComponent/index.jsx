@@ -5,7 +5,7 @@ import styles from './index.less';
 class RadioComponent extends PureComponent {
   render() {
     const { Tab, handleRadio, jobDetail, employeeTypeList } = this.props;
-    const { position, classification } = jobDetail;
+    const { position, employeeType } = jobDetail;
     return (
       <div className={styles.RadioComponent}>
         <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>
@@ -31,7 +31,7 @@ class RadioComponent extends PureComponent {
         </Typography.Title>
         <Radio.Group
           className={styles.paddingRadio}
-          defaultValue={classification}
+          defaultValue={employeeType}
           onChange={(e) => handleRadio(e)}
           name={Tab.classificationTab.name}
         >

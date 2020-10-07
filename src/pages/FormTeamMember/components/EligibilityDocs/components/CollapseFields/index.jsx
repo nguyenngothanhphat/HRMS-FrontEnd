@@ -59,7 +59,7 @@ class CollapseField extends PureComponent {
                     : null
                 }
               >
-                {item.type}
+                Type {item.type}: {item.name}
               </Checkbox>
             }
             extra="[Can submit any of the below other than (*)mandatory]"

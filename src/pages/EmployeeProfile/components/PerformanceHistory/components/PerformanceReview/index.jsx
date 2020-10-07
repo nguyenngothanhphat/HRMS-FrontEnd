@@ -96,7 +96,7 @@ class PerformanceReview extends PureComponent {
           })}
         >
           <Row gutter={[16, 16]} className={styles.root}>
-            {dummyData.map((item) => (
+            {dummyData.map((item, index) => (
               <Fragment key={item.id}>
                 {item.id === 1 || item.id === 2 ? (
                   <>
@@ -113,7 +113,10 @@ class PerformanceReview extends PureComponent {
                       {item.label}
                     </Col>
                     <Col span={13} className={styles.performanceReview_indicator}>
-                      <PerformanceReviewIndicator level={item.value.level} />
+                      <PerformanceReviewIndicator
+                        keyIndex={`${index + 1}`}
+                        level={item.value.level}
+                      />
                     </Col>
                     <Col span={5} className={styles.textValue}>
                       {this.renderTypePerformanceReview(item.value.level)}

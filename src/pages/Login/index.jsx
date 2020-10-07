@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
-import { EyeFilled } from '@ant-design/icons';
+import { EyeFilled, GooglePlusOutlined } from '@ant-design/icons';
+import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading: loading.effects['login/login'],
+  loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
 }))
 class FormLogin extends Component {
   onFinish = (values) => {
@@ -31,13 +33,23 @@ class FormLogin extends Component {
         htmlType="submit"
         loading={loading}
         disabled={!valueEmail || !valuePsw}
+        className={styles.btnSignIn}
       >
         {formatMessage({ id: 'pages.login.signIn' })}
       </Button>
     );
   };
 
+  responseGoogle = (response) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'login/loginThirdParty',
+      payload: response,
+    });
+  };
+
   render() {
+    const { loadingLoginThirdParty } = this.props;
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
@@ -100,6 +112,21 @@ class FormLogin extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
+          <div className={styles.textOr}>Or</div>
+          <GoogleLogin
+            clientId="979138479820-7hv5jn95k39tb42ltiscoi552ce9i2an.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <Button
+                type="primary"
+                className={styles.btnSignInGG}
+                onClick={renderProps.onClick}
+                disabled={renderProps.disabled}
+                icon={<GooglePlusOutlined style={{ fontSize: '26px' }} />}
+                loading={loadingLoginThirdParty}
+              />
+            )}
+            onSuccess={this.responseGoogle}
+          />
           <Link to="/forgot-password">
             <p className={styles.forgotPassword}>
               {formatMessage({ id: 'pages.login.forgotPassword' })}

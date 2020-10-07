@@ -20,38 +20,32 @@ class FirstFieldsComponent extends PureComponent {
       managerList,
       _handleSelect,
     } = this.props;
-    const { department, jobTitle, jobCategory, workLocation, reportingManager } = jobDetail;
+    const { department, title, workLocation, reportingManager } = jobDetail;
     return (
       <>
         <div>
           <Row gutter={[24, 0]}>
             {dropdownField.map((item) => (
-              <Col
-                xs={24}
-                sm={24}
-                md={12}
-                lg={12}
-                xl={12}
-                offset={item.title === 'department' || item.title === 'jobTitle' ? 12 : 0}
-                pull={item.title === 'department' || item.title === 'jobTitle' ? 12 : 0}
-              >
+              <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
                   className={styles}
                   onChange={
-                    item.title === 'workLocation'
+                    item.title === 'workLocation' || item.title === 'department'
                       ? (value) => handleSelect(value, item.title)
                       : (value) => _handleSelect(value, item.title)
                   }
-                  disabled={!!(item.title === 'reportingManager' && managerList.length <= 0)}
+                  disabled={
+                    !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                    (item.title === 'department' && departmentList.length <= 0) ||
+                    (item.title === 'title' && titleList.length <= 0)
+                  }
                   defaultValue={
                     item.title === 'department'
                       ? department
-                      : item.title === 'jobTitle'
-                      ? jobTitle
-                      : item.title === 'jobCategory'
-                      ? jobCategory
+                      : item.title === 'title'
+                      ? title
                       : item.title === 'workLocation'
                       ? workLocation
                       : item.title === 'reportingManager'
@@ -68,10 +62,10 @@ class FirstFieldsComponent extends PureComponent {
                     : item.title === 'workLocation'
                     ? locationList.map((data, index) => (
                         <Option value={data._id} key={index}>
-                          <Typography.Text>{data.address.address}</Typography.Text>
+                          <Typography.Text>{data.legalAddress.address}</Typography.Text>
                         </Option>
                       ))
-                    : item.title === 'jobTitle'
+                    : item.title === 'title'
                     ? titleList.map((data, index) => (
                         <Option value={data._id} key={index}>
                           <Typography.Text>{data.name}</Typography.Text>
@@ -80,7 +74,7 @@ class FirstFieldsComponent extends PureComponent {
                     : item.title === 'reportingManager' && managerList.length > 1
                     ? managerList.map((data, index) => (
                         <Option value={data._id} key={index}>
-                          <Typography.Text>{data.generalinfos.firstName}</Typography.Text>
+                          <Typography.Text>{data.generalInfo.firstName}</Typography.Text>
                         </Option>
                       ))
                     : null}
