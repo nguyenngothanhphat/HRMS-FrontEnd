@@ -6,7 +6,7 @@ import s from './index.less';
 
 const CertificationInput = ({ value = [{}], onChange }) => {
   const [list, setList] = useState(value);
-  console.log(list);
+  // console.log(list);
   const [idInput, setIdInput] = useState(Date.now());
 
   const handleAddBtn = () => {
