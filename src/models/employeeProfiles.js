@@ -26,6 +26,9 @@ import {
   getChangeHistories,
   getDocumentAdd,
   getDocumentUpdate,
+  getAdhaarcardAdd,
+  getAdhaarcardUpdate,
+  getAdhaardCard,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -66,6 +69,7 @@ const employeeProfile = {
       document: {},
     },
     listPRReport: [],
+    AdhaarCard: {},
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -537,6 +541,53 @@ const employeeProfile = {
       let doc = {};
       try {
         const response = yield call(getDocumentUpdate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { document: data } });
+        doc = data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return doc;
+    },
+    *fetchAdhaardCard({ payload: { employee = '' } }, { call, put }) {
+      try {
+        const response = yield call(getAdhaardCard, { employee });
+        const { statusCode, data: AdhaarCard = {} } = response;
+        if (statusCode !== 200) throw response;
+        console.log(AdhaarCard);
+        yield put({
+          type: 'save',
+          payload: { idCurrentEmployee: employee, AdhaarCard },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchAdhaarcardAdd({ payload = {} }, { call, select, put }) {
+      let idAdhaarcard = '';
+      try {
+        const response = yield call(getAdhaarcardAdd, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const {
+          statusCode,
+          data: { _id: id },
+        } = response;
+        if (statusCode !== 200) throw response;
+        idAdhaarcard = id;
+        yield put({
+          type: 'fetchAdhaardCard',
+          payload: { employee: idCurrentEmployee },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return idAdhaarcard;
+    },
+    *fetchAdhaarcardUpdate({ payload }, { call, put }) {
+      let doc = {};
+      try {
+        const response = yield call(getAdhaarcardUpdate, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });

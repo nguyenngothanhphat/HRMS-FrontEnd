@@ -65,20 +65,31 @@ class Edit extends Component {
   };
 
   handleGetUpLoad = (resp) => {
-    const { dispatch, idCurrentEmployee } = this.props;
+    const { dispatch, idCurrentEmployee, passportData } = this.props;
     const { data = [] } = resp;
     const [first] = data;
 
-    dispatch({
-      type: 'employeeProfile/fetchDocumentAdd',
-      payload: {
-        key: 'PassPort',
-        attachment: first.id,
-        employeeGroup: 'Identity',
-        parentEmployeeGroup: 'Indentification Documents',
-        employee: idCurrentEmployee,
-      },
-    }).then((id) => this.handleUpdate(id));
+    const { document: documentPassPort } = passportData;
+    if (documentPassPort) {
+      const dataPassport = { id: documentPassPort._id, attachment: first.id };
+      dispatch({
+        type: 'employeeProfile/fetchDocumentUpdate',
+        payload: dataPassport,
+      });
+      const value = { id: documentPassPort._id, url: first.url };
+      this.handleChange('urlFile', value);
+    } else {
+      dispatch({
+        type: 'employeeProfile/fetchDocumentAdd',
+        payload: {
+          key: 'PassPort',
+          attachment: first.id,
+          employeeGroup: 'Identity',
+          parentEmployeeGroup: 'Indentification Documents',
+          employee: idCurrentEmployee,
+        },
+      }).then((id) => this.handleUpdate(id));
+    }
   };
 
   handleUpdate = (id) => {
@@ -106,7 +117,7 @@ class Edit extends Component {
     } = passportDataTemp;
     const payloadChanges = {
       id,
-      document: urlFile ? urlFile.id : document,
+      document: urlFile ? urlFile.id : document._id,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,
@@ -133,7 +144,7 @@ class Edit extends Component {
       } = item;
       const formVisa = {
         id,
-        document: urlFile ? urlFile.id : document,
+        document: urlFile ? urlFile.id : document._id,
         employee,
         visaNumber,
         visaIssuedCountry,
