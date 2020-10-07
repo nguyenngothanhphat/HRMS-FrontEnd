@@ -127,6 +127,27 @@ export async function getAddVisa(payload) {
   });
 }
 
+export async function getDocumentAdd(payload) {
+  return request('/api/document/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentUpdate(payload) {
+  return request('/api/document/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPRReport(payload) {
+  return request('/api/document/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getDocuments(payload) {
   return request('/api/document/list', {
     method: 'POST',

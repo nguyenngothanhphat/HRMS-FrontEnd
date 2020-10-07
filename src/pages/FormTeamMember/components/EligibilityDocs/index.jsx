@@ -139,6 +139,7 @@ class EligibilityDocs extends Component {
         },
       },
     });
+
     dispatch({
       type: 'info/addCandidateByHR',
       payload: { ...item, documents: testEligibility },

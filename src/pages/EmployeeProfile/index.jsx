@@ -51,6 +51,10 @@ class EmployeeProfile extends Component {
       payload: employee,
     });
     dispatch({
+      type: 'employeeProfile/fetchPRReport',
+      payload: { employee },
+    });
+    dispatch({
       type: 'employeeProfile/fetchDocuments',
       payload: { employee },
     });

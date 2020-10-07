@@ -258,6 +258,7 @@ const info = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
+        console.log(errors);
         dialog(errors);
       }
     },

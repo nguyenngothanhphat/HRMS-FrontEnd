@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 {
   "search.exclude": {
     "**/node_modules": true,
@@ -21,7 +21,6 @@
   },
   "git.ignoreLimitWarning": true
 }
-=======
 {
   "search.exclude": {
     "**/node_modules": true,
@@ -43,4 +42,7 @@
     "source.fixAll.eslint": true
   }
 }
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
