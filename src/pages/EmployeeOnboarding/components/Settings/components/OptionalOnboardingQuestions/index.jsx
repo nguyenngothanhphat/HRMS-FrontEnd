@@ -3,6 +3,7 @@ import { Checkbox, Button } from 'antd';
 import CustomModal from '@/components/CustomModal';
 import Option from './components/Option';
 import CustomFieldsContent from './components/CustomFieldsContent';
+import OrderSavedContent from './components/OrderSavedContent';
 
 import styles from './index.less';
 
@@ -11,7 +12,8 @@ class OptionalOnboardingQuestions extends PureComponent {
     super(props);
 
     this.state = {
-      openModal: true,
+      openModal: false,
+      currentModal: <CustomFieldsContent onNextModal={this.onNextModal} />,
       optionData: [
         {
           title: 'Equal employee opportunity (EEO Information)',
@@ -55,18 +57,27 @@ class OptionalOnboardingQuestions extends PureComponent {
   closeModal = () => {
     this.setState({
       openModal: false,
+      currentModal: <CustomFieldsContent onNextModal={this.onNextModal} />,
+    });
+  };
+
+  openModal = () => {
+    this.setState({
+      openModal: true,
+    });
+  };
+
+  onNextModal = () => {
+    this.setState({
+      currentModal: <OrderSavedContent closeModal={this.closeModal} />,
     });
   };
 
   render() {
-    const { openModal } = this.state;
+    const { openModal, currentModal } = this.state;
     return (
       <div className={styles.OptionalOnboardingQuestions}>
-        <CustomModal
-          open={openModal}
-          closeModal={this.closeModal}
-          content={<CustomFieldsContent />}
-        />
+        <CustomModal open={openModal} closeModal={this.closeModal} content={currentModal} />
         <div className={styles.OptionalOnboardingQuestions_title}>
           Optional Onboarding Questions
         </div>
@@ -78,7 +89,9 @@ class OptionalOnboardingQuestions extends PureComponent {
           {this._renderOptionList()}
         </Checkbox.Group>
         <div className={styles.OptionalOnboardingQuestions_button}>
-          <Button>+ Add custom fields</Button>
+          <Button type="primary" onClick={this.openModal}>
+            + Add custom fields
+          </Button>
         </div>
       </div>
     );

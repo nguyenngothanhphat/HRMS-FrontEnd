@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import { Button } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import FieldName from '../FieldName';
 
 import styles from './index.less';
 
+@connect(({ onboard: { settings: { optionalOnboardQuestions } = {} } = {} }) => ({
+  optionalOnboardQuestions,
+}))
 class CustomFieldsContent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      nameList: [
-        { id: '0', name: 'Is this a person special part-time (SPT)' },
-        { id: '1', name: 'Alternative address' },
-        { id: '2', name: 'Alternative address' },
-      ],
-    };
+    // this.state = {
+    //   nameList: [
+    //     { id: '0', name: 'Is this a person special part-time (SPT)' },
+    //     { id: '1', name: 'Alternative address' },
+    //     { id: '2', name: 'Alternative address' },
+    //   ],
+    // };
   }
 
   reorder = (list, startIndex, endIndex) => {
@@ -27,17 +31,20 @@ class CustomFieldsContent extends Component {
   };
 
   onDragEnd = (result) => {
-    const { nameList } = this.state;
-    // dropped outside the list
-    console.log(result);
+    const { optionalOnboardQuestions, dispatch } = this.props;
+    const { nameList = [] } = optionalOnboardQuestions;
+    // const { nameList } = this.state;
+
     if (!result.destination) {
       return;
     }
 
     const items = this.reorder(nameList, result.source.index, result.destination.index);
-
-    this.setState({
-      nameList: items,
+    dispatch({
+      type: 'onboard/saveOrderNameField',
+      payload: {
+        nameList: items,
+      },
     });
   };
 
@@ -48,20 +55,26 @@ class CustomFieldsContent extends Component {
     ...draggableStyle,
   });
 
-  getListStyle = (isDraggingOver) => ({
+  getListStyle = () => ({
     padding: 0,
   });
 
-  render() {
-    const { nameList } = this.state;
+  onNextModal = () => {
+    const { onNextModal = {} } = this.props;
+    onNextModal();
+  };
 
+  render() {
+    // const { nameList } = this.state;
+    const { optionalOnboardQuestions } = this.props;
+    const { nameList = [] } = optionalOnboardQuestions;
     return (
       <div className={styles.CustomFieldsContent}>
         <div className={styles.CustomFieldsContent_header}>
           <div className={styles.CustomFieldsContent_header_title}>Custom fields</div>
           <div className={styles.CustomFieldsContent_header_buttons}>
-            <Button>+ New Section</Button>
-            <Button>+ New Field</Button>
+            <Button type="secondary">+ New Section</Button>
+            <Button type="secondary">+ New Field</Button>
           </div>
         </div>
         <hr />
@@ -79,7 +92,7 @@ class CustomFieldsContent extends Component {
                     <div
                       {...provided.droppableProps}
                       ref={provided.innerRef}
-                      style={this.getListStyle(snapshot.isDraggingOver)}
+                      style={this.getListStyle()}
                     >
                       {nameList.map((item, index) => (
                         <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -105,6 +118,11 @@ class CustomFieldsContent extends Component {
               </DragDropContext>
             </div>
           </div>
+        </div>
+        <div className={styles.saveButton}>
+          <Button type="primary" onClick={this.onNextModal}>
+            Save ordering
+          </Button>
         </div>
       </div>
     );
