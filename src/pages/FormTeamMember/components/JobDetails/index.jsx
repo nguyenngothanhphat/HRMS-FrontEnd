@@ -1,17 +1,38 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { isEmpty } from 'lodash';
+import { PageLoading } from '@/layouts/layout/src';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
-
-@connect(({ info: { jobDetail, checkMandatory } = {} }) => ({
-  jobDetail,
-  checkMandatory,
-}))
+// Thứ tự Fields Work Location Job Title Department Reporting Manager
+@connect(
+  ({
+    info: { jobDetail, checkMandatory, company } = {},
+    info: { departmentList, titleList, locationList, employeeTypeList, managerList, location } = [],
+    info: { loading, loadingA, loadingB, loadingC, loadingD, loadingE },
+  }) => ({
+    jobDetail,
+    checkMandatory,
+    departmentList,
+    titleList,
+    locationList,
+    employeeTypeList,
+    company,
+    managerList,
+    loading,
+    loadingA,
+    loadingB,
+    loadingC,
+    loadingD,
+    loadingE,
+    location,
+  }),
+)
 class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,9 +41,48 @@ class JobDetails extends PureComponent {
 
   static getDerivedStateFromProps(props) {
     if ('jobDetail' in props) {
-      return { jobDetail: props.jobDetail || {} };
+      return {
+        jobDetail: props.jobDetail,
+        departmentList: props.departmentList,
+        titleList: props.titleList,
+        locationList: props.locationList,
+        employeeTypeList: props.employeeTypeList,
+        managerList: props.managerList,
+        location: props.location,
+        loading: props.loadingC || props.loadingD,
+        loadingA: props.loadingA,
+        loadingB: props.loadingB,
+        loadingC: props.loadingC,
+        loadingD: props.loadingD,
+        loadingE: props.loadingE,
+        company: props.company || {},
+      };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { locationList, employeeTypeList, loadingC, loadingD } = this.state;
+
+    if (isEmpty(locationList)) {
+      dispatch({
+        type: 'info/fetchLocationList',
+        payload: {
+          locationList,
+          loadingC,
+        },
+      });
+    }
+    if (isEmpty(employeeTypeList)) {
+      dispatch({
+        type: 'info/fetchEmployeeTypeList',
+        payload: {
+          employeeTypeList,
+          loadingD,
+        },
+      });
+    }
   }
 
   handleRadio = (e) => {
@@ -40,28 +100,13 @@ class JobDetails extends PureComponent {
     });
   };
 
-  handleSelect = (value, name) => {
+  _handleSelect = (value, name) => {
     const { dispatch, checkMandatory } = this.props;
     const { jobDetail = {} } = this.state;
     jobDetail[name] = value;
-    const {
-      department,
-      jobTitle,
-      jobCategory,
-      workLocation,
-      reportingManager,
-      candidatesNoticePeriod,
-      prefferedDateOfJoining,
-    } = jobDetail;
-    if (
-      department !== '' &&
-      jobCategory !== '' &&
-      jobTitle !== '' &&
-      workLocation !== '' &&
-      reportingManager !== '' &&
-      candidatesNoticePeriod !== '' &&
-      prefferedDateOfJoining !== ''
-    ) {
+    const { department, title, workLocation, reportingManager } = jobDetail;
+
+    if (department !== '' && title !== '' && workLocation !== '' && reportingManager !== '') {
       checkMandatory.filledJobDetail = true;
     } else {
       checkMandatory.filledJobDetail = false;
@@ -77,19 +122,90 @@ class JobDetails extends PureComponent {
     });
   };
 
+  handleSelect = (value, name) => {
+    const { dispatch } = this.props;
+    const {
+      jobDetail = {},
+      locationList,
+      departmentList,
+      loadingA,
+      loadingB,
+      loadingC,
+    } = this.state;
+    jobDetail[name] = value;
+    if (name === 'workLocation' || name === 'jobTitle') {
+      const changedWorkLocation = [...locationList];
+      const selectedWorkLocation = changedWorkLocation.filter((data) => data._id === value);
+      const obj = selectedWorkLocation[0];
+      const obj1 = obj._id;
+      const locationArr = [obj1];
+      const { company } = obj;
+      const { _id } = company;
+      dispatch({
+        type: 'info/save',
+        payload: {
+          company: _id,
+          location: locationArr,
+        },
+      });
+      if (!isEmpty(company)) {
+        dispatch({
+          type: 'info/fetchDepartmentList',
+          payload: {
+            company: _id,
+            loadingA,
+          },
+        });
+        dispatch({
+          type: 'info/fetchTitleList',
+          payload: {
+            company: _id,
+            loadingB,
+          },
+        });
+      }
+    } else if ((loadingA && loadingC === false) || name === 'department') {
+      const { location } = this.state;
+      const changedDepartmentList = [...departmentList];
+      const selectedDepartment = changedDepartmentList.filter((data) => data._id === value);
+      const department = [selectedDepartment[0]._id];
+      dispatch({
+        type: 'info/save',
+        payload: {
+          department,
+        },
+      });
+      if (!isEmpty(department)) {
+        dispatch({
+          type: 'info/fetchManagerList',
+          payload: {
+            department,
+            location,
+          },
+        });
+      }
+    }
+  };
+
   render() {
     const Tab = {
       positionTab: {
         title: formatMessage({ id: 'component.jobDetail.positionTab' }),
         name: 'position',
         arr: [
-          { value: 1, position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }) },
-          { value: 2, position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }) },
+          {
+            value: 'EMPLOYEE',
+            position: formatMessage({ id: 'component.jobDetail.positionTabRadio1' }),
+          },
+          {
+            value: 'CONTINGENT-WORKER',
+            position: formatMessage({ id: 'component.jobDetail.positionTabRadio2' }),
+          },
         ],
       },
       classificationTab: {
         title: formatMessage({ id: 'component.jobDetail.classificationTab' }),
-        name: 'classification',
+        name: 'employeeType',
         arr: [
           {
             value: 1,
@@ -108,74 +224,28 @@ class JobDetails extends PureComponent {
     };
     const dropdownField = [
       {
-        title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
-        id: 1,
-        placeholder: 'Select a job title',
-        Option: [
-          { key: 1, value: 'UX Designer' },
-          { key: 2, value: 'UX Research' },
-          { key: 3, value: 'Researcher' },
-          { key: 4, value: 'UI Designer' },
-          { key: 5, value: 'Business Analyst' },
-          { key: 6, value: 'Sale Presentative' },
-        ],
-      },
-      {
-        title: 'jobTitle',
-        name: formatMessage({ id: 'component.jobDetail.jobTitle' }),
-        id: 2,
-        placeholder: 'Select a job title',
-        Option: [
-          { key: 1, value: 'UX Designer' },
-          { key: 2, value: 'UX Research' },
-          { key: 3, value: 'Researcher' },
-          { key: 4, value: 'UI Designer' },
-          { key: 5, value: 'Business Analyst' },
-          { key: 6, value: 'Sale Presentative' },
-        ],
-      },
-      {
-        title: 'jobCategory',
-        name: formatMessage({ id: 'component.jobDetail.jobCategory' }),
-        id: 3,
-        placeholder: 'Select a job category',
-        Option: [
-          { key: 1, value: 'Test' },
-          { key: 2, value: 'Dummy' },
-          { key: 3, value: 'DummyText' },
-          { key: 4, value: 'Abcde' },
-          { key: 5, value: 'Text' },
-          { key: 6, value: 'Texts' },
-        ],
-      },
-      {
         title: 'workLocation',
         name: formatMessage({ id: 'component.jobDetail.workLocation' }),
-        id: 4,
+        id: 1,
         placeholder: 'Select a work location',
-        Option: [
-          { key: 1, value: 'HCM City' },
-          { key: 2, value: 'Dubai' },
-          { key: 3, value: 'US' },
-          { key: 4, value: 'AUS' },
-          { key: 5, value: 'Korea' },
-          { key: 6, value: 'China' },
-        ],
+      },
+      {
+        title: 'department',
+        name: formatMessage({ id: 'component.jobDetail.department' }),
+        id: 2,
+        placeholder: 'Select a job title',
+      },
+      {
+        title: 'title',
+        name: 'Job Title',
+        id: 3,
+        placeholder: 'Select a job title',
       },
       {
         title: 'reportingManager',
         name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
-        id: 5,
+        id: 4,
         placeholder: 'Select',
-        Option: [
-          { key: 1, value: 'Project Manager' },
-          { key: 2, value: 'Dummy' },
-          { key: 3, value: 'Test' },
-          { key: 4, value: 'Product Manager' },
-          { key: 5, value: 'Project Leader' },
-          { key: 6, value: 'Senior' },
-        ],
       },
     ];
     const candidateField = [
@@ -208,33 +278,72 @@ class JobDetails extends PureComponent {
         </Typography.Text>
       ),
     };
-    const { jobDetail } = this.state;
+    const {
+      jobDetail,
+      departmentList,
+      locationList,
+      employeeTypeList,
+      titleList,
+      managerList,
+      loading,
+      loadingE,
+    } = this.state;
+
     return (
       <>
-        <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <div className={styles.JobDetailsComponent}>
-              <Header />
-              <RadioComponent Tab={Tab} handleRadio={this.handleRadio} jobDetail={jobDetail} />
-              <FieldsComponent
-                dropdownField={dropdownField}
-                handleSelect={this.handleSelect}
-                candidateField={candidateField}
-                jobDetail={jobDetail}
-              />
-            </div>
-          </Col>
-          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
-                <NoteComponent note={Note} />
-              </Row>
-              <Row className={styles.stepRow}>
-                <StepsComponent />
-              </Row>
-            </div>
-          </Col>
-        </Row>
+        {loading === true ? (
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <PageLoading />
+            </Col>
+            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+              <div className={styles.rightWrapper}>
+                <Row>
+                  <NoteComponent note={Note} />
+                </Row>
+                <Row className={styles.stepRow}>
+                  <StepsComponent />
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        ) : (
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <div className={styles.JobDetailsComponent}>
+                <Header />
+                <RadioComponent
+                  Tab={Tab}
+                  handleRadio={this.handleRadio}
+                  jobDetail={jobDetail}
+                  employeeTypeList={employeeTypeList}
+                />
+                <FieldsComponent
+                  dropdownField={dropdownField}
+                  handleSelect={this.handleSelect}
+                  candidateField={candidateField}
+                  jobDetail={jobDetail}
+                  departmentList={departmentList}
+                  locationList={locationList}
+                  titleList={titleList}
+                  managerList={managerList}
+                  _handleSelect={this._handleSelect}
+                  loadingE={loadingE}
+                />
+              </div>
+            </Col>
+            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+              <div className={styles.rightWrapper}>
+                <Row>
+                  <NoteComponent note={Note} />
+                </Row>
+                <Row className={styles.stepRow}>
+                  <StepsComponent />
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        )}
       </>
     );
   }

@@ -7,9 +7,31 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const { item, eligibilityDocs, handleCheckAll, handleChange } = this.props;
+    const { item = {}, handleCheckAll, handleChange, eligibilityDocs } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
     const { poe } = technicalCertification;
+    const checkedArr = item.data
+      ? item.data.length
+        ? item.data.filter(
+            (data) =>
+              data.key === 'aadharCard' ||
+              data.key === 'panCard' ||
+              data.key === 'sslc' ||
+              data.key === 'intermediateDiploma' ||
+              data.key === 'graduation',
+          )
+        : null
+      : null;
+
+    const defaultArr = item.data.filter(
+      (data) =>
+        data.key !== 'aadharCard' &&
+        data.key !== 'panCard' &&
+        data.key !== 'sslc' &&
+        data.key !== 'intermediateDiploma' &&
+        data.key !== 'graduation',
+    );
+
     return (
       <div className={styles.CollapseField}>
         <Collapse
@@ -24,56 +46,55 @@ class CollapseField extends PureComponent {
               <Checkbox
                 className={styles.checkbox}
                 onClick={(e) => e.stopPropagation()}
-                onChange={(e) => handleCheckAll(e, item.items, item.value)}
+                onChange={(e) => handleCheckAll(e, defaultArr, item)}
                 checked={
-                  item.value === 'typeA'
+                  item.type === 'A'
                     ? identityProof.isChecked
-                    : item.value === 'typeB'
+                    : item.type === 'B'
                     ? addressProof.isChecked
-                    : item.value === 'typeC'
+                    : item.type === 'C'
                     ? educational.isChecked
-                    : item.value === 'typeD'
+                    : item.type === 'D'
                     ? poe.isChecked
                     : null
                 }
               >
-                {item.title}
+                Type {item.type}: {item.name}
               </Checkbox>
             }
             extra="[Can submit any of the below other than (*)mandatory]"
           >
-            {item.title === 'Type D: Technical Certifications' ? <InputField /> : <></>}
+            {item.type === 'D' ? <InputField /> : <></>}
             <Space direction="vertical">
-              {item.defaultItems.map((data) =>
-                item.defaultItems.length > 1 ? (
-                  <Checkbox
-                    checked="true"
-                    disabled="true"
-                    value={data.name}
-                    className={styles.checkboxItem}
-                  >
-                    {data.name}*
-                  </Checkbox>
-                ) : null,
-              )}
+              {checkedArr.map((data) => (
+                <Checkbox
+                  checked="true"
+                  disabled="true"
+                  value={data.alias}
+                  className={styles.checkboxItem}
+                >
+                  {data.alias}*
+                </Checkbox>
+              ))}
+
               <Checkbox.Group
                 direction="vertical"
                 className={styles.checkboxItem}
-                options={item.items.map((obj) => obj.name)}
-                onChange={(e) => handleChange(e, item.items, item.value)}
+                options={defaultArr.map((data) => data.alias)}
+                onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
                 value={
-                  item.value === 'typeA'
+                  item.type === 'A'
                     ? identityProof.listSelected
-                    : item.value === 'typeB'
+                    : item.type === 'B'
                     ? addressProof.listSelected
-                    : item.value === 'typeC'
+                    : item.type === 'C'
                     ? educational.listSelected
-                    : item.value === 'typeD'
+                    : item.type === 'D'
                     ? poe.listSelected
                     : []
                 }
               />
-              {item.title === 'Type D: Technical Certifications' ? (
+              {item.type === 'D' ? (
                 <Space direction="horizontal">
                   <PlusOutlined className={styles.plusIcon} />
                   <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
