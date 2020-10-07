@@ -135,10 +135,12 @@ class EligibilityDocs extends Component {
       payload: {
         item: {
           ...item,
+          actions: 'submit',
           documents: testEligibility,
         },
       },
     });
+
     dispatch({
       type: 'info/addCandidateByHR',
       payload: { ...item, documents: testEligibility },
