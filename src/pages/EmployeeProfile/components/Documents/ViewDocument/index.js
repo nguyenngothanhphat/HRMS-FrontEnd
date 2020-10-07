@@ -97,7 +97,6 @@ class ViewDocument extends PureComponent {
         });
       }
     }
-    return null;
   };
 
   componentDidMount = () => {
@@ -176,6 +175,7 @@ class ViewDocument extends PureComponent {
         },
       });
     }
+    this.fetchDocumentDetails(currentViewingFile);
   };
 
   handleChange = (value) => {
