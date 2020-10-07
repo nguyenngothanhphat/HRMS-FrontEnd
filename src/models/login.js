@@ -25,7 +25,11 @@ const Model = {
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
         const { _id: role = '' } = itemRole;
-        console.log(response.data.user.roles);
+        // let dummyRole = role;
+        // if (role === 'CUSTOMER') {
+        //   dummyRole = 'admin';
+        // }
+
         setAuthority(role.toLowerCase());
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

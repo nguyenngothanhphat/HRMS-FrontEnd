@@ -1,4 +1,3 @@
-
 {
   "search.exclude": {
     "**/node_modules": true,
@@ -20,6 +19,7 @@
     "source.fixAll.eslint": true
   },
   "git.ignoreLimitWarning": true
+<<<<<<< HEAD
 }
 {
   "search.exclude": {
@@ -46,3 +46,6 @@
 >>>>>>> master
 =======
 >>>>>>> master
+=======
+}
+>>>>>>> 47f1d3d2bd51714d5a7866590d04fe7c4f275aa2
