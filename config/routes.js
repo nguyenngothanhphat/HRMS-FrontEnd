@@ -40,6 +40,16 @@ const routes = [
     ],
   },
   {
+    path: '/candidate',
+    component: '../layouts/CandidateLayout',
+    routes: [
+      {
+        path: '/candidate',
+        component: './Candidate',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
