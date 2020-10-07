@@ -10,18 +10,6 @@ import styles from './index.less';
   optionalOnboardQuestions,
 }))
 class CustomFieldsContent extends Component {
-  constructor(props) {
-    super(props);
-
-    // this.state = {
-    //   nameList: [
-    //     { id: '0', name: 'Is this a person special part-time (SPT)' },
-    //     { id: '1', name: 'Alternative address' },
-    //     { id: '2', name: 'Alternative address' },
-    //   ],
-    // };
-  }
-
   reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -88,7 +76,7 @@ class CustomFieldsContent extends Component {
             <div className={styles.list}>
               <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="droppable">
-                  {(provided, snapshot) => (
+                  {(provided) => (
                     <div
                       {...provided.droppableProps}
                       ref={provided.innerRef}
