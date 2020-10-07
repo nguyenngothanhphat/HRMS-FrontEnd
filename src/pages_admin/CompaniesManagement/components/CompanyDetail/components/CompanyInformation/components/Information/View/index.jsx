@@ -7,6 +7,11 @@ class View extends PureComponent {
     const companyDetail = [
       {
         id: 3,
+        label: 'Company Name',
+        value: 'Terralogic',
+      },
+      {
+        id: 3,
         label: 'DBA',
         value: 'DBA',
       },
