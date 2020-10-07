@@ -30,6 +30,7 @@ export default {
   'page.signUp.step2.stateError': 'Please input your state!',
   'page.signUp.step2.zipCode': 'zip code',
   'page.signUp.step2.zipCodeError': 'Please input your Zip code!',
+  'page.signUp.step2.zipCodeError2': 'Zip code must contain 6 digits!',
   'page.signUp.step2.add': 'Add work location',
   'page.signUp.step2.remove': 'Remove work location',
   'page.signUp.step2.back': 'back',

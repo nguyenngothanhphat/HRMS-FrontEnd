@@ -1,185 +1,193 @@
 import React, { useState, useEffect } from 'react';
 
-import { formatMessage } from 'umi';
-import { Input, Select, InputNumber, Row, Col, Button } from 'antd';
+import { useIntl } from 'umi';
+import { Form, Input, Select, InputNumber, Row, Col } from 'antd';
 import bin from '../../images/bin.svg';
 
 import styles from './index.less';
 
 const LocationForm = (props) => {
-  const { onChange } = props;
-  const { headQuarterAddress, locations, listCountry, dispatch, companyName = '' } = props;
-  const [list, setList] = useState([]);
+  const { formIndex } = props;
+  const { locations = [], listCountry, dispatch, locationItem, removeLocation } = props;
 
-  useEffect(() => {
-    if (locations.length === 0) {
-      setList([...locations, { ...headQuarterAddress, isheadQuarter: true, name: companyName }]);
-    } else {
-      setList([...locations]);
-    }
-  }, []);
+  const [country, setCountry] = useState('');
+  // const [state, setState] = useState('');
+  // const [initialLocation, setInitialLocation] = useState({
+  //   address: '',
+  //   country: '',
+  //   state: '',
+  //   zipCode: '',
+  // });
 
-  const updateLocations = () => {
-    const returnedLocations = [];
-    list.map((item) => {
-      const { address = '', country = '', state = '', zipCode = '', isheadQuarter = false } = item;
-      const data = {
-        name: companyName,
-        address,
-        country,
-        state,
-        zipCode,
-        isheadQuarter: isheadQuarter || false,
-      };
-      returnedLocations.push(data);
-      return null;
-    });
+  const [form] = Form.useForm();
 
-    // save data to Store
-    if (dispatch) {
-      dispatch({
-        type: 'signup/save',
-        payload: {
-          locations: returnedLocations,
-        },
-      });
-    }
-  };
+  useEffect(() => {}, [locations]);
 
   const removeAutocomplete = () => {
     const searchInputs = document.querySelectorAll(`input[type='search']`);
+
     searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
   };
 
   useEffect(() => {
-    onChange(list);
-    updateLocations();
     removeAutocomplete();
-  }, [list]);
+  }, []);
 
-  // const onFinish = (values) => {
-  //   console.log('Success:', values);
-  // };
+  const saveToStore = () => {
+    const formValues = form.getFieldsValue();
+    const { address = '', zipCode = '', country: countryValue = '', state = '' } = formValues;
 
-  // const onFinishFailed = (errorInfo) => {
-  //   console.log('Failed:', errorInfo);
-  // };
+    const data = {
+      name: '',
+      address,
+      country: countryValue,
+      state,
+      zipCode,
+      isheadQuarter: false,
+      index: formIndex,
+    };
 
-  const addLocation = () => {
-    // setFormIndex((prevIndex) => prevIndex + 1);
-    const newList = [...list, {}];
-    setList(newList);
+    if (!dispatch) {
+      return;
+    }
+    const returnedLocations = locations;
+
+    const currentIndex = locations.findIndex((location) => location.index === formIndex);
+
+    returnedLocations.splice(currentIndex, 1, data);
+
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        locations: returnedLocations,
+      },
+    });
   };
 
-  const removeLocation = (index) => {
-    const newList = [...list];
-    newList.splice(index, 1);
-    setList(newList);
+  const handleOnChange = () => {
+    // saveToStore();
   };
 
-  const handleFieldChange = (index, fieldName, fieldValue) => {
-    const item = list[index];
-    const newItem = { ...item, [fieldName]: fieldValue };
-    const newList = [...list];
-    newList.splice(index, 1, newItem);
-    setList(newList);
-  };
-
-  const handleOnChange = (fieldValue, fieldName, formIndex) => {
-    handleFieldChange(formIndex, fieldName, fieldValue);
-  };
+  useEffect(() => {
+    saveToStore();
+  }, [country]);
 
   const _renderSelectState = (index) => {
-    const country = list[index].country || {};
-    const itemCountry = listCountry.find((item) => item._id === country) || {};
+    if (!locations || locations.length === 0 || !locations[index]) {
+      return (
+        <Form.Item
+          label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
+          name="state"
+          className={styles.vertical}
+        >
+          <Select />
+        </Form.Item>
+      );
+    }
+
+    const countryValue = locations[index].country || '';
+
+    const itemCountry = listCountry.find((item) => item._id === countryValue) || {};
     const listStateByItemCountry = itemCountry.states || [];
 
     return (
-      <div className={styles.vertical}>
-        <span className={styles.label}>State</span>
-        <Select
-          value={list[index].state}
-          onChange={(value) => handleOnChange(value, 'state', index)}
-        >
-          {listStateByItemCountry.map((state) => (
-            <Select.Option value={state}>{state}</Select.Option>
+      <Form.Item
+        label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
+        name="state"
+        className={styles.vertical}
+      >
+        <Select value={locations[index].state}>
+          {listStateByItemCountry.map((state, itemIndex) => (
+            <Select.Option key={`${itemIndex + 1}`} value={state}>
+              {state}
+            </Select.Option>
           ))}
         </Select>
-      </div>
+      </Form.Item>
     );
   };
 
   return (
-    <>
-      {list.length > 1 &&
-        list.map((item, index) => {
-          if (index === 0) {
-            return null;
-          }
-          const { address, country, zipCode } = item;
-          return (
-            <div key={`${index + 1}`} className={styles.card}>
-              <h2 className={styles.header}>Work location</h2>
+    <Form form={form} onValuesChange={() => saveToStore()} initialValues={locationItem}>
+      <div className={styles.card}>
+        <h2 className={styles.header}>Work location</h2>
 
-              <div className={styles.vertical}>
-                <span className={styles.label}>Address</span>
-                <Input
-                  value={address}
-                  onChange={(e) => handleOnChange(e.target.value, 'address', index)}
-                />
-              </div>
+        <Form.Item
+          name="address"
+          label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+            },
+          ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
 
-              <div className={styles.vertical}>
-                <span className={styles.label}>Country</span>
-                <Select
-                  value={country}
-                  onChange={(value) => {
-                    handleOnChange(value, 'country', index);
-                  }}
-                  // autocomplete="nope"
-                  showArrow
-                  showSearch
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
-                  }
-                >
-                  {listCountry.map((countryItem) => {
-                    const { name, _id } = countryItem;
-                    return <Select.Option key={_id}>{name}</Select.Option>;
-                  })}
-                </Select>
-              </div>
+        <Form.Item
+          name="country"
+          label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: useIntl().formatMessage({ id: 'page.signUp.step2.countryError' }),
+            },
+          ]}
+        >
+          <Select
+            onChange={(value) => {
+              setCountry(value);
+            }}
+            showArrow
+            showSearch
+            filterOption={
+              (input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
+          >
+            {listCountry.map((countryItem) => {
+              const { name, _id } = countryItem;
+              return <Select.Option key={_id}>{name}</Select.Option>;
+            })}
+          </Select>
+        </Form.Item>
 
-              <Row gutter={30}>
-                <Col xm={24} sm={24} md={12} lg={12}>
-                  {_renderSelectState(index)}
-                </Col>
+        <Row gutter={30}>
+          <Col xm={24} sm={24} md={12} lg={12}>
+            {_renderSelectState(formIndex)}
+          </Col>
 
-                <Col xm={24} sm={24} md={12} lg={12}>
-                  <div className={styles.vertical}>
-                    <span className={styles.label}>Zip code</span>
-                    <InputNumber
-                      value={zipCode}
-                      onChange={(value) => handleOnChange(value, 'zipCode', index)}
-                    />
-                  </div>
-                </Col>
-              </Row>
+          <Col xm={24} sm={24} md={12} lg={12}>
+            <Form.Item
+              name="zipCode"
+              label={useIntl().formatMessage({ id: 'page.signUp.step2.zipCode' })}
+              className={styles.vertical}
+              rules={[
+                {
+                  required: true,
+                  message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
+                },
+                {
+                  pattern: /^[0-9]{6}$/,
+                  message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError2' }),
+                },
+              ]}
+            >
+              <InputNumber onChange={() => handleOnChange()} />
+            </Form.Item>
+          </Col>
+        </Row>
 
-              <span className={styles.remove} onClick={() => removeLocation(index)}>
-                <img src={bin} alt="bin icon" />
-                {formatMessage({ id: 'page.signUp.step2.remove' })}
-              </span>
-            </div>
-          );
-        })}
-
-      <Button className={styles.add} type="link" onClick={addLocation}>
-        + Add work location
-      </Button>
-    </>
+        <span className={styles.remove} onClick={() => removeLocation(formIndex)}>
+          <img src={bin} alt="bin icon" />
+          {useIntl().formatMessage({ id: 'page.signUp.step2.remove' })}
+        </span>
+      </div>
+    </Form>
   );
 };
 

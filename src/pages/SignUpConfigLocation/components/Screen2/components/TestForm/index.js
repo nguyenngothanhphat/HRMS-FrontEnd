@@ -9,12 +9,12 @@ const TestForm = () => {
   }, []);
 
   return (
-    <Form
-      form={form}
-      initialValues={{ remember: true }}
-      rules={[{ required: true, message: 'Please input your address!' }]}
-    >
-      <Form.Item name="address1" label="Address">
+    <Form form={form} initialValues={{ remember: true }}>
+      <Form.Item
+        name="address1"
+        label="Address"
+        rules={[{ required: true, message: 'Please input your address!' }]}
+      >
         <Input />
       </Form.Item>
     </Form>

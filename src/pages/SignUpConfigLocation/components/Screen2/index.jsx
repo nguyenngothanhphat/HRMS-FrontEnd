@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { connect, formatMessage } from 'umi';
+import { connect, useIntl } from 'umi';
 import { Form, Input, Select, InputNumber, Row, Col, Button } from 'antd';
 import LocationForm from './components/LocationForm/index';
-// import TestForm from './components/TestForm/index';
 
 import styles from './index.less';
 
 const Screen2 = (props) => {
   const [form] = Form.useForm();
-
   const { headQuarterAddress, listCountry, name: companyName, locations, dispatch } = props;
+  const [currentIndex, setCurrentIndex] = useState(locations.length);
+
+  useEffect(() => {
+    if (locations.length > 0) {
+      // Avoid duplicate index in location item
+      setCurrentIndex(locations[locations.length - 1].index + 1);
+    }
+  }, [locations]);
 
   const onFinish = (values) => {
     console.log('Success:', values);
-    // const { locations } = values;
-    // if (!address || !country || !state || !zipCode || !locations) {
-    // if (locations) console.log('Form not valid');
     return null;
   };
 
@@ -24,79 +27,39 @@ const Screen2 = (props) => {
     console.log('Failed:', errorInfo);
   };
 
-  const buildValidator = (fieldName, value) => {
-    // console.log('fieldName', fieldName);
-    // console.log('value', value);
-
-    let message = '';
-
-    // if (!value) {
-    //   return message;
-    // }
-
-    if (fieldName === 'address') {
-      // msg = value.length === 0 ? 'Name is required' : '';
-      if (!value) {
-        message = 'Address is required!';
-      }
-    }
-
-    if (fieldName === 'zipCode') {
-      const regEx = new RegExp(/^[0-9]{6}$/);
-      if (!value) {
-        message = 'Zip code is required!';
-      } else if (!regEx.exec(value)) {
-        message = 'Zip code must contain 6 digits!';
-      }
-    }
-
-    if (fieldName === 'country') {
-      if (!value) {
-        message = 'Please select country!';
-      }
-    }
-
-    if (fieldName === 'country') {
-      if (!value) {
-        message = 'Please select state!';
-      }
-    }
-
-    return message;
-    // return `\n${msg}`;
-  };
-
-  const locationValidate = (rule, locationArr, callback) => {
-    let msg = '';
-    if (Array.isArray(locationArr) && locationArr.length > 0) {
-      locationArr.every((location, index) => {
-        if (index === 0) {
-          // Skip headquarter location
-          return true;
-        }
-        console.log(location);
-        const keys = Object.keys(location);
-
-        const flag = keys.every((key) => {
-          const value = location[key];
-          const errorMessage = buildValidator(key, value);
-
-          if (errorMessage) {
-            if (!msg.includes(errorMessage)) {
-              // If final error message hasn't had this error message
-              msg = errorMessage;
-            }
-            return false;
-          }
-          return true;
-        });
-
-        return flag;
+  const addLocation = () => {
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          locations: [
+            ...locations,
+            {
+              name: companyName,
+              address: '',
+              country: '',
+              state: '',
+              zipCode: '',
+              isheadQuarter: false,
+              index: currentIndex,
+            },
+          ],
+        },
       });
     }
+    setCurrentIndex((prevState) => prevState + 1);
+  };
 
-    if (msg.length > 0) {
-      callback(msg);
+  const removeLocation = (index) => {
+    let newLocations = locations;
+    newLocations = newLocations.filter((location) => location.index !== index);
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          locations: newLocations,
+        },
+      });
     }
   };
 
@@ -143,22 +106,25 @@ const Screen2 = (props) => {
       >
         <div className={styles.card}>
           <h2 className={styles.header}>
-            {formatMessage({ id: 'page.signUp.step2.workLocations' })}
+            {useIntl().formatMessage({ id: 'page.signUp.step2.workLocations' })}
           </h2>
 
           <p className={styles.description}>
-            {formatMessage({ id: 'page.signUp.step2.description' })}
+            {useIntl().formatMessage({ id: 'page.signUp.step2.description' })}
           </p>
 
           <h2 className={styles.header}>
-            {formatMessage({ id: 'page.signUp.step2.headquarter' })}
+            {useIntl().formatMessage({ id: 'page.signUp.step2.headquarter' })}
           </h2>
 
           <Form.Item
-            label={formatMessage({ id: 'page.signUp.step2.address' })}
+            label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
             name="address"
             rules={[
-              { required: true, message: formatMessage({ id: 'page.signUp.step2.addressError' }) },
+              {
+                required: true,
+                message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+              },
             ]}
             className={styles.vertical}
           >
@@ -166,10 +132,13 @@ const Screen2 = (props) => {
           </Form.Item>
 
           <Form.Item
-            label={formatMessage({ id: 'page.signUp.step2.country' })}
+            label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}
             name="country"
             rules={[
-              { required: true, message: formatMessage({ id: 'page.signUp.step2.countryError' }) },
+              {
+                required: true,
+                message: useIntl().formatMessage({ id: 'page.signUp.step2.countryError' }),
+              },
             ]}
             className={styles.vertical}
           >
@@ -183,13 +152,13 @@ const Screen2 = (props) => {
           <Row gutter={30}>
             <Col xm={24} sm={24} md={12} lg={12}>
               <Form.Item
-                label={formatMessage({ id: 'page.signUp.step2.state' })}
+                label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
                 name="state"
                 className={styles.vertical}
                 rules={[
                   {
                     required: true,
-                    message: formatMessage({ id: 'page.signUp.step2.stateError' }),
+                    message: useIntl().formatMessage({ id: 'page.signUp.step2.stateError' }),
                   },
                 ]}
               >
@@ -204,12 +173,12 @@ const Screen2 = (props) => {
             <Col xm={24} sm={24} md={12} lg={12}>
               <Form.Item
                 className={styles.vertical}
-                label={formatMessage({ id: 'page.signUp.step2.zipCode' })}
+                label={useIntl().formatMessage({ id: 'page.signUp.step2.zipCode' })}
                 name="zipCode"
                 rules={[
                   {
                     required: true,
-                    message: formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
+                    message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
                   },
                 ]}
               >
@@ -218,35 +187,35 @@ const Screen2 = (props) => {
             </Col>
           </Row>
         </div>
-
-        {/* Clone */}
-        <Form.Item
-          name="locations"
-          rules={[
-            {
-              validator: locationValidate,
-            },
-          ]}
-        >
-          <LocationForm
-            listCountry={listCountry}
-            headQuarterAddress={headQuarterAddress}
-            locations={locations}
-            companyName={companyName}
-            dispatch={dispatch}
-          />
-          {/* <TestForm /> */}
-        </Form.Item>
-
-        <div className={styles.btnWrapper}>
-          <Button className={styles.btn} onClick={() => navigate('previous')}>
-            {formatMessage({ id: 'page.signUp.step2.back' })}
-          </Button>
-          <Button className={styles.btn} htmlType="submit" onClick={() => navigate('next')}>
-            {formatMessage({ id: 'page.signUp.step2.next' })}
-          </Button>
-        </div>
       </Form>
+
+      {locations.map((location) => {
+        const formIndex = location.index;
+        return (
+          <LocationForm
+            key={location.index}
+            dispatch={dispatch}
+            formIndex={formIndex}
+            locations={locations}
+            locationItem={location}
+            listCountry={listCountry}
+            removeLocation={removeLocation}
+          />
+        );
+      })}
+
+      <Button className={styles.add} type="link" onClick={addLocation}>
+        + Add work location
+      </Button>
+
+      <div className={styles.btnWrapper}>
+        <Button className={styles.btn} onClick={() => navigate('previous')}>
+          {useIntl().formatMessage({ id: 'page.signUp.step2.back' })}
+        </Button>
+        <Button className={styles.btn} htmlType="submit" onClick={() => navigate('next')}>
+          {useIntl().formatMessage({ id: 'page.signUp.step2.next' })}
+        </Button>
+      </div>
     </div>
   );
 };
