@@ -18,6 +18,10 @@ import resetPasswordPage from './en-US/resetPasswordPage';
 import employeeOnboarding from './en-US/employeeOnboarding';
 import templateDetails from './en-US/templateDetails';
 
+// admin pages
+import usersManagementPage from './en-US/usersManagementPage';
+import documentsManagementPage from './en-US/documentsManagementPage';
+
 export default {
   'navBar.lang': 'Languages',
   'layout.user.link.help': 'Help',
@@ -45,4 +49,7 @@ export default {
   ...resetPasswordPage,
   ...employeeOnboarding,
   ...templateDetails,
+  // admin pages
+  ...usersManagementPage,
+  ...documentsManagementPage,
 };
