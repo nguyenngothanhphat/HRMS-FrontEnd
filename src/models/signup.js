@@ -13,7 +13,7 @@ const delay = (timeout) => {
 const signup = {
   namespace: 'signup',
   state: {
-    currentStep: 1,
+    currentStep: 0,
     checkLegalSameHeadQuarter: false,
     codeNumber: '',
     company: {
