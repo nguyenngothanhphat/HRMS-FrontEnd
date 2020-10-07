@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'umi';
 
 import { Row, Col, Layout, Button, Steps } from 'antd';
 
@@ -37,14 +38,50 @@ const steps = [
   },
 ];
 
-const CandidateLayout = (props) => {
-  const { children } = props;
+const getLineWidth = (value) => {
+  switch (value) {
+    case 1:
+      return s.one;
+    case 2:
+      return s.two;
+    case 3:
+      return s.three;
+    case 4:
+      return s.four;
+    case 5:
+      return s.five;
+    case 6:
+      return s.six;
 
-  const [current, setCurrent] = useState(0);
+    default:
+      return '';
+  }
+};
+
+const CandidateLayout = (props) => {
+  const { children, currentStep, dispatch } = props;
+
+  const [current, setCurrent] = useState(currentStep);
+
+  const nextScreen = () => {
+    if (!dispatch || current === 7) {
+      return;
+    }
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: current + 1,
+      },
+    });
+
+    setCurrent((prevState) => prevState + 1);
+  };
 
   return (
     <div className={s.candidate}>
-      <Header className={`${s.header} ${s.one}`}>
+      {/* <Header className={`${s.header} ${s.one}`}> */}
+      <Header className={`${s.header} ${getLineWidth(current - 1)}`}>
         <div className={s.headerLeft}>
           <div className={s.imgContainer}>
             <img src={logo} alt="terralogic logo" />
@@ -68,20 +105,16 @@ const CandidateLayout = (props) => {
         <Row gutter={24}>
           <Col md={5}>
             <div className={s.stepContainer}>
-              <Steps current={current} direction="vertical">
+              <Steps current={current - 1} direction="vertical">
                 {steps.map((item) => (
                   <Step key={item.title} title={item.title} />
                 ))}
               </Steps>
-
-              {/* <button
-                onClick={() => {
-                  setCurrent((prevState) => prevState + 1);
-                }}
-              >
-                Next
-              </button> */}
             </div>
+
+            <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
+              Next
+            </button>
           </Col>
           <Col md={18}>{children}</Col>
         </Row>
@@ -90,4 +123,7 @@ const CandidateLayout = (props) => {
   );
 };
 
-export default CandidateLayout;
+// export default CandidateLayout;
+export default connect(({ candidateProfile: { currentStep } = {} }) => ({
+  currentStep,
+}))(CandidateLayout);
