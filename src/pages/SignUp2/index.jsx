@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, connect } from 'umi';
+import { Link, formatMessage, connect } from 'umi';
 import { InputNumber, Button } from 'antd';
 
 import gmail from '@/assets/gmail-icon.png';
@@ -75,13 +75,24 @@ const SignUp2 = (props) => {
 
   return (
     <div className={styles.wrapper}>
-      <h2>Check your mail for the code.</h2>
+      <h2>
+        {formatMessage({
+          id: 'page.signUp.checkForCode',
+        })}
+      </h2>
 
       <p className={styles.mail}>
-        We have sent a 6-digit code to<Link to="/">{email}</Link>
+        {formatMessage({
+          id: 'page.signUp.weSentCode',
+        })}
+        <Link to="/">{email}</Link>
       </p>
 
-      <p className={styles.codeDescription}>Enter the security code</p>
+      <p className={styles.codeDescription}>
+        {formatMessage({
+          id: 'page.signUp.enterCode',
+        })}
+      </p>
 
       <div className={styles.code}>
         <InputNumber
@@ -148,7 +159,14 @@ const SignUp2 = (props) => {
 
       <div className={styles.send}>
         <p>
-          Did not receive the code? <Link to="/">Send again</Link>{' '}
+          {formatMessage({
+            id: 'page.signUp.notReceiveCode',
+          })}{' '}
+          <Link to="/">
+            {formatMessage({
+              id: 'page.signUp.sendAgain',
+            })}
+          </Link>
         </p>
       </div>
 
@@ -157,7 +175,11 @@ const SignUp2 = (props) => {
           <Link to="http://gmail.com/">
             <div className={styles.btn}>
               <img src={gmail} alt="gmail icon" />
-              <span>open gmail</span>
+              <span>
+                {formatMessage({
+                  id: 'page.signUp.openGmail',
+                })}
+              </span>
             </div>
           </Link>
         </Button>
@@ -166,7 +188,11 @@ const SignUp2 = (props) => {
           <Link to="https://outlook.office.com/">
             <div className={styles.btn}>
               <img src={outlook} alt="outlook icon" />
-              <span>open outlook</span>
+              <span>
+                {formatMessage({
+                  id: 'page.signUp.openOutlook',
+                })}
+              </span>
             </div>
           </Link>
         </Button>
