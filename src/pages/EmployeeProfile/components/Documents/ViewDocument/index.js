@@ -83,12 +83,27 @@ class ViewDocument extends PureComponent {
   }
 
   // get document details
-  fetchDocumentDetails = (id) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/employeeProfile/fetchViewingDocumentDetail',
-      payload: { id },
-    });
+  fetchDocumentDetails = () => {
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+      selectedFile,
+      dispatch,
+    } = this.props;
+    const { currentViewingFile } = this.state;
+    let i;
+    for (i = 1; i <= groupViewingDocuments.length; i += 1) {
+      if (i === currentViewingFile) {
+        dispatch({
+          type: 'employeeProfile/fetchViewingDocumentDetail',
+          payload: { id: groupViewingDocuments[selectedFile - 1].id },
+        });
+      }
+    }
+    return null;
+  };
+
+  componentDidMount = () => {
+    this.fetchDocumentDetails();
   };
 
   // File Viewing
@@ -108,6 +123,7 @@ class ViewDocument extends PureComponent {
   };
 
   handlePrevViewingFile = () => {
+    this.fetchDocumentDetails();
     const { currentViewingFile } = this.state;
     if (currentViewingFile > 1) {
       this.setState((prevState) => ({
@@ -123,6 +139,7 @@ class ViewDocument extends PureComponent {
   };
 
   handleNextViewingFile = () => {
+    this.fetchDocumentDetails();
     const {
       employeeProfile: { groupViewingDocuments = [] },
     } = this.props;
@@ -215,6 +232,7 @@ class ViewDocument extends PureComponent {
         groupViewingDocuments,
       },
     } = this.props;
+
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
