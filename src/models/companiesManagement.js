@@ -1,5 +1,9 @@
 import { dialog } from '@/utils/utils';
-import { getActiveCompaniesList, getInActiveCompaniesList } from '@/services/companiesManangement';
+import {
+  getActiveCompaniesList,
+  getInActiveCompaniesList,
+  getCompanyDetails,
+} from '@/services/companiesManangement';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -7,32 +11,45 @@ const companiesManagement = {
     isModified: false,
     activeCompaniesList: [],
     inActiveCompaniesList: [],
-    company: {
-      name: '',
-      dba: '',
-      ein: '',
-      employeeNumber: '',
-      website: '',
+    originData: {
+      companyDetails: {},
     },
-    headQuarterAddress: {
-      address: '',
-      country: '',
-      state: '',
-      zipCode: '',
-    },
-    legalAddress: {
-      address: '',
-      country: '',
-      state: '',
-      zipCode: '',
-    },
-    locations: [],
-    user: {
-      firstName: '',
-      email: '',
+    tempData: {
+      companyDetails: {},
     },
   },
   effects: {
+    *fetchCompanyDetails({ payload: { companyID = '' }, dataTempKept = {} }, { call, put }) {
+      try {
+        const response = yield call(getCompanyDetails, { companyID });
+        const { statusCode, data: companyDetails = {} } = response;
+        if (statusCode !== 200) throw response;
+        const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
+        let companyDetailsTemp = { ...companyDetails };
+        if (!checkDataTempKept) {
+          companyDetailsTemp = { ...companyDetailsTemp, ...dataTempKept };
+          const isModified = JSON.stringify(companyDetailsTemp) !== JSON.stringify(companyDetails);
+          yield put({
+            type: 'save',
+            payload: { isModified },
+          });
+        }
+        yield put({
+          type: 'save',
+          payload: { idCurrentCompany: companyID },
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { companyDetails },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { companyDetails: companyDetailsTemp },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchActiveCompaniesList(_, { call, put }) {
       try {
         const response = yield call(getActiveCompaniesList);
@@ -60,6 +77,26 @@ const companiesManagement = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveOrigin(state, action) {
+      const { originData } = state;
+      return {
+        ...state,
+        originData: {
+          ...originData,
+          ...action.payload,
+        },
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
       };
     },
     saveHeadQuarterAddress(state, action) {

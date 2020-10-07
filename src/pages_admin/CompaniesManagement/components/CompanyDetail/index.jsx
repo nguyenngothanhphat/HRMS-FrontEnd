@@ -12,9 +12,16 @@ import styles from './index.less';
 @connect(() => ({}))
 class CompanyDetail extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const {
+      match: { params: { reId: companyID = '' } = {} },
+      dispatch,
+    } = this.props;
     dispatch({
       type: 'country/fetchListCountry',
+    });
+    dispatch({
+      type: 'companiesManagement/fetchCompanyDetails',
+      payload: { companyID },
     });
   }
 

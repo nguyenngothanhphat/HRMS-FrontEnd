@@ -22,7 +22,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '580-00154-23-7 Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -66,7 +66,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '580-00154-23-7 Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -110,7 +110,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: 'Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -154,7 +154,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '580-00154-23-7 Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -198,7 +198,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '580-00154-23-7 Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -242,7 +242,7 @@ const companiesList = [
     locations: [
       {
         name: 'Japan Company2',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '580-00154-23-7 Shindou, Matsubara, Osaka',
         country: 'Japan',
         state: 'HoChiMinh',
         zipCode: '700000',
@@ -287,15 +287,15 @@ const companyDetails = {
   },
   locations: [
     {
-      name: 'Japan Company2',
-      address: '66 Le Thi Ho, Go Vap',
+      name: 'Japan Office',
+      address: '580-00154-23-7 Shindou, Matsubara, Osaka',
       country: 'Japan',
       state: 'HoChiMinh',
       zipCode: '700000',
       isheadQuarter: true,
     },
     {
-      name: 'HoChiMinh Company2',
+      name: 'HoChiMinh Office',
       address: '66 Le Thi Ho, Go Vap',
       country: 'Viet Nam',
       state: 'HoChiMinh',
