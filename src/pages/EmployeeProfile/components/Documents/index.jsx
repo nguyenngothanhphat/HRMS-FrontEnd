@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import ViewDocument from './ViewDocument';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, loading }) => ({
+  loading: loading.effects['employeeProfile/fetchDocuments'],
   employeeProfile,
 }))
 class Documents extends Component {
@@ -25,7 +26,7 @@ class Documents extends Component {
       employeeProfile: { idCurrentEmployee = '' },
       dispatch,
     } = this.props;
-    console.log('employee', idCurrentEmployee);
+
     dispatch({
       type: 'employeeProfile/fetchDocuments',
       payload: { employee: idCurrentEmployee },
@@ -140,6 +141,7 @@ class Documents extends Component {
 
     const {
       employeeProfile: { saveDocuments = [] },
+      loading,
     } = this.props;
     const data = this.generateArrayDocument(saveDocuments);
 
@@ -150,32 +152,41 @@ class Documents extends Component {
     };
     return (
       <div className={styles.Documents}>
-        {data.length === 0 ? (
-          <div className={styles.noDocumentContainer}>
-            <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
-            <div className={styles.buttonContainer}>
-              <Button className={styles.uploadNewBtn} type="primary">
-                Upload new
-              </Button>
-            </div>
+        {loading ? (
+          <div className={styles.loadingDocuments}>
+            {/* <p>Loading documents</p> */}
+            <Spin size="large" />
           </div>
         ) : (
           <div>
-            {isViewingDocument ? (
-              <ViewDocument
-                files={files}
-                selectedFile={selectedFile}
-                typeOfSelectedFile={typeOfSelectedFile}
-                onBackClick={this.onBackClick}
-              />
+            {data.length === 0 ? (
+              <div className={styles.noDocumentContainer}>
+                <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
+                <div className={styles.buttonContainer}>
+                  <Button className={styles.uploadNewBtn} type="primary">
+                    Upload new
+                  </Button>
+                </div>
+              </div>
             ) : (
-              data.map((value, index) => (
-                <InfoCollapseType2
-                  key={`${index + 1}`}
-                  onFileClick={this.onFileClick}
-                  data={value}
-                />
-              ))
+              <div>
+                {isViewingDocument ? (
+                  <ViewDocument
+                    files={files}
+                    selectedFile={selectedFile}
+                    typeOfSelectedFile={typeOfSelectedFile}
+                    onBackClick={this.onBackClick}
+                  />
+                ) : (
+                  data.map((value, index) => (
+                    <InfoCollapseType2
+                      key={`${index + 1}`}
+                      onFileClick={this.onFileClick}
+                      data={value}
+                    />
+                  ))
+                )}
+              </div>
             )}
           </div>
         )}
