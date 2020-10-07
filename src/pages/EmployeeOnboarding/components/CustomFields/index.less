@@ -1,19 +1,27 @@
 .CustomFields {
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-  align-items: center;
-  height: 215px;
+  background-color: #ffffff;
+  height: 100vh;
+  .CustomFieldsTop {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 215px;
+    background-color: #f6f7f9;
+  }
   .contentLeft {
     padding-left: 40px;
   }
   .contentLeftTitle {
+    margin-bottom: 0;
     font-size: 18px;
     font-weight: bold;
     text-align: left;
     color: #161c29;
   }
   .contentLeftText {
+    margin-top: 16px;
+    margin-bottom: 20px;
     font-size: 13px;
     text-align: left;
     color: #707177;
@@ -30,10 +38,61 @@
   .buttonAddNewField {
     width: 157px;
     height: 40px;
+    margin-left: 20px;
     font-size: 14px;
     color: #ffffff;
     border-radius: 25px;
     border: solid 1px #ffa100;
     background-color: #ffa100;
+  }
+  .imgContentRight {
+    margin-top: 40px;
+    margin-right: 45px;
+  }
+  .CustomFieldsBot {
+    width: 872px;
+    :global {
+      th.ant-table-cell {
+        background: #ffffff !important;
+        color: #161c29;
+      }
+      .ant-table-thead > tr > th {
+        border-top: 1px solid #d6dce0;
+        border-bottom: 1px solid #d6dce0;
+      }
+      .ant-table-thead > tr:first-child > th:first-child {
+        border-bottom-left-radius: 0;
+        border-left: 1px solid #d6dce0;
+      }
+      .ant-table-thead > tr:first-child > th:last-child {
+        border-bottom-right-radius: 0;
+        border-right: 1px solid #d6dce0;
+      }
+      // td.ant-table-cell {
+      //   border: solid 1px #d6dce0;
+      // }
+      .ant-table-tbody > tr:first-child > td:first-child {
+        border-bottom-left-radius: 5px;
+        border-left: solid 1px #d6dce0;
+        border-right: solid 1px #d6dce0;
+      }
+      .ant-table-tbody > tr:first-child > td:last-child {
+        border-right: solid 1px #d6dce0;
+      }
+      .ant-table-tbody > tr:last-child > td:last-child {
+        border-bottom-right-radius: 5px;
+        border-right: solid 1px #d6dce0;
+      }
+    }
+  }
+
+  .CustomFieldsBotBackGround {
+    z-index: 1;
+  }
+  .actionIcon {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
   }
 }
