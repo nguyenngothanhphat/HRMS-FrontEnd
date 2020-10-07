@@ -20,6 +20,18 @@ class Documents extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const {
+      employeeProfile: { idCurrentEmployee = '' },
+      dispatch,
+    } = this.props;
+    console.log('employee', idCurrentEmployee);
+    dispatch({
+      type: 'employeeProfile/fetchDocuments',
+      payload: { employee: idCurrentEmployee },
+    });
+  };
+
   onBackClick = () => {
     this.setState({
       isViewingDocument: false,

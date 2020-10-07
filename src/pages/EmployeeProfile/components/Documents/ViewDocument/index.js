@@ -78,7 +78,6 @@ class ViewDocument extends PureComponent {
       numPages: null,
       currentViewingFile: selectedFile,
       fileLoading: false,
-      selectedfileId: '',
     };
   }
 
@@ -134,6 +133,7 @@ class ViewDocument extends PureComponent {
 
   // on Save button click
   onSaveClick = () => {
+    // eslint-disable-next-line no-alert
     alert('Save');
   };
 
@@ -141,11 +141,13 @@ class ViewDocument extends PureComponent {
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       const [first] = data;
+      // eslint-disable-next-line no-console
       console.log('URL Image', first.url);
     }
   };
 
   handleChange = (value) => {
+    // eslint-disable-next-line no-console
     console.log(`selected emails ${value}`);
   };
 
@@ -161,19 +163,19 @@ class ViewDocument extends PureComponent {
 
   // get visa information
   getVisaInformation = (visaData, files, currentViewingFile) => {
-    let visaNumber = '';
+    let visaNumberFinal = '';
     visaData.forEach((visa) => {
+      const { document, visaNumber } = visa;
+      const { _id } = document;
+      console.log('======== visa: ', visa);
       files.forEach((file, index) => {
-        if (
-          visa.document._id === file.id &&
-          visa.visaNumber !== undefined &&
-          currentViewingFile === index
-        ) {
-          visaNumber = visa.visaNumber;
+        console.log('->file: ', file);
+        if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
+          visaNumberFinal = visa.visaNumber;
         }
       });
     });
-    return visaNumber;
+    return visaNumberFinal;
   };
 
   render() {

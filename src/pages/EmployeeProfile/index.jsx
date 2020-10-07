@@ -54,10 +54,10 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchPRReport',
       payload: { employee },
     });
-    dispatch({
-      type: 'employeeProfile/fetchDocuments',
-      payload: { employee },
-    });
+    // dispatch({
+    //   type: 'employeeProfile/fetchDocuments',
+    //   payload: { employee },
+    // });
     dispatch({
       type: 'employeeProfile/fetchPayslips',
       payload: { employee, employeeGroup: 'Payslip' },

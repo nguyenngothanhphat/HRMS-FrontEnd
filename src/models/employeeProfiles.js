@@ -66,6 +66,7 @@ const employeeProfile = {
       document: {},
     },
     listPRReport: [],
+    saveDocuments: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -497,11 +498,11 @@ const employeeProfile = {
         const response = yield call(getDocuments, {
           employee,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { saveDocuments: data },
+          payload: { saveDocuments },
         });
       } catch (errors) {
         dialog(errors);
