@@ -15,7 +15,6 @@ class Documents extends Component {
     super(props);
     this.state = {
       isViewingDocument: false,
-      files: [],
       typeOfSelectedFile: '',
       selectedFile: 0,
     };
@@ -115,7 +114,9 @@ class Documents extends Component {
   onFileClick = (id) => {
     const {
       employeeProfile: { saveDocuments = [] },
+      dispatch,
     } = this.props;
+
     const data = this.generateArrayDocument(saveDocuments);
 
     data.forEach((x) => {
@@ -126,9 +127,12 @@ class Documents extends Component {
           if (z.id === id) {
             this.setState({
               isViewingDocument: true,
-              files: y.files,
               selectedFile: count,
               typeOfSelectedFile: y.kind,
+            });
+            dispatch({
+              type: 'employeeProfile/saveGroupViewingDocuments',
+              payload: { files: y.files },
             });
           }
         });
@@ -137,12 +141,13 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, selectedFile, typeOfSelectedFile } = this.state;
 
     const {
-      employeeProfile: { saveDocuments = [] },
+      employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
       loading,
     } = this.props;
+
     const data = this.generateArrayDocument(saveDocuments);
 
     const emptyData = {
@@ -150,6 +155,7 @@ class Documents extends Component {
       type: 2,
       body: [],
     };
+
     return (
       <div className={styles.Documents}>
         {loading ? (
@@ -170,9 +176,9 @@ class Documents extends Component {
               </div>
             ) : (
               <div>
-                {isViewingDocument ? (
+                {isViewingDocument && groupViewingDocuments.length !== 0 ? (
                   <ViewDocument
-                    files={files}
+                    files={groupViewingDocuments}
                     selectedFile={selectedFile}
                     typeOfSelectedFile={typeOfSelectedFile}
                     onBackClick={this.onBackClick}

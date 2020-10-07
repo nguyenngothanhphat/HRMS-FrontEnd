@@ -68,6 +68,7 @@ const identifyImageOrPdf = (fileName) => {
 
 @connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['upload/uploadFile'],
+  loadingFileDetail: loading.effects['employeeProfile/fetchViewingDocumentDetail'],
   employeeProfile,
 }))
 class ViewDocument extends PureComponent {
@@ -81,14 +82,26 @@ class ViewDocument extends PureComponent {
     };
   }
 
+  // get document details
+  fetchDocumentDetails = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/employeeProfile/fetchViewingDocumentDetail',
+      payload: { id },
+    });
+  };
+
   // File Viewing
   getCurrentViewingFileUrl = () => {
     const { currentViewingFile } = this.state;
-    const { files } = this.props;
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
+
     let i;
-    for (i = 1; i <= files.length; i += 1) {
+    for (i = 1; i <= groupViewingDocuments.length; i += 1) {
       if (i === currentViewingFile) {
-        return files[i - 1].source;
+        return groupViewingDocuments[i - 1].source;
       }
     }
     return null;
@@ -110,9 +123,12 @@ class ViewDocument extends PureComponent {
   };
 
   handleNextViewingFile = () => {
-    const { files } = this.props;
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
+
     const { currentViewingFile } = this.state;
-    if (currentViewingFile < files.length) {
+    if (currentViewingFile < groupViewingDocuments.length) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile + 1,
         fileLoading: true,
@@ -139,14 +155,21 @@ class ViewDocument extends PureComponent {
 
   uploadNew = (resp) => {
     const { statusCode, data = [] } = resp;
-    const { dispatch, files } = this.props;
+
+    const {
+      dispatch,
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
     const { currentViewingFile } = this.state;
 
     if (statusCode === 200) {
       const [attachment] = data;
       dispatch({
         type: 'employeeProfile/updateDocument',
-        payload: { id: files[currentViewingFile - 1].id, attachment: attachment.id },
+        payload: {
+          id: groupViewingDocuments[currentViewingFile - 1].id,
+          attachment: attachment.id,
+        },
       });
     }
   };
@@ -172,9 +195,9 @@ class ViewDocument extends PureComponent {
     visaData.forEach((visa) => {
       const { document, visaNumber } = visa;
       const { _id } = document;
-      console.log('======== visa: ', visa);
+      // console.log('======== visa: ', visa);
       files.forEach((file, index) => {
-        console.log('->file: ', file);
+        // console.log('->file: ', file);
         if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
           visaNumberFinal = visa.visaNumber;
         }
@@ -185,10 +208,11 @@ class ViewDocument extends PureComponent {
 
   render() {
     const { numPages, currentViewingFile, fileLoading } = this.state;
-    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+    const { onBackClick, typeOfSelectedFile, loading } = this.props;
     const {
       employeeProfile: {
         tempData: { passportData = {}, visaData = [] },
+        groupViewingDocuments,
       },
     } = this.props;
     return (
@@ -202,6 +226,7 @@ class ViewDocument extends PureComponent {
             </span>
           </div>
         </div>
+
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
@@ -232,7 +257,7 @@ class ViewDocument extends PureComponent {
           {/* PAGINATION OF DOCUMENT VIEWER */}
           <div className={styles.documentPagination}>
             <div className={styles.numberOfFiles}>
-              <span>{currentViewingFile}</span>/{files.length}
+              <span>{currentViewingFile}</span>/{groupViewingDocuments.length}
             </div>
             <div className={styles.filesPagination}>
               <div>
@@ -265,21 +290,31 @@ class ViewDocument extends PureComponent {
                 Document Name
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {files[currentViewingFile - 1].fileName}
+                {groupViewingDocuments[currentViewingFile - 1].fileName}
               </Col>
             </Row>
 
             {this.includeString(typeOfSelectedFile, 'identity') ? (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
-                  {files[currentViewingFile - 1].fileName} Number
+                  {groupViewingDocuments[currentViewingFile - 1].fileName} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(files[currentViewingFile - 1].fileName, 'passport')
+                  {this.includeString(
+                    groupViewingDocuments[currentViewingFile - 1].fileName,
+                    'passport',
+                  )
                     ? passportData.passportNumber
                     : ''}
-                  {this.includeString(files[currentViewingFile - 1].fileName, 'visa')
-                    ? this.getVisaInformation(visaData, files, currentViewingFile - 1)
+                  {this.includeString(
+                    groupViewingDocuments[currentViewingFile - 1].fileName,
+                    'visa',
+                  )
+                    ? this.getVisaInformation(
+                        visaData,
+                        groupViewingDocuments,
+                        currentViewingFile - 1,
+                      )
                     : ''}
                 </Col>
               </Row>

@@ -26,6 +26,7 @@ import {
   getChangeHistories,
   getDocumentAdd,
   getDocumentUpdate,
+  getDocumentById,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -68,6 +69,8 @@ const employeeProfile = {
     listPRReport: [],
     saveDocuments: [],
     newDocument: {},
+    documentDetail: {},
+    groupViewingDocuments: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -504,6 +507,31 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { saveDocuments },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentById, {
+          id,
+        });
+        const { statusCode, data: documentDetail = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { documentDetail },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *saveGroupViewingDocuments({ payload: { files = [] } = {} }, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { groupViewingDocuments: files },
         });
       } catch (errors) {
         dialog(errors);
