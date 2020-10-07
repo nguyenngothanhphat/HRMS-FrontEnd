@@ -67,6 +67,7 @@ const employeeProfile = {
     },
     listPRReport: [],
     saveDocuments: [],
+    newDocument: {},
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -503,6 +504,25 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { saveDocuments },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateDocument({ payload: { id = '', attachment = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentUpdate, {
+          id,
+          attachment,
+        });
+        const { statusCode, message, data: newDocument = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'save',
+          payload: { newDocument },
         });
       } catch (errors) {
         dialog(errors);

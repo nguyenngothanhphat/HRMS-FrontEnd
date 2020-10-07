@@ -137,12 +137,17 @@ class ViewDocument extends PureComponent {
     alert('Save');
   };
 
-  getUrl = (resp) => {
+  uploadNew = (resp) => {
     const { statusCode, data = [] } = resp;
+    const { dispatch, files } = this.props;
+    const { currentViewingFile } = this.state;
+
     if (statusCode === 200) {
-      const [first] = data;
-      // eslint-disable-next-line no-console
-      console.log('URL Image', first.url);
+      const [attachment] = data;
+      dispatch({
+        type: 'employeeProfile/updateDocument',
+        payload: { id: files[currentViewingFile - 1].id, attachment: attachment.id },
+      });
     }
   };
 
@@ -318,7 +323,7 @@ class ViewDocument extends PureComponent {
                 {loading && <LoadingOutlined className={styles.loadingIcon} />}
               </>
             }
-            getResponse={this.getUrl}
+            getResponse={this.uploadNew}
           />
 
           <Button onClick={this.onSaveClick} className={styles.saveButton}>
