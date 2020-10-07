@@ -78,15 +78,13 @@ class ViewDocument extends PureComponent {
     this.state = {
       numPages: null,
       currentViewingFile: selectedFile,
-      fileLoading: false,
     };
   }
 
   // get document details
-  fetchDocumentDetails = () => {
+  fetchDocumentDetails = (selectedFile) => {
     const {
       employeeProfile: { groupViewingDocuments = [] },
-      selectedFile,
       dispatch,
     } = this.props;
     const { currentViewingFile } = this.state;
@@ -103,7 +101,8 @@ class ViewDocument extends PureComponent {
   };
 
   componentDidMount = () => {
-    this.fetchDocumentDetails();
+    const { selectedFile } = this.props;
+    this.fetchDocumentDetails(selectedFile);
   };
 
   // File Viewing
@@ -123,23 +122,16 @@ class ViewDocument extends PureComponent {
   };
 
   handlePrevViewingFile = () => {
-    this.fetchDocumentDetails();
     const { currentViewingFile } = this.state;
     if (currentViewingFile > 1) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile - 1,
-        fileLoading: true,
       }));
+      this.fetchDocumentDetails(currentViewingFile - 1);
     }
-    setTimeout(() => {
-      this.setState({
-        fileLoading: false,
-      });
-    }, 1000);
   };
 
   handleNextViewingFile = () => {
-    this.fetchDocumentDetails();
     const {
       employeeProfile: { groupViewingDocuments = [] },
     } = this.props;
@@ -148,14 +140,9 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile < groupViewingDocuments.length) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile + 1,
-        fileLoading: true,
       }));
+      this.fetchDocumentDetails(currentViewingFile + 1);
     }
-    setTimeout(() => {
-      this.setState({
-        fileLoading: false,
-      });
-    }, 2000);
   };
 
   onDocumentLoadSuccess = ({ numPages }) => {
@@ -212,11 +199,9 @@ class ViewDocument extends PureComponent {
     visaData.forEach((visa) => {
       const { document, visaNumber } = visa;
       const { _id } = document;
-      // console.log('======== visa: ', visa);
       files.forEach((file, index) => {
-        // console.log('->file: ', file);
         if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
-          visaNumberFinal = visa.visaNumber;
+          visaNumberFinal = visaNumber;
         }
       });
     });
@@ -224,14 +209,16 @@ class ViewDocument extends PureComponent {
   };
 
   render() {
-    const { numPages, currentViewingFile, fileLoading } = this.state;
-    const { onBackClick, typeOfSelectedFile, loading } = this.props;
+    const { numPages, currentViewingFile } = this.state;
+    const { onBackClick, loading, loadingFileDetail } = this.props;
     const {
       employeeProfile: {
         tempData: { passportData = {}, visaData = [] },
         groupViewingDocuments,
+        documentDetail,
       },
     } = this.props;
+    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
 
     return (
       <div className={styles.ViewDocument}>
@@ -248,15 +235,15 @@ class ViewDocument extends PureComponent {
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(this.getCurrentViewingFileUrl()) === 0 ? (
+            {identifyImageOrPdf(url) === 0 ? (
               <div className={styles.imageFrame}>
-                <img alt="preview" src={this.getCurrentViewingFileUrl()} />
+                <img alt="preview" src={url} />
               </div>
             ) : (
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
-                file={this.getCurrentViewingFileUrl()}
+                file={url}
                 loading={this.documentWarning('Loading document. Please wait...')}
                 noData={this.documentWarning('URL is not available.')}
               >
@@ -279,7 +266,7 @@ class ViewDocument extends PureComponent {
             </div>
             <div className={styles.filesPagination}>
               <div>
-                {fileLoading ? (
+                {loadingFileDetail ? (
                   <div>
                     <Spin />
                   </div>
@@ -299,7 +286,7 @@ class ViewDocument extends PureComponent {
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.documentType' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {typeOfSelectedFile}
+                {employeeGroup}
               </Col>
             </Row>
 
@@ -308,26 +295,18 @@ class ViewDocument extends PureComponent {
                 Document Name
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {groupViewingDocuments[currentViewingFile - 1].fileName}
+                {key}
               </Col>
             </Row>
 
-            {this.includeString(typeOfSelectedFile, 'identity') ? (
+            {this.includeString(employeeGroup, 'identity') ? (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
-                  {groupViewingDocuments[currentViewingFile - 1].fileName} Number
+                  {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(
-                    groupViewingDocuments[currentViewingFile - 1].fileName,
-                    'passport',
-                  )
-                    ? passportData.passportNumber
-                    : ''}
-                  {this.includeString(
-                    groupViewingDocuments[currentViewingFile - 1].fileName,
-                    'visa',
-                  )
+                  {this.includeString(key, 'passport') ? passportData.passportNumber : ''}
+                  {this.includeString(key, 'visa')
                     ? this.getVisaInformation(
                         visaData,
                         groupViewingDocuments,

@@ -15,7 +15,6 @@ class Documents extends Component {
     super(props);
     this.state = {
       isViewingDocument: false,
-      typeOfSelectedFile: '',
       selectedFile: 0,
     };
   }
@@ -128,7 +127,6 @@ class Documents extends Component {
             this.setState({
               isViewingDocument: true,
               selectedFile: count,
-              typeOfSelectedFile: y.kind,
             });
             dispatch({
               type: 'employeeProfile/saveGroupViewingDocuments',
@@ -141,7 +139,7 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, selectedFile } = this.state;
 
     const {
       employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
@@ -177,12 +175,7 @@ class Documents extends Component {
             ) : (
               <div>
                 {isViewingDocument && groupViewingDocuments.length !== 0 ? (
-                  <ViewDocument
-                    files={groupViewingDocuments}
-                    selectedFile={selectedFile}
-                    typeOfSelectedFile={typeOfSelectedFile}
-                    onBackClick={this.onBackClick}
-                  />
+                  <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
                 ) : (
                   data.map((value, index) => (
                     <InfoCollapseType2
