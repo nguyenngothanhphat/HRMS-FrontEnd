@@ -13,6 +13,7 @@ import directoryPage from './en-US/directoryPage';
 import employeeProfilePage from './en-US/employeeProfilePage';
 import forgotPasswordPage from './en-US/forgotPasswordPage';
 import loginPage from './en-US/loginPage';
+import signUpPage from './en-US/signUpPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
 import employeeOnboarding from './en-US/employeeOnboarding';
 import templateDetails from './en-US/templateDetails';
@@ -45,6 +46,7 @@ export default {
   ...employeeProfilePage,
   ...forgotPasswordPage,
   ...loginPage,
+  ...signUpPage,
   ...resetPasswordPage,
   ...employeeOnboarding,
   ...templateDetails,

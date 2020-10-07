@@ -167,4 +167,5 @@ export default {
   'component.Benefits.paytm': 'Paytm Wallet',
   'component.Benefits.Employee': 'Employee Provident Fund',
   'component.Benefits.employeeTitle': 'employeeProvident',
+  'page.signUp.signUpHeader': 'Sign Up for your',
 };
