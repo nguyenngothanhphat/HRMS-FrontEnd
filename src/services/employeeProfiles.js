@@ -80,6 +80,13 @@ export async function getCountryList() {
   });
 }
 
+export async function getPayslip(payload) {
+  return request('/api/document/employee-group', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getPassPort(payload) {
   return request('/api/passport/get-by-employee', {
     method: 'POST',
@@ -115,6 +122,41 @@ export async function getVisa(payload) {
 
 export async function getAddVisa(payload) {
   return request('/api/visa/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentAdd(payload) {
+  return request('/api/document/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentUpdate(payload) {
+  return request('/api/document/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPRReport(payload) {
+  return request('/api/document/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocuments(payload) {
+  return request('/api/document/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getChangeHistories(payload) {
+  return request('/api/changehistory/get-by-employee', {
     method: 'POST',
     data: payload,
   });

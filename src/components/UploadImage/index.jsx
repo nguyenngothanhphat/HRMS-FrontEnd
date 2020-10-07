@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Upload, message } from 'antd';
+import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
 
 @connect()
@@ -18,20 +18,23 @@ class UploadImage extends Component {
   };
 
   handleUpload = (file) => {
-    const { dispatch, getResponse = () => {}, name = '' } = this.props;
+    const { dispatch, getResponse = () => {} } = this.props;
+
     const formData = new FormData();
     formData.append('uri', file);
     dispatch({
-      type: 'upload/uploadFileCard',
+      type: 'upload/uploadFile',
       payload: formData,
-      name,
     }).then((resp) => {
       getResponse(resp);
     });
   };
 
   render() {
-    const { content = 'Your content' } = this.props;
+    const { content = 'Your content', loading = false } = this.props;
+    if (loading) {
+      return <Spin loading={loading} active />;
+    }
     const props = {
       name: 'file',
       multiple: false,

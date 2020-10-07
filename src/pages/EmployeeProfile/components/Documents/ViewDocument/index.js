@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select } from 'antd';
+import { Button, Row, Col, Select, Spin } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
@@ -62,12 +62,13 @@ const identifyImageOrPdf = (fileName) => {
     case 'pdf':
       return 1;
     default:
-      return 2;
+      return 0;
   }
 };
 
-@connect(({ loading }) => ({
+@connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['upload/uploadFile'],
+  employeeProfile,
 }))
 class ViewDocument extends PureComponent {
   constructor(props) {
@@ -76,6 +77,8 @@ class ViewDocument extends PureComponent {
     this.state = {
       numPages: null,
       currentViewingFile: selectedFile,
+      fileLoading: false,
+      selectedfileId: '',
     };
   }
 
@@ -97,8 +100,14 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile > 1) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile - 1,
+        fileLoading: true,
       }));
     }
+    setTimeout(() => {
+      this.setState({
+        fileLoading: false,
+      });
+    }, 1000);
   };
 
   handleNextViewingFile = () => {
@@ -107,8 +116,14 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile < files.length) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile + 1,
+        fileLoading: true,
       }));
     }
+    setTimeout(() => {
+      this.setState({
+        fileLoading: false,
+      });
+    }, 2000);
   };
 
   onDocumentLoadSuccess = ({ numPages }) => {
@@ -134,17 +149,45 @@ class ViewDocument extends PureComponent {
     console.log(`selected emails ${value}`);
   };
 
-  render() {
-    const { numPages, currentViewingFile } = this.state;
-    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+  documentWarning = (msg) => (
+    <div className={styles.documentWarning}>
+      <p>{msg}</p>
+    </div>
+  );
 
+  includeString = (str1, str2) => {
+    return str1.toLowerCase().includes(str2.toLowerCase());
+  };
+
+  // get visa information
+  getVisaInformation = (visaData, files, currentViewingFile) => {
+    let visaNumber = '';
+    visaData.forEach((visa) => {
+      files.forEach((file, index) => {
+        if (
+          visa.document._id === file.id &&
+          visa.visaNumber !== undefined &&
+          currentViewingFile === index
+        ) {
+          visaNumber = visa.visaNumber;
+        }
+      });
+    });
+    return visaNumber;
+  };
+
+  render() {
+    const { numPages, currentViewingFile, fileLoading } = this.state;
+    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+    const {
+      employeeProfile: {
+        tempData: { passportData = {}, visaData = [] },
+      },
+    } = this.props;
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
-          <span>
-            {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.title' })} -{' '}
-            {files[currentViewingFile - 1].fileName}
-          </span>
+          <span>{formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.title' })}</span>
           <div onClick={onBackClick} className={styles.goBackButton}>
             <img src={GoBackButton} alt="back" />
             <span>
@@ -163,11 +206,9 @@ class ViewDocument extends PureComponent {
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
-                // eslint-disable-next-line no-console
-                onLoadError={console.error}
                 file={this.getCurrentViewingFileUrl()}
-                loading=""
-                noData="Document Not Found"
+                loading={this.documentWarning('Loading document. Please wait...')}
+                noData={this.documentWarning('URL is not available.')}
               >
                 {Array.from(new Array(numPages), (el, index) => (
                   <Page
@@ -187,6 +228,15 @@ class ViewDocument extends PureComponent {
               <span>{currentViewingFile}</span>/{files.length}
             </div>
             <div className={styles.filesPagination}>
+              <div>
+                {fileLoading ? (
+                  <div>
+                    <Spin />
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
               <img src={ArrowLeftIcon} alt="prev-file" onClick={this.handlePrevViewingFile} />
               <img src={ArrowRightIcon} alt="next-file" onClick={this.handleNextViewingFile} />
             </div>
@@ -202,14 +252,34 @@ class ViewDocument extends PureComponent {
                 {typeOfSelectedFile}
               </Col>
             </Row>
+
             <Row className={styles.infoRow}>
               <Col className={styles.infoCol1} span={7}>
-                Adhaar Card Number
+                Document Name
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                9999-0000-0000-0000
+                {files[currentViewingFile - 1].fileName}
               </Col>
             </Row>
+
+            {this.includeString(typeOfSelectedFile, 'identity') ? (
+              <Row className={styles.infoRow}>
+                <Col className={styles.infoCol1} span={7}>
+                  {files[currentViewingFile - 1].fileName} Number
+                </Col>
+                <Col className={styles.infoCol2} span={17}>
+                  {this.includeString(files[currentViewingFile - 1].fileName, 'passport')
+                    ? passportData.passportNumber
+                    : ''}
+                  {this.includeString(files[currentViewingFile - 1].fileName, 'visa')
+                    ? this.getVisaInformation(visaData, files, currentViewingFile - 1)
+                    : ''}
+                </Col>
+              </Row>
+            ) : (
+              ''
+            )}
+
             <Row className={styles.infoRow}>
               <Col className={`${styles.infoCol1} ${styles.shareWithLabel}`} span={7}>
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.shareWith' })}

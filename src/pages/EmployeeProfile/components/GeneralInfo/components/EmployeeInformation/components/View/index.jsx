@@ -8,9 +8,19 @@ import ConformIcondata from '../../../confirmIcon';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
-@connect(({ upload: { employeeInformationURL = '' } = {} }) => ({
-  employeeInformationURL,
-}))
+@connect(
+  ({
+    upload: { employeeInformationURL = '' } = {},
+    employeeProfile: {
+      originData: { generalData: generalDataOrigin = {} } = {},
+      tempData: { generalData = {} } = {},
+    } = {},
+  }) => ({
+    employeeInformationURL,
+    generalData,
+    generalDataOrigin,
+  }),
+)
 class View extends PureComponent {
   constructor(props) {
     super(props);
@@ -36,8 +46,9 @@ class View extends PureComponent {
 
   render() {
     const { visible, linkImage } = this.state;
-    const { dataAPI, employeeInformationURL } = this.props;
-    const splitUrl = employeeInformationURL.split('/');
+    const { dataAPI, generalData } = this.props;
+    const { urlFile } = generalData;
+    const splitUrl = urlFile ? urlFile.url.split('/') : '';
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
@@ -73,10 +84,10 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
-              {item.label === 'Adhaar Card Number' && employeeInformationURL ? (
+              {item.label === 'Adhaar Card Number' && urlFile ? (
                 <div className={styles.viewFileUpLoad}>
                   <p
-                    onClick={() => this.handleOpenModalReview(employeeInformationURL)}
+                    onClick={() => this.handleOpenModalReview(urlFile.url)}
                     className={styles.urlData}
                   >
                     {splitUrl[6]}

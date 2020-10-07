@@ -20,6 +20,12 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getPRReport,
+  getDocuments,
+  getPayslip,
+  getChangeHistories,
+  getDocumentAdd,
+  getDocumentUpdate,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -34,6 +40,7 @@ const employeeProfile = {
       openPersonnalInfor: false,
       openAcademic: false,
     },
+    paySlip: [],
     countryList: [],
     idCurrentEmployee: '',
     listSkill: [],
@@ -49,13 +56,16 @@ const employeeProfile = {
       passportData: {},
       visaData: [],
       employmentData: {},
+      changeHistories: [],
     },
     tempData: {
       generalData: {},
       compensationData: {},
       passportData: {},
       visaData: [],
+      document: {},
     },
+    listPRReport: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -91,12 +101,30 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *addNewChangeHistory({ payload }, { call }) {
+    *addNewChangeHistory({ payload }, { call, put }) {
       try {
         if (payload.employee && payload.changedBy) {
           const response = yield call(addChangeHistory, payload);
           const { statusCode } = response;
           if (statusCode !== 200) throw response;
+          if (payload.takeEffect === 'UPDATED' && statusCode === 200) {
+            const updates = yield call(getChangeHistories, { employee: payload.employee });
+            if (updates.statusCode !== 200) throw updates;
+            yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
+            const employment = yield call(getEmploymentInfo, { id: payload.employee });
+            yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
+            if (employment.statusCode !== 200) throw response;
+            const compensation = yield call(getCompensation, { employee: payload.employee });
+            if (compensation.statusCode !== 200) throw response;
+            yield put({
+              type: 'saveOrigin',
+              payload: { compensationData: compensation.data },
+            });
+            yield put({
+              type: 'saveTemp',
+              payload: { compensationData: compensation.data },
+            });
+          }
         }
       } catch (error) {
         dialog(error);
@@ -127,6 +155,20 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { countryList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchPayslips({ payload: { employee = '', employeeGroup = '' } }, { call, put }) {
+      try {
+        const response = yield call(getPayslip, { employee, employeeGroup });
+        const { statusCode, data: paySlip = [] } = response;
+        if (statusCode !== 200) throw response;
+        const reversePayslip = paySlip.reverse();
+        yield put({
+          type: 'save',
+          payload: { paySlip: reversePayslip },
         });
       } catch (errors) {
         dialog(errors);
@@ -237,8 +279,7 @@ const employeeProfile = {
       try {
         const response = yield call(getEmployeeList);
         const { statusCode, data } = response;
-        const temp = data.map((item) => item);
-        const employees = temp.filter((item, index) => temp.indexOf(item) === index);
+        const employees = data.filter((item) => item.generalInfo);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employees } });
       } catch (error) {
@@ -435,7 +476,78 @@ const employeeProfile = {
         dialog(error.message);
       }
     },
+    *fetchPRReport(
+      { payload: { employee = '', parentEmployeeGroup = 'PR Reports' } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getPRReport, {
+          employee,
+          parentEmployeeGroup,
+        });
+        const { statusCode, data: listPRReport = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listPRReport } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocuments, {
+          employee,
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { saveDocuments: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchChangeHistories({ payload: employee = '' }, { call, put }) {
+      try {
+        const response = yield call(getChangeHistories, { employee });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { changeHistories: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchDocumentAdd({ payload = {} }, { call }) {
+      let idDocument = '';
+      try {
+        const response = yield call(getDocumentAdd, payload);
+        const {
+          statusCode,
+          data: { _id: id },
+        } = response;
+
+        if (statusCode !== 200) throw response;
+        idDocument = id;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return idDocument;
+    },
+    *fetchDocumentUpdate({ payload }, { call, put }) {
+      let doc = {};
+      try {
+        const response = yield call(getDocumentUpdate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { document: data } });
+        doc = data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return doc;
+    },
   },
+
   reducers: {
     save(state, action) {
       return {

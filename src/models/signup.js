@@ -1,8 +1,14 @@
+/* eslint-disable compat/compat */
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
-// import { getListCountry, getListState } from '../services/country';
 import { notification } from 'antd';
-import { signupAdmin, getUserInfo, getSecurityCode } from '../services/user';
+import { signupAdmin, getUserInfo, getSecurityCode, activeAdmin } from '../services/user';
+
+const delay = (timeout) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+};
 
 const signup = {
   namespace: 'signup',
@@ -58,14 +64,29 @@ const signup = {
       }
     },
 
-    *signupAdmin({ payload }, { call }) {
+    *signupAdmin({ payload }, { call, put }) {
       try {
+        yield call(delay, 2000);
         const response = yield call(signupAdmin, payload);
-        const { statusCode } = response;
+        const { statusCode, message, data: { id = '' } = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Signup Admin Successfully',
+          message,
         });
+        yield put({
+          type: 'activeAdmin',
+          payload: { id },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *activeAdmin({ payload }, { call }) {
+      try {
+        const response = yield call(activeAdmin, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        history.replace('/login');
       } catch (errors) {
         dialog(errors);
       }

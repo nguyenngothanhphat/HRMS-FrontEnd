@@ -55,4 +55,6 @@ export default {
   'menu.templateDetails': 'Template Details',
   'menu.addTeamMember': 'Add a team member',
   'menu.reviewTeamMember': 'Review team member',
+  'menu.employeeOffBoarding': 'Off Boarding',
+  'menu.setting': 'Setting',
 };
