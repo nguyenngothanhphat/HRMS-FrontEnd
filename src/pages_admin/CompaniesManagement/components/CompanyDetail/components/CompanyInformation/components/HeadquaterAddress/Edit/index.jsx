@@ -126,7 +126,6 @@ class Edit extends PureComponent {
                 Cancel
               </Button>
               <Button
-                type="primary"
                 htmlType="submit"
                 disabled={checkDisableBtnNext}
                 className={styles.edit_btn_save}
