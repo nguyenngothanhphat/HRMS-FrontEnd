@@ -9,6 +9,16 @@ const candidateProfile = {
       experienceYears: '',
       workLocation: '',
     },
+    jobDetails: {
+      position: 'EMPLOYEE',
+      employeeType: '5f50c2541513a742582206f9',
+      department: '',
+      title: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
