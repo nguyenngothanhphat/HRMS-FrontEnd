@@ -98,7 +98,14 @@ const routes = [
             path: '/companies',
             name: 'companies',
             icon: '/assets/images/CP-icons_company.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/CompaniesManagement',
+            authority: ['admin'],
+          },
+          {
+            path: '/companies/company-detail/:reId',
+            name: 'companyDetail',
+            component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
+            hideInMenu: true,
             authority: ['admin'],
           },
           {

@@ -21,6 +21,7 @@ import templateDetails from './en-US/templateDetails';
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
+import companiesManagementPage from './en-US/companiesManagementPage';
 
 export default {
   'navBar.lang': 'Languages',
@@ -52,4 +53,5 @@ export default {
   // admin pages
   ...usersManagementPage,
   ...documentsManagementPage,
+  ...companiesManagementPage,
 };
