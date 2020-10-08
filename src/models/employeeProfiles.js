@@ -614,7 +614,6 @@ const employeeProfile = {
         const response = yield call(getAdhaardCard, { employee });
         const { statusCode, data: AdhaarCard = {} } = response;
         if (statusCode !== 200) throw response;
-        console.log(AdhaarCard);
         yield put({
           type: 'save',
           payload: { idCurrentEmployee: employee, AdhaarCard },
