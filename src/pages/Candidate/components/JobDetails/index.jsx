@@ -84,12 +84,33 @@ class JobDetails extends PureComponent {
         name: 'employeeType',
       },
     };
+    const HRField = [
+      {
+        title: 'workLocation',
+        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
+        id: 1,
+      },
+      {
+        title: 'department',
+        name: formatMessage({ id: 'component.jobDetail.department' }),
+        id: 2,
+      },
+      {
+        title: 'title',
+        name: 'Job Title',
+        id: 3,
+      },
+      {
+        title: 'reportingManager',
+        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
+        id: 4,
+      },
+    ];
     const candidateField = [
       {
         title: `candidatesNoticePeriod`,
         name: formatMessage({ id: 'component.jobDetail.candidateNoticePeriod' }),
         id: 1,
-        placeholder: 'Time period',
       },
       {
         title: 'prefferedDateOfJoining',
@@ -131,7 +152,12 @@ class JobDetails extends PureComponent {
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.JobDetailsComponent}>
               <Header />
-              <FieldsComponent Tab={Tab} jobDetails={jobDetails} />
+              <FieldsComponent
+                Tab={Tab}
+                jobDetails={jobDetails}
+                HRField={HRField}
+                candidateField={candidateField}
+              />
             </div>
           </Col>
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>

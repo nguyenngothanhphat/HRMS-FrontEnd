@@ -18,7 +18,7 @@ const _renderScreen = (screenNumber) => {
 };
 
 const Candidate = (props) => {
-  const [screen, setScreen] = useState(2);
+  const [screen, setScreen] = useState(1);
 
   return <div>{_renderScreen(screen)}</div>;
 };

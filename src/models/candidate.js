@@ -19,10 +19,10 @@ const candidateProfile = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
-    checkMandatory: {
-      filledBasicInformation: false,
-      filledJobDetail: false,
-      filledCustomField: false,
+    checkCandidateMandatory: {
+      filledCandidateBasicInformation: false,
+      filledCandidateJobDetails: false,
+      filledCandidateCustomField: false,
       salaryStatus: 2,
     },
   },
