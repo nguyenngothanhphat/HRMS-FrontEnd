@@ -220,13 +220,16 @@ class ViewDocument extends PureComponent {
     const { onBackClick, loading, loadingFileDetail } = this.props;
     const {
       employeeProfile: {
-        tempData: { passportData = {}, visaData = [] },
+        tempData: {
+          passportData: { passportNumber = '' } = {},
+          visaData = [],
+          generalData: { adhaarCardNumber = '' } = {},
+        },
         groupViewingDocuments,
         documentDetail,
       },
     } = this.props;
     const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
-    console.log('url', url);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -312,7 +315,7 @@ class ViewDocument extends PureComponent {
                   {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(key, 'passport') ? passportData.passportNumber : ''}
+                  {this.includeString(key, 'passport') ? passportNumber : ''}
                   {this.includeString(key, 'visa')
                     ? this.getVisaInformation(
                         visaData,
@@ -320,6 +323,8 @@ class ViewDocument extends PureComponent {
                         currentViewingFile - 1,
                       )
                     : ''}
+
+                  {this.includeString(key, 'adhaar') ? adhaarCardNumber : ''}
                 </Col>
               </Row>
             ) : (
