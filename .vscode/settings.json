@@ -19,8 +19,4 @@
     "source.fixAll.eslint": true
   },
   "git.ignoreLimitWarning": true
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
