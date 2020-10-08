@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import styles from '../../../CompanyInformation/components/HeadquaterAddress/View/index.less';
 
 class View extends PureComponent {
@@ -7,17 +8,17 @@ class View extends PureComponent {
     const companyDetail = [
       {
         id: 1,
-        label: 'Full Name',
-        value: 'Terralogic',
+        label: formatMessage({ id: 'pages_admin.owner.fullName' }),
+        value: 'Nguyen Van A',
       },
       {
         id: 2,
-        label: 'Email',
+        label: formatMessage({ id: 'pages_admin.owner.email' }),
         value: 'Terralogic@terralogic.com',
       },
       {
         id: 3,
-        label: 'Phone Number',
+        label: formatMessage({ id: 'pages_admin.owner.phone' }),
         value: '0123456789',
       },
     ];

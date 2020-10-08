@@ -28,40 +28,41 @@ class LayoutCompanyDetail extends PureComponent {
   }
 
   handleCLickItemMenu = (item) => {
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    const { isModified } = this.props;
+    if (isModified) {
+      this.showConfirm();
+    } else {
+      this.setState({
+        selectedItemId: item.id,
+        displayComponent: item.component,
+      });
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
   };
 
-  showConfirm = (item) => {
+  showConfirm = () => {
     const _this = this;
     confirm({
-      title: 'Save your changes ?',
+      title: 'Please save form before proceeding !',
       onOk() {
-        _this.saveChanges(item);
+        _this.saveChanges();
       },
       onCancel() {
-        _this.onCancel(item);
+        _this.onCancel();
       },
     });
   };
 
-  saveChanges = (item) => {
-    console.log('item', item);
-  };
+  saveChanges = () => {};
 
-  onCancel = (item) => {
-    console.log('item', item);
-  };
+  onCancel = () => {};
 
   render() {
-    const { listMenu = [], isModified } = this.props;
+    const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -73,7 +74,7 @@ class LayoutCompanyDetail extends PureComponent {
                 <ItemMenu
                   key={item.id}
                   item={item}
-                  handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  handleClick={this.handleCLickItemMenu}
                   selectedItemId={selectedItemId}
                 />
               ))}
