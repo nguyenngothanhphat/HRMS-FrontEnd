@@ -6,15 +6,15 @@ import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const CANDIDATE = {
-  basicInformation: 1,
-  jobDetails: 2,
-  eligibilityDocuments: 3,
-  offerDetails: 4,
-  benefits: 5,
-  salaryStructure: 6,
-  payrollSettings: 7,
-  customFields: 8,
-  additionalOptions: 9,
+  basicInformation: 10,
+  jobDetails: 11,
+  eligibilityDocuments: 12,
+  offerDetails: 13,
+  benefits: 14,
+  salaryStructure: 15,
+  payrollSettings: 16,
+  customFields: 17,
+  additionalOptions: 18,
 };
 
 const HR = {
@@ -162,7 +162,7 @@ class BottomBar extends PureComponent {
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-
+    console.log(`hihi ${filledCandidateBasicInformation}`);
     if (currentPage === HR.basicInformation) {
       return (
         <Button
@@ -214,7 +214,7 @@ class BottomBar extends PureComponent {
         </>
       );
     }
-    if (currentPage === HR.jobDetails) {
+    if (currentPage === CANDIDATE.jobDetails) {
       return (
         <>
           <Button
