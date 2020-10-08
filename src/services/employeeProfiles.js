@@ -176,6 +176,13 @@ export async function getDocuments(payload) {
   });
 }
 
+export async function getDocumentById(payload) {
+  return request('/api/document/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getChangeHistories(payload) {
   return request('/api/changehistory/get-by-employee', {
     method: 'POST',
