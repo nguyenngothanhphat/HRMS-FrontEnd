@@ -12,6 +12,7 @@ import styles from './index.less';
   ({
     upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
+      AdhaarCard = {},
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
@@ -19,6 +20,7 @@ import styles from './index.less';
     employeeInformationURL,
     generalData,
     generalDataOrigin,
+    AdhaarCard,
   }),
 )
 class View extends PureComponent {
@@ -46,9 +48,15 @@ class View extends PureComponent {
 
   render() {
     const { visible, linkImage } = this.state;
-    const { dataAPI, generalData } = this.props;
-    const { urlFile } = generalData;
-    const splitUrl = urlFile ? urlFile.url.split('/') : '';
+    const { dataAPI, AdhaarCard = {} } = this.props;
+    let splitUrl = '';
+    let urlAdhaarCard = '';
+    if (AdhaarCard !== null) {
+      const { document: { attachment: { name = '', url = '' } = {} } = {} } = AdhaarCard;
+      splitUrl = name;
+      urlAdhaarCard = url;
+    }
+
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
@@ -84,15 +92,15 @@ class View extends PureComponent {
             </Col>
             <Col span={18} className={styles.textValue}>
               {item.value}
-              {item.label === 'Adhaar Card Number' && urlFile ? (
+              {item.label === 'Adhaar Card Number' && AdhaarCard !== null ? (
                 <div className={styles.viewFileUpLoad}>
                   <p
-                    onClick={() => this.handleOpenModalReview(urlFile.url)}
+                    onClick={() => this.handleOpenModalReview(urlAdhaarCard)}
                     className={styles.urlData}
                   >
-                    {splitUrl[6]}
+                    {splitUrl}
                   </p>
-                  <ConformIcondata data={splitUrl[6]} />
+                  <ConformIcondata data={splitUrl} />
                 </div>
               ) : (
                 ''
