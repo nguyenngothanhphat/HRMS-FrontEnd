@@ -1,8 +1,18 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import CustomEmailsHeader from './components/CustomEmailsHeader';
+import addButton from './assets/addButton.svg';
 
-class CustomEmails extends Component {
+import styles from './index.less';
+
+class CustomEmails extends PureComponent {
   render() {
-    return <div>CustomEmails</div>;
+    return (
+      <div className={styles.CustomEmails}>
+        <CustomEmailsHeader />
+
+        <img className={styles.addButton} src={addButton} alt="add button" />
+      </div>
+    );
   }
 }
 
