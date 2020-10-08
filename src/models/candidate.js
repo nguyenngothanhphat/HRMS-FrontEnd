@@ -7,7 +7,7 @@ const candidateProfile = {
     basicInformation: {
       fullName: '',
       privateEmail: '',
-      experienceYears: '',
+      experienceYear: '',
       workLocation: '',
     },
     jobDetails: {

@@ -43,11 +43,13 @@ class BasicInformation extends PureComponent {
     }
 
     dispatch({
-      type: 'info/saveBasicInformation',
+      type: 'info/save',
       payload: {
-        basicInformation,
-        checkCandidateMandatory: {
-          ...checkCandidateMandatory,
+        candidateProfile: {
+          basicInformation,
+          checkCandidateMandatory: {
+            ...checkCandidateMandatory,
+          },
         },
       },
     });
@@ -122,12 +124,12 @@ class BasicInformation extends PureComponent {
               required={false}
               label="Previous experience in years*"
               className={styles.formInput__email}
-              name="experienceYears"
+              name="experienceYear"
             >
               <Input
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="experienceYears"
+                name="experienceYear"
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />

@@ -5,25 +5,49 @@ import { connect, formatMessage } from 'umi';
 
 import styles from './index.less';
 
+const CANDIDATE = {
+  basicInformation: 10,
+  jobDetails: 11,
+  eligibilityDocuments: 12,
+  offerDetails: 13,
+  benefits: 14,
+  salaryStructure: 15,
+  payrollSettings: 16,
+  customFields: 17,
+  additionalOptions: 18,
+};
+
+const HR = {
+  basicInformation: 1,
+  jobDetails: 2,
+  eligibilityDocuments: 3,
+  offerDetails: 4,
+  benefits: 5,
+  salaryStructure: 6,
+  payrollSettings: 7,
+  customFields: 8,
+  additionalOptions: 9,
+};
+
 class BottomBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      pageId: {
-        basicInformation: 1,
-        jobDetails: 2,
-        eligibilityDocuments: 3,
-        offerDetails: 4,
-        benefits: 5,
-        salaryStructure: 6,
-        payrollSettings: 7,
-        customFields: 8,
-        additionalOptions: 9,
-        candidateBasicInfo: 10,
-        candidateJobDetails: 11,
-      },
-    };
+    // this.state = {
+    //   pageId: {
+    //     basicInformation: 1,
+    //     jobDetails: 2,
+    //     eligibilityDocuments: 3,
+    //     offerDetails: 4,
+    //     benefits: 5,
+    //     salaryStructure: 6,
+    //     payrollSettings: 7,
+    //     customFields: 8,
+    //     additionalOptions: 9,
+    //     candidateBasicInfo: 10,
+    //     candidateJobDetails: 11,
+    //   },
+    // };
   }
 
   onClickNext = () => {
@@ -37,20 +61,20 @@ class BottomBar extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { pageId } = this.state;
-    const {
-      basicInformation,
-      jobDetails,
-      offerDetails,
-      salaryStructure,
-      customFields,
-      candidateBasicInfo,
-      candidateJobDetails,
-    } = pageId;
+    // const { pageId } = this.state;
+    // const {
+    //   basicInformation,
+    //   jobDetails,
+    //   offerDetails,
+    //   salaryStructure,
+    //   customFields,
+    //   candidateBasicInfo,
+    //   candidateJobDetails,
+    // } = pageId;
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-    if (currentPage === basicInformation) {
+    if (currentPage === HR.basicInformation) {
       return !filledBasicInformation ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>
@@ -62,7 +86,7 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
-    if (currentPage === candidateBasicInfo) {
+    if (currentPage === CANDIDATE.basicInformation) {
       return !filledCandidateBasicInformation ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>
@@ -75,7 +99,7 @@ class BottomBar extends PureComponent {
       );
     }
 
-    if (currentPage === jobDetails) {
+    if (currentPage === HR.jobDetails) {
       return !filledJobDetail ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
@@ -85,7 +109,7 @@ class BottomBar extends PureComponent {
       );
     }
 
-    if (currentPage === candidateJobDetails) {
+    if (currentPage === CANDIDATE.jobDetails) {
       return !filledCandidateJobDetails ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>All mandatory details must be filled to proceed
@@ -94,7 +118,7 @@ class BottomBar extends PureComponent {
         <div className={styles.greenText}>*All mandatory details have been filled</div>
       );
     }
-    if (currentPage === offerDetails) {
+    if (currentPage === HR.offerDetails) {
       return (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
@@ -102,7 +126,7 @@ class BottomBar extends PureComponent {
       );
     }
 
-    if (currentPage === customFields) {
+    if (currentPage === HR.customFields) {
       return !filledCustomField ? (
         <div className={styles.normalText}>
           <div className={styles.redText}>*</div>
@@ -114,7 +138,7 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
-    if (currentPage === salaryStructure) {
+    if (currentPage === HR.salaryStructure) {
       return (
         <div className={styles.greenText}>
           * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
@@ -125,21 +149,21 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomButton = () => {
-    const { pageId } = this.state;
-    const {
-      basicInformation,
-      jobDetails,
-      offerDetails,
-      salaryStructure,
-      customFields,
-      candidateBasicInfo,
-      candidateJobDetails,
-    } = pageId;
+    // const { pageId } = this.state;
+    // const {
+    //   basicInformation,
+    //   jobDetails,
+    //   offerDetails,
+    //   salaryStructure,
+    //   customFields,
+    //   candidateBasicInfo,
+    //   candidateJobDetails,
+    // } = pageId;
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-
-    if (currentPage === basicInformation) {
+    console.log(currentPage);
+    if (currentPage === HR.basicInformation) {
       return (
         <Button
           type="primary"
@@ -153,8 +177,8 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === candidateBasicInfo) {
-      console.log('abc', !filledCandidateBasicInformation);
+    if (currentPage === CANDIDATE.basicInformation) {
+      console.log('a', currentPage);
       return (
         <Button
           type="primary"
@@ -168,7 +192,7 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === jobDetails) {
+    if (currentPage === HR.jobDetails) {
       return (
         <>
           <Button
@@ -191,7 +215,7 @@ class BottomBar extends PureComponent {
         </>
       );
     }
-    if (currentPage === candidateJobDetails) {
+    if (currentPage === HR.jobDetails) {
       return (
         <>
           <Button
@@ -214,7 +238,7 @@ class BottomBar extends PureComponent {
         </>
       );
     }
-    if (currentPage === offerDetails) {
+    if (currentPage === HR.offerDetails) {
       return (
         <Button
           type="primary"
@@ -225,7 +249,7 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === salaryStructure) {
+    if (currentPage === HR.salaryStructure) {
       return (
         <Button
           type="primary"
@@ -236,7 +260,7 @@ class BottomBar extends PureComponent {
         </Button>
       );
     }
-    if (currentPage === customFields) {
+    if (currentPage === HR.customFields) {
       return (
         <>
           <Button
@@ -263,14 +287,14 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { pageId } = this.state;
-    const { benefits, salaryStructure, eligibilityDocuments } = pageId;
+    // const { pageId } = this.state;
+    // const { benefits, salaryStructure, eligibilityDocuments } = pageId;
     const { currentPage, checkMandatory } = this.props;
     const { salaryStatus } = checkMandatory;
     if (
-      (salaryStatus !== 1 && currentPage === salaryStructure) ||
-      currentPage === benefits ||
-      currentPage === eligibilityDocuments
+      (salaryStatus !== 1 && currentPage === HR.salaryStructure) ||
+      currentPage === HR.benefits ||
+      currentPage === HR.eligibilityDocuments
     ) {
       return null;
     }
