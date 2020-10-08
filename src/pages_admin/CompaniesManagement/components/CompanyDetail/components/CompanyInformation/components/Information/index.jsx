@@ -30,6 +30,32 @@ class Information extends PureComponent {
     this.setState({
       isOpenEditDetail: false,
     });
+    const { companyDetailsOrigin, companyDetails, dispatch } = this.props;
+    const {
+      name = '',
+      dba = '',
+      ein = '',
+      employeeNumber = '',
+      website = '',
+    } = companyDetailsOrigin;
+    const reverseFields = {
+      name,
+      dba,
+      ein,
+      employeeNumber,
+      website,
+    };
+    const payload = { ...companyDetails, ...reverseFields };
+    console.log('payload', payload);
+    const isModified = JSON.stringify(payload) !== JSON.stringify(companyDetailsOrigin);
+    dispatch({
+      type: 'companiesManagement/saveTemp',
+      payload: { companyDetails: payload },
+    });
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { isModified },
+    });
   };
 
   render() {

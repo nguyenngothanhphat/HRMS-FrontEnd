@@ -65,6 +65,7 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
@@ -78,6 +79,7 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
@@ -91,6 +93,7 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
