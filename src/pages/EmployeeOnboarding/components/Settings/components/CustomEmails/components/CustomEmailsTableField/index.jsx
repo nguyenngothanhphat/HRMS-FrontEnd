@@ -14,7 +14,7 @@ import recent3 from './assets/recent3.png';
 
 import styles from './index.less';
 
-class Documents extends PureComponent {
+class CustomEmailsTableField extends PureComponent {
   _renderTemplates = () => {
     const templates = [
       {
@@ -95,13 +95,13 @@ class Documents extends PureComponent {
 
   render() {
     return (
-      <div className={styles.Documents}>
-        <p className={styles.Documents_title}>
+      <div className={styles.CustomEmailsTableField}>
+        <p className={styles.CustomEmailsTableField_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.defaultTemplate' })}
         </p>
         <Row gutter={[4, 12]}>{this._renderTemplates()}</Row>
-        <p className={styles.Documents_title}>
+        <p className={styles.CustomEmailsTableField_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.recentDocuments' })}
         </p>
@@ -111,4 +111,4 @@ class Documents extends PureComponent {
   }
 }
 
-export default Documents;
+export default CustomEmailsTableField;
