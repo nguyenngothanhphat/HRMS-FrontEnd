@@ -44,7 +44,10 @@ class BasicInformation extends PureComponent {
           <br />
           <br />
           Once all the details are filled and approved by you, it has to be approved by the higher
-          authority as well. Only then, you will be able to mail the offer letter to the candidate.
+          authority as well.{' '}
+          <div style={{ display: 'inline', fontWeight: '500' }}>
+            Only then, you will be able to mail the offer letter to the candidate.
+          </div>
         </Typography.Text>
       ),
     };
