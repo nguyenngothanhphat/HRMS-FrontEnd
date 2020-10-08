@@ -26,6 +26,7 @@ import {
   getChangeHistories,
   getDocumentAdd,
   getDocumentUpdate,
+  getDocumentById,
   getAdhaarcardAdd,
   getAdhaarcardUpdate,
   getAdhaardCard,
@@ -69,6 +70,10 @@ const employeeProfile = {
       document: {},
     },
     listPRReport: [],
+    saveDocuments: [],
+    newDocument: {},
+    documentDetail: {},
+    groupViewingDocuments: [],
     AdhaarCard: {},
   },
   effects: {
@@ -501,11 +506,65 @@ const employeeProfile = {
         const response = yield call(getDocuments, {
           employee,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { saveDocuments: data },
+          payload: { saveDocuments },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentById, {
+          id,
+        });
+        const { statusCode, data: documentDetail = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { documentDetail },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeViewingDocumentDetail(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { documentDetail: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *saveGroupViewingDocuments({ payload: { files = [] } = {} }, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { groupViewingDocuments: files },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateDocument({ payload: { id = '', attachment = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentUpdate, {
+          id,
+          attachment,
+        });
+        const { statusCode, message, data: newDocument = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'save',
+          payload: { newDocument },
         });
       } catch (errors) {
         dialog(errors);

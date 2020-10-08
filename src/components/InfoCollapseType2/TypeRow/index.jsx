@@ -98,7 +98,7 @@ const CollapseRow = (props) => {
         extra={statusAndButtons()}
       >
         {row.files.map((file) => (
-          <Row id={file.id} className={styles.eachRow}>
+          <Row key={file.id} className={styles.eachRow}>
             <Col span={8} className={styles.fileName}>
               <div onClick={() => onFileClick(file.id)}>
                 {identifyImageOrPdf(file.source) === 1 ? (
@@ -133,8 +133,8 @@ class TypeRow extends PureComponent {
     const { data = [], onFileClick } = this.props;
     return (
       <div>
-        {data.map((row) => (
-          <CollapseRow onFileClick={onFileClick} data={row} />
+        {data.map((row, index) => (
+          <CollapseRow key={`${index + 1}`} onFileClick={onFileClick} data={row} />
         ))}
       </div>
     );
