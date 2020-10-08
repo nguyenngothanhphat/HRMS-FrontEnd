@@ -44,6 +44,10 @@ class EmployeeProfile extends Component {
       payload: { employee },
     });
     dispatch({
+      type: 'employeeProfile/fetchAdhaardCard',
+      payload: { employee },
+    });
+    dispatch({
       type: 'employeeProfile/fetchCountryList',
     });
     dispatch({
