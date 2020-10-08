@@ -101,7 +101,7 @@ const CandidateLayout = (props) => {
         </div>
       </Header>
 
-      <Content>
+      <Content className={s.main}>
         <Row gutter={24}>
           <Col md={5}>
             <div className={s.stepContainer}>
@@ -116,7 +116,7 @@ const CandidateLayout = (props) => {
               Next
             </button>
           </Col>
-          <Col md={18}>{children}</Col>
+          <Col md={19}>{children}</Col>
         </Row>
       </Content>
     </div>
