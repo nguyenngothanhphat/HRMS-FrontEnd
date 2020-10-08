@@ -10,6 +10,8 @@ import styles from './index.less';
   ({
     loading,
     employeeProfile: {
+      AdhaarCard = {},
+      idCurrentEmployee = '',
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
@@ -19,6 +21,8 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     employeeInformationURL,
+    idCurrentEmployee,
+    AdhaarCard,
   }),
 )
 class Edit extends PureComponent {
@@ -104,11 +108,53 @@ class Edit extends PureComponent {
   };
 
   handleGetUpLoad = (resp) => {
+    const { dispatch, idCurrentEmployee, AdhaarCard, generalDataOrigin, generalData } = this.props;
     const { data = [] } = resp;
     const [first] = data;
-    const value = { url: first.url, id: first.id };
+    const value = { id: first.id, url: first.url };
     const url = { urlFile: value };
     this.handleChange(url);
+    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
+    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
+    const getNewAdhaarCard =
+      adhaarCardNumberTemp !== adhaarCardNumberOrigin
+        ? adhaarCardNumberTemp
+        : adhaarCardNumberOrigin;
+    if (AdhaarCard === null) {
+      dispatch({
+        type: 'employeeProfile/fetchDocumentAdd',
+        payload: {
+          key: 'Adhaar Card',
+          attachment: first.id,
+          employeeGroup: 'Identity',
+          parentEmployeeGroup: 'Indentification Documents',
+          employee: idCurrentEmployee,
+        },
+      }).then((id) => this.handleAdd(id));
+    } else {
+      dispatch({
+        type: 'employeeProfile/fetchAdhaarcardUpdate',
+        payload: {
+          attachment: first.id,
+          id: AdhaarCard._id,
+          adhaarNumber: getNewAdhaarCard,
+        },
+      });
+    }
+  };
+
+  handleAdd = (id) => {
+    const { dispatch, generalData, idCurrentEmployee } = this.props;
+    if (!generalData.adhaarCardNumber) return;
+    const { adhaarCardNumber } = generalData;
+    dispatch({
+      type: 'employeeProfile/fetchAdhaarcardAdd',
+      payload: {
+        document: id,
+        employee: idCurrentEmployee,
+        adhaarNumber: adhaarCardNumber,
+      },
+    });
   };
 
   handleCanCelIcon = () => {

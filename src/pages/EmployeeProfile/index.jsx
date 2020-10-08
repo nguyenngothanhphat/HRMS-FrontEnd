@@ -44,6 +44,10 @@ class EmployeeProfile extends Component {
       payload: { employee },
     });
     dispatch({
+      type: 'employeeProfile/fetchAdhaardCard',
+      payload: { employee },
+    });
+    dispatch({
       type: 'employeeProfile/fetchCountryList',
     });
     dispatch({
@@ -54,10 +58,10 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchPRReport',
       payload: { employee },
     });
-    dispatch({
-      type: 'employeeProfile/fetchDocuments',
-      payload: { employee },
-    });
+    // dispatch({
+    //   type: 'employeeProfile/fetchDocuments',
+    //   payload: { employee },
+    // });
     dispatch({
       type: 'employeeProfile/fetchPayslips',
       payload: { employee, employeeGroup: 'Payslip' },

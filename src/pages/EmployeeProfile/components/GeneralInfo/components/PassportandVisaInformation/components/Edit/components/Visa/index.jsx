@@ -103,21 +103,30 @@ class VisaGeneral extends Component {
     });
   };
 
-  handleGetUpLoad = (index, resp) => {
+  handleGetUpLoad = (index, resp, documentVisa) => {
     const { dispatch, idCurrentEmployee } = this.props;
     const { data = [] } = resp;
     const [first] = data;
-
-    dispatch({
-      type: 'employeeProfile/fetchDocumentAdd',
-      payload: {
-        key: `Visa${index + 1}`,
-        attachment: first.id,
-        employeeGroup: 'Identity',
-        parentEmployeeGroup: 'Indentification Documents',
-        employee: idCurrentEmployee,
-      },
-    }).then((id) => this.handleUpdate(id, index));
+    if (documentVisa) {
+      const dataVisa = { id: documentVisa._id, attachment: first.id, key: `Visa${index + 1}` };
+      dispatch({
+        type: 'employeeProfile/fetchDocumentUpdate',
+        payload: dataVisa,
+      });
+      const value = { id: documentVisa._id, url: first.url };
+      this.handleFieldChange(index, 'urlFile', value);
+    } else {
+      dispatch({
+        type: 'employeeProfile/fetchDocumentAdd',
+        payload: {
+          key: `Visa${index + 1}`,
+          attachment: first.id,
+          employeeGroup: 'Identity',
+          parentEmployeeGroup: 'Indentification Documents',
+          employee: idCurrentEmployee,
+        },
+      }).then((id) => this.handleUpdate(id, index));
+    }
   };
 
   handleUpdate = (id, index) => {
@@ -337,7 +346,7 @@ class VisaGeneral extends Component {
                       <div className={styles.textUpload}>
                         <UploadImage
                           content="Choose file"
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
                           loading={loading}
                         />
                       </div>
