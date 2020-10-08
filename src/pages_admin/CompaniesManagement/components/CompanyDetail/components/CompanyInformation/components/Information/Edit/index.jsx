@@ -1,26 +1,40 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-// import { formatMessage } from 'umi';
+import { connect } from 'umi';
 import styles from './index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
 class Edit extends PureComponent {
-  handleChangeValues = () => {
-    // console.log(changedValues);
+  handleChangeValues = (changedValues) => {
+    const { dispatch, companyDetails, companyDetailsOrigin } = this.props;
+    const companyDetailsChange = {
+      ...companyDetails,
+      ...changedValues,
+    };
+    const isModified =
+      JSON.stringify(companyDetailsChange) !== JSON.stringify(companyDetailsOrigin);
+    dispatch({
+      type: 'companiesManagement/saveTemp',
+      payload: { companyDetails: companyDetailsChange },
+    });
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { isModified },
+    });
   };
 
   render() {
-    const companyDetail = {
-      companyName: 'Terralogic',
-      DBA: 'DBA',
-      EIN: 'EIN',
-      employeeNumber: 'Employee Number',
-      website: 'https://www.terralogic.com/',
-    };
-    const { companyName, DBA, EIN, website, employeeNumber } = companyDetail;
+    const { companyDetails } = this.props;
+    const { name = '', dba = '', ein = '', employeeNumber = '', website = '' } = companyDetails;
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -37,9 +51,9 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           initialValues={{
-            companyName,
-            DBA,
-            EIN,
+            name,
+            dba,
+            ein,
             employeeNumber,
             website,
           }}
@@ -47,7 +61,7 @@ class Edit extends PureComponent {
         >
           <Form.Item
             label="Company Name"
-            name="companyName"
+            name="name"
             {...formItemLayout}
             rules={[
               {
@@ -60,7 +74,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="Doing Business As (DBA)"
-            name="DBA"
+            name="dba"
             {...formItemLayout}
             rules={[
               {
@@ -73,7 +87,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="EIN"
-            name="EIN"
+            name="ein"
             {...formItemLayout}
             rules={[
               {
@@ -90,8 +104,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                // pattern: /^[a-zA-Z ]*$/,
-                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                pattern: /^\d+$/,
+                message: 'Employee number is not validate number!',
               },
             ]}
           >

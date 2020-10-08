@@ -1,8 +1,17 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import Edit from './Edit';
 import View from './View';
 import styles from '../../index.less';
 
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
 class Information extends PureComponent {
   constructor(props) {
     super(props);
@@ -25,10 +34,11 @@ class Information extends PureComponent {
 
   render() {
     const { isOpenEditDetail } = this.state;
+    const { companyDetails } = this.props;
     const renderContentCompanyDetail = isOpenEditDetail ? (
       <Edit handleCancelEdit={this.handleCancelEdit} />
     ) : (
-      <View />
+      <View information={companyDetails} />
     );
 
     return (
