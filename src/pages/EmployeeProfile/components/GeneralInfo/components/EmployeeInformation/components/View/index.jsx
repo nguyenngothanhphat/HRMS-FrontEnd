@@ -48,9 +48,15 @@ class View extends PureComponent {
 
   render() {
     const { visible, linkImage } = this.state;
-    const { dataAPI, AdhaarCard } = this.props;
-    const { document: { attachment: { name = '', url = '' } = {} } = {} } = AdhaarCard;
-    const splitUrl = AdhaarCard ? name : '';
+    const { dataAPI, AdhaarCard = {} } = this.props;
+    let splitUrl = '';
+    let urlAdhaarCard = '';
+    if (AdhaarCard !== null) {
+      const { document: { attachment: { name = '', url = '' } = {} } = {} } = AdhaarCard;
+      splitUrl = name;
+      urlAdhaarCard = url;
+    }
+
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
@@ -88,7 +94,10 @@ class View extends PureComponent {
               {item.value}
               {item.label === 'Adhaar Card Number' && AdhaarCard !== null ? (
                 <div className={styles.viewFileUpLoad}>
-                  <p onClick={() => this.handleOpenModalReview(url)} className={styles.urlData}>
+                  <p
+                    onClick={() => this.handleOpenModalReview(urlAdhaarCard)}
+                    className={styles.urlData}
+                  >
                     {splitUrl}
                   </p>
                   <ConformIcondata data={splitUrl} />
