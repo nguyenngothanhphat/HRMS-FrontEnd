@@ -370,6 +370,13 @@ const onboard = {
         vehicleReportsRequested: '',
         vehicleNotObtained: '',
       },
+      optionalOnboardQuestions: {
+        nameList: [
+          { id: '0', name: 'Is this a person special part-time (SPT)' },
+          { id: '1', name: 'Alternative address' },
+          { id: '2', name: 'Alternative address' },
+        ],
+      },
     },
     customFields: {},
     menu: {
@@ -395,6 +402,16 @@ const onboard = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveOrderNameField(state, action) {
+      return {
+        ...state,
+        settings: {
+          optionalOnboardQuestions: {
+            nameList: action.payload.nameList,
+          },
+        },
       };
     },
   },

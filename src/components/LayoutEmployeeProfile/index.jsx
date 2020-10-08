@@ -62,7 +62,7 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [], isModified } = this.props;
+    const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -74,7 +74,8 @@ class CommonLayout extends PureComponent {
                 <ItemMenu
                   key={item.id}
                   item={item}
-                  handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  // handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  handleClick={this.handleCLickItemMenu}
                   selectedItemId={selectedItemId}
                 />
               ))}

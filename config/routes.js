@@ -91,7 +91,14 @@ const routes = [
             path: '/employees',
             name: 'employees',
             icon: '/assets/images/CP-icons_employees.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/EmployeesManagement',
+            authority: ['admin'],
+          },
+          {
+            path: '/employees/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
             authority: ['admin'],
           },
           {
