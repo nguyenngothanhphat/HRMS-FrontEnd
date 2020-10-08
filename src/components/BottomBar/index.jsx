@@ -173,12 +173,11 @@ class BottomBar extends PureComponent {
           }`}
           disabled={!filledBasicInformation}
         >
-          Next hr
+          Next
         </Button>
       );
     }
     if (currentPage === CANDIDATE.basicInformation) {
-      console.log('a', currentPage);
       return (
         <Button
           type="primary"
@@ -188,7 +187,7 @@ class BottomBar extends PureComponent {
           }`}
           disabled={!filledCandidateBasicInformation}
         >
-          Next can
+          Next
         </Button>
       );
     }
