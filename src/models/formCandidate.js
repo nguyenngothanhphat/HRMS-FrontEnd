@@ -156,6 +156,25 @@ const info = {
     loadingReportingManager: true,
     item: {},
     Obj: {},
+
+    originData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
+    tempData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
