@@ -59,6 +59,7 @@ export default {
   'menu.employees': 'Employees',
   'menu.candidates': 'Candidates',
   'menu.companies': 'Companies',
+  'menu.companyDetail': 'Company Detail',
   'menu.documents': 'Documents',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',

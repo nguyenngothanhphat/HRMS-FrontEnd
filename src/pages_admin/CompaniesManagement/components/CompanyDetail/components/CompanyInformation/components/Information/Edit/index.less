@@ -1,0 +1,73 @@
+.edit {
+  width: 100%;
+  :global {
+    .ant-form-item-label {
+      text-align: left;
+    }
+    .ant-form-item-label > label {
+      font-size: 13px;
+      color: #000000;
+    }
+    .ant-form-item-label > label::after {
+      content: '';
+    }
+    .ant-form-item {
+      width: 100%;
+      padding: 0px 24px;
+    }
+    .ant-form-item:first-child {
+      margin-top: 35px;
+    }
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      box-shadow: unset;
+    }
+    .ant-picker-suffix {
+      color: #161c29;
+    }
+  }
+  &_btn {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 24px;
+    border-top: solid 1px #d6dce0;
+    &_save {
+      width: 95px;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffffff;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      background-color: #ffa100;
+      &:hover {
+        border: solid 1px #b1740c;
+        background-color: #b1740c;
+      }
+      &:focus {
+        border: solid 1px #b1740c;
+        background-color: #b1740c;
+      }
+    }
+    &_cancel {
+      width: 95px;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-right: 10px;
+      color: #ffa100;
+      border-radius: 25px;
+      background-color: unset;
+      &:hover {
+        color: #b1740c;
+      }
+    }
+  }
+}

@@ -68,6 +68,7 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-google-charts": "^3.0.15",
+    "react-google-login": "^5.1.21",
     "react-helmet-async": "^1.0.4",
     "react-image-crop": "^8.6.5",
     "react-orgchart": "^1.0.5",
