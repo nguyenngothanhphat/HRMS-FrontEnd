@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect, formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableEmployees from '../TableEmployees';
@@ -152,18 +152,22 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/#" className={styles.buttonAddImport}>
-          <img src="/assets/images/addMemberIcon.svg" alt="Import Employee" />
+        <div className={styles.buttonAddImport} onClick={this.importEmployee}>
+          <img
+            className={styles.buttonAddImport_imgImport}
+            src="/assets/images/import.svg"
+            alt="Import Employee"
+          />
           <p className={styles.buttonAddImport_text}>
             {formatMessage({ id: 'pages_admin.employees.table.importEmployee' })}
           </p>
-        </NavLink>
-        <NavLink to="/#" className={styles.buttonAddImport}>
+        </div>
+        <div className={styles.buttonAddImport} onClick={this.addEmployee}>
           <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
           <p className={styles.buttonAddImport_text}>
             {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
           </p>
-        </NavLink>
+        </div>
         <div className={styles.filterSider} onClick={this.handleToggle}>
           <div
             className={`${styles.filterButton} ${
@@ -176,6 +180,14 @@ class TableContainer extends PureComponent {
         </div>
       </div>
     );
+  };
+
+  importEmployee = () => {
+    alert('Import Employee');
+  };
+
+  addEmployee = () => {
+    alert('Add Employee');
   };
 
   handleChange = (valueInput) => {

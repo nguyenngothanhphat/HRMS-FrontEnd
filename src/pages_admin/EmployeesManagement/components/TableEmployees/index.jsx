@@ -53,7 +53,8 @@ export default class TableEmployees extends PureComponent {
         title: formatMessage({ id: 'component.directory.table.fullName' }),
         dataIndex: 'generalInfo',
         align: 'center',
-        render: (generalInfo) => <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span>,
+        render: (generalInfo) =>
+          generalInfo ? <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span> : '',
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
