@@ -13,3 +13,14 @@ export async function accountLogin(params) {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }
+
+export async function signInThirdParty(payload) {
+  return request(
+    '/api/sign-in-third-party',
+    {
+      method: 'POST',
+      data: payload,
+    },
+    true,
+  );
+}

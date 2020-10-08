@@ -1,0 +1,87 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@black: #161c29;
+@gray: #707177;
+@border-color: #d6dce0;
+
+.benefitContainer {
+  .benefits {
+    border-radius: 5px;
+    border: solid 1px @border-color;
+    background-color: #ffffff;
+
+    * {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h2 {
+      font-size: 16px;
+      font-weight: bold;
+      color: @black;
+    }
+
+    h3 {
+      font-size: 14px;
+      color: @black;
+      margin-top: 24px;
+    }
+
+    p {
+      font-size: 13px;
+      color: @gray;
+    }
+
+    header {
+      padding: 32px;
+      border-bottom: 1px solid @border-color;
+
+      p {
+        margin-top: 8px;
+      }
+    }
+
+    main {
+      margin: 32px;
+
+      p {
+        margin-top: 16px;
+      }
+
+      .file {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 16px;
+        border-radius: 5px;
+        border: solid 1px #d6dce4;
+        margin-top: 16px;
+        width: 347px;
+        overflow-x: hidden;
+
+        span {
+          font-size: 14px;
+          color: #2c6df9;
+          text-decoration: underline;
+          cursor: pointer;
+        }
+
+        img {
+          width: auto;
+          height: 25px;
+        }
+      }
+
+      .global {
+        border-bottom: 1px solid @border-color;
+        padding-bottom: 31px;
+      }
+
+      .nation {
+        padding-top: 32px;
+      }
+    }
+  }
+}
