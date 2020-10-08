@@ -130,7 +130,7 @@ class JobDetails extends PureComponent {
     };
     const { jobDetails } = this.state;
     return (
-      <>
+      <div className={styles.JobDetailsComponent}>
         {/* {loading === true ? (
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={24} lg={16} xl={16}>
@@ -172,7 +172,7 @@ class JobDetails extends PureComponent {
           </Col>
         </Row>
         {/* )} */}
-      </>
+      </div>
     );
   }
 }

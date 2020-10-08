@@ -80,6 +80,22 @@ const CandidateLayout = (props) => {
     setCurrentPage((prevState) => prevState + 1);
   };
 
+  const prevScreen = () => {
+    if (!dispatch || current === 7) {
+      return;
+    }
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: current - 1,
+      },
+    });
+
+    setCurrent((prevState) => prevState - 1);
+    setCurrentPage((prevState) => prevState - 1);
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -123,7 +139,7 @@ const CandidateLayout = (props) => {
             <Row gutter={[24, 0]}>
               <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                 <BottomBar
-                  // onClickPrev={handlePrev}
+                  onClickPrev={prevScreen}
                   onClickNext={nextScreen}
                   currentPage={currentPage}
                 />

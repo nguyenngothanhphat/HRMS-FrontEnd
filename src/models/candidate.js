@@ -3,7 +3,7 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
+    currentStep: 3,
     basicInformation: {
       fullName: '',
       privateEmail: '',
