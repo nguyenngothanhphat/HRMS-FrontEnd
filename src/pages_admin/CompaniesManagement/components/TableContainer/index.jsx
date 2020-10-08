@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect, formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import TableCompanies from '../TableCompanies';
 import styles from './index.less';
@@ -81,15 +81,19 @@ class TableContainer extends PureComponent {
 
   rightButton = () => {
     return (
-      <div className={styles.tabBarExtra}>
-        <NavLink to="/#" className={styles.buttonAddImport}>
+      <div className={styles.tabBarExtra} onClick={this.addCompany}>
+        <div className={styles.buttonAddImport}>
           <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
           <p className={styles.buttonAddImport_text}>
             {formatMessage({ id: 'pages_admin.companies.table.addEmployee' })}
           </p>
-        </NavLink>
+        </div>
       </div>
     );
+  };
+
+  addCompany = () => {
+    alert('Add Company');
   };
 
   handleChange = (valueInput) => {
