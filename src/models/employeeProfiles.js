@@ -527,6 +527,16 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *removeViewingDocumentDetail(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { documentDetail: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *saveGroupViewingDocuments({ payload: { files = [] } = {} }, { put }) {
       try {
         yield put({

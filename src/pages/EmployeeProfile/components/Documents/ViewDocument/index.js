@@ -104,6 +104,13 @@ class ViewDocument extends PureComponent {
     this.fetchDocumentDetails(selectedFile);
   };
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/removeViewingDocumentDetail',
+    });
+  };
+
   // File Viewing
   getCurrentViewingFileUrl = () => {
     const { currentViewingFile } = this.state;
@@ -219,7 +226,7 @@ class ViewDocument extends PureComponent {
       },
     } = this.props;
     const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
-
+    console.log('url', url);
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
