@@ -14,12 +14,13 @@ import Payroll from './components/Payroll';
 import Additional from './components/Additional';
 
 export default class FormTeamMember extends PureComponent {
-  // componentDidMount() {
-  // const {
-  //   match: { params: { action = '', reId = '' } = {} },
-  // } = this.props;
-  // check action is add or review. If isReview fetch candidate by reID
-  // }
+  componentDidMount() {
+    const {
+      match: { params: { action = '', reId = '' } = {} },
+    } = this.props;
+    // check action is add or review. If isReview fetch candidate by reID
+    console.log(reId, action);
+  }
 
   render() {
     const {

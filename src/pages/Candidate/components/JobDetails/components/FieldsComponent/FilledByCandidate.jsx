@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Input, DatePicker, Typography } from 'antd';
+import { Row, Col, InputNumber, DatePicker, Typography } from 'antd';
 import { formatMessage } from 'umi';
 import InternalStyle from './FilledByCandidate.less';
 
@@ -29,7 +29,8 @@ class FilledByCandidate extends PureComponent {
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>{candidateField[0].name}</Typography.Title>
-            <Input
+            <InputNumber
+              min={1}
               placeholder={candidateField[0].placeholder}
               className={styles}
               onChange={(value) => _handleSelect(value, candidateField[0].title)}
