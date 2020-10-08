@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-// import { formatMessage } from 'umi';
+import { formatMessage } from 'umi';
 import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
 // @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
@@ -35,7 +35,7 @@ class Edit extends PureComponent {
           }}
         >
           <Form.Item
-            label="License"
+            label={formatMessage({ id: 'pages_admin.company.license' })}
             name="license"
             {...formItemLayout}
             rules={[
@@ -48,7 +48,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Payment Info"
+            label={formatMessage({ id: 'pages_admin.company.paymentInfo' })}
             name="paymentInfo"
             {...formItemLayout}
             rules={[

@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import styles from '../../HeadquaterAddress/View/index.less';
 
 class View extends PureComponent {
@@ -7,7 +8,7 @@ class View extends PureComponent {
     const { information } = this.props;
     const companyInformation = [
       {
-        label: 'Company Name',
+        label: formatMessage({ id: 'pages_admin.companies.table.companyName' }),
         value: information.name,
       },
       {
@@ -19,11 +20,11 @@ class View extends PureComponent {
         value: information.ein,
       },
       {
-        label: 'Employee Number',
+        label: formatMessage({ id: 'pages_admin.company.employeeNumber' }),
         value: information.employeeNumber,
       },
       {
-        label: 'Website',
+        label: formatMessage({ id: 'pages_admin.company.website' }),
         value: information.website,
       },
     ];

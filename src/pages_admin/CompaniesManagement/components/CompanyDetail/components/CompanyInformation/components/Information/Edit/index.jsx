@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 @connect(
@@ -60,7 +60,7 @@ class Edit extends PureComponent {
           onValuesChange={this.handleChangeValues}
         >
           <Form.Item
-            label="Company Name"
+            label={formatMessage({ id: 'pages_admin.companies.table.companyName' })}
             name="name"
             {...formItemLayout}
             rules={[
@@ -74,7 +74,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Doing Business As (DBA)"
+            label={formatMessage({ id: 'pages_admin.company.dba' })}
             name="dba"
             {...formItemLayout}
             rules={[
@@ -102,7 +102,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Employee Number"
+            label={formatMessage({ id: 'pages_admin.company.employeeNumber' })}
             name="employeeNumber"
             {...formItemLayout}
             rules={[
@@ -115,7 +115,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Website"
+            label={formatMessage({ id: 'pages_admin.company.website' })}
             name="website"
             {...formItemLayout}
             rules={[
