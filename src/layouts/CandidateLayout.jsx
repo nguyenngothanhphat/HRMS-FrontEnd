@@ -3,13 +3,13 @@ import { connect } from 'umi';
 
 import { Row, Col, Layout, Button, Steps } from 'antd';
 
+import { RightOutlined } from '@ant-design/icons';
+import logo from '../../public/assets/images/terralogic-logo.png';
+import BottomBar from '../components/BottomBar';
+import s from './CandidateLayout.less';
+
 const { Header, Content } = Layout;
 const { Step } = Steps;
-
-import logo from '../../public/assets/images/terralogic-logo.png';
-import { RightOutlined } from '@ant-design/icons';
-
-import s from './CandidateLayout.less';
 
 const steps = [
   {
@@ -69,6 +69,7 @@ const CandidateLayout = (props) => {
   const { children, currentStep, dispatch } = props;
 
   const [current, setCurrent] = useState(currentStep);
+  const [currentPage, setCurrentPage] = useState(10);
 
   useEffect(() => {
     console.log('CANDIDATE LAYOUT RENDER');
@@ -87,6 +88,23 @@ const CandidateLayout = (props) => {
     });
 
     setCurrent((prevState) => prevState + 1);
+    setCurrentPage((prevState) => prevState + 1);
+  };
+
+  const prevScreen = () => {
+    if (!dispatch || current === 7) {
+      return;
+    }
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: current - 1,
+      },
+    });
+
+    setCurrent((prevState) => prevState - 1);
+    setCurrentPage((prevState) => prevState - 1);
   };
 
   return (
@@ -123,12 +141,26 @@ const CandidateLayout = (props) => {
               </Steps>
             </div>
 
-            <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
+            {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
               Next
-            </button>
+            </button> */}
           </Col>
           <Col md={19}>
             {children}
+            <Row gutter={[24, 0]}>
+              <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                <BottomBar
+                  onClickPrev={prevScreen}
+                  onClickNext={nextScreen}
+                  currentPage={currentPage}
+                />
+                <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
+                  Next
+                </button>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={19}>
             <Bottom step={currentStep} />
           </Col>
         </Row>

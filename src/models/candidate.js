@@ -1,19 +1,29 @@
-// import { dialog } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 5,
+    currentStep: 1,
     basicInformation: {
       fullName: '',
       privateEmail: '',
-      experienceYears: '',
+      experienceYear: '',
       workLocation: '',
     },
-    checkMandatory: {
-      filledBasicInformation: false,
-      filledJobDetail: false,
-      filledCustomField: false,
+    jobDetails: {
+      position: 'EMPLOYEE',
+      employeeType: '5f50c2541513a742582206f9',
+      department: '',
+      title: '',
+      workLocation: '',
+      reportingManager: '',
+      candidatesNoticePeriod: '',
+      prefferedDateOfJoining: '',
+    },
+    checkCandidateMandatory: {
+      filledCandidateBasicInformation: false,
+      filledCandidateJobDetails: false,
+      filledCandidateCustomField: false,
       salaryStatus: 2,
     },
   },

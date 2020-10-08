@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 
 import BasicInfomation from './components/BasicInfomation';
-import JobDetails from './components/JobDetails';
-import EligibilityDocuments from './components/EligibilityDocuments';
+import EligibilityDocs from './components/EligibilityDocs';
 import OfferDetails from './components/OfferDetails';
+import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
 
@@ -15,7 +15,7 @@ const _renderScreen = (screenNumber) => {
     case 2:
       return <JobDetails />;
     case 3:
-      return <EligibilityDocuments />;
+      return <EligibilityDocs />;
     case 4:
       return <OfferDetails />;
     case 5:

@@ -8,9 +8,9 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { basicInformation, checkMandatory } = {} }) => ({
+@connect(({ candidateProfile: { basicInformation, checkCandidateMandatory } = {} }) => ({
   basicInformation,
-  checkMandatory,
+  checkCandidateMandatory,
 }))
 class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -23,7 +23,7 @@ class BasicInformation extends PureComponent {
   handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkCandidateMandatory } = this.props;
 
     const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
 
@@ -37,17 +37,19 @@ class BasicInformation extends PureComponent {
       privateEmail !== '' &&
       emailRegExp.test(privateEmail)
     ) {
-      checkMandatory.filledBasicInformation = true;
+      checkCandidateMandatory.filledCandidateBasicInformation = true;
     } else {
-      checkMandatory.filledBasicInformation = false;
+      checkCandidateMandatory.filledCandidateBasicInformation = false;
     }
 
     dispatch({
-      type: 'info/saveBasicInformation',
+      type: 'info/save',
       payload: {
-        basicInformation,
-        checkMandatory: {
-          ...checkMandatory,
+        candidateProfile: {
+          basicInformation,
+          checkCandidateMandatory: {
+            ...checkCandidateMandatory,
+          },
         },
       },
     });
@@ -122,7 +124,7 @@ class BasicInformation extends PureComponent {
               required={false}
               label="Previous experience in years*"
               className={styles.formInput__email}
-              name="experienceYears"
+              name="experienceYear"
             >
               <Input
                 onChange={(e) => this.handleChange(e)}
