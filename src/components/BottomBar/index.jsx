@@ -178,6 +178,8 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === CANDIDATE.basicInformation) {
+      console.log('abcsd');
+
       return (
         <Button
           type="primary"
@@ -187,7 +189,7 @@ class BottomBar extends PureComponent {
           }`}
           disabled={!filledCandidateBasicInformation}
         >
-          Next
+          Next candidate
         </Button>
       );
     }

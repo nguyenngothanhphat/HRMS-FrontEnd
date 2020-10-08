@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 
 import { Row, Col, Layout, Button, Steps } from 'antd';
@@ -58,11 +58,22 @@ const getLineWidth = (value) => {
   }
 };
 
+const Bottom = ({ step }) => {
+  useEffect(() => {
+    console.log('BOTTOM BAR RENDER');
+  }, []);
+  return <div>BottomBar Step: {step}</div>;
+};
+
 const CandidateLayout = (props) => {
   const { children, currentStep, dispatch } = props;
 
   const [current, setCurrent] = useState(currentStep);
   const [currentPage, setCurrentPage] = useState(10);
+
+  useEffect(() => {
+    console.log('CANDIDATE LAYOUT RENDER');
+  }, [currentStep]);
 
   const nextScreen = () => {
     if (!dispatch || current === 7) {
@@ -143,11 +154,14 @@ const CandidateLayout = (props) => {
                   onClickNext={nextScreen}
                   currentPage={currentPage}
                 />
-                {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
+                <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
                   Next
-                </button> */}
+                </button>
               </Col>
             </Row>
+          </Col>
+          <Col md={19}>
+            <Bottom step={currentStep} />
           </Col>
         </Row>
       </Content>

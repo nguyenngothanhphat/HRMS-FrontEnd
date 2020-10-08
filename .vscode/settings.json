@@ -19,33 +19,4 @@
     "source.fixAll.eslint": true
   },
   "git.ignoreLimitWarning": true
-<<<<<<< HEAD
 }
-{
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/dist": true,
-    "**/coverge": true
-  },
-  "typescript.referencesCodeLens.enabled": true,
-  "tslint.ignoreDefinitionFiles": true,
-  "tslint.exclude": "**/node_modules/**/*",
-  "editor.formatOnSave": true,
-  "javascript.format.enable": false,
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#0000008a",
-    "titleBar.activeBackground": "#0000008a",
-    "titleBar.activeForeground": "#ffffff"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
-}
-<<<<<<< HEAD
->>>>>>> master
-=======
->>>>>>> master
-=======
-}
->>>>>>> 47f1d3d2bd51714d5a7866590d04fe7c4f275aa2
