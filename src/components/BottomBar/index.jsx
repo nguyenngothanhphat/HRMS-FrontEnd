@@ -159,7 +159,7 @@ class BottomBar extends PureComponent {
           type="primary"
           onClick={this.onClickNext}
           className={`${styles.bottomBar__button__primary} ${
-            !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+            !filledCandidateBasicInformation ? styles.bottomBar__button__disabled : ''
           }`}
           disabled={!filledCandidateBasicInformation}
         >

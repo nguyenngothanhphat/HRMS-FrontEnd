@@ -8,9 +8,9 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { basicInformation, checkMandatory } = {} }) => ({
+@connect(({ candidateProfile: { basicInformation, checkCandidateMandatory } = {} }) => ({
   basicInformation,
-  checkMandatory,
+  checkCandidateMandatory,
 }))
 class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -23,7 +23,7 @@ class BasicInformation extends PureComponent {
   handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkCandidateMandatory } = this.props;
 
     const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
 
@@ -37,17 +37,17 @@ class BasicInformation extends PureComponent {
       privateEmail !== '' &&
       emailRegExp.test(privateEmail)
     ) {
-      checkMandatory.filledBasicInformation = true;
+      checkCandidateMandatory.filledCandidateBasicInformation = true;
     } else {
-      checkMandatory.filledBasicInformation = false;
+      checkCandidateMandatory.filledCandidateBasicInformation = false;
     }
 
     dispatch({
       type: 'info/saveBasicInformation',
       payload: {
         basicInformation,
-        checkMandatory: {
-          ...checkMandatory,
+        checkCandidateMandatory: {
+          ...checkCandidateMandatory,
         },
       },
     });
@@ -127,7 +127,7 @@ class BasicInformation extends PureComponent {
               <Input
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="experienceYear"
+                name="experienceYears"
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
