@@ -62,6 +62,7 @@ const CandidateLayout = (props) => {
   const { children, currentStep, dispatch } = props;
 
   const [current, setCurrent] = useState(currentStep);
+  const [currentPage, setCurrentPage] = useState(10);
 
   const nextScreen = () => {
     if (!dispatch || current === 7) {
@@ -76,6 +77,7 @@ const CandidateLayout = (props) => {
     });
 
     setCurrent((prevState) => prevState + 1);
+    setCurrentPage((prevState) => prevState + 1);
   };
 
   return (
@@ -123,7 +125,7 @@ const CandidateLayout = (props) => {
                 <BottomBar
                   // onClickPrev={handlePrev}
                   onClickNext={nextScreen}
-                  currentPage={currentStep}
+                  currentPage={currentPage}
                 />
                 {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
                   Next

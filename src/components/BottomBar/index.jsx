@@ -154,6 +154,7 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === candidateBasicInfo) {
+      console.log('abc', !filledCandidateBasicInformation);
       return (
         <Button
           type="primary"
