@@ -3,69 +3,51 @@
 
 @spacing-xxs: 4px;
 
-.basicInformation {
+.payrollSetting {
   font-family: 'Roboto', sans-serif;
   width: 100%;
   min-height: 216px;
   position: relative;
+
+  .payrollSettingHeader {
+    object-fit: contain;
+    margin-bottom: 24px;
+  }
+
+  .payrollSettingContainer {
+    border: solid 0.5px #d6dce0;
+    border-radius: 5px;
+    background-color: #ffffff;
+    padding: 120px 8 * @spacing-xxs;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .lolipopIcon {
+      width: 20%;
+      margin-bottom: 40px;
+      img {
+        width: 100%;
+      }
+    }
+    p {
+      font-size: 13px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.38;
+      letter-spacing: 0.12px;
+      text-align: center;
+      color: #707177;
+      padding: 0 100px;
+    }
+  }
 
   &__bottom {
     position: fixed;
     height: 72px;
     bottom: 0;
     width: inherit;
-  }
-
-  &__top {
-    object-fit: contain;
-    border-radius: 2.5px;
-    border: solid 0.5px #d6dce0;
-    background-color: #ffffff;
-    margin-bottom: 50px;
-    hr {
-      width: 100%;
-      height: 0.5px;
-      object-fit: contain;
-      border-top: solid 0.5px #d6dce0;
-      border-bottom: none;
-    }
-
-    .basicInformation__form {
-      padding: 8 * @spacing-xxs;
-      width: 100%;
-      :global {
-        .ant-form-item-has-success {
-          .ant-input {
-            border: solid 1px #47c97f;
-          }
-        }
-        .ant-form-item-label {
-          padding-bottom: 0;
-          label {
-            color: #707177;
-            font-size: 13px;
-          }
-        }
-      }
-
-      .formInput__email {
-        position: relative;
-        .formInput__domain {
-          position: absolute;
-          right: 4 * @spacing-xxs;
-          top: 10px;
-          z-index: 1000;
-          color: #707177;
-        }
-      }
-      .formInput {
-        font-family: 'Roboto', sans-serif;
-        height: 42px;
-        object-fit: contain;
-        border-radius: 8px;
-        //   border: solid 0.5px #d6dce4;
-        background-color: #ffffff;
-      }
-    }
   }
 }
