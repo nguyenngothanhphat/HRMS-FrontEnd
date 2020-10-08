@@ -133,8 +133,7 @@ class TableCompanies extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
-    alert('EDIT USER');
-    console.log('EDIT USER', key);
+    alert('EDIT USER', key);
   };
 
   // pagination
@@ -210,7 +209,7 @@ class TableCompanies extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey={(record) => record.id}
+          rowKey={(record) => record.company.id}
           // onChange={this.onSortChange}
         />
         <ModalConfirmRemove

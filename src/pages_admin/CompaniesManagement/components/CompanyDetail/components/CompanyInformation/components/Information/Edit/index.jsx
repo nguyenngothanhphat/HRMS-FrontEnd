@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-import { formatMessage } from 'umi';
+// import { formatMessage } from 'umi';
 import styles from './index.less';
 
 // @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
@@ -51,8 +51,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >
@@ -64,8 +64,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >
@@ -77,8 +77,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >
@@ -90,8 +90,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >
@@ -103,8 +103,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >

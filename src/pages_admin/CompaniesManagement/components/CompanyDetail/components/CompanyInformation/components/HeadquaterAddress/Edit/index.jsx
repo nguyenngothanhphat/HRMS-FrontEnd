@@ -85,8 +85,7 @@ class Edit extends PureComponent {
                 showSearch
                 onChange={this.onChangeCountryHeadquarter}
                 filterOption={
-                  (input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   // eslint-disable-next-line react/jsx-curly-newline
                 }
               >
@@ -105,7 +104,7 @@ class Edit extends PureComponent {
                     disabled={!countryHead}
                     filterOption={
                       (input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       // eslint-disable-next-line react/jsx-curly-newline
                     }
                   >

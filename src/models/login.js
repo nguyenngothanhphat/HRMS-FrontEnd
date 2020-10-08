@@ -24,12 +24,12 @@ const Model = {
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
         const { _id: role = '' } = itemRole;
-        let dummyRole = role;
-        if (role === 'CUSTOMER') {
-          dummyRole = 'admin';
-        }
+        // let dummyRole = role;
+        // if (role === 'CUSTOMER') {
+        //   dummyRole = 'admin';
+        // }
 
-        setAuthority(dummyRole.toLowerCase());
+        setAuthority(role.toLowerCase());
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;

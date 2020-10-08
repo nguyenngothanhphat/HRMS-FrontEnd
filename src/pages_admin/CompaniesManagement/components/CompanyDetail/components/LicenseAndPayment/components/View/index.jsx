@@ -13,7 +13,7 @@ class View extends PureComponent {
       {
         id: 2,
         label: 'Payment Info',
-        value: 'Terralogic',
+        value: 'Paid',
       },
     ];
 

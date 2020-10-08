@@ -12,10 +12,10 @@ class WorkLocation extends PureComponent {
     const locations = [
       {
         name: 'Japan Office',
-        address: '66 Le Thi Ho, Go Vap',
+        address: '2-45 Minamisendanishimachi, Naka, Hiroshima, Hiroshima',
         country: 'Japan',
-        state: 'HoChiMinh',
-        zipCode: '700000',
+        state: 'Japan',
+        zipCode: '900000',
         isheadQuarter: true,
       },
       {

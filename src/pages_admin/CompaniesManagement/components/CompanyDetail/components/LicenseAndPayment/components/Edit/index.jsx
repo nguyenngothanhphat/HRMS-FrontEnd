@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-import { formatMessage } from 'umi';
+// import { formatMessage } from 'umi';
 import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
 // @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
@@ -10,16 +10,10 @@ import styles from '../../../CompanyInformation/components/Information/Edit/inde
 class Edit extends PureComponent {
   render() {
     const companyDetail = {
-      companyName: 'Terralogic',
-      DBA: 'DBA',
-      EIN: 'EIN',
-      headQuaterAdd: 'Head Quarter Add',
-      value: 'Work Location',
-      employeeNumber: 'Employee Number',
-      license: 'License',
-      payment: 'Payment',
+      license: 'v4.02',
+      paymentInfo: 'Paid',
     };
-    const { companyName, DBA, EIN, headQuaterAdd, employeeNumber } = companyDetail;
+    const { license, paymentInfo } = companyDetail;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -36,60 +30,31 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           initialValues={{
-            companyName,
-            DBA,
-            EIN,
-            headQuaterAdd,
-            employeeNumber,
+            license,
+            paymentInfo,
           }}
         >
           <Form.Item
-            label="Company Name"
-            name="companyName"
+            label="License"
+            name="license"
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="DBA"
-            name="DBA"
+            label="Payment Info"
+            name="paymentInfo"
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item
-            label="EIN"
-            name="EIN"
-            {...formItemLayout}
-            rules={[
-              {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item
-            label="Head Quarter Add"
-            name="headQuaterAdd"
-            {...formItemLayout}
-            rules={[
-              {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}
           >

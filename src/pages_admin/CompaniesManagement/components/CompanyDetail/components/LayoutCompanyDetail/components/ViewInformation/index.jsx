@@ -86,7 +86,7 @@ class ViewInformation extends PureComponent {
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"
-          getResponse={this.getResponse}
+          // getResponse={this.getResponse}
         />
       </div>
     );
