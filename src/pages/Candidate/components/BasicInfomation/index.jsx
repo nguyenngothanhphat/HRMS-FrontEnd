@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
 
@@ -12,7 +12,14 @@ import styles from './index.less';
   basicInformation,
   checkCandidateMandatory,
 }))
-class BasicInformation extends PureComponent {
+class BasicInformation extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      basicInformation: {},
+    };
+  }
+
   static getDerivedStateFromProps(props) {
     if ('basicInformation' in props) {
       return { basicInformation: props.basicInformation || {} };
@@ -31,25 +38,19 @@ class BasicInformation extends PureComponent {
     basicInformation[name] = value;
     const { fullName = '', workLocation = '', privateEmail = '' } = basicInformation;
 
-    if (
+    const filledCandidateBasicInformation =
       fullName !== '' &&
       workLocation !== '' &&
       privateEmail !== '' &&
-      emailRegExp.test(privateEmail)
-    ) {
-      checkCandidateMandatory.filledCandidateBasicInformation = true;
-    } else {
-      checkCandidateMandatory.filledCandidateBasicInformation = false;
-    }
+      emailRegExp.test(privateEmail);
 
     dispatch({
-      type: 'info/save',
+      type: 'candidateProfile/save',
       payload: {
-        candidateProfile: {
-          basicInformation,
-          checkCandidateMandatory: {
-            ...checkCandidateMandatory,
-          },
+        basicInformation,
+        checkCandidateMandatory: {
+          ...checkCandidateMandatory,
+          filledCandidateBasicInformation,
         },
       },
     });

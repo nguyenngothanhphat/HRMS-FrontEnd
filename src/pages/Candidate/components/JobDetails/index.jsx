@@ -9,8 +9,9 @@ import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateProfile: { jobDetails } = {} }) => ({
+@connect(({ candidateProfile: { jobDetails, checkCandidateMandatory } = {} }) => ({
   jobDetails,
+  checkCandidateMandatory,
 }))
 class JobDetails extends PureComponent {
   constructor(props) {
@@ -52,22 +53,22 @@ class JobDetails extends PureComponent {
   // }
 
   _handleSelect = (value, name) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkCandidateMandatory } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
-    const { department, title, workLocation, reportingManager } = jobDetails;
+    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
 
-    if (department !== '' && title !== '' && workLocation !== '' && reportingManager !== '') {
-      checkMandatory.filledJobDetail = true;
+    if ((candidatesNoticePeriod !== '', prefferedDateOfJoining !== '')) {
+      checkCandidateMandatory.filledCandidateJobDetails = true;
     } else {
-      checkMandatory.filledJobDetail = false;
+      checkCandidateMandatory.filledCandidateJobDetails = false;
     }
     dispatch({
-      type: 'info/save',
+      type: 'candidateProfile/save',
       payload: {
         jobDetails,
-        checkMandatory: {
-          ...checkMandatory,
+        checkCandidateMandatory: {
+          ...checkCandidateMandatory,
         },
       },
     });
@@ -157,6 +158,7 @@ class JobDetails extends PureComponent {
                 jobDetails={jobDetails}
                 HRField={HRField}
                 candidateField={candidateField}
+                _handleSelect={this._handleSelect}
               />
             </div>
           </Col>

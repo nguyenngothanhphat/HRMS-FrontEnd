@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
@@ -29,26 +29,32 @@ const HR = {
   additionalOptions: 9,
 };
 
-class BottomBar extends PureComponent {
-  constructor(props) {
-    super(props);
+@connect(
+  ({
+    info: { checkMandatory = {} } = {},
+    candidateProfile: { checkCandidateMandatory = {} } = {},
+  }) => ({
+    // ,
+    checkMandatory,
+    checkCandidateMandatory,
+  }),
+)
+class BottomBar extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     checkCandidateMandatory: {},
+  //   };
+  // }
 
-    // this.state = {
-    //   pageId: {
-    //     basicInformation: 1,
-    //     jobDetails: 2,
-    //     eligibilityDocuments: 3,
-    //     offerDetails: 4,
-    //     benefits: 5,
-    //     salaryStructure: 6,
-    //     payrollSettings: 7,
-    //     customFields: 8,
-    //     additionalOptions: 9,
-    //     candidateBasicInfo: 10,
-    //     candidateJobDetails: 11,
-    //   },
-    // };
-  }
+  // static getDerivedStateFromProps(props) {
+  //   if ('checkCandidateMandatory' in props) {
+  //     return {
+  //       checkCandidateMandatory: props.checkCandidateMandatory || {},
+  //     };
+  //   }
+  //   return null;
+  // }
 
   onClickNext = () => {
     const { onClickNext } = this.props;
@@ -149,20 +155,11 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomButton = () => {
-    // const { pageId } = this.state;
-    // const {
-    //   basicInformation,
-    //   jobDetails,
-    //   offerDetails,
-    //   salaryStructure,
-    //   customFields,
-    //   candidateBasicInfo,
-    //   candidateJobDetails,
-    // } = pageId;
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-    console.log(`hihi ${filledCandidateBasicInformation}`);
+    // console.log('filledCandidateBasicInformation', filledCandidateBasicInformation);
+
     if (currentPage === HR.basicInformation) {
       return (
         <Button
@@ -178,8 +175,6 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === CANDIDATE.basicInformation) {
-      console.log('abcsd');
-
       return (
         <Button
           type="primary"
@@ -189,7 +184,7 @@ class BottomBar extends PureComponent {
           }`}
           disabled={!filledCandidateBasicInformation}
         >
-          Next candidate
+          Next
         </Button>
       );
     }
@@ -288,10 +283,7 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    // const { pageId } = this.state;
-    // const { benefits, salaryStructure, eligibilityDocuments } = pageId;
-    const { currentPage, checkMandatory } = this.props;
-    const { salaryStatus } = checkMandatory;
+    const { currentPage, checkMandatory: { salaryStatus = 0 } = {} } = this.props;
     if (
       (salaryStatus !== 1 && currentPage === HR.salaryStructure) ||
       currentPage === HR.benefits ||
@@ -314,14 +306,11 @@ class BottomBar extends PureComponent {
   };
 
   render() {
+    console.log('render');
+    const { checkCandidateMandatory } = this.props;
+    const { filledCandidateBasicInformation } = checkCandidateMandatory;
     return <>{this._renderBottomBar()}</>;
   }
 }
 
-// export default BottomBar;
-export default connect(
-  ({ info: { checkMandatory = {} } = {}, candidateProfile: { checkCandidateMandatory = {} } }) => ({
-    checkMandatory,
-    checkCandidateMandatory,
-  }),
-)(BottomBar);
+export default BottomBar;

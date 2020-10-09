@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Space, Checkbox, Typography, Upload } from 'antd';
+import { Collapse, Space, Checkbox, Typography, Upload, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import UploadImage from '@/components/UploadImage';
 // import InputField from '../InputField';
 import styles from './index.less';
 
@@ -55,10 +56,19 @@ class CollapseField extends PureComponent {
             extra="[Can submit any of the below other than (*)mandatory]"
           >
             {/* {item.type === 'D' ? <InputField /> : <></>} */}
-            <Space direction="vertical">
-              {item.data.map((name) => (
-                <Typography.Text>{name.name}</Typography.Text>
-              ))}
+            <Space direction="vertical" className={styles.Space}>
+              <div className={styles.Upload}>
+                {item.data.map((name) => (
+                  <Row className={styles.checkboxItem}>
+                    <Col span={18}>
+                      <Typography.Text>{name.name}</Typography.Text>
+                    </Col>
+                    <Col span={6}>
+                      <UploadImage content="Choose file" />
+                    </Col>
+                  </Row>
+                ))}
+              </div>
               {item.type === 'D' ? (
                 <Space direction="horizontal">
                   <PlusOutlined className={styles.plusIcon} />

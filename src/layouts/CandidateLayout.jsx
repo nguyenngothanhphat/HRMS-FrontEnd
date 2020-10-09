@@ -60,7 +60,7 @@ const getLineWidth = (value) => {
 
 const Bottom = ({ step }) => {
   useEffect(() => {
-    console.log('BOTTOM BAR RENDER');
+    // console.log('BOTTOM BAR RENDER');
   }, []);
   return <div>BottomBar Step: {step}</div>;
 };
@@ -72,7 +72,7 @@ const CandidateLayout = (props) => {
   const [currentPage, setCurrentPage] = useState(10);
 
   useEffect(() => {
-    console.log('CANDIDATE LAYOUT RENDER');
+    // console.log('CANDIDATE LAYOUT RENDER');
   }, [currentStep]);
 
   const nextScreen = () => {
@@ -154,14 +154,8 @@ const CandidateLayout = (props) => {
                   onClickNext={nextScreen}
                   currentPage={currentPage}
                 />
-                <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
-                  Next
-                </button>
               </Col>
             </Row>
-          </Col>
-          <Col md={19}>
-            <Bottom step={currentStep} />
           </Col>
         </Row>
       </Content>
@@ -170,6 +164,7 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(({ candidateProfile: { currentStep } = {} }) => ({
+export default connect(({ candidateProfile: { currentStep, checkCandidateMandatory } = {} }) => ({
   currentStep,
+  checkCandidateMandatory,
 }))(CandidateLayout);

@@ -1,5 +1,3 @@
-import { dialog } from '@/utils/utils';
-
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
@@ -29,6 +27,8 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
+      console.log(action);
+
       return {
         ...state,
         ...action.payload,
