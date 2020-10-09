@@ -1,41 +1,38 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import styles from '../../HeadquaterAddress/View/index.less';
 
 class View extends PureComponent {
   render() {
-    const companyDetail = [
+    const { information } = this.props;
+    const companyInformation = [
       {
-        id: 3,
-        label: 'Company Name',
-        value: 'Terralogic',
+        label: formatMessage({ id: 'pages_admin.companies.table.companyName' }),
+        value: information.name,
       },
       {
-        id: 3,
         label: 'DBA',
-        value: 'DBA',
+        value: information.dba,
       },
       {
-        id: 4,
         label: 'EIN',
-        value: 'EIN',
+        value: information.ein,
       },
       {
-        id: 7,
-        label: 'Employee Number',
-        value: 'Employee Number',
+        label: formatMessage({ id: 'pages_admin.company.employeeNumber' }),
+        value: information.employeeNumber,
       },
       {
-        id: 7,
-        label: 'Website',
-        value: 'https://www.terralogic.com/',
+        label: formatMessage({ id: 'pages_admin.company.website' }),
+        value: information.website,
       },
     ];
 
     return (
       <div className={styles.view}>
         <Row gutter={[0, 16]} className={styles.root}>
-          {companyDetail.map((item) => (
+          {companyInformation.map((item) => (
             <Fragment key={item.label}>
               <Col span={6} className={styles.textLabel}>
                 {item.label}

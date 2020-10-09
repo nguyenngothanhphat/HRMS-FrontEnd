@@ -99,6 +99,7 @@ class Edit extends PureComponent {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
+    this.handleUpLoadAdhaarCard();
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
@@ -107,25 +108,19 @@ class Edit extends PureComponent {
     });
   };
 
-  handleGetUpLoad = (resp) => {
-    const { dispatch, idCurrentEmployee, AdhaarCard, generalDataOrigin, generalData } = this.props;
-    const { data = [] } = resp;
-    const [first] = data;
-    const value = { id: first.id, url: first.url };
-    const url = { urlFile: value };
-    this.handleChange(url);
-    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
-    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
-    const getNewAdhaarCard =
-      adhaarCardNumberTemp !== adhaarCardNumberOrigin
-        ? adhaarCardNumberTemp
-        : adhaarCardNumberOrigin;
+  handleUpLoadAdhaarCard = () => {
+    const { dispatch, idCurrentEmployee, AdhaarCard, generalData } = this.props;
+    let file = '';
+    const { urlFile } = generalData;
+    if (urlFile) {
+      file = urlFile;
+    }
     if (AdhaarCard === null) {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
           key: 'Adhaar Card',
-          attachment: first.id,
+          attachment: file.id,
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
@@ -133,14 +128,39 @@ class Edit extends PureComponent {
       }).then((id) => this.handleAdd(id));
     } else {
       dispatch({
-        type: 'employeeProfile/fetchAdhaarcardUpdate',
+        type: 'employeeProfile/fetchDocumentUpdate',
         payload: {
-          attachment: first.id,
-          id: AdhaarCard._id,
-          adhaarNumber: getNewAdhaarCard,
+          attachment: file.id,
+          id: AdhaarCard.document._id,
         },
-      });
+      }).then((doc) => this.handleUpdate(doc));
     }
+  };
+
+  handleGetUpLoad = (resp) => {
+    const { data = [] } = resp;
+    const [first] = data;
+    const value = { id: first.id, url: first.url };
+    const url = { urlFile: value };
+    this.handleChange(url);
+  };
+
+  handleUpdate = (doc) => {
+    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
+    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
+    const getNewAdhaarCard =
+      adhaarCardNumberTemp !== adhaarCardNumberOrigin
+        ? adhaarCardNumberTemp
+        : adhaarCardNumberOrigin;
+    dispatch({
+      type: 'employeeProfile/fetchAdhaarcardUpdate',
+      payload: {
+        document: doc._id,
+        id: AdhaarCard._id,
+        adhaarNumber: getNewAdhaarCard,
+      },
+    });
   };
 
   handleAdd = (id) => {
