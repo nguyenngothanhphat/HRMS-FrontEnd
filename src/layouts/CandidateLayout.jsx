@@ -66,7 +66,8 @@ const Bottom = ({ step }) => {
 };
 
 const CandidateLayout = (props) => {
-  const { children, currentStep, dispatch } = props;
+  const { children, currentStep, dispatch, checkCandidateMandatory, checkMandatory } = props;
+  console.log(checkCandidateMandatory.filledCandidateBasicInformation);
 
   const [current, setCurrent] = useState(currentStep);
   const [currentPage, setCurrentPage] = useState(10);
@@ -74,6 +75,10 @@ const CandidateLayout = (props) => {
   useEffect(() => {
     console.log('CANDIDATE LAYOUT RENDER');
   }, [currentStep]);
+
+  useEffect(() => {
+    console.log('CANDIDATE LAYOUT RENDER');
+  }, [checkCandidateMandatory.filledCandidateBasicInformation]);
 
   const nextScreen = () => {
     if (!dispatch || current === 7) {
@@ -170,6 +175,14 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(({ candidateProfile: { currentStep } = {} }) => ({
-  currentStep,
-}))(CandidateLayout);
+export default connect(
+  ({
+    candidateProfile: { currentStep } = {},
+    info: { checkMandatory = {} } = {},
+    candidateProfile: { checkCandidateMandatory = {} },
+  }) => ({
+    currentStep,
+    checkMandatory,
+    checkCandidateMandatory,
+  }),
+)(CandidateLayout);
