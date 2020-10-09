@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Col, Tabs, Row } from 'antd';
+import { Link } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
-import TableEmployee from './TableEmployee/index';
+import TableEmployee from './TableEmployee';
 import styles from './index.less';
 
 const data = [
@@ -25,7 +26,7 @@ export default class ViewLeft extends Component {
     const { TabPane } = Tabs;
 
     const activeTitle = (
-      <Row className={styles.titelContainer}>
+      <Row className={styles.titleContainer}>
         <Col span={4}>Inprogress (00)</Col>
         <Col span={4}>On-hold (00)</Col>
         <Col span={4}>Accepted (00)</Col>
@@ -34,7 +35,7 @@ export default class ViewLeft extends Component {
     );
 
     return (
-      <div className={styles.root}>
+      <div className={styles.Contanner}>
         <div className={styles.title_Box}>
           <div>
             <img src={icon} alt="iconCheck" className={styles.icon} />
@@ -51,7 +52,9 @@ export default class ViewLeft extends Component {
         <div className={styles.subTitle_Text}>
           But, if you have made your mind then lets get to it.
         </div>
-        <Button className={styles.submitButton}> Set a resgination request </Button>
+        <Button className={styles.submitButton}>
+          <Link to="/employee-offboarding/resignation-request"> Set a resgination request </Link>
+        </Button>
         <div>
           <Tabs defaultActiveKey="1" className={styles.TabComponent}>
             {data.map((tab) => (

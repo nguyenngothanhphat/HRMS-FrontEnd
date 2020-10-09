@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { Button, Input } from 'antd';
 import icon from '@/assets/offboarding-schedule.svg';
 import styles from './index.less';
+
+const { TextArea } = Input;
 
 export default class ResignationLeft extends Component {
   constructor(props) {
@@ -10,7 +13,7 @@ export default class ResignationLeft extends Component {
 
   render() {
     return (
-      <div className={styles.root}>
+      <div className={styles.resignationLeft}>
         <div className={styles.title_Box}>
           <div>
             <img src={icon} alt="iconCheck" className={styles.icon} />
@@ -25,19 +28,21 @@ export default class ResignationLeft extends Component {
         </div>
         <div className={styles.titleBody}>
           <div className={styles.center}>
-            <p> Reason for leaving us?</p>
-            <span>22.05.20 | 12PM</span>
+            <p className={styles.textBox}> Reason for leaving us?</p>
+            <p className={styles.textTime}>
+              <span style={{ color: 'black' }}>22.05.20 </span>| 12PM
+            </p>
           </div>
-          <div className={styles.boxReason}>
-            The reason I have decided to end my journey with Lollypop here is because…The reason I
-            have decided to end my journey with Lollypop here is because…The reason I have decided
-            to end my journey with Lollypop here is because…The reason I have decided to end my
-            journey with Lollypop here is because…The reason I have decided to end my journey with
-            Lollypop here is because…The reason I have decided to end my journey with Lollypop here
-            is because…The reason I have decided to end my journey with Lollypop here is because…The
-            reason I have decided to end my journey with Lollypop here is because…The reason I have
-            decided to end my journey with Lollypop here is because…
+          {/* <Input className={styles.boxReason} /> */}
+          <TextArea className={styles.boxReason} />
+        </div>
+        <div className={styles.subbmitForm}>
+          <div className={styles.subbmiText}>
+            By default notifications will be sent to HR, your manager and recursively loop to your
+            department head.
           </div>
+          <Button className={styles.buttonDraft}>Save to draft</Button>
+          <Button className={styles.buttonSubmit}>Submit</Button>
         </div>
       </div>
     );

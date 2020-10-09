@@ -35,7 +35,7 @@ const array = [
   },
 ];
 
-export class ViewRight extends Component {
+export default class ViewRight extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -75,4 +75,4 @@ export class ViewRight extends Component {
   }
 }
 
-export default ViewRight;
+// export default InfoRight;

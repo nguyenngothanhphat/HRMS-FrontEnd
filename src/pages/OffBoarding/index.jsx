@@ -20,7 +20,7 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Terminate work relationship</p>
               <div>
                 <span className={styles.textActivity}>View Activity Log</span>
-                <span className={styles.textActivity} style={{ color: 'red' }}>
+                <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
                   (00)
                 </span>
               </div>

@@ -103,13 +103,6 @@ const routes = [
             name: 'employeeOffBoarding',
             icon: 'file-image',
             component: './OffBoarding',
-            // routes: [
-            //   {
-            //     path: '/employee-offboarding/sendrequest',
-            //     name: 'Resignation Request',
-            //     component: './Dashboard',
-            //   },
-            // ],
           },
           {
             path: '/employee-offboarding/resignation-request',
