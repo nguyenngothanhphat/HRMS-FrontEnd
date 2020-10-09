@@ -14,7 +14,7 @@ class WorkLocation extends PureComponent {
         name: 'Japan Office',
         address: '2-45 Minamisendanishimachi, Naka, Hiroshima, Hiroshima',
         country: 'Japan',
-        state: 'Japan',
+        state: 'Tokyo',
         zipCode: '900000',
         isheadQuarter: true,
       },
