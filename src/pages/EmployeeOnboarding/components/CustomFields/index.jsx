@@ -1,5 +1,6 @@
 import { Button, Table } from 'antd';
 import React, { PureComponent } from 'react';
+import { history, formatMessage } from 'umi';
 import iGirl from '@/assets/Group1404.svg';
 import trash from '@/assets/trash-customField.svg';
 import edit from '@/assets/edit-customField.svg';
@@ -7,10 +8,14 @@ import group from '@/assets/Group-customField.svg';
 import styles from './index.less';
 
 class CustomFields extends PureComponent {
+  handleAddNewSection = () => {
+    history.push('/employee-onboarding/CreateField');
+  };
+
   render() {
     const columns = [
       {
-        title: 'Section name',
+        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.sectionName' }),
         dataIndex: 'sectionName',
         key: 'sectionName',
         width: '230px',
@@ -29,24 +34,24 @@ class CustomFields extends PureComponent {
         },
       },
       {
-        title: 'Field name',
+        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.fieldName' }),
         dataIndex: 'fieldName',
         key: 'fieldName',
         width: '50%',
       },
       {
-        title: 'Actions',
+        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         render: () => {
           return (
             <div className={styles.actionIcon}>
               <div>
-                <img src={trash} alt="" />
-                <img src={edit} alt="" />
+                <img src={trash} alt="" className={styles.iconTrash} />
+                <img src={edit} alt="" className={styles.iconEdit} />
               </div>
               <div>
-                <img src={group} alt="" />
+                <img src={group} alt="" className={styles.iconGroup} />
               </div>
             </div>
           );
@@ -69,14 +74,19 @@ class CustomFields extends PureComponent {
       <div className={styles.CustomFields}>
         <div className={styles.CustomFieldsTop}>
           <div className={styles.contentLeft}>
-            <h2 className={styles.contentLeftTitle}>Custom fields</h2>
+            <h2 className={styles.contentLeftTitle}>
+              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.customFields' })}
+            </h2>
             <p className={styles.contentLeftText}>
-              You can manage create fields of your choice for entering into forms or surveys from
-              here.
+              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.text' })}
             </p>
             <div>
-              <Button className={styles.buttonAddNewSection}>Add new section</Button>
-              <Button className={styles.buttonAddNewField}>Add new field</Button>
+              <Button className={styles.buttonAddNewSection} onClick={this.handleAddNewSection}>
+                {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewSection' })}
+              </Button>
+              <Button className={styles.buttonAddNewField}>
+                {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewField' })}
+              </Button>
             </div>
           </div>
           <div className={styles.imgContentRight}>
@@ -84,7 +94,9 @@ class CustomFields extends PureComponent {
           </div>
         </div>
         <div className={styles.CustomFieldsBotBackGround}>
-          <p>Custom Sections & fields</p>
+          <p className={styles.CustomFieldsBotTitle}>
+            {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.customSections&Fields' })}
+          </p>
           <div className={styles.CustomFieldsBot}>
             <Table columns={columns} dataSource={data} pagination={false} size="small" />
           </div>

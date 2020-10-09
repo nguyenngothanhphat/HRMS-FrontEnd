@@ -51,6 +51,7 @@
   }
   .CustomFieldsBot {
     width: 872px;
+    margin-left: 50px;
     :global {
       th.ant-table-cell {
         background: #ffffff !important;
@@ -63,18 +64,20 @@
       .ant-table-thead > tr:first-child > th:first-child {
         border-bottom-left-radius: 0;
         border-left: 1px solid #d6dce0;
+        padding-left: 16px;
+      }
+      .ant-table-thead > tr:first-child > th:nth-last-of-type(2) {
+        padding-left: 20px;
       }
       .ant-table-thead > tr:first-child > th:last-child {
         border-bottom-right-radius: 0;
         border-right: 1px solid #d6dce0;
       }
-      // td.ant-table-cell {
-      //   border: solid 1px #d6dce0;
-      // }
       .ant-table-tbody > tr:first-child > td:first-child {
         border-bottom-left-radius: 5px;
         border-left: solid 1px #d6dce0;
         border-right: solid 1px #d6dce0;
+        text-align: center;
       }
       .ant-table-tbody > tr:first-child > td:last-child {
         border-right: solid 1px #d6dce0;
@@ -83,16 +86,32 @@
         border-bottom-right-radius: 5px;
         border-right: solid 1px #d6dce0;
       }
+      .ant-table-tbody > tr:first-child > td:nth-last-of-type(2) {
+        padding-left: 16px;
+      }
+      .ant-table-tbody > tr:last-child > td:nth-last-of-type(2) {
+        padding-left: 16px;
+      }
     }
   }
-
   .CustomFieldsBotBackGround {
+    padding-top: 50px;
     z-index: 1;
+  }
+  .CustomFieldsBotTitle {
+    margin-left: 50px;
+    margin-bottom: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #161c29;
   }
   .actionIcon {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
+  }
+  .iconTrash {
+    margin-right: 16px;
   }
 }

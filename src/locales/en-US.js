@@ -17,7 +17,7 @@ import signUpPage from './en-US/signUpPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
 import employeeOnboarding from './en-US/employeeOnboarding';
 import templateDetails from './en-US/templateDetails';
-
+import onBoardingCustomFields from './en-US/onBoardingCustomFields';
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
@@ -56,4 +56,5 @@ export default {
   ...documentsManagementPage,
   ...employeesManagementPage,
   ...companiesManagementPage,
+  ...onBoardingCustomFields,
 };

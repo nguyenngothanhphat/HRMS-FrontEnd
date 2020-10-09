@@ -158,6 +158,13 @@ const routes = [
             authority: ['customer'],
           },
           {
+            path: '/employee-onboarding/CreateField',
+            name: 'Create custom field section',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateField',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
             path: '/employee-offboarding',
             name: 'employeeOffBoarding',
             icon: 'file-image',
