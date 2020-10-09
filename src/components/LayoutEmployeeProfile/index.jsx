@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal, Affix } from 'antd';
 import { connect } from 'umi';
@@ -52,16 +53,16 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  // saveChanges = (item) => {
-  //   console.log('item', item);
-  // };
+  saveChanges = (item) => {
+    console.log('item', item);
+  };
 
-  // onCancel = (item) => {
-  //   console.log('item', item);
-  // };
+  onCancel = (item) => {
+    console.log('item', item);
+  };
 
   render() {
-    const { listMenu = [], isModified } = this.props;
+    const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -73,7 +74,8 @@ class CommonLayout extends PureComponent {
                 <ItemMenu
                   key={item.id}
                   item={item}
-                  handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  // handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
+                  handleClick={this.handleCLickItemMenu}
                   selectedItemId={selectedItemId}
                 />
               ))}

@@ -104,32 +104,10 @@ class VisaGeneral extends Component {
   };
 
   handleGetUpLoad = (index, resp) => {
-    const { dispatch, idCurrentEmployee } = this.props;
     const { data = [] } = resp;
     const [first] = data;
-
-    dispatch({
-      type: 'employeeProfile/fetchDocumentAdd',
-      payload: {
-        key: `Visa${index + 1}`,
-        attachment: first.id,
-        employeeGroup: 'Identity',
-        parentEmployeeGroup: 'Indentification Documents',
-        employee: idCurrentEmployee,
-      },
-    }).then((id) => this.handleUpdate(id, index));
-  };
-
-  handleUpdate = (id, index) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/fetchDocumentUpdate',
-      payload: { id },
-    }).then((doc) => {
-      const { _id, attachment: { url } = {} } = doc;
-      const value = { id: _id, url };
-      this.handleFieldChange(index, 'urlFile', value);
-    });
+    const value = { id: first.id, url: first.url };
+    this.handleFieldChange(index, 'urlFile', value);
   };
 
   handleNameDataUpload = (url) => {
@@ -337,7 +315,7 @@ class VisaGeneral extends Component {
                       <div className={styles.textUpload}>
                         <UploadImage
                           content="Choose file"
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
                           loading={loading}
                         />
                       </div>

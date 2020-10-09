@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import ViewDocument from './ViewDocument';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, loading }) => ({
+  loading: loading.effects['employeeProfile/fetchDocuments'],
   employeeProfile,
 }))
 class Documents extends Component {
@@ -14,11 +15,21 @@ class Documents extends Component {
     super(props);
     this.state = {
       isViewingDocument: false,
-      files: [],
-      typeOfSelectedFile: '',
       selectedFile: 0,
     };
   }
+
+  componentDidMount = () => {
+    const {
+      employeeProfile: { idCurrentEmployee = '' },
+      dispatch,
+    } = this.props;
+
+    dispatch({
+      type: 'employeeProfile/fetchDocuments',
+      payload: { employee: idCurrentEmployee },
+    });
+  };
 
   onBackClick = () => {
     this.setState({
@@ -102,7 +113,9 @@ class Documents extends Component {
   onFileClick = (id) => {
     const {
       employeeProfile: { saveDocuments = [] },
+      dispatch,
     } = this.props;
+
     const data = this.generateArrayDocument(saveDocuments);
 
     data.forEach((x) => {
@@ -113,9 +126,11 @@ class Documents extends Component {
           if (z.id === id) {
             this.setState({
               isViewingDocument: true,
-              files: y.files,
               selectedFile: count,
-              typeOfSelectedFile: y.kind,
+            });
+            dispatch({
+              type: 'employeeProfile/saveGroupViewingDocuments',
+              payload: { files: y.files },
             });
           }
         });
@@ -124,11 +139,13 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, selectedFile } = this.state;
 
     const {
-      employeeProfile: { saveDocuments = [] },
+      employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
+      loading,
     } = this.props;
+
     const data = this.generateArrayDocument(saveDocuments);
 
     const emptyData = {
@@ -136,34 +153,39 @@ class Documents extends Component {
       type: 2,
       body: [],
     };
+
     return (
       <div className={styles.Documents}>
-        {data.length === 0 ? (
-          <div className={styles.noDocumentContainer}>
-            <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
-            <div className={styles.buttonContainer}>
-              <Button className={styles.uploadNewBtn} type="primary">
-                Upload new
-              </Button>
-            </div>
+        {loading ? (
+          <div className={styles.loadingDocuments}>
+            {/* <p>Loading documents</p> */}
+            <Spin size="large" />
           </div>
         ) : (
           <div>
-            {isViewingDocument ? (
-              <ViewDocument
-                files={files}
-                selectedFile={selectedFile}
-                typeOfSelectedFile={typeOfSelectedFile}
-                onBackClick={this.onBackClick}
-              />
+            {data.length === 0 ? (
+              <div className={styles.noDocumentContainer}>
+                <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
+                <div className={styles.buttonContainer}>
+                  <Button className={styles.uploadNewBtn} type="primary">
+                    Upload new
+                  </Button>
+                </div>
+              </div>
             ) : (
-              data.map((value, index) => (
-                <InfoCollapseType2
-                  key={`${index + 1}`}
-                  onFileClick={this.onFileClick}
-                  data={value}
-                />
-              ))
+              <div>
+                {isViewingDocument && groupViewingDocuments.length !== 0 ? (
+                  <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
+                ) : (
+                  data.map((value, index) => (
+                    <InfoCollapseType2
+                      key={`${index + 1}`}
+                      onFileClick={this.onFileClick}
+                      data={value}
+                    />
+                  ))
+                )}
+              </div>
             )}
           </div>
         )}

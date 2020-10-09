@@ -27,10 +27,19 @@
   .vertical {
     display: flex;
     flex-direction: column;
+    margin-bottom: 24px;
   }
 
   label {
     width: 100%;
+    text-transform: capitalize;
+  }
+
+  .label {
+    color: @gray;
+    font-size: 14px;
+    letter-spacing: 0.17px;
+    line-height: 1.57;
   }
 
   input {
@@ -103,6 +112,10 @@
 
     .ant-form-item-required::before {
       display: none !important;
+    }
+
+    input[type='search'] {
+      height: 100% !important;
     }
   }
 }
