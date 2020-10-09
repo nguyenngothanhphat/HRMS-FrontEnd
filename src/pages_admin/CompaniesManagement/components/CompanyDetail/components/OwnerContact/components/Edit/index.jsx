@@ -37,7 +37,7 @@ class Edit extends PureComponent {
           }}
         >
           <Form.Item
-            label="Full Name"
+            label={formatMessage({ id: 'pages_admin.owner.fullName' })}
             name="name"
             {...formItemLayout}
             rules={[
@@ -50,7 +50,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Email"
+            label={formatMessage({ id: 'pages_admin.owner.email' })}
             name="email"
             {...formItemLayout}
             rules={[
@@ -63,7 +63,7 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Phone Number"
+            label={formatMessage({ id: 'pages_admin.owner.phone' })}
             name="phoneNumber"
             {...formItemLayout}
             rules={[

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Row, Col } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from '../../../../WorkLocation/components/Edit/index.less';
 
 const { Option } = Select;
@@ -75,10 +75,16 @@ class Edit extends PureComponent {
             }}
             onValuesChange={this.handleFormHeadquarter}
           >
-            <Form.Item label="Address*" name="address">
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.address' })}
+              name="address"
+            >
               <Input />
             </Form.Item>
-            <Form.Item label="Country" name="country">
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.country' })}
+              name="country"
+            >
               <Select
                 placeholder="Select Country"
                 showArrow
@@ -96,7 +102,10 @@ class Edit extends PureComponent {
             </Form.Item>
             <Row gutter={[30, 0]}>
               <Col span={12}>
-                <Form.Item label="State" name="state">
+                <Form.Item
+                  label={formatMessage({ id: 'pages_admin.company.location.state' })}
+                  name="state"
+                >
                   <Select
                     placeholder="Select State"
                     showArrow
@@ -115,7 +124,10 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Zip Code" name="zipCode">
+                <Form.Item
+                  label={formatMessage({ id: 'pages_admin.company.location.zipCode' })}
+                  name="zipCode"
+                >
                   <Input />
                 </Form.Item>
               </Col>
