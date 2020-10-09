@@ -1,111 +1,60 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import { Link, formatMessage } from 'umi';
-
-import Template from './components/Template';
-import consecteturMorbi from './assets/consecteturMorbi.png';
-import fringillaPulvinar from './assets/fringillaPulvinar.png';
-import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
-import lectusTinciduntEros2 from './assets/lectusTinciduntEros2.png';
-import lectusTinciduntEros3 from './assets/lectusTinciduntEros3.png';
-import recent1 from './assets/recent1.png';
-import recent2 from './assets/recent2.png';
-import recent3 from './assets/recent3.png';
+import { Table } from 'antd';
+// import { Link, formatMessage } from 'umi';
 
 import styles from './index.less';
 
 class CustomEmailsTableField extends PureComponent {
-  _renderTemplates = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { consecteturMorbi },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { fringillaPulvinar },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { lectusTinciduntEros },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 4,
-        templateThumbnail: { lectusTinciduntEros2 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 5,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 6,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 7,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
-      return (
-        <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
-            <Template template={template} />
-          </Link>
-        </Col>
-      );
-    });
-  };
-
-  _renderRecentDocuments = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { recent1 },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { recent2 },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { recent3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
-      return (
-        <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
-            <Template template={template} />
-          </Link>
-        </Col>
-      );
-    });
-  };
-
   render() {
+    const data = [
+      {
+        emailSubject: 'Onboarding email',
+        createdOn: '24th August, 2020',
+        triggerEvent: 'Person starts work',
+        frequency: 'Once',
+        action: 'name',
+      },
+      {
+        emailSubject: 'Onboarding email',
+        createdOn: '24th August, 2020',
+        triggerEvent: 'Person starts work',
+        frequency: 'Once',
+        action: 'name',
+      },
+    ];
+    const columns = [
+      {
+        title: 'Email subject',
+        dataIndex: 'emailSubject',
+        key: 'emailSubject',
+      },
+      {
+        title: 'Created on',
+        dataIndex: 'createdOn',
+        key: 'createdOn',
+      },
+      {
+        title: 'Trigger event',
+        dataIndex: 'triggerEvent',
+        key: 'triggerEvent',
+      },
+      {
+        title: 'Frequency',
+        dataIndex: 'frequency',
+        key: 'frequency',
+      },
+      {
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+      },
+    ];
     return (
       <div className={styles.CustomEmailsTableField}>
-        <p className={styles.CustomEmailsTableField_title}>
-          {' '}
-          {formatMessage({ id: 'component.documentAndTemplates.defaultTemplate' })}
-        </p>
-        <Row gutter={[4, 12]}>{this._renderTemplates()}</Row>
-        <p className={styles.CustomEmailsTableField_title}>
-          {' '}
-          {formatMessage({ id: 'component.documentAndTemplates.recentDocuments' })}
-        </p>
-        <Row gutter={[4, 12]}>{this._renderRecentDocuments()}</Row>
+        <div className={styles.CustomEmailsTableField_title}>Custom emails created</div>
+        <div className={styles.CustomEmailsTableField_table}>
+          <Table dataSource={data} columns={columns} size="middle" pagination={false} />
+        </div>
       </div>
     );
   }
