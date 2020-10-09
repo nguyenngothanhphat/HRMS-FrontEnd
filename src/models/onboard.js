@@ -1,3 +1,6 @@
+import { getOnboardingList } from '@/services/onboard';
+import { dialog } from '@/utils/utils';
+
 const rookieList = [
   {
     key: '1',
@@ -234,23 +237,23 @@ const employeeList = rookieList.filter(
   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
 );
 
-// Data for table
-const sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
-const receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
-const eligibleCandidatesData = rookieList;
-const ineligibleCandidatesData = rookieList;
-const sentProvisionalOffersData = rookieList; // Provisional Offers
-const receivedProvisionalOffersData = rookieList; // Provisional Offers
-const discardedProvisionalOffersData = employeeList;
-const approvedFinalOffersData = employeeList; // Awaiting Approvals
-const pendingApprovalsData = employeeList; // Awaiting Approvals
-const rejectFinalOfferData = employeeList; // Awaiting Approvals
-const acceptedFinalOffersData = employeeList; // Final Offers
-const sentFinalOffersData = rookieList; // Final Offers
-const finalOfferDraftsData = employeeList;
-const discardedFinalOffersData = rookieList;
+// Mock data for table
+let sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
+let receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
+let eligibleCandidatesData = rookieList;
+let ineligibleCandidatesData = rookieList;
+let sentProvisionalOffersData = rookieList; // Provisional Offers
+let receivedProvisionalOffersData = rookieList; // Provisional Offers
+let discardedProvisionalOffersData = employeeList;
+let approvedFinalOffersData = employeeList; // Awaiting Approvals
+let pendingApprovalsData = employeeList; // Awaiting Approvals
+let rejectFinalOfferData = employeeList; // Awaiting Approvals
+let acceptedFinalOffersData = employeeList; // Final Offers
+let sentFinalOffersData = rookieList; // Final Offers
+let finalOfferDraftsData = employeeList;
+let discardedFinalOffersData = rookieList;
 
-const PHASE_DATA = [
+let PHASE_DATA = [
   {
     id: 1,
     title: 'phase 1',
@@ -335,6 +338,120 @@ const PHASE_DATA = [
   },
 ];
 
+const PROCESS_STATUS = {
+  SENT_ELIGIBILITY_FORMS: 'SENT-ELIGIBILITY-FORMS',
+  RECEIVED_SUBMITTED_DOCUMENTS: 'RECEIVED-SUBMITTED-DOCUMENTS',
+  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATES-FOR-OFFERS',
+  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATES',
+  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISION-OFFER',
+  RECEIVED_PROVISIONAL_OFFERS: 'RECEIVED-PROVISION-OFFER',
+  DISCARDED_PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
+  PENDING_APPROVALS: 'PENDING-APPROVAL',
+  APPROVED_FINAL_OFFERS: 'APPROVED-FINAL-OFFERS',
+  REJECT_FINAL_OFFERS: 'REJECT-FINAL-OFFER',
+  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFER',
+  ACCEPTED_FINAL_OFFERS: 'ACCEPT-OFFER',
+  FINAL_OFFERS_DRAFTS: 'FINAL-OFFER-DRAFES',
+  DISCARDED_FINAL_OFFERS: 'ACCEPT-OFFER',
+};
+
+const formatMonth = (month) => {
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  return monthNames[month];
+};
+
+const formatDay = (day) => {
+  const nth = (d) => {
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  };
+  return day + nth(day);
+};
+
+const formatDate = (date) => {
+  let dateObj = new Date(date);
+  let month = dateObj.getUTCMonth() + 1; //months from 1-12
+  let day = dateObj.getUTCDate();
+  let year = dateObj.getUTCFullYear();
+
+  let newDate = `${formatDay(day)} ${formatMonth(month)}, ${year}`;
+  return newDate;
+};
+
+const dateDiffInDays = (a, b) => {
+  // a and b are javascript Date objects
+  // console.log(a);
+  // console.log(b);
+  // console.log(typeof a);
+  // console.log(typeof b);
+  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+  // Discard the time and time-zone information.
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  // console.log(utc1);
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+};
+
+const formatData = (list) => {
+  const formatList = [];
+  list.map((item) => {
+    const {
+      _id,
+      fullName,
+      position,
+      title,
+      workLocation,
+      updatedAt,
+      createdAt,
+      comments = 'Passport submission pending …',
+    } = item;
+
+    const dateSent = formatDate(createdAt);
+    const dateReceived = formatDate(updatedAt);
+    const dateJoin = formatDate(updatedAt);
+    // console.log(dateDiffInDays(Date.now(), new Date(updatedAt)));
+
+    const rookie = {
+      rookieId: `#${_id.substring(0, 8)}`,
+      isNew: true,
+      rookieName: fullName,
+      position: title.name,
+      location: workLocation.name,
+      comments: 'Passport submission pending …',
+      dateSent,
+      dateReceived,
+      dateJoin,
+    };
+    formatList.push(rookie);
+    return null;
+  });
+  return formatList;
+};
+
 const onboard = {
   namespace: 'onboard',
   state: {
@@ -396,6 +513,133 @@ const onboard = {
     //     dialog(errors);
     //   }
     // },
+    *fetchOnboardList({ payload }, { call, put }) {
+      try {
+        const { processStatus = '' } = payload;
+        const req = {
+          processStatus,
+          page: 1,
+          limit: 1,
+        };
+        const response = yield call(getOnboardingList, req);
+        console.log(response);
+        const returnedData = formatData(response.data);
+        const { statusCode, data: employeetype = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        const {
+          SENT_ELIGIBILITY_FORMS,
+          RECEIVED_SUBMITTED_DOCUMENTS,
+          ELIGIBLE_CANDIDATES,
+          INELIGIBLE_CANDIDATES,
+          SENT_PROVISIONAL_OFFERS,
+          RECEIVED_PROVISIONAL_OFFERS,
+          DISCARDED_PROVISIONAL_OFFERS,
+          PENDING_APPROVALS,
+          APPROVED_FINAL_OFFERS,
+          REJECT_FINAL_OFFERS,
+          SENT_FINAL_OFFERS,
+          ACCEPTED_FINAL_OFFERS,
+          FINAL_OFFERS_DRAFTS,
+          DISCARDED_FINAL_OFFERS,
+        } = PROCESS_STATUS;
+
+        // Fetch data
+        switch (processStatus) {
+          case SENT_ELIGIBILITY_FORMS: {
+            yield put({
+              type: 'saveSentEligibilityForms',
+              payload: returnedData,
+            });
+          }
+          case RECEIVED_SUBMITTED_DOCUMENTS: {
+            yield put({
+              type: 'saveReceivedSubmittedDocuments',
+              payload: returnedData,
+            });
+          }
+          case ELIGIBLE_CANDIDATES: {
+            yield put({
+              type: 'saveEligibleCandidates',
+              payload: returnedData,
+            });
+          }
+          case INELIGIBLE_CANDIDATES: {
+            yield put({
+              type: 'saveIneligibleCandidates',
+              payload: returnedData,
+            });
+          }
+          case SENT_PROVISIONAL_OFFERS: {
+            yield put({
+              type: 'saveSentProvisionalOffers',
+              payload: returnedData,
+            });
+          }
+          case RECEIVED_PROVISIONAL_OFFERS: {
+            yield put({
+              type: 'saveReceivedProvisionalOffers',
+              payload: returnedData,
+            });
+          }
+          case DISCARDED_PROVISIONAL_OFFERS: {
+            yield put({
+              type: 'saveDiscardedProvisionalOffers',
+              payload: returnedData,
+            });
+          }
+          case PENDING_APPROVALS: {
+            yield put({
+              type: 'savePendingApprovals',
+              payload: returnedData,
+            });
+          }
+          case APPROVED_FINAL_OFFERS: {
+            yield put({
+              type: 'saveApprovedFinalOffers',
+              payload: returnedData,
+            });
+          }
+          case REJECT_FINAL_OFFERS: {
+            yield put({
+              type: 'saveRejectFinalOffers',
+              payload: returnedData,
+            });
+          }
+          case SENT_FINAL_OFFERS: {
+            yield put({
+              type: 'saveSentFinalOffers',
+              payload: returnedData,
+            });
+          }
+          case ACCEPTED_FINAL_OFFERS: {
+            yield put({
+              type: 'saveAcceptedFinalOffers',
+              payload: returnedData,
+            });
+          }
+          case FINAL_OFFERS_DRAFTS: {
+            yield put({
+              type: 'saveFinalOfferDrafts',
+              payload: returnedData,
+            });
+          }
+          case DISCARDED_FINAL_OFFERS: {
+            yield put({
+              type: 'saveDiscardedFinalOffer',
+              payload: returnedData,
+            });
+          }
+        }
+        // Update menu
+        yield put({
+          type: 'updateMenuQuantity',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -404,6 +648,233 @@ const onboard = {
         ...action.payload,
       };
     },
+
+    saveSentEligibilityForms(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          pendingEligibilityChecks: {
+            ...state.onboardingOverview.pendingEligibilityChecks,
+            sentEligibilityForms: action.payload,
+          },
+        },
+      };
+    },
+
+    saveReceivedSubmittedDocuments(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          pendingEligibilityChecks: {
+            ...state.onboardingOverview.pendingEligibilityChecks,
+            receivedSubmittedDocuments: action.payload,
+          },
+        },
+      };
+    },
+
+    saveEligibleCandidates(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          eligibleCandidates: action.payload,
+        },
+      };
+    },
+
+    saveIneligibleCandidates(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          ineligibleCandidates: action.payload,
+        },
+      };
+    },
+
+    saveSentProvisionalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          provisionalOffers: {
+            ...state.onboardingOverview.provisionalOffers,
+            sentProvisionalOffers: action.payload,
+          },
+        },
+      };
+    },
+
+    saveReceivedProvisionalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          provisionalOffers: {
+            ...state.onboardingOverview.provisionalOffers,
+            receivedProvisionalOffers: action.payload,
+          },
+        },
+      };
+    },
+
+    saveDiscardedProvisionalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          discardedProvisionalOffers: action.payload,
+        },
+      };
+    },
+
+    savePendingApprovals(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          awaitingApprovals: {
+            ...state.onboardingOverview.awaitingApprovals,
+            pendingApprovals: action.payload,
+          },
+        },
+      };
+    },
+
+    saveApprovedFinalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          awaitingApprovals: {
+            ...state.onboardingOverview.awaitingApprovals,
+            approvedFinalOffers: action.payload,
+          },
+        },
+      };
+    },
+
+    saveRejectFinalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          awaitingApprovals: {
+            ...state.onboardingOverview.awaitingApprovals,
+            rejectFinalOffer: action.payload,
+          },
+        },
+      };
+    },
+
+    saveSentFinalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          finalOffers: {
+            ...state.onboardingOverview.finalOffers,
+            sentFinalOffers: action.payload,
+          },
+        },
+      };
+    },
+
+    saveAcceptedFinalOffers(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          finalOffers: {
+            ...state.onboardingOverview.finalOffers,
+            acceptedFinalOffers: action.payload,
+          },
+        },
+      };
+    },
+
+    saveFinalOfferDrafts(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          finalOfferDrafts: action.payload,
+        },
+      };
+    },
+
+    saveDiscardedFinalOffer(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          discardedFinalOffers: action.payload,
+        },
+      };
+    },
+
+    updateMenuQuantity(state, action) {
+      const { phaseList } = state.menu.onboardingOverviewTab;
+      let newPhaseList = [];
+      newPhaseList = phaseList.map((phaseItem) => {
+        const { menuItem } = phaseItem;
+
+        const newMenuItem = menuItem.map((item) => {
+          const { key } = item;
+          let newItem = item;
+          let newQuantity = item.quantity;
+          let dataLength = 0;
+          if (key === 'pendingEligibilityChecks') {
+            dataLength =
+              state.onboardingOverview.pendingEligibilityChecks.sentEligibilityForms.length;
+          }
+          if (key === 'eligibleCandidates') {
+            dataLength = state.onboardingOverview.eligibleCandidates.length;
+          }
+          if (key === 'ineligibleCandidates') {
+            dataLength = state.onboardingOverview.ineligibleCandidates.length;
+          }
+          if (key === 'provisionalOffers') {
+            dataLength = state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length;
+          }
+          if (key === 'discardedProvisionalOffers') {
+            dataLength = state.onboardingOverview.discardedProvisionalOffers.length;
+          }
+          if (key === 'awaitingApprovals') {
+            dataLength = state.onboardingOverview.awaitingApprovals.approvedFinalOffers.length;
+          }
+          if (key === 'finalOffers') {
+            dataLength = state.onboardingOverview.finalOffers.acceptedFinalOffers.length;
+          }
+          if (key === 'finalOfferDrafts') {
+            dataLength = state.onboardingOverview.finalOfferDrafts.length;
+          }
+          if (key === 'discardedFinalOffers') {
+            dataLength = state.onboardingOverview.discardedFinalOffers.length;
+          }
+          newQuantity = dataLength;
+          newItem = { ...newItem, quantity: newQuantity };
+          return newItem;
+        });
+        return {
+          menuItem: newMenuItem,
+        };
+      });
+
+      return {
+        ...state,
+        menu: {
+          ...state.menu,
+          onboardingOverviewTab: {
+            phaseList: newPhaseList,
+          },
+        },
+      };
+    },
+
     saveOrderNameField(state, action) {
       return {
         ...state,

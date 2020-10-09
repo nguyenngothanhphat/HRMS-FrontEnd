@@ -15,7 +15,7 @@ export default {
   'component.onboardingOverview.location': 'Location',
   'component.onboardingOverview.dateSent': 'Date sent',
   'component.onboardingOverview.dateReceived': 'Date received',
-  'component.onboardingOverview.dateJoin': 'Date join',
+  'component.onboardingOverview.dateJoin': 'Date of joining',
   'component.onboardingOverview.comments': 'Comments',
   'component.onboardingOverview.actions': 'Actions',
   'component.onboardingOverview.viewDraft': 'View Draft',
