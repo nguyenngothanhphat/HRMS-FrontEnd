@@ -140,7 +140,10 @@ const Benefits = () => {
               loading={documentWarning('Loading document. Please wait...')}
               noData={documentWarning('URL is not available.')}
             >
-              <Page pageNumber={currentPage} height={650} width={750} />
+              <Page
+                pageNumber={currentPage}
+                // height={650} width={750}
+              />
             </Document>
 
             <div className={s.control}>

@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
 import { Typography, Row, Col } from 'antd';
+import { connect } from 'umi';
 import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -117,6 +118,11 @@ const DummyItem = [
     ],
   },
 ];
+@connect(({ loading } = {}) => {
+  return {
+    loading: loading.effects['upload/uploadFile'],
+  };
+})
 class EligibilityDocs extends PureComponent {
   render() {
     return (

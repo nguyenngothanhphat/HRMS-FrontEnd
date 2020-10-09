@@ -66,7 +66,25 @@ class BottomBar extends Component {
     onClickPrev();
   };
 
+  // componentDidUpdate(prevProps) {
+  //   console.log(this.props.checkCandidateMandatory.filledCandidateBasicInformation);
+  //   console.log(prevProps.checkCandidateMandatory.filledCandidateBasicInformation);
+  //   if (
+  //     !equal(
+  //       this.props.checkCandidateMandatory.filledCandidateBasicInformation,
+  //       prevProps.checkCandidateMandatory.filledCandidateBasicInformation,
+  //     )
+  //   ) {
+  //     // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
+  //     // this.updateUser();
+  //     console.log('UPDATE');
+  //     this.onClickNext();
+  //   }
+  // }
+
   _renderStatus = () => {
+    console.log('RENDER');
+
     // const { pageId } = this.state;
     // const {
     //   basicInformation,

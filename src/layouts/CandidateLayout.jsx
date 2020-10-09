@@ -58,16 +58,8 @@ const getLineWidth = (value) => {
   }
 };
 
-const Bottom = ({ step }) => {
-  useEffect(() => {
-    // console.log('BOTTOM BAR RENDER');
-  }, []);
-  return <div>BottomBar Step: {step}</div>;
-};
-
 const CandidateLayout = (props) => {
   const { children, currentStep, dispatch } = props;
-
   const [current, setCurrent] = useState(currentStep);
   const [currentPage, setCurrentPage] = useState(10);
 
@@ -89,6 +81,7 @@ const CandidateLayout = (props) => {
 
     setCurrent((prevState) => prevState + 1);
     setCurrentPage((prevState) => prevState + 1);
+    console.log(currentPage);
   };
 
   const prevScreen = () => {
