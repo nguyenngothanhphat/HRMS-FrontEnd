@@ -28,4 +28,5 @@ export default {
   'pages_admin.owner.fullName': 'Full Name',
   'pages_admin.owner.email': 'Email',
   'pages_admin.owner.phone': 'Phone Number',
+  'pages_admin.company.addCompany': 'Add Company',
 };
