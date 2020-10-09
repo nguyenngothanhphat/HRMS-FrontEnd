@@ -26,89 +26,15 @@ class OnboardingOverview extends PureComponent {
       FINAL_OFFERS_DRAFTS,
       DISCARDED_FINAL_OFFERS,
     } = PROCESS_STATUS;
+    // dispatch({
+    //   type: 'onboard/fetchOnboardList',
+    //   payload: {
+    //     processStatus: SENT_ELIGIBILITY_FORMS,
+    //   },
+    // });
     dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: SENT_ELIGIBILITY_FORMS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: RECEIVED_SUBMITTED_DOCUMENTS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: ELIGIBLE_CANDIDATES,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: INELIGIBLE_CANDIDATES,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: SENT_PROVISIONAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: RECEIVED_PROVISIONAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: DISCARDED_PROVISIONAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: PENDING_APPROVALS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: APPROVED_FINAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: REJECT_FINAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: SENT_FINAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: ACCEPTED_FINAL_OFFERS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: FINAL_OFFERS_DRAFTS,
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: DISCARDED_FINAL_OFFERS,
-      },
+      type: 'onboard/fetchAllOnboardList',
+      payload: {},
     });
   }
 

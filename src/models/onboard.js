@@ -503,16 +503,118 @@ const onboard = {
     },
   },
   effects: {
-    // *fetchEmployeeType(_, { call, put }) {
-    //   try {
-    //     const response = yield call(EmployeeTypeFilter);
-    //     const { statusCode, data: employeetype = [] } = response;
-    //     if (statusCode !== 200) throw response;
-    //     yield put({ type: 'saveEmployeeType', payload: { employeetype } });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
+    *fetchAllOnboardList({ payload }, { call, put }) {
+      try {
+        // yield put({
+        //   type: 'updateMenuQuantity',
+        //   payload: {},
+        // });
+        const {
+          SENT_ELIGIBILITY_FORMS,
+          RECEIVED_SUBMITTED_DOCUMENTS,
+          ELIGIBLE_CANDIDATES,
+          INELIGIBLE_CANDIDATES,
+          SENT_PROVISIONAL_OFFERS,
+          RECEIVED_PROVISIONAL_OFFERS,
+          DISCARDED_PROVISIONAL_OFFERS,
+          PENDING_APPROVALS,
+          APPROVED_FINAL_OFFERS,
+          REJECT_FINAL_OFFERS,
+          SENT_FINAL_OFFERS,
+          ACCEPTED_FINAL_OFFERS,
+          FINAL_OFFERS_DRAFTS,
+          DISCARDED_FINAL_OFFERS,
+        } = PROCESS_STATUS;
+
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: SENT_ELIGIBILITY_FORMS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: RECEIVED_SUBMITTED_DOCUMENTS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: ELIGIBLE_CANDIDATES,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: INELIGIBLE_CANDIDATES,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: SENT_PROVISIONAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: RECEIVED_PROVISIONAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: DISCARDED_PROVISIONAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: PENDING_APPROVALS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: APPROVED_FINAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: REJECT_FINAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: SENT_FINAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: ACCEPTED_FINAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: FINAL_OFFERS_DRAFTS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: DISCARDED_FINAL_OFFERS,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *fetchOnboardList({ payload }, { call, put }) {
       try {
         const { processStatus = '' } = payload;
@@ -551,91 +653,170 @@ const onboard = {
               type: 'saveSentEligibilityForms',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case RECEIVED_SUBMITTED_DOCUMENTS: {
             yield put({
               type: 'saveReceivedSubmittedDocuments',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case ELIGIBLE_CANDIDATES: {
             yield put({
               type: 'saveEligibleCandidates',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case INELIGIBLE_CANDIDATES: {
             yield put({
               type: 'saveIneligibleCandidates',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case SENT_PROVISIONAL_OFFERS: {
             yield put({
               type: 'saveSentProvisionalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case RECEIVED_PROVISIONAL_OFFERS: {
             yield put({
               type: 'saveReceivedProvisionalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case DISCARDED_PROVISIONAL_OFFERS: {
             yield put({
               type: 'saveDiscardedProvisionalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case PENDING_APPROVALS: {
             yield put({
               type: 'savePendingApprovals',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case APPROVED_FINAL_OFFERS: {
             yield put({
               type: 'saveApprovedFinalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case REJECT_FINAL_OFFERS: {
             yield put({
               type: 'saveRejectFinalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case SENT_FINAL_OFFERS: {
             yield put({
               type: 'saveSentFinalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case ACCEPTED_FINAL_OFFERS: {
             yield put({
               type: 'saveAcceptedFinalOffers',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case FINAL_OFFERS_DRAFTS: {
             yield put({
               type: 'saveFinalOfferDrafts',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
           case DISCARDED_FINAL_OFFERS: {
             yield put({
               type: 'saveDiscardedFinalOffer',
               payload: returnedData,
             });
+            // Update menu
+            yield put({
+              type: 'updateMenuQuantity',
+              payload: {},
+            });
+            return;
           }
         }
-        // Update menu
-        yield put({
-          type: 'updateMenuQuantity',
-          payload: {},
-        });
       } catch (errors) {
         dialog(errors);
       }
