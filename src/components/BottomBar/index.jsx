@@ -83,19 +83,16 @@ class BottomBar extends Component {
   // }
 
   _renderStatus = () => {
-    console.log('RENDER');
-
-    // const { pageId } = this.state;
-    // const {
-    //   basicInformation,
-    //   jobDetails,
-    //   offerDetails,
-    //   salaryStructure,
-    //   customFields,
-    //   candidateBasicInfo,
-    //   candidateJobDetails,
-    // } = pageId;
-    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
+    const { pageId } = this.state;
+    const {
+      basicInformation,
+      jobDetails,
+      offerDetails,
+      salaryStructure,
+      customFields,
+      payrollSettings,
+    } = pageId;
+    const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     if (currentPage === HR.basicInformation) {
@@ -169,11 +166,27 @@ class BottomBar extends Component {
         </div>
       );
     }
+    if (currentPage === payrollSettings) {
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
+    }
     return null;
   };
 
   _renderBottomButton = () => {
-    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
+    const { pageId } = this.state;
+    const {
+      basicInformation,
+      jobDetails,
+      offerDetails,
+      salaryStructure,
+      customFields,
+      payrollSettings,
+    } = pageId;
+    const { currentPage, checkMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     // console.log('filledCandidateBasicInformation', filledCandidateBasicInformation);
@@ -291,6 +304,26 @@ class BottomBar extends Component {
               !filledCustomField ? styles.bottomBar__button__disabled : ''
             }`}
             disabled={!filledCustomField}
+          >
+            Next
+          </Button>
+        </>
+      );
+    }
+    if (currentPage === payrollSettings) {
+      return (
+        <>
+          <Button
+            type="secondary"
+            onClick={this.onClickPrev}
+            className={styles.bottomBar__button__secondary}
+          >
+            Previous
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onClickNext}
+            className={styles.bottomBar__button__primary}
           >
             Next
           </Button>

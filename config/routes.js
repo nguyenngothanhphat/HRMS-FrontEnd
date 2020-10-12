@@ -119,6 +119,13 @@ const routes = [
             authority: ['admin'],
           },
           {
+            path: '/companies/add-company',
+            name: 'addCompany',
+            hideInMenu: true,
+            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            authority: ['admin'],
+          },
+          {
             path: '/companies/company-detail/:reId',
             name: 'companyDetail',
             component: '../pages_admin/CompaniesManagement/components/CompanyDetail',

@@ -103,42 +103,11 @@ class VisaGeneral extends Component {
     });
   };
 
-  handleGetUpLoad = (index, resp, documentVisa) => {
-    const { dispatch, idCurrentEmployee } = this.props;
+  handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
-    if (documentVisa) {
-      const dataVisa = { id: documentVisa._id, attachment: first.id, key: `Visa${index + 1}` };
-      dispatch({
-        type: 'employeeProfile/fetchDocumentUpdate',
-        payload: dataVisa,
-      });
-      const value = { id: documentVisa._id, url: first.url };
-      this.handleFieldChange(index, 'urlFile', value);
-    } else {
-      dispatch({
-        type: 'employeeProfile/fetchDocumentAdd',
-        payload: {
-          key: `Visa${index + 1}`,
-          attachment: first.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
-          employee: idCurrentEmployee,
-        },
-      }).then((id) => this.handleUpdate(id, index));
-    }
-  };
-
-  handleUpdate = (id, index) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/fetchDocumentUpdate',
-      payload: { id },
-    }).then((doc) => {
-      const { _id, attachment: { url } = {} } = doc;
-      const value = { id: _id, url };
-      this.handleFieldChange(index, 'urlFile', value);
-    });
+    const value = { id: first.id, url: first.url };
+    this.handleFieldChange(index, 'urlFile', value);
   };
 
   handleNameDataUpload = (url) => {
