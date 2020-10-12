@@ -3,36 +3,42 @@ import React, { PureComponent } from 'react';
 import { Collapse, Space, Checkbox, Typography, Upload, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import { connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
-  loading: loading.effects['candidateProfile/updateGeneralInfo'],
-}))
 class CollapseField extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isUpdated: false,
       urlFile: '',
-      isAllUploaded: false,
+      isAllUploaded: [],
+      isValidated: false,
     };
   }
 
-  handleFile = (res) => {
-    console.log(res);
+  handleFile = (res, index) => {
+    const { dispatch, eliDocs = [] } = this.props;
+    const tempData = [...eliDocs];
     const { statusCode } = res;
     if (statusCode === 200) {
-      this.setState({
-        isUpdated: !this.state.isUpdated,
-      });
+      tempData.splice(index, 1, { ...tempData[index], data: true });
     }
+    // dispatch({
+    //   type: 'candidateProfile/save',
+    //   payload: {
+    //     eligibilityDocs: tempData,
+    //   },
+    // });
+
+    console.log('temp', tempData);
+    console.log('origin', eliDocs);
   };
 
   render() {
-    const { item = {}, loading } = this.props;
+    const { item = {}, tempData } = this.props;
+    console.log(item);
     return (
       <div className={styles.CollapseField}>
         <Collapse
@@ -58,10 +64,10 @@ class CollapseField extends PureComponent {
             {item.type === 'D' ? <InputField /> : <></>}
             <Space direction="vertical" className={styles.Space}>
               <div className={styles.Upload}>
-                {item.data.map((name) => (
+                {item.data.map((name, index) => (
                   // <Row className={styles.checkboxItem}>
-                  <>
-                    {!this.state.isUpdated ? (
+                  <div key={index}>
+                    {!name.value ? (
                       <Row className={styles.checkboxItem}>
                         <Col span={18}>
                           <Typography.Text>{name.name}</Typography.Text>
@@ -69,8 +75,7 @@ class CollapseField extends PureComponent {
                         <Col span={5}>
                           <UploadImage
                             content="Choose file"
-                            getResponse={(res) => this.handleFile(res)}
-                            loading={loading}
+                            getResponse={(res) => this.handleFile(res, index)}
                           />
                         </Col>
                       </Row>
@@ -102,7 +107,7 @@ class CollapseField extends PureComponent {
                         </Col>
                       </Row>
                     )}
-                  </>
+                  </div>
                   // <Col span={18}>
                   //   <Typography.Text>{name.name}</Typography.Text>
                   // </Col>

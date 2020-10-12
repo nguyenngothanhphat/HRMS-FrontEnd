@@ -18,7 +18,7 @@ const candidateProfile = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
-    eligibilityDocs: [
+    eliDocs: [
       {
         type: 'A',
         name: 'Identity Proof',

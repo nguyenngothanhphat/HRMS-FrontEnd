@@ -118,24 +118,25 @@ const DummyItem = [
     ],
   },
 ];
-@connect(({ loading } = {}) => {
-  return {
-    loading: loading.effects['upload/uploadFile'],
-  };
-})
+
+@connect(({ candidateProfile: { eliDocs } = {} }) => ({
+  eliDocs,
+}))
 class EligibilityDocs extends PureComponent {
   render() {
+    const { eliDocs } = this.props;
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
               <Title />
-              {DummyItem.length > 0 &&
-                DummyItem.map((item) => {
+              {eliDocs.length > 0 &&
+                eliDocs.map((item) => {
                   return (
                     <CollapseFields
                       item={item && item}
+                      eliDocs={eliDocs}
                       // handleChange={this.handleChange}
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}
