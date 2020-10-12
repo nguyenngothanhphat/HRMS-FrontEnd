@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Button, Form, Input, Select, Row, Col } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
 import styles from '../../../../WorkLocation/components/Edit/index.less';
 
@@ -58,13 +59,16 @@ class Edit extends PureComponent {
 
     const checkDisableBtnNext = !addressHead || !countryHead || !stateHead || !zipCodeHead;
 
+    const formLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 12 },
+    };
     return (
       <div className={styles.edit}>
         <div className={styles.edit_form}>
           <Form
             name="formHeadQuarter"
             requiredMark={false}
-            layout="vertical"
             colon={false}
             ref={this.formRef}
             initialValues={{
@@ -74,6 +78,7 @@ class Edit extends PureComponent {
               zipCode: zipCodeHead,
             }}
             onValuesChange={this.handleFormHeadquarter}
+            {...formLayout}
           >
             <Form.Item
               label={formatMessage({ id: 'pages_admin.company.location.address' })}
@@ -100,38 +105,31 @@ class Edit extends PureComponent {
                 ))}
               </Select>
             </Form.Item>
-            <Row gutter={[30, 0]}>
-              <Col span={12}>
-                <Form.Item
-                  label={formatMessage({ id: 'pages_admin.company.location.state' })}
-                  name="state"
-                >
-                  <Select
-                    placeholder="Select State"
-                    showArrow
-                    showSearch
-                    disabled={!countryHead}
-                    filterOption={
-                      (input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // eslint-disable-next-line react/jsx-curly-newline
-                    }
-                  >
-                    {listStateHead.map((item) => (
-                      <Option key={item}>{item}</Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label={formatMessage({ id: 'pages_admin.company.location.zipCode' })}
-                  name="zipCode"
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.state' })}
+              name="state"
+            >
+              <Select
+                placeholder="Select State"
+                showArrow
+                showSearch
+                disabled={!countryHead}
+                filterOption={
+                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
+              >
+                {listStateHead.map((item) => (
+                  <Option key={item}>{item}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.zipCode' })}
+              name="zipCode"
+            >
+              <Input />
+            </Form.Item>
             <div className={styles.edit_btn}>
               <Button type="text" className={styles.edit_btn_cancel} onClick={handleCancelEdit}>
                 Cancel

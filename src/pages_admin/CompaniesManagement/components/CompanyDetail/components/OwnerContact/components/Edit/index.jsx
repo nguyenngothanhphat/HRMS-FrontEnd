@@ -10,7 +10,7 @@ import styles from './index.less';
 class Edit extends PureComponent {
   render() {
     const companyDetail = {
-      name: 'Terralogic',
+      name: 'Nguyen Van A',
       email: 'Terralogic@terralogic.com',
       phoneNumber: '0123456789',
     };
