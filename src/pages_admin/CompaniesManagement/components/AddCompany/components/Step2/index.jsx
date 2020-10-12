@@ -35,7 +35,22 @@ class Step2 extends PureComponent {
     }
   }
 
-  navigate = () => {};
+  navigateStep = (type) => {
+    const { dispatch } = this.props;
+    let step;
+    if (type === 'previous') {
+      step = 0;
+    }
+    if (type === 'next') {
+      step = 2;
+    }
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: { currentStep: step },
+      });
+    }
+  };
 
   addLocation = () => {
     const { dispatch, locations } = this.props;
@@ -174,10 +189,10 @@ class Step2 extends PureComponent {
               </Button>
 
               <div className={styles.btnWrapper}>
-                <Button className={styles.btn} onClick={this.navigate('previous')}>
+                <Button className={styles.btn} onClick={() => this.navigateStep('previous')}>
                   {formatMessage({ id: 'page.signUp.step2.back' })}
                 </Button>
-                <Button className={styles.btn} htmlType="submit" onClick={this.navigate('next')}>
+                <Button className={styles.btn} onClick={() => this.navigateStep('next')}>
                   {formatMessage({ id: 'page.signUp.step2.next' })}
                 </Button>
               </div>
