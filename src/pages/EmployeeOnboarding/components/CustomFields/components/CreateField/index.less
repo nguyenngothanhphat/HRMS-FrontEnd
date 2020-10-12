@@ -112,4 +112,51 @@
     border: solid 1px #ffa100;
     cursor: pointer;
   }
+  .switchField {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 188px;
+    height: 34px;
+    background-image: url('./backgroundImage/Rectangle-customField.svg');
+  }
+  .switchField > .itemField1 {
+    width: 50%;
+  }
+  .switchField > .itemField1Active {
+    width: 50%;
+  }
+
+  .itemField1Active {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 100%;
+    margin: 0 -15px;
+    font-size: 13px;
+    font-weight: 500;
+    background-image: url('./backgroundImage/Rectangle-item.svg');
+    background-repeat: no-repeat;
+    background-size: 99px 40px;
+    color: #ffffff;
+    transition: 0.35s ease-in-out 0s;
+    cursor: pointer;
+  }
+  .itemField1 {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 100%;
+    margin: 0 -15px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #161c29;
+    transition: 0.35s ease-in-out 0s;
+    cursor: pointer;
+  }
 }

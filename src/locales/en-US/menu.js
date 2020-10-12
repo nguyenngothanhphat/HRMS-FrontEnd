@@ -65,4 +65,5 @@ export default {
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.setting': 'Setting',
+  'menu.Createcustomfieldsection': 'Create custom field section',
 };

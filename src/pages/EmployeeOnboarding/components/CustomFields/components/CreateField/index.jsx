@@ -6,7 +6,27 @@ import { Button, Input, Radio } from 'antd';
 import styles from './index.less';
 
 class index extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: '',
+      itemField: 'all',
+    };
+  }
+
+  handleChange = (e) => {
+    const { value } = e.target;
+    this.setState({ name: value });
+  };
+
+  onClickChange = (item) => {
+    console.log(item);
+    this.setState({ itemField: item });
+  };
+
   render() {
+    const { name, itemField } = this.state;
+    console.log(name, itemField);
     return (
       <PageContainer>
         <div className={styles.CreateACustomFieldSection}>
@@ -117,11 +137,44 @@ class index extends PureComponent {
                     id: 'pages.EmployeeOnboardingCustomField.text3',
                   })}
                 </span>
-                <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="everyone">
-                    <Radio value="everyone">Everyone</Radio>
-                    <Radio value="certain people only">Certain people only</Radio>
+                <div
+                  className={styles.boxFieldSection2__Content1__Radio}
+                  onChange={this.handleChange}
+                >
+                  <Radio.Group name={name} defaultValue="everyone">
+                    <Radio name="everyone" value="everyone">
+                      Everyone
+                    </Radio>
+                    <Radio name="certain people only" value="certain people only">
+                      Certain people only
+                    </Radio>
                   </Radio.Group>
+                  {name === 'certain people only' ? (
+                    <div className={styles.switchField}>
+                      <div
+                        className={
+                          itemField === 'all'
+                            ? `${styles.itemField1Active}`
+                            : `${styles.itemField1}`
+                        }
+                        onClick={() => this.onClickChange('all')}
+                      >
+                        All of this
+                      </div>
+                      <div
+                        className={
+                          itemField === 'any'
+                            ? `${styles.itemField1Active}`
+                            : `${styles.itemField1}`
+                        }
+                        onClick={() => this.onClickChange('any')}
+                      >
+                        Any of this
+                      </div>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
             </div>

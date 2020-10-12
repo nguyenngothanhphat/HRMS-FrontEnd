@@ -166,7 +166,7 @@ const routes = [
           },
           {
             path: '/employee-onboarding/CreateField',
-            name: 'Create custom field section',
+            name: 'Createcustomfieldsection',
             component: './EmployeeOnboarding/components/CustomFields/components/CreateField',
             hideInMenu: true,
             authority: ['customer'],
