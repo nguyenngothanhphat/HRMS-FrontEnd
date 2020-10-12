@@ -33,21 +33,21 @@ class BottomBar extends PureComponent {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   pageId: {
-    //     basicInformation: 1,
-    //     jobDetails: 2,
-    //     eligibilityDocuments: 3,
-    //     offerDetails: 4,
-    //     benefits: 5,
-    //     salaryStructure: 6,
-    //     payrollSettings: 7,
-    //     customFields: 8,
-    //     additionalOptions: 9,
-    //     candidateBasicInfo: 10,
-    //     candidateJobDetails: 11,
-    //   },
-    // };
+    this.state = {
+      pageId: {
+        basicInformation: 1,
+        jobDetails: 2,
+        eligibilityDocuments: 3,
+        offerDetails: 4,
+        benefits: 5,
+        salaryStructure: 6,
+        payrollSettings: 7,
+        customFields: 8,
+        additionalOptions: 9,
+        candidateBasicInfo: 10,
+        candidateJobDetails: 11,
+      },
+    };
   }
 
   onClickNext = () => {
@@ -60,13 +60,13 @@ class BottomBar extends PureComponent {
     onClickPrev();
   };
 
-  shouldComponentUpdate(nextProps) {
-    console.log(nextProps);
-    return (
-      nextProps.checkCandidateMandatory.filledCandidateBasicInformation !==
-      this.props.checkCandidateMandatory.filledCandidateBasicInformation
-    );
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   console.log(nextProps);
+  //   return (
+  //     nextProps.checkCandidateMandatory.filledCandidateBasicInformation !==
+  //     this.props.checkCandidateMandatory.filledCandidateBasicInformation
+  //   );
+  // }
 
   // componentDidUpdate(prevProps) {
   //   console.log(this.props.checkCandidateMandatory.filledCandidateBasicInformation);
@@ -85,21 +85,6 @@ class BottomBar extends PureComponent {
   // }
 
   _renderStatus = () => {
-<<<<<<< HEAD
-    console.log('RENDER');
-
-    // const { pageId } = this.state;
-    // const {
-    //   basicInformation,
-    //   jobDetails,
-    //   offerDetails,
-    //   salaryStructure,
-    //   customFields,
-    //   candidateBasicInfo,
-    //   candidateJobDetails,
-    // } = pageId;
-    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
-=======
     const { pageId } = this.state;
     const {
       basicInformation,
@@ -109,8 +94,7 @@ class BottomBar extends PureComponent {
       customFields,
       payrollSettings,
     } = pageId;
-    const { currentPage, checkMandatory } = this.props;
->>>>>>> master
+    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     if (currentPage === HR.basicInformation) {
@@ -195,19 +179,6 @@ class BottomBar extends PureComponent {
   };
 
   _renderBottomButton = () => {
-<<<<<<< HEAD
-    // const { pageId } = this.state;
-    // const {
-    //   basicInformation,
-    //   jobDetails,
-    //   offerDetails,
-    //   salaryStructure,
-    //   customFields,
-    //   candidateBasicInfo,
-    //   candidateJobDetails,
-    // } = pageId;
-    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
-=======
     const { pageId } = this.state;
     const {
       basicInformation,
@@ -217,8 +188,7 @@ class BottomBar extends PureComponent {
       customFields,
       payrollSettings,
     } = pageId;
-    const { currentPage, checkMandatory } = this.props;
->>>>>>> master
+    const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     console.log(`hihi ${filledCandidateBasicInformation}`);

@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 
-import { Row, Col, Typography } from 'antd';
-import NoteComponent from '../NoteComponent';
-import CustomModal from '@/components/CustomModal/index';
-import { Document, Page, pdfjs } from 'react-pdf';
 import FileIcon from '@/assets/pdf_icon.png';
-import LeftArrow from '@/assets/arrow-left_icon.svg';
-import RightArrow from '@/assets/arrow-right_icon.svg';
+import { Row, Col, Typography } from 'antd';
+import CustomModal from '@/components/CustomModal/index';
+import NoteComponent from '../NoteComponent';
+import FileContent from './components/FileContent';
+import mockFiles from './components/utils';
 
 import s from './index.less';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const Note = {
   title: 'Note',
@@ -22,32 +21,38 @@ const Note = {
   ),
 };
 
-const documentWarning = (msg) => (
-  <div className={s.documentWarning}>
-    <p>{msg}</p>
-  </div>
-);
-
 const Benefits = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [numPages, setNumPages] = useState(1);
+  const [fileUrl, setFileUrl] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const next = () => {
-    if (currentPage === numPages) {
-      return;
-    }
-    setCurrentPage((prevPage) => prevPage + 1);
+  const _renderFile = (url) => {
+    return <FileContent url={url} />;
   };
 
-  const back = () => {
-    if (currentPage === 1) {
-      return;
-    }
-    setCurrentPage((prevPage) => prevPage - 1);
+  const { medical, dental, vision, life, disablity, fund } = mockFiles;
+
+  const handleClick = (url) => {
+    // setFileUrl(
+    //   'http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff',
+    // );
+    setFileUrl(url);
+    setModalVisible(true);
   };
 
-  const onLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const _renderFiles = (list) => {
+    return list.map((item, index) => {
+      const { name, url } = item;
+      return (
+        <div key={`${index} + a`} className={s.file} onClick={() => handleClick(url)}>
+          <span className={s.fileName}>{name}</span>
+          <img src={FileIcon} alt="file icon" />
+        </div>
+      );
+    });
   };
 
   return (
@@ -67,53 +72,68 @@ const Benefits = () => {
                 {/* Medical */}
                 <h3>Medical</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {/* {medical.map((item, index) => {
+                  const { name, url } = item;
+                  return (
+                    <div key={`${index} + a`} className={s.file} onClick={() => handleClick(url)}>
+                      <span className={s.fileName}>{name}</span>
+                      <img src={FileIcon} alt="file icon" />
+                    </div>
+                  );
+                })} */}
+                {_renderFiles(medical)}
+                {/* <div className={s.file} onClick={() => handleClick()}>
                   <span className={s.fileName}>[ 2020 ] Open Access Plus - Choice Plan.pdf</span>
                   <img src={FileIcon} alt="file icon" />
                 </div>
                 <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] OAP - Base Plan.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
 
                 {/* Dental */}
                 <h3>Dental</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {_renderFiles(dental)}
+                {/* <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Voluntary Dental.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
+
                 {/* Vision */}
                 <h3>Vision</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {_renderFiles(vision)}
+                {/* <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Vision PPO.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
 
                 {/* Life */}
                 <h3>Life</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {_renderFiles(life)}
+                {/* <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Basic Life / AD & D.pdf</span>
                   <img src={FileIcon} alt="file icon" />
                 </div>
                 <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Vol life / AD & D.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
 
                 {/* disability */}
                 <h3>Short-term disability</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {_renderFiles(disablity)}
+                {/* <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Basic Life / AD & D.pdf</span>
                   <img src={FileIcon} alt="file icon" />
                 </div>
                 <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Vol life / AD & D.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
               </div>
 
               <div className={s.nation}>
@@ -124,16 +144,17 @@ const Benefits = () => {
 
                 <h3>Employee Provident Fund</h3>
                 <p>Coverage will take effect on 20/04/2020</p>
-                <div className={s.file}>
+                {_renderFiles(fund)}
+                {/* <div className={s.file}>
                   <span className={s.fileName}>[ 2020 ] Open Access Plus - Choice Plan.pdf</span>
                   <img src={FileIcon} alt="file icon" />
-                </div>
+                </div> */}
               </div>
             </main>
           </div>
 
           {/* <Document file="http://www.africau.edu/images/default/sample.pdf" /> */}
-          <div className={s.viewFile}>
+          {/* <div className={s.viewFile}>
             <Document
               file="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff"
               onLoadSuccess={onLoadSuccess}
@@ -157,13 +178,23 @@ const Benefits = () => {
                 <img src={RightArrow} alt="next" onClick={() => next()} />
               </div>
             </div>
-          </div>
+          </div> */}
         </Col>
 
         <Col md={8}>
           <NoteComponent note={Note} />
         </Col>
       </Row>
+
+      {/* <FileView url="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff" /> */}
+
+      <CustomModal
+        width={700}
+        // open={openEditBio}
+        open={modalVisible}
+        closeModal={closeModal}
+        content={_renderFile(fileUrl)}
+      />
     </div>
   );
 };

@@ -58,27 +58,14 @@ const getLineWidth = (value) => {
   }
 };
 
-const Bottom = ({ step }) => {
-  useEffect(() => {
-    console.log('BOTTOM BAR RENDER');
-  }, []);
-  return <div>BottomBar Step: {step}</div>;
-};
-
 const CandidateLayout = (props) => {
-  const { children, currentStep, dispatch, checkCandidateMandatory, checkMandatory } = props;
-  console.log(checkCandidateMandatory.filledCandidateBasicInformation);
-
+  const { children, currentStep, dispatch } = props;
   const [current, setCurrent] = useState(currentStep);
   const [currentPage, setCurrentPage] = useState(10);
 
   useEffect(() => {
-    console.log('CANDIDATE LAYOUT RENDER');
+    // console.log('CANDIDATE LAYOUT RENDER');
   }, [currentStep]);
-
-  useEffect(() => {
-    console.log('CANDIDATE LAYOUT RENDER');
-  }, [checkCandidateMandatory.filledCandidateBasicInformation]);
 
   const nextScreen = () => {
     if (!dispatch || current === 7) {
@@ -94,6 +81,7 @@ const CandidateLayout = (props) => {
 
     setCurrent((prevState) => prevState + 1);
     setCurrentPage((prevState) => prevState + 1);
+    console.log(currentPage);
   };
 
   const prevScreen = () => {
@@ -159,14 +147,8 @@ const CandidateLayout = (props) => {
                   onClickNext={nextScreen}
                   currentPage={currentPage}
                 />
-                <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
-                  Next
-                </button>
               </Col>
             </Row>
-          </Col>
-          <Col md={19}>
-            <Bottom step={currentStep} />
           </Col>
         </Row>
       </Content>
@@ -175,14 +157,7 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(
-  ({
-    candidateProfile: { currentStep } = {},
-    info: { checkMandatory = {} } = {},
-    candidateProfile: { checkCandidateMandatory = {} },
-  }) => ({
-    currentStep,
-    checkMandatory,
-    checkCandidateMandatory,
-  }),
-)(CandidateLayout);
+export default connect(({ candidateProfile: { currentStep, checkCandidateMandatory } = {} }) => ({
+  currentStep,
+  checkCandidateMandatory,
+}))(CandidateLayout);
