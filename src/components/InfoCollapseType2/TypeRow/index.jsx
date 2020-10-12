@@ -15,10 +15,6 @@ const CollapseRow = (props) => {
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
 
-  // const handleDownloadClick = () => {
-  //   alert('Downloading');
-  // };
-
   const handleMenuClick = (event) => {
     event.stopPropagation();
   };
