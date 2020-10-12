@@ -2,105 +2,96 @@
   margin: 32px 0;
   &__form {
     width: 510px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+    background-color: #ffffff;
+    padding: 32px 32px 2px 32px;
+    .viewRow {
+      display: flex;
+      justify-content: space-between;
+    }
+    &__title {
+      font-size: 16px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.19;
+      letter-spacing: normal;
+      text-align: left;
+      color: #161c29;
+      margin-bottom: 20px;
+    }
+    &__description {
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.57;
+      letter-spacing: 0.17px;
+      text-align: left;
+      color: #707177;
+      margin-bottom: 42px;
+    }
+    &__image {
+      width: 510px;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+      img {
+        width: 100%;
+      }
+    }
+    :global {
+      .ant-input {
+        border-radius: 4.5px;
+        height: 42px;
+        color: #000;
+        border: solid 1px #d6dce4;
+        &:focus {
+          box-shadow: none;
+        }
+      }
+      .ant-form-item {
+        margin-bottom: 30px;
+      }
+      .ant-form label {
+        color: #707177;
+        font-weight: 500;
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+      .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+        background-color: #fff;
+        border: 1px solid #d6dce4;
+        border-radius: 5px;
+        color: #000;
+        width: 100%;
+        height: 42px;
+        padding: 5px 11px 0;
+      }
+      .ant-select-single:not(.ant-select-customize-input)
+        .ant-select-selector
+        .ant-select-selection-search-input {
+        height: 36px;
+      }
+    }
   }
-  &__form__image {
+  &__viewBtn {
     width: 510px;
     display: flex;
-    justify-content: center;
-    overflow: hidden;
-    img {
-      width: 100%;
-    }
-  }
-  .container {
-    border-radius: 5px;
-    box-shadow: 0 0 2px 0 rgb(214, 220, 229);
-    background-color: #ffffff;
-    padding: 32px 32px 0 32px;
-    .titleAndDescription {
-      padding-bottom: 8px;
-      border-bottom: 2px solid rgb(214, 220, 229);
-      .title {
-        font-size: 16px;
-        font-weight: bold;
-        color: #161c29;
-        margin-bottom: 22px;
-      }
-      .description {
-        font-size: 13px;
-        color: #707177;
-      }
-    }
-    .passwordContainer {
-      margin-top: 32px;
-      padding-bottom: 24px;
-      :global {
-        .ant-input-password,
-        .ant-input-affix-wrapper {
-          height: 42px !important;
-          border-radius: 5px;
-
-          border: solid 1px #d6dce4;
-          background-color: #ffffff;
-        }
-        .ant-form-item {
-          margin-bottom: 1rem;
-        }
-        .ant-form-item-label label {
-          font-size: 13px;
-          font-weight: 500;
-          color: #707177 !important;
-          margin-bottom: 5px;
-        }
-        .ant-form-item-explain {
-          margin: 10px 0;
-        }
-      }
-    }
-  }
-  .signInButton {
+    justify-content: flex-start;
     margin-top: 40px;
-    :global {
-      .ant-btn-primary {
-        height: 40px;
-        width: 60%;
-        font-size: 14px;
-        font-weight: 600;
-        background-color: #ffa100;
-        color: white;
-        border: none;
-        border-radius: 30px;
-      }
-    }
-  }
-  .viewLoading {
-    background-color: #f7f9fd;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    &__content {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      &__text {
-        margin-bottom: 0px;
-        margin-right: 15px;
-        font-size: 30px;
-        font-weight: bold;
-        line-height: 1.27;
-        letter-spacing: 0.48px;
-        color: #161c29;
-      }
-      &__img {
-        width: 110px;
-        height: auto;
-        object-fit: contain;
+    .btnSave {
+      font-size: 14px;
+      width: 120px;
+      height: 40px;
+      font-weight: 500;
+      border-radius: 30px;
+      color: #fff;
+      background-color: #ffa100;
+      border: none;
+      &:disabled {
+        opacity: 0.5;
       }
     }
   }

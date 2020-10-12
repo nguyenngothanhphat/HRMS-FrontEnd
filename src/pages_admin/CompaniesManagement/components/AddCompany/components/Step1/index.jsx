@@ -174,15 +174,6 @@ class Step1 extends Component {
                   </Fragment>
                 </Form>
               </div>
-            </Col>
-            <Col>
-              <div className={styles.root__form__image}>
-                <img src="/assets/images/Intranet_01@3x.png" alt="image_intranet" />
-              </div>
-            </Col>
-          </Row>
-          <Row gutter={[30, 0]}>
-            <Col>
               <div className={styles.root__form} style={{ marginTop: '41px' }}>
                 <Form
                   name="formHeadQuarter"
@@ -245,8 +236,6 @@ class Step1 extends Component {
                   </Fragment>
                 </Form>
               </div>
-            </Col>
-            <Col>
               <div className={styles.root__form} style={{ marginTop: '41px' }}>
                 <Form
                   name="formLegalAddress"
@@ -328,6 +317,11 @@ class Step1 extends Component {
                 >
                   Next
                 </Button>
+              </div>
+            </Col>
+            <Col>
+              <div className={styles.root__form__image}>
+                <img src="/assets/images/Intranet_01@3x.png" alt="image_intranet" />
               </div>
             </Col>
           </Row>

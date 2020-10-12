@@ -2,13 +2,84 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent, Fragment } from 'react';
 import { Form, Input, Button, Row, Col, Select } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import LocationForm from './components/LocationForm/index';
 import styles from './index.less';
 
+const { Option } = Select;
+@connect(
+  ({
+    signup: { headQuarterAddress = {}, locations, company: { name = '' } = {} } = {},
+    country: { listCountry = [] } = {},
+  }) => ({
+    name,
+    headQuarterAddress,
+    locations,
+    listCountry,
+  }),
+)
 class Step2 extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentIndex: props.locations.length,
+    };
+  }
+
+  componentDidMount() {
+    const { locations } = this.props;
+    if (locations.length > 0) {
+      this.setState({
+        currentIndex: locations[locations.length - 1].index + 1,
+      });
+    }
+  }
+
   navigate = () => {};
 
+  addLocation = () => {
+    const { dispatch, locations } = this.props;
+    const { currentIndex } = this.state;
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          locations: [
+            ...locations,
+            {
+              name: 'companyName',
+              address: '',
+              country: '',
+              state: '',
+              zipCode: '',
+              isheadQuarter: false,
+              index: currentIndex,
+            },
+          ],
+        },
+      });
+    }
+    this.setState({
+      currentIndex: currentIndex + 1,
+    });
+  };
+
+  removeLocation = (index) => {
+    const { locations, dispatch } = this.props;
+    let newLocations = locations;
+    newLocations = newLocations.filter((location) => location.index !== index);
+    if (dispatch) {
+      dispatch({
+        type: 'signup/save',
+        payload: {
+          locations: newLocations,
+        },
+      });
+    }
+  };
+
   render() {
+    const { dispatch, locations, listCountry } = this.props;
     return (
       <div className={styles.root}>
         <Row justify="center">
@@ -60,9 +131,9 @@ class Step2 extends PureComponent {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        {/* {listCountry.map((item) => (
-                    <Option key={item._id}>{item.name}</Option>
-                  ))} */}
+                        {listCountry.map((item) => (
+                          <Option key={item._id}>{item.name}</Option>
+                        ))}
                       </Select>
                     </Form.Item>
                     <Row gutter={[30, 0]}>
@@ -70,8 +141,8 @@ class Step2 extends PureComponent {
                         <Form.Item label="State" name="state">
                           <Select>
                             {/* {listStateHead.map((item) => (
-                        <Option key={item}>{item}</Option>
-                      ))} */}
+                              <Option key={item}>{item}</Option>
+                            ))} */}
                           </Select>
                         </Form.Item>
                       </Col>
@@ -84,6 +155,20 @@ class Step2 extends PureComponent {
                   </Fragment>
                 </Form>
               </div>
+              {locations.map((location) => {
+                const formIndex = location.index;
+                return (
+                  <LocationForm
+                    key={location.index}
+                    dispatch={dispatch}
+                    formIndex={formIndex}
+                    locations={locations}
+                    locationItem={location}
+                    listCountry={listCountry}
+                    removeLocation={this.removeLocation}
+                  />
+                );
+              })}
               <Button className={styles.btn_addLocation} type="link" onClick={this.addLocation}>
                 + Add work location
               </Button>

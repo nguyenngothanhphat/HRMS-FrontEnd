@@ -8,7 +8,6 @@ import Step3 from './components/Step3';
 import styles from './index.less';
 
 const { Step } = Steps;
-
 @connect(({ signup: { currentStep = 0 } = {} }) => ({
   currentStep,
 }))
