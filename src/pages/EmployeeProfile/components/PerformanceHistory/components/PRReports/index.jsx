@@ -11,38 +11,81 @@ class PRReports extends PureComponent {
     super(props);
     this.state = {
       isViewingDocument: false,
-      files: [],
-      typeOfSelectedFile: '',
       selectedFile: 0,
     };
   }
 
-  generateArrayDocument = (listPRReport) => {
-    const arrayAttachment = listPRReport.map((item) => {
-      if (item.attachment) {
-        const { _id: id, createdAt: date, url: source } = item.attachment;
-        return {
-          id,
-          fileName: item.key,
-          generatedBy: 'Terralogic',
-          date: moment(date).locale('en').format('MMMM Do, YYYY'),
-          source,
-        };
-      }
-      return null;
+  getFiles = (item) => {
+    // console.log(item)
+    if (item.attachment) {
+      const { createdAt: date, url: source } = item.attachment;
+      return {
+        id: item._id,
+        fileName: item.key,
+        generatedBy: 'Terralogic',
+        date: moment(date).locale('en').format('MMMM Do, YYYY'),
+        source,
+      };
+    }
+    return {
+      id: '',
+      fileName: '',
+      generatedBy: '',
+      date: '',
+      source: '',
+    };
+  };
+
+  generateArrayDocument = (filesList) => {
+    // PARENT EMPLOYEE GROUP
+    const list1 = filesList.filter((value) => {
+      return value.parentEmployeeGroup !== undefined;
     });
-    return [
-      {
-        title: 'PR Reports',
-        type: 1, // uploaded by
-        body: [
-          {
-            kind: 'Agreement',
-            files: arrayAttachment,
-          },
-        ],
-      },
-    ];
+    const parentList = [...new Set(list1.map((value) => value.parentEmployeeGroup))];
+
+    // EMPLOYEE GROUP
+    const list2 = filesList.filter((value) => {
+      return value.employeeGroup !== undefined;
+    });
+
+    const typeList = list2.filter(
+      (v, i, a) =>
+        a.findIndex(
+          (t) =>
+            t.parentEmployeeGroup === v.parentEmployeeGroup && t.employeeGroup === v.employeeGroup,
+        ) === i,
+    );
+
+    const data = [];
+    parentList.forEach((parent) => {
+      const body = [];
+      typeList.forEach((value) => {
+        if (value.parentEmployeeGroup === parent) {
+          const files = [];
+          filesList.forEach((file) => {
+            if (
+              file.parentEmployeeGroup === value.parentEmployeeGroup &&
+              file.employeeGroup === value.employeeGroup
+            ) {
+              files.push(this.getFiles(file));
+            }
+          });
+          const bodyElement = {
+            kind: value.employeeGroup,
+            files,
+          };
+          body.push(bodyElement);
+        }
+      });
+      const dataElement = {
+        title: parent,
+        type: 2, // uploaded by
+        body,
+      };
+      data.push(dataElement);
+    });
+
+    return data.reverse();
   };
 
   onBackClick = () => {
@@ -54,6 +97,7 @@ class PRReports extends PureComponent {
   onFileClick = (id) => {
     const {
       employeeProfile: { listPRReport = [] },
+      dispatch,
     } = this.props;
 
     const data = this.generateArrayDocument(listPRReport);
@@ -65,9 +109,11 @@ class PRReports extends PureComponent {
           if (z.id === id) {
             this.setState({
               isViewingDocument: true,
-              files: y.files,
               selectedFile: count,
-              typeOfSelectedFile: y.kind,
+            });
+            dispatch({
+              type: 'employeeProfile/saveGroupViewingDocuments',
+              payload: { files: y.files },
             });
           }
         });
@@ -76,7 +122,7 @@ class PRReports extends PureComponent {
   };
 
   render() {
-    const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, selectedFile } = this.state;
     const {
       employeeProfile: { listPRReport = [] },
     } = this.props;
@@ -86,12 +132,7 @@ class PRReports extends PureComponent {
       <div className={styles.prReports}>
         {isViewingDocument ? (
           <div className={styles.prReports_viewDocument}>
-            <ViewDocument
-              files={files}
-              selectedFile={selectedFile}
-              typeOfSelectedFile={typeOfSelectedFile}
-              onBackClick={this.onBackClick}
-            />
+            <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
           </div>
         ) : (
           data.map((value, index) => (
