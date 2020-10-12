@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
+import ReactQuill from 'react-quill';
+
 // import { formatMessage } from 'umi';
 
 import styles from './index.less';
@@ -172,6 +174,10 @@ class EmailReminderForm extends PureComponent {
             <Form.Item name="emailSubject" label="Email subject">
               <Input placeholder="Eg:  Welcome to the company" />
             </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <ReactQuill value={this.state.text} onChange={this.handleChange} />
           </Col>
         </Row>
       </Form>
