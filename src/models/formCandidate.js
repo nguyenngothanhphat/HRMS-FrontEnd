@@ -15,6 +15,7 @@ import {
   getManagerList,
   addCandidate,
 } from '@/services/addNewMember';
+import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 const info = {
@@ -269,6 +270,7 @@ const info = {
         dialog(errors);
       }
     },
+
     *addCandidateByHR({ payload }, { call, put }) {
       console.log('payload model', payload);
       try {
@@ -278,6 +280,20 @@ const info = {
         yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+
+    *fetchCandidateInfo({ payload }, { call, put }) {
+      try {
+        // yield put({
+        //   type: 'saveSentEligibilityForms',
+        //   payload: returnedData,
+        // });
+        console.log(history);
+        const rookieId = '123';
+        history.push(`/employee-onboarding/review/${rookieId}`);
+      } catch (error) {
+        dialog(error);
       }
     },
   },

@@ -136,8 +136,6 @@ class OnboardTable extends Component {
         render: () => {
           const { currentRecord = {} } = this.state;
           const { rookieId = '' } = currentRecord;
-          console.log(currentRecord);
-          console.log(rookieId);
           const id = rookieId.replace('#', '') || '';
           return (
             <Link to={`/employee-onboarding/review/${id}`}>

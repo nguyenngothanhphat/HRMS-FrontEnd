@@ -626,7 +626,7 @@ const onboard = {
           limit: 1,
         };
         const response = yield call(getOnboardingList, req);
-        console.log(response);
+        // console.log(response);
         const returnedData = formatData(response.data);
         const { statusCode, data: employeetype = [] } = response;
         if (statusCode !== 200) throw response;
