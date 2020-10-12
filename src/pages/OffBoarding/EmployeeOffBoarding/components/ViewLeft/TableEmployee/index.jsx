@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
+// import persion from '@/assets/people.svg';
 import t from './index.less';
 
 class TableEmployee extends PureComponent {
@@ -11,30 +11,30 @@ class TableEmployee extends PureComponent {
   }
 
   render() {
-    const data = [
-      {
-        ticketId: <span className={t.tableText}>16003134</span>,
-        requestOn: <span className={t.tableText}>22.08.2020</span>,
-        lwd: '',
-        lwdchange: '',
-        assigned: (
-          <p>
-            <span>
-              <img src={persion} style={{ marginTop: '10px' }} alt="" />
-            </span>
-            <span>
-              <img src={persion} style={{ marginTop: '10px' }} alt="" />
-            </span>
-          </p>
-        ),
-        reasionOfLeaving: <span className={t.tableText}>I have decide to quit….</span>,
-        action: (
-          <span className={t.tableText} style={{ color: 'blue', textDecoration: 'underline' }}>
-            View Request
-          </span>
-        ),
-      },
-    ];
+    // const data = [
+    //   {
+    //     ticketId: <span className={t.tableText}>16003134</span>,
+    //     requestOn: <span className={t.tableText}>22.08.2020</span>,
+    //     lwd: '',
+    //     lwdchange: '',
+    //     assigned: (
+    //       <p>
+    //         <span>
+    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
+    //         </span>
+    //         <span>
+    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
+    //         </span>
+    //       </p>
+    //     ),
+    //     reasionOfLeaving: <span className={t.tableText}>I have decide to quit….</span>,
+    //     action: (
+    //       <span className={t.tableText} style={{ color: 'blue', textDecoration: 'underline' }}>
+    //         View Request
+    //       </span>
+    //     ),
+    //   },
+    // ];
 
     const columns = [
       {
@@ -79,7 +79,7 @@ class TableEmployee extends PureComponent {
             ),
           }}
           columns={columns}
-          dataSource={data}
+          // dataSource={data}
           // pagination={{
           //   ...pagination,
           //   total: data.length,

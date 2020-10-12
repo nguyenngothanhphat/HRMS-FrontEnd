@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ResignationLeft from './component/ResignationLeft';
-// import Resignation from './component/ResignationRight';
-import Submited from './component/SubmitedResignation';
+import Resignation from './component/ResignationRight';
+// import Submited from './component/SubmitedResignation';
 // import Workflow from './component/TerminationWorkflow';
 import styles from './index.less';
 
@@ -36,8 +36,8 @@ class ResignationRequest extends Component {
             </Col>
             <Col span={7}>
               {/* <Workflow /> */}
-              <Submited />
-              {/* <Resignation /> */}
+              {/* <Submited /> */}
+              <Resignation />
             </Col>
           </Row>
         </div>

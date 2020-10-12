@@ -107,7 +107,7 @@ const routes = [
           {
             path: '/employee-offboarding/resignation-request',
             name: 'Resignation Request',
-            icon: 'file-image',
+            hideInMenu: true,
             component: './ResignationRequest',
           },
           {
