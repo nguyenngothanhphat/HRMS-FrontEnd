@@ -266,24 +266,24 @@ const companiesList = [
 ];
 
 const companyDetails = {
-  company: {
-    id: 6,
-    name: 'Viet NamG',
-    dba: 'Logistic',
-    ein: '123467892',
+  id: 6,
+  name: 'Viet NamG',
+  dba: 'Logistic',
+  ein: '123467892',
+  employeeNumber: '1000',
+  website: 'https://www.terralogic.com/',
 
-    headQuarterAddress: {
-      address: '66 Le Thi Ho, Go Vap',
-      country: 'Viet Nam',
-      state: 'HoChiMinh',
-      zipCode: '700000',
-    },
-    legalAddress: {
-      address: '66 Le Thi Ho, Go Vap',
-      country: 'Viet Nam',
-      state: 'HoChiMinh',
-      zipCode: '700000',
-    },
+  headQuarterAddress: {
+    address: '66 Le Thi Ho, Go Vap',
+    country: 'Viet Nam',
+    state: 'HoChiMinh',
+    zipCode: '700000',
+  },
+  legalAddress: {
+    address: '66 Le Thi Ho, Go Vap',
+    country: 'Viet Nam',
+    state: 'HoChiMinh',
+    zipCode: '700000',
   },
   locations: [
     {

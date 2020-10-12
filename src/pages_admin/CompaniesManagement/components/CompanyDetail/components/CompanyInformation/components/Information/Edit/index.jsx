@@ -1,26 +1,40 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-// import { formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
 class Edit extends PureComponent {
-  handleChangeValues = () => {
-    // console.log(changedValues);
+  handleChangeValues = (changedValues) => {
+    const { dispatch, companyDetails, companyDetailsOrigin } = this.props;
+    const companyDetailsChange = {
+      ...companyDetails,
+      ...changedValues,
+    };
+    const isModified =
+      JSON.stringify(companyDetailsChange) !== JSON.stringify(companyDetailsOrigin);
+    dispatch({
+      type: 'companiesManagement/saveTemp',
+      payload: { companyDetails: companyDetailsChange },
+    });
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { isModified },
+    });
   };
 
   render() {
-    const companyDetail = {
-      companyName: 'Terralogic',
-      DBA: 'DBA',
-      EIN: 'EIN',
-      employeeNumber: 'Employee Number',
-      website: 'https://www.terralogic.com/',
-    };
-    const { companyName, DBA, EIN, website, employeeNumber } = companyDetail;
+    const { companyDetails } = this.props;
+    const { name = '', dba = '', ein = '', employeeNumber = '', website = '' } = companyDetails;
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -37,20 +51,21 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           initialValues={{
-            companyName,
-            DBA,
-            EIN,
+            name,
+            dba,
+            ein,
             employeeNumber,
             website,
           }}
           onValuesChange={this.handleChangeValues}
         >
           <Form.Item
-            label="Company Name"
-            name="companyName"
+            label={formatMessage({ id: 'pages_admin.companies.table.companyName' })}
+            name="name"
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
@@ -59,11 +74,12 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Doing Business As (DBA)"
-            name="DBA"
+            label={formatMessage({ id: 'pages_admin.company.dba' })}
+            name="dba"
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
@@ -73,10 +89,11 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label="EIN"
-            name="EIN"
+            name="ein"
             {...formItemLayout}
             rules={[
               {
+                required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
@@ -85,20 +102,20 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Employee Number"
+            label={formatMessage({ id: 'pages_admin.company.employeeNumber' })}
             name="employeeNumber"
             {...formItemLayout}
             rules={[
               {
-                // pattern: /^[a-zA-Z ]*$/,
-                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                pattern: /^\d+$/,
+                message: 'Employee number is not validate number!',
               },
             ]}
           >
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
-            label="Website"
+            label={formatMessage({ id: 'pages_admin.company.website' })}
             name="website"
             {...formItemLayout}
             rules={[

@@ -107,7 +107,7 @@ class SalaryAcceptance extends PureComponent {
     return (
       <div className={styles.salaryAcceptance}>
         <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
-        {salaryStatus === 2 ? <SendEmail /> : ''}
+        {salaryStatus === 2 ? <SendEmail formatMessage={formatMessage} /> : ''}
       </div>
     );
   }
