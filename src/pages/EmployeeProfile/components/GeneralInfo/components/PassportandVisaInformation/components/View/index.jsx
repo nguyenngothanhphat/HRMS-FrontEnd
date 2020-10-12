@@ -136,8 +136,17 @@ class View extends PureComponent {
       passportIssuedOn = '',
     } = passportData;
     const viewCountry = passportIssuedCountry.name ? passportIssuedCountry.name : '';
-    const nameDocument = document ? document.attachment.name : '';
-    const url = document ? document.attachment.url : '';
+    let nameDocument = '';
+    let getUrl = '';
+    if (document) {
+      if (document.attachment) {
+        const { attachment: { name = '', url = '' } = {} } = document;
+        nameDocument = name;
+        getUrl = url;
+      }
+    }
+    // const nameDocument = document ? (document.attachment ? document.attachment.name : '') : '';
+    // const url = document ? document.attachment.url : '';
     const splitUrlPassPort = document ? nameDocument : '';
     const dummyData = [
       { label: 'Passport Number', value: passportNumber },
@@ -183,7 +192,7 @@ class View extends PureComponent {
               {item.value}
               {item.label === 'Passport Number' ? (
                 <div className={styles.viewFileUpLoad}>
-                  <p onClick={() => this.handleOpenModalReview(url)} className={styles.urlData}>
+                  <p onClick={() => this.handleOpenModalReview(getUrl)} className={styles.urlData}>
                     {splitUrlPassPort}
                   </p>
                   <ConformIcondata data={splitUrlPassPort} />
