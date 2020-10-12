@@ -28,6 +28,7 @@ export default {
   'component.onboardingOverview.sendOffer': 'send offer',
   'component.onboardingOverview.sendForApproval': 'send for approval',
   'component.onboardingOverview.createProfile': 'send for approval',
+  'component.onboardingOverview.noData': 'No data',
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
   'component.onboardingOverview.addTeamMember': 'Add Team Member',

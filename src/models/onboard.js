@@ -454,6 +454,7 @@ const formatData = (list) => {
 
 const onboard = {
   namespace: 'onboard',
+
   state: {
     onboardingOverview: {
       pendingEligibilityChecks: {
@@ -502,6 +503,7 @@ const onboard = {
       },
     },
   },
+
   effects: {
     *fetchAllOnboardList({ payload }, { call, put }) {
       try {
