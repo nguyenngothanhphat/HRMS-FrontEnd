@@ -39,6 +39,7 @@ class Edit extends Component {
     super(props);
     this.state = {
       dropdown: false,
+      isLt5M: true,
     };
   }
 
@@ -336,7 +337,12 @@ class Edit extends Component {
     });
   };
 
+  handleGetSetSizeImage = (isLt5M) => {
+    this.setState({ isLt5M });
+  };
+
   render() {
+    const { isLt5M } = this.state;
     const { Option } = Select;
     const {
       passportData = {},
@@ -405,7 +411,7 @@ class Edit extends Component {
               ]}
             >
               <Input
-                className={styles.inputForm}
+                className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
                 onChange={(event) => {
                   const { value: fieldValue } = event.target;
                   this.handleChange('passportNumber', fieldValue);
@@ -415,7 +421,8 @@ class Edit extends Component {
             {!urlFile ? (
               <div className={styles.textUpload}>
                 <UploadImage
-                  content="Choose file"
+                  content={isLt5M ? 'Choose file' : `Retry`}
+                  setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                   getResponse={(resp) => this.handleGetUpLoad(resp)}
                   loading={loading}
                 />
@@ -501,7 +508,12 @@ class Edit extends Component {
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
             </div>
-            <Button type="primary" htmlType="submit" className={styles.buttonFooter}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              disabled={isLt5M === false}
+            >
               Save
             </Button>
           </div>
