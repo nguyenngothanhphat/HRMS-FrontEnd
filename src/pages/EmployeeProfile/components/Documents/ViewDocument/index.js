@@ -68,6 +68,7 @@ const identifyImageOrPdf = (fileName) => {
 
 @connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['upload/uploadFile'],
+  loadingFileDetail: loading.effects['employeeProfile/fetchViewingDocumentDetail'],
   employeeProfile,
 }))
 class ViewDocument extends PureComponent {
@@ -77,19 +78,50 @@ class ViewDocument extends PureComponent {
     this.state = {
       numPages: null,
       currentViewingFile: selectedFile,
-      fileLoading: false,
-      selectedfileId: '',
     };
   }
+
+  // get document details
+  fetchDocumentDetails = (selectedFile) => {
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+      dispatch,
+    } = this.props;
+    const { currentViewingFile } = this.state;
+    let i;
+    for (i = 1; i <= groupViewingDocuments.length; i += 1) {
+      if (i === currentViewingFile) {
+        dispatch({
+          type: 'employeeProfile/fetchViewingDocumentDetail',
+          payload: { id: groupViewingDocuments[selectedFile - 1].id },
+        });
+      }
+    }
+  };
+
+  componentDidMount = () => {
+    const { selectedFile } = this.props;
+    this.fetchDocumentDetails(selectedFile);
+  };
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/removeViewingDocumentDetail',
+    });
+  };
 
   // File Viewing
   getCurrentViewingFileUrl = () => {
     const { currentViewingFile } = this.state;
-    const { files } = this.props;
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
+
     let i;
-    for (i = 1; i <= files.length; i += 1) {
+    for (i = 1; i <= groupViewingDocuments.length; i += 1) {
       if (i === currentViewingFile) {
-        return files[i - 1].source;
+        return groupViewingDocuments[i - 1].source;
       }
     }
     return null;
@@ -100,30 +132,23 @@ class ViewDocument extends PureComponent {
     if (currentViewingFile > 1) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile - 1,
-        fileLoading: true,
       }));
+      this.fetchDocumentDetails(currentViewingFile - 1);
     }
-    setTimeout(() => {
-      this.setState({
-        fileLoading: false,
-      });
-    }, 1000);
   };
 
   handleNextViewingFile = () => {
-    const { files } = this.props;
+    const {
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
+
     const { currentViewingFile } = this.state;
-    if (currentViewingFile < files.length) {
+    if (currentViewingFile < groupViewingDocuments.length) {
       this.setState((prevState) => ({
         currentViewingFile: prevState.currentViewingFile + 1,
-        fileLoading: true,
       }));
+      this.fetchDocumentDetails(currentViewingFile + 1);
     }
-    setTimeout(() => {
-      this.setState({
-        fileLoading: false,
-      });
-    }, 2000);
   };
 
   onDocumentLoadSuccess = ({ numPages }) => {
@@ -134,18 +159,34 @@ class ViewDocument extends PureComponent {
 
   // on Save button click
   onSaveClick = () => {
+    // eslint-disable-next-line no-alert
     alert('Save');
   };
 
-  getUrl = (resp) => {
+  uploadNew = (resp) => {
     const { statusCode, data = [] } = resp;
+
+    const {
+      dispatch,
+      employeeProfile: { groupViewingDocuments = [] },
+    } = this.props;
+    const { currentViewingFile } = this.state;
+
     if (statusCode === 200) {
-      const [first] = data;
-      console.log('URL Image', first.url);
+      const [attachment] = data;
+      dispatch({
+        type: 'employeeProfile/updateDocument',
+        payload: {
+          id: groupViewingDocuments[currentViewingFile - 1].id,
+          attachment: attachment.id,
+        },
+      });
     }
+    this.fetchDocumentDetails(currentViewingFile);
   };
 
   handleChange = (value) => {
+    // eslint-disable-next-line no-console
     console.log(`selected emails ${value}`);
   };
 
@@ -161,29 +202,34 @@ class ViewDocument extends PureComponent {
 
   // get visa information
   getVisaInformation = (visaData, files, currentViewingFile) => {
-    let visaNumber = '';
+    let visaNumberFinal = '';
     visaData.forEach((visa) => {
+      const { document, visaNumber } = visa;
+      const { _id } = document;
       files.forEach((file, index) => {
-        if (
-          visa.document._id === file.id &&
-          visa.visaNumber !== undefined &&
-          currentViewingFile === index
-        ) {
-          visaNumber = visa.visaNumber;
+        if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
+          visaNumberFinal = visaNumber;
         }
       });
     });
-    return visaNumber;
+    return visaNumberFinal;
   };
 
   render() {
-    const { numPages, currentViewingFile, fileLoading } = this.state;
-    const { onBackClick, typeOfSelectedFile, files, loading } = this.props;
+    const { numPages, currentViewingFile } = this.state;
+    const { onBackClick, loading, loadingFileDetail } = this.props;
     const {
       employeeProfile: {
-        tempData: { passportData = {}, visaData = [] },
+        tempData: {
+          passportData: { passportNumber = '' } = {},
+          visaData = [],
+          generalData: { adhaarCardNumber = '' } = {},
+        },
+        groupViewingDocuments,
+        documentDetail,
       },
     } = this.props;
+    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -195,18 +241,19 @@ class ViewDocument extends PureComponent {
             </span>
           </div>
         </div>
+
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(this.getCurrentViewingFileUrl()) === 0 ? (
+            {identifyImageOrPdf(url) === 0 ? (
               <div className={styles.imageFrame}>
-                <img alt="preview" src={this.getCurrentViewingFileUrl()} />
+                <img alt="preview" src={url} />
               </div>
             ) : (
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
-                file={this.getCurrentViewingFileUrl()}
+                file={url}
                 loading={this.documentWarning('Loading document. Please wait...')}
                 noData={this.documentWarning('URL is not available.')}
               >
@@ -225,11 +272,11 @@ class ViewDocument extends PureComponent {
           {/* PAGINATION OF DOCUMENT VIEWER */}
           <div className={styles.documentPagination}>
             <div className={styles.numberOfFiles}>
-              <span>{currentViewingFile}</span>/{files.length}
+              <span>{currentViewingFile}</span>/{groupViewingDocuments.length}
             </div>
             <div className={styles.filesPagination}>
               <div>
-                {fileLoading ? (
+                {loadingFileDetail ? (
                   <div>
                     <Spin />
                   </div>
@@ -249,7 +296,7 @@ class ViewDocument extends PureComponent {
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.documentType' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {typeOfSelectedFile}
+                {employeeGroup}
               </Col>
             </Row>
 
@@ -258,22 +305,26 @@ class ViewDocument extends PureComponent {
                 Document Name
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {files[currentViewingFile - 1].fileName}
+                {key}
               </Col>
             </Row>
 
-            {this.includeString(typeOfSelectedFile, 'identity') ? (
+            {this.includeString(employeeGroup, 'identity') ? (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
-                  {files[currentViewingFile - 1].fileName} Number
+                  {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(files[currentViewingFile - 1].fileName, 'passport')
-                    ? passportData.passportNumber
+                  {this.includeString(key, 'passport') ? passportNumber : ''}
+                  {this.includeString(key, 'visa')
+                    ? this.getVisaInformation(
+                        visaData,
+                        groupViewingDocuments,
+                        currentViewingFile - 1,
+                      )
                     : ''}
-                  {this.includeString(files[currentViewingFile - 1].fileName, 'visa')
-                    ? this.getVisaInformation(visaData, files, currentViewingFile - 1)
-                    : ''}
+
+                  {this.includeString(key, 'adhaar') ? adhaarCardNumber : ''}
                 </Col>
               </Row>
             ) : (
@@ -316,7 +367,7 @@ class ViewDocument extends PureComponent {
                 {loading && <LoadingOutlined className={styles.loadingIcon} />}
               </>
             }
-            getResponse={this.getUrl}
+            getResponse={this.uploadNew}
           />
 
           <Button onClick={this.onSaveClick} className={styles.saveButton}>

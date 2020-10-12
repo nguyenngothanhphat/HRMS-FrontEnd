@@ -141,6 +141,27 @@ export async function getDocumentUpdate(payload) {
   });
 }
 
+export async function getAdhaardCard(payload) {
+  return request('/api/adhaarcard/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getAdhaarcardAdd(payload) {
+  return request('/api/adhaarcard/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getAdhaarcardUpdate(payload) {
+  return request('/api/adhaarcard/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getPRReport(payload) {
   return request('/api/document/list', {
     method: 'POST',
@@ -150,6 +171,13 @@ export async function getPRReport(payload) {
 
 export async function getDocuments(payload) {
   return request('/api/document/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentById(payload) {
+  return request('/api/document/get-by-id', {
     method: 'POST',
     data: payload,
   });
