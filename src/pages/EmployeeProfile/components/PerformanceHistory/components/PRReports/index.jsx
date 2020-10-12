@@ -11,8 +11,6 @@ class PRReports extends PureComponent {
     super(props);
     this.state = {
       isViewingDocument: false,
-      files: [],
-      typeOfSelectedFile: '',
       selectedFile: 0,
     };
   }
@@ -124,7 +122,7 @@ class PRReports extends PureComponent {
   };
 
   render() {
-    const { isViewingDocument, files, selectedFile, typeOfSelectedFile } = this.state;
+    const { isViewingDocument, selectedFile } = this.state;
     const {
       employeeProfile: { listPRReport = [] },
     } = this.props;
@@ -134,12 +132,7 @@ class PRReports extends PureComponent {
       <div className={styles.prReports}>
         {isViewingDocument ? (
           <div className={styles.prReports_viewDocument}>
-            <ViewDocument
-              files={files}
-              selectedFile={selectedFile}
-              typeOfSelectedFile={typeOfSelectedFile}
-              onBackClick={this.onBackClick}
-            />
+            <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
           </div>
         ) : (
           data.map((value, index) => (
