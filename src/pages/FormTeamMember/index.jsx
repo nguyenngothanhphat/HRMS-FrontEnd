@@ -12,6 +12,7 @@ import SalaryStructure from './components/SalaryStructure';
 import EligibilityDocs from './components/EligibilityDocs';
 import Payroll from './components/Payroll';
 import Additional from './components/Additional';
+// import PreviewOffer from './components/PreviewOffer';
 
 export default class FormTeamMember extends PureComponent {
   // componentDidMount() {

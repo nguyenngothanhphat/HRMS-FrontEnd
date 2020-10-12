@@ -9,9 +9,10 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
+@connect(({ info: { basicInformation, checkMandatory, currentStep = 0 } = {} }) => ({
   basicInformation,
   checkMandatory,
+  currentStep,
 }))
 class BasicInformation extends PureComponent {
   constructor(props) {
@@ -54,7 +55,6 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'info/saveBasicInformation',
       payload: {
-        basicInformation,
         checkMandatory: {
           ...checkMandatory,
         },
@@ -63,7 +63,15 @@ class BasicInformation extends PureComponent {
   };
 
   onFinish = (values) => {
+    const { dispatch, currentStep } = this.props;
     console.log('Success:', values);
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
   };
 
   onClickClose = () => {
