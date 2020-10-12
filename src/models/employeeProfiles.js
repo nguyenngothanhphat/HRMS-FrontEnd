@@ -642,14 +642,19 @@ const employeeProfile = {
       }
       return idAdhaarcard;
     },
-    *fetchAdhaarcardUpdate({ payload }, { call, put }) {
+    *fetchAdhaarcardUpdate({ payload }, { call, put, select }) {
       let doc = {};
       try {
         const response = yield call(getAdhaarcardUpdate, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });
         doc = data;
+        yield put({
+          type: 'fetchAdhaardCard',
+          payload: { employee: idCurrentEmployee },
+        });
       } catch (errors) {
         dialog(errors);
       }

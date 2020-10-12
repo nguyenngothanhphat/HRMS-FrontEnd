@@ -85,6 +85,7 @@ class BottomBar extends PureComponent {
   // }
 
   _renderStatus = () => {
+<<<<<<< HEAD
     console.log('RENDER');
 
     // const { pageId } = this.state;
@@ -98,6 +99,18 @@ class BottomBar extends PureComponent {
     //   candidateJobDetails,
     // } = pageId;
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
+=======
+    const { pageId } = this.state;
+    const {
+      basicInformation,
+      jobDetails,
+      offerDetails,
+      salaryStructure,
+      customFields,
+      payrollSettings,
+    } = pageId;
+    const { currentPage, checkMandatory } = this.props;
+>>>>>>> master
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     if (currentPage === HR.basicInformation) {
@@ -171,10 +184,18 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
+    if (currentPage === payrollSettings) {
+      return (
+        <div className={styles.greenText}>
+          * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+        </div>
+      );
+    }
     return null;
   };
 
   _renderBottomButton = () => {
+<<<<<<< HEAD
     // const { pageId } = this.state;
     // const {
     //   basicInformation,
@@ -186,6 +207,18 @@ class BottomBar extends PureComponent {
     //   candidateJobDetails,
     // } = pageId;
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
+=======
+    const { pageId } = this.state;
+    const {
+      basicInformation,
+      jobDetails,
+      offerDetails,
+      salaryStructure,
+      customFields,
+      payrollSettings,
+    } = pageId;
+    const { currentPage, checkMandatory } = this.props;
+>>>>>>> master
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
     console.log(`hihi ${filledCandidateBasicInformation}`);
@@ -304,6 +337,26 @@ class BottomBar extends PureComponent {
               !filledCustomField ? styles.bottomBar__button__disabled : ''
             }`}
             disabled={!filledCustomField}
+          >
+            Next
+          </Button>
+        </>
+      );
+    }
+    if (currentPage === payrollSettings) {
+      return (
+        <>
+          <Button
+            type="secondary"
+            onClick={this.onClickPrev}
+            className={styles.bottomBar__button__secondary}
+          >
+            Previous
+          </Button>
+          <Button
+            type="primary"
+            onClick={this.onClickNext}
+            className={styles.bottomBar__button__primary}
           >
             Next
           </Button>

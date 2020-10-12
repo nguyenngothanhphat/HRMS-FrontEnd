@@ -119,6 +119,13 @@ const routes = [
             authority: ['admin'],
           },
           {
+            path: '/companies/add-company',
+            name: 'addCompany',
+            hideInMenu: true,
+            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            authority: ['admin'],
+          },
+          {
             path: '/companies/company-detail/:reId',
             name: 'companyDetail',
             component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
@@ -172,6 +179,18 @@ const routes = [
             name: 'employeeOffBoarding',
             icon: 'file-image',
             component: './OffBoarding',
+          },
+          {
+            path: '/employee-offboarding/resignation-request',
+            name: 'Resignation Request',
+            hideInMenu: true,
+            component: './ResignationRequest',
+          },
+          {
+            path: '/directory/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
           },
           {
             path: '/setting',
