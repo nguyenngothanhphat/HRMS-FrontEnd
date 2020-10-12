@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 // import { formatMessage } from 'umi';
 
@@ -13,6 +14,7 @@ class EmailReminderForm extends PureComponent {
     this.state = {
       formData: {
         appliesTo: '',
+        emailMessage: '',
       },
       triggerEventItem: [
         {
@@ -79,6 +81,18 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
+  handleChangeEmail = (value) => {
+    this.setState({
+      formData: {
+        emailMessage: value,
+      },
+    });
+  };
+
+  onFinish = (values) => {
+    console.log('Success:', values);
+  };
+
   _renderApplyToOptions = () => {
     const { formData } = this.state;
     if (formData.appliesTo === 'Any Person') {
@@ -100,8 +114,9 @@ class EmailReminderForm extends PureComponent {
       appliesTo,
       sendToWorker,
     } = this.state;
+    const { emailMessage } = formData;
     return (
-      <Form>
+      <Form onFinish={this.onFinish}>
         <Row gutter={[36, 6]}>
           {/* Trigger Event */}
           <Col span={12}>
@@ -176,9 +191,22 @@ class EmailReminderForm extends PureComponent {
             </Form.Item>
           </Col>
 
+          {/* Email message */}
           <Col span={24}>
-            <ReactQuill value={this.state.text} onChange={this.handleChange} />
+            <Form.Item name="emailMessage" label="Email message">
+              <ReactQuill
+                className={styles.quill}
+                value={emailMessage}
+                onChange={this.handleChangeEmail}
+              />
+            </Form.Item>
           </Col>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
         </Row>
       </Form>
     );
