@@ -171,6 +171,18 @@ const routes = [
             component: './OffBoarding',
           },
           {
+            path: '/employee-offboarding/resignation-request',
+            name: 'Resignation Request',
+            hideInMenu: true,
+            component: './ResignationRequest',
+          },
+          {
+            path: '/directory/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
+          },
+          {
             path: '/setting',
             name: 'setting',
             icon: 'setting',
