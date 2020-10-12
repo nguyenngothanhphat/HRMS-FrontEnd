@@ -20,9 +20,16 @@ import {
   getDepartmentList,
   getEmployeeList,
   addChangeHistory,
+  getPRReport,
   getDocuments,
   getPayslip,
   getChangeHistories,
+  getDocumentAdd,
+  getDocumentUpdate,
+  getDocumentById,
+  getAdhaarcardAdd,
+  getAdhaarcardUpdate,
+  getAdhaardCard,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -60,7 +67,14 @@ const employeeProfile = {
       compensationData: {},
       passportData: {},
       visaData: [],
+      document: {},
     },
+    listPRReport: [],
+    saveDocuments: [],
+    newDocument: {},
+    documentDetail: {},
+    groupViewingDocuments: [],
+    AdhaarCard: {},
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -471,16 +485,86 @@ const employeeProfile = {
         dialog(error.message);
       }
     },
+    *fetchPRReport(
+      { payload: { employee = '', parentEmployeeGroup = 'PR Reports' } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getPRReport, {
+          employee,
+          parentEmployeeGroup,
+        });
+        const { statusCode, data: listPRReport = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listPRReport } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
       try {
         const response = yield call(getDocuments, {
           employee,
         });
-        const { statusCode, data } = response;
+        const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { saveDocuments: data },
+          payload: { saveDocuments },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentById, {
+          id,
+        });
+        const { statusCode, data: documentDetail = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { documentDetail },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeViewingDocumentDetail(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { documentDetail: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *saveGroupViewingDocuments({ payload: { files = [] } = {} }, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { groupViewingDocuments: files },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateDocument({ payload: { id = '', attachment = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentUpdate, {
+          id,
+          attachment,
+        });
+        const { statusCode, message, data: newDocument = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'save',
+          payload: { newDocument },
         });
       } catch (errors) {
         dialog(errors);
@@ -496,7 +580,88 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *fetchDocumentAdd({ payload = {} }, { call }) {
+      let idDocument = '';
+      try {
+        const response = yield call(getDocumentAdd, payload);
+        const {
+          statusCode,
+          data: { _id: id },
+        } = response;
+
+        if (statusCode !== 200) throw response;
+        idDocument = id;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return idDocument;
+    },
+    *fetchDocumentUpdate({ payload }, { call, put }) {
+      let doc = {};
+      try {
+        const response = yield call(getDocumentUpdate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { document: data } });
+        doc = data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return doc;
+    },
+    *fetchAdhaardCard({ payload: { employee = '' } }, { call, put }) {
+      try {
+        const response = yield call(getAdhaardCard, { employee });
+        const { statusCode, data: AdhaarCard = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { idCurrentEmployee: employee, AdhaarCard },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchAdhaarcardAdd({ payload = {} }, { call, select, put }) {
+      let idAdhaarcard = '';
+      try {
+        const response = yield call(getAdhaarcardAdd, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const {
+          statusCode,
+          data: { _id: id },
+        } = response;
+        if (statusCode !== 200) throw response;
+        idAdhaarcard = id;
+        yield put({
+          type: 'fetchAdhaardCard',
+          payload: { employee: idCurrentEmployee },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return idAdhaarcard;
+    },
+    *fetchAdhaarcardUpdate({ payload }, { call, put, select }) {
+      let doc = {};
+      try {
+        const response = yield call(getAdhaarcardUpdate, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { document: data } });
+        doc = data;
+        yield put({
+          type: 'fetchAdhaardCard',
+          payload: { employee: idCurrentEmployee },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return doc;
+    },
   },
+
   reducers: {
     save(state, action) {
       return {

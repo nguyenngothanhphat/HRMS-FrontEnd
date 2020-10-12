@@ -4,7 +4,6 @@ import { DownOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
-// import debounce from 'lodash/debounce';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import styles from '../../index.less';
 
@@ -13,12 +12,13 @@ import styles from '../../index.less';
     loading,
     upload: { urlImage = '', visa0URL = '', visa1URL = '' },
     employeeProfile: {
+      idCurrentEmployee,
       countryList,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
       tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
     } = {},
   }) => ({
-    loading: loading.effects['employeeProfile/updatePassPortVisa'],
+    loading: loading.effects['upload/uploadFile'],
     countryList,
     passportDataOrigin,
     passportData,
@@ -28,6 +28,7 @@ import styles from '../../index.less';
     visa0URL,
     visa1URL,
     urlImage,
+    idCurrentEmployee,
   }),
 )
 class VisaGeneral extends Component {
@@ -105,7 +106,7 @@ class VisaGeneral extends Component {
   handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
-    const value = { url: first.url, id: first.id };
+    const value = { id: first.id, url: first.url };
     this.handleFieldChange(index, 'urlFile', value);
   };
 
@@ -118,7 +119,7 @@ class VisaGeneral extends Component {
   render() {
     const { Option } = Select;
     const { dropdownCountry, dropdownType, dropdownEntry, listItem } = this.state;
-    const { countryList, visa0URL, visa1URL, visaData } = this.props;
+    const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -314,8 +315,8 @@ class VisaGeneral extends Component {
                       <div className={styles.textUpload}>
                         <UploadImage
                           content="Choose file"
-                          name={`visa${index}`}
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
+                          loading={loading}
                         />
                       </div>
                     ) : (

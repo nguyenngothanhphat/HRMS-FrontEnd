@@ -32,11 +32,19 @@
   .tableContent {
     padding: 24px 24px 0 24px;
     border-bottom: solid 1px #d6dce0;
+    .example {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+      margin-bottom: 20px;
+      padding: 30px 50px;
+      margin: 20px 0;
+    }
     .documentPreviewFrame {
       border-radius: 5px;
       background-color: #f3f7ff;
       max-height: 450px;
-      min-height: 350px;
+      min-height: 300px;
       overflow-x: hidden;
       border: 1px solid #2c6df9;
       margin-bottom: 0;
@@ -73,6 +81,7 @@
       justify-content: space-between;
       margin-top: 7px;
       align-items: center;
+      height: 20px;
       .numberOfFiles {
         font-size: 16px;
         font-weight: bold;
@@ -81,6 +90,17 @@
         }
       }
       .filesPagination {
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div {
+          height: 100%;
+          div {
+            margin-top: -1px;
+            height: 100%;
+          }
+        }
         img {
           margin-left: 24px;
           cursor: pointer;

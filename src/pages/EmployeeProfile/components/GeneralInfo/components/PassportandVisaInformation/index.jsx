@@ -56,11 +56,11 @@ class PassportVisaInformation extends PureComponent {
       JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: payloadPassPort },
+      payload: { passportData: passportDataOrigin },
     });
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { visaData: payloadVisa },
+      payload: { visaData: visaDataOrigin },
     });
     dispatch({
       type: 'employeeProfile/save',

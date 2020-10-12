@@ -59,4 +59,14 @@ export default {
   'component.authorization.link': `Change signatory`,
   'component.backgroundCheck.title': `Background Check`,
   'component.billingInformation.title': `  Billing information for background check`,
+  // Optional Onboaring Questions
+  'component.optionalOnboardingQuestions.title': `Optional Onboarding Questions`,
+  'component.optionalOnboardingQuestions.subTitle': `During onboarding we will collect information from your new hires`,
+  'component.optionalOnboardingQuestions.addCustomFields': `+ Add custom fields`,
+  'component.optionalOnboardingQuestions.customFields': `Custom fields`,
+  'component.optionalOnboardingQuestions.newSection': `+ New Section`,
+  'component.optionalOnboardingQuestions.newField': `+ New Field`,
+  'component.optionalOnboardingQuestions.sectionName': `Section name`,
+  'component.optionalOnboardingQuestions.fieldName': `Field name`,
+  'component.optionalOnboardingQuestions.saveOrdering': `Save ordering`,
 };

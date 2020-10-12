@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
@@ -14,11 +14,12 @@ import styles from './index.less';
     upload: { passPortURL = '', visa0IDURL = '', visa1IDURL = '', passPortIDURL = '' },
     employeeProfile: {
       countryList,
+      idCurrentEmployee,
       originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
+      tempData: { passportData = {}, generalData = {}, visaData = [], document = {} } = {},
     } = {},
   }) => ({
-    loading: loading.effects['employeeProfile/updatePassPortVisa'],
+    loading: loading.effects['upload/uploadFile'],
     countryList,
     passportDataOrigin,
     passportData,
@@ -29,9 +30,11 @@ import styles from './index.less';
     visa0IDURL,
     visa1IDURL,
     passPortIDURL,
+    document,
+    idCurrentEmployee,
   }),
 )
-class Edit extends PureComponent {
+class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,8 +67,47 @@ class Edit extends PureComponent {
   handleGetUpLoad = (resp) => {
     const { data = [] } = resp;
     const [first] = data;
-    const value = { url: first.url, id: first.id };
+    const value = { id: first.id, url: first.url };
     this.handleChange('urlFile', value);
+  };
+
+  handleAddPassPortAllField = () => {
+    const { dispatch, idCurrentEmployee, passportData } = this.props;
+    const { document: documentPassPort, urlFile } = passportData;
+    let getFile = '';
+    if (urlFile) {
+      getFile = urlFile;
+    }
+    if (documentPassPort) {
+      const dataPassport = { id: documentPassPort._id, attachment: getFile.id };
+      dispatch({
+        type: 'employeeProfile/fetchDocumentUpdate',
+        payload: dataPassport,
+      });
+    } else {
+      dispatch({
+        type: 'employeeProfile/fetchDocumentAdd',
+        payload: {
+          key: 'PassPort',
+          attachment: getFile.id,
+          employeeGroup: 'Identity',
+          parentEmployeeGroup: 'Indentification Documents',
+          employee: idCurrentEmployee,
+        },
+      }).then((id) => this.handleAddPassPort(id));
+    }
+  };
+
+  handleAddPassPort = (id) => {
+    const { dispatch } = this.props;
+    const dataTempKept = this.processDataKeptPassPort() || {};
+    const payloadAddPassPort = this.processDataAddPassPort(id) || {};
+    dispatch({
+      type: 'employeeProfile/addPassPort',
+      payload: payloadAddPassPort,
+      dataTempKept,
+      key: 'openPassportandVisa',
+    });
   };
 
   processDataChangesPassPort = () => {
@@ -81,7 +123,7 @@ class Edit extends PureComponent {
     } = passportDataTemp;
     const payloadChanges = {
       id,
-      document: urlFile ? urlFile.id : document,
+      document: document ? document._id : urlFile.id,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,
@@ -91,44 +133,38 @@ class Edit extends PureComponent {
     return payloadChanges;
   };
 
-  processDataChangesVisa = () => {
-    const { visaData, generalData } = this.props;
+  processDataChangesVisa = (item) => {
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
-    const formatData = visaData.map((item) => {
-      const {
-        _id: id,
-        document,
-        urlFile,
-        visaNumber,
-        visaIssuedCountry,
-        visaIssuedOn,
-        visaType,
-        visaValidTill,
-        visaEntryType,
-      } = item;
-      const formVisa = {
-        id,
-        document: urlFile ? urlFile.id : document,
-        employee,
-        visaNumber,
-        visaIssuedCountry,
-        visaIssuedOn,
-        visaType,
-        visaValidTill,
-        visaEntryType,
-      };
+    const {
+      _id: id,
+      document,
+      visaNumber,
+      visaIssuedCountry,
+      visaIssuedOn,
+      visaType,
+      visaValidTill,
+      visaEntryType,
+    } = item;
+    const formVisa = {
+      id,
+      document: document ? document._id : '',
+      employee,
+      visaNumber,
+      visaIssuedCountry,
+      visaIssuedOn,
+      visaType,
+      visaValidTill,
+      visaEntryType,
+    };
 
-      return formVisa;
-    });
-
-    return formatData;
+    return formVisa;
   };
 
-  processDataAddPassPort = () => {
+  processDataAddPassPort = (id) => {
     const { passportData: passportDataTemp, generalData } = this.props;
     const { employee = '' } = generalData;
     const {
-      urlFile = '',
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
@@ -139,39 +175,73 @@ class Edit extends PureComponent {
       passportIssuedCountry,
       passportIssuedOn,
       passportValidTill,
-      document: urlFile ? urlFile.id : '',
+      document: id,
       employee,
     };
     return payloadChanges;
   };
 
-  processDataAddVisa = () => {
-    const { visaData, generalData } = this.props;
-    const { employee = '' } = generalData;
-    const formatData = visaData.map((item) => {
-      const {
-        visaNumber,
-        urlFile,
-        visaIssuedCountry,
-        visaIssuedOn,
-        visaType,
-        visaValidTill,
-        visaEntryType,
-      } = item;
-      const formVisa = {
-        document: urlFile ? urlFile.id : '',
-        employee,
-        visaNumber,
-        visaIssuedCountry,
-        visaIssuedOn,
-        visaType,
-        visaValidTill,
-        visaEntryType,
-      };
+  handleAddVisaAllField = (item, index) => {
+    const { dispatch, idCurrentEmployee } = this.props;
+    const { urlFile, document: documentVisa } = item;
+    let getFile = '';
+    if (urlFile) {
+      getFile = urlFile;
+    }
+    if (documentVisa) {
+      const dataVisa = { id: documentVisa._id, attachment: getFile.id, key: `Visa${index + 1}` };
+      dispatch({
+        type: 'employeeProfile/fetchDocumentUpdate',
+        payload: dataVisa,
+      });
+    } else {
+      dispatch({
+        type: 'employeeProfile/fetchDocumentAdd',
+        payload: {
+          key: `Visa${index + 1}`,
+          attachment: getFile.id,
+          employeeGroup: 'Identity',
+          parentEmployeeGroup: 'Indentification Documents',
+          employee: idCurrentEmployee,
+        },
+      }).then((id) => this.handleAddVisa(id, index, item));
+    }
+  };
 
-      return formVisa;
+  handleAddVisa = (id, index, item) => {
+    const { dispatch } = this.props;
+    const dataTempKept = this.processDataKeptVisa() || {};
+    const payloadAddPassPort = this.processDataAddVisa(id, item) || {};
+    dispatch({
+      type: 'employeeProfile/addVisa',
+      payload: payloadAddPassPort,
+      dataTempKept,
+      key: 'openPassportandVisa',
     });
-    return formatData;
+  };
+
+  processDataAddVisa = (id, item) => {
+    const { generalData } = this.props;
+    const { employee = '' } = generalData;
+    const {
+      visaNumber,
+      visaIssuedCountry,
+      visaIssuedOn,
+      visaType,
+      visaValidTill,
+      visaEntryType,
+    } = item;
+    const formVisa = {
+      document: id,
+      employee,
+      visaNumber,
+      visaIssuedCountry,
+      visaIssuedOn,
+      visaType,
+      visaValidTill,
+      visaEntryType,
+    };
+    return formVisa;
   };
 
   processDataKeptPassPort = () => {
@@ -183,68 +253,73 @@ class Edit extends PureComponent {
       'passportIssuedCountry',
       'passportIssuedOn',
       'passportValidTill',
+      'document',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
   };
 
-  processDataKeptVisa = () => {
-    const { visaData } = this.props;
-    const dataKeptVisa = visaData.map((itemdata) => {
-      const newobj = { ...itemdata };
-      const listKey = [
-        'visaNumber',
-        'urlFile',
-        'visaIssuedCountry',
-        'visaIssuedOn',
-        'visaValidTill',
-        'visaEntryType',
-        'visaType',
-      ];
-      listKey.forEach((item) => delete newobj[item]);
-      return newobj;
-    });
-    return dataKeptVisa;
+  processDataKeptVisa = (item) => {
+    const newobj = { ...item };
+    const listKey = [
+      'visaNumber',
+      'urlFile',
+      'visaIssuedCountry',
+      'visaIssuedOn',
+      'visaValidTill',
+      'visaEntryType',
+      'visaType',
+      'document',
+    ];
+    listKey.forEach((itemVisa) => delete newobj[itemVisa]);
+    return newobj;
   };
 
-  handleSave = () => {
+  handleUpdateVisaGroup = (item, index) => {
+    const payloadUpdateVisa = this.processDataChangesVisa(item) || {};
+    const dataTempKeptVisa = this.processDataKeptVisa(item) || {};
+    const { dispatch } = this.props;
+    this.handleAddVisaAllField(item, index);
+    dispatch({
+      type: 'employeeProfile/updateVisa',
+      payload: payloadUpdateVisa,
+      dataTempKeptVisa,
+      key: 'openPassportandVisa',
+    });
+  };
+
+  handleSave = async () => {
     const { dispatch, passportData = {}, visaData = [] } = this.props;
-    const { _id: idPassPort = '' } = passportData;
-    const datavisa1 = visaData[0];
-    const { _id: idVisa = '' } = datavisa1;
-    const payloadAddPassPort = this.processDataAddPassPort() || {};
     const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
     const dataTempKept = this.processDataKeptPassPort() || {};
-    const payloadAddVisa = this.processDataAddVisa() || {};
-    const payloadUpdateVisa = this.processDataChangesVisa() || {};
-    const dataTempKeptVisa = this.processDataKeptVisa() || {};
-    if (idPassPort && idVisa) {
+    let idPassPort = '';
+
+    if (passportData) {
+      idPassPort = passportData._id;
+    }
+
+    if (idPassPort) {
+      this.handleAddPassPortAllField();
       dispatch({
         type: 'employeeProfile/updatePassPort',
         payload: payloadUpdatePassPort,
         dataTempKept,
         key: 'openPassportandVisa',
       });
-      dispatch({
-        type: 'employeeProfile/updateVisa',
-        payload: payloadUpdateVisa,
-        dataTempKeptVisa,
-        key: 'openPassportandVisa',
-      });
     } else {
-      dispatch({
-        type: 'employeeProfile/addPassPort',
-        payload: payloadAddPassPort,
-        dataTempKept,
-        key: 'openPassportandVisa',
-      });
-      dispatch({
-        type: 'employeeProfile/addVisa',
-        payload: payloadAddVisa,
-        dataTempKeptVisa,
-        key: 'openPassportandVisa',
-      });
+      this.handleAddPassPortAllField();
     }
+    visaData.map((item, index) => {
+      let idVisa = '';
+      const { _id } = item;
+      if (_id) {
+        idVisa = _id;
+      }
+      if (idVisa) {
+        return this.handleUpdateVisaGroup(item, index);
+      }
+      return this.handleAddVisaAllField(item, index);
+    });
   };
 
   handleCanCelIcon = () => {
@@ -266,12 +341,10 @@ class Edit extends PureComponent {
     const {
       passportData = {},
       handleCancel = () => {},
-      loading,
       countryList,
       visaData = [{}],
+      loading,
     } = this.props;
-    // const dataVisa1 = visaData[0] ? visaData[0] : [];
-    // const dataVisa2 = visaData[1] ? visaData[1] : [];
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -343,8 +416,8 @@ class Edit extends PureComponent {
               <div className={styles.textUpload}>
                 <UploadImage
                   content="Choose file"
-                  name="passport"
                   getResponse={(resp) => this.handleGetUpLoad(resp)}
+                  loading={loading}
                 />
               </div>
             ) : (
@@ -428,12 +501,7 @@ class Edit extends PureComponent {
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
             </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-            >
+            <Button type="primary" htmlType="submit" className={styles.buttonFooter}>
               Save
             </Button>
           </div>

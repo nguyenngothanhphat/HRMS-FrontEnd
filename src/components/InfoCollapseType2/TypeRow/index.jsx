@@ -1,10 +1,11 @@
 import React, { useState, PureComponent } from 'react';
 import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import FileIcon from '../../../assets/pdf_icon.png';
-import DownloadIcon from '../../../assets/download_icon.svg';
-import DownArrowIcon from '../../../assets/downArrow.svg';
-import UpArrowIcon from '../../../assets/upArrow.svg';
+import { UploadOutlined, EllipsisOutlined } from '@ant-design/icons';
+import FileIcon from '@/assets/pdf_icon.png';
+import DownloadIcon from '@/assets/download_icon.svg';
+import DownArrowIcon from '@/assets/downArrow.svg';
+import UpArrowIcon from '@/assets/upArrow.svg';
+import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -14,12 +15,13 @@ const CollapseRow = (props) => {
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
 
-  const handleDownloadClick = (event) => {
+  const handleMenuClick = (event) => {
     event.stopPropagation();
   };
 
-  const handleMenuClick = (event) => {
-    event.stopPropagation();
+  const handleUploadClick = () => {
+    alert('Uploading');
+    // event.stopPropagation();
   };
 
   const menu = () => (
@@ -35,14 +37,11 @@ const CollapseRow = (props) => {
   );
 
   const statusAndButtons = () => (
-    <div onClick={handleMenuClick} className={styles.statusAndButtons}>
+    <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
       <a>Complete</a>
-      <img
-        alt="download"
-        src={DownloadIcon}
-        className={styles.downloadButton}
-        onClick={handleDownloadClick}
-      />
+      <div onClick={handleUploadClick}>
+        <UploadOutlined className={styles.uploadButton} />
+      </div>
       <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
       </Dropdown>
@@ -64,6 +63,27 @@ const CollapseRow = (props) => {
     </div>
   );
 
+  const identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      default:
+        return 2;
+    }
+  };
+
+  const renderDownloadIcon = () => (
+    <img alt="download" src={DownloadIcon} className={styles.downloadButton} />
+  );
+
   return (
     <Collapse
       defaultActiveKey={['1']}
@@ -79,16 +99,25 @@ const CollapseRow = (props) => {
         extra={statusAndButtons()}
       >
         {row.files.map((file) => (
-          <Row id={file.id} className={styles.eachRow}>
+          <Row key={file.id} className={styles.eachRow}>
             <Col span={8} className={styles.fileName}>
               <div onClick={() => onFileClick(file.id)}>
-                <img src={FileIcon} alt="file" className={styles.fileIcon} />
+                {identifyImageOrPdf(file.source) === 1 ? (
+                  <img src={FileIcon} alt="file" className={styles.fileIcon} />
+                ) : (
+                  // will replace with ImageIcon
+                  <img src={FileIcon} alt="img" className={styles.fileIcon} />
+                )}
                 <span>{file.fileName}</span>
               </div>
             </Col>
             <Col span={7}>{file.generatedBy}</Col>
             <Col span={7}>{file.date}</Col>
-            <Col span={2} />
+            <Col span={2}>
+              <div className={styles.downloadFile}>
+                <DownloadFile content={renderDownloadIcon()} url={file.source} />
+              </div>
+            </Col>
           </Row>
         ))}
       </Panel>
@@ -100,8 +129,8 @@ class TypeRow extends PureComponent {
     const { data = [], onFileClick } = this.props;
     return (
       <div>
-        {data.map((row) => (
-          <CollapseRow onFileClick={onFileClick} data={row} />
+        {data.map((row, index) => (
+          <CollapseRow key={`${index + 1}`} onFileClick={onFileClick} data={row} />
         ))}
       </div>
     );
