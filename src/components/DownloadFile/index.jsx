@@ -34,7 +34,7 @@ class DownloadFile extends Component {
     const { content = 'Download', url = '' } = this.props;
     const { isDownloading } = this.state;
     return (
-      <Fragment>
+      <>
         {isDownloading ? (
           <SyncOutlined spin style={{ color: '#1890ff' }} />
         ) : (
@@ -42,7 +42,7 @@ class DownloadFile extends Component {
             {content}
           </div>
         )}
-      </Fragment>
+      </>
     );
   }
 }
