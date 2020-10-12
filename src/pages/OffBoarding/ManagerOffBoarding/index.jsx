@@ -34,7 +34,7 @@ class ManagerOffBoading extends Component {
 
     return (
       <PageContainer>
-        <div className={styles.ManagerContaner}>
+        <div className={styles.managerContainer}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relationship</p>
@@ -48,7 +48,7 @@ class ManagerOffBoading extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
             <Col span={24}>
-              <Tabs defaultActiveKey="1" className={styles.TabComponent}>
+              <Tabs defaultActiveKey="1" className={styles.tabComponent}>
                 {data.map((tab) => (
                   <TabPane tab={tab.name} key={tab.id}>
                     {activeTitle}

@@ -56,7 +56,7 @@ export default class ViewLeft extends Component {
           <Link to="/employee-offboarding/resignation-request"> Set a resgination request </Link>
         </Button>
         <div>
-          <Tabs defaultActiveKey="1" className={styles.TabComponent}>
+          <Tabs defaultActiveKey="1" className={styles.tabComponent}>
             {data.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 {activeTitle}

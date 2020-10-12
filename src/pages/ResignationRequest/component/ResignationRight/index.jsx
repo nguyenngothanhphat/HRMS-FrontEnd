@@ -66,7 +66,7 @@ export class Resignationright extends Component {
           </div>
           <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div>
           <div className={styles.twoRight}>
-            <p className={styles.text_twoRight}> Few thing to consider</p>
+            <p className={styles.text_Right}> Few thing to consider</p>
             <div>{array.map((reder) => this.rederItem(reder))}</div>
           </div>
         </div>
