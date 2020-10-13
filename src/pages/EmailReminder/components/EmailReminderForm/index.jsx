@@ -3,6 +3,8 @@ import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import removeIcon from './assets/removeIcon.svg';
+
 // import { formatMessage } from 'umi';
 
 import styles from './index.less';
@@ -13,16 +15,6 @@ class EmailReminderForm extends PureComponent {
 
     this.state = {
       conditionsData: [
-        {
-          unit: '',
-          tobeVerb: '',
-          department: '',
-        },
-        {
-          unit: '',
-          tobeVerb: '',
-          department: '',
-        },
         {
           unit: '',
           tobeVerb: '',
@@ -138,10 +130,6 @@ class EmailReminderForm extends PureComponent {
             value: 'Employment type',
           },
           {
-            name: 'Compensation type',
-            value: 'Compensation type',
-          },
-          {
             name: 'Title',
             value: 'Title',
           },
@@ -202,21 +190,50 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
-    const { emailMessage = '' } = this.state;
-    const payload = { ...values, emailMessage };
-    console.log('Success:', payload);
-  };
-
   onChangeCondition = (index, name, value) => {
     const { conditionsData } = this.state;
-    console.log(index, name, value);
+    // console.log(index, name, value);
     const newConditionsData = [...conditionsData];
     newConditionsData[index][name] = value;
-    console.log(newConditionsData);
+    // console.log(newConditionsData);
     this.setState({
       conditionsData: newConditionsData,
     });
+  };
+
+  onRemoveCondition = (index) => {
+    const { conditionsData } = this.state;
+    const newConditionsData = [...conditionsData];
+
+    newConditionsData.splice(index, 1);
+
+    this.setState({
+      conditionsData: newConditionsData,
+    });
+  };
+
+  onAddCondition = () => {
+    const { conditionsData } = this.state;
+    const newConditionsData = [...conditionsData];
+    const newCondition = { unit: '', tobeVerb: '', department: '' };
+
+    newConditionsData.push(newCondition);
+
+    this.setState({
+      conditionsData: newConditionsData,
+    });
+  };
+
+  onFinish = (values) => {
+    const { emailMessage = '', conditionsData = [], appliesToData } = this.state;
+    let payload = {};
+    if (appliesToData === 'Any Person') {
+      payload = { ...values, appliesToData, emailMessage };
+    }
+    if (appliesToData === 'Create a condition') {
+      payload = { ...values, conditionsData, emailMessage };
+    }
+    console.log('Success:', payload);
   };
 
   _renderConditions = () => {
@@ -230,12 +247,13 @@ class EmailReminderForm extends PureComponent {
         <Form.Item label="Conditions: Trigger for someone if">
           {conditionsData.map((data, index) => {
             return (
-              <Row gutter={[24, 12]}>
+              <Row gutter={[24, 12]} align="middle">
                 {/* Units  */}
                 <Col span={9}>
                   <Select
                     size="large"
                     value={data.unit}
+                    placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'unit', value)}
                   >
                     {units.map((unit) => {
@@ -249,6 +267,7 @@ class EmailReminderForm extends PureComponent {
                   <Select
                     size="large"
                     value={data.toBeVerb}
+                    placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                   >
                     {toBeVerbs.map((toBeVerb) => {
@@ -258,10 +277,11 @@ class EmailReminderForm extends PureComponent {
                 </Col>
 
                 {/* Departments  */}
-                <Col span={11}>
+                <Col span={10}>
                   <Select
                     size="large"
                     value={data.department}
+                    placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'department', value)}
                   >
                     {departments.map((department) => {
@@ -269,10 +289,20 @@ class EmailReminderForm extends PureComponent {
                     })}
                   </Select>
                 </Col>
+                <Col span={1}>
+                  <img
+                    onClick={() => this.onRemoveCondition(index)}
+                    src={removeIcon}
+                    alt="remove"
+                  />
+                </Col>
               </Row>
             );
           })}
         </Form.Item>
+        <Button type="primary" onClick={this.onAddCondition}>
+          + Add another condition
+        </Button>
       </Col>
     );
   };
@@ -317,7 +347,7 @@ class EmailReminderForm extends PureComponent {
     // const { emailMessage } = formData;
     return (
       <Form onFinish={this.onFinish}>
-        <Row gutter={[36, 6]}>
+        <Row gutter={[36, 24]}>
           {/* Trigger Event */}
           <Col span={12}>
             <Form.Item label="Trigger event" name="triggerEvent">
