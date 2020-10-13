@@ -50,6 +50,7 @@
     "@ant-design/pro-layout": "^6.4.15",
     "@ant-design/pro-table": "^2.5.13",
     "antd": "^4.5.3",
+    "axios": "^0.20.0",
     "babel-eslint": "^10.1.0",
     "classnames": "^2.2.6",
     "eslint": "^7.8.1",
