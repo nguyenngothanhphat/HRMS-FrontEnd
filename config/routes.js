@@ -151,6 +151,13 @@ const routes = [
             authority: ['customer'],
           },
           {
+            path: '/time-off',
+            name: 'timeOff',
+            icon: '/assets/images/directory.svg',
+            component: './TimeOff',
+            authority: ['customer'],
+          },
+          {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
             component: './EmployeeProfile',
