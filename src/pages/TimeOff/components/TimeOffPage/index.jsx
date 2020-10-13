@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
+import QuickLinks from './components/QuickLinks';
 
 import styles from './index.less';
 
@@ -36,6 +37,9 @@ export default class TimeOffPage extends PureComponent {
               </Col>
               <Col span={24}>
                 <LeaveHistoryAndHoliday />
+              </Col>
+              <Col span={24}>
+                <QuickLinks />
               </Col>
             </Row>
           </Col>

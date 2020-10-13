@@ -88,9 +88,9 @@ export default class LeaveInformation extends PureComponent {
         <div className={styles.totalLeaveBalance}>
           <span className={styles.title}>Total Leave Balance</span>
           <div className={styles.leaveBalanceBox}>
-            <span className={styles.text1}>23</span>
+            <span className={styles.text1}>{`0${23}`.slice(-2)}</span>
             <span className={styles.text2}>Remaining out of</span>
-            <span className={styles.text3}>25</span>
+            <span className={styles.text3}>{`0${25}`.slice(-2)}</span>
           </div>
           <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">
