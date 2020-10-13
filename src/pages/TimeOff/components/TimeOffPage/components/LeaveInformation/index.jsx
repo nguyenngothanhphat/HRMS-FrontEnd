@@ -11,9 +11,9 @@ const { Panel } = Collapse;
 const CollapseInformation = () => {
   return (
     <div className={styles.CollapseInformation}>
-      <div className={styles.title}>
-        <span className={styles.title__left}>Common Leaves</span>
-        <div className={styles.title__right}>
+      <div className={styles.secondTitle}>
+        <span className={styles.secondTitle__left}>Common Leaves</span>
+        <div className={styles.secondTitle__right}>
           <span>Under </span>
           <a>Standard Policy</a>
         </div>
@@ -42,9 +42,9 @@ const CollapseInformation = () => {
         />
       </div>
 
-      <div className={styles.title}>
-        <span className={styles.title__left}>Special Leaves</span>
-        <div className={styles.title__right}>
+      <div className={styles.secondTitle}>
+        <span className={styles.secondTitle__left}>Special Leaves</span>
+        <div className={styles.secondTitle__right}>
           <span>Under </span>
           <a>Terralogic Fulltime Policy</a>
         </div>
