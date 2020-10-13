@@ -40,6 +40,7 @@ class Edit extends Component {
     this.state = {
       dropdown: false,
       isLt5M: true,
+      getContent: true,
     };
   }
 
@@ -341,8 +342,15 @@ class Edit extends Component {
     this.setState({ isLt5M });
   };
 
+  getConfirmContent = (setContent) => {
+    if (setContent) {
+      this.setState({ getContent: setContent.isLt5M });
+    }
+  };
+
   render() {
-    const { isLt5M } = this.state;
+    const { isLt5M, getContent } = this.state;
+    console.log(getContent);
     const { Option } = Select;
     const {
       passportData = {},
@@ -503,7 +511,7 @@ class Edit extends Component {
               className={styles.dateForm}
             />
           </Form.Item>
-          <VisaGeneral />
+          <VisaGeneral setConfirmContent={this.getConfirmContent} />
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
@@ -512,7 +520,7 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={isLt5M === false}
+              disabled={isLt5M === false || getContent === false}
             >
               Save
             </Button>
