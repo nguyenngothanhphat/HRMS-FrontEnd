@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Alert } from 'antd';
+import { Row, Col } from 'antd';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
+import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
+
 import styles from './index.less';
 
 export default class TimeOffPage extends PureComponent {
@@ -28,7 +30,14 @@ export default class TimeOffPage extends PureComponent {
       <div className={styles.TimeOffPage}>
         <Row gutter={[16, 16]}>
           <Col xs={6}>
-            <LeaveInformation />
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <LeaveInformation />
+              </Col>
+              <Col span={24}>
+                <LeaveHistoryAndHoliday />
+              </Col>
+            </Row>
           </Col>
           <Col xs={18}>
             <Row gutter={[16, 16]}>
