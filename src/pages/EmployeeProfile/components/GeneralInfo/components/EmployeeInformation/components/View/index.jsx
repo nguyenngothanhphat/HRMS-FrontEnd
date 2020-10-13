@@ -52,9 +52,11 @@ class View extends PureComponent {
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {
-      const { document: { attachment: { name = '', url = '' } = {} } = {} } = AdhaarCard;
-      splitUrl = name;
-      urlAdhaarCard = url;
+      if (AdhaarCard.document !== null) {
+        const { document: { attachment: { name = '', url = '' } = {} } = {} } = AdhaarCard;
+        splitUrl = name;
+        urlAdhaarCard = url;
+      }
     }
 
     const dummyData = [

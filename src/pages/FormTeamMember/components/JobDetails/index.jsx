@@ -190,9 +190,9 @@ class JobDetails extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, currentStep, dataTest } = this.props;
+    const { dispatch, currentStep, dataTest, reId } = this.props;
     const { data } = dataTest;
-    const { jobDetail } = this.state;
+    const { jobDetail, company } = this.state;
     dispatch({
       type: 'info/save',
       payload: {
@@ -202,13 +202,10 @@ class JobDetails extends PureComponent {
     dispatch({
       type: 'info/updateByHR',
       payload: {
-        dataTest: {
-          ...dataTest,
-          data: {
-            ...data,
-            ...jobDetail,
-          },
-        },
+        ...data,
+        ...jobDetail,
+        candidate: reId,
+        company,
       },
     });
   };

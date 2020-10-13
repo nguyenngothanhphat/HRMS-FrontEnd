@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { formatMessage, Link, connect } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
@@ -71,6 +71,17 @@ class OnboardingLayout extends PureComponent {
     });
   };
 
+  handleAddBtn = () => {
+    const { dispatch } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'info/fetchCandidateInfo',
+      payload: {},
+    });
+  };
+
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
@@ -78,16 +89,15 @@ class OnboardingLayout extends PureComponent {
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>
-          <Link to="/employee-onboarding/add">
-            <Button className={styles.addMember} type="primary">
-              <div className={styles.icon}>
-                <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
+          {/* <Link to="/employee-onboarding/add"> */}
+          <Button className={styles.addMember} type="primary" onClick={this.handleAddBtn}>
+            <div className={styles.icon}>
+              <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
 
-                {/* <span>Add Team Member</span> */}
-                <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
-              </div>
-            </Button>
-          </Link>
+              <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
+            </div>
+          </Button>
+          {/* </Link> */}
 
           <div className={styles.divider} />
 
@@ -125,4 +135,7 @@ class OnboardingLayout extends PureComponent {
   }
 }
 
-export default OnboardingLayout;
+// export default OnboardingLayout;
+export default connect(({ info }) => ({
+  info,
+}))(OnboardingLayout);
