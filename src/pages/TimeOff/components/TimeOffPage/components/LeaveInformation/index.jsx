@@ -78,7 +78,7 @@ export default class LeaveInformation extends PureComponent {
     return (
       <div className={styles.showBtn}>
         <span>View Leave breakdown</span>
-        {show ? <DownOutlined /> : <UpOutlined />}
+        {show ? <UpOutlined /> : <DownOutlined />}
       </div>
     );
   };
@@ -93,7 +93,7 @@ export default class LeaveInformation extends PureComponent {
             <span className={styles.text2}>Remaining out of</span>
             <span className={styles.text3}>25</span>
           </div>
-          <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['1']}>
+          <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">
               <CollapseInformation />
             </Panel>
