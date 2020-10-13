@@ -50,6 +50,7 @@ export default {
   'menu.editor.koni': 'Koni Editor',
   'menu.dashboard': 'Dashboard',
   'menu.directory': 'Directory',
+  'menu.timeOff': 'Time Off',
   'menu.employeeProfile': 'Employee Profile',
   'menu.employeeOnboarding': 'Employee Onboarding',
   'menu.templateDetails': 'Template Details',
