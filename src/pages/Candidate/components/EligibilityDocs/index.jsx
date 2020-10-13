@@ -20,111 +20,42 @@ const Note = {
   ),
 };
 
-const DummyItem = [
-  {
-    type: 'A',
-    name: 'Identity Proof',
-    data: [
-      {
-        name: 'Aahar Card',
-        uploaded: false,
-      },
-      {
-        name: 'PAN Card',
-        uploaded: false,
-      },
-      {
-        name: 'Passport',
-        uploaded: false,
-      },
-      {
-        name: 'Driving License',
-        uploaded: false,
-      },
-      {
-        name: 'Voter Card',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'B',
-    name: 'Address Proof',
-    data: [
-      {
-        name: 'Rental Agreement',
-        uploaded: false,
-      },
-      {
-        name: 'Electricity & Utility Bills',
-        uploaded: false,
-      },
-      {
-        name: 'Telephone Bills',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'C',
-    name: 'Educational',
-    data: [
-      {
-        name: 'SSLC',
-        uploaded: false,
-      },
-      {
-        name: 'Intermediate/Diploma',
-        uploaded: false,
-      },
-      {
-        name: 'Graduation',
-        uploaded: false,
-      },
-      {
-        name: 'Post Graduate',
-        uploaded: false,
-      },
-      {
-        name: 'PHP/Doctorate',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'D',
-    name: 'Technical Certifications',
-    data: [
-      {
-        name: 'Offer letter',
-        uploaded: false,
-      },
-      {
-        name: 'Appraisal letter',
-        uploaded: false,
-      },
-      {
-        name: 'Paystubs',
-        uploaded: false,
-      },
-      {
-        name: 'Form 16',
-        uploaded: false,
-      },
-      {
-        name: 'Relieving Letter',
-        uploaded: false,
-      },
-    ],
-  },
-];
-
-@connect(({ candidateProfile: { eliDocs } = {} }) => ({
+@connect(({ candidateProfile: { eliDocs, isUploadedSuccessfully } = {} }) => ({
   eliDocs,
+  isUploadedSuccessfully,
 }))
 class EligibilityDocs extends PureComponent {
+  handleFile = (resp, index, id) => {
+    const { dispatch, eliDocs = [] } = this.props;
+    const tempData = JSON.parse(JSON.stringify(eliDocs));
+    console.log(resp);
+    const { statusCode } = resp;
+    if (statusCode === 200) {
+      const { data } = tempData[id];
+      data[index].value = true;
+      data[index].isUploaded = true;
+      tempData.splice(id, 1, { ...tempData[id], data });
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          eliDocs: tempData,
+        },
+      });
+    } else {
+      const { data } = tempData[id];
+      data[index].isUploaded = false;
+      tempData.splice(id, 1, { ...tempData[id], data });
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          eliDocs: tempData,
+        },
+      });
+    }
+  };
+
   render() {
-    const { eliDocs } = this.props;
+    const { eliDocs, isUploadedSuccessfully } = this.props;
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -132,11 +63,14 @@ class EligibilityDocs extends PureComponent {
             <div className={styles.eliContainer}>
               <Title />
               {eliDocs.length > 0 &&
-                eliDocs.map((item) => {
+                eliDocs.map((item, id) => {
                   return (
                     <CollapseFields
                       item={item && item}
+                      id={id}
                       eliDocs={eliDocs}
+                      handleFile={this.handleFile}
+                      isUploadedSuccessfully={isUploadedSuccessfully}
                       // handleChange={this.handleChange}
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}
