@@ -20,31 +20,3 @@
   },
   "git.ignoreLimitWarning": true
 }
-<<<<<<< HEAD
-{
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/dist": true,
-    "**/coverge": true
-  },
-  "typescript.referencesCodeLens.enabled": true,
-  "tslint.ignoreDefinitionFiles": true,
-  "tslint.exclude": "**/node_modules/**/*",
-  "editor.formatOnSave": true,
-  "javascript.format.enable": false,
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#0000008a",
-    "titleBar.activeBackground": "#0000008a",
-    "titleBar.activeForeground": "#ffffff"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
-}
-<<<<<<< HEAD
->>>>>>> master
-=======
->>>>>>> master
-=======
->>>>>>> 66dcb3e8fbc401d8aad4f15ad475f209715171f8

@@ -14,6 +14,7 @@ import {
   getEmployeeTypeList,
   getManagerList,
   addCandidate,
+  updateByHR,
 } from '@/services/addNewMember';
 import { dialog } from '@/utils/utils';
 
@@ -137,6 +138,8 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    currentStep: 0,
+    displayComponent: {},
     testEligibility: [],
     departmentList: [],
     titleList: [],
@@ -156,6 +159,26 @@ const info = {
     loadingReportingManager: true,
     item: {},
     Obj: {},
+
+    originData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
+    tempData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
+    dataTest: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -257,6 +280,19 @@ const info = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
+      } catch (errors) {
+        console.log(errors);
+        dialog(errors);
+      }
+    },
+
+    *updateByHR({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(updateByHR, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { dataTest: data } });
       } catch (errors) {
         console.log(errors);
         dialog(errors);

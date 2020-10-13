@@ -1,13 +1,18 @@
 /* eslint-disable react/button-has-type */
 import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
+import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-import BottomBar from '../BottomBar';
+// import BottomBar from '../BottomBar';
 
 import s from './index.less';
 
-export default class CommonLayout extends PureComponent {
+@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
+  currentStep,
+  displayComponent,
+}))
+class CommonLayout extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,52 +21,51 @@ export default class CommonLayout extends PureComponent {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    const { listMenu, currentStep } = props;
+    return {
+      selectedItemId: listMenu[currentStep].id,
+      displayComponent: listMenu[currentStep].component,
+    };
+  }
+
   componentDidMount() {
-    const { listMenu } = this.props;
+    const { listMenu, currentStep } = this.props;
     this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
+      selectedItemId: listMenu[currentStep].id,
+      displayComponent: listMenu[currentStep].component,
     });
   }
 
   _handlePreviewOffer = () => {
-    this.setState({
-      selectedItemId: '',
-      displayComponent: <PreviewOffer />,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: null,
+        displayComponent: <PreviewOffer />,
+      },
     });
   };
 
   _handleClick = (item) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: item.id - 1,
+        displayComponent: item.component,
+      },
+    });
     this.setState({
       selectedItemId: item.id,
       displayComponent: item.component,
     });
   };
 
-  handleNext = () => {
-    const { selectedItemId } = this.state;
-    const { listMenu = [] } = this.props;
-    const nextItem = listMenu.find((element) => element.id === selectedItemId + 1);
-    this.setState({
-      selectedItemId: nextItem.id,
-      displayComponent: nextItem.component,
-    });
-  };
-
-  handlePrev = () => {
-    const { selectedItemId } = this.state;
-    const { listMenu = [] } = this.props;
-    const prevItem = listMenu.find((element) => element.id === selectedItemId - 1);
-    this.setState({
-      selectedItemId: prevItem.id,
-      displayComponent: prevItem.component,
-    });
-  };
-
   render() {
     const { listMenu = [], currentPage = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
-
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
@@ -76,20 +80,10 @@ export default class CommonLayout extends PureComponent {
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
               {currentPage !== 'settings' && (
-                <Button
-                  type="primary"
-                  ghost
-                  onClick={() => {
-                    this.setState({
-                      selectedItemId: '',
-                      displayComponent: <PreviewOffer />,
-                    });
-                  }}
-                >
+                <Button type="primary" ghost onClick={this._handlePreviewOffer}>
                   Preview offer letter
                 </Button>
               )}
-
               {/* <button onClick={this.handleNext}> next </button> */}
             </div>
           </div>
@@ -98,13 +92,13 @@ export default class CommonLayout extends PureComponent {
           {displayComponent}
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              {currentPage !== 'settings' && (
+              {/* {currentPage !== 'settings' && (
                 <BottomBar
                   onClickPrev={this.handlePrev}
                   onClickNext={this.handleNext}
                   currentPage={selectedItemId}
                 />
-              )}
+              )} */}
             </Col>
           </Row>
         </div>
@@ -112,3 +106,5 @@ export default class CommonLayout extends PureComponent {
     );
   }
 }
+
+export default CommonLayout;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { formatMessage, Redirect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
@@ -14,7 +14,7 @@ import styles from './index.less';
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1, openModal: false };
+    this.state = { pageSelected: 1, openModal: false, currentRecord: {}, redirectScreen: null };
   }
 
   handleActionClick = (tableType) => {
@@ -134,7 +134,19 @@ class OnboardTable extends Component {
         key: 'actions',
         width: getColumnWidth('actions', type),
         render: () => (
-          <span className={styles.tableActions} onClick={() => {}}>
+          <span
+            className={styles.tableActions}
+            onClick={(e) => {
+              const { currentRecord = {} } = this.state;
+              const { rookieId = 0 } = currentRecord;
+              const id = rookieId.replace('#', '');
+              console.log(id);
+              // return <Redirect to={`/review?${id}`} />;
+              this.setState({
+                redirectScreen: `/employee-onboarding/review/${id}`,
+              });
+            }}
+          >
             {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
               <>
                 <span>{actionText}</span>
@@ -204,27 +216,42 @@ class OnboardTable extends Component {
     const { openModal } = this.state;
     return (
       <>
-        <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
-          <Table
-            size="small"
-            rowSelection={
-              hasCheckbox && {
-                type: 'checkbox',
-                ...rowSelection,
-              }
-            }
-            columns={this.generateColumns(columnArr, type)}
-            dataSource={list}
-            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            // scroll={{ x: 1000, y: 'max-content' }}
-          />
-        </div>
-        <CustomModal
-          open={openModal}
-          width={590}
-          closeModal={this.closeModal}
-          content={<ModalContent closeModal={this.closeModal} />}
-        />
+        {this.state.redirectScreen ? (
+          <Redirect to={this.state.redirectScreen} />
+        ) : (
+          <>
+            <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
+              <Table
+                size="small"
+                rowSelection={
+                  hasCheckbox && {
+                    type: 'checkbox',
+                    ...rowSelection,
+                  }
+                }
+                columns={this.generateColumns(columnArr, type)}
+                dataSource={list}
+                pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+                onRow={(record, rowIndex) => {
+                  return {
+                    onMouseEnter: (event) => {
+                      this.setState({
+                        currentRecord: record,
+                      });
+                    }, // Hover mouse on row
+                  };
+                }}
+                // scroll={{ x: 1000, y: 'max-content' }}
+              />
+            </div>
+            <CustomModal
+              open={openModal}
+              width={590}
+              closeModal={this.closeModal}
+              content={<ModalContent closeModal={this.closeModal} />}
+            />
+          </>
+        )}
       </>
     );
   }

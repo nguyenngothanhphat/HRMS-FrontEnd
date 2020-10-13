@@ -12,14 +12,16 @@ import SalaryStructure from './components/SalaryStructure';
 import EligibilityDocs from './components/EligibilityDocs';
 import Payroll from './components/Payroll';
 import Additional from './components/Additional';
+// import PreviewOffer from './components/PreviewOffer';
 
 export default class FormTeamMember extends PureComponent {
-  // componentDidMount() {
-  // const {
-  //   match: { params: { action = '', reId = '' } = {} },
-  // } = this.props;
-  // check action is add or review. If isReview fetch candidate by reID
-  // }
+  componentDidMount() {
+    const {
+      match: { params: { action = '', reId = '' } = {} },
+    } = this.props;
+    // console.log(this.props);
+    // check action is add or review. If isReview fetch candidate by reID
+  }
 
   render() {
     const {
