@@ -49,7 +49,6 @@ const CollapseInformation = () => {
           <a>Terralogic Fulltime Policy</a>
         </div>
       </div>
-
       <Row>
         <SpecialLeaveBox color="#FFA100" title="Maternity Leave" shorten="ML" days={90} />
         <SpecialLeaveBox color="#FF3397" title="Bereavement Leave" shorten="BL" days={7} />

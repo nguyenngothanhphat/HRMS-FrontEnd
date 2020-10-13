@@ -16,7 +16,7 @@ export default class SpecialLeaveBox extends PureComponent {
           }}
           className={styles.days}
         >
-          <span className={styles.activeDays}>{days}</span>
+          <span className={styles.activeDays}>{`0${days}`.slice(-2)}</span>
           <span> days</span>
         </div>
       </Col>

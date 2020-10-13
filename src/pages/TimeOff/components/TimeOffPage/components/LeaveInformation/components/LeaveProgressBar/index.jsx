@@ -4,6 +4,7 @@ import styles from './index.less';
 export default class LeaveProgressBar extends PureComponent {
   renderProgressBar = () => {
     const { stepNumber = 0, limitNumber = 0, color = '#000' } = this.props;
+
     return (
       <div className={styles.renderProgressBar}>
         {Array.from(Array(stepNumber), (_, index) => {
@@ -54,7 +55,7 @@ export default class LeaveProgressBar extends PureComponent {
               }}
               className={styles.stepNumber}
             >
-              {stepNumber}
+              {`0${stepNumber}`.slice(-2)}
             </span>
             <span
               style={{
@@ -62,7 +63,7 @@ export default class LeaveProgressBar extends PureComponent {
               }}
               className={styles.limitNumber}
             >
-              /{limitNumber}
+              /{`0${limitNumber}`.slice(-2)}
             </span>
           </p>
         </div>

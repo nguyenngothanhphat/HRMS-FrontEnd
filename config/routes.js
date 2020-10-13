@@ -153,7 +153,7 @@ const routes = [
           {
             path: '/time-off',
             name: 'timeOff',
-            icon: '/assets/images/directory.svg',
+            icon: '/assets/images/timeOff.svg',
             component: './TimeOff',
             authority: ['customer'],
           },
