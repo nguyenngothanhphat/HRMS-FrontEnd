@@ -1,7 +1,8 @@
 import React, { useState, PureComponent } from 'react';
 import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
 import { UploadOutlined, EllipsisOutlined } from '@ant-design/icons';
-import FileIcon from '@/assets/pdf_icon.png';
+import PDFIcon from '@/assets/pdf_icon.png';
+import ImageIcon from '@/assets/image_icon.png';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownArrowIcon from '@/assets/downArrow.svg';
 import UpArrowIcon from '@/assets/upArrow.svg';
@@ -103,10 +104,9 @@ const CollapseRow = (props) => {
             <Col span={8} className={styles.fileName}>
               <div onClick={() => onFileClick(file.id)}>
                 {identifyImageOrPdf(file.source) === 1 ? (
-                  <img src={FileIcon} alt="file" className={styles.fileIcon} />
+                  <img src={PDFIcon} alt="file" className={styles.fileIcon} />
                 ) : (
-                  // will replace with ImageIcon
-                  <img src={FileIcon} alt="img" className={styles.fileIcon} />
+                  <img src={ImageIcon} alt="img" className={styles.fileIcon} />
                 )}
                 <span>{file.fileName}</span>
               </div>
