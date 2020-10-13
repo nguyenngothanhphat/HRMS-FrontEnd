@@ -51,7 +51,7 @@ class Step3 extends Component {
                   onValuesChange={this.handleFormCompanyChange}
                 >
                   <Fragment>
-                    <p className={styles.root__form__title}>Enter owner's cotact</p>
+                    <p className={styles.root__form__title}>Enter owner's contact</p>
                     <p className={styles.root__form__description}>
                       We need to collect some basic information so that we can contact you easily.
                     </p>
