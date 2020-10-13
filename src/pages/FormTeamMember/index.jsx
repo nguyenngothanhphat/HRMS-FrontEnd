@@ -20,6 +20,8 @@ export default class FormTeamMember extends PureComponent {
     } = this.props;
     // console.log(this.props);
     // check action is add or review. If isReview fetch candidate by reID
+
+    // console.log(this.props);
   }
 
   render() {
