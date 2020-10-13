@@ -39,6 +39,9 @@ class VisaGeneral extends Component {
       dropdownCountry: false,
       dropdownType: false,
       listItem: [{}],
+      // isLt5M: true,
+      // numberIndex: 0,
+      checkValidate: [{}],
     };
     // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
@@ -116,9 +119,30 @@ class VisaGeneral extends Component {
     return nameData1URL;
   };
 
+  handleGetSetSizeImage = (index, isLt5M) => {
+    const { checkValidate } = this.state;
+    const item = checkValidate[index];
+    const newItem = { ...item, isLt5M };
+    const newCheck = [...checkValidate];
+    newCheck.splice(index, 1, newItem);
+    // this.setState({ isLt5M, numberIndex: index, checkValidate: newCheck });
+  };
+
+  // handleShowContent = (checkValidate) => {
+  //   // console.log(checkValidate);
+  // };
+
   render() {
     const { Option } = Select;
-    const { dropdownCountry, dropdownType, dropdownEntry, listItem } = this.state;
+    const {
+      dropdownCountry,
+      dropdownType,
+      dropdownEntry,
+      listItem,
+      // isLt5M,
+      // numberIndex,
+      checkValidate,
+    } = this.state;
     const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
@@ -304,7 +328,9 @@ class VisaGeneral extends Component {
                     >
                       <Input
                         defaultValue={item.visaNumber}
-                        className={styles.inputForm}
+                        className={
+                          checkValidate[index] ? styles.inputFormImageValidate : styles.inputForm
+                        }
                         onChange={(event) => {
                           const { value: fieldValue } = event.target;
                           this.handleFieldChange(index, 'visaNumber', fieldValue);
@@ -314,7 +340,10 @@ class VisaGeneral extends Component {
                     {!item.urlFile ? (
                       <div className={styles.textUpload}>
                         <UploadImage
-                          content="Choose file"
+                          content={this.handleShowContent(checkValidate)}
+                          setSizeImageMatch={(isImage5M) =>
+                            this.handleGetSetSizeImage(index, isImage5M)
+                          }
                           getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
                           loading={loading}
                         />

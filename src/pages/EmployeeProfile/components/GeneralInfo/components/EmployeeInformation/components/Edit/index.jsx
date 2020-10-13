@@ -28,7 +28,9 @@ import styles from './index.less';
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLt5M: true,
+    };
   }
 
   handleChange = (changedValues) => {
@@ -127,6 +129,18 @@ class Edit extends PureComponent {
         },
       }).then((id) => this.handleAdd(id));
     } else {
+      if (AdhaarCard.document === null) {
+        dispatch({
+          type: 'employeeProfile/fetchDocumentAdd',
+          payload: {
+            key: 'Adhaar Card',
+            attachment: file.id,
+            employeeGroup: 'Identity',
+            parentEmployeeGroup: 'Indentification Documents',
+            employee: idCurrentEmployee,
+          },
+        }).then((id) => this.handleAddDocument(id));
+      }
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: {
@@ -135,6 +149,24 @@ class Edit extends PureComponent {
         },
       }).then((doc) => this.handleUpdate(doc));
     }
+  };
+
+  handleAddDocument = (id) => {
+    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
+    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
+    const getNewAdhaarCard =
+      adhaarCardNumberTemp !== adhaarCardNumberOrigin
+        ? adhaarCardNumberTemp
+        : adhaarCardNumberOrigin;
+    dispatch({
+      type: 'employeeProfile/fetchAdhaarcardUpdate',
+      payload: {
+        document: id,
+        id: AdhaarCard._id,
+        adhaarNumber: getNewAdhaarCard,
+      },
+    });
   };
 
   handleGetUpLoad = (resp) => {
@@ -191,7 +223,12 @@ class Edit extends PureComponent {
     });
   };
 
+  handleGetSetSizeImage = (isLt5M) => {
+    this.setState({ isLt5M });
+  };
+
   render() {
+    const { isLt5M } = this.state;
     const { generalData, loading, handleCancel = () => {} } = this.props;
     const {
       urlFile = '',
@@ -296,14 +333,15 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} />
+              <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
             </Form.Item>
             <>
               {urlFile === '' ? (
                 <div className={styles.textUpload}>
                   <UploadImage
-                    content="Choose file"
+                    content={isLt5M ? 'Choose file' : `Retry`}
                     name="adhaarCard"
+                    setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                     getResponse={(resp) => this.handleGetUpLoad(resp)}
                   />
                 </div>
@@ -364,6 +402,7 @@ class Edit extends PureComponent {
               htmlType="submit"
               className={styles.buttonFooter}
               loading={loading}
+              disabled={isLt5M === false}
             >
               Save
             </Button>
