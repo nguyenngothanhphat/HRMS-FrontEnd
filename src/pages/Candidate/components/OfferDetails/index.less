@@ -1,0 +1,218 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@border-color: #d6dce0;
+@black: #161c29;
+@gray: #707177;
+@dark-orange: #e08e00;
+@header-color: #161c29;
+@orange: #ffa100;
+
+.offerDetailsContainer {
+  background-color: white;
+  border: 1px solid @border-color;
+  font-family: 'Roboto', sans-serif;
+
+  h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: @black;
+  }
+
+  h4 {
+    font-size: 13px;
+    color: black;
+    font-weight: normal;
+    margin-top: 16px;
+  }
+
+  p {
+    font-size: 13px;
+    color: @gray;
+    margin-top: 16px;
+  }
+
+  .file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    border-radius: 5px;
+    border: solid 1px #d6dce4;
+    margin-top: 16px;
+    width: 347px;
+    overflow-x: hidden;
+
+    span {
+      font-size: 14px;
+      color: #2c6df9;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    img {
+      width: auto;
+      height: 25px;
+    }
+  }
+
+  .offerDetails {
+    .header {
+      padding: 32px;
+      border-bottom: 1px solid @border-color;
+    }
+
+    .agreement {
+      margin: 32px;
+      border-bottom: 1px solid @border-color;
+    }
+
+    .handbook {
+      margin: 32px;
+    }
+  }
+
+  .signature {
+    // border-radius: 5px;
+    // border: solid 1px @border-color;
+    background-color: white;
+    // padding: 25px;
+
+    // header {
+    //   display: flex;
+    //   align-items: center;
+
+    //   * {
+    //     margin: 0;
+    //     padding: 0;
+    //   }
+
+    //   h2 {
+    //     font-weight: 500;
+    //     font-size: 18px;
+    //     color: @header-color;
+    //     margin-left: 16px;
+    //   }
+
+    //   .icon {
+    //     .bigGlow,
+    //     .smallGlow {
+    //       border-radius: 50%;
+    //     }
+
+    //     .bigGlow {
+    //       width: 64px;
+    //       height: 64px;
+    //       background-color: @big-glow;
+
+    //       display: flex;
+    //       align-items: center;
+    //       justify-content: center;
+
+    //       .smallGlow {
+    //         width: 41px;
+    //         height: 41px;
+    //         background-color: @small-glow;
+
+    //         display: flex;
+    //         align-items: center;
+    //         justify-content: center;
+
+    //         svg {
+    //           width: 18px;
+    //           height: 18px;
+    //           fill: @blue;
+    //         }
+    //       }
+
+    //       &:hover {
+    //         cursor: pointer;
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  .signature {
+    margin-bottom: 16px;
+
+    p {
+      margin-top: 24px;
+      font-size: 13px;
+      color: #707177;
+    }
+
+    .upload {
+      border: 1px solid #d6dce4;
+      padding: 23px 28px 15px 28px;
+      border-style: dashed;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+
+      .signatureImg {
+        width: 212px;
+        height: 85px;
+        border: 0;
+        outline: none;
+      }
+
+      button {
+        color: blue;
+        font-weight: 500;
+        font-size: 16px;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin: 0 auto;
+        margin-top: 10px;
+      }
+    }
+
+    .uploadInput {
+      display: none;
+    }
+
+    .submitContainer {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      button {
+        // padding: 12px 24px;
+        width: 94px;
+        height: 40px;
+        background-color: @orange;
+        border-radius: 25px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in;
+
+        span {
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
+        }
+
+        &.active {
+          &:hover {
+            background-color: @dark-orange;
+          }
+        }
+
+        &.disable {
+          opacity: 0.5;
+        }
+      }
+
+      span {
+        color: #47c97f;
+        font-size: 13px;
+      }
+    }
+  }
+}

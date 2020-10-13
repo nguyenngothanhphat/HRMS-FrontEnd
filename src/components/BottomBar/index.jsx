@@ -191,7 +191,7 @@ class BottomBar extends PureComponent {
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-    console.log(`hihi ${filledCandidateBasicInformation}`);
+    // console.log(`hihi ${filledCandidateBasicInformation}`);
     if (currentPage === HR.basicInformation) {
       return (
         <Button
@@ -207,7 +207,7 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === CANDIDATE.basicInformation) {
-      console.log('abcsd');
+      // console.log('abcsd');
 
       return (
         <Button
