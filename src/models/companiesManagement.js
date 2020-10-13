@@ -8,6 +8,7 @@ import {
 const companiesManagement = {
   namespace: 'companiesManagement',
   state: {
+    currentStep: 0,
     isModified: false,
     activeCompaniesList: [],
     inActiveCompaniesList: [],
