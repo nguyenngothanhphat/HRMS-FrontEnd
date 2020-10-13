@@ -9,7 +9,11 @@ import styles from './index.less';
 
 class CustomFields extends PureComponent {
   handleAddNewSection = () => {
-    history.push('/employee-onboarding/CreateField');
+    history.push('/employee-onboarding/CreateFieldSection');
+  };
+
+  handleAddNewField = () => {
+    history.push('/employee-onboarding/CreateNewField');
   };
 
   render() {
@@ -84,7 +88,7 @@ class CustomFields extends PureComponent {
               <Button className={styles.buttonAddNewSection} onClick={this.handleAddNewSection}>
                 {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewSection' })}
               </Button>
-              <Button className={styles.buttonAddNewField}>
+              <Button className={styles.buttonAddNewField} onClick={this.handleAddNewField}>
                 {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewField' })}
               </Button>
             </div>

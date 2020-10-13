@@ -119,7 +119,9 @@
     align-items: center;
     width: 188px;
     height: 34px;
-    background-image: url('./backgroundImage/Rectangle-customField.svg');
+    margin-top: 34px;
+    margin-bottom: 25px;
+    background-image: url('../backgroundImage/Rectangle-customField.svg');
   }
   .switchField > .itemField1 {
     width: 50%;
@@ -138,7 +140,7 @@
     margin: 0 -15px;
     font-size: 13px;
     font-weight: 500;
-    background-image: url('./backgroundImage/Rectangle-item.svg');
+    background-image: url('../backgroundImage/Rectangle-item.svg');
     background-repeat: no-repeat;
     background-size: 99px 40px;
     color: #ffffff;
@@ -158,5 +160,43 @@
     color: #161c29;
     transition: 0.35s ease-in-out 0s;
     cursor: pointer;
+  }
+  .selectFilter {
+    margin: 17px 0;
+    &1 {
+      width: 241px;
+    }
+    &2 {
+      width: 90px;
+      margin: 0 23.5px;
+    }
+    &3 {
+      width: 362px;
+      margin-right: 24px;
+    }
+    :global {
+      .ant-select-selector {
+        height: 42px;
+        border-radius: 5px;
+        border: solid 1px #d6dce0;
+        background-color: #ffffff;
+      }
+      .ant-select-selection-item {
+        padding-top: 5px;
+        font-size: 14px;
+        color: #161c29;
+      }
+      .ant-select-selection-placeholder {
+        padding-top: 5px;
+      }
+    }
+  }
+  .line {
+    opacity: 0.5;
+    border: solid 1px #d6dce0;
+  }
+  .line:last-child {
+    opacity: none;
+    border: none;
   }
 }

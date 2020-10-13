@@ -25,4 +25,16 @@ export default {
     'Who does this apply to?  You may have fields which might be applicable for only certain employees. You can customize the field to make sure you are asking for this information when its needed.',
   'pages.EmployeeOnboardingCustomField.Save&Return': 'Save & Return',
   'pages.EmployeeOnboardingCustomField.Cancel': 'Cancel',
+  'pages.EmployeeOnboardingCustomField.paragarph':
+    'Collect and store information from your company’s workforce. For ex : if an employee needs a license to do their job, have them enter their license during onboarding. Add your own unique prompts or questions and set the rule for who completes the information and when. ',
+  'pages.EmployeeOnboardingCustomField.FillingOutTheField': 'Filling out the field',
+  'pages.EmployeeOnboardingCustomField.Prompt': 'Prompt',
+  'pages.EmployeeOnboardingCustomField.note':
+    'You can phrase this as either as a simple prompt like “employee id #” or  a question like “what is the employee id?”',
+  'pages.EmployeeOnboardingCustomField.HelpText': 'Help text (optional)',
+  'pages.EmployeeOnboardingCustomField.note2':
+    'If you would like to add additional text to clarify your question or prompt',
+  'pages.EmployeeOnboardingCustomField.Helpmedia': 'Help media (optional)',
+  'pages.EmployeeOnboardingCustomField.note3':
+    'If you would like to add additional media file to show your future employee, upload below.',
 };

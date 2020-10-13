@@ -165,9 +165,16 @@ const routes = [
             authority: ['customer'],
           },
           {
-            path: '/employee-onboarding/CreateField',
+            path: '/employee-onboarding/CreateFieldSection',
             name: 'Createcustomfieldsection',
-            component: './EmployeeOnboarding/components/CustomFields/components/CreateField',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateFieldSection',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-onboarding/CreateNewField',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateNewField',
             hideInMenu: true,
             authority: ['customer'],
           },

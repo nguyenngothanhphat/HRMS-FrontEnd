@@ -2,10 +2,11 @@ import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
-import { Button, Input, Radio } from 'antd';
+import { Button, Input, Radio, Select } from 'antd';
+import iconCancel from '@/assets/iconCancelCustomField.svg';
 import styles from './index.less';
 
-class index extends PureComponent {
+class CreateFieldSection extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,13 +21,12 @@ class index extends PureComponent {
   };
 
   onClickChange = (item) => {
-    console.log(item);
     this.setState({ itemField: item });
   };
 
   render() {
     const { name, itemField } = this.state;
-    console.log(name, itemField);
+    const { Option } = Select;
     return (
       <PageContainer>
         <div className={styles.CreateACustomFieldSection}>
@@ -150,28 +150,53 @@ class index extends PureComponent {
                     </Radio>
                   </Radio.Group>
                   {name === 'certain people only' ? (
-                    <div className={styles.switchField}>
-                      <div
-                        className={
-                          itemField === 'all'
-                            ? `${styles.itemField1Active}`
-                            : `${styles.itemField1}`
-                        }
-                        onClick={() => this.onClickChange('all')}
-                      >
-                        All of this
+                    <>
+                      <div className={styles.switchField}>
+                        <div
+                          className={
+                            itemField === 'all'
+                              ? `${styles.itemField1Active}`
+                              : `${styles.itemField1}`
+                          }
+                          onClick={() => this.onClickChange('all')}
+                        >
+                          All of this
+                        </div>
+                        <div
+                          className={
+                            itemField === 'any'
+                              ? `${styles.itemField1Active}`
+                              : `${styles.itemField1}`
+                          }
+                          onClick={() => this.onClickChange('any')}
+                        >
+                          Any of this
+                        </div>
                       </div>
-                      <div
-                        className={
-                          itemField === 'any'
-                            ? `${styles.itemField1Active}`
-                            : `${styles.itemField1}`
-                        }
-                        onClick={() => this.onClickChange('any')}
-                      >
-                        Any of this
+                      <div>
+                        <div className={styles.selectFilter}>
+                          <Select
+                            defaultValue="Department"
+                            className={styles.selectFilter1}
+                            allowClear
+                          >
+                            <Option value="Department">Department</Option>
+                          </Select>
+                          <Select defaultValue="is" className={styles.selectFilter2} allowClear>
+                            <Option value="is">is</Option>
+                          </Select>
+                          <Select
+                            defaultValue="UX & Research"
+                            className={styles.selectFilter3}
+                            allowClear
+                          >
+                            <Option value="UX & Research">UX & Research</Option>
+                          </Select>
+                          <img src={iconCancel} alt="not found" />
+                        </div>
+                        <div className={styles.line} />
                       </div>
-                    </div>
+                    </>
                   ) : (
                     ''
                   )}
@@ -193,4 +218,4 @@ class index extends PureComponent {
   }
 }
 
-export default index;
+export default CreateFieldSection;
