@@ -238,22 +238,22 @@ const employeeList = rookieList.filter(
 );
 
 // Mock data for table
-let sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
-let receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
-let eligibleCandidatesData = rookieList;
-let ineligibleCandidatesData = rookieList;
-let sentProvisionalOffersData = rookieList; // Provisional Offers
-let receivedProvisionalOffersData = rookieList; // Provisional Offers
-let discardedProvisionalOffersData = employeeList;
-let approvedFinalOffersData = employeeList; // Awaiting Approvals
-let pendingApprovalsData = employeeList; // Awaiting Approvals
-let rejectFinalOfferData = employeeList; // Awaiting Approvals
-let acceptedFinalOffersData = employeeList; // Final Offers
-let sentFinalOffersData = rookieList; // Final Offers
-let finalOfferDraftsData = employeeList;
-let discardedFinalOffersData = rookieList;
+const sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
+const receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
+const eligibleCandidatesData = rookieList;
+const ineligibleCandidatesData = rookieList;
+const sentProvisionalOffersData = rookieList; // Provisional Offers
+const receivedProvisionalOffersData = rookieList; // Provisional Offers
+const discardedProvisionalOffersData = employeeList;
+const approvedFinalOffersData = employeeList; // Awaiting Approvals
+const pendingApprovalsData = employeeList; // Awaiting Approvals
+const rejectFinalOfferData = employeeList; // Awaiting Approvals
+const acceptedFinalOffersData = employeeList; // Final Offers
+const sentFinalOffersData = rookieList; // Final Offers
+const finalOfferDraftsData = employeeList;
+const discardedFinalOffersData = rookieList;
 
-let PHASE_DATA = [
+const PHASE_DATA = [
   {
     id: 1,
     title: 'phase 1',
@@ -392,12 +392,12 @@ const formatDay = (day) => {
 };
 
 const formatDate = (date) => {
-  let dateObj = new Date(date);
-  let month = dateObj.getUTCMonth() + 1; //months from 1-12
-  let day = dateObj.getUTCDate();
-  let year = dateObj.getUTCFullYear();
+  const dateObj = new Date(date);
+  const month = dateObj.getUTCMonth() + 1; // months from 1-12
+  const day = dateObj.getUTCDate();
+  const year = dateObj.getUTCFullYear();
 
-  let newDate = `${formatDay(day)} ${formatMonth(month)}, ${year}`;
+  const newDate = `${formatDay(day)} ${formatMonth(month)}, ${year}`;
   return newDate;
 };
 
@@ -628,7 +628,7 @@ const onboard = {
         const response = yield call(getOnboardingList, req);
         // console.log(response);
         const returnedData = formatData(response.data);
-        const { statusCode, data: employeetype = [] } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
         const {
@@ -818,6 +818,8 @@ const onboard = {
             });
             return;
           }
+          default:
+            return;
         }
       } catch (errors) {
         dialog(errors);

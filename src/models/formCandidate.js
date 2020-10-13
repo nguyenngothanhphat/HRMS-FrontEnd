@@ -18,15 +18,20 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
+import { getRookieInfo } from '@/services/formCandidate';
+
 const info = {
   namespace: 'info',
   state: {
+    rookieId: '',
+
     basicInformation: {
       fullName: '',
       privateEmail: '',
       workEmail: '',
       experienceYear: '',
     },
+
     offerDetail: {
       includeOffer: false,
       file: 'Template.docx',
@@ -36,6 +41,7 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+
     eligibilityDocs: {
       email: '',
       generateLink: '',
@@ -81,6 +87,7 @@ const info = {
         },
       },
     },
+
     jobDetail: {
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -91,15 +98,18 @@ const info = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
+
     salaryStructure: {
       rejectComment: '',
     },
+
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
       salaryStatus: 2,
     },
+
     previewOffer: {
       file: '',
       file2: '',
@@ -115,6 +125,7 @@ const info = {
       city2: '',
       mail: '',
     },
+
     benefits: {
       medical: false,
       life: false,
@@ -285,12 +296,12 @@ const info = {
 
     *fetchCandidateInfo({ payload }, { call, put }) {
       try {
-        // yield put({
-        //   type: 'saveSentEligibilityForms',
-        //   payload: returnedData,
-        // });
-        console.log(history);
-        const rookieId = '123';
+        const response = yield call(getRookieInfo);
+        const { data } = response;
+        const { ticketID = '' } = data;
+        // console.log(response);
+        const rookieId = ticketID;
+        yield put({ type: 'save', payload: { rookieId } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
