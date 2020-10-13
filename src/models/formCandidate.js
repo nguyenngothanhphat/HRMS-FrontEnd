@@ -347,7 +347,4 @@ const info = {
     },
   },
 };
-
-const candidate = {};
-// export { info, candidate };
 export default info;
