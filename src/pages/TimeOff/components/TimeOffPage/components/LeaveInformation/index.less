@@ -38,12 +38,30 @@
         font-size: 35px;
       }
     }
-    .collapseInformationBtn {
+    :global {
+      .ant-collapse {
+        background-color: white;
+        > .ant-collapse {
+          border: none;
+        }
+      }
+      .ant-collapse-borderless > .ant-collapse-item {
+        border: none;
+      }
+      .ant-collapse-header {
+        text-align: center;
+      }
+      .ant-collapse-content > .ant-collapse-content-box {
+        padding: 0;
+      }
+    }
+    .showBtn {
+      cursor: pointer;
       span {
         font-weight: bold;
         color: #2c6df9;
         text-decoration: underline;
-        cursor: pointer;
+        margin-right: 10px;
       }
     }
   }

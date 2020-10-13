@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Row } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Row, Collapse } from 'antd';
+import { InfoCircleOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
 
 import styles from './index.less';
+
+const { Panel } = Collapse;
 
 const CollapseInformation = () => {
   return (
@@ -71,8 +73,17 @@ export default class LeaveInformation extends PureComponent {
     });
   };
 
-  render() {
+  renderHeader = () => {
     const { show } = this.state;
+    return (
+      <div className={styles.showBtn}>
+        <span>View Leave breakdown</span>
+        {show ? <DownOutlined /> : <UpOutlined />}
+      </div>
+    );
+  };
+
+  render() {
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
@@ -82,14 +93,15 @@ export default class LeaveInformation extends PureComponent {
             <span className={styles.text2}>Remaining out of</span>
             <span className={styles.text3}>25</span>
           </div>
-          <div className={styles.collapseInformationBtn}>
-            <span onClick={this.handleShow}>View Leave Breakdown</span>
-          </div>
+          <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['1']}>
+            <Panel showArrow={false} header={this.renderHeader()} key="1">
+              <CollapseInformation />
+            </Panel>
+          </Collapse>
         </div>
         <div className={styles.infoIcon}>
           <InfoCircleOutlined />
         </div>
-        {show ? <CollapseInformation /> : ''}
       </div>
     );
   }
