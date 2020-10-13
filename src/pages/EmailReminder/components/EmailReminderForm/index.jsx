@@ -12,10 +12,25 @@ class EmailReminderForm extends PureComponent {
     super(props);
 
     this.state = {
-      formData: {
-        appliesTo: '',
-        emailMessage: '',
-      },
+      conditionsData: [
+        {
+          unit: '',
+          tobeVerb: '',
+          department: '',
+        },
+        {
+          unit: '',
+          tobeVerb: '',
+          department: '',
+        },
+        {
+          unit: '',
+          tobeVerb: '',
+          department: '',
+        },
+      ],
+      appliesToData: '',
+      emailMessage: '',
       triggerEventItem: [
         {
           name: 'Person starts work',
@@ -70,36 +85,220 @@ class EmailReminderForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
+      receipients: [
+        {
+          name: 'The person (The triggering person)',
+          value: 'The person (The triggering person)',
+        },
+        {
+          name: 'Manager (The person’s manager)',
+          value: 'Manager (The person’s manager)',
+        },
+        {
+          name: 'Admin (All admins)',
+          value: 'Admin (All admins)',
+        },
+        {
+          name: 'UX & Research (everyone)',
+          value: 'UX & Research (everyone)',
+        },
+        {
+          name: 'Visual Design (everyone)',
+          value: 'Visual Design (everyone)',
+        },
+        {
+          name: 'Sales & Marketing (everyone)',
+          value: 'Sales & Marketing (everyone)',
+        },
+        {
+          name: 'Business Development (everyone)',
+          value: 'Business Development (everyone)',
+        },
+        {
+          name: 'Front end (everyone)',
+          value: 'Front end (everyone)',
+        },
+        {
+          name: 'Engineering (everyone)',
+          value: 'Engineering (everyone)',
+        },
+      ],
+      conditions: {
+        units: [
+          {
+            name: 'Department',
+            value: 'Department',
+          },
+          {
+            name: 'Location',
+            value: 'Location',
+          },
+          {
+            name: 'Employment type',
+            value: 'Employment type',
+          },
+          {
+            name: 'Compensation type',
+            value: 'Compensation type',
+          },
+          {
+            name: 'Title',
+            value: 'Title',
+          },
+          {
+            name: 'Salary',
+            value: 'Salary',
+          },
+        ],
+        toBeVerbs: [
+          {
+            name: 'is',
+            value: 'is',
+          },
+          {
+            name: 'is in',
+            value: 'is in',
+          },
+        ],
+        departments: [
+          {
+            name: 'UX & Research',
+            value: 'UX & Research',
+          },
+          {
+            name: 'Visual Design',
+            value: 'Visual Design',
+          },
+          {
+            name: 'Sales & Marketing',
+            value: 'Sales & Marketing',
+          },
+          {
+            name: 'Business Development',
+            value: 'Business Development',
+          },
+          {
+            name: 'Front end',
+            value: 'Front end',
+          },
+          {
+            name: 'Engineering',
+            value: 'Engineering',
+          },
+        ],
+      },
     };
   }
 
   handleChangeApply = (value) => {
     this.setState({
-      formData: {
-        appliesTo: value,
-      },
+      appliesToData: value,
     });
   };
 
   handleChangeEmail = (value) => {
     this.setState({
-      formData: {
-        emailMessage: value,
-      },
+      emailMessage: value,
     });
   };
 
   onFinish = (values) => {
-    console.log('Success:', values);
+    const { emailMessage = '' } = this.state;
+    const payload = { ...values, emailMessage };
+    console.log('Success:', payload);
+  };
+
+  onChangeCondition = (index, name, value) => {
+    const { conditionsData } = this.state;
+    console.log(index, name, value);
+    const newConditionsData = [...conditionsData];
+    newConditionsData[index][name] = value;
+    console.log(newConditionsData);
+    this.setState({
+      conditionsData: newConditionsData,
+    });
+  };
+
+  _renderConditions = () => {
+    const { Option } = Select;
+    const {
+      conditionsData,
+      conditions: { units = [], toBeVerbs = [], departments = [] },
+    } = this.state;
+    return (
+      <Col span={24}>
+        <Form.Item label="Conditions: Trigger for someone if">
+          {conditionsData.map((data, index) => {
+            return (
+              <Row gutter={[24, 12]}>
+                {/* Units  */}
+                <Col span={9}>
+                  <Select
+                    size="large"
+                    value={data.unit}
+                    onChange={(value) => this.onChangeCondition(index, 'unit', value)}
+                  >
+                    {units.map((unit) => {
+                      return <Option value={unit.value}>{unit.name}</Option>;
+                    })}
+                  </Select>
+                </Col>
+
+                {/* To be verbs  */}
+                <Col span={4}>
+                  <Select
+                    size="large"
+                    value={data.toBeVerb}
+                    onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
+                  >
+                    {toBeVerbs.map((toBeVerb) => {
+                      return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
+                    })}
+                  </Select>
+                </Col>
+
+                {/* Departments  */}
+                <Col span={11}>
+                  <Select
+                    size="large"
+                    value={data.department}
+                    onChange={(value) => this.onChangeCondition(index, 'department', value)}
+                  >
+                    {departments.map((department) => {
+                      return <Option value={department.value}>{department.name}</Option>;
+                    })}
+                  </Select>
+                </Col>
+              </Row>
+            );
+          })}
+        </Form.Item>
+      </Col>
+    );
   };
 
   _renderApplyToOptions = () => {
-    const { formData } = this.state;
-    if (formData.appliesTo === 'Any Person') {
-      return <p>Any Person</p>;
+    const { Option } = Select;
+    const { appliesToData, receipients } = this.state;
+    if (appliesToData === 'Any Person') {
+      return (
+        // Receipients
+        <>
+          <Col span={12}>
+            <Form.Item label="Receipients" name="receipients">
+              <Select size="large" placeholder="Please select a choice">
+                {receipients.map((option) => {
+                  return <Option value={option.value}>{option.name}</Option>;
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12} />
+        </>
+      );
     }
-    if (formData.appliesTo === 'Create a condition') {
-      return <p>Create a condition</p>;
+    if (appliesToData === 'Create a condition') {
+      return this._renderConditions();
     }
     return null;
   };
@@ -107,14 +306,15 @@ class EmailReminderForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const {
-      formData,
+      // formData,
       triggerEventItem,
       frequencyItem,
       sendingDate,
       appliesTo,
       sendToWorker,
+      emailMessage,
     } = this.state;
-    const { emailMessage } = formData;
+    // const { emailMessage } = formData;
     return (
       <Form onFinish={this.onFinish}>
         <Row gutter={[36, 6]}>
@@ -171,7 +371,9 @@ class EmailReminderForm extends PureComponent {
             </Form.Item>
           </Col>
 
-          <Col span={24}>{this._renderApplyToOptions()}</Col>
+          <Col span={12} />
+
+          {this._renderApplyToOptions()}
 
           {/* Send to existing workers */}
           <Col span={12}>
@@ -193,13 +395,13 @@ class EmailReminderForm extends PureComponent {
 
           {/* Email message */}
           <Col span={24}>
-            <Form.Item name="emailMessage" label="Email message">
-              <ReactQuill
-                className={styles.quill}
-                value={emailMessage}
-                onChange={this.handleChangeEmail}
-              />
-            </Form.Item>
+            {/* <Form.Item name="emailMessage" label="Email message"> */}
+            <ReactQuill
+              className={styles.quill}
+              value={emailMessage}
+              onChange={this.handleChangeEmail}
+            />
+            {/* </Form.Item> */}
           </Col>
 
           <Form.Item>
