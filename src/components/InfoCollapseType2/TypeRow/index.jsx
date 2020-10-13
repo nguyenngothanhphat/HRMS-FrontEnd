@@ -5,6 +5,7 @@ import FileIcon from '@/assets/pdf_icon.png';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownArrowIcon from '@/assets/downArrow.svg';
 import UpArrowIcon from '@/assets/upArrow.svg';
+import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -13,10 +14,6 @@ const CollapseRow = (props) => {
   const { data = [], onFileClick } = props;
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
-
-  const handleDownloadClick = () => {
-    alert('Downloading');
-  };
 
   const handleMenuClick = (event) => {
     event.stopPropagation();
@@ -83,6 +80,10 @@ const CollapseRow = (props) => {
     }
   };
 
+  const renderDownloadIcon = () => (
+    <img alt="download" src={DownloadIcon} className={styles.downloadButton} />
+  );
+
   return (
     <Collapse
       defaultActiveKey={['1']}
@@ -114,12 +115,7 @@ const CollapseRow = (props) => {
             <Col span={7}>{file.date}</Col>
             <Col span={2}>
               <div className={styles.downloadFile}>
-                <img
-                  alt="download"
-                  src={DownloadIcon}
-                  className={styles.downloadButton}
-                  onClick={handleDownloadClick}
-                />
+                <DownloadFile content={renderDownloadIcon()} url={file.source} />
               </div>
             </Col>
           </Row>

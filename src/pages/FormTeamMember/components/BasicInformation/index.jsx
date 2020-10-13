@@ -9,9 +9,10 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
+@connect(({ info: { basicInformation, checkMandatory, currentStep = 0 } = {} }) => ({
   basicInformation,
   checkMandatory,
+  currentStep,
 }))
 class BasicInformation extends PureComponent {
   constructor(props) {
@@ -29,41 +30,54 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
-  handleChange = (e) => {
-    const { target } = e;
-    const { name, value } = target;
+  handleChange = (_, allValues) => {
     const { dispatch, checkMandatory } = this.props;
-
-    const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
-
-    const { basicInformation = {} } = this.state;
-    basicInformation[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '' } = basicInformation;
-
-    if (
-      fullName !== '' &&
-      workEmail !== '' &&
-      privateEmail !== '' &&
-      emailRegExp.test(privateEmail)
-    ) {
-      checkMandatory.filledBasicInformation = true;
-    } else {
-      checkMandatory.filledBasicInformation = false;
-    }
-
+    const { fullName = '', workEmail = '', privateEmail = '' } = allValues;
+    const check = fullName !== '' && workEmail !== '' && privateEmail !== '';
     dispatch({
       type: 'info/saveBasicInformation',
       payload: {
-        basicInformation,
         checkMandatory: {
           ...checkMandatory,
+          filledBasicInformation: check,
         },
       },
     });
   };
 
+  // handleChange = (e) => {
+  //   const { target } = e;
+  //   const { name, value } = target;
+  //   const { dispatch, checkMandatory } = this.props;
+
+  //   const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
+
+  //   const { basicInformation1 = {} } = this.state;
+  //   const abc = { ...basicInformation1 };
+  //   abc[name] = value;
+  //   // const { fullName = '', workEmail = '', privateEmail = '' } = abc;
+  //   console.log(abc);
+  //   // const filledBasicInformation = fullName !== '' && workEmail !== '' && privateEmail !== '';
+  //   // console.log(filledBasicInformation);
+  //   // dispatch({
+  //   //   type: 'info/saveBasicInformation',
+  //   //   payload: {
+  //   //     checkMandatory: {
+  //   //       ...checkMandatory,
+  //   //       filledBasicInformation,
+  //   //     },
+  //   //   },
+  //   // });
+  // };
+
   onFinish = (values) => {
-    console.log('Success:', values);
+    const { dispatch, currentStep } = this.props;
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
   };
 
   onClickClose = () => {
@@ -93,7 +107,7 @@ class BasicInformation extends PureComponent {
               rules={[{ required: true, message: `'Please input your full name!'` }]}
             >
               <Input
-                onChange={(e) => this.handleChange(e)}
+                // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
               />
@@ -118,7 +132,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
-                onChange={(e) => this.handleChange(e)}
+                // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
                 // defaultValue={privateEmail}
@@ -133,9 +147,19 @@ class BasicInformation extends PureComponent {
               label={formatMessage({ id: 'component.basicInformation.workEmail' })}
               className={styles.formInput__email}
               name="workEmail"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your email!',
+                },
+                {
+                  type: 'email',
+                  message: 'Email invalid!',
+                },
+              ]}
             >
               <Input
-                onChange={(e) => this.handleChange(e)}
+                // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
                 // suffix="@terralogic.com"
@@ -161,7 +185,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
-                onChange={(e) => this.handleChange(e)}
+                // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="experienceYear"
                 // defaultValue={experienceYear}
@@ -240,6 +264,7 @@ class BasicInformation extends PureComponent {
               name="basic"
               initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
               onFocus={this.onFocus}
+              onValuesChange={this.handleChange}
               onFinish={this.onFinish}
             >
               <div className={styles.basicInformation__top}>

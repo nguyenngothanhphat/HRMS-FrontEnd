@@ -137,6 +137,8 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    currentStep: 0,
+    displayComponent: {},
     testEligibility: [],
     departmentList: [],
     titleList: [],
