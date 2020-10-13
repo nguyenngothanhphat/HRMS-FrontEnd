@@ -140,7 +140,7 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/Setting',
             authority: ['admin-sa'],
           },
           {
