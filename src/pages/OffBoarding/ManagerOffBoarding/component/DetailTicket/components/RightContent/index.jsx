@@ -45,7 +45,7 @@ export default class RightContent extends Component {
 
   renderItem = (render) => {
     return (
-      <Row gutter={[0, 17]}>
+      <Row gutter={[10, 17]}>
         <Col span={4}>
           <img src={render.icon} alt="iconCheck" />
         </Col>

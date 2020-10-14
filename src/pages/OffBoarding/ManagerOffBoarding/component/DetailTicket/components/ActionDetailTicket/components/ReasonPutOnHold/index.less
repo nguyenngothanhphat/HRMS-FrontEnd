@@ -1,33 +1,41 @@
-.closingComments {
+.reasonPutOnHold {
   background-color: #ffffff;
-  min-height: 170px;
+  min-height: 220px;
   padding: 30px;
-  margin-bottom: 20px;
   &__title {
     font-weight: bold;
     font-size: 16px;
   }
-  &__textArea {
-    position: relative;
-    .btn__submit {
-      position: absolute;
-      top: 0;
-      right: 20px;
-      width: 100px;
-      height: 35px;
-      border: none;
-      color: #ffffff;
-      background: #ffa100;
-      border-radius: 25px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-weight: 500;
+  &__action {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    &__text {
+      font-size: 11px;
+      color: #707177;
+    }
+    &__btn {
+      .btn {
+        width: 100px;
+        height: 35px;
+        border-radius: 25px;
+        font-weight: 500;
+        border: none;
+      }
+      .btn__cancel {
+        .btn;
+        margin-right: 30px;
+        color: #464646;
+        background: rgba(86, 138, 250, 0.07);
+      }
+      .btn__submit {
+        .btn;
+        color: #ffffff;
+        background: #ffa100;
+      }
     }
   }
-  &__edit {
-    margin-right: 30px;
-    color: #ffa100;
-  }
+
   &__dateTime {
     span {
       font-weight: 500;
@@ -64,22 +72,5 @@
       text-overflow: ellipsis;
       font-style: italic;
     }
-  }
-}
-
-.notification {
-  position: fixed;
-  width: calc(100% - 73px);
-  padding: 30px;
-  bottom: 0;
-
-  &__content {
-    height: 70px;
-    border-radius: 5px;
-    width: 100%;
-    background-color: #d6dce0;
-    border: 1px solid rgba(86, 138, 250, 0.07);
-    box-sizing: border-box;
-    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
   }
 }

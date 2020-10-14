@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
-import { NavLink } from 'umi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ClosingComments from './components/ClosingComments';
+import ReasonPutOnHold from './components/ReasonPutOnHold';
 import styles from './index.less';
 
 class ActionDetailTicket extends PureComponent {
@@ -11,12 +11,22 @@ class ActionDetailTicket extends PureComponent {
     super(props);
     this.state = {
       isOpenSetMeeting: false,
+      isOpenClosingComments: false,
+      isDisplayBtnSetMeeting: true,
     };
   }
 
   setMeeting1on1 = () => {
     this.setState({
       isOpenSetMeeting: true,
+      isDisplayBtnSetMeeting: false,
+    });
+  };
+
+  startMeeting = () => {
+    this.setState({
+      isOpenClosingComments: true,
+      isOpenSetMeeting: false,
     });
   };
 
@@ -38,9 +48,9 @@ class ActionDetailTicket extends PureComponent {
           </div>
         </div>
         <div className={styles.schedule__link}>
-          <NavLink to="">
+          <span className={styles.schedule__link__text} onClick={this.startMeeting}>
             <u>Start meeting now !</u>
-          </NavLink>
+          </span>
         </div>
       </div>
     );
@@ -59,15 +69,23 @@ class ActionDetailTicket extends PureComponent {
   removeScheduleMeeting = () => {
     this.setState({
       isOpenSetMeeting: false,
+      isDisplayBtnSetMeeting: true,
     });
   };
 
   render() {
-    const { isOpenSetMeeting } = this.state;
+    const { isOpenSetMeeting, isOpenClosingComments, isDisplayBtnSetMeeting } = this.state;
+    const { handleDisplayNotifications, isOpenFormReason } = this.props;
     return (
       <div className={styles.actionDetailTicket}>
-        {isOpenSetMeeting ? this.renderScheduleMeeting() : this.renderBtnSetMeeting()}
-        <ClosingComments />
+        {isDisplayBtnSetMeeting ? this.renderBtnSetMeeting() : ''}
+        {isOpenSetMeeting && !isDisplayBtnSetMeeting ? this.renderScheduleMeeting() : ''}
+        {isOpenClosingComments ? (
+          <ClosingComments handleDisplayNotifications={handleDisplayNotifications} />
+        ) : (
+          ''
+        )}
+        {isOpenFormReason ? <ReasonPutOnHold /> : ''}
       </div>
     );
   }

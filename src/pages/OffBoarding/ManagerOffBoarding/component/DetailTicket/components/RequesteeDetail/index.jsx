@@ -24,18 +24,18 @@ class RequesteeDetail extends PureComponent {
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={5}>
             <p className={styles.requesteeDetail__text}>Employee ID</p>
-            <p>{employee._id}</p>
+            <span>{employee._id}</span>
           </Col>
           <Col span={7} className={styles.requesteeDetail__center}>
             <div style={{ display: 'flex' }}>
               <div className={styles.requesteeDetail__avatar} />
               <p className={styles.requesteeDetail__text}>Employee Name</p>
             </div>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
               <Avatar className={styles.requesteeDetail__avatar} icon={<UserOutlined />} />
-              <p>
+              <span>
                 <u>{employee.name}</u>
-              </p>
+              </span>
             </div>
           </Col>
           <Col span={8}>
@@ -56,22 +56,24 @@ class RequesteeDetail extends PureComponent {
               <div className={styles.requesteeDetail__avatar} />
               <p className={styles.requesteeDetail__text}>Project Manager</p>
             </div>
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
               <Avatar className={styles.requesteeDetail__avatar} icon={<UserOutlined />} />
-              <p>
+              <span>
                 <u>{project.manager}</u>
-              </p>
+              </span>
             </div>
           </Col>
           <Col span={8}>
             <p className={styles.requesteeDetail__text}>Project Health</p>
             <Progress percent={project.projectHealth} status="active" />
           </Col>
-          <Col span={4}>
-            <a>
-              <u>View report</u>
-            </a>
-          </Col>
+          <Row align="middle">
+            <Col>
+              <a>
+                <u>View report</u>
+              </a>
+            </Col>
+          </Row>
         </Row>
       </div>
     );
