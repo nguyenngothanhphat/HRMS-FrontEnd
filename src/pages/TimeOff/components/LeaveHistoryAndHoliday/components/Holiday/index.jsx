@@ -33,11 +33,11 @@ export default class Holiday extends PureComponent {
         {mockData.map((row) => {
           return (
             <Row className={styles.eachRow}>
-              <Col xs={3} className={styles.dateAndMonth}>
-                <span>{moment(row.time).locale('en').format('MM')}</span>
+              <Col xs={5} className={styles.dateAndMonth}>
+                <span>{moment(row.time).locale('en').format('MMMM')}</span>
                 <span>{moment(row.time).locale('en').format('DD')}</span>
               </Col>
-              <Col xs={16}>{row.name}</Col>
+              <Col xs={14}>{row.name}</Col>
               <Col className={styles.dayInWeek} xs={5}>
                 {moment(row.time).locale('en').format('dddd')}
               </Col>
