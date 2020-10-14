@@ -4,6 +4,7 @@ import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
+import TimeOffRequests from './components/TimeOffRequests';
 
 import styles from './index.less';
 
@@ -62,6 +63,11 @@ export default class TimeOffPage extends PureComponent {
                   buttonText="Request Compoff"
                   type={2}
                 />
+              </Col>
+            </Row>
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <TimeOffRequests />
               </Col>
             </Row>
           </Col>
