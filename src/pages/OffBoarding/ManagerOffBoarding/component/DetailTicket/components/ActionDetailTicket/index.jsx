@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import externalLinkIcon from '@/assets/external-link.svg';
+import removeIcon from '@/assets/remove-off-boarding.svg';
 import ClosingComments from './components/ClosingComments';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
+
 import styles from './index.less';
 
 class ActionDetailTicket extends PureComponent {
@@ -40,10 +41,10 @@ class ActionDetailTicket extends PureComponent {
               Scheduled on : 22.05.20 &nbsp; | &nbsp; <span>12PM</span>
             </span>
             <span className={styles.icon__external__link}>
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
+              <img src={externalLinkIcon} alt="external-link-icon" />
             </span>
             <span className={styles.icon__remove} onClick={this.removeScheduleMeeting}>
-              <FontAwesomeIcon icon={faTimes} />
+              <img src={removeIcon} alt="remove-icon" />
             </span>
           </div>
         </div>

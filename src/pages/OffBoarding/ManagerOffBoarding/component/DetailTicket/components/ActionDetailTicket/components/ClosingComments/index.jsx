@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Space, Input } from 'antd';
-import { faEdit, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import editIcon from '@/assets/edit-off-boarding.svg';
+import thumbsUpIcon from '@/assets/thumbs-up.svg';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -35,10 +35,8 @@ class ClosingComments extends PureComponent {
               <Row>
                 {isSumbit ? (
                   <div className={styles.closingComments__edit}>
-                    <Space>
-                      <FontAwesomeIcon icon={faEdit} />
-                      Edit
-                    </Space>
+                    <img src={editIcon} alt="edit-icon" />
+                    <span>Edit</span>
                   </div>
                 ) : (
                   ''
@@ -60,7 +58,7 @@ class ClosingComments extends PureComponent {
               </div>
               <div className={styles.closingComments__content__note}>
                 <Space>
-                  <FontAwesomeIcon icon={faThumbsUp} />
+                  <img src={thumbsUpIcon} alt="thumbs-up-icon" />
                   <span>
                     Your comment for the 1-on-1 with Venkat has been recorded. Venkat and the HR
                     manager will be able to view this comment.
