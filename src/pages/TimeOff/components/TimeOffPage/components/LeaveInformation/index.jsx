@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Collapse } from 'antd';
+import { Row, Collapse, Tooltip } from 'antd';
 import { InfoCircleOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
@@ -82,6 +82,10 @@ export default class LeaveInformation extends PureComponent {
     );
   };
 
+  moreInformationClick = () => {
+    alert('More information icon clicked');
+  };
+
   render() {
     return (
       <div className={styles.LeaveInformation}>
@@ -98,9 +102,12 @@ export default class LeaveInformation extends PureComponent {
             </Panel>
           </Collapse>
         </div>
-        <div className={styles.infoIcon}>
-          <InfoCircleOutlined />
-        </div>
+        <Tooltip title="More information">
+          <div onClick={this.moreInformationClick} className={styles.infoIcon}>
+            <InfoCircleOutlined />
+          </div>
+        </Tooltip>
+        ,
       </div>
     );
   }

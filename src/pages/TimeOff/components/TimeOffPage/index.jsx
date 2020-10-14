@@ -30,9 +30,9 @@ export default class TimeOffPage extends PureComponent {
     ];
     return (
       <div className={styles.TimeOffPage}>
-        <Row gutter={[16, 16]}>
+        <Row gutter={[20, 20]}>
           <Col xs={6}>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[20, 20]}>
               <Col span={24}>
                 <LeaveInformation />
               </Col>
@@ -45,7 +45,7 @@ export default class TimeOffPage extends PureComponent {
             </Row>
           </Col>
           <Col xs={18}>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[20, 20]}>
               <Col span={15}>
                 <ApplyRequest
                   title="Apply for Timeoff from Office"
@@ -65,7 +65,7 @@ export default class TimeOffPage extends PureComponent {
                 />
               </Col>
             </Row>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[20, 20]}>
               <Col span={24}>
                 <TimeOffRequests />
               </Col>

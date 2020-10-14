@@ -42,34 +42,23 @@ export default class LRTable extends PureComponent {
             <Avatar.Group
               maxCount={2}
               maxStyle={{
-                color: '#f56a00',
-                backgroundColor: '#fde3cf',
+                color: '#d6dce0',
+                backgroundColor: '#d6dce0',
               }}
             >
-              <Avatar
-                style={{
-                  backgroundColor: '#87d068',
-                }}
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
-              <Avatar
-                style={{
-                  backgroundColor: '#87d068',
-                }}
-                src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              />
-              <Tooltip title="Ant User" placement="top">
-                <Avatar
-                  style={{
-                    backgroundColor: '#87d068',
-                  }}
-                  src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                />
-              </Tooltip>
+              {assigned.map((value) => {
+                return (
+                  <Tooltip title={value.name} placement="top">
+                    <Avatar
+                      style={{
+                        backgroundColor: '#FFA100',
+                      }}
+                      src={value.imageUrl}
+                    />
+                  </Tooltip>
+                );
+              })}
             </Avatar.Group>
-            {/* {assigned.map((value) => {
-              return <span>{value.name} </span>;
-            })} */}
           </div>
         );
       },

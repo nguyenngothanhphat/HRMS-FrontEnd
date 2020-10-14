@@ -22,13 +22,13 @@ export default class TimeOffRequests extends PureComponent {
             <LeaveRequestTab />
           </TabPane>
           <TabPane tab="Special Leave Request" key="2">
-            <LeaveRequestTab />
+            <h2>Special Leave Request</h2>
           </TabPane>
           <TabPane tab="LWP Request" key="3">
-            <LeaveRequestTab />
+            <h2>LWP Request</h2>
           </TabPane>
           <TabPane tab="Compoff Request" key="4">
-            <LeaveRequestTab />
+            <h2>Compoff Request</h2>
           </TabPane>
         </Tabs>
       </div>
