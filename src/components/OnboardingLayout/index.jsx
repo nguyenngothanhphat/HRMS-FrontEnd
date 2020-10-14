@@ -42,6 +42,7 @@ const getComponent = (name) => {
   }
 };
 
+@connect()
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -73,11 +74,8 @@ class OnboardingLayout extends PureComponent {
 
   handleAddBtn = () => {
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
     dispatch({
-      type: 'info/fetchCandidateInfo',
+      type: 'candidateInfo/fetchCandidateInfo',
       payload: {},
     });
   };
@@ -135,7 +133,4 @@ class OnboardingLayout extends PureComponent {
   }
 }
 
-// export default OnboardingLayout;
-export default connect(({ info }) => ({
-  info,
-}))(OnboardingLayout);
+export default OnboardingLayout;

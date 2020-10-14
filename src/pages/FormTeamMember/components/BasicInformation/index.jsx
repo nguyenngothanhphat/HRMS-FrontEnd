@@ -9,8 +9,8 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
-  basicInformation,
+@connect(({ candidateInfo: { data, checkMandatory } = {} }) => ({
+  data,
   checkMandatory,
 }))
 class BasicInformation extends PureComponent {
@@ -23,8 +23,8 @@ class BasicInformation extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if ('basicInformation' in props) {
-      return { basicInformation: props.basicInformation || {} };
+    if ('data' in props) {
+      return { data: props.data, checkMandatory: props.checkMandatory || {} };
     }
     return null;
   }
@@ -32,14 +32,15 @@ class BasicInformation extends PureComponent {
   handleChange = (e) => {
     const { target } = e;
     const { name, value } = target;
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch } = this.props;
 
     const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
 
-    const { basicInformation = {} } = this.state;
-    basicInformation[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '' } = basicInformation;
-
+    const { data, checkMandatory } = this.state;
+    data[name] = value;
+    const { fullName = '', workEmail = '', privateEmail = '' } = data;
+    console.log('data', data);
+    console.log('check', checkMandatory);
     if (
       fullName !== '' &&
       workEmail !== '' &&
@@ -52,12 +53,10 @@ class BasicInformation extends PureComponent {
     }
 
     dispatch({
-      type: 'info/saveBasicInformation',
+      type: 'candidateInfo/save',
       payload: {
-        basicInformation,
-        checkMandatory: {
-          ...checkMandatory,
-        },
+        data,
+        checkMandatory,
       },
     });
   };
@@ -83,8 +82,8 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder, basicInformation = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
+    const { isOpenReminder, data = {} } = this.state;
+    const { fullName, privateEmail, workEmail, experienceYear } = data;
     return (
       <Form
         className={styles.basicInformation__form}
