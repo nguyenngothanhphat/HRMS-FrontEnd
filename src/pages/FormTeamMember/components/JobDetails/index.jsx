@@ -193,6 +193,7 @@ class JobDetails extends PureComponent {
     const { dispatch, currentStep, dataTest, reId } = this.props;
     const { data } = dataTest;
     const { jobDetail, company } = this.state;
+    console.log(company);
     dispatch({
       type: 'info/save',
       payload: {
