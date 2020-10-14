@@ -63,7 +63,7 @@ export default class FormTeamMember extends PureComponent {
       jobDetails: false,
       salaryStructure: false,
       backgroundCheck: false,
-      eligibilityDocuments: false,
+      // eligibilityDocuments: false,
       offerDetails: false,
       payrollSettings: false,
       benefits: false,
