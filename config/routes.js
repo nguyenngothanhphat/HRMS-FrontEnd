@@ -140,7 +140,7 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/Setting',
             authority: ['admin-sa'],
           },
           {
@@ -148,6 +148,13 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/directory.svg',
             component: './Directory',
+            authority: ['customer'],
+          },
+          {
+            path: '/time-off',
+            name: 'timeOff',
+            icon: '/assets/images/timeOff.svg',
+            component: './TimeOff',
             authority: ['customer'],
           },
           {
