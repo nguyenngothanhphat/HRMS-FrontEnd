@@ -20,15 +20,15 @@ export default class TimeOffRequests extends PureComponent {
         <Tabs tabBarGutter={40} defaultActiveKey="1" tabBarExtraContent={this.renderTableTitle}>
           <TabPane tab="Leave Request" key="1">
             <LeaveRequestTab />
-          </TabPane>{' '}
+          </TabPane>
           <TabPane tab="Special Leave Request" key="2">
-            Special Leave Request
-          </TabPane>{' '}
+            <LeaveRequestTab />
+          </TabPane>
           <TabPane tab="LWP Request" key="3">
-            LWP Request
-          </TabPane>{' '}
+            <LeaveRequestTab />
+          </TabPane>
           <TabPane tab="Compoff Request" key="4">
-            Compoff Request
+            <LeaveRequestTab />
           </TabPane>
         </Tabs>
       </div>
