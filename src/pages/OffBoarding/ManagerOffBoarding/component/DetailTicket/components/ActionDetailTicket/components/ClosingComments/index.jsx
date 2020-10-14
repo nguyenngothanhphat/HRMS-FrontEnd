@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Button, Row, Col, Space, Input } from 'antd';
 import editIcon from '@/assets/edit-off-boarding.svg';
 import thumbsUpIcon from '@/assets/thumbs-up.svg';
+import { formatMessage } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -30,7 +31,9 @@ class ClosingComments extends PureComponent {
       <>
         <div className={styles.closingComments}>
           <Row gutter={[0, 20]} justify="space-between">
-            <Col className={styles.closingComments__title}>Closing comments from 1-on-1</Col>
+            <Col className={styles.closingComments__title}>
+              {formatMessage({ id: 'pages.offBoarding.closingComments' })}
+            </Col>
             <Col>
               <Row>
                 {isSumbit ? (

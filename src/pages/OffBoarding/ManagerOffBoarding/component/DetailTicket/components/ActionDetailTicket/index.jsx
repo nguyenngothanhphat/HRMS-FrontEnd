@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
+import { formatMessage } from 'umi';
 import externalLinkIcon from '@/assets/external-link.svg';
 import removeIcon from '@/assets/remove-off-boarding.svg';
 import ClosingComments from './components/ClosingComments';
@@ -35,10 +36,13 @@ class ActionDetailTicket extends PureComponent {
     return (
       <div className={styles.actionDetailTicket__schedule}>
         <div className={styles.schedule__content}>
-          <span className={styles.actionDetailTicket__title}>1-on-1 meeting</span>
+          <span className={styles.actionDetailTicket__title}>
+            {formatMessage({ id: 'pages.offBoarding.1on1Meeting' })}
+          </span>
           <div className={styles.actionDetailTicket__dateTime}>
             <span>
-              Scheduled on : 22.05.20 &nbsp; | &nbsp; <span>12PM</span>
+              {formatMessage({ id: 'pages.offBoarding.scheduledOn' })} : 22.05.20 &nbsp; | &nbsp;{' '}
+              <span>12PM</span>
             </span>
             <span className={styles.icon__external__link}>
               <img src={externalLinkIcon} alt="external-link-icon" />

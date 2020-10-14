@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ActionDetailTicket from './components/ActionDetailTicket';
@@ -32,9 +33,11 @@ class DetailTicket extends PureComponent {
               By default notifications will be sent to HR, your manager and recursively loop to your
               department head.
             </span>
-            <span onClick={this.openFormReason}>Put on hold</span>
-            <span>Reject</span>
-            <span>Accept</span>
+            <span onClick={this.openFormReason}>
+              {formatMessage({ id: 'pages.offBoarding.putOnHold' })}
+            </span>
+            <span>{formatMessage({ id: 'pages.offBoarding.reject' })}</span>
+            <span>{formatMessage({ id: 'pages.offBoarding.accept' })}</span>
           </div>
         </div>
       </Row>

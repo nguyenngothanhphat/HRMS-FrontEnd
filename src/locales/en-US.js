@@ -17,6 +17,7 @@ import signUpPage from './en-US/signUpPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
 import employeeOnboarding from './en-US/employeeOnboarding';
 import templateDetails from './en-US/templateDetails';
+import offBoarding from './en-US/offBoarding';
 
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
@@ -52,6 +53,7 @@ export default {
   ...resetPasswordPage,
   ...employeeOnboarding,
   ...templateDetails,
+  ...offBoarding,
   // admin pages
   ...usersManagementPage,
   ...documentsManagementPage,

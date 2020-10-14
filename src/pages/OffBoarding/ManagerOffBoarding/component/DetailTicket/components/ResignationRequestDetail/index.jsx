@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class ResignationRequestDetail extends PureComponent {
@@ -11,9 +12,13 @@ class ResignationRequestDetail extends PureComponent {
     };
     return (
       <div className={styles.resignationRequest}>
-        <p className={styles.resignationRequest__title}>Resignation Request</p>
+        <p className={styles.resignationRequest__title}>
+          {formatMessage({ id: 'pages.offBoarding.resignationTitle' })}
+        </p>
         <div className={styles.resignationRequest__date}>
-          <p className={styles.resignationRequest__text}>Date of Request</p>
+          <p className={styles.resignationRequest__text}>
+            {formatMessage({ id: 'pages.offBoarding.resignation.date' })}
+          </p>
           <p>{requestDetail.date}</p>
         </div>
         <p className={styles.resignationRequest__text}>Employee Name</p>

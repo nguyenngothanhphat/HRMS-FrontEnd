@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Button, Space } from 'antd';
 import warningNoteIcon from '@/assets/warning-icon.svg';
+import { formatMessage } from 'umi';
 import ModalNotice from '../ModalNotice';
 import styles from './index.less';
 
@@ -36,7 +37,9 @@ class ReasonPutOnHold extends PureComponent {
     return (
       <div className={styles.reasonPutOnHold}>
         <Row gutter={[0, 20]} justify="space-between">
-          <Col className={styles.reasonPutOnHold__title}>Reason put on hold</Col>
+          <Col className={styles.reasonPutOnHold__title}>
+            {formatMessage({ id: 'pages.offBoarding.reasonPutOnHold' })}
+          </Col>
           <Col>
             <Row>
               <div className={styles.reasonPutOnHold__dateTime}>
