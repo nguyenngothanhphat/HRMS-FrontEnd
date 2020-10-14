@@ -1,0 +1,89 @@
+.closingComments {
+  background-color: #ffffff;
+  min-height: 170px;
+  padding: 30px;
+  margin-bottom: 20px;
+  &__title {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  &__textArea {
+    position: relative;
+    .btn__submit {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      width: 100px;
+      height: 35px;
+      border: none;
+      color: #ffffff;
+      background: #ffa100;
+      border-radius: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 500;
+    }
+  }
+  &__edit {
+    margin-right: 30px;
+    color: #ffa100;
+    img {
+      margin-right: 5px;
+      margin-top: -4px;
+    }
+  }
+  &__dateTime {
+    span {
+      font-weight: 500;
+      color: #464646;
+      span {
+        font-weight: normal;
+      }
+    }
+  }
+  &__content {
+    &__text {
+      font-size: 14px;
+      min-height: 66px;
+      border: 1px solid #d6dce0;
+      padding: 14px 10px;
+      color: #464646;
+    }
+    &__note {
+      margin-left: 4px;
+      margin-top: 6px;
+      font-size: 11px;
+      color: #707177;
+    }
+  }
+  :global {
+    .ant-input {
+      border: 1px solid #d6dce0;
+      padding-right: 140px;
+    }
+    textarea.ant-input {
+      min-height: 66px;
+    }
+    .ant-input:placeholder-shown {
+      text-overflow: ellipsis;
+      font-style: italic;
+    }
+  }
+}
+
+.notification {
+  position: fixed;
+  width: calc(100% - 73px);
+  padding: 30px;
+  bottom: 0;
+
+  &__content {
+    height: 70px;
+    border-radius: 5px;
+    width: 100%;
+    background-color: #d6dce0;
+    border: 1px solid rgba(86, 138, 250, 0.07);
+    box-sizing: border-box;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+}

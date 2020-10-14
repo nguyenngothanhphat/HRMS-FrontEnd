@@ -185,6 +185,13 @@ const routes = [
             component: './ResignationRequest',
           },
           {
+            path: '/employee-offboarding/:ticketId',
+            name: `ticketId16008082`,
+            component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
             component: './EmployeeProfile',
