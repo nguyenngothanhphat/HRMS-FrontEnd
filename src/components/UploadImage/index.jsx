@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
 import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
+import undo from '@/assets/undo-signs.svg';
+import styles from './index.less';
 
 @connect()
 class UploadImage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { check: true };
+  }
+
   beforeUpload = (file) => {
+    const { setSizeImageMatch = () => {} } = this.props;
     const checkType =
       file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
     if (!checkType) {
       message.error('You can only upload JPG/PNG/PDF file!');
     }
-    // const isLt2M = file.size / 1024 / 1024 < 2;
     const isLt5M = file.size / 1024 / 1024 < 5;
-    // if (!isLt2M) {
-    //   message.error('Image must smaller than 2MB!');
-    // }
     if (!isLt5M) {
       message.error('Image must smaller than 5MB!');
+      setSizeImageMatch(isLt5M);
+      this.setState({ check: isLt5M });
     }
+    setTimeout(() => {
+      setSizeImageMatch(isLt5M);
+      this.setState({ check: isLt5M });
+    }, 2000);
     return checkType && isLt5M;
   };
 
@@ -34,6 +44,7 @@ class UploadImage extends Component {
   };
 
   render() {
+    const { check } = this.state;
     const { content = 'Your content', loading = false } = this.props;
     if (loading) {
       return <Spin loading={loading} active />;
@@ -48,8 +59,10 @@ class UploadImage extends Component {
         {...props}
         beforeUpload={this.beforeUpload}
         action={(file) => this.handleUpload(file)}
+        className={styles.UploadImageFile}
       >
-        {content}
+        {check ? '' : <span className={styles.ShowTestValidation}>File must me under 5 Mb </span>}
+        {content} {check ? '' : <img src={undo} alt="undo" />}
       </Upload>
     );
   }
