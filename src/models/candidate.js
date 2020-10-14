@@ -1,7 +1,7 @@
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 4,
+    currentStep: 6,
     basicInformation: {
       fullName: '',
       privateEmail: '',

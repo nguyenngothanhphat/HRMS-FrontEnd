@@ -8,8 +8,8 @@
 export default {
   dev: {
     '/api/': {
-      // target: 'http://api-stghrms.paxanimi.ai',
-      target: 'http://1d6cb68ac95a.ngrok.io',
+      target: 'http://api-stghrms.paxanimi.ai',
+      // target: 'http://1d6cb68ac95a.ngrok.io',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
