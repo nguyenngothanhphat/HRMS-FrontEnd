@@ -67,7 +67,7 @@ const OfferDetails = (props) => {
 
   const handleSubmit = () => {};
 
-  const loadImage = (type, response) => {
+  const loadImage = (response) => {
     const { data = [] } = response;
     const { url } = data[0];
 
@@ -106,59 +106,52 @@ const OfferDetails = (props) => {
                 The candidate may draw the signature below or can upload the signature from personal
                 system.
               </p>
+              <Row gutter={16} style={{ marginTop: '24px' }}>
+                <Col md={14}>
+                  <div className={s.signature}>
+                    <div className={s.upload}>
+                      {!signature ? (
+                        // Default image
+                        <img className={s.signatureImg} src={whiteImg} alt="" />
+                      ) : (
+                        <img className={s.signatureImg} src={signature} alt="" />
+                      )}
 
-              <div className={s.signature}>
-                {/* <header>
-                  <div className={s.icon}>
-                    <div className={s.bigGlow}>
-                      <div className={s.smallGlow}>
-                        <EditOutlined />
-                      </div>
+                      <button
+                        type="submit"
+                        onClick={() => {
+                          setUploadVisible(true);
+                        }}
+                      >
+                        {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                      </button>
+
+                      <CancelIcon resetImg={() => resetImg('hr')} />
+                    </div>
+
+                    <div className={s.submitContainer}>
+                      <Button
+                        type="primary"
+                        onClick={handleSubmit}
+                        className={`${signature ? s.active : s.disable}`}
+                      >
+                        {formatMessage({ id: 'component.previewOffer.submit' })}
+                      </Button>
+
+                      <span className={s.submitMessage}>
+                        {signature ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+                      </span>
                     </div>
                   </div>
-                  <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
-                </header> */}
-
-                {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-
-                <div className={s.upload}>
-                  {!signature ? (
-                    // Default image
-                    <img className={s.signatureImg} src={whiteImg} alt="" />
-                  ) : (
-                    <img className={s.signatureImg} src={signature} alt="" />
+                </Col>
+                <Col md={10}>
+                  {signature && (
+                    <Alert display type="info">
+                      <p>The signature has been submitted.</p>
+                    </Alert>
                   )}
-
-                  <button
-                    type="submit"
-                    onClick={() => {
-                      setUploadVisible(true);
-                    }}
-                  >
-                    {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                  </button>
-
-                  <CancelIcon resetImg={() => resetImg('hr')} />
-                </div>
-
-                <div className={s.submitContainer}>
-                  <Button
-                    type="primary"
-                    onClick={handleSubmit}
-                    className={`${signature ? s.active : s.disable}`}
-                  >
-                    {formatMessage({ id: 'component.previewOffer.submit' })}
-                  </Button>
-
-                  <span className={s.submitMessage}>
-                    {signature ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
-                  </span>
-                </div>
-              </div>
-
-              {/* <Alert display type="info">
-                <p>The signature has been submitted.</p>
-              </Alert> */}
+                </Col>
+              </Row>
             </div>
 
             <div className={s.handbook}>
@@ -187,9 +180,9 @@ const OfferDetails = (props) => {
 
       <ModalUpload
         visible={uploadVisible}
-        // getResponse={(response) => {
-        //   loadImage('hr', response);
-        // }}
+        getResponse={(response) => {
+          loadImage(response);
+        }}
         handleCancel={() => {
           setUploadVisible(false);
         }}

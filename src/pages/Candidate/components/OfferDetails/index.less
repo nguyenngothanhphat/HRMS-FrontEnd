@@ -9,8 +9,6 @@
 @orange: #ffa100;
 
 .offerDetailsContainer {
-  background-color: white;
-  border: 1px solid @border-color;
   font-family: 'Roboto', sans-serif;
 
   h3 {
@@ -57,6 +55,9 @@
   }
 
   .offerDetails {
+    background-color: white;
+    border: 1px solid @border-color;
+
     .header {
       padding: 32px;
       border-bottom: 1px solid @border-color;
@@ -65,6 +66,7 @@
     .agreement {
       margin: 32px;
       border-bottom: 1px solid @border-color;
+      padding-bottom: 18px;
     }
 
     .handbook {
@@ -73,67 +75,8 @@
   }
 
   .signature {
-    // border-radius: 5px;
-    // border: solid 1px @border-color;
     background-color: white;
-    // padding: 25px;
-
-    // header {
-    //   display: flex;
-    //   align-items: center;
-
-    //   * {
-    //     margin: 0;
-    //     padding: 0;
-    //   }
-
-    //   h2 {
-    //     font-weight: 500;
-    //     font-size: 18px;
-    //     color: @header-color;
-    //     margin-left: 16px;
-    //   }
-
-    //   .icon {
-    //     .bigGlow,
-    //     .smallGlow {
-    //       border-radius: 50%;
-    //     }
-
-    //     .bigGlow {
-    //       width: 64px;
-    //       height: 64px;
-    //       background-color: @big-glow;
-
-    //       display: flex;
-    //       align-items: center;
-    //       justify-content: center;
-
-    //       .smallGlow {
-    //         width: 41px;
-    //         height: 41px;
-    //         background-color: @small-glow;
-
-    //         display: flex;
-    //         align-items: center;
-    //         justify-content: center;
-
-    //         svg {
-    //           width: 18px;
-    //           height: 18px;
-    //           fill: @blue;
-    //         }
-    //       }
-
-    //       &:hover {
-    //         cursor: pointer;
-    //       }
-    //     }
-    //   }
-    // }
-  }
-
-  .signature {
+    max-width: 347px;
     margin-bottom: 16px;
 
     p {
@@ -156,10 +99,11 @@
         height: 85px;
         border: 0;
         outline: none;
+        margin: 0 auto;
       }
 
       button {
-        color: blue;
+        color: #568afa;
         font-weight: 500;
         font-size: 16px;
         background-color: transparent;
