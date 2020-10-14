@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button, Form } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
@@ -17,6 +17,39 @@ class SalaryStructure extends PureComponent {
     return (
       <div className={styles.tableWrapper}>
         <p>{formatMessage({ id: 'component.salaryStructure.tableWrapper' })}</p>
+      </div>
+    );
+  };
+
+  _renderStatus = () => {
+    return (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary}`}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   };
@@ -41,11 +74,14 @@ class SalaryStructure extends PureComponent {
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={styles.salaryStructure}>
-            <div className={styles.salaryStructure__top}>
-              <SalaryStructureHeader />
-              {/* <hr /> */}
-              {this._renderTable()}
-            </div>
+            <Form wrapperCol={{ span: 24 }} name="basic" onFinish={this.onFinish}>
+              <div className={styles.salaryStructure__top}>
+                <SalaryStructureHeader />
+                {/* <hr /> */}
+                {this._renderTable()}
+              </div>
+              {salaryStatus === 1 ? this._renderBottomBar() : null}
+            </Form>
           </div>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
