@@ -11,7 +11,7 @@ class EmailReminderHeader extends PureComponent {
         <Link
           to={{
             pathname: '/employee-onboarding',
-            state: { defaultActiveKey: '2' },
+            state: { defaultActiveKey: '2', settingsDisplayComponent: true },
           }}
         >
           <img src={blueBackIcon} alt="back icon" />

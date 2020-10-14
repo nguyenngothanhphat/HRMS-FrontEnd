@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Link, history } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -300,11 +301,15 @@ class EmailReminderForm extends PureComponent {
             );
           })}
         </Form.Item>
-        <Button type="primary" onClick={this.onAddCondition}>
-          + Add another condition
-        </Button>
+        <div className={styles.addNewButton}>
+          <Button onClick={this.onAddCondition}>+ Add another condition</Button>
+        </div>
       </Col>
     );
+  };
+
+  back = () => {
+    history.goBack();
   };
 
   _renderApplyToOptions = () => {
@@ -360,7 +365,9 @@ class EmailReminderForm extends PureComponent {
           </Col>
           <Col span={12}>
             <div className={styles.note}>
-              You can add additional events with <a href="#"> Custom fields</a>
+              <span>
+                You can add additional events with <a href="#"> Custom fields</a>
+              </span>
             </div>
           </Col>
 
@@ -434,11 +441,21 @@ class EmailReminderForm extends PureComponent {
             {/* </Form.Item> */}
           </Col>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
+          <Col className={styles.buttons} span={8} offset={16}>
+            <Link
+              to={{
+                pathname: '/employee-onboarding',
+                state: { defaultActiveKey: '2' },
+              }}
+            >
+              <Button type="secondary">Cancel</Button>
+            </Link>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Col>
         </Row>
       </Form>
     );

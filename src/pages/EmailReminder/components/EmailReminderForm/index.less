@@ -6,7 +6,7 @@
   border-radius: 5px;
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
   background-color: #ffffff;
-  padding: 50px;
+  padding: 50px 50px 10px 50px;
   position: relative;
 
   :global {
@@ -14,20 +14,41 @@
       margin-bottom: 0;
     }
     .ant-btn-primary {
+      width: 95px;
       height: 40px;
-      border-radius: 5px;
-      background-color: white;
-      border: none;
-      box-shadow: none;
+      object-fit: contain;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      background-color: #ffa100;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0.13px;
-      color: #2c6df9;
+      color: #ffffff;
+      margin-left: 24px;
+      &:hover {
+        background-color: #ffa100;
+        color: #ffffff;
+      }
+    }
+    .ant-btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.13px;
+      color: #ffa100;
     }
   }
 
   .quill {
     height: 478px;
+    margin-bottom: 48px;
   }
   .receipients {
     padding: 0;
@@ -50,6 +71,26 @@
     margin-top: 34px;
   }
   &_form {
+    .addNewButton {
+      :global {
+        .ant-btn {
+          height: 40px;
+          border-radius: 5px;
+          background-color: white;
+          border: none;
+          box-shadow: none;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #2c6df9;
+        }
+      }
+    }
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
     .note {
       height: 100%;
       display: flex;
@@ -59,6 +100,7 @@
       letter-spacing: 0.12px;
       text-align: left;
       color: #707177;
+      margin-top: 14px;
     }
   }
   :global {
