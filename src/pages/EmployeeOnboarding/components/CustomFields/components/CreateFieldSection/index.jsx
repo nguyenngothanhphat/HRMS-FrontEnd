@@ -1,22 +1,48 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
 import { Button, Input, Radio, Select } from 'antd';
 import iconCancel from '@/assets/iconCancelCustomField.svg';
 import styles from './index.less';
 
+@connect(({ employee: { department = [] } = {}, employeeProfile: { listSkill } = {} }) => ({
+  department,
+  listSkill,
+}))
 class CreateFieldSection extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
       itemField: 'all',
+      dataFilter: [{}],
+      data: {
+        name: '',
+        settings: {},
+        filters: [],
+      },
     };
   }
 
-  handleChange = (e) => {
+  handleChange = (name, e) => {
+    const { data } = this.state;
     const { value } = e.target;
+    if (name === 'name') {
+      const item = data;
+      this.setState({ data: { ...item, [name]: value } });
+    }
+    if (
+      name === 'sensitive' ||
+      name === 'applicant' ||
+      name === 'onboardingComplete' ||
+      name === 'visibleToIndividual' ||
+      name === 'visibileToManager'
+    ) {
+      const item = data;
+      const { settings } = item;
+      this.setState({ data: { ...item, settings: { ...settings, [name]: value } } });
+    }
     this.setState({ name: value });
   };
 
@@ -24,8 +50,19 @@ class CreateFieldSection extends PureComponent {
     this.setState({ itemField: item });
   };
 
+  handleChangeFilter = (index, name, value) => {
+    const { data } = this.state;
+    const { filters } = data;
+    const item = filters[index];
+    const newItem = { ...item, [name]: value };
+    const newList = [...filters];
+    newList.splice(index, 1, newItem);
+    this.setState({ data: { ...data, filters: newList } });
+  };
+
   render() {
-    const { name, itemField } = this.state;
+    const { name, itemField, dataFilter } = this.state;
+    const { department, listSkill } = this.props;
     const { Option } = Select;
     return (
       <PageContainer>
@@ -44,7 +81,7 @@ class CreateFieldSection extends PureComponent {
                 id: 'pages.EmployeeOnboardingCustomField.CreateCustomFieldSection',
               })}
             </p>
-            <Input />
+            <Input onChange={(e) => this.handleChange('name', e)} />
           </div>
           <div className={styles.boxFieldSection2}>
             <div className={styles.boxFieldSection2__Title}>
@@ -62,7 +99,10 @@ class CreateFieldSection extends PureComponent {
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="Yes">
+                  <Radio.Group
+                    defaultValue="Yes"
+                    onChange={(e) => this.handleChange('sensitive', e)}
+                  >
                     <Radio value="Yes">Yes</Radio>
                     <Radio value="No">No</Radio>
                   </Radio.Group>
@@ -75,9 +115,12 @@ class CreateFieldSection extends PureComponent {
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="employee">
-                    <Radio value="employee">Employee</Radio>
-                    <Radio value="employer">Employer</Radio>
+                  <Radio.Group
+                    defaultValue="EMPLOYEE"
+                    onChange={(e) => this.handleChange('applicant', e)}
+                  >
+                    <Radio value="EMPLOYEE">Employee</Radio>
+                    <Radio value="EMPLOYER">Employer</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -88,7 +131,10 @@ class CreateFieldSection extends PureComponent {
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="Yes">
+                  <Radio.Group
+                    defaultValue="Yes"
+                    onChange={(e) => this.handleChange('onboardingComplete', e)}
+                  >
                     <Radio value="Yes">Yes</Radio>
                     <Radio value="No">No</Radio>
                   </Radio.Group>
@@ -101,7 +147,10 @@ class CreateFieldSection extends PureComponent {
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="Yes">
+                  <Radio.Group
+                    defaultValue="Yes"
+                    onChange={(e) => this.handleChange('visibleToIndividual', e)}
+                  >
                     <Radio value="Yes">Yes</Radio>
                     <Radio value="No">No</Radio>
                   </Radio.Group>
@@ -114,7 +163,10 @@ class CreateFieldSection extends PureComponent {
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
-                  <Radio.Group defaultValue="Yes">
+                  <Radio.Group
+                    defaultValue="Yes"
+                    onChange={(e) => this.handleChange('visibileToManager', e)}
+                  >
                     <Radio value="Yes">Yes</Radio>
                     <Radio value="No">No</Radio>
                   </Radio.Group>
@@ -139,7 +191,7 @@ class CreateFieldSection extends PureComponent {
                 </span>
                 <div
                   className={styles.boxFieldSection2__Content1__Radio}
-                  onChange={this.handleChange}
+                  onChange={(e) => this.handleChange('filter', e)}
                 >
                   <Radio.Group name={name} defaultValue="everyone">
                     <Radio name="everyone" value="everyone">
@@ -173,29 +225,41 @@ class CreateFieldSection extends PureComponent {
                           Any of this
                         </div>
                       </div>
-                      <div>
-                        <div className={styles.selectFilter}>
-                          <Select
-                            defaultValue="Department"
-                            className={styles.selectFilter1}
-                            allowClear
-                          >
-                            <Option value="Department">Department</Option>
-                          </Select>
-                          <Select defaultValue="is" className={styles.selectFilter2} allowClear>
-                            <Option value="is">is</Option>
-                          </Select>
-                          <Select
-                            defaultValue="UX & Research"
-                            className={styles.selectFilter3}
-                            allowClear
-                          >
-                            <Option value="UX & Research">UX & Research</Option>
-                          </Select>
-                          <img src={iconCancel} alt="not found" />
-                        </div>
-                        <div className={styles.line} />
-                      </div>
+                      {dataFilter.map((item, index) => {
+                        return (
+                          <div>
+                            <div className={styles.selectFilter}>
+                              <Select
+                                className={styles.selectFilter1}
+                                allowClear
+                                onChange={(e) => this.handleChangeFilter(index, 'department', e)}
+                              >
+                                {department.map((itemDepartment) => {
+                                  return (
+                                    <Option value={itemDepartment._id}>
+                                      {itemDepartment.name}
+                                    </Option>
+                                  );
+                                })}
+                              </Select>
+                              <Select defaultValue="is" className={styles.selectFilter2} allowClear>
+                                <Option value="is">is</Option>
+                              </Select>
+                              <Select
+                                className={styles.selectFilter3}
+                                allowClear
+                                onChange={(value) => this.handleChangeFilter(index, 'title', value)}
+                              >
+                                {listSkill.map((itemSkill) => {
+                                  return <Option value={itemSkill._id}>{itemSkill.name}</Option>;
+                                })}
+                              </Select>
+                              <img src={iconCancel} alt="not found" />
+                            </div>
+                            <div className={styles.line} />
+                          </div>
+                        );
+                      })}
                     </>
                   ) : (
                     ''
