@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { formatMessage } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
 import { Row, Col, Typography, Button } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
 import CustomModal from '@/components/CustomModal/index';
 import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
 import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
@@ -37,7 +36,7 @@ const FileInfo = [
   },
 ];
 
-const OfferDetails = (props) => {
+const OfferDetails = () => {
   const [signature, setSignature] = useState(null);
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);

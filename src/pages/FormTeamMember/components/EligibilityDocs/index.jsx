@@ -135,7 +135,6 @@ class EligibilityDocs extends Component {
       payload: {
         item: {
           ...item,
-          actions: 'submit',
           documents: testEligibility,
         },
       },

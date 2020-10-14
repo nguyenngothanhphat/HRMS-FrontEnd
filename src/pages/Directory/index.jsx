@@ -34,8 +34,11 @@ export default class Directory extends PureComponent {
             style={{ color: '#2c6df9', fontSize: '18px', margin: '12px' }}
           />
         </div>
-        {array.map((item) => (
-          <Menu.Item style={{ display: 'flex', whiteSpace: 'normal', padding: '0 24px 24px 16px' }}>
+        {array.map((item, index) => (
+          <Menu.Item
+            key={`${index + 1}`}
+            style={{ display: 'flex', whiteSpace: 'normal', padding: '0 24px 24px 16px' }}
+          >
             <ThunderboltFilled style={{ paddingTop: '6px', fontSize: '14px', color: '#2c6df9' }} />
             <a target="_blank" rel="noopener noreferrer" href="/">
               {item}

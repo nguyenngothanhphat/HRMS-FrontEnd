@@ -38,10 +38,10 @@ const getActionText = (type) => {
     case PENDING_APPROVALS:
     case REJECTED_FINAL_OFFERS:
     case DISCARDED_FINAL_OFFERS:
+    case SENT_FINAL_OFFERS:
       return formatMessage({ id: 'component.onboardingOverview.viewDraft2' });
     case FINAL_OFFERS_DRAFTS:
       return formatMessage({ id: 'component.onboardingOverview.sendForApproval' });
-    case SENT_FINAL_OFFERS:
     case ACCEPTED_FINAL_OFFERS:
       return formatMessage({ id: 'component.onboardingOverview.createProfile' });
     default:
@@ -279,15 +279,15 @@ const getColumnWidth = (columnName, tableType) => {
   if (tableType === ACCEPTED_FINAL_OFFERS) {
     switch (columnName) {
       case 'rookieId':
-        return '12%';
+        return '10%';
       case 'rookieName':
-        return '17%';
+        return '15%';
       case 'position':
-        return '17%';
+        return '13%';
       case 'location':
         return '';
       case 'dateJoin':
-        return '17%';
+        return '16%';
       case 'comments':
         return '24%';
       case 'actions':
@@ -304,13 +304,13 @@ const getColumnWidth = (columnName, tableType) => {
       case 'rookieName':
         return '17%';
       case 'position':
-        return '16%';
+        return '15%';
       case 'location':
         return '';
       case 'dateJoin':
         return '16%';
       case 'actions':
-        return '19%';
+        return '17%';
       default:
         return '';
     }
