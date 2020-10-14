@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import CommonLayout from '@/components/CommonLayout';
 
 import BackgroundChecks from './components/BackgroundChecks';
@@ -8,6 +9,10 @@ import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 
+@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
+  currentStep,
+  displayComponent,
+}))
 class Settings extends PureComponent {
   render() {
     const listMenu = [

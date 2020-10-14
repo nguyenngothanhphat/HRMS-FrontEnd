@@ -211,7 +211,12 @@ const routes = [
             component: './FormTeamMember',
             authority: ['customer'],
           },
-
+          {
+            path: '/employee-onboarding/create-email-reminder',
+            name: 'Create Email Reminder',
+            hideInMenu: true,
+            component: './EmailReminder',
+          },
           {
             path: '/template-details/:templateId',
             name: 'templateDetails',

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography } from 'antd';
+import { Row, Col, Form, Input, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import BasicInformationHeader from './components/BasicInformationHeader';
@@ -9,9 +9,10 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory } = {} }) => ({
+@connect(({ info: { basicInformation, checkMandatory, currentStep = 0 } = {} }) => ({
   basicInformation,
   checkMandatory,
+  currentStep,
 }))
 class BasicInformation extends PureComponent {
   constructor(props) {
@@ -54,7 +55,6 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'info/saveBasicInformation',
       payload: {
-        basicInformation,
         checkMandatory: {
           ...checkMandatory,
         },
@@ -62,11 +62,15 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  onChangeFormData = (key, value) => {
-    const { myInfo } = this.state;
-    myInfo[key] = value;
-    this.setState({
-      myInfo,
+  onFinish = (values) => {
+    const { dispatch, currentStep } = this.props;
+    console.log('Success:', values);
+
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
     });
   };
 
@@ -83,16 +87,9 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder, basicInformation = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
+    const { isOpenReminder } = this.state;
     return (
-      <Form
-        className={styles.basicInformation__form}
-        wrapperCol={{ span: 24 }}
-        name="basic"
-        initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
-        onFocus={this.onFocus}
-      >
+      <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
@@ -180,11 +177,59 @@ class BasicInformation extends PureComponent {
             </Form.Item>
           </Col>
         </Row>
-      </Form>
+      </div>
+    );
+  };
+
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+    return !filledBasicInformation ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledBasicInformation}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
     );
   };
 
   render() {
+    const { basicInformation = {} } = this.state;
+    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
     const Note = {
       title: 'Note',
       data: (
@@ -198,11 +243,20 @@ class BasicInformation extends PureComponent {
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={styles.basicInformation}>
-            <div className={styles.basicInformation__top}>
-              <BasicInformationHeader />
-              <hr />
-              {this._renderForm()}
-            </div>
+            <Form
+              wrapperCol={{ span: 24 }}
+              name="basic"
+              initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
+              onFocus={this.onFocus}
+              onFinish={this.onFinish}
+            >
+              <div className={styles.basicInformation__top}>
+                <BasicInformationHeader />
+                <hr />
+                {this._renderForm()}
+              </div>
+              {this._renderBottomBar()}
+            </Form>
           </div>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
