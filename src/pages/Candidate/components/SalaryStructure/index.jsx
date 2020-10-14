@@ -3,7 +3,6 @@ import React from 'react';
 import { Row, Col, Typography } from 'antd';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from '../../../FormTeamMember/components/SalaryStructure/components/SalaryAcceptance';
-import SalaryAcceptanceContent from '../../../FormTeamMember/components/SalaryStructure/components/SalaryAcceptanceContent';
 
 import s from './index.less';
 

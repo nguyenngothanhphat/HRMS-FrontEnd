@@ -6,12 +6,13 @@ import { formatMessage, Link, connect } from 'umi';
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
 import EligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/EligibleCandidates';
-import FinalOfferDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOfferDrafts';
+import AllDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AllDrafts';
 import FinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOffers';
 import IneligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/IneligibleCandidates';
 import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/PendingEligibilityChecks';
 import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProvisionalOffers';
 import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
+import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
 
 import MenuItem from './components/MenuItem';
 
@@ -34,9 +35,11 @@ const getComponent = (name) => {
     case 'FinalOffers':
       return <FinalOffers />;
     case 'FinalOfferDrafts':
-      return <FinalOfferDrafts />;
+      return <AllDrafts />;
     case 'DiscardedFinalOffers':
       return <DiscardedFinalOffers />;
+    case 'BackgroundCheck':
+      return <BackgroundCheck />;
     default:
       return <PendingEligibilityChecks />;
   }

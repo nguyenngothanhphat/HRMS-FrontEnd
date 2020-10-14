@@ -243,15 +243,22 @@ const receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
 const eligibleCandidatesData = rookieList;
 const ineligibleCandidatesData = rookieList;
 const sentProvisionalOffersData = rookieList; // Provisional Offers
-const receivedProvisionalOffersData = rookieList; // Provisional Offers
+const acceptedProvisionalOffersData = rookieList; // Provisional Offers
+const renegotiateProvisionalOffersData = rookieList; // Provisional Offers
+const receivedProvisionalOffersData = rookieList; // Provisional Offers (delete)
 const discardedProvisionalOffersData = employeeList;
+const sentForApprovalsData = employeeList; // Awaiting Approvals
+const approvedOffersData = employeeList; // Awaiting Approvals
 const approvedFinalOffersData = employeeList; // Awaiting Approvals
-const pendingApprovalsData = employeeList; // Awaiting Approvals
-const rejectFinalOfferData = employeeList; // Awaiting Approvals
+const pendingApprovalsData = employeeList; // Awaiting Approvals  del
+const rejectFinalOfferData = employeeList; // Awaiting Approvals  del
 const acceptedFinalOffersData = employeeList; // Final Offers
 const sentFinalOffersData = rookieList; // Final Offers
-const finalOfferDraftsData = employeeList;
+const provisionalOfferDraftsData = employeeList; // All Drafts
+const finalOfferDraftsData = employeeList; // All Drafts
 const discardedFinalOffersData = rookieList;
+
+const pendingData = rookieList; // Background Checks
 
 const PHASE_DATA = [
   {
@@ -292,6 +299,14 @@ const PHASE_DATA = [
         key: 'provisionalOffers',
         component: 'ProvisionalOffers',
         quantity: sentProvisionalOffersData.length,
+      },
+      {
+        id: 10,
+        name: 'Background Checks',
+        key: 'backgroundChecks',
+        component: 'BackgroundCheck',
+        // quantity: sentProvisionalOffersData.length,
+        quantity: 10,
       },
       {
         id: 5,
@@ -465,19 +480,32 @@ const onboard = {
       ineligibleCandidates: ineligibleCandidatesData,
       provisionalOffers: {
         sentProvisionalOffers: sentProvisionalOffersData,
-        receivedProvisionalOffers: receivedProvisionalOffersData,
+        acceptedProvisionalOffers: acceptedProvisionalOffersData,
+        renegotiateProvisionalOffers: renegotiateProvisionalOffersData,
+        // receivedProvisionalOffers: receivedProvisionalOffersData,
+      },
+      backgroundCheck: {
+        pending: pendingData,
+        eligibleCandidates: eligibleCandidatesData,
+        ineligibleCandidates: ineligibleCandidatesData,
       },
       discardedProvisionalOffers: discardedProvisionalOffersData,
       awaitingApprovals: {
-        approvedFinalOffers: approvedFinalOffersData,
-        pendingApprovals: pendingApprovalsData,
-        rejectFinalOffer: rejectFinalOfferData,
+        approvedFinalOffers: approvedFinalOffersData, // del
+        pendingApprovals: pendingApprovalsData, // del
+        rejectFinalOffer: rejectFinalOfferData, // del
+        sentForApprovals: sentForApprovalsData,
+        approvedOffers: approvedOffersData,
       },
       finalOffers: {
         acceptedFinalOffers: acceptedFinalOffersData,
         sentFinalOffers: sentFinalOffersData,
       },
       finalOfferDrafts: finalOfferDraftsData,
+      allDrafts: {
+        provisionalOfferDrafts: provisionalOfferDraftsData,
+        finalOfferDrafts: finalOfferDraftsData,
+      },
       discardedFinalOffers: discardedFinalOffersData,
     },
     settings: {
