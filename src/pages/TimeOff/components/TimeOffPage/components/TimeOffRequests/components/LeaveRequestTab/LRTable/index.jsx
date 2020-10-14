@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Divider, Tooltip } from 'antd';
-import { UserOutlined, AntDesignOutlined } from '@ant-design/icons';
+import { Table, Avatar, Tooltip } from 'antd';
 
 import styles from './index.less';
 
@@ -9,32 +8,32 @@ export default class LRTable extends PureComponent {
     {
       title: 'Ticket ID',
       dataIndex: 'ticketId',
-      align: 'center',
+      align: 'left',
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      align: 'center',
+      align: 'left',
     },
     {
       title: `Req’ted on `,
       dataIndex: 'requestedOn',
-      align: 'center',
+      align: 'left',
     },
     {
       title: 'Leave date',
       width: '20%',
       dataIndex: 'leaveDate',
-      align: 'center',
+      align: 'left',
     },
     {
       title: 'Duration',
       dataIndex: 'duration',
-      align: 'center',
+      align: 'left',
     },
     {
       title: 'Assigned',
-      align: 'center',
+      align: 'left',
       render: (key) => {
         const { assigned = [] } = key;
         return (
@@ -65,7 +64,7 @@ export default class LRTable extends PureComponent {
     },
     {
       title: 'Action',
-      align: 'center',
+      align: 'left',
       render: (key) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(key)}>View request</span>
@@ -84,7 +83,9 @@ export default class LRTable extends PureComponent {
 
   // view request
   viewRequest = (key) => {
+    // eslint-disable-next-line no-alert
     alert('View Requests');
+    // eslint-disable-next-line no-console
     console.log('key', key);
   };
 
@@ -102,6 +103,7 @@ export default class LRTable extends PureComponent {
   };
 
   onSelectChange = (selectedRowKeys) => {
+    // eslint-disable-next-line no-console
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
@@ -110,10 +112,10 @@ export default class LRTable extends PureComponent {
     const { data = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 20;
-    const scroll = {
-      x: '',
-      y: 'max-content',
-    };
+    // const scroll = {
+    //   x: '',
+    //   y: 'max-content',
+    // };
     const pagination = {
       position: ['bottomRight'],
       total: data.length,

@@ -1,7 +1,3 @@
-.mixin-border-bottom-row {
-  border-bottom: solid 1px #d6dce0;
-}
-
 .LRTable {
   :global {
     .ant-table-body {
@@ -10,8 +6,9 @@
     }
 
     .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
+      border-bottom: solid 1px #d6dce0;
       color: #464646;
+      font-size: 13px;
     }
 
     // Sort active icon

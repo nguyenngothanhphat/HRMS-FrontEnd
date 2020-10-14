@@ -157,6 +157,11 @@ const data = [
         name: 'Alex',
         imageUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
       },
+      {
+        userId: 1,
+        name: 'John',
+        imageUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+      },
     ],
   },
   {
