@@ -17,9 +17,22 @@ class EmailReminderForm extends PureComponent {
     this.state = {
       conditionsData: [
         {
-          unit: '',
+          id: 0,
+          unit: '1',
           tobeVerb: '',
           department: '',
+        },
+        {
+          id: 1,
+          unit: '',
+          tobeVerb: '2',
+          department: '',
+        },
+        {
+          id: 2,
+          unit: '',
+          tobeVerb: '',
+          department: '3',
         },
       ],
       appliesToData: '',
@@ -205,8 +218,9 @@ class EmailReminderForm extends PureComponent {
   onRemoveCondition = (index) => {
     const { conditionsData } = this.state;
     const newConditionsData = [...conditionsData];
-
+    console.log(index);
     newConditionsData.splice(index, 1);
+    console.log(newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -216,7 +230,7 @@ class EmailReminderForm extends PureComponent {
   onAddCondition = () => {
     const { conditionsData } = this.state;
     const newConditionsData = [...conditionsData];
-    const newCondition = { unit: '', tobeVerb: '', department: '' };
+    const newCondition = { id: conditionsData.length, unit: '', tobeVerb: '', department: '' };
 
     newConditionsData.push(newCondition);
 
@@ -248,7 +262,7 @@ class EmailReminderForm extends PureComponent {
         <Form.Item label="Conditions: Trigger for someone if">
           {conditionsData.map((data, index) => {
             return (
-              <Row gutter={[24, 12]} align="middle">
+              <Row gutter={[24, 12]} align="middle" key={data.id}>
                 {/* Units  */}
                 <Col span={9}>
                   <Select
