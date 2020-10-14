@@ -11,9 +11,9 @@ class EmailReminderNote extends Component {
 
     this.state = {
       notes: [
-        'Custom Email messages are a great way to recognize important dates and milestones.',
-        'For example, you can remind managers of their team members’ start dates or create remainders for events, like license renewals or 30 day check-ins. ',
-        'You can use the Auto Text feature to generate personalized emails from a template.',
+        `${formatMessage({ id: 'component.emailReminderNote.note1' })}`,
+        `${formatMessage({ id: 'component.emailReminderNote.note2' })}`,
+        `${formatMessage({ id: 'component.emailReminderNote.note3' })}`,
       ],
     };
   }
@@ -31,7 +31,9 @@ class EmailReminderNote extends Component {
             </div>
           </Space>
 
-          <div className={styles.EmailReminderNote_header_title}>Note</div>
+          <div className={styles.EmailReminderNote_header_title}>
+            {formatMessage({ id: 'component.emailReminderNote.title' })}
+          </div>
         </div>
         <div className={styles.EmailReminderNote_list}>
           {notes.map((note) => {

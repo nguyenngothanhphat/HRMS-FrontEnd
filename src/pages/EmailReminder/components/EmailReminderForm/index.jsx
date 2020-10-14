@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Link, history } from 'umi';
+import { Link, history, formatMessage } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 import removeIcon from './assets/removeIcon.svg';
-
-// import { formatMessage } from 'umi';
 
 import styles from './index.less';
 
@@ -18,21 +16,9 @@ class EmailReminderForm extends PureComponent {
       conditionsData: [
         {
           id: 0,
-          unit: '1',
-          tobeVerb: '',
-          department: '',
-        },
-        {
-          id: 1,
-          unit: '',
-          tobeVerb: '2',
-          department: '',
-        },
-        {
-          id: 2,
           unit: '',
           tobeVerb: '',
-          department: '3',
+          department: '',
         },
       ],
       appliesToData: '',
@@ -316,7 +302,9 @@ class EmailReminderForm extends PureComponent {
           })}
         </Form.Item>
         <div className={styles.addNewButton}>
-          <Button onClick={this.onAddCondition}>+ Add another condition</Button>
+          <Button onClick={this.onAddCondition}>
+            {formatMessage({ id: 'component.emailReminderForm.addCondition' })}
+          </Button>
         </div>
       </Col>
     );
@@ -380,7 +368,11 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <div className={styles.note}>
               <span>
-                You can add additional events with <a href="#"> Custom fields</a>
+                {formatMessage({ id: 'component.emailReminderForm.triggerNote' })}{' '}
+                <a href="#">
+                  {' '}
+                  {formatMessage({ id: 'component.emailReminderForm.triggerNoteLink' })}
+                </a>
               </span>
             </div>
           </Col>
@@ -447,6 +439,7 @@ class EmailReminderForm extends PureComponent {
           {/* Email message */}
           <Col span={24}>
             {/* <Form.Item name="emailMessage" label="Email message"> */}
+            <p className={styles.label}>Email message :</p>
             <ReactQuill
               className={styles.quill}
               value={emailMessage}
@@ -462,11 +455,14 @@ class EmailReminderForm extends PureComponent {
                 state: { defaultActiveKey: '2' },
               }}
             >
-              <Button type="secondary">Cancel</Button>
+              <Button type="secondary">
+                {' '}
+                {formatMessage({ id: 'component.emailReminderForm.cancel' })}
+              </Button>
             </Link>
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Submit
+                {formatMessage({ id: 'component.emailReminderForm.submit' })}
               </Button>
             </Form.Item>
           </Col>
@@ -479,7 +475,7 @@ class EmailReminderForm extends PureComponent {
     return (
       <div className={styles.EmailReminderForm}>
         <div className={styles.EmailReminderForm_title}>
-          Create a custom new email reminder
+          {formatMessage({ id: 'component.emailReminderForm.title' })}
           <hr />
         </div>
         <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>

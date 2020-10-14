@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'umi';
+import { Link, formatMessage } from 'umi';
 import blueBackIcon from './assets/blueBackIcon.svg';
 
 import styles from './index.less';
@@ -17,7 +17,7 @@ class EmailReminderHeader extends PureComponent {
           <img src={blueBackIcon} alt="back icon" />
         </Link>
 
-        <p>Create a custom email remainder</p>
+        <p>{formatMessage({ id: 'component.emailReminderHeader.title' })}</p>
       </div>
     );
   }

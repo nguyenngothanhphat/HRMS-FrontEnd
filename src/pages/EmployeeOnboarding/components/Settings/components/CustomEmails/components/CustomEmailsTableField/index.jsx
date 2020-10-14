@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-// import { Link, formatMessage } from 'umi';
+import { formatMessage } from 'umi';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
@@ -52,7 +52,9 @@ class CustomEmailsTableField extends PureComponent {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => <a href="#">View mail</a>,
+        render: () => (
+          <a href="#">{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</a>
+        ),
       },
       {
         title: '',
@@ -67,7 +69,9 @@ class CustomEmailsTableField extends PureComponent {
   render() {
     return (
       <div className={styles.CustomEmailsTableField}>
-        <div className={styles.CustomEmailsTableField_title}>Custom emails created</div>
+        <div className={styles.CustomEmailsTableField_title}>
+          {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+        </div>
         <div className={styles.CustomEmailsTableField_table}>
           <Table
             dataSource={this._renderData()}
