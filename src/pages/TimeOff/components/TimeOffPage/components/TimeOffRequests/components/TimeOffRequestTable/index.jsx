@@ -3,7 +3,7 @@ import { Table, Avatar, Tooltip } from 'antd';
 
 import styles from './index.less';
 
-export default class LRTable extends PureComponent {
+export default class TimeOffRequestTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -67,7 +67,7 @@ export default class LRTable extends PureComponent {
       align: 'left',
       render: (key) => (
         <div className={styles.rowAction}>
-          <span onClick={() => this.viewRequest(key)}>View request</span>
+          <span onClick={() => this.viewRequest(key)}>View Request</span>
         </div>
       ),
     },
@@ -139,7 +139,7 @@ export default class LRTable extends PureComponent {
       onChange: this.onSelectChange,
     };
     return (
-      <div className={styles.LRTable}>
+      <div className={styles.TimeOffRequestTable}>
         <Table
           size="small"
           loading={loading}

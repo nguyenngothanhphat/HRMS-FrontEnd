@@ -11,6 +11,10 @@ export default class FilterBar extends PureComponent {
     setSelectedFilterTab(activeKey);
   };
 
+  addZeroToNumber = (number) => {
+    return `0${number}`.slice(-2);
+  };
+
   render() {
     const { dataNumber } = this.props;
     return (
@@ -21,11 +25,13 @@ export default class FilterBar extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab={`In-progress (${`0${dataNumber.inProgressNumber}`.slice(-2)})`} key="1" />
-
-          <TabPane tab={`On-hold (${`0${dataNumber.onHoldNumber}`.slice(-2)})`} key="2" />
-          <TabPane tab={`Accepted (${`0${dataNumber.acceptedNumber}`.slice(-2)})`} key="3" />
-          <TabPane tab={`Rejected (${`0${dataNumber.rejectedNumber}`.slice(-2)})`} key="4" />
+          <TabPane
+            tab={`In-progress (${this.addZeroToNumber(dataNumber.inProgressNumber)})`}
+            key="1"
+          />
+          <TabPane tab={`On-hold  (${this.addZeroToNumber(dataNumber.onHoldNumber)})`} key="2" />
+          <TabPane tab={`Accepted  (${this.addZeroToNumber(dataNumber.acceptedNumber)})`} key="3" />
+          <TabPane tab={`Rejected  (${this.addZeroToNumber(dataNumber.rejectedNumber)})`} key="4" />
         </Tabs>
       </div>
     );
