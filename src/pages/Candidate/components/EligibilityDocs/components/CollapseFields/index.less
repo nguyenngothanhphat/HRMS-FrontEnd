@@ -154,10 +154,23 @@
           font-weight: 500;
         }
       }
+      .retryIcon {
+        width: 100%;
+      }
       .textAlignCenter {
         text-align: center;
       }
       :global {
+        .anticon-redo {
+          padding: 0 !important;
+          svg {
+            width: 100%;
+            color: #ff6c6c;
+            width: 100%;
+            height: 15px;
+            transform: rotateY(180deg) rotateZ(272deg);
+          }
+        }
         .ant-typography {
           color: #ff6c6c;
         }
@@ -200,7 +213,6 @@
     }
     span {
       &:last-child {
-        padding-top: 1rem;
         padding-left: 1rem;
       }
       &:first {

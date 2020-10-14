@@ -32,8 +32,12 @@ class EligibilityDocs extends PureComponent {
     const { statusCode } = resp;
     if (statusCode === 200) {
       const { data } = tempData[id];
+      const { name } = resp.data[0];
+      const { url } = resp.data[0];
       data[index].value = true;
       data[index].isUploaded = true;
+      data[index].fileName = name;
+      data[index].fileUrl = url;
       tempData.splice(id, 1, { ...tempData[id], data });
       dispatch({
         type: 'candidateProfile/save',
@@ -54,8 +58,29 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
+  handleCanCelIcon = (index, id) => {
+    console.log('index', index);
+    console.log('id', id);
+    const { dispatch, eliDocs = [] } = this.props;
+    const tempData = JSON.parse(JSON.stringify(eliDocs));
+    const { data } = tempData[id];
+    data[index].value = false;
+    data[index].isUploaded = null;
+    tempData.splice(id, 1, { ...tempData[id], data });
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        eliDocs: tempData,
+      },
+    });
+  };
+
+  handleAdd = (e) => {
+    console.log('a', e);
+  };
+
   render() {
-    const { eliDocs, isUploadedSuccessfully } = this.props;
+    const { eliDocs } = this.props;
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -70,7 +95,8 @@ class EligibilityDocs extends PureComponent {
                       id={id}
                       eliDocs={eliDocs}
                       handleFile={this.handleFile}
-                      isUploadedSuccessfully={isUploadedSuccessfully}
+                      handleCanCelIcon={this.handleCanCelIcon}
+                      handleAdd={this.handleAdd}
                       // handleChange={this.handleChange}
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}

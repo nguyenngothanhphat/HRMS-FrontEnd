@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { PlusOutlined, MinusOutlined, RedoOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import UploadImage from '../UploadImage';
 import InputField from '../InputField';
@@ -9,7 +9,7 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const { item = {}, id, handleFile, isUploadedSuccessfully } = this.props;
+    const { item = {}, id, handleFile, handleCanCelIcon, handleAdd } = this.props;
     return (
       <div className={styles.CollapseField} key={id}>
         <Collapse
@@ -58,12 +58,12 @@ class CollapseField extends PureComponent {
                         </Col>
                         <Col span={5} className={styles.textAlign}>
                           <a
-                            href="#"
+                            href={name.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.viewUpLoadDataURL}
                           >
-                            fileName
+                            {name.fileName}
                           </a>
                         </Col>
                         <Col span={3} className={styles.textAlign}>
@@ -73,7 +73,7 @@ class CollapseField extends PureComponent {
                           <img
                             src={cancelIcon}
                             alt=""
-                            onClick={this.handleCanCelIcon}
+                            onClick={() => handleCanCelIcon(index, id)}
                             className={styles.viewUpLoadDataIconCancel}
                           />
                         </Col>
@@ -90,50 +90,18 @@ class CollapseField extends PureComponent {
                           <Typography.Text className={styles.boldText}>Retry</Typography.Text>
                         </Col>
                         <Col span={2} className={styles.textAlignCenter}>
-                          <img
-                            src={cancelIcon}
-                            alt=""
-                            onClick={this.handleCanCelIcon}
-                            className={styles.viewUpLoadDataIconCancel}
+                          <RedoOutlined
+                            className={styles.retryIcon}
+                            onClick={() => handleCanCelIcon(index, id)}
                           />
                         </Col>
                       </Row>
                     ) : null}
                   </div>
-                  // <Col span={18}>
-                  //   <Typography.Text>{name.name}</Typography.Text>
-                  // </Col>
-                  // <Col span={6}>
-                  //   {!this.state.isUpdated ? (
-                  //     <UploadImage
-                  //       content="Choose file"
-                  //       getResponse={(res) => this.handleFile(res)}
-                  //     />
-                  //   ) : (
-                  //     <div>
-                  //       <a
-                  //         href="#"
-                  //         target="_blank"
-                  //         rel="noopener noreferrer"
-                  //         className={styles.viewUpLoadDataURL}
-                  //       >
-                  //         fileName
-                  //       </a>
-                  //       <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                  //       <img
-                  //         src={cancelIcon}
-                  //         alt=""
-                  //         onClick={this.handleCanCelIcon}
-                  //         className={styles.viewUpLoadDataIconCancel}
-                  //       />
-                  //     </div>
-                  //   )}
-                  // </Col>
-                  // </Row>
                 ))}
               </div>
               {item.type === 'D' ? (
-                <Space direction="horizontal">
+                <Space direction="horizontal" onClick={() => handleAdd()}>
                   <PlusOutlined className={styles.plusIcon} />
                   <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
                 </Space>
