@@ -38,7 +38,9 @@ export default class Holiday extends PureComponent {
                 <span>{moment(row.time).locale('en').format('DD')}</span>
               </Col>
               <Col xs={16}>{row.name}</Col>
-              <Col xs={5}>{moment(row.time).locale('en').format('dddd')}</Col>
+              <Col className={styles.dayInWeek} xs={5}>
+                {moment(row.time).locale('en').format('dddd')}
+              </Col>
             </Row>
           );
         })}
