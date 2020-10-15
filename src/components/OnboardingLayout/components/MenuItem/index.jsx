@@ -5,10 +5,10 @@ const MenuItem = (props) => {
   // const { title = '', menuItem = [], selectedId = 1 } = props;
   const { name = '', component = '', quantity = 1, selectedId = 1, id = 0 } = props;
   const { handleClick } = props;
-  console.log(id);
+  // console.log(id);
   // const { id, name, quantity } = item;
   return (
-    <div className={styles.phase}>
+    <div className={styles.menuWrapper}>
       {/* <h3>{title}</h3> */}
 
       <p

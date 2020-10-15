@@ -8,8 +8,13 @@ const COLUMN_NAME = {
   DATE_SENT: 'date_sent',
   DATE_RECEIVED: 'date_received',
   COMMENT: 'comment',
-  DATE_JOIN: 'DATE_JOIN',
+  DATE_JOIN: 'date_join',
   ACTION: 'action',
+  EXPIRE: 'expire',
+  DOCUMENT: 'document',
+  RESUBMIT: 'resubmit',
+  CHANGE_REQUEST: 'change_request',
+  DATE_REQUEST: 'date_request',
 };
 
 const PROCESS_STATUS = {
@@ -48,6 +53,9 @@ const TABLE_TYPE = {
   SENT_FINAL_OFFERS: 'SENT_FINAL_OFFERS', // Final offers
   ACCEPTED_FINAL_OFFERS: 'ACCEPTED_FINAL_OFFERS', // Final offers
   DISCARDED_FINAL_OFFERS: 'DISCARDED_FINAL_OFFERS',
+  // New
+  PROVISIONAL_OFFERS_DRAFTS: 'PROVISIONAL_OFFERS_DRAFTS',
+  // FINAL_OFFERS_DRAFTS: 'FINAL_OFFERS_DRAFTS',
 };
 
 export { rookieList, COLUMN_NAME, TABLE_TYPE, PROCESS_STATUS };
