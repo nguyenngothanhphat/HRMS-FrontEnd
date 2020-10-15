@@ -44,10 +44,12 @@ export default class TableEmployees extends PureComponent {
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
-        dataIndex: 'email',
+        dataIndex: 'generalInfo',
         width: '15%',
         align: 'center',
-        render: () => <span>emailTemplate@terralogic.com</span>,
+        render: (generalInfo) => (
+          <span>{generalInfo && generalInfo.workEmail ? generalInfo.workEmail : ''}</span>
+        ),
       },
       {
         title: formatMessage({ id: 'component.directory.table.fullName' }),

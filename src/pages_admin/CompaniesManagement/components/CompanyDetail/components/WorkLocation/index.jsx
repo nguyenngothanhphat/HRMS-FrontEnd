@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import { Card, Row, Col } from 'antd';
+import { Button } from 'antd';
 // import { formatMessage } from 'umi';
 import View from './components/View';
 import styles from './index.less';
@@ -8,6 +8,10 @@ import styles from './index.less';
 //   isOpenEditDetail,
 // }))
 class WorkLocation extends PureComponent {
+  addWorkLocation = () => {
+    console.log('addWorkLocation');
+  };
+
   render() {
     const locations = [
       {
@@ -39,6 +43,9 @@ class WorkLocation extends PureComponent {
             </div>
           );
         })}
+        <Button className={styles.btn_addLocation} type="link" onClick={this.addWorkLocation}>
+          + Add work location
+        </Button>
       </>
     );
   }

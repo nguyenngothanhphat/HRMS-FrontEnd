@@ -6,10 +6,11 @@ import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
 import styles from './index.less';
 
-@connect(({ loading, employee }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+@connect(({ loading, employee, employeesManangement }) => ({
+  loadingActiveList: loading.effects['employeesManangement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['employeesManangement/fetchInActiveEmployeesList'],
   employee,
+  employeesManangement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -92,10 +93,10 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
+      type: 'employeesManangement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeInActive',
+      type: 'employeesManangement/fetchInActiveEmployeesList',
     });
   };
 
@@ -117,12 +118,12 @@ class TableContainer extends PureComponent {
 
   renderListEmployees = (tabId) => {
     const {
-      employee: { listEmployeeActive = [], listEmployeeInActive = [] },
+      employeesManangement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
-      return listEmployeeActive;
+      return activeEmployeesList;
     }
-    return listEmployeeInActive;
+    return inActiveEmployeesList;
   };
 
   handleToggle = () => {
@@ -152,14 +153,14 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <div className={styles.buttonAddImport} onClick={this.importEmployee}>
+        <div className={styles.buttonAddImport} onClick={this.importEmployees}>
           <img
             className={styles.buttonAddImport_imgImport}
             src="/assets/images/import.svg"
             alt="Import Employee"
           />
           <p className={styles.buttonAddImport_text}>
-            {formatMessage({ id: 'pages_admin.employees.table.importEmployee' })}
+            {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
           </p>
         </div>
         <div className={styles.buttonAddImport} onClick={this.addEmployee}>
@@ -182,7 +183,7 @@ class TableContainer extends PureComponent {
     );
   };
 
-  importEmployee = () => {
+  importEmployees = () => {
     alert('Import Employee');
   };
 
@@ -198,7 +199,7 @@ class TableContainer extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { tabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
+    const { loadingActiveList, loadingInActiveList } = this.props;
 
     return (
       <div className={styles.tableContainer}>
@@ -214,7 +215,7 @@ class TableContainer extends PureComponent {
                 <Layout className={styles.managementLayout}>
                   <Content className="site-layout-background">
                     <TableEmployees
-                      loading={loadingListActive || loadingListInActive}
+                      loading={loadingActiveList || loadingInActiveList}
                       data={this.renderListEmployees(tab.id)}
                     />
                   </Content>
