@@ -70,7 +70,6 @@ class BasicInformation extends PureComponent {
   };
 
   onFinish = (values) => {
-    console.log(values);
     const { data } = this.state;
     const { dispatch, currentStep } = this.props;
     const { _id } = data;

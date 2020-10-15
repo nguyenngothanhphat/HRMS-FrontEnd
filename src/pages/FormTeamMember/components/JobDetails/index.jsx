@@ -10,182 +10,274 @@ import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(
-  ({
-    info: { jobDetail, checkMandatory, company } = {},
-    info: { departmentList, titleList, locationList, employeeTypeList, managerList, location } = [],
-    info: { loading, loadingA, loadingB, loadingC, loadingD, loadingE },
-  }) => ({
-    jobDetail,
-    checkMandatory,
-    departmentList,
-    titleList,
-    locationList,
-    employeeTypeList,
-    company,
-    managerList,
-    loading,
-    loadingA,
-    loadingB,
-    loadingC,
-    loadingD,
-    loadingE,
-    location,
-  }),
-)
+@connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+  data,
+  checkMandatory,
+  currentStep,
+  tempData,
+}))
 class JobDetails extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   static getDerivedStateFromProps(props) {
-    if ('jobDetail' in props) {
+    if ('data' in props) {
       return {
-        jobDetail: props.jobDetail,
-        departmentList: props.departmentList,
-        titleList: props.titleList,
-        locationList: props.locationList,
-        employeeTypeList: props.employeeTypeList,
-        managerList: props.managerList,
-        location: props.location,
-        loading: props.loadingC || props.loadingD,
-        loadingA: props.loadingA,
-        loadingB: props.loadingB,
-        loadingC: props.loadingC,
-        loadingD: props.loadingD,
-        loadingE: props.loadingE,
-        company: props.company || {},
+        data: props.data,
+        checkMandatory: props.checkMandatory,
+        currentStep: props.currentStep,
+        tempData: props.tempData,
       };
     }
     return null;
-  }
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    const { locationList, employeeTypeList, loadingC, loadingD } = this.state;
-
-    if (isEmpty(locationList)) {
-      dispatch({
-        type: 'info/fetchLocationList',
-        payload: {
-          locationList,
-          loadingC,
-        },
-      });
-    }
-    if (isEmpty(employeeTypeList)) {
-      dispatch({
-        type: 'info/fetchEmployeeTypeList',
-        payload: {
-          employeeTypeList,
-          loadingD,
-        },
-      });
-    }
   }
 
   handleRadio = (e) => {
     const { target } = e;
     const { name, value } = target;
     const { dispatch } = this.props;
-    const { jobDetail = {} } = this.state;
-    jobDetail[name] = value;
+    const { tempData = {} } = this.state;
+    tempData[name] = value;
 
     dispatch({
-      type: 'info/saveJobDetail',
+      type: 'candidateInfo/save',
       payload: {
-        jobDetail,
+        tempData: {
+          ...tempData,
+        },
       },
     });
   };
 
   _handleSelect = (value, name) => {
-    const { dispatch, checkMandatory } = this.props;
-    const { jobDetail = {} } = this.state;
-    jobDetail[name] = value;
-    const { department, title, workLocation, reportingManager } = jobDetail;
+    const { dispatch, locationList } = this.props;
+    const { tempData = {}, checkMandatory } = this.state;
+    tempData[name] = value;
+    const { department, title, workLocation, reportingManager, checkStatus = {} } = tempData;
 
     if (department !== '' && title !== '' && workLocation !== '' && reportingManager !== '') {
-      checkMandatory.filledJobDetail = true;
+      checkStatus.filledJobDetail = true;
     } else {
-      checkMandatory.filledJobDetail = false;
+      checkStatus.filledJobDetail = false;
     }
     dispatch({
-      type: 'info/saveJobDetail',
+      type: 'candidateInfo/save',
       payload: {
-        jobDetail,
+        tempData,
         checkMandatory: {
           ...checkMandatory,
         },
       },
     });
-  };
-
-  handleSelect = (value, name) => {
-    const { dispatch } = this.props;
-    const {
-      jobDetail = {},
-      locationList,
-      departmentList,
-      loadingA,
-      loadingB,
-      loadingC,
-    } = this.state;
-    jobDetail[name] = value;
     if (name === 'workLocation' || name === 'jobTitle') {
-      const changedWorkLocation = [...locationList];
-      const selectedWorkLocation = changedWorkLocation.filter((data) => data._id === value);
-      const obj = selectedWorkLocation[0];
-      const obj1 = obj._id;
-      const locationArr = [obj1];
-      const { company } = obj;
-      const { _id } = company;
+      const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
+      const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
+      const {
+        company: { _id },
+      } = selectedWorkLocation;
+      console.log('selected', selectedWorkLocation);
+      console.log('company id', _id);
       dispatch({
-        type: 'info/save',
+        type: 'candidateInfo/save',
         payload: {
-          company: _id,
-          location: locationArr,
+          tempData: {
+            ...tempData,
+            company: _id,
+            location: selectedWorkLocation._id,
+            workLocation: selectedWorkLocation._id,
+          },
         },
       });
-      if (!isEmpty(company)) {
+      if (!isEmpty(workLocation)) {
         dispatch({
-          type: 'info/fetchDepartmentList',
+          type: 'candidateInfo/fetchDepartmentList',
           payload: {
             company: _id,
-            loadingA,
           },
         });
         dispatch({
-          type: 'info/fetchTitleList',
+          type: 'candidateInfo/fetchTitleList',
           payload: {
             company: _id,
-            loadingB,
           },
         });
       }
-    } else if ((loadingA && loadingC === false) || name === 'department') {
-      const { location } = this.state;
-      const changedDepartmentList = [...departmentList];
-      const selectedDepartment = changedDepartmentList.filter((data) => data._id === value);
-      const department = [selectedDepartment[0]._id];
+    } else if (name === 'department') {
+      const { location, departmentList } = tempData;
+      const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
+      const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
+      console.log('test b', selectedDepartment);
       dispatch({
-        type: 'info/save',
+        type: 'candidateInfo/save',
         payload: {
-          department,
+          tempData: {
+            ...tempData,
+            department: selectedDepartment,
+          },
         },
       });
       if (!isEmpty(department)) {
+        const departmentTemp = [department];
+        const locationTemp = [location];
         dispatch({
-          type: 'info/fetchManagerList',
+          type: 'candidateInfo/fetchManagerList',
           payload: {
-            department,
-            location,
+            departmentTemp,
+            locationTemp,
           },
         });
       }
     }
   };
+
+  // _renderForm = () => {
+  //   const { isOpenReminder, data = {} } = this.state;
+  //   const { fullName, privateEmail, workEmail, experienceYear } = data;
+  //   return (
+  //     <div className={styles.basicInformation__form}>
+  //       <Row gutter={[48, 0]}>
+  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+  //           <Form.Item
+  //             labelCol={{ span: 24 }}
+  //             wrapperCol={{ span: 24 }}
+  //             required={false}
+  //             label={formatMessage({ id: 'component.basicInformation.fullName' })}
+  //             name="fullName"
+  //             rules={[{ required: true, message: `'Please input your full name!'` }]}
+  //           >
+  //             <Input
+  //               // onChange={(e) => this.handleChange(e)}
+  //               className={styles.formInput}
+  //               name="fullName"
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+  //           <Form.Item
+  //             labelCol={{ span: 24 }}
+  //             wrapperCol={{ span: 24 }}
+  //             required={false}
+  //             label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
+  //             name="privateEmail"
+  //             rules={[
+  //               {
+  //                 required: true,
+  //                 message: 'Please input your email!',
+  //               },
+  //               {
+  //                 type: 'email',
+  //                 message: 'Email invalid!',
+  //               },
+  //             ]}
+  //           >
+  //             <Input
+  //               // onChange={(e) => this.handleChange(e)}
+  //               className={styles.formInput}
+  //               name="privateEmail"
+  //               // defaultValue={privateEmail}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+  //           <Form.Item
+  //             labelCol={{ span: 24 }}
+  //             wrapperCol={{ span: 24 }}
+  //             required={false}
+  //             label={formatMessage({ id: 'component.basicInformation.workEmail' })}
+  //             className={styles.formInput__email}
+  //             name="workEmail"
+  //             rules={[
+  //               {
+  //                 required: true,
+  //                 message: 'Please input your email!',
+  //               },
+  //               {
+  //                 type: 'email',
+  //                 message: 'Email invalid!',
+  //               },
+  //             ]}
+  //           >
+  //             <Input
+  //               // onChange={(e) => this.handleChange(e)}
+  //               className={styles.formInput}
+  //               name="workEmail"
+  //               // suffix="@terralogic.com"
+  //               // defaultValue={workEmail}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
+  //       </Row>
+  //       <Row gutter={[48, 0]}>
+  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+  //           <Form.Item
+  //             labelCol={{ span: 24 }}
+  //             wrapperCol={{ span: 24 }}
+  //             required={false}
+  //             label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
+  //             name="experienceYear"
+  //             rules={[
+  //               {
+  //                 pattern: /^[0-9]*$/,
+  //                 message: 'Year of experience invalid!',
+  //               },
+  //             ]}
+  //           >
+  //             <Input
+  //               // onChange={(e) => this.handleChange(e)}
+  //               className={styles.formInput}
+  //               name="experienceYear"
+  //               // defaultValue={experienceYear}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //       </Row>
+  //     </div>
+  //   );
+  // };
+
+  // _renderStatus = () => {
+  //   const { checkMandatory } = this.props;
+  //   const { filledBasicInformation } = checkMandatory;
+  //   return !filledBasicInformation ? (
+  //     <div className={styles.normalText}>
+  //       <div className={styles.redText}>*</div>
+  //       {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+  //     </div>
+  //   ) : (
+  //     <div className={styles.greenText}>
+  //       * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+  //     </div>
+  //   );
+  // };
+
+  // _renderBottomBar = () => {
+  //   const { checkMandatory } = this.props;
+  //   const { filledBasicInformation } = checkMandatory;
+
+  //   return (
+  //     <div className={styles.bottomBar}>
+  //       <Row align="middle">
+  //         <Col span={16}>
+  //           <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+  //         </Col>
+  //         <Col span={8}>
+  //           <div className={styles.bottomBar__button}>
+  //             {' '}
+  //             <Button
+  //               type="primary"
+  //               htmlType="submit"
+  //               onClick={this.onClickNext}
+  //               className={`${styles.bottomBar__button__primary} ${
+  //                 !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+  //               }`}
+  //               disabled={!filledBasicInformation}
+  //             >
+  //               Next
+  //             </Button>
+  //           </div>
+  //         </Col>
+  //       </Row>
+  //     </div>
+  //   );
+  // };
 
   render() {
     const Tab = {
@@ -279,71 +371,66 @@ class JobDetails extends PureComponent {
       ),
     };
     const {
-      jobDetail,
-      departmentList,
-      locationList,
-      employeeTypeList,
-      titleList,
-      managerList,
-      loading,
-      loadingE,
+      tempData,
+      tempData: {
+        employeeTypeList,
+        departmentList,
+        locationList,
+        titleList,
+        managerList,
+        position,
+        employeeType,
+        department,
+        title,
+        workLocation,
+        reportingManager,
+        prefferedDateOfJoining,
+        candidatesNoticePeriod,
+      },
     } = this.state;
-
     return (
       <>
-        {loading === true ? (
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              <PageLoading />
-            </Col>
-            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-              <div className={styles.rightWrapper}>
-                <Row>
-                  <NoteComponent note={Note} />
-                </Row>
-                <Row className={styles.stepRow}>
-                  <StepsComponent />
-                </Row>
-              </div>
-            </Col>
-          </Row>
-        ) : (
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              <div className={styles.JobDetailsComponent}>
-                <Header />
-                <RadioComponent
-                  Tab={Tab}
-                  handleRadio={this.handleRadio}
-                  jobDetail={jobDetail}
-                  employeeTypeList={employeeTypeList}
-                />
-                <FieldsComponent
-                  dropdownField={dropdownField}
-                  handleSelect={this.handleSelect}
-                  candidateField={candidateField}
-                  jobDetail={jobDetail}
-                  departmentList={departmentList}
-                  locationList={locationList}
-                  titleList={titleList}
-                  managerList={managerList}
-                  _handleSelect={this._handleSelect}
-                  loadingE={loadingE}
-                />
-              </div>
-            </Col>
-            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-              <div className={styles.rightWrapper}>
-                <Row>
-                  <NoteComponent note={Note} />
-                </Row>
-                <Row className={styles.stepRow}>
-                  <StepsComponent />
-                </Row>
-              </div>
-            </Col>
-          </Row>
-        )}
+        <Row gutter={[24, 0]}>
+          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+            <div className={styles.JobDetailsComponent}>
+              <Header />
+              <RadioComponent
+                Tab={Tab}
+                handleRadio={this.handleRadio}
+                tempData={tempData}
+                employeeTypeList={employeeTypeList}
+                employeeType={employeeType}
+                position={position}
+              />
+              <FieldsComponent
+                dropdownField={dropdownField}
+                candidateField={candidateField}
+                departmentList={departmentList}
+                locationList={locationList}
+                titleList={titleList}
+                managerList={managerList}
+                department={department}
+                workLocation={workLocation}
+                title={title}
+                reportingManager={reportingManager}
+                candidatesNoticePeriod={candidatesNoticePeriod}
+                prefferedDateOfJoining={prefferedDateOfJoining}
+                _handleSelect={this._handleSelect}
+              />
+              {/* {this._renderBottomBar()} */}
+            </div>
+          </Col>
+          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+            <div className={styles.rightWrapper}>
+              <Row>
+                <NoteComponent note={Note} />
+              </Row>
+              <Row className={styles.stepRow}>
+                <StepsComponent />
+              </Row>
+            </div>
+          </Col>
+        </Row>
       </>
     );
   }

@@ -36,13 +36,21 @@ class FormTeamMember extends PureComponent {
           id: _id,
         },
       });
+      dispatch({
+        type: 'candidateInfo/fetchLocationList',
+      });
+      dispatch({
+        type: 'candidateInfo/fetchEmployeeTypeList',
+      });
     }
   }
 
   render() {
     const {
       match: { params: { action = '', reId = '' } = {} },
+      candidateInfo,
     } = this.props;
+    const { tempData: { locationList, employeeTypeList } = {} } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
     const listMenu = [
       {
@@ -51,7 +59,12 @@ class FormTeamMember extends PureComponent {
         key: 'basicInformation',
         component: <BasicInformation reId={reId} />,
       },
-      { id: 2, name: 'Job Details', key: 'jobDetails', component: <JobDetails /> },
+      {
+        id: 2,
+        name: 'Job Details',
+        key: 'jobDetails',
+        component: <JobDetails locationList={locationList} employeeTypeList={employeeTypeList} />,
+      },
       {
         id: 3,
         name: 'Eligibility Documents',
