@@ -16,10 +16,18 @@ export default class InformationUploadForm extends PureComponent {
         <div className={styles.formTitle}>
           <span>Document Information</span>
         </div>
-        <Form onFinish={this.onFinish}>
+        <Form name="uploadForm" onFinish={this.onFinish}>
           <Row gutter={['20', '20']}>
             <Col span={12}>
-              <Form.Item name="employeeId" rules={[{ required: true, message: 'Please input!' }]}>
+              <Form.Item
+                name="employeeId"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input employee ID!',
+                  },
+                ]}
+              >
                 <span className={styles.inputLabel}>Employee ID</span>
                 <Input />
               </Form.Item>
@@ -35,7 +43,7 @@ export default class InformationUploadForm extends PureComponent {
             <Col span={12}>
               <Form.Item
                 name="documentType"
-                rules={[{ required: true, message: 'Please select!' }]}
+                rules={[{ required: true, message: 'Please select document type!' }]}
               >
                 <span className={styles.inputLabel}>Document Type</span>
                 <Select onChange={() => {}}>
@@ -49,13 +57,19 @@ export default class InformationUploadForm extends PureComponent {
 
           <Row gutter={['20', '20']}>
             <Col span={12}>
-              <Form.Item name="visaNumber" rules={[{ required: true, message: 'Please input!' }]}>
+              <Form.Item
+                name="visaNumber"
+                rules={[{ required: true, message: 'Please input visa number!' }]}
+              >
                 <span className={styles.inputLabel}>Visa Number</span>
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="visaType" rules={[{ required: true, message: 'Please select!' }]}>
+              <Form.Item
+                name="visaType"
+                rules={[{ required: true, message: 'Please select visa type!' }]}
+              >
                 <span className={styles.inputLabel}>Visa Type</span>
                 <Select onChange={() => {}}>
                   <Option value="jack">Jack</Option>
@@ -67,7 +81,10 @@ export default class InformationUploadForm extends PureComponent {
 
           <Row gutter={['20', '20']}>
             <Col span={12}>
-              <Form.Item name="country" rules={[{ required: true, message: 'Please select!' }]}>
+              <Form.Item
+                name="country"
+                rules={[{ required: true, message: 'Please select country!' }]}
+              >
                 <span className={styles.inputLabel}>Country</span>
                 <Select onChange={() => {}}>
                   <Option value="jack">Jack</Option>
@@ -76,7 +93,10 @@ export default class InformationUploadForm extends PureComponent {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="entryType" rules={[{ required: true, message: 'Please select!' }]}>
+              <Form.Item
+                name="entryType"
+                rules={[{ required: true, message: 'Please select entry type!' }]}
+              >
                 <span className={styles.inputLabel}>Entry Type</span>
                 <Select onChange={() => {}}>
                   <Option value="jack">Jack</Option>
@@ -88,13 +108,19 @@ export default class InformationUploadForm extends PureComponent {
 
           <Row gutter={['20', '20']}>
             <Col span={12}>
-              <Form.Item name="issuedOn" rules={[{ required: true, message: 'Please select!' }]}>
+              <Form.Item
+                name="issuedOn"
+                rules={[{ required: true, message: 'Please select issued time!' }]}
+              >
                 <span className={styles.inputLabel}>Issued On</span>
                 <DatePicker />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="validStill" rules={[{ required: true, message: 'Please select!' }]}>
+              <Form.Item
+                name="validStill"
+                rules={[{ required: true, message: 'Please select valid time!' }]}
+              >
                 <span className={styles.inputLabel}>Valid Still</span>
                 <DatePicker />
               </Form.Item>
