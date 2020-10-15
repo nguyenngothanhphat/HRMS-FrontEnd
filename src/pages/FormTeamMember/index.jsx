@@ -13,6 +13,7 @@ import SalaryStructure from './components/SalaryStructure';
 import EligibilityDocs from './components/EligibilityDocs';
 import Payroll from './components/Payroll';
 import Additional from './components/Additional';
+// import PreviewOffer from './components/PreviewOffer';
 
 @connect(({ candidateInfo = {} }) => ({
   candidateInfo,
@@ -26,22 +27,16 @@ class FormTeamMember extends PureComponent {
     } = this.props;
     // console.log(this.props);
     // check action is add or review. If isReview fetch candidate by reID
-    console.log(this.props);
     const { data } = candidateInfo;
     const { _id } = data;
     if (action === 'review') {
       dispatch({
-        type: 'candidateInfo/fetchCandidateInfo',
+        type: 'candidateInfo/fetchEmployeeById',
         payload: {
-          rookieId: reId,
-          data: {
-            ...data,
-            _id,
-          },
+          id: _id,
         },
       });
     }
-    // console.log(this.props);
   }
 
   render() {

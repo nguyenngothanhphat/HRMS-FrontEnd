@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'umi';
 import { Layout, Row, Col, InputNumber, Button } from 'antd';
 
-import SignUp1 from '@/pages/SignUp1';
-import SignUp2 from '@/pages/SignUp2';
-
 import gmail from '@/assets/gmail-icon.png';
 import outlook from '@/assets/outlook-icon.png';
 import img from '@/assets/sign-up-img.png';
@@ -48,11 +45,7 @@ const SignUpLayout1 = (props) => {
             </div>
           </div>
 
-          <div className={styles.rightContent}>
-            {/* <SignUp2 /> */}
-            {/* <SignUp1 /> */}
-            {children}
-          </div>
+          <div className={styles.rightContent}>{children}</div>
         </div>
       </Content>
     </Layout>

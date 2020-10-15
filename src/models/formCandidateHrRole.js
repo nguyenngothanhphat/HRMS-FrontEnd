@@ -7,6 +7,7 @@ import {
   getManagerList,
   addCandidate,
   updateByHR,
+  getById,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -22,6 +23,10 @@ const candidateInfo = {
       filledJobDetail: false,
       filledCustomField: false,
       salaryStatus: 2,
+    },
+    currentStep: 1,
+    tempData: {
+      checkStatus: {},
     },
     data: {
       fullName: null,
@@ -264,8 +269,9 @@ const candidateInfo = {
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('update', data);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { temptData: data } });
+        yield put({ type: 'save', payload });
       } catch (errors) {
         dialog(errors);
       }
@@ -275,12 +281,25 @@ const candidateInfo = {
       try {
         console.log('abc');
         const response = yield call(getRookieInfo);
-        const { data } = response;
+        const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
-        console.log('b', response);
+        if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
         history.push(`/employee-onboarding/review/${rookieId}`);
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchEmployeeById({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        console.log('abc', data);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { data: { ...data, id: payload._id } } });
       } catch (error) {
         dialog(error);
       }
