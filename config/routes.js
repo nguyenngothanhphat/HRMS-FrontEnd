@@ -193,7 +193,7 @@ const routes = [
           },
           {
             path: '/employee-offboarding/:ticketId',
-            name: `ticketId16008082`,
+            name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
             authority: ['customer'],

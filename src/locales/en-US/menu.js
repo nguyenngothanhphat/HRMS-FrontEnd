@@ -66,6 +66,6 @@ export default {
   'menu.uploadDocument': 'Add Document',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
-  'menu.ticketId16008082': 'Ticket Id: 1600182',
+  'menu.ticketId': 'Ticket Id',
   'menu.setting': 'Setting',
 };
