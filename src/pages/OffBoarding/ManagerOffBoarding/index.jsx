@@ -54,7 +54,7 @@ class ManagerOffBoading extends Component {
                   <TabPane tab={tab.name} key={tab.id}>
                     {activeTitle}
                     <div className={styles.tableTab}>
-                      <NavLink to="/employee-offboarding/16001282">Link to detail ticket</NavLink>
+                      <NavLink to="/employee-offboarding/16001288">Link to detail ticket</NavLink>
                       <TableManager />
                     </div>
                   </TabPane>
