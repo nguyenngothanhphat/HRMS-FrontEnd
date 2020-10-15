@@ -13,6 +13,7 @@ import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/Onbo
 import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProvisionalOffers';
 import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
 import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
+import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
 
 import MenuItem from './components/MenuItem';
 
@@ -36,10 +37,12 @@ const getComponent = (name) => {
       return <FinalOffers />;
     case 'FinalOfferDrafts':
       return <AllDrafts />;
-    case 'DiscardedFinalOffers':
-      return <DiscardedFinalOffers />;
+    case 'DiscardedFinalOffers': // del
+      return <DiscardedFinalOffers />; // del
     case 'BackgroundCheck':
       return <BackgroundCheck />;
+    case 'DiscardedOffers':
+      return <DiscardedOffers />;
     default:
       return <PendingEligibilityChecks />;
   }
@@ -57,12 +60,19 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     const { listMenu = [] } = this.props;
-    const firstComponent = listMenu[0].menuItem[0].component;
+    console.log(listMenu);
+    const firstComponent = listMenu[0].component;
     this.setState({
-      pageTitle: listMenu[0].menuItem[0].name,
-      selectedId: listMenu[0].menuItem[0].id,
+      pageTitle: listMenu[0].name,
+      selectedId: listMenu[0].id,
       displayComponent: getComponent(firstComponent),
     });
+    // const firstComponent = listMenu[0].menuItem[0].component;
+    // this.setState({
+    //   pageTitle: listMenu[0].menuItem[0].name,
+    //   selectedId: listMenu[0].menuItem[0].id,
+    //   displayComponent: getComponent(firstComponent),
+    // });
   }
 
   handleClick = (item) => {
@@ -105,7 +115,24 @@ class OnboardingLayout extends PureComponent {
           <div className={styles.divider} />
 
           <div className={styles.leftMenu}>
-            {listMenu.map((phase) => {
+            {listMenu.map((item) => {
+              const { id, name, component } = item;
+              const { selectedId } = this.state;
+              return (
+                <div key={id}>
+                  <MenuItem
+                    selectedId={selectedId}
+                    id={id}
+                    name={name}
+                    component={component}
+                    // title={title}
+                    // menuItem={menuItem}
+                    handleClick={this.handleClick}
+                  />
+                </div>
+              );
+            })}
+            {/* {listMenu.map((phase) => {
               const { id, title, menuItem } = phase;
               const { selectedId } = this.state;
               return (
@@ -118,7 +145,7 @@ class OnboardingLayout extends PureComponent {
                   />
                 </div>
               );
-            })}
+            })} */}
           </div>
 
           {/* <Link

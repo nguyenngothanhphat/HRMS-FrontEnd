@@ -2,13 +2,22 @@ import React from 'react';
 import styles from './index.less';
 
 const MenuItem = (props) => {
-  const { title = '', menuItem = [], selectedId = 1 } = props;
+  // const { title = '', menuItem = [], selectedId = 1 } = props;
+  const { name = '', component = '', quantity = 1, selectedId = 1, id = 0 } = props;
   const { handleClick } = props;
-
+  console.log(id);
+  // const { id, name, quantity } = item;
   return (
     <div className={styles.phase}>
-      <h3>{title}</h3>
-      {menuItem.map((item) => {
+      {/* <h3>{title}</h3> */}
+
+      <p
+        className={selectedId === id ? `${styles.menuItem} ${styles.active}` : styles.menuItem}
+        onClick={() => handleClick({ name, component, id })}
+      >
+        {name} <span>({quantity})</span>
+      </p>
+      {/* {menuItem.map((item) => {
         const { id, name, quantity } = item;
         return (
           <p
@@ -19,7 +28,7 @@ const MenuItem = (props) => {
             {name} <span>({quantity})</span>
           </p>
         );
-      })}
+      })} */}
     </div>
   );
 };

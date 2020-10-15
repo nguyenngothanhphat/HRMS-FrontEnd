@@ -254,9 +254,12 @@ const pendingApprovalsData = employeeList; // Awaiting Approvals  del
 const rejectFinalOfferData = employeeList; // Awaiting Approvals  del
 const acceptedFinalOffersData = employeeList; // Final Offers
 const sentFinalOffersData = rookieList; // Final Offers
+const renegotiateFinalOffersData = rookieList; // Final Offers
 const provisionalOfferDraftsData = employeeList; // All Drafts
 const finalOfferDraftsData = employeeList; // All Drafts
 const discardedFinalOffersData = rookieList;
+const provisionalOffersData = rookieList; // Discarded Offers
+const finalOffersData = rookieList; // Discarded Offers
 
 const pendingData = rookieList; // Background Checks
 
@@ -264,34 +267,6 @@ const PHASE_DATA = [
   {
     id: 1,
     title: 'phase 1',
-    menuItem: [
-      {
-        id: 1,
-        name: 'Pending Eligibility Checks',
-        // name: {formatMessage({ id: 'component.onboardingOverview.new' })},
-        key: 'pendingEligibilityChecks',
-        component: 'PendingEligibilityChecks',
-        quantity: sentEligibilityFormsData.length,
-      },
-      {
-        id: 2,
-        name: 'Eligible Candidates',
-        key: 'eligibleCandidates',
-        component: 'EligibleCandidates',
-        quantity: eligibleCandidatesData.length,
-      },
-      {
-        id: 3,
-        name: 'Ineligible candidates',
-        key: 'ineligibleCandidates',
-        component: 'IneligibleCandidates',
-        quantity: ineligibleCandidatesData.length,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: 'phase 2',
     menuItem: [
       {
         id: 4,
@@ -309,26 +284,6 @@ const PHASE_DATA = [
         quantity: 10,
       },
       {
-        id: 5,
-        name: 'Discarded Provisional offers',
-        key: 'discardedProvisionalOffers',
-        component: 'DiscardedProvisionalOffers',
-        quantity: discardedProvisionalOffersData.length,
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: 'phase 3',
-    menuItem: [
-      {
-        id: 6,
-        name: 'Awaiting approvals from HR',
-        key: 'awaitingApprovals',
-        component: 'AwaitingApprovals',
-        quantity: approvedFinalOffersData.length,
-      },
-      {
         id: 7,
         name: 'Final offers',
         key: 'finalOffers',
@@ -336,20 +291,167 @@ const PHASE_DATA = [
         quantity: sentFinalOffersData.length,
       },
       {
+        id: 6,
+        name: 'Awaiting approvals',
+        key: 'awaitingApprovals',
+        component: 'AwaitingApprovals',
+        quantity: approvedFinalOffersData.length,
+      },
+      {
+        id: 11,
+        name: 'Discarded offers',
+        key: 'discardedOffers',
+        component: 'DiscardedOffers',
+        // quantity: sentFinalOffersData.length,
+        quantity: 5,
+      },
+      {
         id: 8,
-        name: 'Final Offer Drafts',
+        name: 'All Drafts',
         key: 'finalOfferDrafts',
         component: 'FinalOfferDrafts',
         quantity: finalOfferDraftsData.length,
       },
-      {
-        id: 9,
-        name: 'Discarded Final Offers',
-        key: 'discardedFinalOffers',
-        component: 'DiscardedFinalOffers',
-        quantity: discardedFinalOffersData.length,
-      },
+      // {
+      //   id: 1,
+      //   name: 'Pending Eligibility Checks',
+      //   // name: {formatMessage({ id: 'component.onboardingOverview.new' })},
+      //   key: 'pendingEligibilityChecks',
+      //   component: 'PendingEligibilityChecks',
+      //   quantity: sentEligibilityFormsData.length,
+      // },
+      // {
+      //   id: 2,
+      //   name: 'Eligible Candidates',
+      //   key: 'eligibleCandidates',
+      //   component: 'EligibleCandidates',
+      //   quantity: eligibleCandidatesData.length,
+      // },
+      // {
+      //   id: 3,
+      //   name: 'Ineligible candidates',
+      //   key: 'ineligibleCandidates',
+      //   component: 'IneligibleCandidates',
+      //   quantity: ineligibleCandidatesData.length,
+      // },
     ],
+  },
+  {
+    id: 2,
+    title: 'phase 2',
+    menuItem: [
+      // {
+      //   id: 4,
+      //   name: 'Provisional offers',
+      //   key: 'provisionalOffers',
+      //   component: 'ProvisionalOffers',
+      //   quantity: sentProvisionalOffersData.length,
+      // },
+      // {
+      //   id: 10,
+      //   name: 'Background Checks',
+      //   key: 'backgroundChecks',
+      //   component: 'BackgroundCheck',
+      //   // quantity: sentProvisionalOffersData.length,
+      //   quantity: 10,
+      // },
+      // {  // Del
+      //   id: 5,
+      //   name: 'Discarded Provisional offers',
+      //   key: 'discardedProvisionalOffers',
+      //   component: 'DiscardedProvisionalOffers',
+      //   quantity: discardedProvisionalOffersData.length,
+      // },
+    ],
+  },
+  {
+    id: 3,
+    title: 'phase 3',
+    menuItem: [
+      // {
+      //   id: 7,
+      //   name: 'Final offers',
+      //   key: 'finalOffers',
+      //   component: 'FinalOffers',
+      //   quantity: sentFinalOffersData.length,
+      // },
+      // {
+      //   id: 6,
+      //   name: 'Awaiting approvals',
+      //   key: 'awaitingApprovals',
+      //   component: 'AwaitingApprovals',
+      //   quantity: approvedFinalOffersData.length,
+      // },
+      // {
+      //   id: 11,
+      //   name: 'Discarded offers',
+      //   key: 'discardedOffers',
+      //   component: 'DiscardedOffers',
+      //   // quantity: sentFinalOffersData.length,
+      //   quantity: 5,
+      // },
+      // {
+      //   id: 8,
+      //   name: 'All Drafts',
+      //   key: 'finalOfferDrafts',
+      //   component: 'FinalOfferDrafts',
+      //   quantity: finalOfferDraftsData.length,
+      // },
+      // { // Del
+      //   id: 9,
+      //   name: 'Discarded Final Offers',
+      //   key: 'discardedFinalOffers',
+      //   component: 'DiscardedFinalOffers',
+      //   quantity: discardedFinalOffersData.length,
+      // },
+    ],
+  },
+];
+
+const MENU_DATA = [
+  {
+    id: 1,
+    name: 'Provisional offers',
+    key: 'provisionalOffers',
+    component: 'ProvisionalOffers',
+    quantity: sentProvisionalOffersData.length,
+  },
+  {
+    id: 2,
+    name: 'Background Checks',
+    key: 'backgroundChecks',
+    component: 'BackgroundCheck',
+    // quantity: sentProvisionalOffersData.length,
+    quantity: 10,
+  },
+  {
+    id: 3,
+    name: 'Final offers',
+    key: 'finalOffers',
+    component: 'FinalOffers',
+    quantity: sentFinalOffersData.length,
+  },
+  {
+    id: 4,
+    name: 'Awaiting approvals',
+    key: 'awaitingApprovals',
+    component: 'AwaitingApprovals',
+    quantity: approvedFinalOffersData.length,
+  },
+  {
+    id: 5,
+    name: 'Discarded offers',
+    key: 'discardedOffers',
+    component: 'DiscardedOffers',
+    // quantity: sentFinalOffersData.length,
+    quantity: 5,
+  },
+  {
+    id: 6,
+    name: 'All Drafts',
+    key: 'finalOfferDrafts',
+    component: 'FinalOfferDrafts',
+    quantity: finalOfferDraftsData.length,
   },
 ];
 
@@ -500,6 +602,7 @@ const onboard = {
       finalOffers: {
         acceptedFinalOffers: acceptedFinalOffersData,
         sentFinalOffers: sentFinalOffersData,
+        renegotiateFinalOffers: renegotiateFinalOffersData,
       },
       finalOfferDrafts: finalOfferDraftsData,
       allDrafts: {
@@ -507,6 +610,10 @@ const onboard = {
         finalOfferDrafts: finalOfferDraftsData,
       },
       discardedFinalOffers: discardedFinalOffersData,
+      discardedOffers: {
+        provisionalOffers: provisionalOffersData,
+        finalOffers: finalOffersData,
+      },
     },
     settings: {
       backgroundChecks: {
@@ -528,6 +635,7 @@ const onboard = {
     menu: {
       onboardingOverviewTab: {
         phaseList: PHASE_DATA,
+        listMenu: MENU_DATA,
       },
     },
   },

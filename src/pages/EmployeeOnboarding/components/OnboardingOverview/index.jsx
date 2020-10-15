@@ -42,10 +42,11 @@ class OnboardingOverview extends PureComponent {
     const { menu = {} } = this.props;
     const { onboardingOverviewTab = {} } = menu;
     const { phaseList = [] } = onboardingOverviewTab;
+    const { listMenu = [] } = onboardingOverviewTab;
 
     return (
       <div>
-        <OnboardingLayout listMenu={phaseList} />
+        <OnboardingLayout listMenu={listMenu} />
       </div>
     );
   }
