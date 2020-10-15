@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Empty } from 'antd';
+import { Table, Empty, Dropdown, Menu } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { formatMessage, Link, Redirect } from 'umi';
 
@@ -45,6 +45,114 @@ class OnboardTable extends Component {
       );
     }
     return <p>{name}</p>;
+  };
+
+  renderAction = (id, type, actionText) => {
+    const {
+      FINAL_OFFERS_DRAFTS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+      APPROVED_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+    } = TABLE_TYPE;
+
+    let actionContent = null;
+
+    switch (type) {
+      case RENEGOTIATE_PROVISIONAL_OFFERS:
+      case RENEGOTIATE_FINAL_OFFERS:
+        actionContent = (
+          <>
+            {/* <span>{actionText}</span> */}
+            <span>Schedule 1-on-1</span>
+
+            <span className={styles.viewDraft}>
+              View Form
+              {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
+            </span>
+          </>
+        );
+        break;
+
+      case FINAL_OFFERS_DRAFTS: {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1">Discard offer</Menu.Item>
+          </Menu>
+        );
+
+        actionContent = (
+          <>
+            <span>Send for approval</span>
+
+            <span className={styles.viewDraft}>
+              {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+            </span>
+
+            <Dropdown.Button
+              overlay={menu}
+              placement="bottomCenter"
+              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+            />
+          </>
+        );
+        break;
+      }
+
+      case APPROVED_OFFERS:
+        actionContent = (
+          <>
+            <span>Send to candidate</span>
+            <span className={styles.viewDraft}>View form</span>
+          </>
+        );
+        break;
+
+      case ACCEPTED_FINAL_OFFERS: {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1">Discard offer</Menu.Item>
+          </Menu>
+        );
+
+        actionContent = (
+          <>
+            <Dropdown.Button
+              overlay={menu}
+              placement="bottomCenter"
+              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+            >
+              {actionText}
+            </Dropdown.Button>
+            {/* <span onClick={() => this.handleActionClick(type)}>{actionText}</span> */}
+            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+          </>
+        );
+        break;
+      }
+
+      default:
+        actionContent = (
+          <>
+            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+          </>
+        );
+        break;
+    }
+    return (
+      <Link to={`/employee-onboarding/review/${id}`}>
+        <span className={styles.tableActions}>
+          {actionContent}
+          {/* {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
+          ) : (
+            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+          )} */}
+
+          {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+        </span>
+      </Link>
+    );
   };
 
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
@@ -184,25 +292,26 @@ class OnboardTable extends Component {
           const { currentRecord = {} } = this.state;
           const { rookieId = '' } = currentRecord;
           const id = rookieId.replace('#', '') || '';
-          return (
-            <Link to={`/employee-onboarding/review/${id}`}>
-              <span className={styles.tableActions}>
-                {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-                  <>
-                    <span>{actionText}</span>
+          return this.renderAction(id, type, actionText);
+          // return (
+          //   <Link to={`/employee-onboarding/review/${id}`}>
+          //     <span className={styles.tableActions}>
+          //       {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
+          //         <>
+          //           <span>{actionText}</span>
 
-                    <span className={styles.viewDraft}>
-                      {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-                    </span>
-                  </>
-                ) : (
-                  <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-                )}
+          //           <span className={styles.viewDraft}>
+          //             {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+          //           </span>
+          //         </>
+          //       ) : (
+          //         <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+          //       )}
 
-                <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
-              </span>
-            </Link>
-          );
+          //       <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
+          //     </span>
+          //   </Link>
+          // );
         },
         columnName: ACTION,
       },

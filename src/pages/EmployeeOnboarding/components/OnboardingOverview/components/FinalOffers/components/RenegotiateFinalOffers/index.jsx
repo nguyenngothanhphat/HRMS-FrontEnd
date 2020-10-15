@@ -7,7 +7,7 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 
 const { ID, NAME, POSITION, LOCATION, DATE_REQUEST, ACTION } = COLUMN_NAME;
-const { ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
+const { RENEGOTIATE_FINAL_OFFERS } = TABLE_TYPE;
 
 class RenegotiateFinalOffer extends PureComponent {
   render() {
@@ -17,9 +17,9 @@ class RenegotiateFinalOffer extends PureComponent {
       <OnboardTable
         list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_REQUEST, ACTION]}
-        type={ACCEPTED_FINAL_OFFERS}
+        type={RENEGOTIATE_FINAL_OFFERS}
         inTab
-        hasCheckbox
+        // hasCheckbox
       />
     );
   }

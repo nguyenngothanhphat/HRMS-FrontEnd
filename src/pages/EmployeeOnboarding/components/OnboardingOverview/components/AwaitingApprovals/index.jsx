@@ -26,7 +26,7 @@ class AwaitingApprovals extends PureComponent {
       <div className={styles.AwaitingApprovals}>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1">
-            <TabPane tab="send for approval" key="1">
+            <TabPane tab="sent for approval" key="1">
               {/* <PendingApprovals list={pendingApprovals} /> */}
               <SentForApprovals list={sentForApprovals} />
             </TabPane>

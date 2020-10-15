@@ -7,7 +7,7 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 
 const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { SENT_FINAL_OFFERS, PROVISIONAL_OFFERS_DRAFTS } = TABLE_TYPE;
+const { PROVISIONAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class ProvisionalOfferDrafts extends PureComponent {
   render() {
@@ -17,7 +17,7 @@ class ProvisionalOfferDrafts extends PureComponent {
       <OnboardTable
         list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-        type={SENT_FINAL_OFFERS}
+        type={PROVISIONAL_OFFERS_DRAFTS}
         inTab
       />
     );

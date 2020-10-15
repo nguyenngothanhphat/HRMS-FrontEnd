@@ -19,7 +19,7 @@ class AcceptedFinalOffers extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, CHANGE_REQUEST, ACTION]}
         type={ACCEPTED_FINAL_OFFERS}
         inTab
-        hasCheckbox
+        // hasCheckbox
       />
     );
   }
