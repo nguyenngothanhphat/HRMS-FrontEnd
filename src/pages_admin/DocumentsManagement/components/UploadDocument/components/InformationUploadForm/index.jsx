@@ -7,7 +7,7 @@ const { Option } = Select;
 
 export default class InformationUploadForm extends PureComponent {
   onFinish = (fieldsValue) => {
-    //
+    console.log('fieldsValue', fieldsValue);
   };
 
   render() {
@@ -16,10 +16,11 @@ export default class InformationUploadForm extends PureComponent {
         <div className={styles.formTitle}>
           <span>Document Information</span>
         </div>
-        <Form name="uploadForm" onFinish={this.onFinish}>
+        <Form name="uploadForm" layout="vertical" onFinish={this.onFinish}>
           <Row gutter={['20', '20']}>
             <Col span={12}>
               <Form.Item
+                label="Employee ID"
                 name="employeeId"
                 rules={[
                   {
@@ -28,13 +29,11 @@ export default class InformationUploadForm extends PureComponent {
                   },
                 ]}
               >
-                <span className={styles.inputLabel}>Employee ID</span>
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="employeeName">
-                <span className={styles.inputLabel}>Employee Name</span>
+              <Form.Item label="Employee Name" name="employeeName">
                 <Input disabled />
               </Form.Item>
             </Col>
@@ -42,14 +41,25 @@ export default class InformationUploadForm extends PureComponent {
           <Row gutter={['20', '20']}>
             <Col span={12}>
               <Form.Item
+                label="Document Type"
                 name="documentType"
                 rules={[{ required: true, message: 'Please select document type!' }]}
               >
-                <span className={styles.inputLabel}>Document Type</span>
                 <Select onChange={() => {}}>
-                  <Option value="jack">Jack</Option>
-                  <Option value="lucy">Lucy</Option>
-                  <Option value="Yiminghe">yiminghe</Option>
+                  <Option value="Type 1">Type 1</Option>
+                  <Option value="Type 2">Type 2</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Company"
+                name="company"
+                rules={[{ required: true, message: 'Please select company!' }]}
+              >
+                <Select onChange={() => {}}>
+                  <Option value="Company A">Company A</Option>
+                  <Option value="Company B">Company B</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -59,21 +69,27 @@ export default class InformationUploadForm extends PureComponent {
             <Col span={12}>
               <Form.Item
                 name="visaNumber"
-                rules={[{ required: true, message: 'Please input visa number!' }]}
+                label="Visa Number"
+                rules={[
+                  {
+                    required: true,
+                    pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                    message: 'Invalid Visa Number',
+                  },
+                ]}
               >
-                <span className={styles.inputLabel}>Visa Number</span>
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="visaType"
+                label="Visa Type"
                 rules={[{ required: true, message: 'Please select visa type!' }]}
               >
-                <span className={styles.inputLabel}>Visa Type</span>
                 <Select onChange={() => {}}>
-                  <Option value="jack">Jack</Option>
-                  <Option value="lucy">Lucy</Option>
+                  <Option value="Type 1">Type 1</Option>
+                  <Option value="Type 2">Type 2</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -83,24 +99,25 @@ export default class InformationUploadForm extends PureComponent {
             <Col span={12}>
               <Form.Item
                 name="country"
+                label="Country"
                 rules={[{ required: true, message: 'Please select country!' }]}
               >
-                <span className={styles.inputLabel}>Country</span>
                 <Select onChange={() => {}}>
-                  <Option value="jack">Jack</Option>
-                  <Option value="lucy">Lucy</Option>
+                  <Option value="US">US</Option>
+                  <Option value="India">India</Option>
+                  <Option value="Vietnam">Vietnam</Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="entryType"
+                label="Entry Type"
                 rules={[{ required: true, message: 'Please select entry type!' }]}
               >
-                <span className={styles.inputLabel}>Entry Type</span>
                 <Select onChange={() => {}}>
-                  <Option value="jack">Jack</Option>
-                  <Option value="lucy">Lucy</Option>
+                  <Option value="Type 1">Type 1</Option>
+                  <Option value="Type 2">Type 2</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -110,18 +127,18 @@ export default class InformationUploadForm extends PureComponent {
             <Col span={12}>
               <Form.Item
                 name="issuedOn"
+                label="Issued On"
                 rules={[{ required: true, message: 'Please select issued time!' }]}
               >
-                <span className={styles.inputLabel}>Issued On</span>
                 <DatePicker />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 name="validStill"
-                rules={[{ required: true, message: 'Please select valid time!' }]}
+                label="Valid Still"
+                rules={[{ required: true, message: 'Please select expired time!' }]}
               >
-                <span className={styles.inputLabel}>Valid Still</span>
                 <DatePicker />
               </Form.Item>
             </Col>
