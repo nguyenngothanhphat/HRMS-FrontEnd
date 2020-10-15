@@ -3,7 +3,9 @@ import { Upload, message, Button } from 'antd';
 import { connect } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
 
-@connect()
+@connect(({ loading }) => ({
+  loading: loading.effects['upload/uploadFile'],
+}))
 class DraggerUpLoad extends PureComponent {
   beforeUpload = (file) => {
     const checkType =
@@ -34,9 +36,10 @@ class DraggerUpLoad extends PureComponent {
   render() {
     const props = {
       name: 'file',
-      multiple: true,
-      showUploadList: true,
+      multiple: false,
+      showUploadList: false,
     };
+    const { loading } = this.props;
     return (
       <div>
         <Upload
@@ -44,7 +47,9 @@ class DraggerUpLoad extends PureComponent {
           beforeUpload={this.beforeUpload}
           action={(file) => this.handleUpload(file)}
         >
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          <Button icon={<UploadOutlined />} loading={loading}>
+            Click to Upload
+          </Button>
         </Upload>
       </div>
     );

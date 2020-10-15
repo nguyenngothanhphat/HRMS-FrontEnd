@@ -11,16 +11,6 @@ import styles from './index.less';
   loading: loading.effects['login/login'],
 }))
 class EmployeeOnboarding extends PureComponent {
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employee/fetchDepartment',
-    });
-    dispatch({
-      type: 'employeeProfile/fetchListSkill',
-    });
-  }
-
   render() {
     const { location: { state: { defaultActiveKey = '3' } = {} } = {} } = this.props;
 

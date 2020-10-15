@@ -1,13 +1,23 @@
-import { Button, Table } from 'antd';
+import { Button, Table, Spin } from 'antd';
 import React, { PureComponent } from 'react';
-import { history, formatMessage } from 'umi';
+import { history, formatMessage, connect } from 'umi';
 import iGirl from '@/assets/Group1404.svg';
 import trash from '@/assets/trash-customField.svg';
 import edit from '@/assets/edit-customField.svg';
 import group from '@/assets/Group-customField.svg';
 import styles from './index.less';
 
+@connect(({ loading }) => ({
+  loadingCustom: loading.effects['custormField/fetchSection'],
+}))
 class CustomFields extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'custormField/fetchSection',
+    });
+  }
+
   handleAddNewSection = () => {
     history.push('/employee-onboarding/CreateFieldSection');
   };
@@ -74,6 +84,13 @@ class CustomFields extends PureComponent {
         fieldName: 'Additional Information',
       },
     ];
+    const { loadingCustom = false } = this.props;
+    if (loadingCustom)
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" loading={loadingCustom} className={styles.loadingCustom} />
+        </div>
+      );
     return (
       <div className={styles.CustomFields}>
         <div className={styles.CustomFieldsTop}>

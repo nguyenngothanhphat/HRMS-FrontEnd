@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
 import { Button, Input, Radio, Select } from 'antd';
 import iconCancel from '@/assets/iconCancelCustomField.svg';
 import styles from './index.less';
 
-@connect(({ employee: { department = [] } = {}, employeeProfile: { listSkill } = {} }) => ({
-  department,
-  listSkill,
-}))
+@connect(
+  ({ loading, employee: { department = [] } = {}, employeeProfile: { listSkill } = {} }) => ({
+    loading: loading.effects['custormField/addSection'],
+    department,
+    listSkill,
+  }),
+)
 class CreateFieldSection extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,6 +26,16 @@ class CreateFieldSection extends PureComponent {
         filters: [],
       },
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/fetchDepartment',
+    });
+    dispatch({
+      type: 'employeeProfile/fetchListSkill',
+    });
   }
 
   handleChange = (name, e) => {
@@ -60,9 +73,22 @@ class CreateFieldSection extends PureComponent {
     this.setState({ data: { ...data, filters: newList } });
   };
 
+  handClick = async (data) => {
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'custormField/addSection',
+      payload: data,
+    });
+    history.push('/employee-onboarding/');
+  };
+
+  handClickCancel = () => {
+    history.push('/employee-onboarding/');
+  };
+
   render() {
-    const { name, itemField, dataFilter } = this.state;
-    const { department, listSkill } = this.props;
+    const { name, itemField, dataFilter, data } = this.state;
+    const { department, listSkill, loading } = this.props;
     const { Option } = Select;
     return (
       <PageContainer>
@@ -100,11 +126,11 @@ class CreateFieldSection extends PureComponent {
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
-                    defaultValue="Yes"
+                    defaultValue="true"
                     onChange={(e) => this.handleChange('sensitive', e)}
                   >
-                    <Radio value="Yes">Yes</Radio>
-                    <Radio value="No">No</Radio>
+                    <Radio value="true">Yes</Radio>
+                    <Radio value="false">No</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -132,11 +158,11 @@ class CreateFieldSection extends PureComponent {
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
-                    defaultValue="Yes"
+                    defaultValue="true"
                     onChange={(e) => this.handleChange('onboardingComplete', e)}
                   >
-                    <Radio value="Yes">Yes</Radio>
-                    <Radio value="No">No</Radio>
+                    <Radio value="true">Yes</Radio>
+                    <Radio value="false">No</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -148,11 +174,11 @@ class CreateFieldSection extends PureComponent {
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
-                    defaultValue="Yes"
+                    defaultValue="true"
                     onChange={(e) => this.handleChange('visibleToIndividual', e)}
                   >
-                    <Radio value="Yes">Yes</Radio>
-                    <Radio value="No">No</Radio>
+                    <Radio value="true">Yes</Radio>
+                    <Radio value="false">No</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -164,11 +190,11 @@ class CreateFieldSection extends PureComponent {
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
-                    defaultValue="Yes"
+                    defaultValue="true"
                     onChange={(e) => this.handleChange('visibileToManager', e)}
                   >
-                    <Radio value="Yes">Yes</Radio>
-                    <Radio value="No">No</Radio>
+                    <Radio value="true">Yes</Radio>
+                    <Radio value="false">No</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -227,7 +253,7 @@ class CreateFieldSection extends PureComponent {
                       </div>
                       {dataFilter.map((item, index) => {
                         return (
-                          <div>
+                          <div key={`data${index + 1}`}>
                             <div className={styles.selectFilter}>
                               <Select
                                 className={styles.selectFilter1}
@@ -236,7 +262,7 @@ class CreateFieldSection extends PureComponent {
                               >
                                 {department.map((itemDepartment) => {
                                   return (
-                                    <Option value={itemDepartment._id}>
+                                    <Option value={itemDepartment._id} key={itemDepartment._id}>
                                       {itemDepartment.name}
                                     </Option>
                                   );
@@ -251,7 +277,11 @@ class CreateFieldSection extends PureComponent {
                                 onChange={(value) => this.handleChangeFilter(index, 'title', value)}
                               >
                                 {listSkill.map((itemSkill) => {
-                                  return <Option value={itemSkill._id}>{itemSkill.name}</Option>;
+                                  return (
+                                    <Option value={itemSkill._id} key={itemSkill._id}>
+                                      {itemSkill.name}
+                                    </Option>
+                                  );
                                 })}
                               </Select>
                               <img src={iconCancel} alt="not found" />
@@ -269,10 +299,14 @@ class CreateFieldSection extends PureComponent {
             </div>
           </div>
           <div className={styles.buttonFooter}>
-            <Button className={styles.buttonFooterSave}>
+            <Button
+              className={styles.buttonFooterSave}
+              onClick={() => this.handClick(data)}
+              loading={loading}
+            >
               {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Save&Return' })}
             </Button>
-            <Button className={styles.buttonFooterCancel}>
+            <Button className={styles.buttonFooterCancel} onClick={this.handClickCancel}>
               {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Cancel' })}
             </Button>
           </div>
