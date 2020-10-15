@@ -63,6 +63,7 @@ export default {
   'menu.addCompany': 'Add Company',
   'menu.companyDetail': 'Company Detail',
   'menu.documents': 'Documents',
+  'menu.uploadDocument': 'Add Document',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId16008082': 'Ticket Id: 1600182',

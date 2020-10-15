@@ -84,7 +84,7 @@ class TableContainer extends PureComponent {
             {formatMessage({ id: 'pages_admin.documents.documentTable.importDocuments' })}
           </span>
         </NavLink>
-        <NavLink to="/#" className={styles.buttonAdd}>
+        <NavLink to="/documents/upload-document" className={styles.buttonAdd}>
           <img src={addDocument} alt="add-document" />
           <span className={styles.NameNewProfile}>
             {formatMessage({ id: 'pages_admin.documents.documentTable.addDocument' })}
