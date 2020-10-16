@@ -1,9 +1,24 @@
+/* eslint-disable react/jsx-curly-newline */
+/* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input } from 'antd';
+import { Modal, Button, Form, Input, Select } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+const Option = Select;
+
+@connect(
+  ({
+    loading,
+    employeesManagement: { companyList = [], locationList = [], departmentList = [] },
+  }) => ({
+    companyList,
+    locationList,
+    departmentList,
+    loading: loading.effects['employeesManagement/addEmployee'],
+  }),
+)
 class AddEmployeeForm extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +34,11 @@ class AddEmployeeForm extends Component {
   handleChangeAddEmployee = () => {};
 
   handleSubmitEmployee = (values) => {
-    console.log('Success:', values);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/addEmployee',
+      payload: values,
+    });
   };
 
   renderHeaderModal = () => {
@@ -34,8 +53,15 @@ class AddEmployeeForm extends Component {
   renderAddEmployeeForm = () => {
     const formLayout = {
       labelCol: { span: 8 },
-      //   wrapperCol: { span: 14 },
     };
+    const validateMessages = {
+      required: '${label} is required!',
+      types: {
+        email: '${label} is not validate email!',
+        number: '${label} is not a validate number!',
+      },
+    };
+    const { companyList, locationList, departmentList } = this.props;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -44,42 +70,90 @@ class AddEmployeeForm extends Component {
           colon={false}
           labelAlign="left"
           ref={this.formRef}
+          validateMessages={validateMessages}
           id="addEmployeeForm"
           onValuesChange={this.handleChangeAddEmployee}
           onFinish={this.handleSubmitEmployee}
           {...formLayout}
         >
-          <Form.Item label="Name" name="name">
+          <Form.Item
+            label="Name"
+            name="firstName"
+            rules={[
+              { required: true },
+              {
+                pattern: /^[a-zA-Z ]*$/,
+                message: 'Name is not a validate name!',
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Personal Email" name="personalEmail">
+          <Form.Item
+            label="Personal Email"
+            name="personalEmail"
+            rules={[{ required: true, type: 'email' }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Work Email" name="workEmail">
+          <Form.Item
+            label="Work Email"
+            name="workEmail"
+            rules={[{ required: true, type: 'email' }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Company" name="company">
-            <Input />
+          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+            <Select
+              placeholder="Select Company"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {companyList.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item label="Location" name="location">
-            <Input />
+          <Form.Item label="Location" name="location" rules={[{ required: true }]}>
+            <Select
+              placeholder="Select Location"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {locationList.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item label="Department" name="department">
-            <Input />
+          <Form.Item label="Department" name="department" rules={[{ required: true }]}>
+            <Select
+              placeholder="Select Department"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {departmentList.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item label="Job Title" name="jobTitle">
             <Input />
           </Form.Item>
-          <Form.Item label="Reporting Manager" name="reportingManager">
+          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ type: 'email' }]}>
             <Input />
           </Form.Item>
         </Form>
       </div>
     );
-  };
-
-  handleRemoveToServer = () => {
-    console.log('handleRemoveToServer');
   };
 
   render() {
@@ -89,7 +163,6 @@ class AddEmployeeForm extends Component {
         className={styles.addEmployee}
         visible={visible}
         title={this.renderHeaderModal()}
-        onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         style={{ top: 50 }}
         destroyOnClose

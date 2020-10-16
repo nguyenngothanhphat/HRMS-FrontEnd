@@ -7,11 +7,11 @@ import TabFilter from '../TabFilter';
 import AddEmployeeForm from './components/AddEmployeeForm';
 import styles from './index.less';
 
-@connect(({ loading, employee, employeesManangement }) => ({
-  loadingActiveList: loading.effects['employeesManangement/fetchActiveEmployeesList'],
-  loadingInActiveList: loading.effects['employeesManangement/fetchInActiveEmployeesList'],
+@connect(({ loading, employee, employeesManagement }) => ({
+  loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
   employee,
-  employeesManangement,
+  employeesManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -95,10 +95,19 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManangement/fetchActiveEmployeesList',
+      type: 'employeesManagement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'employeesManangement/fetchInActiveEmployeesList',
+      type: 'employeesManagement/fetchInActiveEmployeesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchLocationList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchDepartmentList',
     });
   };
 
@@ -120,7 +129,7 @@ class TableContainer extends PureComponent {
 
   renderListEmployees = (tabId) => {
     const {
-      employeesManangement: { activeEmployeesList = [], inActiveEmployeesList = [] },
+      employeesManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
       return activeEmployeesList;
