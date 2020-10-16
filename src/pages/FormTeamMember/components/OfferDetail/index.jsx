@@ -144,7 +144,6 @@ const OfferDetail = (props) => {
           </p>
 
           <Checkbox
-            disabled
             className="checkbox"
             checked={agreement}
             onChange={(e) => handleAgreementChange(e.target.value)}
@@ -156,11 +155,7 @@ const OfferDetail = (props) => {
             {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
           </p>
 
-          <Checkbox
-            disabled
-            checked={handbook}
-            onChange={(e) => handleHandbookChange(e.target.value)}
-          >
+          <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
             {formatMessage({ id: 'component.offerDetail.handbook' })}
           </Checkbox>
 
