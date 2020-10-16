@@ -24,7 +24,7 @@ const candidateInfo = {
       filledCustomField: false,
       salaryStatus: 2,
     },
-    currentStep: 8,
+    currentStep: 0,
     tempData: {
       checkStatus: {},
       position: 'EMPLOYEE',
