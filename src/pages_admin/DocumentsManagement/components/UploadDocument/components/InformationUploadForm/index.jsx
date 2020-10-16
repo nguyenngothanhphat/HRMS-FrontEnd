@@ -38,8 +38,9 @@ class InformationUploadForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      documentGroup: null,
-      documentType: null,
+      documentGroup: '',
+      documentType: '',
+      identityType: '',
     };
   }
 
@@ -53,7 +54,14 @@ class InformationUploadForm extends PureComponent {
   onDocumentGroupChange = (value) => {
     this.setState({
       documentGroup: value,
-      documentType: null,
+      documentType: '',
+      identityType: '',
+    });
+  };
+
+  onIdentityTypeChange = (value) => {
+    this.setState({
+      identityType: value,
     });
   };
 
@@ -82,7 +90,7 @@ class InformationUploadForm extends PureComponent {
   };
 
   render() {
-    const { documentGroup = '', documentType = '' } = this.state;
+    const { documentGroup = '', documentType = '', identityType = '' } = this.state;
     const {
       documentsManagement: {
         employeeDetail: { generalInfo: { firstName = '', lastName = '' } = {} } = '',
@@ -171,7 +179,42 @@ class InformationUploadForm extends PureComponent {
             </Col>
           </Row>
 
-          {documentType === 'Visa' && (
+          {documentType === 'Identity' && (
+            <Row gutter={['20', '20']}>
+              <Col span={12}>
+                <Form.Item
+                  label="Identity Type"
+                  name="identityType"
+                  rules={[{ required: true, message: 'Please select identity type!' }]}
+                >
+                  <Select onChange={this.onIdentityTypeChange}>
+                    <Option value="Visa">Visa</Option>
+                    <Option value="Passport">Passport</Option>
+                    <Option value="Adhaar Card">Adhaar Card</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              {identityType === 'Adhaar Card' && (
+                <Col span={12}>
+                  <Form.Item
+                    name="adhaarNumber"
+                    label="Adhaar Number"
+                    rules={[
+                      {
+                        required: true,
+                        pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                        message: 'Invalid Adhaar Number',
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+              )}
+            </Row>
+          )}
+
+          {identityType === 'Visa' && (
             <div>
               <Row gutter={['20', '20']}>
                 <Col span={12}>
@@ -226,6 +269,62 @@ class InformationUploadForm extends PureComponent {
                     <Select onChange={() => {}}>
                       <Option value="Type 1">Type 1</Option>
                       <Option value="Type 2">Type 2</Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={['20', '20']}>
+                <Col span={12}>
+                  <Form.Item
+                    name="issuedOn"
+                    label="Issued On"
+                    rules={[{ required: true, message: 'Please select issued time!' }]}
+                  >
+                    <DatePicker />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="validStill"
+                    label="Valid Still"
+                    rules={[{ required: true, message: 'Please select expired time!' }]}
+                  >
+                    <DatePicker />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+          )}
+
+          {identityType === 'Passport' && (
+            <div>
+              <Row gutter={['20', '20']}>
+                <Col span={12}>
+                  <Form.Item
+                    name="passportNumber"
+                    label="Passport Number"
+                    rules={[
+                      {
+                        required: true,
+                        pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                        message: 'Invalid Passport Number',
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="country"
+                    label="Country"
+                    rules={[{ required: true, message: 'Please select country!' }]}
+                  >
+                    <Select onChange={() => {}}>
+                      <Option value="US">US</Option>
+                      <Option value="India">India</Option>
+                      <Option value="Vietnam">Vietnam</Option>
                     </Select>
                   </Form.Item>
                 </Col>
