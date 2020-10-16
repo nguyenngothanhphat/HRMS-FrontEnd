@@ -60,7 +60,10 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData,
+        tempData: {
+          ...tempData,
+        },
+
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -77,13 +80,6 @@ class BasicInformation extends PureComponent {
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
-        // data: {
-        //   ...data,
-        //   fullName: values.fullName,
-        //   privateEmail: values.privateEmail,
-        //   workEmail: values.workEmail,
-        //   candidate: _id,
-        // },
       },
     });
     dispatch({

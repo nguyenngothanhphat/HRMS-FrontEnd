@@ -8,6 +8,7 @@ import {
   addCandidate,
   updateByHR,
   getById,
+  submitPhase1,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -36,6 +37,49 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      documentList: [],
+      isSentEmail: false,
+      isMarkAsDone: true,
+      generateLink: '',
+      email: '',
+      identityProof: {
+        aadharCard: true,
+        PAN: true,
+        passport: false,
+        drivingLicense: false,
+        voterCard: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      addressProof: {
+        rentalAgreement: false,
+        electricityBill: false,
+        telephoneBill: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      educational: {
+        sslc: true,
+        diploma: true,
+        graduation: true,
+        postGraduate: false,
+        phd: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      technicalCertification: {
+        name: '',
+        duration: '',
+        poe: {
+          offerLetter: false,
+          appraisalLetter: false,
+          paystubs: false,
+          form16: false,
+          relievingLetter: false,
+          listSelected: [],
+          isChecked: false,
+        },
+      },
     },
     data: {
       fullName: null,
@@ -192,7 +236,7 @@ const candidateInfo = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveEligibilityRequirement',
+          type: 'saveTemp',
           payload: { documentList: data },
         });
       } catch (errors) {
@@ -298,7 +342,7 @@ const candidateInfo = {
         const { statusCode, data } = response;
         console.log('update', data);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: data });
+        yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -324,6 +368,17 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { data: { ...data, id: payload._id } } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *submitPhase1Effect({ payload }, { call, put }) {
+      try {
+        const response = yield call(submitPhase1, payload);
+        const { data, statusCode } = response;
+        console.log('aa', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
         dialog(error);
       }

@@ -40,7 +40,7 @@ class CommonLayout extends PureComponent {
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'info/save',
+      type: 'candidateInfo/save',
       payload: {
         currentStep: null,
         displayComponent: <PreviewOffer />,

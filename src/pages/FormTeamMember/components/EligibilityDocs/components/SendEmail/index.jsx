@@ -14,12 +14,14 @@ const index = ({
   generateLink = '',
   handleMarkAsDone = () => {},
   handleSendFormAgain = () => {},
+  handleValueChange = () => {},
   fullName = '',
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
   const [initialEmail] = email;
   const [initialGenerateLink] = useState('abc.xyz.com');
+  console.log('initial', initialEmail);
   const handleEmailClick = () => {
     setIsEnable(true);
   };
@@ -90,10 +92,11 @@ const index = ({
           <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
             <div className={style.line} />
             <Form
-              onFinish={(values) => handleSendEmail(values)}
+              onFinish={handleSendEmail}
               layout="vertical"
               className={style.emailForm}
-              initialValues={{ email: email || initialEmail }}
+              initialValues={{ email: initialEmail }}
+              onValuesChange={handleValueChange}
             >
               <Form.Item
                 name="email"

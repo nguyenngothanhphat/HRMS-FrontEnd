@@ -49,7 +49,7 @@ class JobDetails extends PureComponent {
     const { dispatch, locationList } = this.props;
     const { tempData = {}, checkMandatory } = this.state;
     tempData[name] = value;
-    const { department, title, workLocation, reportingManager, checkStatus = {} } = tempData;
+    const { department, title, workLocation, reportingManager, checkStatus = {}, email } = tempData;
 
     if (department && title && workLocation && reportingManager) {
       checkStatus.filledJobDetail = true;
@@ -81,6 +81,13 @@ class JobDetails extends PureComponent {
             location: selectedWorkLocation._id,
             workLocation: selectedWorkLocation._id,
           },
+        },
+      });
+
+      dispatch({
+        type: 'candidateInfo/saveOrigin',
+        payload: {
+          company: _id,
         },
       });
       if (!isEmpty(workLocation)) {
@@ -127,7 +134,7 @@ class JobDetails extends PureComponent {
   onClickNext = () => {
     const {
       currentStep,
-      data: { _id },
+      data: { _id, company },
       tempData: { position, employeeType, workLocation, department, title, reportingManager },
     } = this.state;
     const { dispatch } = this.props;
@@ -137,6 +144,7 @@ class JobDetails extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
+    console.log('abc', company);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -146,6 +154,7 @@ class JobDetails extends PureComponent {
         department,
         title,
         reportingManager,
+        company,
         candidate: _id,
       },
     });
