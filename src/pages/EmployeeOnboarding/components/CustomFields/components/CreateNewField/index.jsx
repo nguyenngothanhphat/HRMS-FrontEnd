@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
 import { Button, Input, Radio, Select } from 'antd';
@@ -8,8 +8,14 @@ import DraggerUpLoad from './DraggerUpload';
 import styles from './index.less';
 
 @connect(
-  ({ loading, employee: { department = [] } = {}, employeeProfile: { listSkill } = {} }) => ({
-    loading: loading.effects['custormField/addSection'],
+  ({
+    loading,
+    employee: { department = [] } = {},
+    employeeProfile: { listSkill } = {},
+    custormField: { section = [] } = {},
+  }) => ({
+    loading: loading.effects['custormField/addSectionField'],
+    section,
     department,
     listSkill,
   }),
@@ -21,7 +27,9 @@ class CreateNewField extends PureComponent {
       name: '',
       itemField: 'all',
       dataFilter: [{}],
+      urlFile: '',
       data: {
+        section: '',
         prompt: '',
         helpText: '',
         helpMedia: '',
@@ -39,12 +47,14 @@ class CreateNewField extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchListSkill',
     });
+    dispatch({
+      type: 'custormField/fetchSection',
+    });
   }
 
-  handleChange = (name, e) => {
+  handleChange = (name, value) => {
     const { data } = this.state;
-    const { value } = e.target;
-    if (name === 'prompt' || name === 'helpText') {
+    if (name === 'prompt' || name === 'helpText' || name === 'section') {
       const item = data;
       this.setState({ data: { ...item, [name]: value } });
     }
@@ -77,6 +87,7 @@ class CreateNewField extends PureComponent {
     const [first] = data;
     const value = first.id;
     this.handleAddUpLoadtoState('helpMedia', value);
+    this.setState({ urlFile: first.url });
   };
 
   handleChangeFilter = (index, name, value) => {
@@ -89,9 +100,27 @@ class CreateNewField extends PureComponent {
     this.setState({ data: { ...data, filters: newList } });
   };
 
+  handleRemoveImageUpload = (name, value) => {
+    const { data } = this.state;
+    this.setState({ urlFile: value, data: { ...data, [name]: value } });
+  };
+
+  handClickCancel = () => {
+    history.push('/employee-onboarding/');
+  };
+
+  handClick = async (data) => {
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'custormField/addSectionField',
+      payload: data,
+    });
+    history.push('/employee-onboarding/');
+  };
+
   render() {
-    const { name, itemField, dataFilter } = this.state;
-    const { department, listSkill } = this.props;
+    const { name, itemField, dataFilter, urlFile, data } = this.state;
+    const { department, listSkill, section, loading } = this.props;
     const { Option } = Select;
     const { TextArea } = Input;
     return (
@@ -123,6 +152,22 @@ class CreateNewField extends PureComponent {
             </div>
             <div className={styles.boxFieldSection2__Content}>
               <div className={styles.boxFieldSection2__Content1}>
+                <p className={styles.boxFieldSection2__textP}>Section</p>
+                <Select
+                  className={styles.selectFilter1}
+                  allowClear
+                  onChange={(e) => this.handleChange('section', e)}
+                >
+                  {section.map((item) => {
+                    return (
+                      <Option value={item._id} key={item._id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+              <div className={styles.boxFieldSection2__Content1}>
                 <p className={styles.boxFieldSection2__textP}>
                   {formatMessage({
                     id: 'pages.EmployeeOnboardingCustomField.Prompt',
@@ -133,7 +178,12 @@ class CreateNewField extends PureComponent {
                     id: 'pages.EmployeeOnboardingCustomField.note',
                   })}
                 </span>
-                <Input onChange={(e) => this.handleChange('prompt', e)} />
+                <Input
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    this.handleChange('prompt', value);
+                  }}
+                />
               </div>
               <div className={styles.boxFieldSection2__Content1}>
                 <div className={styles.boxFieldSection2__flex}>
@@ -148,7 +198,13 @@ class CreateNewField extends PureComponent {
                         id: 'pages.EmployeeOnboardingCustomField.note2',
                       })}
                     </span>
-                    <TextArea rows={5} onChange={(e) => this.handleChange('helpText', e)} />
+                    <TextArea
+                      rows={5}
+                      onChange={(e) => {
+                        const { value } = e.target;
+                        this.handleChange('helpText', value);
+                      }}
+                    />
                   </div>
                   <div className={styles.boxFieldSection2__flexRight}>
                     <p className={styles.boxFieldSection2__textP}>
@@ -161,7 +217,11 @@ class CreateNewField extends PureComponent {
                         id: 'pages.EmployeeOnboardingCustomField.note3',
                       })}
                     </span>
-                    <DraggerUpLoad getResponse={this.handleGetUpLoad} />
+                    <DraggerUpLoad
+                      getResponse={this.handleGetUpLoad}
+                      urlFile={urlFile}
+                      handleRemoveImageUpload={this.handleRemoveImageUpload}
+                    />
                   </div>
                 </div>
               </div>
@@ -186,7 +246,10 @@ class CreateNewField extends PureComponent {
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
                     defaultValue="true"
-                    onChange={(e) => this.handleChange('sensitive', e)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      this.handleChange('sensitive', value);
+                    }}
                   >
                     <Radio value="true">Yes</Radio>
                     <Radio value="false">No</Radio>
@@ -202,7 +265,10 @@ class CreateNewField extends PureComponent {
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
                     defaultValue="EMPLOYEE"
-                    onChange={(e) => this.handleChange('applicant', e)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      this.handleChange('applicant', value);
+                    }}
                   >
                     <Radio value="EMPLOYEE">Employee</Radio>
                     <Radio value="EMPLOYER">Employer</Radio>
@@ -218,7 +284,10 @@ class CreateNewField extends PureComponent {
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
                     defaultValue="true"
-                    onChange={(e) => this.handleChange('onboardingComplete', e)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      this.handleChange('onboardingComplete', value);
+                    }}
                   >
                     <Radio value="true">Yes</Radio>
                     <Radio value="false">No</Radio>
@@ -234,7 +303,10 @@ class CreateNewField extends PureComponent {
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
                     defaultValue="true"
-                    onChange={(e) => this.handleChange('visibleToIndividual', e)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      this.handleChange('visibleToIndividual', value);
+                    }}
                   >
                     <Radio value="true">Yes</Radio>
                     <Radio value="false">No</Radio>
@@ -250,7 +322,10 @@ class CreateNewField extends PureComponent {
                 <div className={styles.boxFieldSection2__Content1__Radio}>
                   <Radio.Group
                     defaultValue="true"
-                    onChange={(e) => this.handleChange('visibileToManager', e)}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      this.handleChange('visibileToManager', value);
+                    }}
                   >
                     <Radio value="true">Yes</Radio>
                     <Radio value="false">No</Radio>
@@ -276,7 +351,10 @@ class CreateNewField extends PureComponent {
                 </span>
                 <div
                   className={styles.boxFieldSection2__Content1__Radio}
-                  onChange={(e) => this.handleChange('filter', e)}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    this.handleChange('filter', value);
+                  }}
                 >
                   <Radio.Group name={name} defaultValue="everyone">
                     <Radio name="everyone" value="everyone">
@@ -358,10 +436,14 @@ class CreateNewField extends PureComponent {
             </div>
           </div>
           <div className={styles.buttonFooter}>
-            <Button className={styles.buttonFooterSave}>
+            <Button
+              className={styles.buttonFooterSave}
+              onClick={() => this.handClick(data)}
+              loading={loading}
+            >
               {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Save&Return' })}
             </Button>
-            <Button className={styles.buttonFooterCancel}>
+            <Button className={styles.buttonFooterCancel} onClick={this.handClickCancel}>
               {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Cancel' })}
             </Button>
           </div>

@@ -11,3 +11,10 @@ export async function addNewSection(payload) {
     data: payload,
   });
 }
+
+export async function addNewFieldSection(payload) {
+  return request('/api/customfield/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

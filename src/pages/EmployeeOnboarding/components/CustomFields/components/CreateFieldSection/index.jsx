@@ -79,7 +79,9 @@ class CreateFieldSection extends PureComponent {
       type: 'custormField/addSection',
       payload: data,
     });
-    history.push('/employee-onboarding/');
+    setTimeout(() => {
+      history.push('/employee-onboarding/');
+    }, 1500);
   };
 
   handClickCancel = () => {

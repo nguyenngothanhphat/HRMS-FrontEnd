@@ -94,6 +94,22 @@
     }
     &__Content1 {
       margin-bottom: 32px;
+      :global {
+        .ant-select-selector {
+          height: 42px;
+          border-radius: 5px;
+          border: solid 1px #d6dce0;
+          background-color: #ffffff;
+        }
+        .ant-select-selection-item {
+          padding-top: 5px;
+          font-size: 14px;
+          color: #161c29;
+        }
+        .ant-select-selection-placeholder {
+          padding-top: 5px;
+        }
+      }
       &__Text {
         font-size: 13px;
         color: #707177;

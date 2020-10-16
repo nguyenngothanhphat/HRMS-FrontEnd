@@ -7,8 +7,9 @@ import edit from '@/assets/edit-customField.svg';
 import group from '@/assets/Group-customField.svg';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, custormField: { section = [] } = {} }) => ({
   loadingCustom: loading.effects['custormField/fetchSection'],
+  section,
 }))
 class CustomFields extends PureComponent {
   componentDidMount() {
@@ -26,6 +27,12 @@ class CustomFields extends PureComponent {
     history.push('/employee-onboarding/CreateNewField');
   };
 
+  handleData = (data) => {
+    data.map((item) => {
+      return item;
+    });
+  };
+
   render() {
     const columns = [
       {
@@ -33,6 +40,7 @@ class CustomFields extends PureComponent {
         dataIndex: 'sectionName',
         key: 'sectionName',
         width: '230px',
+        align: 'center',
         render: (value, row, index) => {
           const obj = {
             children: value,
@@ -52,6 +60,7 @@ class CustomFields extends PureComponent {
         dataIndex: 'fieldName',
         key: 'fieldName',
         width: '50%',
+        padding: '16px',
       },
       {
         title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.actions' }),
@@ -72,19 +81,45 @@ class CustomFields extends PureComponent {
         },
       },
     ];
+    const { loadingCustom = false } = this.props;
     const data = [
       {
         key: '1',
-        sectionName: 'N/A',
+        sectionName: 'n/a',
         fieldName: 'Inside sales_ commission plan',
       },
       {
         key: '2',
-        sectionName: 'N/A',
+        sectionName: 'n/a',
+        fieldName: 'Additional Information',
+      },
+      {
+        key: '1',
+        sectionName: 'a',
+        fieldName: 'Inside sales_ commission plan',
+      },
+      {
+        key: '2',
+        sectionName: 'a',
         fieldName: 'Additional Information',
       },
     ];
-    const { loadingCustom = false } = this.props;
+
+    // const formatData = section.map((item) => {
+    //   return [
+    //     {
+    //       key: '1',
+    //       sectionName: item.name,
+    //       fieldName: 'Inside sales_ commission plan',
+    //     },
+    //     {
+    //       key: '2',
+    //       sectionName: item.name,
+    //       fieldName: 'Additional Information',
+    //     },
+    //   ];
+    // });
+
     if (loadingCustom)
       return (
         <div className={styles.viewLoading}>

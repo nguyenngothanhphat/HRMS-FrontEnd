@@ -1,8 +1,8 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { addNewSection, getSection } from '../services/onBoarding-CustomFiled';
+import { addNewSection, getSection, addNewFieldSection } from '../services/onBoarding-CustomFiled';
 
-const employee = {
+const custormField = {
   namespace: 'custormField',
   state: {
     section: [{}],
@@ -11,11 +11,11 @@ const employee = {
     *fetchSection(_, { call, put }) {
       try {
         const response = yield call(getSection);
-        const { statusCode, message, data: section = [] } = response;
+        const { statusCode, data: section = [] } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { section } });
       } catch (errors) {
@@ -36,6 +36,39 @@ const employee = {
         dialog(errors);
       }
     },
+    *addSectionField(
+      {
+        payload: {
+          section = '',
+          prompt = '',
+          helpText = '',
+          helpMedia = '',
+          filters = [],
+          settings = {},
+        } = {},
+      },
+      { call },
+    ) {
+      try {
+        const response = yield call(addNewFieldSection, {
+          section,
+          prompt,
+          helpText,
+          helpMedia,
+          filters,
+          settings,
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'fetchSection' });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -46,4 +79,4 @@ const employee = {
     },
   },
 };
-export default employee;
+export default custormField;
