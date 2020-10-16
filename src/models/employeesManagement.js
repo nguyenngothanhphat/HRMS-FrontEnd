@@ -5,6 +5,7 @@ import {
   getCompanyList,
   getLocationList,
   getDepartmentList,
+  getJobTitleList,
   addEmployee,
 } from '../services/employeesManagement';
 
@@ -16,6 +17,7 @@ const employeesManagement = {
     companyList: [],
     locationList: [],
     departmentList: [],
+    jobTitleList: [],
   },
   effects: {
     *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
@@ -68,6 +70,16 @@ const employeesManagement = {
         const { statusCode, data: departmentList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchJobTitleList(_, { call, put }) {
+      try {
+        const response = yield call(getJobTitleList);
+        const { statusCode, data: jobTitleList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { jobTitleList } });
       } catch (errors) {
         dialog(errors);
       }

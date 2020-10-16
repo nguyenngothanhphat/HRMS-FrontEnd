@@ -11,11 +11,17 @@ const Option = Select;
 @connect(
   ({
     loading,
-    employeesManagement: { companyList = [], locationList = [], departmentList = [] },
+    employeesManagement: {
+      companyList = [],
+      locationList = [],
+      departmentList = [],
+      jobTitleList = [],
+    },
   }) => ({
     companyList,
     locationList,
     departmentList,
+    jobTitleList,
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -23,8 +29,17 @@ class AddEmployeeForm extends Component {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {};
+    this.state = {
+      isDisabled: false,
+    };
   }
+
+  onChangeSelectCompany = (value) => {
+    console.log('value', value);
+    this.setState({
+      isDisabled: true,
+    });
+  };
 
   handleCancel = () => {
     const { handleCancel } = this.props;
@@ -61,7 +76,8 @@ class AddEmployeeForm extends Component {
         number: '${label} is not a validate number!',
       },
     };
-    const { companyList, locationList, departmentList } = this.props;
+    const { companyList, locationList, departmentList, jobTitleList } = this.props;
+    const { isDisabled } = this.state;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -108,6 +124,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Company"
               showArrow
               showSearch
+              onChange={this.onChangeSelectCompany}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -122,6 +139,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Location"
               showArrow
               showSearch
+              disabled={isDisabled}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -146,7 +164,18 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
           <Form.Item label="Job Title" name="jobTitle">
-            <Input />
+            <Select
+              placeholder="Select Job Title"
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {jobTitleList.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
           <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ type: 'email' }]}>
             <Input />

@@ -28,6 +28,13 @@ export async function getDepartmentList(payload) {
   });
 }
 
+export async function getJobTitleList(payload) {
+  return request('/api/title/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addEmployee(payload) {
   return request('/api/user/add-employee', {
     method: 'POST',

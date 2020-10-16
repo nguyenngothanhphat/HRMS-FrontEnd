@@ -109,6 +109,9 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'employeesManagement/fetchDepartmentList',
     });
+    dispatch({
+      type: 'employeesManagement/fetchJobTitleList',
+    });
   };
 
   getDataTable = (params, tabId) => {
