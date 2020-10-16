@@ -30,14 +30,14 @@ class AddEmployeeForm extends Component {
     super(props);
     this.formRef = React.createRef();
     this.state = {
-      isDisabled: false,
+      isDisabled: true,
     };
   }
 
   onChangeSelectCompany = (value) => {
     console.log('value', value);
     this.setState({
-      isDisabled: true,
+      isDisabled: false,
     });
   };
 
