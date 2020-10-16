@@ -157,7 +157,7 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/Setting',
             authority: ['admin-sa'],
           },
           {
@@ -165,6 +165,13 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/directory.svg',
             component: './Directory',
+            authority: ['customer'],
+          },
+          {
+            path: '/time-off',
+            name: 'timeOff',
+            icon: '/assets/images/timeOff.svg',
+            component: './TimeOff',
             authority: ['customer'],
           },
           {
@@ -193,6 +200,13 @@ const routes = [
             name: 'Resignation Request',
             hideInMenu: true,
             component: './ResignationRequest',
+          },
+          {
+            path: '/employee-offboarding/:ticketId',
+            name: 'ticketId',
+            component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
+            hideInMenu: true,
+            authority: ['customer'],
           },
           {
             path: '/directory/employee-profile/:reId',
@@ -233,7 +247,12 @@ const routes = [
             component: './FormTeamMember',
             authority: ['customer'],
           },
-
+          {
+            path: '/employee-onboarding/create-email-reminder',
+            name: 'Create Email Reminder',
+            hideInMenu: true,
+            component: './EmailReminder',
+          },
           {
             path: '/template-details/:templateId',
             name: 'templateDetails',

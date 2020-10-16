@@ -17,12 +17,14 @@ import signUpPage from './en-US/signUpPage';
 import resetPasswordPage from './en-US/resetPasswordPage';
 import employeeOnboarding from './en-US/employeeOnboarding';
 import templateDetails from './en-US/templateDetails';
+import offBoarding from './en-US/offBoarding';
 
 // admin pages
 import usersManagementPage from './en-US/usersManagementPage';
 import documentsManagementPage from './en-US/documentsManagementPage';
 import employeesManagementPage from './en-US/employeesManagementPage';
 import companiesManagementPage from './en-US/companiesManagementPage';
+import adminSetting from './en-US/adminSetting';
 
 export default {
   'navBar.lang': 'Languages',
@@ -51,9 +53,11 @@ export default {
   ...resetPasswordPage,
   ...employeeOnboarding,
   ...templateDetails,
+  ...offBoarding,
   // admin pages
   ...usersManagementPage,
   ...documentsManagementPage,
   ...employeesManagementPage,
   ...companiesManagementPage,
+  ...adminSetting,
 };
