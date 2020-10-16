@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Button, Affix } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
+import { connect } from 'umi';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
@@ -12,31 +13,58 @@ import SalaryStructure from './components/SalaryStructure';
 import EligibilityDocs from './components/EligibilityDocs';
 import Payroll from './components/Payroll';
 import Additional from './components/Additional';
+// import PreviewOffer from './components/PreviewOffer';
 
-export default class FormTeamMember extends PureComponent {
+@connect(({ candidateInfo = {} }) => ({
+  candidateInfo,
+}))
+class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
       match: { params: { action = '', reId = '' } = {} },
+      dispatch,
+      candidateInfo,
     } = this.props;
     // console.log(this.props);
     // check action is add or review. If isReview fetch candidate by reID
-
-    // console.log(this.props);
+    const { data } = candidateInfo;
+    const { _id } = data;
+    if (action === 'review') {
+      dispatch({
+        type: 'candidateInfo/fetchEmployeeById',
+        payload: {
+          id: _id,
+        },
+      });
+      dispatch({
+        type: 'candidateInfo/fetchLocationList',
+      });
+      dispatch({
+        type: 'candidateInfo/fetchEmployeeTypeList',
+      });
+    }
   }
 
   render() {
     const {
       match: { params: { action = '', reId = '' } = {} },
+      candidateInfo,
     } = this.props;
+    const { tempData: { locationList, employeeTypeList } = {} } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
     const listMenu = [
       {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: <BasicInformation />,
+        component: <BasicInformation reId={reId} />,
       },
-      { id: 2, name: 'Job Details', key: 'jobDetails', component: <JobDetails /> },
+      {
+        id: 2,
+        name: 'Job Details',
+        key: 'jobDetails',
+        component: <JobDetails locationList={locationList} employeeTypeList={employeeTypeList} />,
+      },
       {
         id: 3,
         name: 'Eligibility Documents',
@@ -98,3 +126,5 @@ export default class FormTeamMember extends PureComponent {
     );
   }
 }
+
+export default FormTeamMember;

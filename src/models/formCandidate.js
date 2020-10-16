@@ -149,6 +149,8 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    currentStep: 0,
+    displayComponent: {},
     testEligibility: [],
     departmentList: [],
     titleList: [],
@@ -290,6 +292,7 @@ const info = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
+        console.log(errors);
         dialog(errors);
       }
     },
@@ -298,10 +301,9 @@ const info = {
       try {
         const response = yield call(getRookieInfo);
         const { data } = response;
-        const { ticketID = '' } = data;
-        // console.log(response);
+        const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId } });
+        yield put({ type: 'save', payload: { rookieId, _id } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);

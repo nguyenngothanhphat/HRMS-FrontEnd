@@ -21,6 +21,7 @@ const Model = {
           payload: response,
         });
         if (response.statusCode !== 200) throw response;
+        console.log(response);
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
         const { _id: role = '' } = itemRole;
@@ -32,7 +33,9 @@ const Model = {
         setAuthority(role.toLowerCase());
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
+        console.log('p', params);
         let { redirect } = params;
+        console.log('r', redirect);
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
@@ -47,6 +50,7 @@ const Model = {
         }
         history.replace(redirect || '/');
       } catch (errors) {
+        console.log(errors);
         dialog(errors);
       }
     },

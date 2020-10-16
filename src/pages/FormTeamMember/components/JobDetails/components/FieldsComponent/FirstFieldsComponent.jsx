@@ -11,36 +11,37 @@ class FirstFieldsComponent extends PureComponent {
   render() {
     const {
       styles,
-      dropdownField = [],
-      handleSelect = () => {},
-      jobDetail = {},
+      dropdownField,
       departmentList,
       locationList,
       titleList,
       managerList,
       _handleSelect,
+      department,
+      title,
+      workLocation,
+      reportingManager,
     } = this.props;
-    const { department, title, workLocation, reportingManager } = jobDetail;
+    console.log('abc', dropdownField);
+    if (managerList.length > 0) {
+      console.log(managerList[0].data.genernalInfo.firstName);
+    }
     return (
       <>
         <div>
           <Row gutter={[24, 0]}>
-            {dropdownField.map((item) => (
-              <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            {dropdownField.map((item, id) => (
+              <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
                   placeholder={item.placeholder}
                   className={styles}
-                  onChange={
-                    item.title === 'workLocation' || item.title === 'department'
-                      ? (value) => handleSelect(value, item.title)
-                      : (value) => _handleSelect(value, item.title)
-                  }
-                  disabled={
-                    !!(item.title === 'reportingManager' && managerList.length <= 0) ||
-                    (item.title === 'department' && departmentList.length <= 0) ||
-                    (item.title === 'title' && titleList.length <= 0)
-                  }
+                  onChange={(value) => _handleSelect(value, item.title)}
+                  // disabled={
+                  //   !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                  //   (item.title === 'department' && departmentList.length <= 0) ||
+                  //   (item.title === 'title' && titleList.length <= 0)
+                  // }
                   defaultValue={
                     item.title === 'department'
                       ? department
@@ -53,31 +54,31 @@ class FirstFieldsComponent extends PureComponent {
                       : null
                   }
                 >
-                  {item.title === 'department'
-                    ? departmentList.map((data, index) => (
-                        <Option value={data._id} key={index}>
-                          <Typography.Text>{data.name}</Typography.Text>
-                        </Option>
-                      ))
-                    : item.title === 'workLocation'
+                  {item.title === 'workLocation'
                     ? locationList.map((data, index) => (
                         <Option value={data._id} key={index}>
                           <Typography.Text>{data.legalAddress.address}</Typography.Text>
                         </Option>
                       ))
-                    : item.title === 'title'
+                    : item.title === 'department' && departmentList.length > 0
+                    ? departmentList.map((data, index) => (
+                        <Option value={data._id} key={index}>
+                          <Typography.Text>{data.name}</Typography.Text>
+                        </Option>
+                      ))
+                    : item.title === 'title' && titleList.length > 0
                     ? titleList.map((data, index) => (
                         <Option value={data._id} key={index}>
                           <Typography.Text>{data.name}</Typography.Text>
                         </Option>
                       ))
-                    : item.title === 'reportingManager' && managerList.length > 1
-                    ? managerList.map((data, index) => (
-                        <Option value={data._id} key={index}>
-                          <Typography.Text>{data.generalInfo.firstName}</Typography.Text>
-                        </Option>
-                      ))
-                    : null}
+                    : // : item.title === 'reportingManager' && managerList.length > 0
+                      // ? managerList.map((data, index) => (
+                      //     <Option value={data._id} key={index}>
+                      //       <Typography.Text>{data.generalInfo.firstName}</Typography.Text>
+                      //     </Option>
+                      //   ))
+                      null}
                 </Select>
               </Col>
             ))}

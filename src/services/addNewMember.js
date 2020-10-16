@@ -49,7 +49,23 @@ export function getManagerList(params) {
 
 export function addCandidate(params) {
   console.log(params);
-  return request('/api/candidate/add-by-hr', {
+  return request('/api/candidate/add-new-member', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function updateByHR(params) {
+  console.log(params);
+  return request('/api/candidate/update-by-hr', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function getById(params) {
+  console.log(params);
+  return request('/api/candidate/get-by-id', {
     method: 'POST',
     data: params,
   });
