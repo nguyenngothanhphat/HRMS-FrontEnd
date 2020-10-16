@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Upload, message, Button } from 'antd';
+import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
-
-export default class FileUploadForm extends PureComponent {
+@connect()
+class FileUploadForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,25 +20,51 @@ export default class FileUploadForm extends PureComponent {
     });
   };
 
-  onChange = (info) => {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      // eslint-disable-next-line no-console
-      console.log(info.file, info.fileList);
+  beforeUpload = (file) => {
+    const { setSizeImageMatch = () => {} } = this.props;
+    const checkType =
+      file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
+    if (!checkType) {
+      message.error('You can only upload JPG/PNG/PDF file!');
     }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-      this.handlePreview(info.file.name);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must smaller than 5MB!');
+      setSizeImageMatch(isLt5M);
+      // this.setState({ check: isLt5M });
     }
+    setTimeout(() => {
+      setSizeImageMatch(isLt5M);
+      // this.setState({ check: isLt5M });
+    }, 2000);
+    return checkType && isLt5M;
+  };
+
+  handleUpload = (file) => {
+    const { dispatch, getResponse = () => {} } = this.props;
+
+    const formData = new FormData();
+    formData.append('uri', file);
+    dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    }).then((resp) => {
+      const { data = [] } = resp;
+      const { name = '' } = data[0];
+      getResponse(resp);
+      this.handlePreview(name);
+    });
   };
 
   render() {
     const { fileName = '' } = this.state;
     return (
       <div className={styles.FileUploadForm}>
-        <Dragger name="file" showUploadList={false} onChange={(info) => this.onChange(info)}>
+        <Dragger
+          beforeUpload={this.beforeUpload}
+          showUploadList={false}
+          action={(file) => this.handleUpload(file)}
+        >
           {fileName !== '' ? (
             <div className={styles.fileUploadedContainer}>
               <p className={styles.fileName}>
@@ -52,7 +79,6 @@ export default class FileUploadForm extends PureComponent {
                   <img src={FileUploadIcon} alt="upload" />
                 </p>
               </div>
-
               <p className={styles.uploadText}>Drap and drop the file here</p>
               <p className={styles.uploadText}>or</p>
               <Button>Choose file</Button>
@@ -63,3 +89,5 @@ export default class FileUploadForm extends PureComponent {
     );
   }
 }
+
+export default FileUploadForm;

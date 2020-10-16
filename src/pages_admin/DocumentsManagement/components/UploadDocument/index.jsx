@@ -6,7 +6,25 @@ import InformationUploadForm from './components/InformationUploadForm';
 import styles from './index.less';
 
 export default class UploadDocument extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fileId: '',
+    };
+  }
+
+  getResponse = (resp) => {
+    const { statusCode, data = [] } = resp;
+    const { id = '' } = data[0];
+    if (statusCode === 200) {
+      this.setState({
+        fileId: id,
+      });
+    }
+  };
+
   render() {
+    const { fileId = '' } = this.state;
     return (
       <PageContainer>
         <div className={styles.UploadDocuments}>
@@ -16,10 +34,10 @@ export default class UploadDocument extends PureComponent {
           <div className={styles.containerUploadDocuments}>
             <Row gutter={['20', '20']}>
               <Col xs={12}>
-                <FileUploadForm />
+                <FileUploadForm getResponse={this.getResponse} />
               </Col>
               <Col xs={12}>
-                <InformationUploadForm />
+                <InformationUploadForm fileId={fileId} />
               </Col>
             </Row>
           </div>

@@ -27,9 +27,9 @@ class TableDocuments extends PureComponent {
       dataIndex: 'employeeGroup',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      // },
+      sorter: {
+        compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
+      },
     },
     {
       title: 'Document Name',
@@ -63,9 +63,9 @@ class TableDocuments extends PureComponent {
       title: 'User ID',
       dataIndex: 'employee',
       align: 'center',
-      // sorter: {
-      //   compare: (a, b) => a.employee - b.employee,
-      // },
+      sorter: {
+        compare: (a, b) => a.employee.localeCompare(b.employee),
+      },
     },
     {
       title: 'Action',
