@@ -17,18 +17,6 @@ export default class TableEmployees extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
-        title: formatMessage({ id: 'pages_admin.employees.table.userID' }),
-        dataIndex: 'userId',
-        width: '8%',
-        align: 'left',
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend', 'ascend'],
-        sorter: {
-          compare: (a, b) => a.userId - b.userId,
-        },
-        render: () => <span>User ID</span>,
-      },
-      {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         align: 'left',
