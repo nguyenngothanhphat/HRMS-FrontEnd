@@ -15,7 +15,7 @@ export default {
   'component.onboardingOverview.location': 'Location',
   'component.onboardingOverview.dateSent': 'Date sent',
   'component.onboardingOverview.dateReceived': 'Date received',
-  'component.onboardingOverview.dateJoin': 'Date join',
+  'component.onboardingOverview.dateJoin': 'Date of joining',
   'component.onboardingOverview.comments': 'Comments',
   'component.onboardingOverview.actions': 'Actions',
   'component.onboardingOverview.viewDraft': 'View Draft',
@@ -28,6 +28,7 @@ export default {
   'component.onboardingOverview.sendOffer': 'send offer',
   'component.onboardingOverview.sendForApproval': 'send for approval',
   'component.onboardingOverview.createProfile': 'send for approval',
+  'component.onboardingOverview.noData': 'No data',
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
   'component.onboardingOverview.addTeamMember': 'Add Team Member',

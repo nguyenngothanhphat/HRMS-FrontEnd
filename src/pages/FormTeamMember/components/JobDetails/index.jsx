@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty } from 'lodash';
 import { PageLoading } from '@/layouts/layout/src';
@@ -14,7 +14,7 @@ import styles from './index.less';
   ({
     info: { jobDetail, checkMandatory, company } = {},
     info: { departmentList, titleList, locationList, employeeTypeList, managerList, location } = [],
-    info: { loading, loadingA, loadingB, loadingC, loadingD, loadingE },
+    info: { loading, loadingA, loadingB, loadingC, loadingD, loadingE, currentStep, dataTest },
   }) => ({
     jobDetail,
     checkMandatory,
@@ -31,6 +31,8 @@ import styles from './index.less';
     loadingD,
     loadingE,
     location,
+    currentStep,
+    dataTest,
   }),
 )
 class JobDetails extends PureComponent {
@@ -187,6 +189,90 @@ class JobDetails extends PureComponent {
     }
   };
 
+  onClickNext = () => {
+    const { dispatch, currentStep, dataTest, reId } = this.props;
+    const { data } = dataTest;
+    const { jobDetail, company } = this.state;
+    console.log(company);
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+    dispatch({
+      type: 'info/updateByHR',
+      payload: {
+        ...data,
+        ...jobDetail,
+        candidate: reId,
+        company,
+      },
+    });
+  };
+
+  onClickPrev = () => {
+    const { dispatch, currentStep } = this.props;
+    dispatch({
+      type: 'info/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
+    return !filledJobDetail ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledJobDetail}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const Tab = {
       positionTab: {
@@ -331,6 +417,7 @@ class JobDetails extends PureComponent {
                   loadingE={loadingE}
                 />
               </div>
+              {this._renderBottomBar()}
             </Col>
             <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
               <div className={styles.rightWrapper}>
