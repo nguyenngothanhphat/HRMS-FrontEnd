@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
 import PendingApprovals from './components/PendingApprovals/index';
 import RejectFinalOffers from './components/RejectFinalOffers/index';
+import SentForApprovals from './components/SentForApprovals/index';
 
 import styles from './index.less';
 
@@ -16,22 +17,26 @@ class AwaitingApprovals extends PureComponent {
     const {
       approvedFinalOffers = [],
       pendingApprovals = [],
-      rejectFinalOffer = [],
+      sentForApprovals = [],
+      approvedOffers = [],
+      // rejectFinalOffer = [],
     } = awaitingApprovals;
 
     return (
       <div className={styles.AwaitingApprovals}>
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1">
-            <TabPane tab="pending aprrovals" key="1">
-              <PendingApprovals list={pendingApprovals} />
+            <TabPane tab="sent for approval" key="1">
+              {/* <PendingApprovals list={pendingApprovals} /> */}
+              <SentForApprovals list={sentForApprovals} />
             </TabPane>
-            <TabPane tab="approved final offers" key="2">
-              <ApprovedFinalOffers list={approvedFinalOffers} />
+            <TabPane tab="approved offers" key="2">
+              {/* <ApprovedFinalOffers list={approvedFinalOffers} /> */}
+              <ApprovedFinalOffers list={approvedOffers} />
             </TabPane>
-            <TabPane tab="reject final offers" key="3">
+            {/* <TabPane tab="reject final offers" key="3">
               <RejectFinalOffers list={rejectFinalOffer} />
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </div>
