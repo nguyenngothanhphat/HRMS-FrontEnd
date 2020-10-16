@@ -33,6 +33,7 @@ const note = {
   ({
     info: { eligibilityDocs, basicInformation, jobDetail } = {},
     info: { testEligibility, loadingDocumentList, item },
+    candidateInfo: { documentList } = {},
   }) => ({
     eligibilityDocs,
     basicInformation,
@@ -40,6 +41,7 @@ const note = {
     loadingDocumentList,
     jobDetail,
     item,
+    documentList,
   }),
 )
 class EligibilityDocs extends Component {
@@ -58,7 +60,7 @@ class EligibilityDocs extends Component {
         testEligibility: props.testEligibility,
         jobDetail: props.jobDetail,
         item: props.item,
-
+        documentList: props.documentList,
         loadingDocumentList: props.loadingDocumentList || {},
       };
     }
@@ -73,6 +75,7 @@ class EligibilityDocs extends Component {
       basicInformation,
       loadingDocumentList,
       jobDetail,
+      documentList,
     } = this.state;
     const { position, employeeType, department, title, workLocation, reportingManager } = jobDetail;
     const { workEmail } = basicInformation;

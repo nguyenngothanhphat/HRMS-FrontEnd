@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty } from 'lodash';
-import { PageLoading } from '@/layouts/layout/src';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -52,7 +51,7 @@ class JobDetails extends PureComponent {
     tempData[name] = value;
     const { department, title, workLocation, reportingManager, checkStatus = {} } = tempData;
 
-    if (department !== '' && title !== '' && workLocation !== '' && reportingManager !== '') {
+    if (department && title && workLocation && reportingManager) {
       checkStatus.filledJobDetail = true;
     } else {
       checkStatus.filledJobDetail = false;
@@ -63,6 +62,7 @@ class JobDetails extends PureComponent {
         tempData,
         checkMandatory: {
           ...checkMandatory,
+          filledJobDetail: checkStatus.filledJobDetail,
         },
       },
     });
@@ -72,8 +72,6 @@ class JobDetails extends PureComponent {
       const {
         company: { _id },
       } = selectedWorkLocation;
-      console.log('selected', selectedWorkLocation);
-      console.log('company id', _id);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -103,13 +101,12 @@ class JobDetails extends PureComponent {
       const { location, departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
       const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
-      console.log('test b', selectedDepartment);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           tempData: {
             ...tempData,
-            department: selectedDepartment,
+            department: selectedDepartment._id,
           },
         },
       });
@@ -127,157 +124,77 @@ class JobDetails extends PureComponent {
     }
   };
 
-  // _renderForm = () => {
-  //   const { isOpenReminder, data = {} } = this.state;
-  //   const { fullName, privateEmail, workEmail, experienceYear } = data;
-  //   return (
-  //     <div className={styles.basicInformation__form}>
-  //       <Row gutter={[48, 0]}>
-  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-  //           <Form.Item
-  //             labelCol={{ span: 24 }}
-  //             wrapperCol={{ span: 24 }}
-  //             required={false}
-  //             label={formatMessage({ id: 'component.basicInformation.fullName' })}
-  //             name="fullName"
-  //             rules={[{ required: true, message: `'Please input your full name!'` }]}
-  //           >
-  //             <Input
-  //               // onChange={(e) => this.handleChange(e)}
-  //               className={styles.formInput}
-  //               name="fullName"
-  //             />
-  //           </Form.Item>
-  //         </Col>
-  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-  //           <Form.Item
-  //             labelCol={{ span: 24 }}
-  //             wrapperCol={{ span: 24 }}
-  //             required={false}
-  //             label={formatMessage({ id: 'component.basicInformation.privateEmail' })}
-  //             name="privateEmail"
-  //             rules={[
-  //               {
-  //                 required: true,
-  //                 message: 'Please input your email!',
-  //               },
-  //               {
-  //                 type: 'email',
-  //                 message: 'Email invalid!',
-  //               },
-  //             ]}
-  //           >
-  //             <Input
-  //               // onChange={(e) => this.handleChange(e)}
-  //               className={styles.formInput}
-  //               name="privateEmail"
-  //               // defaultValue={privateEmail}
-  //             />
-  //           </Form.Item>
-  //         </Col>
-  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-  //           <Form.Item
-  //             labelCol={{ span: 24 }}
-  //             wrapperCol={{ span: 24 }}
-  //             required={false}
-  //             label={formatMessage({ id: 'component.basicInformation.workEmail' })}
-  //             className={styles.formInput__email}
-  //             name="workEmail"
-  //             rules={[
-  //               {
-  //                 required: true,
-  //                 message: 'Please input your email!',
-  //               },
-  //               {
-  //                 type: 'email',
-  //                 message: 'Email invalid!',
-  //               },
-  //             ]}
-  //           >
-  //             <Input
-  //               // onChange={(e) => this.handleChange(e)}
-  //               className={styles.formInput}
-  //               name="workEmail"
-  //               // suffix="@terralogic.com"
-  //               // defaultValue={workEmail}
-  //             />
-  //           </Form.Item>
-  //         </Col>
-  //         {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
-  //       </Row>
-  //       <Row gutter={[48, 0]}>
-  //         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-  //           <Form.Item
-  //             labelCol={{ span: 24 }}
-  //             wrapperCol={{ span: 24 }}
-  //             required={false}
-  //             label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
-  //             name="experienceYear"
-  //             rules={[
-  //               {
-  //                 pattern: /^[0-9]*$/,
-  //                 message: 'Year of experience invalid!',
-  //               },
-  //             ]}
-  //           >
-  //             <Input
-  //               // onChange={(e) => this.handleChange(e)}
-  //               className={styles.formInput}
-  //               name="experienceYear"
-  //               // defaultValue={experienceYear}
-  //             />
-  //           </Form.Item>
-  //         </Col>
-  //       </Row>
-  //     </div>
-  //   );
-  // };
+  onClickNext = () => {
+    const {
+      currentStep,
+      data: { _id },
+      tempData: { position, employeeType, workLocation, department, title, reportingManager },
+    } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        position,
+        employeeType,
+        workLocation,
+        department,
+        title,
+        reportingManager,
+        candidate: _id,
+      },
+    });
+  };
 
-  // _renderStatus = () => {
-  //   const { checkMandatory } = this.props;
-  //   const { filledBasicInformation } = checkMandatory;
-  //   return !filledBasicInformation ? (
-  //     <div className={styles.normalText}>
-  //       <div className={styles.redText}>*</div>
-  //       {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-  //     </div>
-  //   ) : (
-  //     <div className={styles.greenText}>
-  //       * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-  //     </div>
-  //   );
-  // };
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
+    return !filledJobDetail ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
 
-  // _renderBottomBar = () => {
-  //   const { checkMandatory } = this.props;
-  //   const { filledBasicInformation } = checkMandatory;
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
 
-  //   return (
-  //     <div className={styles.bottomBar}>
-  //       <Row align="middle">
-  //         <Col span={16}>
-  //           <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-  //         </Col>
-  //         <Col span={8}>
-  //           <div className={styles.bottomBar__button}>
-  //             {' '}
-  //             <Button
-  //               type="primary"
-  //               htmlType="submit"
-  //               onClick={this.onClickNext}
-  //               className={`${styles.bottomBar__button__primary} ${
-  //                 !filledBasicInformation ? styles.bottomBar__button__disabled : ''
-  //               }`}
-  //               disabled={!filledBasicInformation}
-  //             >
-  //               Next
-  //             </Button>
-  //           </div>
-  //         </Col>
-  //       </Row>
-  //     </div>
-  //   );
-  // };
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledJobDetail}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
 
   render() {
     const Tab = {
@@ -417,7 +334,7 @@ class JobDetails extends PureComponent {
                 prefferedDateOfJoining={prefferedDateOfJoining}
                 _handleSelect={this._handleSelect}
               />
-              {/* {this._renderBottomBar()} */}
+              {this._renderBottomBar()}
             </div>
           </Col>
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
