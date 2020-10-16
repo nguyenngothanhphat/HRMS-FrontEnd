@@ -1,0 +1,33 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+.AllDrafts {
+  font-family: 'Roboto';
+  margin-top: 32px;
+  // height: 319px;
+  object-fit: contain;
+  border-radius: 8px;
+  overflow: auto;
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+
+  .title {
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000000;
+  }
+  :global {
+    .ant-tabs-tab {
+      text-transform: capitalize;
+
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+    .ant-tabs-nav-wrap {
+      height: 56px;
+    }
+  }
+}

@@ -42,7 +42,7 @@ const note = {
     item,
   }),
 )
-class EligibilityDocs extends Component {
+class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -139,6 +139,7 @@ class EligibilityDocs extends Component {
         },
       },
     });
+
     dispatch({
       type: 'info/addCandidateByHR',
       payload: { ...item, documents: testEligibility },
@@ -439,4 +440,4 @@ class EligibilityDocs extends Component {
     );
   }
 }
-export default EligibilityDocs;
+export default BackgroundCheck;

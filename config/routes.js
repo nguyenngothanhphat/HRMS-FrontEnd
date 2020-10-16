@@ -40,6 +40,16 @@ const routes = [
     ],
   },
   {
+    path: '/candidate',
+    component: '../layouts/CandidateLayout',
+    routes: [
+      {
+        path: '/candidate',
+        component: './Candidate',
+      },
+    ],
+  },
+  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -116,6 +126,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/companies/add-company',
+            name: 'addCompany',
+            hideInMenu: true,
+            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            authority: ['admin'],
+          },
+          {
             path: '/companies/company-detail/:reId',
             name: 'companyDetail',
             component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
@@ -190,6 +207,18 @@ const routes = [
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
             authority: ['customer'],
+          },
+          {
+            path: '/directory/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
+          },
+          {
+            path: '/employee-offboarding/resignation-request',
+            name: 'Resignation Request',
+            hideInMenu: true,
+            component: './ResignationRequest',
           },
           {
             path: '/directory/employee-profile/:reId',
