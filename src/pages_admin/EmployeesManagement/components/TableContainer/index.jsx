@@ -4,6 +4,7 @@ import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
+import AddEmployeeForm from './components/AddEmployeeForm';
 import styles from './index.less';
 
 @connect(({ loading, employee, employeesManangement }) => ({
@@ -58,6 +59,7 @@ class TableContainer extends PureComponent {
         { id: 1, name: formatMessage({ id: 'pages_admin.employees.table.activeEmployeesTab' }) },
         { id: 2, name: formatMessage({ id: 'pages_admin.employees.table.inactiveEmployeesTab' }) },
       ],
+      visible: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -188,7 +190,19 @@ class TableContainer extends PureComponent {
   };
 
   addEmployee = () => {
-    alert('Add Employee');
+    this.openFormAddEmployee();
+  };
+
+  openFormAddEmployee = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
   };
 
   handleChange = (valueInput) => {
@@ -198,7 +212,7 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { tabs, collapsed, changeTab } = this.state;
+    const { tabs, collapsed, changeTab, visible } = this.state;
     const { loadingActiveList, loadingInActiveList } = this.props;
 
     return (
@@ -230,6 +244,12 @@ class TableContainer extends PureComponent {
               </TabPane>
             ))}
           </Tabs>
+          <AddEmployeeForm
+            titleModal="Add Employee"
+            visible={visible}
+            handleCancel={this.handleCancel}
+            getResponse={this.getResponse}
+          />
         </div>
       </div>
     );
