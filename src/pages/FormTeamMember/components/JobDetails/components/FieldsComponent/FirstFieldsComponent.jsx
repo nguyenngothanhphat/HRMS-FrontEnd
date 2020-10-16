@@ -23,9 +23,7 @@ class FirstFieldsComponent extends PureComponent {
       reportingManager,
     } = this.props;
     console.log('abc', dropdownField);
-    if (managerList.length > 0) {
-      console.log(managerList[0].data.genernalInfo.firstName);
-    }
+    if (managerList.length > 0) console.log('managerList', managerList);
     return (
       <>
         <div>
@@ -37,11 +35,11 @@ class FirstFieldsComponent extends PureComponent {
                   placeholder={item.placeholder}
                   className={styles}
                   onChange={(value) => _handleSelect(value, item.title)}
-                  // disabled={
-                  //   !!(item.title === 'reportingManager' && managerList.length <= 0) ||
-                  //   (item.title === 'department' && departmentList.length <= 0) ||
-                  //   (item.title === 'title' && titleList.length <= 0)
-                  // }
+                  disabled={
+                    !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                    (item.title === 'department' && departmentList.length <= 0) ||
+                    (item.title === 'title' && titleList.length <= 0)
+                  }
                   defaultValue={
                     item.title === 'department'
                       ? department
@@ -72,13 +70,15 @@ class FirstFieldsComponent extends PureComponent {
                           <Typography.Text>{data.name}</Typography.Text>
                         </Option>
                       ))
-                    : // : item.title === 'reportingManager' && managerList.length > 0
-                      // ? managerList.map((data, index) => (
-                      //     <Option value={data._id} key={index}>
-                      //       <Typography.Text>{data.generalInfo.firstName}</Typography.Text>
-                      //     </Option>
-                      //   ))
-                      null}
+                    : item.title === 'reportingManager' && managerList.length > 0
+                    ? managerList.map((data, index) => (
+                        <Option value={data._id} key={index}>
+                          <Typography.Text>
+                            {data.generalInfo && data.generalInfo.firstName}
+                          </Typography.Text>
+                        </Option>
+                      ))
+                    : null}
                 </Select>
               </Col>
             ))}

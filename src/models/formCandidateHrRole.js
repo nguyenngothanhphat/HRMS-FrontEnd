@@ -193,7 +193,7 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveEligibilityRequirement',
-          payload: { testEligibility: data },
+          payload: { documentList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -265,11 +265,11 @@ const candidateInfo = {
     },
 
     *fetchManagerList({ payload = {} }, { call, put }) {
-      console.log(payload);
+      // console.log(payload);
       try {
         const response = yield call(getManagerList, payload);
         const { statusCode, data } = response;
-        console.log('data resp', data);
+        // console.log('data resp', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
