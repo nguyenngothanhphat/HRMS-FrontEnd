@@ -24,11 +24,11 @@ class ConfirmRemoveModal extends Component {
   };
 
   handleRemoveToServer = () => {
-    console.log('handleRemoveToServer');
+    // console.log('handleRemoveToServer');
   };
 
   render() {
-    const { visible = false, loading, id, name } = this.props;
+    const { visible = false, loading, name } = this.props;
     return (
       <div>
         <Modal
@@ -53,7 +53,7 @@ class ConfirmRemoveModal extends Component {
             </Button>,
           ]}
         >
-          Are you sure to remove &quot;{id} - {name}&quot; document?
+          Are you sure to remove &quot;{name}&quot; document?
         </Modal>
       </div>
     );

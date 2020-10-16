@@ -54,7 +54,7 @@ class InformationUploadForm extends PureComponent {
   onDocumentGroupChange = (value) => {
     this.setState({
       documentGroup: value,
-      documentType: '',
+      documentType: null,
       identityType: '',
     });
   };
@@ -167,7 +167,7 @@ class InformationUploadForm extends PureComponent {
                 name="documentType"
                 rules={[{ required: true, message: 'Please select document type!' }]}
               >
-                <Select onChange={this.onDocumentTypeChange} value={documentType}>
+                <Select value={documentType} onChange={this.onDocumentTypeChange}>
                   {documentCategory.map((each) => {
                     const { group, subGroup } = each;
                     if (group === documentGroup) {

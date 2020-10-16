@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Upload, message, Button } from 'antd';
+import { Upload, message, Button, Spin } from 'antd';
 import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
-@connect()
+@connect(({ loading }) => ({
+  loadingUploadAttachment: loading.effects['upload/uploadFile'],
+}))
 class FileUploadForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -58,6 +60,7 @@ class FileUploadForm extends PureComponent {
 
   render() {
     const { fileName = '' } = this.state;
+    const { loadingUploadAttachment } = this.props;
     return (
       <div className={styles.FileUploadForm}>
         <Dragger
@@ -74,14 +77,20 @@ class FileUploadForm extends PureComponent {
             </div>
           ) : (
             <div>
-              <div>
-                <p className={styles.uploadIcon}>
-                  <img src={FileUploadIcon} alt="upload" />
-                </p>
-              </div>
-              <p className={styles.uploadText}>Drap and drop the file here</p>
-              <p className={styles.uploadText}>or</p>
-              <Button>Choose file</Button>
+              {loadingUploadAttachment ? (
+                <Spin />
+              ) : (
+                <div>
+                  <div>
+                    <p className={styles.uploadIcon}>
+                      <img src={FileUploadIcon} alt="upload" />
+                    </p>
+                  </div>
+                  <p className={styles.uploadText}>Drap and drop the file here</p>
+                  <p className={styles.uploadText}>or</p>
+                  <Button>Choose file</Button>
+                </div>
+              )}
             </div>
           )}
         </Dragger>
