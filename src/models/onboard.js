@@ -16,7 +16,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: 2,
     changeRequest: 'Change in DOJ',
   },
   {
@@ -34,7 +34,7 @@ const rookieList = [
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
     resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    changeRequest: '-',
   },
   {
     key: '3',
@@ -50,8 +50,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   {
     key: '4',
@@ -83,7 +83,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: '-',
     changeRequest: 'Change in DOJ',
   },
   {
@@ -99,8 +99,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   {
     key: '7',
@@ -115,7 +115,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: 3,
     changeRequest: 'Change in DOJ',
   },
   {
@@ -131,8 +131,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   {
     key: '9',
@@ -147,7 +147,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: 2,
     changeRequest: 'Change in DOJ',
   },
   {
@@ -163,8 +163,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   // Clone
   {
@@ -197,8 +197,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   {
     key: '13',
@@ -213,7 +213,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: '-',
     changeRequest: 'Change in DOJ',
   },
   {
@@ -246,7 +246,7 @@ const rookieList = [
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
     resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    changeRequest: '-',
   },
   {
     key: '16',
@@ -262,7 +262,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: '-',
     changeRequest: 'Change in DOJ',
   },
   {
@@ -279,8 +279,8 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    resubmit: '-',
+    changeRequest: '-',
   },
   {
     key: '18',
@@ -311,7 +311,7 @@ const rookieList = [
     dateRequest: '20 Aug, 2020',
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
-    resubmit: 1,
+    resubmit: '-',
     changeRequest: 'Change in DOJ',
   },
   {
@@ -329,7 +329,7 @@ const rookieList = [
     expire: '30th Oct, 2020',
     documentVerified: '4/5',
     resubmit: 1,
-    changeRequest: 'Change in DOJ',
+    changeRequest: '-',
   },
 ];
 
@@ -345,7 +345,7 @@ const ineligibleCandidatesData = rookieList;
 const sentProvisionalOffersData = rookieList; // Provisional Offers
 const acceptedProvisionalOffersData = rookieList; // Provisional Offers
 const renegotiateProvisionalOffersData = rookieList; // Provisional Offers
-const receivedProvisionalOffersData = rookieList; // Provisional Offers (delete)
+// const receivedProvisionalOffersData = rookieList; // Provisional Offers (delete)
 const discardedProvisionalOffersData = employeeList;
 const sentForApprovalsData = employeeList; // Awaiting Approvals
 const approvedOffersData = employeeList; // Awaiting Approvals
@@ -363,165 +363,22 @@ const finalOffersData = rookieList; // Discarded Offers
 
 const pendingData = rookieList; // Background Checks
 
-const PHASE_DATA = [
-  {
-    id: 1,
-    title: 'phase 1',
-    menuItem: [
-      {
-        id: 4,
-        name: 'Provisional offers',
-        key: 'provisionalOffers',
-        component: 'ProvisionalOffers',
-        quantity: sentProvisionalOffersData.length,
-      },
-      {
-        id: 10,
-        name: 'Background Checks',
-        key: 'backgroundChecks',
-        component: 'BackgroundCheck',
-        // quantity: sentProvisionalOffersData.length,
-        quantity: 10,
-      },
-      {
-        id: 7,
-        name: 'Final offers',
-        key: 'finalOffers',
-        component: 'FinalOffers',
-        quantity: sentFinalOffersData.length,
-      },
-      {
-        id: 6,
-        name: 'Awaiting approvals',
-        key: 'awaitingApprovals',
-        component: 'AwaitingApprovals',
-        quantity: approvedFinalOffersData.length,
-      },
-      {
-        id: 11,
-        name: 'Discarded offers',
-        key: 'discardedOffers',
-        component: 'DiscardedOffers',
-        // quantity: sentFinalOffersData.length,
-        quantity: 5,
-      },
-      {
-        id: 8,
-        name: 'All Drafts',
-        key: 'finalOfferDrafts',
-        component: 'FinalOfferDrafts',
-        quantity: finalOfferDraftsData.length,
-      },
-      // {
-      //   id: 1,
-      //   name: 'Pending Eligibility Checks',
-      //   // name: {formatMessage({ id: 'component.onboardingOverview.new' })},
-      //   key: 'pendingEligibilityChecks',
-      //   component: 'PendingEligibilityChecks',
-      //   quantity: sentEligibilityFormsData.length,
-      // },
-      // {
-      //   id: 2,
-      //   name: 'Eligible Candidates',
-      //   key: 'eligibleCandidates',
-      //   component: 'EligibleCandidates',
-      //   quantity: eligibleCandidatesData.length,
-      // },
-      // {
-      //   id: 3,
-      //   name: 'Ineligible candidates',
-      //   key: 'ineligibleCandidates',
-      //   component: 'IneligibleCandidates',
-      //   quantity: ineligibleCandidatesData.length,
-      // },
-    ],
-  },
-  {
-    id: 2,
-    title: 'phase 2',
-    menuItem: [
-      // {
-      //   id: 4,
-      //   name: 'Provisional offers',
-      //   key: 'provisionalOffers',
-      //   component: 'ProvisionalOffers',
-      //   quantity: sentProvisionalOffersData.length,
-      // },
-      // {
-      //   id: 10,
-      //   name: 'Background Checks',
-      //   key: 'backgroundChecks',
-      //   component: 'BackgroundCheck',
-      //   // quantity: sentProvisionalOffersData.length,
-      //   quantity: 10,
-      // },
-      // {  // Del
-      //   id: 5,
-      //   name: 'Discarded Provisional offers',
-      //   key: 'discardedProvisionalOffers',
-      //   component: 'DiscardedProvisionalOffers',
-      //   quantity: discardedProvisionalOffersData.length,
-      // },
-    ],
-  },
-  {
-    id: 3,
-    title: 'phase 3',
-    menuItem: [
-      // {
-      //   id: 7,
-      //   name: 'Final offers',
-      //   key: 'finalOffers',
-      //   component: 'FinalOffers',
-      //   quantity: sentFinalOffersData.length,
-      // },
-      // {
-      //   id: 6,
-      //   name: 'Awaiting approvals',
-      //   key: 'awaitingApprovals',
-      //   component: 'AwaitingApprovals',
-      //   quantity: approvedFinalOffersData.length,
-      // },
-      // {
-      //   id: 11,
-      //   name: 'Discarded offers',
-      //   key: 'discardedOffers',
-      //   component: 'DiscardedOffers',
-      //   // quantity: sentFinalOffersData.length,
-      //   quantity: 5,
-      // },
-      // {
-      //   id: 8,
-      //   name: 'All Drafts',
-      //   key: 'finalOfferDrafts',
-      //   component: 'FinalOfferDrafts',
-      //   quantity: finalOfferDraftsData.length,
-      // },
-      // { // Del
-      //   id: 9,
-      //   name: 'Discarded Final Offers',
-      //   key: 'discardedFinalOffers',
-      //   component: 'DiscardedFinalOffers',
-      //   quantity: discardedFinalOffersData.length,
-      // },
-    ],
-  },
-];
-
 const MENU_DATA = [
   {
     id: 1,
     name: 'All Drafts',
     key: 'finalOfferDrafts',
     component: 'FinalOfferDrafts',
-    quantity: finalOfferDraftsData.length,
+    // quantity: finalOfferDraftsData.length,
+    quantity: provisionalOfferDraftsData.length,
   },
   {
     id: 2,
     name: 'Provisional offers',
     key: 'provisionalOffers',
     component: 'ProvisionalOffers',
-    quantity: sentProvisionalOffersData.length,
+    // quantity: sentProvisionalOffersData.length,
+    quantity: acceptedProvisionalOffersData.length,
   },
   {
     id: 3,
@@ -529,14 +386,14 @@ const MENU_DATA = [
     key: 'backgroundChecks',
     component: 'BackgroundCheck',
     // quantity: sentProvisionalOffersData.length,
-    quantity: 10,
+    quantity: pendingData.length,
   },
   {
     id: 4,
     name: 'Awaiting approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
-    quantity: approvedFinalOffersData.length,
+    quantity: sentForApprovalsData.length,
   },
   {
     id: 5,
@@ -550,8 +407,8 @@ const MENU_DATA = [
     name: 'Discarded offers',
     key: 'discardedOffers',
     component: 'DiscardedOffers',
-    // quantity: sentFinalOffersData.length,
-    quantity: 5,
+    quantity: provisionalOffersData.length,
+    // quantity: 5,
   },
 ];
 
@@ -618,20 +475,20 @@ const formatDate = (date) => {
   return newDate;
 };
 
-const dateDiffInDays = (a, b) => {
-  // a and b are javascript Date objects
-  // console.log(a);
-  // console.log(b);
-  // console.log(typeof a);
-  // console.log(typeof b);
-  const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  // console.log(utc1);
+// const dateDiffInDays = (a, b) => {
+//   // a and b are javascript Date objects
+//   // console.log(a);
+//   // console.log(b);
+//   // console.log(typeof a);
+//   // console.log(typeof b);
+//   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+//   // Discard the time and time-zone information.
+//   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+//   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+//   // console.log(utc1);
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-};
+//   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+// };
 
 const formatData = (list) => {
   const formatList = [];
@@ -639,7 +496,7 @@ const formatData = (list) => {
     const {
       _id,
       fullName,
-      position,
+      // position,
       title,
       workLocation,
       updatedAt,
@@ -658,7 +515,8 @@ const formatData = (list) => {
       rookieName: fullName,
       position: title.name,
       location: workLocation.name,
-      comments: 'Passport submission pending …',
+      // comments: 'Passport submission pending …',
+      comments,
       dateSent,
       dateReceived,
       dateJoin,
@@ -734,14 +592,13 @@ const onboard = {
     customFields: {},
     menu: {
       onboardingOverviewTab: {
-        phaseList: PHASE_DATA,
         listMenu: MENU_DATA,
       },
     },
   },
 
   effects: {
-    *fetchAllOnboardList({ payload }, { call, put }) {
+    *fetchAllOnboardList(_, { put }) {
       try {
         // yield put({
         //   type: 'updateMenuQuantity',
@@ -1237,7 +1094,7 @@ const onboard = {
       };
     },
 
-    updateMenuQuantity(state, action) {
+    updateMenuQuantity(state) {
       const { phaseList } = state.menu.onboardingOverviewTab;
       let newPhaseList = [];
       newPhaseList = phaseList.map((phaseItem) => {

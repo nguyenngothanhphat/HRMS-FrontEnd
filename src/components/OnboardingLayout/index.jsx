@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { formatMessage, Link, connect } from 'umi';
+import { formatMessage, connect } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
@@ -60,19 +60,12 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     const { listMenu = [] } = this.props;
-    console.log(listMenu);
     const firstComponent = listMenu[0].component;
     this.setState({
       pageTitle: listMenu[0].name,
       selectedId: listMenu[0].id,
       displayComponent: getComponent(firstComponent),
     });
-    // const firstComponent = listMenu[0].menuItem[0].component;
-    // this.setState({
-    //   pageTitle: listMenu[0].menuItem[0].name,
-    //   selectedId: listMenu[0].menuItem[0].id,
-    //   displayComponent: getComponent(firstComponent),
-    // });
   }
 
   handleClick = (item) => {
@@ -116,7 +109,7 @@ class OnboardingLayout extends PureComponent {
 
           <div className={styles.leftMenu}>
             {listMenu.map((item) => {
-              const { id, name, component } = item;
+              const { id, name, component, quantity } = item;
               const { selectedId } = this.state;
               return (
                 <div key={id}>
@@ -125,35 +118,13 @@ class OnboardingLayout extends PureComponent {
                     id={id}
                     name={name}
                     component={component}
-                    // title={title}
-                    // menuItem={menuItem}
+                    quantity={quantity}
                     handleClick={this.handleClick}
                   />
                 </div>
               );
             })}
-            {/* {listMenu.map((phase) => {
-              const { id, title, menuItem } = phase;
-              const { selectedId } = this.state;
-              return (
-                <div key={id}>
-                  <MenuItem
-                    selectedId={selectedId}
-                    title={title}
-                    menuItem={menuItem}
-                    handleClick={this.handleClick}
-                  />
-                </div>
-              );
-            })} */}
           </div>
-
-          {/* <Link
-            to="/employee-onboarding/review/16003134"
-            style={{ marginTop: '1rem', display: 'block' }}
-          >
-            Link review member by rookieId =16003134
-          </Link> */}
         </div>
 
         <div className={styles.viewRight}>
