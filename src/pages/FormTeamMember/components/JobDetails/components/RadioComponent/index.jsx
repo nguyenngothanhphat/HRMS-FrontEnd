@@ -4,8 +4,7 @@ import styles from './index.less';
 
 class RadioComponent extends PureComponent {
   render() {
-    const { Tab, handleRadio, jobDetail, employeeTypeList } = this.props;
-    const { position, employeeType } = jobDetail;
+    const { Tab, handleRadio, employeeTypeList, employeeType, position } = this.props;
     return (
       <div className={styles.RadioComponent}>
         <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>

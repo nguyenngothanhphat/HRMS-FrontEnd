@@ -68,4 +68,5 @@ export default {
   'menu.ticketId': 'Ticket Id',
   'menu.setting': 'Setting',
   'menu.change-password': 'Change Password',
+  'menu.Createcustomfieldsection': 'Create custom field section',
 };
