@@ -265,7 +265,12 @@ const routes = [
             hideInMenu: true,
             component: './TemplateDetails',
           },
-
+          {
+            path: '/change-password',
+            name: 'change-password',
+            hideInMenu: true,
+            component: './ChangePassword',
+          },
           {
             component: './404',
           },

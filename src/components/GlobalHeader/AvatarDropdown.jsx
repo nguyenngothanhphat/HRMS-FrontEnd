@@ -37,7 +37,9 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === CHANGEPASSWORD) {
-      alert('Change Password');
+      const { currentUser = {} } = this.props;
+      console.log('currentUser', currentUser);
+      history.push('/change-password');
 
       return;
     }
