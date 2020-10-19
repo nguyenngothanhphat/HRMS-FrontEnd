@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Typography } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
-import { isEmpty, map } from 'lodash';
-import { PageLoading } from '@/layouts/layout/src';
+import { map } from 'lodash';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -61,8 +60,19 @@ class EligibilityDocs extends Component {
     const { dispatch } = this.props;
     const {
       tempData: { documentList },
-      data: { _id, company, department, workLocation, reportingManager, title, employeeType },
-      data,
+      data: {
+        department,
+        workLocation,
+        reportingManager,
+        title,
+        employeeType,
+        candidate,
+        fullName,
+        position,
+        privateEmail,
+        workEmail,
+        previousExperience,
+      },
     } = this.state;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -72,35 +82,30 @@ class EligibilityDocs extends Component {
     });
 
     dispatch({
-      type: 'candidateInfo/updateByHR',
-      payload: {
-        documentChecklistSetting: documentList,
-        candidate: _id,
-      },
-    });
-
-    dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
-        ...data,
-        department: department._id,
-        workLocation: workLocation._id,
-        reportingManager: reportingManager._id,
-        title: title._id,
-        employeeType: employeeType._id,
-        company: company._id,
-        previousExperience: '2',
+        candidate,
+        fullName,
+        position,
+        employeeType,
+        department,
+        title,
+        workLocation,
+        reportingManager,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        documentChecklistSetting: documentList,
         salaryStructure: '5f57544e899f4743e8fdb3f2',
-        candidate: _id,
         action: 'submit',
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+      }
     });
-
-    dispatch(
-      this.setState({
-        openModal: true,
-      }),
-    );
   };
 
   handleValueChange = (e) => {

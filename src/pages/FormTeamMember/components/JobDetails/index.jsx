@@ -49,7 +49,7 @@ class JobDetails extends PureComponent {
     const { dispatch, locationList } = this.props;
     const { tempData = {}, checkMandatory } = this.state;
     tempData[name] = value;
-    const { department, title, workLocation, reportingManager, checkStatus = {}, email } = tempData;
+    const { department, title, workLocation, reportingManager, checkStatus = {} } = tempData;
 
     if (department && title && workLocation && reportingManager) {
       checkStatus.filledJobDetail = true;
@@ -144,7 +144,6 @@ class JobDetails extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
-    console.log('abc', company);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {

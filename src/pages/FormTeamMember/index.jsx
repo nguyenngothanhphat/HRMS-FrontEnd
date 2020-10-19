@@ -21,24 +21,19 @@ import Additional from './components/Additional';
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '', reId = '' } = {} },
+      match: { params: { action = '' } = {} },
       dispatch,
       candidateInfo,
-      tempData,
     } = this.props;
     // console.log(this.props);
     // check action is add or review. If isReview fetch candidate by reID
-    const {
-      data,
-      currentStep,
-      tempData: { documentList },
-    } = candidateInfo;
+    const { data } = candidateInfo;
     const { _id } = data;
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchEmployeeById',
         payload: {
-          id: _id,
+          candidate: _id,
         },
       });
       dispatch({
@@ -51,9 +46,6 @@ class FormTeamMember extends PureComponent {
         type: 'candidateInfo/fetchDocumentList',
       });
     }
-    if (documentList) {
-      console.log('abc', documentList);
-    }
   }
 
   render() {
@@ -62,7 +54,6 @@ class FormTeamMember extends PureComponent {
       candidateInfo,
     } = this.props;
     const { tempData: { locationList, employeeTypeList, documentList } = {} } = candidateInfo;
-    console.log('documentList', documentList);
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
     const listMenu = [
       {

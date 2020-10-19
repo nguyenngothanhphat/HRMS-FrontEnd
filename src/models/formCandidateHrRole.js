@@ -26,10 +26,12 @@ const candidateInfo = {
       salaryStatus: 2,
     },
     currentStep: 0,
+    statusCodeToValidate: null,
     tempData: {
       checkStatus: {},
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
+      previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
       employeeTypeList: [],
@@ -91,6 +93,7 @@ const candidateInfo = {
       department: null,
       title: null,
       company: null,
+      previousExperience: null,
       processStatus: 'DRAFT',
       noticePeriod: null,
       dateOfJoining: null,
@@ -98,6 +101,8 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      id: '',
+      candidate: '',
       documentChecklistSetting: [
         {
           type: 'A',
@@ -277,10 +282,6 @@ const candidateInfo = {
         const response = yield call(getLocation);
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { tempData: { ...tempData, locationList: data } },
-        // });
         yield put({
           type: 'saveTemp',
           payload: { locationList },
@@ -295,10 +296,6 @@ const candidateInfo = {
         const response = yield call(getEmployeeTypeList);
         const { statusCode, data: employeeTypeList = [] } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { tempData: { ...tempData, employeeTypeList: data } },
-        // });
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
@@ -320,7 +317,6 @@ const candidateInfo = {
           payload: { managerList: data },
         });
       } catch (errors) {
-        console.log(errors);
         dialog(errors);
       }
     },
@@ -340,7 +336,6 @@ const candidateInfo = {
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('update', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -366,22 +361,27 @@ const candidateInfo = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
+        const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { data: { ...data, id: payload._id } } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
       } catch (error) {
         dialog(error);
       }
     },
     *submitPhase1Effect({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(submitPhase1, payload);
+        response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
-        console.log('aa', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
   },
 
