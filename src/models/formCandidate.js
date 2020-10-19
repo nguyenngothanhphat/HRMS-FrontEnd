@@ -317,10 +317,9 @@ const info = {
       try {
         const response = yield call(getRookieInfo);
         const { data } = response;
-        const { _id = '' } = data;
-        console.log(response);
-        const rookieId = _id;
-        yield put({ type: 'save', payload: { rookieId } });
+        const { ticketID = '', _id = '' } = data;
+        const rookieId = ticketID;
+        yield put({ type: 'save', payload: { rookieId, _id } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);

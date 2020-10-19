@@ -9,10 +9,11 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ info: { basicInformation, checkMandatory, currentStep = 0 } = {} }) => ({
-  basicInformation,
+@connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+  data,
   checkMandatory,
   currentStep,
+  tempData,
 }))
 class BasicInformation extends PureComponent {
   constructor(props) {
@@ -24,58 +25,74 @@ class BasicInformation extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if ('basicInformation' in props) {
-      return { basicInformation: props.basicInformation || {} };
+    if ('data' in props) {
+      return {
+        data: props.data,
+        checkMandatory: props.checkMandatory,
+        tempData: props.tempData || {},
+      };
     }
     return null;
   }
 
-  handleChange = (_, allValues) => {
-    const { dispatch, checkMandatory } = this.props;
-    const { fullName = '', workEmail = '', privateEmail = '' } = allValues;
-    const check = fullName !== '' && workEmail !== '' && privateEmail !== '';
+  handleChange = (e) => {
+    const name = Object.keys(e).find((x) => x);
+    const value = Object.values(e).find((x) => x);
+    const { dispatch } = this.props;
+    const emailRegExp = RegExp(
+      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+    );
+
+    const { tempData, checkMandatory } = this.state;
+    tempData[name] = value;
+    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
+    if (
+      fullName !== '' &&
+      workEmail !== '' &&
+      privateEmail !== '' &&
+      emailRegExp.test(privateEmail) &&
+      emailRegExp.test(workEmail)
+    ) {
+      checkStatus.filledBasicInformation = true;
+    } else {
+      checkStatus.filledBasicInformation = false;
+    }
     dispatch({
-      type: 'info/saveBasicInformation',
+      type: 'candidateInfo/save',
       payload: {
+        tempData,
         checkMandatory: {
           ...checkMandatory,
-          filledBasicInformation: check,
+          filledBasicInformation: checkStatus.filledBasicInformation,
         },
       },
     });
   };
 
-  // handleChange = (e) => {
-  //   const { target } = e;
-  //   const { name, value } = target;
-  //   const { dispatch, checkMandatory } = this.props;
-
-  //   const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
-
-  //   const { basicInformation1 = {} } = this.state;
-  //   const abc = { ...basicInformation1 };
-  //   abc[name] = value;
-  //   // const { fullName = '', workEmail = '', privateEmail = '' } = abc;
-  //   console.log(abc);
-  //   // const filledBasicInformation = fullName !== '' && workEmail !== '' && privateEmail !== '';
-  //   // console.log(filledBasicInformation);
-  //   // dispatch({
-  //   //   type: 'info/saveBasicInformation',
-  //   //   payload: {
-  //   //     checkMandatory: {
-  //   //       ...checkMandatory,
-  //   //       filledBasicInformation,
-  //   //     },
-  //   //   },
-  //   // });
-  // };
-
   onFinish = (values) => {
+    const { data } = this.state;
     const { dispatch, currentStep } = this.props;
+    const { _id } = data;
     dispatch({
-      type: 'info/save',
+      type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
+        // data: {
+        //   ...data,
+        //   fullName: values.fullName,
+        //   privateEmail: values.privateEmail,
+        //   workEmail: values.workEmail,
+        //   candidate: _id,
+        // },
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        fullName: values.fullName,
+        privateEmail: values.privateEmail,
+        workEmail: values.workEmail,
+        candidate: _id,
       },
     });
   };
@@ -93,7 +110,8 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder } = this.state;
+    const { isOpenReminder, data = {} } = this.state;
+    const { fullName, privateEmail, workEmail, experienceYear } = data;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -244,8 +262,8 @@ class BasicInformation extends PureComponent {
   };
 
   render() {
-    const { basicInformation = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
+    const { data = {} } = this.state;
+    const { fullName, privateEmail, workEmail, experienceYear } = data;
     const Note = {
       title: 'Note',
       data: (

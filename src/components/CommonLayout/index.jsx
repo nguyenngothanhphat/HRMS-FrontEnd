@@ -8,7 +8,7 @@ import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/ind
 
 import s from './index.less';
 
-@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
+@connect(({ candidateInfo: { currentStep = 0, displayComponent = {} } = {} }) => ({
   currentStep,
   displayComponent,
 }))
