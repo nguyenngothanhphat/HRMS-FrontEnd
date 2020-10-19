@@ -103,28 +103,19 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'employeesManagement/fetchCompanyList',
     });
-    dispatch({
-      type: 'employeesManagement/fetchLocationList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchDepartmentList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchJobTitleList',
-    });
   };
 
   getDataTable = (params, tabId) => {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'employee/fetchListEmployeeActive',
+        type: 'employeesManagement/fetchActiveEmployeesList',
         payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'employee/fetchListEmployeeInActive',
+        type: 'employeesManagement/fetchInActiveEmployeesList',
         payload: params,
       });
     }

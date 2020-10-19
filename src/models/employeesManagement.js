@@ -58,7 +58,7 @@ const employeesManagement = {
     },
     *fetchLocationList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getLocationList, company);
+        const response = yield call(getLocationList, { company });
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList } });
@@ -68,7 +68,7 @@ const employeesManagement = {
     },
     *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, company);
+        const response = yield call(getDepartmentList, { company });
         const { statusCode, data: departmentList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList } });
@@ -78,7 +78,7 @@ const employeesManagement = {
     },
     *fetchJobTitleList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getJobTitleList, company);
+        const response = yield call(getJobTitleList, { company });
         const { statusCode, data: jobTitleList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { jobTitleList } });
@@ -87,12 +87,11 @@ const employeesManagement = {
       }
     },
     *fetchReportingManagerList({ payload = {} }, { call, put }) {
-      console.log(payload);
       try {
         const response = yield call(getReportingManagerList, payload);
-        const { statusCode, data } = response;
+        const { statusCode, data: reportingManagerList = []  } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { managerList: data } });
+        yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
         dialog(errors);
       }

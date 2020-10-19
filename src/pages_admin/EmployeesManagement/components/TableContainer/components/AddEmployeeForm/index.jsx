@@ -16,12 +16,14 @@ const Option = Select;
       locationList = [],
       departmentList = [],
       jobTitleList = [],
+      reportingManagerList = []
     },
   }) => ({
     companyList,
     locationList,
     departmentList,
     jobTitleList,
+    reportingManagerList,
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -31,15 +33,82 @@ class AddEmployeeForm extends Component {
     this.formRef = React.createRef();
     this.state = {
       isDisabled: true,
+      isDisabledManager: true,
+      department: [],
+      location: []
     };
   }
 
-  onChangeSelectCompany = (value) => {
-    console.log('value', value);
-    this.setState({
-      isDisabled: false,
-    });
+  static getDerivedStateFromProps(props) {
+    const { reportingManagerList } = props;
+    if (reportingManagerList.length > 0) {
+      return {
+        isDisabledManager: false
+      }
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {dispatch} = this.props;
+    const { department, location } = this.state;
+    if ((prevState.department !== department || prevState.location !== location) && department.length > 0 && location.length > 0) {
+      dispatch({
+        type: 'employeesManagement/fetchReportingManagerList',
+        payload: {
+          department,
+          location
+        }
+      })
+    }
+  }
+
+  onChangeSelect = (type, value) => {
+    const { dispatch } = this.props;
+    const location = [];
+    const department = []
+    switch (type) {
+      case 'company':
+        dispatch({
+          type: 'employeesManagement/fetchLocationList',
+          payload: {
+            company: value
+          }
+        })
+        dispatch({
+          type: 'employeesManagement/fetchDepartmentList',
+          payload: {
+            company: value
+          }
+        })
+        dispatch({
+          type: 'employeesManagement/fetchJobTitleList',
+          payload: {
+            company: value
+          }
+        })
+        this.setState({
+          isDisabled: false,
+        });
+        break;
+      case 'location':
+        location.push(value)
+        this.setState({
+          location
+        })
+        break;
+      case 'department':
+        department.push(value)
+        this.setState({
+          department
+        })
+        break;
+      default:
+        break;
+    }   
   };
+
+
 
   handleCancel = () => {
     const { handleCancel } = this.props;
@@ -68,6 +137,7 @@ class AddEmployeeForm extends Component {
   renderAddEmployeeForm = () => {
     const formLayout = {
       labelCol: { span: 8 },
+      wrapperCol: { span: 18 },
     };
     const validateMessages = {
       required: '${label} is required!',
@@ -76,8 +146,8 @@ class AddEmployeeForm extends Component {
         number: '${label} is not a validate number!',
       },
     };
-    const { companyList, locationList, departmentList, jobTitleList } = this.props;
-    const { isDisabled } = this.state;
+    const { companyList, locationList, departmentList, jobTitleList, reportingManagerList } = this.props;
+    const { isDisabled, isDisabledManager } = this.state;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -85,6 +155,7 @@ class AddEmployeeForm extends Component {
           requiredMark={false}
           colon={false}
           labelAlign="left"
+          layout="horizontal"
           ref={this.formRef}
           validateMessages={validateMessages}
           id="addEmployeeForm"
@@ -124,7 +195,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Company"
               showArrow
               showSearch
-              onChange={this.onChangeSelectCompany}
+              onChange={(value) => this.onChangeSelect('company', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -140,12 +211,13 @@ class AddEmployeeForm extends Component {
               showArrow
               showSearch
               disabled={isDisabled}
+              onChange={(value) => this.onChangeSelect('location', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
               {locationList.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
+                <Option key={item._id}>{item.headQuarterAddress.address}</Option>
               ))}
             </Select>
           </Form.Item>
@@ -154,6 +226,8 @@ class AddEmployeeForm extends Component {
               placeholder="Select Department"
               showArrow
               showSearch
+              disabled={isDisabled}
+              onChange={(value) => this.onChangeSelect('department', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -168,6 +242,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Job Title"
               showArrow
               showSearch
+              disabled={isDisabled}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -178,7 +253,19 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
           <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ type: 'email' }]}>
-            <Input />
+            <Select
+              placeholder="Select Reporting Manager"
+              showArrow
+              showSearch
+              disabled={isDisabledManager}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {reportingManagerList.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </div>

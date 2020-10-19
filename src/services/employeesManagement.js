@@ -15,14 +15,14 @@ export async function getCompanyList(payload) {
 }
 
 export async function getLocationList(payload) {
-  return request('/api/location/list', {
+  return request('/api/location/get-by-company', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getDepartmentList(payload) {
-  return request('/api/department/list', {
+  return request('/api/department/list-by-company', {
     method: 'POST',
     data: payload,
   });
