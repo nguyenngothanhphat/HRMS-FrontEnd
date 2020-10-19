@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Empty, Dropdown, Menu } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage, Redirect } from 'umi';
+import { formatMessage, Link, Redirect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
@@ -47,6 +47,114 @@ class OnboardTable extends Component {
     return <p>{name}</p>;
   };
 
+  renderAction = (id, type, actionText) => {
+    const {
+      FINAL_OFFERS_DRAFTS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+      APPROVED_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+    } = TABLE_TYPE;
+
+    let actionContent = null;
+
+    switch (type) {
+      case RENEGOTIATE_PROVISIONAL_OFFERS:
+      case RENEGOTIATE_FINAL_OFFERS:
+        actionContent = (
+          <>
+            {/* <span>{actionText}</span> */}
+            <span>Schedule 1-on-1</span>
+
+            <span className={styles.viewDraft}>
+              View Form
+              {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
+            </span>
+          </>
+        );
+        break;
+
+      case FINAL_OFFERS_DRAFTS: {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1">Discard offer</Menu.Item>
+          </Menu>
+        );
+
+        actionContent = (
+          <>
+            <span>Send for approval</span>
+
+            <span className={styles.viewDraft}>
+              {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+            </span>
+
+            <Dropdown.Button
+              overlay={menu}
+              placement="bottomCenter"
+              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+            />
+          </>
+        );
+        break;
+      }
+
+      case APPROVED_OFFERS:
+        actionContent = (
+          <>
+            <span>Send to candidate</span>
+            <span className={styles.viewDraft}>View form</span>
+          </>
+        );
+        break;
+
+      case ACCEPTED_FINAL_OFFERS: {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1">Discard offer</Menu.Item>
+          </Menu>
+        );
+
+        actionContent = (
+          <>
+            <Dropdown.Button
+              overlay={menu}
+              placement="bottomCenter"
+              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+            >
+              {actionText}
+            </Dropdown.Button>
+            {/* <span onClick={() => this.handleActionClick(type)}>{actionText}</span> */}
+            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+          </>
+        );
+        break;
+      }
+
+      default:
+        actionContent = (
+          <>
+            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+          </>
+        );
+        break;
+    }
+    return (
+      <Link to={`/employee-onboarding/review/${id}`}>
+        <span className={styles.tableActions}>
+          {actionContent}
+          {/* {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
+          ) : (
+            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+          )} */}
+
+          {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+        </span>
+      </Link>
+    );
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
     const {
       ID,
@@ -58,6 +166,11 @@ class OnboardTable extends Component {
       DATE_RECEIVED,
       DATE_JOIN,
       ACTION,
+      EXPIRE,
+      DOCUMENT,
+      RESUBMIT,
+      CHANGE_REQUEST,
+      DATE_REQUEST,
     } = COLUMN_NAME;
     const actionText = getActionText(type);
 
@@ -120,6 +233,48 @@ class OnboardTable extends Component {
         width: getColumnWidth('dateJoin', type),
       },
       {
+        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        title: 'No. Of documents verified',
+        dataIndex: 'documentVerified',
+        key: 'document',
+        columnName: DOCUMENT,
+        width: getColumnWidth('document', type),
+        align: 'center',
+      },
+      {
+        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        title: 'Resubmits',
+        dataIndex: 'resubmit',
+        key: 'resubmit',
+        columnName: RESUBMIT,
+        width: getColumnWidth('resubmit', type),
+        align: 'center',
+      },
+      {
+        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        title: 'Expires on',
+        dataIndex: 'expire',
+        key: 'expire',
+        columnName: EXPIRE,
+        width: getColumnWidth('expire', type),
+      },
+      {
+        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        title: 'Change request',
+        dataIndex: 'changeRequest',
+        key: 'changeRequest',
+        columnName: CHANGE_REQUEST,
+        width: getColumnWidth('changeRequest', type),
+      },
+      {
+        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
+        title: 'Request date',
+        dataIndex: 'dateRequest',
+        key: 'dateRequest',
+        columnName: DATE_REQUEST,
+        width: getColumnWidth('dateRequest', type),
+      },
+      {
         // title: 'Comments',
         title: formatMessage({ id: 'component.onboardingOverview.comments' }),
         dataIndex: 'comments',
@@ -133,35 +288,31 @@ class OnboardTable extends Component {
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
-        render: () => (
-          <span
-            className={styles.tableActions}
-            onClick={(e) => {
-              const { currentRecord = {} } = this.state;
-              const { rookieId = 0 } = currentRecord;
-              const id = rookieId.replace('#', '');
-              console.log(id);
-              // return <Redirect to={`/review?${id}`} />;
-              this.setState({
-                redirectScreen: `/employee-onboarding/review/${id}`,
-              });
-            }}
-          >
-            {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-              <>
-                <span>{actionText}</span>
+        render: () => {
+          const { currentRecord = {} } = this.state;
+          const { rookieId = '' } = currentRecord;
+          const id = rookieId.replace('#', '') || '';
+          return this.renderAction(id, type, actionText);
+          // return (
+          //   <Link to={`/employee-onboarding/review/${id}`}>
+          //     <span className={styles.tableActions}>
+          //       {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
+          //         <>
+          //           <span>{actionText}</span>
 
-                <span className={styles.viewDraft}>
-                  {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-                </span>
-              </>
-            ) : (
-              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-            )}
+          //           <span className={styles.viewDraft}>
+          //             {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+          //           </span>
+          //         </>
+          //       ) : (
+          //         <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+          //       )}
 
-            <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
-          </span>
-        ),
+          //       <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
+          //     </span>
+          //   </Link>
+          // );
+        },
         columnName: ACTION,
       },
     ];
@@ -216,42 +367,46 @@ class OnboardTable extends Component {
     const { openModal } = this.state;
     return (
       <>
-        {this.state.redirectScreen ? (
-          <Redirect to={this.state.redirectScreen} />
-        ) : (
-          <>
-            <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
-              <Table
-                size="small"
-                rowSelection={
-                  hasCheckbox && {
-                    type: 'checkbox',
-                    ...rowSelection,
-                  }
-                }
-                columns={this.generateColumns(columnArr, type)}
-                dataSource={list}
-                pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-                onRow={(record, rowIndex) => {
-                  return {
-                    onMouseEnter: (event) => {
-                      this.setState({
-                        currentRecord: record,
-                      });
-                    }, // Hover mouse on row
-                  };
-                }}
-                // scroll={{ x: 1000, y: 'max-content' }}
-              />
-            </div>
-            <CustomModal
-              open={openModal}
-              width={590}
-              closeModal={this.closeModal}
-              content={<ModalContent closeModal={this.closeModal} />}
-            />
-          </>
-        )}
+        <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
+          <Table
+            size="small"
+            rowSelection={
+              hasCheckbox && {
+                type: 'checkbox',
+                ...rowSelection,
+              }
+            }
+            locale={{
+              emptyText: (
+                <Empty
+                  description={formatMessage(
+                    { id: 'component.onboardingOverview.noData' },
+                    { format: 0 },
+                  )}
+                />
+              ),
+            }}
+            columns={this.generateColumns(columnArr, type)}
+            dataSource={list}
+            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            onRow={(record, rowIndex) => {
+              return {
+                onMouseEnter: (event) => {
+                  this.setState({
+                    currentRecord: record,
+                  });
+                }, // Hover mouse on row
+              };
+            }}
+            // scroll={{ x: 1000, y: 'max-content' }}
+          />
+        </div>
+        <CustomModal
+          open={openModal}
+          width={590}
+          closeModal={this.closeModal}
+          content={<ModalContent closeModal={this.closeModal} />}
+        />
       </>
     );
   }

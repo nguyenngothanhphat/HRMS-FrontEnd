@@ -1,17 +1,40 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
-import { PlusOutlined, MinusOutlined, RedoOutlined } from '@ant-design/icons';
+import { Collapse, Space, Checkbox, Typography, Upload, Row, Col } from 'antd';
+import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import UploadImage from '../UploadImage';
+import { connect } from 'umi';
+import UploadImage from '@/components/UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
+@connect(({ loading }) => ({
+  loading: loading.effects['candidateProfile/updateGeneralInfo'],
+}))
 class CollapseField extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isUpdated: false,
+      urlFile: '',
+      isAllUploaded: false,
+    };
+  }
+
+  handleFile = (res) => {
+    console.log(res);
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      this.setState({
+        isUpdated: !this.state.isUpdated,
+      });
+    }
+  };
+
   render() {
-    const { item = {}, id, handleFile, handleCanCelIcon, handleAdd } = this.props;
+    const { item = {}, loading } = this.props;
     return (
-      <div className={styles.CollapseField} key={id}>
+      <div className={styles.CollapseField}>
         <Collapse
           accordion
           expandIconPosition="right"
@@ -35,11 +58,10 @@ class CollapseField extends PureComponent {
             {item.type === 'D' ? <InputField /> : <></>}
             <Space direction="vertical" className={styles.Space}>
               <div className={styles.Upload}>
-                {item.data.map((name, index) => (
+                {item.data.map((name) => (
                   // <Row className={styles.checkboxItem}>
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div key={index}>
-                    {!name.value && name.isUploaded === null ? (
+                  <>
+                    {!this.state.isUpdated ? (
                       <Row className={styles.checkboxItem}>
                         <Col span={18}>
                           <Typography.Text>{name.name}</Typography.Text>
@@ -47,23 +69,24 @@ class CollapseField extends PureComponent {
                         <Col span={5}>
                           <UploadImage
                             content="Choose file"
-                            getResponse={(resp) => handleFile(resp, index, id)}
+                            getResponse={(res) => this.handleFile(res)}
+                            loading={loading}
                           />
                         </Col>
                       </Row>
-                    ) : name.value && name.isUploaded === true ? (
+                    ) : (
                       <Row className={styles.checkboxItem}>
                         <Col span={14}>
                           <Typography.Text>{name.name}</Typography.Text>
                         </Col>
                         <Col span={5} className={styles.textAlign}>
                           <a
-                            href={name.fileUrl}
+                            href="#"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.viewUpLoadDataURL}
                           >
-                            {name.fileName}
+                            fileName
                           </a>
                         </Col>
                         <Col span={3} className={styles.textAlign}>
@@ -73,35 +96,47 @@ class CollapseField extends PureComponent {
                           <img
                             src={cancelIcon}
                             alt=""
-                            onClick={() => handleCanCelIcon(index, id)}
+                            onClick={this.handleCanCelIcon}
                             className={styles.viewUpLoadDataIconCancel}
                           />
                         </Col>
                       </Row>
-                    ) : !name.value && name.isUploaded === false ? (
-                      <Row className={styles.checkboxItemError}>
-                        <Col span={8}>
-                          <Typography.Text>{name.name}</Typography.Text>
-                        </Col>
-                        <Col span={11}>
-                          <Typography.Text>File must be under 5Mb</Typography.Text>
-                        </Col>
-                        <Col span={3} className={styles.paddingLeft}>
-                          <Typography.Text className={styles.boldText}>Retry</Typography.Text>
-                        </Col>
-                        <Col span={2} className={styles.textAlignCenter}>
-                          <RedoOutlined
-                            className={styles.retryIcon}
-                            onClick={() => handleCanCelIcon(index, id)}
-                          />
-                        </Col>
-                      </Row>
-                    ) : null}
-                  </div>
+                    )}
+                  </>
+                  // <Col span={18}>
+                  //   <Typography.Text>{name.name}</Typography.Text>
+                  // </Col>
+                  // <Col span={6}>
+                  //   {!this.state.isUpdated ? (
+                  //     <UploadImage
+                  //       content="Choose file"
+                  //       getResponse={(res) => this.handleFile(res)}
+                  //     />
+                  //   ) : (
+                  //     <div>
+                  //       <a
+                  //         href="#"
+                  //         target="_blank"
+                  //         rel="noopener noreferrer"
+                  //         className={styles.viewUpLoadDataURL}
+                  //       >
+                  //         fileName
+                  //       </a>
+                  //       <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                  //       <img
+                  //         src={cancelIcon}
+                  //         alt=""
+                  //         onClick={this.handleCanCelIcon}
+                  //         className={styles.viewUpLoadDataIconCancel}
+                  //       />
+                  //     </div>
+                  //   )}
+                  // </Col>
+                  // </Row>
                 ))}
               </div>
               {item.type === 'D' ? (
-                <Space direction="horizontal" onClick={() => handleAdd()}>
+                <Space direction="horizontal">
                   <PlusOutlined className={styles.plusIcon} />
                   <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
                 </Space>

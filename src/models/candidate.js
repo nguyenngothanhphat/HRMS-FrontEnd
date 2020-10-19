@@ -1,11 +1,7 @@
-import { getDocumentByCandidate } from '@/services/candidate';
-import { dialog } from '@/utils/utils';
-
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
-    tempData: {},
+    currentStep: 6,
     basicInformation: {
       fullName: '',
       privateEmail: '',
@@ -22,47 +18,47 @@ const candidateProfile = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
-    eliDocs: [
+    eligibilityDocs: [
       {
         type: 'A',
         name: 'Identity Proof',
         data: [
-          { name: 'Aahar Card', value: false, isUploaded: null },
-          { name: 'PAN Card', value: false, isUploaded: null },
-          { name: 'Passport', value: false, isUploaded: null },
-          { name: 'Driving License', value: false, isUploaded: null },
-          { name: 'Voter Card', value: false, isUploaded: null },
+          { name: 'Aahar Card', value: false },
+          { name: 'PAN Card', value: false },
+          { name: 'Passport', value: false },
+          { name: 'Driving License', value: false },
+          { name: 'Voter Card', value: false },
         ],
       },
       {
         type: 'B',
         name: 'Address Proof',
         data: [
-          { name: 'Rental Aggreement', value: false, isUploaded: null },
-          { name: 'Electricity & Utility Bills', value: false, isUploaded: null },
-          { name: 'Telephone Bills', value: false, isUploaded: null },
+          { name: 'Rental Aggreement', value: false },
+          { name: 'Electricity & Utility Bills', value: false },
+          { name: 'Telephone Bills', value: false },
         ],
       },
       {
         type: 'C',
         name: 'Educational',
         data: [
-          { name: 'SSLC', value: false, isUploaded: null },
-          { name: 'Intermediate/Diploma', value: false, isUploaded: null },
-          { name: 'Graduation', value: false, isUploaded: null },
-          { name: 'Post Graduate', value: false, isUploaded: null },
-          { name: 'PHP/Doctorate', value: false, isUploaded: null },
+          { name: 'SSLC', value: false },
+          { name: 'Intermediate/Diploma', value: false },
+          { name: 'Graduation', value: false },
+          { name: 'Post Graduate', value: false },
+          { name: 'PHP/Doctorate', value: false },
         ],
       },
       {
         type: 'D',
         name: 'Technical Certifications',
         data: [
-          { name: 'Offer letter', value: false, isUploaded: null },
-          { name: 'Appraisal letter', value: false, isUploaded: null },
-          { name: 'Paystubs', value: false, isUploaded: null },
-          { name: 'Form 16', value: false, isUploaded: null },
-          { name: 'Relieving Letter', value: false, isUploaded: null },
+          { name: 'Offer letter', value: false },
+          { name: 'Appraisal letter', value: false },
+          { name: 'Paystubs', value: false },
+          { name: 'Form 16', value: false },
+          { name: 'Relieving Letter', value: false },
         ],
       },
     ],
@@ -73,33 +69,11 @@ const candidateProfile = {
       salaryStatus: 2,
     },
   },
-  effect: {
-    *fetchDocListsByCandidate({ payload }, { call, put }) {
-      try {
-        const response = yield call(getDocumentByCandidate, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'saveTemp', payload: data });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-  },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
-      };
-    },
-    saveTemp(state, action) {
-      const { tempData } = state;
-      return {
-        ...state,
-        tempData: {
-          ...tempData,
-          ...action.payload,
-        },
       };
     },
   },

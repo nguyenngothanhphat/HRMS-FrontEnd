@@ -28,7 +28,9 @@ import styles from './index.less';
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLt5M: true,
+    };
   }
 
   handleChange = (changedValues) => {
@@ -99,6 +101,7 @@ class Edit extends PureComponent {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
+    this.handleUpLoadAdhaarCard();
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
@@ -107,40 +110,89 @@ class Edit extends PureComponent {
     });
   };
 
-  handleGetUpLoad = (resp) => {
-    const { dispatch, idCurrentEmployee, AdhaarCard, generalDataOrigin, generalData } = this.props;
-    const { data = [] } = resp;
-    const [first] = data;
-    const value = { id: first.id, url: first.url };
-    const url = { urlFile: value };
-    this.handleChange(url);
-    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
-    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
-    const getNewAdhaarCard =
-      adhaarCardNumberTemp !== adhaarCardNumberOrigin
-        ? adhaarCardNumberTemp
-        : adhaarCardNumberOrigin;
+  handleUpLoadAdhaarCard = () => {
+    const { dispatch, idCurrentEmployee, AdhaarCard, generalData } = this.props;
+    let file = '';
+    const { urlFile } = generalData;
+    if (urlFile) {
+      file = urlFile;
+    }
     if (AdhaarCard === null) {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
           key: 'Adhaar Card',
-          attachment: first.id,
+          attachment: file.id,
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
         },
       }).then((id) => this.handleAdd(id));
     } else {
+      if (AdhaarCard.document === null) {
+        dispatch({
+          type: 'employeeProfile/fetchDocumentAdd',
+          payload: {
+            key: 'Adhaar Card',
+            attachment: file.id,
+            employeeGroup: 'Identity',
+            parentEmployeeGroup: 'Indentification Documents',
+            employee: idCurrentEmployee,
+          },
+        }).then((id) => this.handleAddDocument(id));
+      }
       dispatch({
-        type: 'employeeProfile/fetchAdhaarcardUpdate',
+        type: 'employeeProfile/fetchDocumentUpdate',
         payload: {
-          attachment: first.id,
-          id: AdhaarCard._id,
-          adhaarNumber: getNewAdhaarCard,
+          attachment: file.id,
+          id: AdhaarCard.document._id,
         },
-      });
+      }).then((doc) => this.handleUpdate(doc));
     }
+  };
+
+  handleAddDocument = (id) => {
+    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
+    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
+    const getNewAdhaarCard =
+      adhaarCardNumberTemp !== adhaarCardNumberOrigin
+        ? adhaarCardNumberTemp
+        : adhaarCardNumberOrigin;
+    dispatch({
+      type: 'employeeProfile/fetchAdhaarcardUpdate',
+      payload: {
+        document: id,
+        id: AdhaarCard._id,
+        adhaarNumber: getNewAdhaarCard,
+      },
+    });
+  };
+
+  handleGetUpLoad = (resp) => {
+    const { data = [] } = resp;
+    const [first] = data;
+    const value = { id: first.id, url: first.url };
+    const url = { urlFile: value };
+    this.handleChange(url);
+  };
+
+  handleUpdate = (doc) => {
+    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
+    const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
+    const getNewAdhaarCard =
+      adhaarCardNumberTemp !== adhaarCardNumberOrigin
+        ? adhaarCardNumberTemp
+        : adhaarCardNumberOrigin;
+    dispatch({
+      type: 'employeeProfile/fetchAdhaarcardUpdate',
+      payload: {
+        document: doc._id,
+        id: AdhaarCard._id,
+        adhaarNumber: getNewAdhaarCard,
+      },
+    });
   };
 
   handleAdd = (id) => {
@@ -171,7 +223,12 @@ class Edit extends PureComponent {
     });
   };
 
+  handleGetSetSizeImage = (isLt5M) => {
+    this.setState({ isLt5M });
+  };
+
   render() {
+    const { isLt5M } = this.state;
     const { generalData, loading, handleCancel = () => {} } = this.props;
     const {
       urlFile = '',
@@ -276,14 +333,15 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={styles.inputForm} />
+              <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
             </Form.Item>
             <>
               {urlFile === '' ? (
                 <div className={styles.textUpload}>
                   <UploadImage
-                    content="Choose file"
+                    content={isLt5M ? 'Choose file' : `Retry`}
                     name="adhaarCard"
+                    setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                     getResponse={(resp) => this.handleGetUpLoad(resp)}
                   />
                 </div>
@@ -344,6 +402,7 @@ class Edit extends PureComponent {
               htmlType="submit"
               className={styles.buttonFooter}
               loading={loading}
+              disabled={isLt5M === false}
             >
               Save
             </Button>

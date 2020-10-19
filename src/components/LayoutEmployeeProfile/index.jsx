@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal, Affix } from 'antd';
 import { connect } from 'umi';
@@ -52,13 +53,13 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  // saveChanges = (item) => {
-  //   console.log('item', item);
-  // };
+  saveChanges = (item) => {
+    console.log('item', item);
+  };
 
-  // onCancel = (item) => {
-  //   console.log('item', item);
-  // };
+  onCancel = (item) => {
+    console.log('item', item);
+  };
 
   render() {
     const { listMenu = [] } = this.props;

@@ -15,7 +15,7 @@ export default {
   'component.onboardingOverview.location': 'Location',
   'component.onboardingOverview.dateSent': 'Date sent',
   'component.onboardingOverview.dateReceived': 'Date received',
-  'component.onboardingOverview.dateJoin': 'Date join',
+  'component.onboardingOverview.dateJoin': 'Date of joining',
   'component.onboardingOverview.comments': 'Comments',
   'component.onboardingOverview.actions': 'Actions',
   'component.onboardingOverview.viewDraft': 'View Draft',
@@ -28,6 +28,7 @@ export default {
   'component.onboardingOverview.sendOffer': 'send offer',
   'component.onboardingOverview.sendForApproval': 'send for approval',
   'component.onboardingOverview.createProfile': 'send for approval',
+  'component.onboardingOverview.noData': 'No data',
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
   'component.onboardingOverview.addTeamMember': 'Add Team Member',
@@ -69,4 +70,24 @@ export default {
   'component.optionalOnboardingQuestions.sectionName': `Section name`,
   'component.optionalOnboardingQuestions.fieldName': `Field name`,
   'component.optionalOnboardingQuestions.saveOrdering': `Save ordering`,
+  // Settings custom emails
+  'component.emailReminderNote.title': 'Note',
+  'component.emailReminderNote.note1':
+    'Custom Email messages are a great way to recognize important dates and milestones.',
+  'component.emailReminderNote.note2':
+    'For example, you can remind managers of their team members’ start dates or create reminders for events, like license renewals or 30 day check-ins. ',
+  'component.emailReminderNote.note3':
+    'You can use the Auto Text feature to generate personalized emails from a template.',
+  'component.emailReminderHeader.title': 'Create a custom email reminder',
+  'component.emailReminderForm.title': 'Create a custom email reminder',
+  'component.emailReminderForm.triggerNote': 'You can add additional events with',
+  'component.emailReminderForm.triggerNoteLink': 'Custom fields',
+  'component.emailReminderForm.addCondition': '+ Add another condition',
+  'component.emailReminderForm.cancel': 'Cancel',
+  'component.emailReminderForm.submit': 'Submit',
+  'component.customEmailsTableField.viewEmail': 'View email',
+  'component.customEmailsTableField.title': 'Custom emails',
+  'component.customEmailsTableField.description':
+    'Cras gravida bibendum dolor eu varius. Morbi fermentum velit nisl, eget vehicula lorem sodales eget. Donec quis volutpat orci. Sed ipsum felis, tristique id egestas et, convallis ac velit.',
+  'component.customEmailsTableField.titleTable': 'Custom emails created',
 };

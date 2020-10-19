@@ -39,6 +39,7 @@ class VisaGeneral extends Component {
       dropdownCountry: false,
       dropdownType: false,
       listItem: [{}],
+      checkValidate: [{}],
     };
     // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
@@ -103,42 +104,11 @@ class VisaGeneral extends Component {
     });
   };
 
-  handleGetUpLoad = (index, resp, documentVisa) => {
-    const { dispatch, idCurrentEmployee } = this.props;
+  handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
-    if (documentVisa) {
-      const dataVisa = { id: documentVisa._id, attachment: first.id, key: `Visa${index + 1}` };
-      dispatch({
-        type: 'employeeProfile/fetchDocumentUpdate',
-        payload: dataVisa,
-      });
-      const value = { id: documentVisa._id, url: first.url };
-      this.handleFieldChange(index, 'urlFile', value);
-    } else {
-      dispatch({
-        type: 'employeeProfile/fetchDocumentAdd',
-        payload: {
-          key: `Visa${index + 1}`,
-          attachment: first.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
-          employee: idCurrentEmployee,
-        },
-      }).then((id) => this.handleUpdate(id, index));
-    }
-  };
-
-  handleUpdate = (id, index) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeProfile/fetchDocumentUpdate',
-      payload: { id },
-    }).then((doc) => {
-      const { _id, attachment: { url } = {} } = doc;
-      const value = { id: _id, url };
-      this.handleFieldChange(index, 'urlFile', value);
-    });
+    const value = { id: first.id, url: first.url };
+    this.handleFieldChange(index, 'urlFile', value);
   };
 
   handleNameDataUpload = (url) => {
@@ -147,9 +117,42 @@ class VisaGeneral extends Component {
     return nameData1URL;
   };
 
+  handleGetSetSizeImage = (index, isLt5M) => {
+    const { checkValidate } = this.state;
+    const item = checkValidate[index];
+    const newItem = { ...item, isLt5M };
+    const newList = [...checkValidate];
+    newList.splice(index, 1, newItem);
+    this.setState({ checkValidate: newList });
+  };
+
+  handleShowContent = (index, checkValidate) => {
+    const { setConfirmContent = () => {} } = this.props;
+    const setContent = checkValidate[index];
+    setConfirmContent(setContent);
+    if (setContent) {
+      if (setContent.isLt5M === false) {
+        return 'Retry';
+      }
+      return 'Choose file';
+    }
+    return 'Choose file';
+  };
+
+  handleSetClass = (index, checkValidate, form, formValidate) => {
+    const setClass = checkValidate[index];
+    if (setClass) {
+      if (setClass.isLt5M === false) {
+        return formValidate;
+      }
+      return form;
+    }
+    return form;
+  };
+
   render() {
     const { Option } = Select;
-    const { dropdownCountry, dropdownType, dropdownEntry, listItem } = this.state;
+    const { dropdownCountry, dropdownType, dropdownEntry, listItem, checkValidate } = this.state;
     const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
@@ -182,7 +185,12 @@ class VisaGeneral extends Component {
                     >
                       <Input
                         defaultValue={item.name}
-                        className={styles.inputForm}
+                        className={this.handleSetClass(
+                          index,
+                          checkValidate,
+                          styles.inputForm,
+                          styles.inputFormImageValidate,
+                        )}
                         onChange={(event) => {
                           const { value: fieldValue } = event.target;
                           this.handleFieldChange(index, 'visaNumber', fieldValue);
@@ -192,9 +200,11 @@ class VisaGeneral extends Component {
                     {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
                       <div className={styles.textUpload}>
                         <UploadImage
-                          content="Choose file"
+                          content={this.handleShowContent(index, checkValidate)}
                           name={`visa${index}`}
+                          setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                          loading={loading}
                         />
                       </div>
                     ) : (
@@ -322,6 +332,7 @@ class VisaGeneral extends Component {
                   <div className={styles.line} />
                   <div className={styles.styleUpLoad}>
                     <Form.Item
+                      initialValue={item.visaNumber}
                       label="Visa Number"
                       name={`visaNumber${index + 1}`}
                       rules={[
@@ -334,8 +345,13 @@ class VisaGeneral extends Component {
                       ]}
                     >
                       <Input
-                        defaultValue={item.visaNumber}
-                        className={styles.inputForm}
+                        // defaultValue={item.visaNumber}
+                        className={this.handleSetClass(
+                          index,
+                          checkValidate,
+                          styles.inputForm,
+                          styles.inputFormImageValidate,
+                        )}
                         onChange={(event) => {
                           const { value: fieldValue } = event.target;
                           this.handleFieldChange(index, 'visaNumber', fieldValue);
@@ -345,7 +361,8 @@ class VisaGeneral extends Component {
                     {!item.urlFile ? (
                       <div className={styles.textUpload}>
                         <UploadImage
-                          content="Choose file"
+                          content={this.handleShowContent(index, checkValidate)}
+                          setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
                           getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
                           loading={loading}
                         />
@@ -384,9 +401,13 @@ class VisaGeneral extends Component {
                   ) : (
                     ''
                   )}
-                  <Form.Item label="Visa Type" name={`visaType${index + 1}`}>
+                  <Form.Item
+                    label="Visa Type"
+                    name={`visaType${index + 1}`}
+                    initialValue={item.visaType}
+                  >
                     <Select
-                      defaultValue={item.visaType}
+                      // defaultValue={item.visaType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
@@ -404,9 +425,13 @@ class VisaGeneral extends Component {
                       <Option value="nothing">nothing...</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Country" name={`visaIssuedCountry${index + 1}`}>
+                  <Form.Item
+                    label="Country"
+                    name={`visaIssuedCountry${index + 1}`}
+                    initialValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
+                  >
                     <Select
-                      defaultValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
+                      // defaultValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) =>
                         this.handleDropdown('visaIssuedCountry', open)
@@ -431,9 +456,13 @@ class VisaGeneral extends Component {
                       })}
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Entry Type" name={`visaEntryType${index + 1}`}>
+                  <Form.Item
+                    label="Entry Type"
+                    name={`visaEntryType${index + 1}`}
+                    initialValue={item.visaEntryType}
+                  >
                     <Select
-                      defaultValue={item.visaEntryType}
+                      // defaultValue={item.visaEntryType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaEntryType', open)}
                       onChange={(value) => {
@@ -451,9 +480,13 @@ class VisaGeneral extends Component {
                       <Option value="nothing">nothing....</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item label="Issued On" name={`visaIssuedOn${index + 1}`}>
+                  <Form.Item
+                    label="Issued On"
+                    name={`visaIssuedOn${index + 1}`}
+                    initialValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
+                  >
                     <DatePicker
-                      defaultValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
+                      // defaultValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaIssuedOn', dates);
@@ -461,9 +494,13 @@ class VisaGeneral extends Component {
                       className={styles.dateForm}
                     />
                   </Form.Item>
-                  <Form.Item label="Valid Till" name={`visaValidTill${index + 1}`}>
+                  <Form.Item
+                    label="Valid Till"
+                    name={`visaValidTill${index + 1}`}
+                    initialValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
+                  >
                     <DatePicker
-                      defaultValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
+                      // defaultValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaValidTill', dates);
