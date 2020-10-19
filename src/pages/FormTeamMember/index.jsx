@@ -21,7 +21,7 @@ import Payroll from './components/Payroll';
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '' } = {} },
+      match: { params: { action = '', reId } = {} },
       dispatch,
       candidateInfo,
     } = this.props;
