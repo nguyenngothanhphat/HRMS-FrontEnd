@@ -46,6 +46,7 @@ class InformationUploadForm extends PureComponent {
       documentType: '',
       identityType: '',
       checkEmployeeExists: false,
+      hasTyped: false,
     };
     this.typingTimeoutRef = React.createRef(null);
   }
@@ -78,6 +79,9 @@ class InformationUploadForm extends PureComponent {
   };
 
   getEmployeeDetail = (value) => {
+    this.setState({
+      hasTyped: true,
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/clearEmployeeDetail',
@@ -246,7 +250,7 @@ class InformationUploadForm extends PureComponent {
   };
 
   render() {
-    const { documentGroup = '', documentType = '', identityType = '' } = this.state;
+    const { documentGroup, documentType, identityType, checkEmployeeExists, hasTyped } = this.state;
     const {
       documentsManagement: { employeeDetail: { firstName = '', lastName = '' } = '' },
     } = this.props;
@@ -268,7 +272,14 @@ class InformationUploadForm extends PureComponent {
                   },
                 ]}
               >
-                <Input onChange={this.handleInput} />
+                <Input
+                  className={
+                    checkEmployeeExists || !hasTyped
+                      ? styles.employeeExists
+                      : styles.employeeNotExists
+                  }
+                  onChange={this.handleInput}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
