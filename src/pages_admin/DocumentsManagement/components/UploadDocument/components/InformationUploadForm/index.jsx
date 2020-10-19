@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Form, Select, Input, Button, Row, Col, DatePicker } from 'antd';
+import { Form, Select, Input, Button, Row, Col } from 'antd';
 import { connect } from 'umi';
-
+import moment from 'moment';
+import AdhaarCardForm from './components/AdhaarCardForm';
+import VisaForm from './components/VisaForm';
+import PassportForm from './components/PassportForm';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -83,10 +86,98 @@ class InformationUploadForm extends PureComponent {
     });
   };
 
+  addDocument = (fieldsValue, attachmentId, addDoc) => {
+    const { dispatch } = this.props;
+    const { documentType } = this.state;
+    const { documentName = '', documentGroup = '', employeeId = '' } = fieldsValue;
+    const documentData = {
+      key: documentName,
+      employeeGroup: documentType,
+      parentEmployeeGroup: documentGroup,
+      attachment: attachmentId,
+      employee: employeeId,
+    };
+    dispatch({
+      type: 'documentsManagement/uploadDocument',
+      data: documentData,
+    }).then((uploadedDocument) => {
+      const { _id } = uploadedDocument;
+      addDoc(fieldsValue, _id);
+    });
+  };
+
+  addPassport = (fieldsValue, documentId) => {
+    const { dispatch } = this.props;
+    const {
+      country = '',
+      employeeId = '',
+      issuedOn = '',
+      passportNumber = '',
+      validTill = '',
+    } = fieldsValue;
+
+    const formatIssuedOn = moment(issuedOn);
+    const formatValidTill = moment(validTill);
+    // console.log('uploadedDocumentId', documentId);
+    const passportData = {
+      passportNumber,
+      passportIssuedCountry: country,
+      passportIssuedOn: formatIssuedOn,
+      passportValidTill: formatValidTill,
+      employee: employeeId,
+      document: documentId,
+    };
+
+    dispatch({
+      type: 'documentsManagement/addPassport',
+      data: passportData,
+    });
+  };
+
+  addVisa = (fieldsValue, documentId) => {
+    const { dispatch } = this.props;
+    const {
+      employeeId = '',
+      country = '',
+      visaNumber = '',
+      visaType = '',
+      entryType = '',
+      issuedOn = '',
+      validTill = '',
+    } = fieldsValue;
+
+    const formatIssuedOn = moment(issuedOn);
+    const formatValidTill = moment(validTill);
+    // console.log('uploadedDocumentId', documentId);
+    const visaData = {
+      visaNumber,
+      visaIssuedCountry: country,
+      visaIssuedOn: formatIssuedOn,
+      visaValidTill: formatValidTill,
+      visaType,
+      visaEntryType: entryType,
+      document: documentId,
+      employee: employeeId,
+    };
+
+    dispatch({
+      type: 'documentsManagement/addVisa',
+      data: visaData,
+    });
+  };
+
   onFinish = (fieldsValue) => {
-    // const { dispatch } = this.props;
     // eslint-disable-next-line no-console
     console.log('fieldsValue', fieldsValue);
+    const { documentType, identityType } = this.state;
+    const { attachmentId } = this.props;
+    if (documentType !== 'Identity' && attachmentId !== '') {
+      this.addDocument(fieldsValue, attachmentId, () => {});
+    } else if (documentType === 'Identity' && identityType === 'Passport') {
+      this.addDocument(fieldsValue, attachmentId, this.addPassport);
+    } else if (documentType === 'Identity' && identityType === 'Visa') {
+      this.addDocument(fieldsValue, attachmentId, this.addVisa);
+    }
   };
 
   render() {
@@ -194,164 +285,13 @@ class InformationUploadForm extends PureComponent {
                   </Select>
                 </Form.Item>
               </Col>
-              {identityType === 'Adhaar Card' && (
-                <Col span={12}>
-                  <Form.Item
-                    name="adhaarNumber"
-                    label="Adhaar Number"
-                    rules={[
-                      {
-                        required: true,
-                        pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                        message: 'Invalid Adhaar Number',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              )}
+              {identityType === 'Adhaar Card' && <AdhaarCardForm />}
             </Row>
           )}
 
-          {identityType === 'Visa' && (
-            <div>
-              <Row gutter={['20', '20']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="visaNumber"
-                    label="Visa Number"
-                    rules={[
-                      {
-                        required: true,
-                        pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                        message: 'Invalid Visa Number',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="visaType"
-                    label="Visa Type"
-                    rules={[{ required: true, message: 'Please select visa type!' }]}
-                  >
-                    <Select onChange={() => {}}>
-                      <Option value="Type 1">Type 1</Option>
-                      <Option value="Type 2">Type 2</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
+          {identityType === 'Visa' && <VisaForm />}
 
-              <Row gutter={['20', '20']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="country"
-                    label="Country"
-                    rules={[{ required: true, message: 'Please select country!' }]}
-                  >
-                    <Select onChange={() => {}}>
-                      <Option value="US">US</Option>
-                      <Option value="India">India</Option>
-                      <Option value="Vietnam">Vietnam</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="entryType"
-                    label="Entry Type"
-                    rules={[{ required: true, message: 'Please select entry type!' }]}
-                  >
-                    <Select onChange={() => {}}>
-                      <Option value="Type 1">Type 1</Option>
-                      <Option value="Type 2">Type 2</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={['20', '20']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="issuedOn"
-                    label="Issued On"
-                    rules={[{ required: true, message: 'Please select issued time!' }]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="validStill"
-                    label="Valid Still"
-                    rules={[{ required: true, message: 'Please select expired time!' }]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-          )}
-
-          {identityType === 'Passport' && (
-            <div>
-              <Row gutter={['20', '20']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="passportNumber"
-                    label="Passport Number"
-                    rules={[
-                      {
-                        required: true,
-                        pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                        message: 'Invalid Passport Number',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="country"
-                    label="Country"
-                    rules={[{ required: true, message: 'Please select country!' }]}
-                  >
-                    <Select onChange={() => {}}>
-                      <Option value="US">US</Option>
-                      <Option value="India">India</Option>
-                      <Option value="Vietnam">Vietnam</Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={['20', '20']}>
-                <Col span={12}>
-                  <Form.Item
-                    name="issuedOn"
-                    label="Issued On"
-                    rules={[{ required: true, message: 'Please select issued time!' }]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    name="validStill"
-                    label="Valid Still"
-                    rules={[{ required: true, message: 'Please select expired time!' }]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-          )}
+          {identityType === 'Passport' && <PassportForm />}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
