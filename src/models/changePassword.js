@@ -42,7 +42,6 @@ export default {
         notification.success({
           message,
         });
-        history.goBack();
       } catch (errors) {
         dialog(errors);
       }

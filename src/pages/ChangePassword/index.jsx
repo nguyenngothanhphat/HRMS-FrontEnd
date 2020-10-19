@@ -1,7 +1,7 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Form, Input, Button, Col, Row, Affix } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import { CheckCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
@@ -21,22 +21,22 @@ class ChangePassword extends Component {
         loading={loading}
         disabled={!valuePsw || !valueConfirm || valuePsw !== valueConfirm}
       >
-        Change Password
+        {formatMessage({ id: 'page.changePassword' })}
       </Button>
     );
   };
 
-    onFinish = (values) => {
-      const { dispatch } = this.props;
-      const payload = {
-        oldPassword: values.currentPassword,
-        newPassword: values.newPassword
-      }
-      dispatch ({
-        type: 'changePassword/updatePassword', 
-        payload
-      })
+  onFinish = (values) => {
+    const { dispatch } = this.props;
+    const payload = {
+      oldPassword: values.currentPassword,
+      newPassword: values.newPassword,
     };
+    dispatch({
+      type: 'changePassword/updatePassword',
+      payload,
+    });
+  };
 
   processData = (psw) => {
     const { signup = {} } = this.props;
@@ -76,7 +76,9 @@ class ChangePassword extends Component {
             layout="vertical"
             name="basic"
             initialValues={{
-              remember: true,
+              newPassword: '',
+              currentPassword: '',
+              confirmPassword: '',
             }}
             onFinish={this.onFinish}
             requiredMark={false}
@@ -94,7 +96,7 @@ class ChangePassword extends Component {
               <Row className={styles.passwordContainer} gutter={[16, 50]}>
                 <Col xl={12} lg={18}>
                   <Form.Item
-                    label="Current password"
+                    label={formatMessage({ id: 'page.changePassword.currentPassword' })}
                     name="currentPassword"
                     rules={[
                       {
@@ -119,7 +121,7 @@ class ChangePassword extends Component {
               <Row className={styles.passwordContainer} gutter={[16, 50]}>
                 <Col xl={12} lg={18}>
                   <Form.Item
-                    label="New password"
+                    label={formatMessage({ id: 'page.changePassword.newPassword' })}
                     name="newPassword"
                     rules={[
                       {
@@ -141,7 +143,7 @@ class ChangePassword extends Component {
                 </Col>
                 <Col xl={12} lg={18}>
                   <Form.Item
-                    label="Confirm password"
+                    label={formatMessage({ id: 'page.changePassword.confirmPassword' })}
                     name="confirmPassword"
                     rules={[
                       {
