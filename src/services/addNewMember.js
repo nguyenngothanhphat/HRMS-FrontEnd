@@ -54,3 +54,11 @@ export function addCandidate(params) {
     data: params,
   });
 }
+
+export function updateByHR(params) {
+  console.log(params);
+  return request('/api/candidate/update-by-hr', {
+    method: 'POST',
+    data: params,
+  });
+}
