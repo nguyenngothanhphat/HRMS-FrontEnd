@@ -14,6 +14,7 @@ import {
   getEmployeeTypeList,
   getManagerList,
   addCandidate,
+  updateByHR,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -54,14 +55,14 @@ const info = {
         passport: false,
         drivingLicense: false,
         voterCard: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
         telephoneBill: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       educational: {
@@ -70,7 +71,7 @@ const info = {
         graduation: true,
         postGraduate: false,
         phd: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       technicalCertification: {
@@ -82,7 +83,7 @@ const info = {
           paystubs: false,
           form16: false,
           relievingLetter: false,
-          listSelected: [],
+          checkedList: [],
           isChecked: false,
         },
       },
@@ -189,6 +190,7 @@ const info = {
       previewOffer: {},
       benefits: {},
     },
+    dataTest: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -297,7 +299,21 @@ const info = {
       }
     },
 
-    *fetchCandidateInfo({ payload }, { call, put }) {
+    *updateByHR({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(updateByHR, payload);
+        const { statusCode, data } = response;
+        console.log('abc', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { dataTest: data } });
+      } catch (errors) {
+        console.log(errors);
+        dialog(errors);
+      }
+    },
+
+    *fetchCandidateInfo(_, { call, put }) {
       try {
         const response = yield call(getRookieInfo);
         const { data } = response;

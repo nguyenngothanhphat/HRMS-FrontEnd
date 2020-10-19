@@ -34,3 +34,24 @@
     }
   }
 }
+
+.menuWrapper {
+  padding: 10px 0;
+
+  .menuItem {
+    margin-left: 13px;
+    margin-bottom: 0;
+    padding: 12px 14px 12px 16px;
+    display: block;
+    color: @gray;
+    cursor: pointer;
+
+    &.active {
+      background-color: #e9f0ff;
+      color: @blue;
+      font-weight: bold;
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
+    }
+  }
+}

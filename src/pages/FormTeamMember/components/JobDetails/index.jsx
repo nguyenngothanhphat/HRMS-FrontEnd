@@ -83,6 +83,13 @@ class JobDetails extends PureComponent {
           },
         },
       });
+
+      dispatch({
+        type: 'candidateInfo/saveOrigin',
+        payload: {
+          company: _id,
+        },
+      });
       if (!isEmpty(workLocation)) {
         dispatch({
           type: 'candidateInfo/fetchDepartmentList',
@@ -127,7 +134,7 @@ class JobDetails extends PureComponent {
   onClickNext = () => {
     const {
       currentStep,
-      data: { _id },
+      data: { _id, company },
       tempData: { position, employeeType, workLocation, department, title, reportingManager },
     } = this.state;
     const { dispatch } = this.props;
@@ -146,6 +153,7 @@ class JobDetails extends PureComponent {
         department,
         title,
         reportingManager,
+        company,
         candidate: _id,
       },
     });
@@ -166,6 +174,17 @@ class JobDetails extends PureComponent {
     );
   };
 
+  onClickPrev = () => {
+    const { currentStep } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
   _renderBottomBar = () => {
     const { checkMandatory } = this.props;
     const { filledJobDetail } = checkMandatory;
@@ -179,6 +198,13 @@ class JobDetails extends PureComponent {
           <Col span={8}>
             <div className={styles.bottomBar__button}>
               {' '}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
               <Button
                 type="primary"
                 onClick={this.onClickNext}

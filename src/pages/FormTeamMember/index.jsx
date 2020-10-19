@@ -6,13 +6,13 @@ import { connect } from 'umi';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
-import CustomField from './components/CustomField';
+// import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
-import EligibilityDocs from './components/EligibilityDocs';
+import BackgroundCheck from './components/BackgroundCheck';
 import Payroll from './components/Payroll';
-import Additional from './components/Additional';
+// import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
 @connect(({ candidateInfo = {} }) => ({
@@ -21,19 +21,19 @@ import Additional from './components/Additional';
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '', reId = '' } = {} },
+      match: { params: { action = '' } = {} },
       dispatch,
       candidateInfo,
     } = this.props;
-    // console.log(this.props);
+    console.log('test', reId);
     // check action is add or review. If isReview fetch candidate by reID
-    const { data, currentStep } = candidateInfo;
+    const { data } = candidateInfo;
     const { _id } = data;
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchEmployeeById',
         payload: {
-          id: _id,
+          candidate: _id,
         },
       });
       dispatch({
@@ -45,11 +45,6 @@ class FormTeamMember extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchDocumentList',
       });
-      // if (currentStep === 1) {
-      //   dispatch({
-
-      //   })
-      // }
     }
   }
 
@@ -73,35 +68,37 @@ class FormTeamMember extends PureComponent {
         key: 'jobDetails',
         component: <JobDetails locationList={locationList} employeeTypeList={employeeTypeList} />,
       },
+      { id: 3, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
       {
-        id: 3,
-        name: 'Eligibility Documents',
-        key: 'eligibilityDocuments',
-        component: <EligibilityDocs documentList={documentList} />,
+        id: 4,
+        name: 'Background Check',
+        key: 'backgroundCheck',
+        // key: 'eligibilityDocuments',
+        component: <BackgroundCheck documentList={documentList} />,
       },
-      { id: 4, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
-      { id: 5, name: 'Benefits', key: 'benefits', component: <Benefit /> },
-      { id: 6, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
-      { id: 7, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },
-      { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
-      {
-        id: 9,
-        name: 'Additional Options',
-        key: 'additionalOptions',
-        component: <Additional />,
-      },
+      { id: 5, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
+      { id: 6, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },
+      { id: 7, name: 'Benefits', key: 'benefits', component: <Benefit /> },
+      // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
+      // {
+      //   id: 9,
+      //   name: 'Additional Options',
+      //   key: 'additionalOptions',
+      //   component: <Additional />,
+      // },
     ];
 
     const candidateProcess = {
       basicInformation: false,
       jobDetails: false,
-      eligibilityDocuments: false,
-      offerDetails: false,
-      benefits: false,
       salaryStructure: false,
+      backgroundCheck: false,
+      // eligibilityDocuments: false,
+      offerDetails: false,
       payrollSettings: false,
-      customFields: false,
-      additionalOptions: false,
+      benefits: false,
+      // customFields: false,
+      // additionalOptions: false,
     };
 
     const formatListMenu =

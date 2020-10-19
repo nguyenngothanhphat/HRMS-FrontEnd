@@ -8,7 +8,7 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
 const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { APPROVED_FINAL_OFFERS } = TABLE_TYPE;
+const { APPROVED_OFFERS } = TABLE_TYPE;
 
 class ApprovedFinalOffers extends PureComponent {
   render() {
@@ -18,7 +18,7 @@ class ApprovedFinalOffers extends PureComponent {
       <OnboardTable
         list={list}
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
-        type={APPROVED_FINAL_OFFERS}
+        type={APPROVED_OFFERS}
         inTab
         hasCheckbox
       />

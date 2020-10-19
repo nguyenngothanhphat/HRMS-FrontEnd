@@ -1,0 +1,46 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@black: #161c29;
+@gray: #707177;
+
+.salaryStructureContainer {
+  font-family: 'Roboto', sans-serif;
+
+  .salaryStructure {
+    h3 {
+      font-size: 18px;
+      font-weight: bold;
+      color: @black;
+      text-transform: capitalize;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 13px;
+      font-weight: normal;
+      color: @gray;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 709px;
+      height: 517px;
+      object-fit: contain;
+      border-radius: 5px;
+      border: solid 1px #d6dce0;
+      background-color: #ffffff;
+      position: relative;
+      margin-top: 24px;
+
+      p {
+        width: 440px;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%; -50%);
+      }
+    }
+  }
+}

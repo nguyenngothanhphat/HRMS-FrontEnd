@@ -8,6 +8,7 @@ import {
   addCandidate,
   updateByHR,
   getById,
+  submitPhase1,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -26,10 +27,12 @@ const candidateInfo = {
       salaryStatus: 2,
     },
     currentStep: 0,
+    statusCodeToValidate: null,
     tempData: {
       checkStatus: {},
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
+      previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
       employeeTypeList: [],
@@ -45,6 +48,50 @@ const candidateInfo = {
       timeOffPolicy: '',
       hiringAgreements: true,
       companyHandbook: true,
+
+      documentList: [],
+      isSentEmail: false,
+      isMarkAsDone: true,
+      generateLink: '',
+      email: '',
+      identityProof: {
+        aadharCard: true,
+        PAN: true,
+        passport: false,
+        drivingLicense: false,
+        voterCard: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      addressProof: {
+        rentalAgreement: false,
+        electricityBill: false,
+        telephoneBill: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      educational: {
+        sslc: true,
+        diploma: true,
+        graduation: true,
+        postGraduate: false,
+        phd: false,
+        listSelected: [],
+        isChecked: false,
+      },
+      technicalCertification: {
+        name: '',
+        duration: '',
+        poe: {
+          offerLetter: false,
+          appraisalLetter: false,
+          paystubs: false,
+          form16: false,
+          relievingLetter: false,
+          listSelected: [],
+          isChecked: false,
+        },
+      },
     },
     data: {
       fullName: null,
@@ -56,6 +103,7 @@ const candidateInfo = {
       department: null,
       title: null,
       company: null,
+      previousExperience: null,
       processStatus: 'DRAFT',
       noticePeriod: null,
       dateOfJoining: null,
@@ -63,6 +111,8 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      id: '',
+      candidate: '',
       documentChecklistSetting: [
         {
           type: 'A',
@@ -201,7 +251,7 @@ const candidateInfo = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveEligibilityRequirement',
+          type: 'saveTemp',
           payload: { documentList: data },
         });
       } catch (errors) {
@@ -242,10 +292,6 @@ const candidateInfo = {
         const response = yield call(getLocation);
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { tempData: { ...tempData, locationList: data } },
-        // });
         yield put({
           type: 'saveTemp',
           payload: { locationList },
@@ -260,10 +306,6 @@ const candidateInfo = {
         const response = yield call(getEmployeeTypeList);
         const { statusCode, data: employeeTypeList = [] } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { tempData: { ...tempData, employeeTypeList: data } },
-        // });
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
@@ -285,7 +327,6 @@ const candidateInfo = {
           payload: { managerList: data },
         });
       } catch (errors) {
-        console.log(errors);
         dialog(errors);
       }
     },
@@ -305,9 +346,8 @@ const candidateInfo = {
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('update', data);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: data });
+        yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -331,11 +371,27 @@ const candidateInfo = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
+        const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { data: { ...data, id: payload._id } } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
       } catch (error) {
         dialog(error);
       }
+    },
+    *submitPhase1Effect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(submitPhase1, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
 

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import TableManager from './component/TableManager';
+// import Icon from '@ant-design/icons';
+import { Link } from 'umi';
+import addIcon from '@/assets/addTicket.svg';
+import TabContent from './component/tabContent';
 import styles from './index.less';
 
 class ManagerOffBoading extends Component {
@@ -23,13 +26,12 @@ class ManagerOffBoading extends Component {
         name: 'My request',
       },
     ];
-    const activeTitle = (
-      <Row className={styles.titleContainer}>
-        <Col span={4}>Inprogress (00)</Col>
-        <Col span={4}>On-hold (00)</Col>
-        <Col span={4}>Accepted (00)</Col>
-        <Col span={4}>Rejected (00)</Col>
-      </Row>
+
+    const resignationRequest = (
+      <div className={styles.buttonRequest}>
+        <img src={addIcon} alt="" style={{ margin: '5px' }} />
+        <span>Initiate Resignation Request</span>
+      </div>
     );
 
     return (
@@ -38,22 +40,20 @@ class ManagerOffBoading extends Component {
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relationship</p>
-              <div>
-                <span className={styles.textActivity}>View Activity Log</span>
-                <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
-                  (00)
-                </span>
-              </div>
+              <Link to="/employee-offboarding/employee"> Open Employee Request </Link>
             </div>
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
             <Col span={24}>
-              <Tabs defaultActiveKey="1" className={styles.tabComponent}>
+              <Tabs
+                defaultActiveKey="1"
+                className={styles.tabComponent}
+                tabBarExtraContent={resignationRequest}
+              >
                 {data.map((tab) => (
                   <TabPane tab={tab.name} key={tab.id}>
-                    {activeTitle}
                     <div className={styles.tableTab}>
-                      <TableManager />
+                      <TabContent />
                     </div>
                   </TabPane>
                 ))}

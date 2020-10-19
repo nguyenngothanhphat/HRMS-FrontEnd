@@ -49,9 +49,11 @@ class DirectoryTable extends Component {
         render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
         align: 'left',
         sorter: (a, b) =>
-          `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
-            `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
-          ),
+          a.generalInfo && a.generalInfo.firstName
+            ? `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
+                `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
+              )
+            : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
         width: '18%',
