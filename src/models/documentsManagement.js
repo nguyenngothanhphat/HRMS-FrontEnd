@@ -122,7 +122,7 @@ const documentsManagement = {
         // console.log('added visa', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedVisa } });
-        notification.success({ message: 'Add Visa document successfully' });
+        notification.success({ message: 'Add Visa document successfully! Refreshing page...' });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -153,7 +153,7 @@ const documentsManagement = {
         // console.log('added passport', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedPassport } });
-        notification.success({ message: 'Add Passport document successfully' });
+        notification.success({ message: 'Add Passport document successfully! Refreshing page...' });
         return statusCode;
       } catch (errors) {
         dialog(errors);

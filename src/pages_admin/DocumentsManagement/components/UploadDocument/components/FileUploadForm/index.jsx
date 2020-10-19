@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react';
 import { Upload, message, Button, Spin } from 'antd';
 import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
+import PDFIcon from '@/assets/pdf_icon.png';
+import ImageIcon from '@/assets/image_icon.png';
+
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -15,6 +18,23 @@ class FileUploadForm extends PureComponent {
       fileName: '',
     };
   }
+
+  identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      default:
+        return 0;
+    }
+  };
 
   handlePreview = (fileName) => {
     this.setState({
@@ -70,6 +90,13 @@ class FileUploadForm extends PureComponent {
         >
           {fileName !== '' ? (
             <div className={styles.fileUploadedContainer}>
+              <p className={styles.previewIcon}>
+                {this.identifyImageOrPdf(fileName) === 1 ? (
+                  <img src={PDFIcon} alt="pdf" />
+                ) : (
+                  <img src={ImageIcon} alt="img" />
+                )}
+              </p>
               <p className={styles.fileName}>
                 Uploaded: <a>{fileName}</a>
               </p>

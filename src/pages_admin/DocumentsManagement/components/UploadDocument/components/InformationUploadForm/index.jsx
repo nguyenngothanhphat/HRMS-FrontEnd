@@ -121,6 +121,17 @@ class InformationUploadForm extends PureComponent {
     });
   };
 
+  refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 3000);
+  };
+
+  addDocumentSuccessfully = () => {
+    notification.success({ message: 'Add document successfully! Refreshing page...' });
+    this.refreshPage();
+  };
+
   addPassport = (fieldsValue, documentId) => {
     const { dispatch, employeeDetail: { employee = '' } = {} } = this.props;
     const { country = '', issuedOn = '', passportNumber = '', validTill = '' } = fieldsValue;
@@ -146,6 +157,8 @@ class InformationUploadForm extends PureComponent {
           type: 'documentsManagement/deleteDocument',
           id: documentId,
         });
+      } else {
+        this.refreshPage();
       }
     });
   };
@@ -187,6 +200,8 @@ class InformationUploadForm extends PureComponent {
           type: 'documentsManagement/deleteDocument',
           id: documentId,
         });
+      } else {
+        this.refreshPage();
       }
     });
   };
@@ -220,7 +235,7 @@ class InformationUploadForm extends PureComponent {
     } else if (!checkEmployeeExists) {
       notification.error({ message: 'Employee does not exists!' });
     } else if (documentType !== 'Identity') {
-      this.addDocument(fieldsValue, attachmentId, () => {});
+      this.addDocument(fieldsValue, attachmentId, this.addDocumentSuccessfully);
     } else if (documentType === 'Identity' && identityType === 'Passport') {
       this.addDocument(fieldsValue, attachmentId, this.addPassport);
     } else if (documentType === 'Identity' && identityType === 'Visa') {
