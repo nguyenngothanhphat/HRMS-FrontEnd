@@ -35,6 +35,13 @@ export async function getJobTitleList(payload) {
   });
 }
 
+export async function getReportingManagerList(params) {
+  return request('/api/employee/list-active', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export async function addEmployee(payload) {
   return request('/api/user/add-employee', {
     method: 'POST',

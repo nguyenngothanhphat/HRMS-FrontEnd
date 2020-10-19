@@ -6,6 +6,7 @@ import {
   getLocationList,
   getDepartmentList,
   getJobTitleList,
+  getReportingManagerList,
   addEmployee,
 } from '../services/employeesManagement';
 
@@ -18,6 +19,7 @@ const employeesManagement = {
     locationList: [],
     departmentList: [],
     jobTitleList: [],
+    reportingManagerList: [],
   },
   effects: {
     *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
@@ -54,9 +56,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchLocationList(_, { call, put }) {
+    *fetchLocationList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getLocationList);
+        const response = yield call(getLocationList, company);
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList } });
@@ -64,9 +66,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchDepartmentList(_, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList);
+        const response = yield call(getDepartmentList, company);
         const { statusCode, data: departmentList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList } });
@@ -74,12 +76,23 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchJobTitleList(_, { call, put }) {
+    *fetchJobTitleList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getJobTitleList);
+        const response = yield call(getJobTitleList, company);
         const { statusCode, data: jobTitleList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { jobTitleList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchReportingManagerList({ payload = {} }, { call, put }) {
+      console.log(payload);
+      try {
+        const response = yield call(getReportingManagerList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { managerList: data } });
       } catch (errors) {
         dialog(errors);
       }
