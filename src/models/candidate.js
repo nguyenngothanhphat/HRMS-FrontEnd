@@ -1,7 +1,11 @@
+import { getDocumentByCandidate } from '@/services/candidate';
+import { dialog } from '@/utils/utils';
+
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
     currentStep: 1,
+    tempData: {},
     basicInformation: {
       fullName: '',
       privateEmail: '',
@@ -69,11 +73,33 @@ const candidateProfile = {
       salaryStatus: 2,
     },
   },
+  effect: {
+    *fetchDocListsByCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDocumentByCandidate, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: data });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+  },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
       };
     },
   },

@@ -6,3 +6,10 @@ export function getCandidate(payload) {
     data: payload,
   });
 }
+
+export function getDocumentByCandidate(payload) {
+  return request('/api/document/get-by-candidate', {
+    method: 'POST',
+    data: payload,
+  });
+}
