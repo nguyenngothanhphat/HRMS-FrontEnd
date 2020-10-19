@@ -7,16 +7,18 @@ import { CheckCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
-  loading: loading.effects['changePassword/resetPassword'],
+  loading: loading.effects['changePassword/updatePassword'],
 }))
 class ChangePassword extends Component {
   _renderButton = (getFieldValue) => {
+    const { loading } = this.props;
     const valuePsw = getFieldValue('newPassword');
     const valueConfirm = getFieldValue('confirmPassword');
     return (
       <Button
         type="primary"
         htmlType="submit"
+        loading={loading}
         disabled={!valuePsw || !valueConfirm || valuePsw !== valueConfirm}
       >
         Change Password
@@ -24,10 +26,17 @@ class ChangePassword extends Component {
     );
   };
 
-  //   onFinish = (values) => {
-  //     console.log('values', values);
-
-  //   };
+    onFinish = (values) => {
+      const { dispatch } = this.props;
+      const payload = {
+        oldPassword: values.currentPassword,
+        newPassword: values.newPassword
+      }
+      dispatch ({
+        type: 'changePassword/updatePassword', 
+        payload
+      })
+    };
 
   processData = (psw) => {
     const { signup = {} } = this.props;
