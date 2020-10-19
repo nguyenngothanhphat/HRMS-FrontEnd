@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 
-import { Radio, Select, Checkbox, Form } from 'antd';
+import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
 import { currencyArr, timeoffArr, fileArr } from './mockData';
@@ -16,69 +16,102 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, offerDetail } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
   const [form] = Form.useForm();
-  // Get default value from "info" store
+  // Get default value from "candidateInfo" store
   const {
+    compensationType: compensationProp,
+    amountIn: currencyProp,
+    timeOffPolicy: timeoffProp,
+    hiringAgreements: agreementProp,
+    companyHandbook: handbookProp,
+    template: templateProp,
     includeOffer: includeOfferProp,
-    file: fileProp,
-    // agreement: agreementProp,
-    // handbook: handbookProp,
-    currency: currencyProp,
-    timeoff: timeoffProp,
-    compensation: compensationProp,
-  } = offerDetail;
+  } = tempData;
 
   // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
-  const [file, setFile] = useState(fileProp);
-  const [agreement, setAgreement] = useState(true);
-  const [handbook, setHandbook] = useState(true);
+  const [file, setFile] = useState(templateProp || '');
+  const [agreement, setAgreement] = useState(agreementProp);
+  const [handbook, setHandbook] = useState(handbookProp);
   // const [compensation, setCompensation] = useState(compensationProp);
   // const [currency, setCurrency] = useState(currencyProp);
   // const [timeoff, setTimeoff] = useState(timeoffProp);
   // const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
-  // Trigger dispatch save changes to "info" store
-  // useEffect(() => {
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'info/save',
-  //       payload: {
-  //         offerDetail: {
-  //           ...offerDetail,
-  //           includeOffer,
-  //           file,
-  //           agreement,
-  //           handbook,
-  //           currency,
-  //           compensation,
-  //           timeoff,
-  //         },
-  //       },
-  //     });
-  //   }
-  // }, [includeOffer, file, agreement, handbook, compensation, currency, timeoff]);
+  const checkAllFieldsValid = (allFieldsValues) => {
+    const keys = Object.keys(allFieldsValues);
+    let valid = true;
+    keys.map((key) => {
+      const value = allFieldsValues[key];
+      if (value === null || value === undefined || value.length === 0) {
+        valid = false;
+      }
+      return null;
+    });
+
+    setAllFieldsFilled(valid);
+
+    if (dispatch) {
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          checkMandatory: {
+            ...checkMandatory,
+            filledOfferDetail: valid,
+          },
+        },
+      });
+    }
+    return valid;
+  };
+
+  const handleFormChange = (changedValues, allFieldsValues) => {
+    const { includeOffer, compensation, currency, timeoff } = allFieldsValues;
+
+    if (timeoff === 'can not') {
+      setDisplayTimeoffAlert(true);
+    } else {
+      setDisplayTimeoffAlert(false);
+    }
+
+    checkAllFieldsValid(allFieldsValues);
+
+    if (!dispatch) {
+      return;
+    }
+
+    const { _id = '' } = data;
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          includeOffer,
+          compensationType: compensation,
+          amountIn: currency,
+          timeOffPolicy: timeoff,
+          hiringAgreements: agreement,
+          companyHandbook: handbook,
+          template: file,
+          candidate: _id,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const formValues = form.getFieldsValue();
-    console.log(formValues);
-    // console.log(form.getFieldValue('agreement'));
+    checkAllFieldsValid({ ...formValues, agreement, handbook });
   }, []);
 
-  const handleRadio = (e) => {
-    const { value } = e.target;
-    // setIncludeOffer(value);
-  };
-
-  const handleTimeoffChange = (value) => {
-    // if (value === 'can not') {
-    //   setDisplayTimeoffAlert(true);
-    // } else {
-    //   setDisplayTimeoffAlert(false);
-    // }
-    // setTimeoff(value);
-  };
+  useEffect(() => {
+    const allFormValues = form.getFieldsValue();
+    handleFormChange(null, allFormValues);
+    checkAllFieldsValid(allFormValues);
+  }, [file, agreement, handbook]);
 
   const handleFileChange = (value) => {
     setFile(value);
@@ -92,40 +125,87 @@ const OfferDetail = (props) => {
     setHandbook((prevState) => !prevState);
   };
 
-  const handleCurrencyChange = (value) => {
-    // setCurrency(value);
+  const onClickNext = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    const { _id = '' } = data;
+    const formValues = form.getFieldsValue();
+    const { compensation, currency, timeoff } = formValues;
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        compensationType: compensation,
+        amountIn: currency,
+        timeOffPolicy: timeoff,
+        hiringAgreements: agreement,
+        companyHandbook: handbook,
+        candidate: _id,
+      },
+    });
   };
 
-  const handleCompensationChange = (value) => {
-    // setCompensation(value);
+  const _renderStatus = () => {
+    return !allFieldsFilled ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  const _renderBottomBar = () => {
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{_renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                onClick={onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !allFieldsFilled ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!allFieldsFilled}
+              >
+                Proceed
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   return (
     <Form
       form={form}
       initialValues={{
-        includeOffer: false,
-        agreement: true,
-        compensation: 'salary2',
-        handbook: true,
-        currency: 'dollar',
-        timeoff: 'can',
+        includeOffer: includeOfferProp,
+        agreement: agreementProp,
+        compensation: compensationProp,
+        handbook: handbookProp,
+        currency: currencyProp,
+        timeoff: timeoffProp,
       }}
-      // onFieldsChange={(changedFields, allFields) => {
-      //   console.log(changedFields);
-      //   console.log(allFields);
-      // }}
-      onValuesChange={(changedValues, allFieldsValues) => {
-        console.log(changedValues);
-        console.log(allFieldsValues);
-
-        const { timeoff } = allFieldsValues;
-        if (timeoff === 'can not') {
-          setDisplayTimeoffAlert(true);
-        } else {
-          setDisplayTimeoffAlert(false);
-        }
-      }}
+      onValuesChange={handleFormChange}
     >
       <div className={styles.offerDetailContainer}>
         <div className={styles.offerDetail}>
@@ -141,10 +221,7 @@ const OfferDetail = (props) => {
             <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
 
             <Form.Item name="includeOffer">
-              <Radio.Group
-                // onChange={handleRadio}
-                className={styles.radioGroup}
-              >
+              <Radio.Group className={styles.radioGroup}>
                 <Radio value={false}>
                   {formatMessage({ id: 'component.offerDetail.notInclude' })}
                 </Radio>
@@ -185,7 +262,6 @@ const OfferDetail = (props) => {
               {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
             </p>
 
-            {/* <Form.Item name="agreement"> */}
             <Checkbox
               className="checkbox"
               checked={agreement}
@@ -193,16 +269,14 @@ const OfferDetail = (props) => {
             >
               {formatMessage({ id: 'component.offerDetail.agreement' })}
             </Checkbox>
-            {/* </Form.Item> */}
 
             <p className={styles.handbook}>
               {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
             </p>
-            {/* <Form.Item name="handbook"> */}
+
             <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
               {formatMessage({ id: 'component.offerDetail.handbook' })}
             </Checkbox>
-            {/* </Form.Item> */}
 
             <div className={styles.wrapper2}>
               <div className={styles.compensationWrapper}>
@@ -248,10 +322,7 @@ const OfferDetail = (props) => {
                 </p>
 
                 <Form.Item name="timeoff">
-                  <Select
-                    // value={timeoff}
-                    className={styles.select}
-                  >
+                  <Select className={styles.select}>
                     {timeoffArr.map(({ name, value }, index) => (
                       <Option value={value} key={index}>
                         {name}
@@ -266,6 +337,8 @@ const OfferDetail = (props) => {
               </Alert>
             </div>
           </div>
+
+          {_renderBottomBar()}
         </div>
 
         <div className={styles.rightCol}>
@@ -277,6 +350,14 @@ const OfferDetail = (props) => {
   );
 };
 
-export default connect(({ info: { offerDetail = {} } = {} }) => ({
-  offerDetail,
-}))(OfferDetail);
+// export default connect(({ info: { offerDetail = {} } = {} }) => ({
+//   offerDetail,
+// }))(OfferDetail);
+export default connect(
+  ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+    data,
+    checkMandatory,
+    currentStep,
+    tempData,
+  }),
+)(OfferDetail);

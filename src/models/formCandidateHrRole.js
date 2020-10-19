@@ -22,6 +22,7 @@ const candidateInfo = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
+      filledOfferDetail: false,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -36,6 +37,14 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      // Offer details
+      template: 'Template.docx',
+      includeOffer: false,
+      compensationType: '',
+      amountIn: '',
+      timeOffPolicy: '',
+      hiringAgreements: true,
+      companyHandbook: true,
     },
     data: {
       fullName: null,
