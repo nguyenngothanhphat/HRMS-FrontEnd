@@ -78,10 +78,11 @@ class CreateFieldSection extends PureComponent {
     await dispatch({
       type: 'custormField/addSection',
       payload: data,
+    }).then((resp) => {
+      if (resp === 'Add item successfully') {
+        history.push('/employee-onboarding/');
+      }
     });
-    setTimeout(() => {
-      history.push('/employee-onboarding/');
-    }, 1500);
   };
 
   handClickCancel = () => {

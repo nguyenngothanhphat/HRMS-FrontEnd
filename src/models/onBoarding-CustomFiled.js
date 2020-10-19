@@ -23,6 +23,7 @@ const custormField = {
       }
     },
     *addSection({ payload: { name = '', filters = [], settings = {} } = {} }, { call, put }) {
+      let getMesg = '';
       try {
         const response = yield call(addNewSection, { name, filters, settings });
         const { statusCode, message } = response;
@@ -32,9 +33,11 @@ const custormField = {
         });
         if (statusCode !== 200) throw response;
         yield put({ type: 'fetchSection' });
+        getMesg = message;
       } catch (errors) {
         dialog(errors);
       }
+      return getMesg;
     },
     *addSectionField(
       {

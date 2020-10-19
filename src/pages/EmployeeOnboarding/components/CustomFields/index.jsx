@@ -81,44 +81,25 @@ class CustomFields extends PureComponent {
         },
       },
     ];
-    const { loadingCustom = false } = this.props;
-    const data = [
-      {
-        key: '1',
-        sectionName: 'n/a',
-        fieldName: 'Inside sales_ commission plan',
-      },
-      {
-        key: '2',
-        sectionName: 'n/a',
-        fieldName: 'Additional Information',
-      },
-      {
-        key: '1',
-        sectionName: 'a',
-        fieldName: 'Inside sales_ commission plan',
-      },
-      {
-        key: '2',
-        sectionName: 'a',
-        fieldName: 'Additional Information',
-      },
-    ];
+    const { loadingCustom = false, section } = this.props;
 
-    // const formatData = section.map((item) => {
-    //   return [
-    //     {
-    //       key: '1',
-    //       sectionName: item.name,
-    //       fieldName: 'Inside sales_ commission plan',
-    //     },
-    //     {
-    //       key: '2',
-    //       sectionName: item.name,
-    //       fieldName: 'Additional Information',
-    //     },
-    //   ];
-    // });
+    const formatData = section.map((item, index) => {
+      return [
+        {
+          key: index * 2 + 1,
+          sectionName: item.name,
+          fieldName: 'Inside sales_ commission plan',
+        },
+        {
+          key: index * 2 + 2,
+          sectionName: item.name,
+          fieldName: 'Additional Information',
+        },
+      ];
+    });
+
+    // const mergedData = [].concat.apply([], formatData);
+    const mergedData = formatData.flat(1);
 
     if (loadingCustom)
       return (
@@ -154,7 +135,7 @@ class CustomFields extends PureComponent {
             {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.customSections&Fields' })}
           </p>
           <div className={styles.CustomFieldsBot}>
-            <Table columns={columns} dataSource={data} pagination={false} size="small" />
+            <Table columns={columns} dataSource={mergedData} pagination={false} size="small" />
           </div>
         </div>
       </div>
