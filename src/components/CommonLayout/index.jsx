@@ -23,9 +23,17 @@ class CommonLayout extends PureComponent {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep } = props;
+    // const selectedItemId = listMenu[currentStep]
+    if (currentStep !== null) {
+      return {
+        selectedItemId: listMenu[currentStep].id,
+        displayComponent: listMenu[currentStep].component,
+      };
+    }
+
     return {
-      selectedItemId: listMenu[currentStep].id,
-      displayComponent: listMenu[currentStep].component,
+      selectedItemId: '',
+      displayComponent: <PreviewOffer />,
     };
   }
 

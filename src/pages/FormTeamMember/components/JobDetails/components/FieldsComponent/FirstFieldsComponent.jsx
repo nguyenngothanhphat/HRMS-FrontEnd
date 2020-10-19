@@ -22,8 +22,6 @@ class FirstFieldsComponent extends PureComponent {
       workLocation,
       reportingManager,
     } = this.props;
-    console.log('abc', dropdownField);
-    if (managerList.length > 0) console.log('managerList', managerList);
     return (
       <>
         <div>

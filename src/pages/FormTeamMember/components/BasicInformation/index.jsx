@@ -242,7 +242,7 @@ class BasicInformation extends PureComponent {
               <Button
                 type="primary"
                 htmlType="submit"
-                onClick={this.onClickNext}
+                // onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${
                   !filledBasicInformation ? styles.bottomBar__button__disabled : ''
                 }`}

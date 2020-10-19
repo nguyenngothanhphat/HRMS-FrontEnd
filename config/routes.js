@@ -126,6 +126,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/companies/add-company',
+            name: 'addCompany',
+            hideInMenu: true,
+            component: '../pages_admin/CompaniesManagement/components/AddCompany',
+            authority: ['admin'],
+          },
+          {
             path: '/companies/company-detail/:reId',
             name: 'companyDetail',
             component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
@@ -150,7 +157,7 @@ const routes = [
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/Setting',
             authority: ['admin-sa'],
           },
           {
@@ -158,6 +165,13 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/directory.svg',
             component: './Directory',
+            authority: ['customer'],
+          },
+          {
+            path: '/time-off',
+            name: 'timeOff',
+            icon: '/assets/images/timeOff.svg',
+            component: './TimeOff',
             authority: ['customer'],
           },
           {
@@ -175,11 +189,50 @@ const routes = [
             authority: ['customer'],
           },
           {
+            path: '/employee-onboarding/CreateFieldSection',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateFieldSection',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-onboarding/CreateNewField',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateNewField',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
             path: '/employee-offboarding',
             name: 'employeeOffBoarding',
             icon: 'file-image',
-            component: './OffBoarding',
+            component: './OffBoarding/ManagerOffBoarding',
             authority: ['customer'],
+          },
+          {
+            path: '/employee-offboarding/employee',
+            name: 'EmployeeOffBoarding',
+            hideInMenu: true,
+            component: './OffBoarding/EmployeeOffBoarding',
+          },
+          {
+            path: '/employee-offboarding/resignation-request',
+            name: 'ResignationRequest',
+            hideInMenu: true,
+            component: './ResignationRequest',
+          },
+          {
+            path: '/employee-offboarding/:ticketId',
+            name: 'ticketId',
+            component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/directory/employee-profile/:reId',
+            name: 'employeeProfile',
+            component: './EmployeeProfile',
+            hideInMenu: true,
           },
           {
             path: '/employee-offboarding/resignation-request',
@@ -214,7 +267,12 @@ const routes = [
             component: './FormTeamMember',
             authority: ['customer'],
           },
-
+          {
+            path: '/employee-onboarding/create-email-reminder',
+            name: 'Create Email Reminder',
+            hideInMenu: true,
+            component: './EmailReminder',
+          },
           {
             path: '/template-details/:templateId',
             name: 'templateDetails',

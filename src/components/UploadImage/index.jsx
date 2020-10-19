@@ -47,7 +47,7 @@ class UploadImage extends Component {
     const { check } = this.state;
     const { content = 'Your content', loading = false } = this.props;
     if (loading) {
-      return <Spin loading={loading} active />;
+      return <Spin loading={loading} active="true" />;
     }
     const props = {
       name: 'file',
