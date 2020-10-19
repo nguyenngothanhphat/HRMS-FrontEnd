@@ -175,6 +175,17 @@ class JobDetails extends PureComponent {
     );
   };
 
+  onClickPrev = () => {
+    const { currentStep } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
   _renderBottomBar = () => {
     const { checkMandatory } = this.props;
     const { filledJobDetail } = checkMandatory;
@@ -188,6 +199,13 @@ class JobDetails extends PureComponent {
           <Col span={8}>
             <div className={styles.bottomBar__button}>
               {' '}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
               <Button
                 type="primary"
                 onClick={this.onClickNext}

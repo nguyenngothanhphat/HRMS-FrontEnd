@@ -78,7 +78,7 @@ class EligibilityDocs extends Component {
         candidate: _id,
       },
     });
-    console.log('data', data);
+
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
@@ -95,6 +95,7 @@ class EligibilityDocs extends Component {
         action: 'submit',
       },
     });
+
     dispatch(
       this.setState({
         openModal: true,
@@ -106,7 +107,7 @@ class EligibilityDocs extends Component {
     const { dispatch } = this.props;
     const value = Object.values(e).find((x) => x);
     dispatch({
-      type: 'candidateInfo/saveTemp',
+      type: 'candidateInfo/saveOrigin',
       payload: {
         privateEmail: value,
       },
@@ -341,7 +342,7 @@ class EligibilityDocs extends Component {
               handleMarkAsDone={this.handleMarkAsDone}
               fullName={fullName}
               handleValueChange={this.handleValueChange}
-              email={privateEmail}
+              privateEmail={privateEmail}
             />
           </Col>
         </Row>
@@ -354,7 +355,7 @@ class EligibilityDocs extends Component {
               isSentEmail={isSentEmail}
               isMarkAsDone={isMarkAsDone}
               tempData={tempData}
-              email={privateEmail}
+              privateEmail={privateEmail}
             />
           }
         />
