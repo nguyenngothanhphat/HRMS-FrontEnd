@@ -9,17 +9,18 @@ import copy from './Assets/copy-office.svg';
 const index = ({
   formatMessage = () => {},
   handleSendEmail = () => {},
-  email = '',
+  privateEmail = '',
   isSentEmail,
   generateLink = '',
   handleMarkAsDone = () => {},
   handleSendFormAgain = () => {},
   fullName = '',
+  handleValueChange = () => {},
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
-  const [initialEmail] = email;
   const [initialGenerateLink] = useState('abc.xyz.com');
+  console.log('initial', privateEmail);
   const handleEmailClick = () => {
     setIsEnable(true);
   };
@@ -90,10 +91,11 @@ const index = ({
           <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
             <div className={style.line} />
             <Form
-              onFinish={(values) => handleSendEmail(values)}
+              onFinish={handleSendEmail}
               layout="vertical"
               className={style.emailForm}
-              initialValues={{ email: email || initialEmail }}
+              initialValues={{ email: privateEmail }}
+              onValuesChange={handleValueChange}
             >
               <Form.Item
                 name="email"

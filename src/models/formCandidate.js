@@ -55,14 +55,14 @@ const info = {
         passport: false,
         drivingLicense: false,
         voterCard: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
         telephoneBill: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       educational: {
@@ -71,7 +71,7 @@ const info = {
         graduation: true,
         postGraduate: false,
         phd: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       technicalCertification: {
@@ -83,7 +83,7 @@ const info = {
           paystubs: false,
           form16: false,
           relievingLetter: false,
-          listSelected: [],
+          checkedList: [],
           isChecked: false,
         },
       },
@@ -313,14 +313,13 @@ const info = {
       }
     },
 
-    *fetchCandidateInfo({ payload }, { call, put }) {
+    *fetchCandidateInfo(_, { call, put }) {
       try {
         const response = yield call(getRookieInfo);
         const { data } = response;
-        const { _id = '' } = data;
-        console.log(response);
-        const rookieId = _id;
-        yield put({ type: 'save', payload: { rookieId } });
+        const { ticketID = '', _id = '' } = data;
+        const rookieId = ticketID;
+        yield put({ type: 'save', payload: { rookieId, _id } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
