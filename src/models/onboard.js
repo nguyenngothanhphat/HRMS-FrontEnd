@@ -627,84 +627,91 @@ const onboard = {
             processStatus: SENT_ELIGIBILITY_FORMS,
           },
         });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RECEIVED_SUBMITTED_DOCUMENTS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ELIGIBLE_CANDIDATES,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: INELIGIBLE_CANDIDATES,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RECEIVED_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: DISCARDED_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PENDING_APPROVALS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: APPROVED_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: REJECT_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS_DRAFTS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: DISCARDED_FINAL_OFFERS,
-          },
-        });
+
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: SENT_ELIGIBILITY_FORMS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: RECEIVED_SUBMITTED_DOCUMENTS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: ELIGIBLE_CANDIDATES,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: INELIGIBLE_CANDIDATES,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: SENT_PROVISIONAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: RECEIVED_PROVISIONAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: DISCARDED_PROVISIONAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: PENDING_APPROVALS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: APPROVED_FINAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: REJECT_FINAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: SENT_FINAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: ACCEPTED_FINAL_OFFERS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: FINAL_OFFERS_DRAFTS,
+        //   },
+        // });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: DISCARDED_FINAL_OFFERS,
+        //   },
+        // });
       } catch (error) {
         dialog(error);
       }
