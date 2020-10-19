@@ -29,16 +29,16 @@ class OrganChart extends PureComponent {
         {
           name: 'Anil Reddy',
           position: 'Sales',
-          // children: [
-          //   {
-          //     name: 'Peter Gibbons',
-          //     position: 'Sales 1',
-          //   },
-          //   {
-          //     name: 'Peter Gibbons',
-          //     position: 'Sales 2',
-          //   },
-          // ],
+          children: [
+            {
+              name: 'Peter Gibbons',
+              position: 'Sales 1',
+            },
+            {
+              name: 'Peter Gibbons',
+              position: 'Sales 2',
+            },
+          ],
         },
         {
           name: 'Peter Gibbons',
