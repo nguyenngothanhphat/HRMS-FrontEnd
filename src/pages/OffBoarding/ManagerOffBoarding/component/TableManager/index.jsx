@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import empty from '@/assets/empty.svg';
+import persion from '@/assets/people.svg';
+import { history } from 'umi';
 // import persion from '@/assets/people.svg';
 import styles from './index.less';
 
@@ -10,8 +12,29 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
+  push = () => {
+    history.push('/employee-offboarding/16001288');
+  };
+
   render() {
-    const data = [];
+    const { data = [] } = this.props;
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: data.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          total
+        </span>
+      ),
+      // pageSize: rowSize,
+      // current: pageSelected,
+      // onChange: this.onChangePagination,
+    };
 
     const columns = [
       {
@@ -19,25 +42,54 @@ class TableEmployee extends PureComponent {
         dataIndex: 'ticketId',
       },
       {
+        title: <span className={styles.title}>Employee ID </span>,
+        dataIndex: 'employeeId',
+      },
+      {
         title: <span className={styles.title}>Created date </span>,
+        dataIndex: 'createDate',
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
+        dataIndex: 'name',
       },
       {
         title: <span className={styles.title}>Current Project </span>,
+        dataIndex: 'currentProject',
       },
       {
         title: <span className={styles.title}>Project Manager </span>,
+        dataIndex: 'projectManager',
       },
       {
         title: <span className={styles.title}>Assigned </span>,
+        dataIndex: 'Assigned',
+        render: () => (
+          <div className={styles.rowAction}>
+            <p>
+              <span>
+                <img src={persion} style={{ marginTop: '10px' }} alt="" />
+              </span>
+              <span>
+                <img src={persion} style={{ marginTop: '10px' }} alt="" />
+              </span>
+            </p>
+          </div>
+        ),
       },
       {
         title: <span className={styles.title}>1-on-1 date</span>,
+        dataIndex: 'date',
       },
       {
         title: <span className={styles.title}>Action</span>,
+        dataIndex: 'Action',
+        render: () => (
+          <div className={styles.rowAction}>
+            <span>Set 1-on-1</span>
+            <span onClick={this.push}>View Request</span>
+          </div>
+        ),
       },
     ];
 
@@ -58,6 +110,7 @@ class TableEmployee extends PureComponent {
           //   ...pagination,
           //   total: data.length,
           // }}
+          pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}
