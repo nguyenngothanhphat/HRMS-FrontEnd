@@ -37,7 +37,10 @@ export default class UploadDocument extends PureComponent {
                 <FileUploadForm getResponse={this.getResponse} />
               </Col>
               <Col xs={12}>
-                <InformationUploadForm attachmentId={fileId} />
+                <InformationUploadForm
+                  attachmentId={fileId}
+                  getUploadStatus={this.getUploadStatus}
+                />
               </Col>
             </Row>
           </div>

@@ -14,6 +14,13 @@ export const getDocumentDetail = (payload) => {
 };
 
 // add document
+export const getEmployeeByShortId = async (payload) => {
+  return request('/api/employee/get-by-employee-id', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
 export const getCountryList = async () => {
   return request('/api/country/list', {
     method: 'POST',

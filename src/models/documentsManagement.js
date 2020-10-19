@@ -7,6 +7,7 @@ import {
   addVisa,
   addPassport,
   getCountryList,
+  getEmployeeByShortId,
 } from '../services/documentsManagement';
 
 const documentsManagement = {
@@ -43,16 +44,16 @@ const documentsManagement = {
       }
     },
 
-    *fetchEmployeeDetail({ payload: id = '' }, { call, put }) {
-      try {
-        const response = yield call(getEmployeeData, { id });
-        const { statusCode, data: employeeDetail = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { employeeDetail } });
-      } catch (errors) {
-        // dialog(errors);
-      }
-    },
+    // *fetchEmployeeDetail({ payload: id = '' }, { call, put }) {
+    //   try {
+    //     const response = yield call(getEmployeeData, { id });
+    //     const { statusCode, data: employeeDetail = [] } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({ type: 'save', payload: { employeeDetail } });
+    //   } catch (errors) {
+    //     // dialog(errors);
+    //   }
+    // },
 
     *clearEmployeeDetail(_, { put }) {
       try {
@@ -63,6 +64,20 @@ const documentsManagement = {
     },
 
     // upload visa, passport, document
+    *fetchEmployeeDetailByShortId({ employeeId = {} }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeByShortId, { employeeId });
+        const { statusCode, data: employeeDetail = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeDetail },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+
     *fetchCountryList(_, { call, put }) {
       try {
         const response = yield call(getCountryList);
@@ -104,8 +119,10 @@ const documentsManagement = {
         console.log('added visa', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedVisa } });
+        return uploadedVisa;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
 
@@ -132,8 +149,10 @@ const documentsManagement = {
         console.log('added passport', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedPassport } });
+        return uploadedPassport;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
 
@@ -162,7 +181,7 @@ const documentsManagement = {
         return uploadedDocument;
       } catch (errors) {
         dialog(errors);
-        return 'hehe';
+        return '';
       }
     },
   },

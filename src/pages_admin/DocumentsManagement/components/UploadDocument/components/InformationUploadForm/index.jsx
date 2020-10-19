@@ -45,6 +45,7 @@ class InformationUploadForm extends PureComponent {
       documentType: '',
       identityType: '',
     };
+    this.typingTimeoutRef = React.createRef(null);
   }
 
   componentDidMount = () => {
@@ -74,47 +75,43 @@ class InformationUploadForm extends PureComponent {
     });
   };
 
-  getEmployeeName = (e) => {
-    const { value } = e.target;
+  getEmployeeDetail = (value) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/clearEmployeeDetail',
     });
     dispatch({
-      type: 'documentsManagement/fetchEmployeeDetail',
-      payload: value,
+      type: 'documentsManagement/fetchEmployeeDetailByShortId',
+      employeeId: value,
     });
   };
 
   addDocument = (fieldsValue, attachmentId, addDoc) => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      documentsManagement: { employeeDetail: { employee = '' } = {} },
+    } = this.props;
     const { documentType } = this.state;
-    const { documentName = '', documentGroup = '', employeeId = '' } = fieldsValue;
+    const { documentName = '', documentGroup = '' } = fieldsValue;
     const documentData = {
       key: documentName,
       employeeGroup: documentType,
       parentEmployeeGroup: documentGroup,
       attachment: attachmentId,
-      employee: employeeId,
+      employee,
     };
     dispatch({
       type: 'documentsManagement/uploadDocument',
       data: documentData,
     }).then((uploadedDocument) => {
-      const { _id } = uploadedDocument;
+      const { _id = '' } = uploadedDocument;
       addDoc(fieldsValue, _id);
     });
   };
 
   addPassport = (fieldsValue, documentId) => {
-    const { dispatch } = this.props;
-    const {
-      country = '',
-      employeeId = '',
-      issuedOn = '',
-      passportNumber = '',
-      validTill = '',
-    } = fieldsValue;
+    const { dispatch, employeeDetail: { employee = '' } = {} } = this.props;
+    const { country = '', issuedOn = '', passportNumber = '', validTill = '' } = fieldsValue;
 
     const formatIssuedOn = moment(issuedOn);
     const formatValidTill = moment(validTill);
@@ -124,7 +121,7 @@ class InformationUploadForm extends PureComponent {
       passportIssuedCountry: country,
       passportIssuedOn: formatIssuedOn,
       passportValidTill: formatValidTill,
-      employee: employeeId,
+      employee,
       document: documentId,
     };
 
@@ -135,9 +132,11 @@ class InformationUploadForm extends PureComponent {
   };
 
   addVisa = (fieldsValue, documentId) => {
-    const { dispatch } = this.props;
     const {
-      employeeId = '',
+      dispatch,
+      documentsManagement: { employeeDetail: { employee = '' } = {} },
+    } = this.props;
+    const {
       country = '',
       visaNumber = '',
       visaType = '',
@@ -157,7 +156,7 @@ class InformationUploadForm extends PureComponent {
       visaType,
       visaEntryType: entryType,
       document: documentId,
-      employee: employeeId,
+      employee,
     };
 
     dispatch({
@@ -166,26 +165,45 @@ class InformationUploadForm extends PureComponent {
     });
   };
 
+  addAdhaarCard = (fieldsValue, documentId) => {
+    // const { dispatch } = this.props;
+    // const { employeeId = '', adhaarCardNumber = '' } = fieldsValue;
+    // const adhaarCardData = {
+    // };
+    // dispatch({
+    //   type: 'documentsManagement/addVisa',
+    //   data: visaData,
+    // });
+  };
+
+  handleInput = (event) => {
+    const { value } = event.target;
+    if (this.typingTimeoutRef.current) {
+      clearTimeout(this.typingTimeoutRef.current);
+    }
+    this.typingTimeoutRef.current = setTimeout(() => {
+      this.getEmployeeDetail(value);
+    }, 500);
+  };
+
   onFinish = (fieldsValue) => {
-    // eslint-disable-next-line no-console
-    console.log('fieldsValue', fieldsValue);
     const { documentType, identityType } = this.state;
-    const { attachmentId } = this.props;
+    const { attachmentId = '' } = this.props;
     if (documentType !== 'Identity' && attachmentId !== '') {
       this.addDocument(fieldsValue, attachmentId, () => {});
     } else if (documentType === 'Identity' && identityType === 'Passport') {
       this.addDocument(fieldsValue, attachmentId, this.addPassport);
     } else if (documentType === 'Identity' && identityType === 'Visa') {
       this.addDocument(fieldsValue, attachmentId, this.addVisa);
+      // } else if (documentType === 'Identity' && identityType === 'Adhaar Card') {
+      //   this.addDocument(fieldsValue, attachmentId, this.addAdhaarCard);
     }
   };
 
   render() {
     const { documentGroup = '', documentType = '', identityType = '' } = this.state;
     const {
-      documentsManagement: {
-        employeeDetail: { generalInfo: { firstName = '', lastName = '' } = {} } = '',
-      },
+      documentsManagement: { employeeDetail: { firstName = '', lastName = '' } = '' },
     } = this.props;
     return (
       <div className={styles.InformationUploadForm}>
@@ -205,7 +223,7 @@ class InformationUploadForm extends PureComponent {
                   },
                 ]}
               >
-                <Input onChange={this.getEmployeeName} />
+                <Input onChange={this.handleInput} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -290,7 +308,6 @@ class InformationUploadForm extends PureComponent {
           )}
 
           {identityType === 'Visa' && <VisaForm />}
-
           {identityType === 'Passport' && <PassportForm />}
 
           <Form.Item>
