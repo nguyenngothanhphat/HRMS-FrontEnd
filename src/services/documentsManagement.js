@@ -34,6 +34,13 @@ export const uploadDocument = (payload) => {
   });
 };
 
+export const deleteDocument = (payload) => {
+  return request('/api/document/remove', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
 export const getEmployeeData = (payload) => {
   return request('/api/employee/get-by-id', {
     method: 'POST',

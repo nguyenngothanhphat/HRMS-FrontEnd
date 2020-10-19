@@ -8,6 +8,7 @@ import {
   addPassport,
   getCountryList,
   getEmployeeByShortId,
+  deleteDocument,
 } from '../services/documentsManagement';
 
 const documentsManagement = {
@@ -122,7 +123,7 @@ const documentsManagement = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedVisa } });
         notification.success({ message: 'Add Visa document successfully' });
-        return uploadedVisa;
+        return statusCode;
       } catch (errors) {
         dialog(errors);
         return '';
@@ -153,7 +154,7 @@ const documentsManagement = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedPassport } });
         notification.success({ message: 'Add Passport document successfully' });
-        return uploadedPassport;
+        return statusCode;
       } catch (errors) {
         dialog(errors);
         return '';
@@ -188,7 +189,19 @@ const documentsManagement = {
         return '';
       }
     },
+    *deleteDocument({ id }, { call }) {
+      try {
+        const response = yield call(deleteDocument, {
+          id,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
+
   reducers: {
     save(state, action) {
       return {

@@ -140,6 +140,13 @@ class InformationUploadForm extends PureComponent {
     dispatch({
       type: 'documentsManagement/addPassport',
       data: passportData,
+    }).then((statusCode) => {
+      if (statusCode !== 200) {
+        dispatch({
+          type: 'documentsManagement/deleteDocument',
+          id: documentId,
+        });
+      }
     });
   };
 
@@ -174,6 +181,13 @@ class InformationUploadForm extends PureComponent {
     dispatch({
       type: 'documentsManagement/addVisa',
       data: visaData,
+    }).then((statusCode) => {
+      if (statusCode !== 200) {
+        dispatch({
+          type: 'documentsManagement/deleteDocument',
+          id: documentId,
+        });
+      }
     });
   };
 
