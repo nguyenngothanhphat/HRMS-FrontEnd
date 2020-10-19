@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
-import SendEmail from '../../../EligibilityDocs/components/SendEmail';
+import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 

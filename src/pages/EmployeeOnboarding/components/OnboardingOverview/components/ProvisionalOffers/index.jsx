@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 import SentProvisionalOffers from './components/SentProvisionalOffers/index';
-import ReceivedProvisionalOffers from './components/ReceivedProvisionalOffers/index';
+import AcceptedProvisionalOffers from './components/AcceptedProvisionalOffers/index';
+import RenegotiateProvisionalOffers from './components/RenegotiateProvisionalOffers/index';
 
 import styles from './index.less';
 
@@ -10,7 +11,12 @@ class ProvisionalOffers extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { provisionalOffers = {} } = this.props;
-    const { sentProvisionalOffers = [], receivedProvisionalOffers = [] } = provisionalOffers;
+    const {
+      sentProvisionalOffers = [],
+      // receivedProvisionalOffers = [],
+      acceptedProvisionalOffers = [],
+      renegotiateProvisionalOffers = [],
+    } = provisionalOffers;
 
     return (
       <div className={styles.PendingEligibilityChecks}>
@@ -24,12 +30,21 @@ class ProvisionalOffers extends PureComponent {
               {/* <OnboardTable list={rookieList} /> */}
               <SentProvisionalOffers list={sentProvisionalOffers} />
             </TabPane>
+
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
-              tab="received provisional offers"
+              tab="accepted provisional offers"
               key="2"
             >
-              <ReceivedProvisionalOffers list={receivedProvisionalOffers} />
+              <AcceptedProvisionalOffers list={acceptedProvisionalOffers} />
+            </TabPane>
+
+            <TabPane
+              // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
+              tab="renegotiate provisional offers"
+              key="3"
+            >
+              <RenegotiateProvisionalOffers list={renegotiateProvisionalOffers} />
             </TabPane>
           </Tabs>
         </div>
