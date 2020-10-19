@@ -1,8 +1,12 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ documentsManagement }) => ({
+  documentsManagement,
+}))
 class ConfirmRemoveModal extends Component {
   constructor(props) {
     super(props);
@@ -24,11 +28,20 @@ class ConfirmRemoveModal extends Component {
   };
 
   handleRemoveToServer = () => {
-    // console.log('handleRemoveToServer');
+    const { dispatch, id = '' } = this.props;
+    dispatch({
+      type: 'documentsManagement/deleteDocument',
+      id,
+    }).then(() => {
+      this.handleCancel();
+      dispatch({
+        type: 'documentsManagement/fetchListDocuments',
+      });
+    });
   };
 
   render() {
-    const { visible = false, loading, name } = this.props;
+    const { visible = false, loading = false, name = '' } = this.props;
     return (
       <div>
         <Modal

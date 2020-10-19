@@ -203,7 +203,7 @@ class TableDocuments extends PureComponent {
       documentsManagement: { listDocumentDetail = [] },
     } = this.props;
 
-    console.log('listDocumentDetail', listDocumentDetail);
+    // console.log('listDocumentDetail', listDocumentDetail);
     return (
       <div>
         {isViewingDocument && selectedDocumentId && listDocumentDetail ? (
