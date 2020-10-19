@@ -7,8 +7,8 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const { item = {}, handleCheckAll, handleChange, eligibilityDocs } = this.props;
-    const { identityProof, addressProof, educational, technicalCertification } = eligibilityDocs;
+    const { item = {}, handleCheckAll, handleChange, tempData } = this.props;
+    const { identityProof, addressProof, educational, technicalCertification } = tempData;
     const { poe } = technicalCertification;
     const checkedArr = item.data
       ? item.data.length
@@ -22,7 +22,6 @@ class CollapseField extends PureComponent {
           )
         : null
       : null;
-
     const defaultArr = item.data.filter(
       (data) =>
         data.key !== 'aadharCard' &&
@@ -84,13 +83,13 @@ class CollapseField extends PureComponent {
                 onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
                 value={
                   item.type === 'A'
-                    ? identityProof.listSelected
+                    ? identityProof.checkedList
                     : item.type === 'B'
-                    ? addressProof.listSelected
+                    ? addressProof.checkedList
                     : item.type === 'C'
-                    ? educational.listSelected
+                    ? educational.checkedList
                     : item.type === 'D'
-                    ? poe.listSelected
+                    ? poe.checkedList
                     : []
                 }
               />
