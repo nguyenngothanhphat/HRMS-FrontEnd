@@ -84,7 +84,7 @@ export default {
   'component.noteComponent.title': 'Note',
   'component.salaryStructureHeader.title': 'Salary Structure',
   'component.salaryStructureHeader.subTitle':
-    'The pay division as per the position of ‘UX Designer’ has been given below.',
+    'The pay division is as per the selected Job title. Additionally you may enter a new salary structure. To do so Download salary structure template  and upload',
   'component.salaryStructure.tableWrapper':
     ' The table of salary structure should populate here. Need clarification here if this table or information is editable by the HR?',
   'component.salaryAcceptanceContent.content': 'Acceptance of salary structure by candidate',

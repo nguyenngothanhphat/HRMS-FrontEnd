@@ -1,15 +1,93 @@
 @spacing-xxs: 4px;
-
+.firstColumn {
+  padding-left: 62px;
+}
 .salaryStructureTemplate {
-  &_form {
-    margin-bottom: 8 * @spacing-xxs;
+  :global {
+    .blue-text {
+      color: #2c6df9;
+    }
+
+    .big-text {
+      font-size: 18px;
+    }
+
+    // .ant-form-item-control {
+    //   height: 0;
+    // }
+
+    .ant-btn:focus .ant-btn.focus {
+      background-color: red !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+    .ant-btn-primary {
+      position: absolute;
+      right: 0;
+      top: -5px;
+      border-radius: 25px;
+      border: none;
+      box-shadow: none;
+      background-color: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.13px;
+      color: #ffa100;
+      &:hover {
+        background-color: transparent;
+        color: #ffa100;
+      }
+    }
+
+    .ant-table-thead {
+      display: none;
+    }
+    .ant-table-tbody {
+      tr {
+        td {
+          border: none;
+        }
+        td:first-child {
+          padding-left: 32px;
+        }
+        td:nth-child(2) {
+          border-right: 1px solid #d6dce0;
+          border-left: 1px solid #d6dce0;
+          text-align: center;
+        }
+        td:last-child {
+          padding-left: 62px;
+        }
+      }
+    }
+  }
+  &_select {
+    // margin-bottom: 30px;
+    :global {
+      .ant-form-item {
+        display: block;
+      }
+    }
+    p {
+      font-family: Roboto;
+      font-size: 13px;
+      line-height: 19px;
+      color: #464646;
+    }
+  }
+  &_table {
+    // margin-bottom: 8 * @spacing-xxs;
     height: 517px;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     border: solid 1px #d6dce0;
     background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 30px;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
     p {
       width: 448px;
       height: 36px;
@@ -21,4 +99,32 @@
       color: #707177;
     }
   }
+
+  &_footer {
+    margin-bottom: 8 * @spacing-xxs;
+    height: 79px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: solid 1px #d6dce0;
+    background-color: #2c6df9;
+    padding: 12px 62px;
+    display: grid;
+    grid-template-columns: 30% 30%;
+    &_info {
+      .title {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+        color: #ffffff;
+        margin-bottom: 10px;
+      }
+      .value {
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 21px;
+        color: #ffffff;
+      }
+    }
+  }
+  // Custom table
 }

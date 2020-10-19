@@ -3,6 +3,7 @@ import { Row, Col, Typography, Button, Form } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
+import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
 
@@ -78,7 +79,7 @@ class SalaryStructure extends PureComponent {
               <div className={styles.salaryStructure__top}>
                 <SalaryStructureHeader />
                 {/* <hr /> */}
-                {this._renderTable()}
+                <SalaryStructureTemplate />
               </div>
               {salaryStatus === 1 ? this._renderBottomBar() : null}
             </Form>
