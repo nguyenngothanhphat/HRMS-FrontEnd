@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Form, Select, Input, Button, Row, Col } from 'antd';
+import { Form, Select, Input, Button, Row, Col, notification } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import AdhaarCardForm from './components/AdhaarCardForm';
 import VisaForm from './components/VisaForm';
 import PassportForm from './components/PassportForm';
+
 import styles from './index.less';
 
 const { Option } = Select;
@@ -44,6 +45,7 @@ class InformationUploadForm extends PureComponent {
       documentGroup: '',
       documentType: '',
       identityType: '',
+      checkEmployeeExists: false,
     };
     this.typingTimeoutRef = React.createRef(null);
   }
@@ -83,6 +85,16 @@ class InformationUploadForm extends PureComponent {
     dispatch({
       type: 'documentsManagement/fetchEmployeeDetailByShortId',
       employeeId: value,
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        this.setState({
+          checkEmployeeExists: true,
+        });
+      } else {
+        this.setState({
+          checkEmployeeExists: false,
+        });
+      }
     });
   };
 
@@ -187,9 +199,13 @@ class InformationUploadForm extends PureComponent {
   };
 
   onFinish = (fieldsValue) => {
-    const { documentType, identityType } = this.state;
+    const { documentType, identityType, checkEmployeeExists } = this.state;
     const { attachmentId = '' } = this.props;
-    if (documentType !== 'Identity' && attachmentId !== '') {
+    if (attachmentId === '') {
+      notification.error({ message: 'Please choose file to upload!' });
+    } else if (!checkEmployeeExists) {
+      notification.error({ message: 'Employee does not exists!' });
+    } else if (documentType !== 'Identity') {
       this.addDocument(fieldsValue, attachmentId, () => {});
     } else if (documentType === 'Identity' && identityType === 'Passport') {
       this.addDocument(fieldsValue, attachmentId, this.addPassport);
@@ -282,6 +298,7 @@ class InformationUploadForm extends PureComponent {
                     if (group === documentGroup) {
                       return subGroup.map((sub) => <Option value={sub}>{sub}</Option>);
                     }
+                    return '';
                   })}
                 </Select>
               </Form.Item>

@@ -1,9 +1,9 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import {
   getListDocuments,
   getDocumentDetail,
   uploadDocument,
-  getEmployeeData,
   addVisa,
   addPassport,
   getCountryList,
@@ -73,8 +73,10 @@ const documentsManagement = {
           type: 'save',
           payload: { employeeDetail },
         });
+        return statusCode;
       } catch (errors) {
         // dialog(errors);
+        return '';
       }
     },
 
@@ -114,11 +116,12 @@ const documentsManagement = {
           document,
           employee,
         });
-        console.log('data add visa', data);
-        const { statusCode, data: uploadedVisa = [] } = response;
-        console.log('added visa', response);
+        // console.log('data add visa', data);
+        const { statusCode = '', data: uploadedVisa = [] } = response;
+        // console.log('added visa', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedVisa } });
+        notification.success({ message: 'Add Visa document successfully' });
         return uploadedVisa;
       } catch (errors) {
         dialog(errors);
@@ -136,7 +139,7 @@ const documentsManagement = {
           employee = '',
           document = '',
         } = data;
-        console.log('data add passport', data);
+        // console.log('data add passport', data);
         const response = yield call(addPassport, {
           passportNumber,
           passportIssuedCountry,
@@ -145,10 +148,11 @@ const documentsManagement = {
           employee,
           document,
         });
-        const { statusCode, data: uploadedPassport = [] } = response;
-        console.log('added passport', response);
+        const { statusCode = '', data: uploadedPassport = [] } = response;
+        // console.log('added passport', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedPassport } });
+        notification.success({ message: 'Add Passport document successfully' });
         return uploadedPassport;
       } catch (errors) {
         dialog(errors);
@@ -175,7 +179,7 @@ const documentsManagement = {
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;
-        console.log('upload document res', response);
+        // console.log('upload document res', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedDocument } });
         return uploadedDocument;
