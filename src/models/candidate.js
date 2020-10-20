@@ -12,7 +12,20 @@ const candidateProfile = {
       _id: '',
       candidate: '',
     },
-    tempData: {},
+    tempData: {
+      checkStatus: {},
+      fullName: '',
+      privateEmail: '',
+      experienceYear: '',
+      workLocation: '',
+    },
+    checkMandatory: {
+      filledBasicInformation: false,
+      filledJobDetail: false,
+      filledCustomField: false,
+      filledOfferDetail: false,
+      salaryStatus: 2,
+    },
     basicInformation: {
       fullName: '',
       privateEmail: '',
