@@ -17,30 +17,30 @@ import TableFilter from '../TableFilter';
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
-      const { usersManagement: { filter = [] } = {} } = nextProps;
-      let role = [];
-      let company = [];
-      let location = [];
-      const roleConst = 'Role';
-      const companyConst = 'Company';
-      const locationConst = 'Location';
+      const { employee: { filter = [] } = {} } = nextProps;
+      let field1 = [];
+      let field2 = [];
+      let field3 = [];
+      const filterField1 = 'Role';
+      const filterField2 = 'Company';
+      const filterField3 = 'Location';
       filter.map((item) => {
-        if (item.actionFilter.name === roleConst) {
-          role = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === filterField1) {
+          field1 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === companyConst) {
-          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === filterField2) {
+          field2 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === locationConst) {
-          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === filterField3) {
+          field3 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { role, company, location };
+        return { field1, field2, field3 };
       });
       return {
         ...prevState,
-        role,
-        company,
-        location,
+        field1,
+        field2,
+        field3,
       };
     }
     return null;
@@ -52,9 +52,9 @@ class TableContainer extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: true,
-      role: [],
-      location: [],
-      company: [],
+      field1: [],
+      field2: [],
+      field3: [],
       filterName: '',
       bottabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeUsersTab' }) },
@@ -73,19 +73,19 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { role, location, company, filterName, tabId } = this.state;
+    const { field1, field2, field3, filterName, tabId } = this.state;
     const params = {
       name: filterName,
-      role,
-      location,
-      company,
+      field1,
+      field2,
+      field3,
     };
 
     if (
       prevState.tabId !== tabId ||
-      prevState.role.length !== role.length ||
-      prevState.location.length !== location.length ||
-      prevState.company.length !== company.length ||
+      prevState.field1.length !== field1.length ||
+      prevState.field2.length !== field2.length ||
+      prevState.field3.length !== field3.length ||
       prevState.filterName !== filterName
     ) {
       this.getDataTable(params, tabId);
@@ -193,7 +193,7 @@ class TableContainer extends PureComponent {
     const { Content } = Layout;
     const { TabPane } = Tabs;
     const { bottabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
+    const { loadingActiveList, loadingInActiveList } = this.props;
     return (
       <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
@@ -208,7 +208,7 @@ class TableContainer extends PureComponent {
                 <Layout className={styles.directoryLayout_inner}>
                   <Content className="site-layout-background">
                     <TableUsers
-                      loading={loadingListActive || loadingListInActive}
+                      loading={loadingActiveList || loadingInActiveList}
                       data={this.renderListUsers(tab.id)}
                     />
                   </Content>

@@ -25,11 +25,12 @@ class ResetPasswordModal extends Component {
   };
 
   handleRemoveToServer = () => {
+    // eslint-disable-next-line no-console
     console.log('handleRemoveToServer');
   };
 
   render() {
-    const { visible = false, loading, user } = this.props;
+    const { visible = false, loading = false, user = {} } = this.props;
     const {
       generalInfo: { firstName = '', lastName = '', employeeId = '', workEmail = '' } = {},
     } = user;

@@ -1,21 +1,20 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-// import { filteredArr } from '@/utils/utils';
+import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ loading, usersManagement }) => ({
-  loading: loading.effects['login/login'],
-  usersManagement,
+@connect(({ employee }) => ({
+  employee,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      roleState: 'Role',
+      EmploymentState: 'Employment Type',
       locationState: 'Location',
-      companyState: 'Company',
+      departmentState: 'Department',
       all: 'All',
       text: '',
       clearText: '',
@@ -26,13 +25,16 @@ class TableFilter extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchRolesList',
+      type: 'employee/fetchEmployeeType',
     });
     dispatch({
-      type: 'usersManagement/fetchLocationList',
+      type: 'employee/fetchLocation',
     });
     dispatch({
-      type: 'usersManagement/fetchCompaniesList',
+      type: 'employee/fetchDepartment',
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
     });
   }
 
@@ -44,7 +46,7 @@ class TableFilter extends PureComponent {
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/offClearName',
+      type: 'employee/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
@@ -57,7 +59,7 @@ class TableFilter extends PureComponent {
     const { clearText } = this.state;
     onHandleChange(clearText);
     dispatch({
-      type: 'usersManagement/clearFilter',
+      type: 'employee/ClearFilter',
     });
     setTimeout(() => {
       this.setState({ reset: false });
@@ -66,35 +68,29 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { locationState, roleState, all, companyState, text, reset } = this.state;
+    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      usersManagement: {
-        listLocations = [],
-        listCompanies = [],
-        listRoles = [],
-        clearName = false,
-      },
+      employee: { location = [], department = [], employeetype = [], clearName = false },
       collapsed,
       changeTab,
     } = this.props;
-
-    const formatDataLocations = listLocations.map((item) => {
+    const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
       return {
         label,
         value,
       };
     });
-    const formatDataRoles = listRoles.map((item) => {
-      const { name: label, id: value } = item;
+    const formatDataEmployeeType = employeetype.map((item) => {
+      const { name: label, _id: value } = item;
       return {
         label,
         value,
       };
     });
 
-    const formatDataCompanies = listCompanies.map((item) => {
-      const { name: label, id: value } = item;
+    const formatDataDepartment = department.map((item) => {
+      const { name: label, _id: value } = item;
       return {
         label,
         value,
@@ -131,16 +127,21 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckList key={roleState} name={roleState} all={all} data={formatDataRoles} />
+              <CheckList
+                key={EmploymentState}
+                name={EmploymentState}
+                all={all}
+                data={filteredArr(formatDataEmployeeType)}
+              />
             )}
             {reset || changeTab ? (
               ''
             ) : (
               <CheckList
-                key={companyState}
-                name={companyState}
+                key={departmentState}
+                name={departmentState}
                 all={all}
-                data={formatDataCompanies}
+                data={filteredArr(formatDataDepartment)}
               />
             )}
             {reset || changeTab ? (
@@ -150,7 +151,7 @@ class TableFilter extends PureComponent {
                 key={locationState}
                 name={locationState}
                 all={all}
-                data={formatDataLocations}
+                data={formatDataLocation}
               />
             )}
           </div>
@@ -159,7 +160,5 @@ class TableFilter extends PureComponent {
     );
   }
 }
-
-TableFilter.propTypes = {};
 
 export default TableFilter;

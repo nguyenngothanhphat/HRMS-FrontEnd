@@ -24,7 +24,7 @@ class CheckList extends PureComponent {
   onChange = (checkedList) => {
     const { data, name, dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/saveFilter',
+      type: 'employee/saveFilter',
       payload: { name, checkedList },
     });
     this.setState({
@@ -39,7 +39,7 @@ class CheckList extends PureComponent {
     const { data, dispatch, name } = this.props;
     const newdata = data.map((x) => x.value);
     dispatch({
-      type: 'usersManagement/saveFilter',
+      type: 'employee/saveFilter',
       payload: { name, checkedList: newdata },
     });
     this.setState({
@@ -49,9 +49,9 @@ class CheckList extends PureComponent {
   };
 
   render() {
-    const { name = '', all = '', data = [], usersManagement = {} } = this.props;
+    const { name = '', all = '', data = [], employee = {} } = this.props;
     const { list } = this.state;
-    const check = usersManagement.clearFilter;
+    const check = employee.clearFilter;
     return (
       <div className={styles.CheckList}>
         <div className={styles.title}>

@@ -4,7 +4,7 @@ import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'MM/DD/YYYY';
+const dateFormat = 'Do MMM YYYY';
 
 const layout = {
   labelCol: { span: 6 },
@@ -15,10 +15,12 @@ class EditUserModal extends PureComponent {
   onFinish = (values) => {
     const { email, fullName, role, location, company } = values;
     const submitValues = { email, fullName, role, location, company };
+    // eslint-disable-next-line no-console
     console.log('Success:', submitValues);
   };
 
   onFinishFailed = (errorInfo) => {
+    // eslint-disable-next-line no-console
     console.log('Failed:', errorInfo);
   };
 
@@ -32,18 +34,22 @@ class EditUserModal extends PureComponent {
   };
 
   render() {
-    const { editModalVisible, closeEditModal, user } = this.props;
+    const { editModalVisible = () => {}, closeEditModal = () => {}, user = {} } = this.props;
     const {
-      userId,
-      employeeId,
-      joinedDate,
-      email,
-      fullName,
-      role,
-      location,
-      company,
-      status,
+      joinDate = '',
+      location: { name: locationName = '' } = {},
+      company: { name: companyName = '' } = {},
+      generalInfo: {
+        userId = '',
+        employeeId = '',
+        workEmail = '',
+        firstName = '',
+        lastName = '',
+      } = {},
+      status = '',
+      title: { name: role = '' } = {},
     } = user;
+    const fullName = `${firstName} ${lastName}`;
     return (
       <>
         <Modal
@@ -77,12 +83,12 @@ class EditUserModal extends PureComponent {
               remember: true,
               userId,
               employeeId,
-              joinedDate: moment(joinedDate, dateFormat),
-              email,
+              joinDate: moment(joinDate, dateFormat),
+              workEmail,
               fullName,
               role,
-              location,
-              company,
+              locationName,
+              companyName,
               status,
             }}
           >
@@ -102,7 +108,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Joined Date"
-              name="joinedDate"
+              name="joinDate"
               rules={[{ required: true, message: 'Please input!' }]}
             >
               {/* <Space direction="vertical" size={12}> */}
@@ -111,7 +117,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Email"
-              name="email"
+              name="workEmail"
               rules={[{ required: true, message: 'Please input!' }]}
             >
               <Input />
@@ -132,14 +138,14 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Location"
-              name="location"
+              name="locationName"
               rules={[{ required: true, message: 'Please input!' }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Company"
-              name="company"
+              name="companyName"
               rules={[{ required: true, message: 'Please input!' }]}
             >
               <Input />

@@ -54,7 +54,7 @@ class TableUsers extends PureComponent {
         dataIndex: 'joinedDate',
         width: '10%',
         align: 'left',
-        render: () => <span>Aug-7,20</span>,
+        render: () => <span>Joined date</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
@@ -82,6 +82,7 @@ class TableUsers extends PureComponent {
         title: 'Role',
         dataIndex: 'role',
         align: 'left',
+        render: () => <span>Role</span>,
       },
       {
         title: 'Location',
@@ -177,7 +178,6 @@ class TableUsers extends PureComponent {
   };
 
   resetPassword = (record) => {
-    console.log('id', record);
     const { dispatch } = this.props;
     dispatch({
       type: 'employeesManagement/fetchEmployeeDetail',
@@ -214,6 +214,7 @@ class TableUsers extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
+    // eslint-disable-next-line no-console
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
@@ -262,7 +263,6 @@ class TableUsers extends PureComponent {
       employeesManagement: { employeeDetail = [] },
     } = this.props;
 
-    console.log('employeeDetail', employeeDetail);
     return (
       <div className={styles.tableUsers}>
         {!loadingUserProfile && selectedUserId && editModalVisible && (
