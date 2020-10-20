@@ -771,9 +771,9 @@ const onboard = {
         };
         const response = yield call(getOnboardingList, req);
         // console.log(response);
-        const returnedData = formatData(response.data[0].paginatedResults);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const returnedData = formatData(response.data[0].paginatedResults);
 
         const {
           PROVISIONAL_OFFER_DRAFT,
