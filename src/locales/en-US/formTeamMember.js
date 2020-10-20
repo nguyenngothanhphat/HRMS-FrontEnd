@@ -91,10 +91,11 @@ export default {
   'component.salaryAcceptance.title1': 'I hereby accept this salary structure.',
   'component.salaryAcceptance.note1':
     'You have gone through all the contents of the table and accept the salary as terms of your employment.',
-  'component.salaryAcceptance.title2': 'I would like to re-negotiate the salary structure.',
+  'component.salaryAcceptance.title2':
+    'A re-negotiation as been asked by the candidate on the salary structure',
   'component.salaryAcceptance.note2':
     'You have gone through all the contents of the table. However, I would like to renegotiate.',
-  'component.salaryAcceptance.title3': 'I would like to reject this offer.',
+  'component.salaryAcceptance.title3': 'The salary structure has been rejected by the candidate.',
   'component.salaryAcceptance.note3':
     'You have gone through all the contents of the table and do not accept the offer given to me.',
   'component.salaryAcceptance.closeCandidature': ' Close Candidature',

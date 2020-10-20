@@ -9,16 +9,21 @@ import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
 
-const DRAFT = 'DRAFT';
-const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
-const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
-const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
-const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
+// const DRAFT = 'DRAFT';
+// const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
+// const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
+// const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
+// const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
 
-@connect(({ info: { salaryStructure = {}, checkMandatory = {} } = {} }) => ({
-  salaryStructure,
-  checkMandatory,
-}))
+@connect(
+  ({
+    candidateInfo: { data: { processStatus = '' }, salaryStructure = {}, checkMandatory = {} } = {},
+  }) => ({
+    processStatus,
+    salaryStructure,
+    checkMandatory,
+  }),
+)
 class SalaryStructure extends PureComponent {
   _renderTable = () => {
     return (
@@ -62,7 +67,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { checkMandatory } = this.props;
+    const { checkMandatory, processStatus } = this.props;
     const { salaryStatus } = checkMandatory;
     const Note = {
       title: 'Note',
@@ -94,11 +99,9 @@ class SalaryStructure extends PureComponent {
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
-              <NoteComponent note={Note} />
+              {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
             </Row>
-            <Row>
-              <SalaryAcceptance salaryStatus={salaryStatus} />
-            </Row>
+            {/* <Row>{processStatus === 'DRAFT' ? '' : <SalaryAcceptance />}</Row> */}
           </div>
         </Col>
       </Row>

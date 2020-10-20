@@ -178,13 +178,15 @@
 
     &__button {
       text-align: right;
+      display: flex;
+      align-items: center;
       &__disabled {
         opacity: 0.3;
       }
       :global {
         .ant-btn-primary {
           // display: none;
-          top: -18px;
+          top: 0;
           width: 94px;
           height: 40px;
           object-fit: contain;

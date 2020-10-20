@@ -4,12 +4,6 @@ import { formatMessage } from 'umi';
 
 import styles from './index.less';
 
-const DRAFT = 'DRAFT';
-const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
-const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
-const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
-const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
-
 export default class SalaryStructureTemplate extends PureComponent {
   constructor(props) {
     super(props);
@@ -312,6 +306,13 @@ export default class SalaryStructureTemplate extends PureComponent {
               >
                 Next
               </Button> */}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
               <Button
                 type="primary"
                 htmlType="submit"

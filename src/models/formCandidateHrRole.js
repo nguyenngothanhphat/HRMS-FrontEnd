@@ -104,7 +104,7 @@ const candidateInfo = {
       title: null,
       company: null,
       previousExperience: null,
-      processStatus: 'DRAFT',
+      processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
