@@ -94,23 +94,6 @@ const candidateProfile = {
     },
   },
   effects: {
-    *fetchCandidateInfo(_, { call, put }) {
-      let response = {};
-      try {
-        response = yield call(getRookieInfo);
-        const { data, statusCode } = response;
-        const { ticketID = '', _id } = data;
-        console.log('data', data);
-        console.log('res', response);
-        if (statusCode !== 200) throw response;
-        const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
-
     *fetchCandidateById({ payload }, { call, put }) {
       console.log('payload model', payload);
       try {
