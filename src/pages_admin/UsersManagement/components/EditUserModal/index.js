@@ -92,25 +92,13 @@ class EditUserModal extends PureComponent {
               status,
             }}
           >
-            <Form.Item
-              label="User ID"
-              name="userId"
-              rules={[{ required: true, message: 'Please input!' }]}
-            >
+            <Form.Item label="User ID" name="userId">
               <Input disabled />
             </Form.Item>
-            <Form.Item
-              label="Employee ID"
-              name="employeeId"
-              rules={[{ required: true, message: 'Please input!' }]}
-            >
+            <Form.Item label="Employee ID" name="employeeId">
               <Input disabled />
             </Form.Item>
-            <Form.Item
-              label="Joined Date"
-              name="joinDate"
-              rules={[{ required: true, message: 'Please input!' }]}
-            >
+            <Form.Item label="Joined Date" name="joinDate">
               <DatePicker disabled format={dateFormat} />
             </Form.Item>
             <Form.Item

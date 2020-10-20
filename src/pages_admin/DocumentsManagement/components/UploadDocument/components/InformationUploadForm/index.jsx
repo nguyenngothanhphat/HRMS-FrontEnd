@@ -356,7 +356,9 @@ class InformationUploadForm extends PureComponent {
                   <Select onChange={this.onIdentityTypeChange}>
                     <Option value="Visa">Visa</Option>
                     <Option value="Passport">Passport</Option>
-                    <Option value="Adhaar Card">Adhaar Card</Option>
+                    <Option value="Adhaar Card" disabled>
+                      Adhaar Card
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>

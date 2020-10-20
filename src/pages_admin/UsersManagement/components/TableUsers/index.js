@@ -52,7 +52,7 @@ class TableUsers extends PureComponent {
       {
         title: 'Joined date',
         dataIndex: 'joinedDate',
-        width: '10%',
+        width: '8%',
         align: 'left',
         render: () => <span>Joined date</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -63,7 +63,7 @@ class TableUsers extends PureComponent {
       {
         title: 'Email',
         dataIndex: 'generalInfo',
-        width: '18%',
+        width: '17%',
         align: 'left',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -93,6 +93,7 @@ class TableUsers extends PureComponent {
       {
         title: 'Company',
         dataIndex: 'company',
+        width: '10%',
         align: 'left',
         render: (company) => <span>{company ? company.name : ''}</span>,
       },
@@ -110,12 +111,12 @@ class TableUsers extends PureComponent {
           </div>
         ),
       },
-      {
-        title: 'Status',
-        dataIndex: 'status',
-        align: 'left',
-        render: (text) => <span style={{ fontWeight: '500' }}>{text}</span>,
-      },
+      // {
+      //   title: 'Status',
+      //   dataIndex: 'status',
+      //   align: 'left',
+      //   render: (text) => <span style={{ fontWeight: '500' }}>{text}</span>,
+      // },
       {
         title: 'Action',
         dataIndex: '_id',
