@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import ViewLeft from './components/ViewLeft';
-import ViewRight from './components/ViewRight';
-import RightDataTable from './components/RightContent';
+import Step1 from './step1';
+// import ResignationLeft from './component/ResignationLeft';
+// import Resignation from './component/ResignationRight';
 import styles from './index.less';
 
-class EmployeeOffBoading extends Component {
+class ResignationRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const data = [
-      {
-        ticketId: 16003134,
-        requestOn: '22.08.2020',
-        reasionOfLeaving: 'The reason why I have decide to quit….',
-      },
-    ];
-
     return (
       <PageContainer>
-        <div className={styles.root}>
+        <div className={styles.request}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>Terminate work relationship</p>
+              <p className={styles.titlePage__text}>
+                Terminate work relationship with Aditya Venkatesh [PSI: 1022]
+              </p>
               <div>
                 <span className={styles.textActivity}>View Activity Log</span>
                 <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
@@ -36,10 +30,10 @@ class EmployeeOffBoading extends Component {
             </div>
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
-            <Col span={18}>
-              <ViewLeft data={data} />
+            <Col span={17}>
+              <Step1 />
             </Col>
-            <Col span={6}>{data && data ? <RightDataTable /> : <ViewRight />}</Col>
+            <Col span={7} />
           </Row>
         </div>
       </PageContainer>
@@ -47,4 +41,4 @@ class EmployeeOffBoading extends Component {
   }
 }
 
-export default EmployeeOffBoading;
+export default ResignationRequest;
