@@ -18,29 +18,29 @@ class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
       const { employee: { filter = [] } = {} } = nextProps;
-      let field1 = [];
-      let field2 = [];
-      let field3 = [];
-      const filterField1 = 'Role';
-      const filterField2 = 'Company';
-      const filterField3 = 'Location';
+      let role = [];
+      let company = [];
+      let location = [];
+      const roleConst = 'Role';
+      const companyConst = 'Company';
+      const locationConst = 'Location';
       filter.map((item) => {
-        if (item.actionFilter.name === filterField1) {
-          field1 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === roleConst) {
+          role = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === filterField2) {
-          field2 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === companyConst) {
+          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === filterField3) {
-          field3 = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === locationConst) {
+          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { field1, field2, field3 };
+        return { role, company, location };
       });
       return {
         ...prevState,
-        field1,
-        field2,
-        field3,
+        role,
+        company,
+        location,
       };
     }
     return null;
@@ -52,9 +52,9 @@ class TableContainer extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: true,
-      field1: [],
-      field2: [],
-      field3: [],
+      role: [],
+      location: [],
+      company: [],
       filterName: '',
       bottabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.users.userTable.activeUsersTab' }) },
@@ -73,19 +73,19 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { field1, field2, field3, filterName, tabId } = this.state;
+    const { role, location, company, filterName, tabId } = this.state;
     const params = {
       name: filterName,
-      field1,
-      field2,
-      field3,
+      role,
+      location,
+      company,
     };
 
     if (
       prevState.tabId !== tabId ||
-      prevState.field1.length !== field1.length ||
-      prevState.field2.length !== field2.length ||
-      prevState.field3.length !== field3.length ||
+      prevState.role.length !== role.length ||
+      prevState.location.length !== location.length ||
+      prevState.company.length !== company.length ||
       prevState.filterName !== filterName
     ) {
       this.getDataTable(params, tabId);
