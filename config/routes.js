@@ -154,6 +154,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/documents/upload-document',
+            name: 'uploadDocument',
+            hideInMenu: true,
+            component: '../pages_admin/DocumentsManagement/components/UploadDocument',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
