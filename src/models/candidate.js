@@ -1,4 +1,4 @@
-import { getById } from '@/services/candidate';
+import { getById, getDocumentByCandidate } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
 import { getRookieInfo } from '@/services/formCandidate';
@@ -108,6 +108,22 @@ const candidateProfile = {
         yield put({
           type: 'saveOrigin',
           payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchDocumentByCandidate({ payload }, { call, put }) {
+      console.log('payload model2', payload);
+      try {
+        const response = yield call(getDocumentByCandidate, payload);
+        const { data, statusCode } = response;
+        console.log('data2', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { data },
         });
       } catch (error) {
         dialog(error);

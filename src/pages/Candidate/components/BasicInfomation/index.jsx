@@ -8,9 +8,10 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { basicInformation, checkCandidateMandatory } = {} }) => ({
+@connect(({ candidateProfile: { basicInformation, checkCandidateMandatory, data } = {} }) => ({
   basicInformation,
   checkCandidateMandatory,
+  data,
 }))
 class BasicInformation extends Component {
   constructor(props) {

@@ -28,19 +28,14 @@ const _renderScreen = (screenNumber) => {
 };
 
 const Candidate = (props) => {
-  const {
-    dispatch,
-    currentStep,
-    data: { _id },
-  } = props;
+  const { dispatch, currentStep, data } = props;
   const [screen, setScreen] = useState(currentStep);
   useEffect(() => {
     setScreen(currentStep);
     dispatch({
       type: 'candidateProfile/fetchCandidateInfo',
-    }).then(({ statusCode }) => {
+    }).then(({ statusCode, data: { _id } }) => {
       if (statusCode === 200) {
-        console.log('data', _id);
         dispatch({
           type: 'candidateProfile/fetchCandidateById',
           payload: {
