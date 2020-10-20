@@ -16,7 +16,7 @@ const Option = Select;
       locationList = [],
       departmentList = [],
       jobTitleList = [],
-      reportingManagerList = []
+      reportingManagerList = [],
     },
   }) => ({
     companyList,
@@ -35,7 +35,7 @@ class AddEmployeeForm extends Component {
       isDisabled: true,
       isDisabledManager: true,
       department: [],
-      location: []
+      location: [],
     };
   }
 
@@ -43,72 +43,74 @@ class AddEmployeeForm extends Component {
     const { reportingManagerList } = props;
     if (reportingManagerList.length > 0) {
       return {
-        isDisabledManager: false
-      }
+        isDisabledManager: false,
+      };
     }
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     const { department, location } = this.state;
-    if ((prevState.department !== department || prevState.location !== location) && department.length > 0 && location.length > 0) {
+    if (
+      (prevState.department !== department || prevState.location !== location) &&
+      department.length > 0 &&
+      location.length > 0
+    ) {
       dispatch({
         type: 'employeesManagement/fetchReportingManagerList',
         payload: {
           department,
-          location
-        }
-      })
+          location,
+        },
+      });
     }
   }
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
     const location = [];
-    const department = []
+    const department = [];
     switch (type) {
       case 'company':
         dispatch({
           type: 'employeesManagement/fetchLocationList',
           payload: {
-            company: value
-          }
-        })
+            company: value,
+          },
+        });
         dispatch({
           type: 'employeesManagement/fetchDepartmentList',
           payload: {
-            company: value
-          }
-        })
+            company: value,
+          },
+        });
         dispatch({
           type: 'employeesManagement/fetchJobTitleList',
           payload: {
-            company: value
-          }
-        })
+            company: value,
+          },
+        });
         this.setState({
           isDisabled: false,
         });
         break;
       case 'location':
-        location.push(value)
+        location.push(value);
         this.setState({
-          location
-        })
+          location,
+        });
         break;
       case 'department':
-        department.push(value)
+        department.push(value);
         this.setState({
-          department
-        })
+          department,
+        });
         break;
       default:
         break;
-    }   
+    }
   };
-
-
 
   handleCancel = () => {
     const { handleCancel } = this.props;
@@ -123,6 +125,7 @@ class AddEmployeeForm extends Component {
       type: 'employeesManagement/addEmployee',
       payload: values,
     });
+    this.formRef.current.resetFields();
   };
 
   renderHeaderModal = () => {
@@ -137,7 +140,7 @@ class AddEmployeeForm extends Component {
   renderAddEmployeeForm = () => {
     const formLayout = {
       labelCol: { span: 8 },
-      wrapperCol: { span: 18 },
+      wrapperCol: { span: 16 },
     };
     const validateMessages = {
       required: '${label} is required!',
@@ -146,7 +149,13 @@ class AddEmployeeForm extends Component {
         number: '${label} is not a validate number!',
       },
     };
-    const { companyList, locationList, departmentList, jobTitleList, reportingManagerList } = this.props;
+    const {
+      companyList,
+      locationList,
+      departmentList,
+      jobTitleList,
+      reportingManagerList,
+    } = this.props;
     const { isDisabled, isDisabledManager } = this.state;
     return (
       <div className={styles.addEmployee__form}>
@@ -252,7 +261,7 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ type: 'email' }]}>
+          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ required: true }]}>
             <Select
               placeholder="Select Reporting Manager"
               showArrow
@@ -263,7 +272,9 @@ class AddEmployeeForm extends Component {
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
+                <Option key={item}>
+                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                </Option>
               ))}
             </Select>
           </Form.Item>
