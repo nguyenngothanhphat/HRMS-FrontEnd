@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 
-import { Row, Col, Layout, Button, Steps } from 'antd';
+import { Row, Col, Layout, Button, Steps, Result } from 'antd';
+import Authorized from '@/utils/Authorized';
+import { getAuthorityFromRouter } from '@/utils/utils';
 
 import { RightOutlined } from '@ant-design/icons';
 import logo from '../../public/assets/images/terralogic-logo.png';
@@ -10,6 +12,19 @@ import s from './CandidateLayout.less';
 
 const { Header, Content } = Layout;
 const { Step } = Steps;
+
+const noMatch = (
+  <Result
+    status={403}
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={
+      <Button type="primary">
+        <Link to="/login">Go Login</Link>
+      </Button>
+    }
+  />
+);
 
 const steps = [
   {
@@ -59,7 +74,16 @@ const getLineWidth = (value) => {
 };
 
 const CandidateLayout = (props) => {
-  const { children, currentStep, dispatch } = props;
+  const {
+    children,
+    currentStep,
+    dispatch,
+    location = {
+      pathname: '/',
+    },
+    route: { routes } = {},
+  } = props;
+
   const [current, setCurrent] = useState(currentStep);
   const [currentPage, setCurrentPage] = useState(10);
 
@@ -100,6 +124,10 @@ const CandidateLayout = (props) => {
     setCurrentPage((prevState) => prevState - 1);
   };
 
+  const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
+    authority: undefined,
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -122,36 +150,37 @@ const CandidateLayout = (props) => {
           </Button>
         </div>
       </Header>
+      <Authorized authority={authorized.authority} noMatch={noMatch}>
+        <Content className={s.main}>
+          <Row gutter={24}>
+            <Col md={5}>
+              <div className={s.stepContainer}>
+                <Steps current={current - 1} direction="vertical">
+                  {steps.map((item) => (
+                    <Step key={item.title} title={item.title} />
+                  ))}
+                </Steps>
+              </div>
 
-      <Content className={s.main}>
-        <Row gutter={24}>
-          <Col md={5}>
-            <div className={s.stepContainer}>
-              <Steps current={current - 1} direction="vertical">
-                {steps.map((item) => (
-                  <Step key={item.title} title={item.title} />
-                ))}
-              </Steps>
-            </div>
-
-            {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
+              {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
               Next
             </button> */}
-          </Col>
-          <Col md={19}>
-            {children}
-            <Row gutter={[24, 0]}>
-              <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                <BottomBar
-                  onClickPrev={prevScreen}
-                  onClickNext={nextScreen}
-                  currentPage={currentPage}
-                />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Content>
+            </Col>
+            <Col md={19}>
+              {children}
+              <Row gutter={[24, 0]}>
+                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                  <BottomBar
+                    onClickPrev={prevScreen}
+                    onClickNext={nextScreen}
+                    currentPage={currentPage}
+                  />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Content>
+      </Authorized>
     </div>
   );
 };
