@@ -3,14 +3,10 @@ import React, { PureComponent } from 'react';
 import { Collapse, Space, Checkbox, Typography, Upload, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import { connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
-  loading: loading.effects['candidateProfile/updateGeneralInfo'],
-}))
 class CollapseField extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,16 +19,19 @@ class CollapseField extends PureComponent {
 
   handleFile = (res) => {
     console.log(res);
+    const { isUpdated } = this.state;
     const { statusCode } = res;
     if (statusCode === 200) {
       this.setState({
-        isUpdated: !this.state.isUpdated,
+        isUpdated: !isUpdated,
       });
     }
   };
 
   render() {
     const { item = {}, loading } = this.props;
+    // console.log('loading', loading);
+    const { isUpdated } = this.state;
     return (
       <div className={styles.CollapseField}>
         <Collapse
@@ -61,7 +60,7 @@ class CollapseField extends PureComponent {
                 {item.data.map((name) => (
                   // <Row className={styles.checkboxItem}>
                   <>
-                    {!this.state.isUpdated ? (
+                    {!isUpdated ? (
                       <Row className={styles.checkboxItem}>
                         <Col span={18}>
                           <Typography.Text>{name.name}</Typography.Text>
@@ -70,7 +69,7 @@ class CollapseField extends PureComponent {
                           <UploadImage
                             content="Choose file"
                             getResponse={(res) => this.handleFile(res)}
-                            loading={loading}
+                            // loading={loading}
                           />
                         </Col>
                       </Row>

@@ -28,11 +28,11 @@ class ModalContentComponent extends PureComponent {
   }
 
   componentDidMount() {
-    const { isSentEmail, isMarkAsDone, email } = this.props;
+    const { isSentEmail, isMarkAsDone, privateEmail } = this.props;
     if (isSentEmail) {
       this.setState({
         content: {
-          header: `The form has been successfully sent to ${email} `,
+          header: `The form has been successfully sent to ${privateEmail} `,
           body: 'The copy of the form has also been mailed to you and the HR manager',
           image: img1,
           button: 'Ok',

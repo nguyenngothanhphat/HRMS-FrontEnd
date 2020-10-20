@@ -125,6 +125,7 @@ const DummyItem = [
 })
 class EligibilityDocs extends PureComponent {
   render() {
+    const { loading } = this.props;
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -140,6 +141,7 @@ class EligibilityDocs extends PureComponent {
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}
                       // eligibilityDocs={eligibilityDocs}
+                      loading={loading}
                     />
                   );
                 })}

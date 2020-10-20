@@ -1,7 +1,17 @@
+import { getById } from '@/services/candidate';
+import { dialog } from '@/utils/utils';
+
+import { getRookieInfo } from '@/services/formCandidate';
+
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 6,
+    currentStep: 1,
+    rookieId: '',
+    data: {
+      _id: '',
+    },
+    tempData: {},
     basicInformation: {
       fullName: '',
       privateEmail: '',
@@ -69,11 +79,64 @@ const candidateProfile = {
       salaryStatus: 2,
     },
   },
+  effects: {
+    *fetchCandidateInfo(_, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getRookieInfo);
+        const { data, statusCode } = response;
+        const { ticketID = '', _id } = data;
+        console.log('data', data);
+        if (statusCode !== 200) throw response;
+        const rookieId = ticketID;
+        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *fetchCandidateById({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        const dataObj = data.find((x) => x);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+  },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveOrigin(state, action) {
+      const { data } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          ...action.payload,
+        },
       };
     },
   },

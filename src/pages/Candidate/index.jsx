@@ -28,17 +28,33 @@ const _renderScreen = (screenNumber) => {
 };
 
 const Candidate = (props) => {
-  const { dispatch, currentStep } = props;
+  const { dispatch, currentStep, data: _id } = props;
   const [screen, setScreen] = useState(currentStep);
 
   useEffect(() => {
     setScreen(currentStep);
+    dispatch({
+      type: 'candidateProfile/fetchCandidateInfo',
+    });
+    // .then({statusCode} => {
+    //   if(statusCode===200){
+
+    //   }
+    // })
+    // dispatch({
+    //   type: 'candidateProfile/fetchCandidateById',
+    //   payload: {
+    //     candidate: _id,
+    //   },
+    // });
   }, [currentStep]);
 
   return <div>{_renderScreen(screen)}</div>;
 };
 
 // export default Candidate;
-export default connect(({ candidateProfile: { currentStep } = {} }) => ({
+export default connect(({ candidateProfile: { currentStep, data, tempData } = {} }) => ({
   currentStep,
+  data,
+  tempData,
 }))(Candidate);

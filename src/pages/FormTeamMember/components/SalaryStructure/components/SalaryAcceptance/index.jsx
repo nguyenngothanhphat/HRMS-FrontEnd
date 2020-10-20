@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
-import SendEmail from '../../../EligibilityDocs/components/SendEmail';
+import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
@@ -107,7 +107,7 @@ class SalaryAcceptance extends PureComponent {
     return (
       <div className={styles.salaryAcceptance}>
         <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
-        {salaryStatus === 2 ? <SendEmail /> : ''}
+        {salaryStatus === 2 ? <SendEmail formatMessage={formatMessage} /> : ''}
       </div>
     );
   }
