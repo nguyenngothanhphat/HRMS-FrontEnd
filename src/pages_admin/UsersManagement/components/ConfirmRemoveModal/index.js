@@ -28,7 +28,8 @@ class ConfirmRemoveModal extends Component {
   };
 
   render() {
-    const { visible = false, loading, user } = this.props;
+    const { visible = false, loading = false, user = [] } = this.props;
+    const { generalInfo: { firstName = '', lastName = '', employeeId = '' } = {} } = user;
     return (
       <div>
         <Modal
@@ -53,7 +54,7 @@ class ConfirmRemoveModal extends Component {
             </Button>,
           ]}
         >
-          Are you sure to remove &quot;{user.userId} - {user.fullName}&quot;?
+          Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
         </Modal>
       </div>
     );

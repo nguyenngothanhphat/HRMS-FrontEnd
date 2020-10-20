@@ -48,3 +48,10 @@ export async function addEmployee(payload) {
     data: payload,
   });
 }
+
+export async function getEmployeeDetailById(payload) {
+  return request('/api/employee/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

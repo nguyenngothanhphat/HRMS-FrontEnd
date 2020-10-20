@@ -8,6 +8,7 @@ import {
   getJobTitleList,
   getReportingManagerList,
   addEmployee,
+  getEmployeeDetailById,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -20,6 +21,7 @@ const employeesManagement = {
     departmentList: [],
     jobTitleList: [],
     reportingManagerList: [],
+    employeeDetail: [],
   },
   effects: {
     *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
@@ -89,7 +91,7 @@ const employeesManagement = {
     *fetchReportingManagerList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getReportingManagerList, payload);
-        const { statusCode, data: reportingManagerList = []  } = response;
+        const { statusCode, data: reportingManagerList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
@@ -104,6 +106,16 @@ const employeesManagement = {
         notification.success({
           message,
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchEmployeeDetail({ id = '' }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeDetailById, { id });
+        const { statusCode, data: employeeDetail = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeDetail } });
       } catch (errors) {
         dialog(errors);
       }

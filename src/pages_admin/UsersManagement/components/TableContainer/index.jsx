@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { NavLink, connect, formatMessage } from 'umi';
-import { FilterOutlined } from '@ant-design/icons';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableUsers from '../TableUsers';
@@ -9,14 +8,15 @@ import importUsers from '../../../../../public/assets/images/import.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingListActive: loading.effects['usersManagement/fetchListUsersActive'],
-  loadingListInActive: loading.effects['usersManagement/fetchListUsersInActive'],
-  usersManagement,
+@connect(({ loading, employee, employeesManagement }) => ({
+  loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
+  employee,
+  employeesManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
-    if ('usersManagement' in nextProps) {
+    if ('employee' in nextProps) {
       const { usersManagement: { filter = [] } = {} } = nextProps;
       let role = [];
       let company = [];
@@ -95,10 +95,13 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchListUsersActive',
+      type: 'employeesManagement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'usersManagement/fetchListUsersInActive',
+      type: 'employeesManagement/fetchInActiveEmployeesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
     });
   };
 
@@ -106,13 +109,13 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'usersManagement/fetchListUsersActive',
+        type: 'employeesManagement/fetchActiveEmployeesList',
         payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'usersManagement/fetchListUsersInActive',
+        type: 'employeesManagement/fetchInActiveEmployeesList',
         payload: params,
       });
     }
@@ -120,12 +123,12 @@ class TableContainer extends PureComponent {
 
   renderListUsers = (tabId) => {
     const {
-      usersManagement: { listUsersActive = [], listUsersInActive = [] },
+      employeesManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
-      return listUsersActive;
+      return activeEmployeesList;
     }
-    return listUsersInActive;
+    return inActiveEmployeesList;
   };
 
   handleToggle = () => {
@@ -147,7 +150,7 @@ class TableContainer extends PureComponent {
     });
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/ClearFilter',
+      type: 'employee/ClearFilter',
     });
     setTimeout(() => {
       this.setState({
@@ -178,7 +181,7 @@ class TableContainer extends PureComponent {
               collapsed ? '' : `${styles.filterBackgroundButton}`
             }`}
           >
-            <FilterOutlined />
+            <img src="/assets/images/iconFilter.svg" alt="filter" />
             <p className={styles.textButtonFilter}>Filter</p>
           </div>
         </div>

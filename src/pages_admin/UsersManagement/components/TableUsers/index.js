@@ -7,110 +7,11 @@ import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
 import styles from './index.less';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingUserProfile: loading.effects['usersManagement/fetchUserProfile'],
-  usersManagement,
+@connect(({ loading, employeesManagement }) => ({
+  loadingUserProfile: loading.effects['employeesManagement/fetchEmployeeDetail'],
+  employeesManagement,
 }))
 class TableUsers extends PureComponent {
-  columns = [
-    {
-      title: 'User ID',
-      dataIndex: 'userId',
-      width: '8%',
-      align: 'center',
-      defaultSortOrder: 'ascend',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.userId - b.userId,
-      },
-    },
-    {
-      title: 'Employee ID',
-      dataIndex: 'employeeId',
-      align: 'center',
-      width: '10%',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
-      },
-    },
-    {
-      title: 'Joined date',
-      dataIndex: 'joinedDate',
-      width: '10%',
-      align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
-      },
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      width: '18%',
-      align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.email.localeCompare(b.email),
-      },
-    },
-    {
-      title: 'Full name',
-      dataIndex: 'fullName',
-      align: 'center',
-    },
-    {
-      title: 'Role',
-      dataIndex: 'role',
-      align: 'center',
-    },
-    {
-      title: 'Location',
-      dataIndex: 'location',
-      align: 'center',
-    },
-    {
-      title: 'Company',
-      dataIndex: 'company',
-      align: 'center',
-    },
-    {
-      title: 'Password',
-      dataIndex: 'password',
-      width: '10%',
-      align: 'center',
-      render: (text, record) => (
-        <div className={styles.userPasswordReset}>
-          <span className={styles.userPassword}>*******</span>
-          <div onClick={(e) => this.resetPassword(record, e)}>
-            <span>RESET</span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      align: 'center',
-      render: (text) => <span style={{ fontWeight: '500' }}>{text}</span>,
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      width: '6%',
-      align: 'center',
-      render: (text, record) => (
-        <div className={styles.userAction}>
-          <UserOutlined onClick={(e) => this.editUser(record, e)} className={styles.editUserBtn} />
-          <DeleteOutlined
-            onClick={(e) => this.deleteUser(record, e)}
-            className={styles.deleteUserBtn}
-          />
-        </div>
-      ),
-    },
-  ];
-
   constructor(props) {
     super(props);
     this.state = {
@@ -123,15 +24,128 @@ class TableUsers extends PureComponent {
     };
   }
 
+  generateColumns = () => {
+    const columns = [
+      {
+        title: 'User ID',
+        dataIndex: 'userId',
+        width: '8%',
+        align: 'left',
+        // defaultSortOrder: 'ascend',
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => a.userId - b.userId,
+        // },
+        render: () => <span>User ID</span>,
+      },
+      {
+        title: 'Employee ID',
+        dataIndex: 'generalInfo',
+        align: 'left',
+        width: '10%',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
+        // },
+      },
+      {
+        title: 'Joined date',
+        dataIndex: 'joinedDate',
+        width: '10%',
+        align: 'left',
+        render: () => <span>Aug-7,20</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
+        // },
+      },
+      {
+        title: 'Email',
+        dataIndex: 'generalInfo',
+        width: '18%',
+        align: 'left',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => a.email.localeCompare(b.email),
+        // },
+      },
+      {
+        title: 'Full name',
+        dataIndex: 'generalInfo',
+        align: 'left',
+        render: (generalInfo) =>
+          generalInfo ? <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span> : '',
+      },
+      {
+        title: 'Role',
+        dataIndex: 'role',
+        align: 'left',
+      },
+      {
+        title: 'Location',
+        dataIndex: 'location',
+        align: 'left',
+        render: (location) => <span>{location ? location.name : ''}</span>,
+      },
+      {
+        title: 'Company',
+        dataIndex: 'company',
+        align: 'left',
+        render: (company) => <span>{company ? company.name : ''}</span>,
+      },
+      {
+        title: 'Password',
+        dataIndex: '_id',
+        width: '10%',
+        align: 'left',
+        render: (_id) => (
+          <div className={styles.userPasswordReset}>
+            <span className={styles.userPassword}>*******</span>
+            <div onClick={(e) => this.resetPassword(_id, e)}>
+              <span>RESET</span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        align: 'left',
+        render: (text) => <span style={{ fontWeight: '500' }}>{text}</span>,
+      },
+      {
+        title: 'Action',
+        dataIndex: '_id',
+        width: '6%',
+        align: 'left',
+        render: (_id) => (
+          <div className={styles.userAction}>
+            <UserOutlined onClick={(e) => this.editUser(_id, e)} className={styles.editUserBtn} />
+            <DeleteOutlined
+              onClick={(e) => this.deleteUser(_id, e)}
+              className={styles.deleteUserBtn}
+            />
+          </div>
+        ),
+      },
+    ];
+    return columns.map((col) => ({
+      ...col,
+      title: col.title,
+    }));
+  };
+
   editUser = (record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchUserProfile',
-      payload: record.userId,
+      type: 'employeesManagement/fetchEmployeeDetail',
+      id: record,
     });
     this.setState({
       editModalVisible: true,
-      selectedUserId: record.userId,
+      selectedUserId: record,
     });
   };
 
@@ -146,11 +160,11 @@ class TableUsers extends PureComponent {
   deleteUser = (record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchUserProfile',
-      payload: record.userId,
+      type: 'employeesManagement/fetchEmployeeDetail',
+      id: record,
     });
     this.setState({
-      selectedUserId: record.userId,
+      selectedUserId: record,
       deleteConfirmModalVisible: true,
     });
   };
@@ -163,13 +177,14 @@ class TableUsers extends PureComponent {
   };
 
   resetPassword = (record) => {
+    console.log('id', record);
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchUserProfile',
-      payload: record.userId,
+      type: 'employeesManagement/fetchEmployeeDetail',
+      id: record,
     });
     this.setState({
-      selectedUserId: record.userId,
+      selectedUserId: record,
       resetPasswordModalVisible: true,
     });
   };
@@ -205,6 +220,7 @@ class TableUsers extends PureComponent {
 
   render() {
     const { data = [], loading, loadingUserProfile } = this.props;
+    // console.log('data', data);
     const {
       pageSelected,
       selectedRowKeys,
@@ -243,21 +259,22 @@ class TableUsers extends PureComponent {
     };
 
     const {
-      usersManagement: { listUserProfile = [] },
+      employeesManagement: { employeeDetail = [] },
     } = this.props;
 
+    console.log('employeeDetail', employeeDetail);
     return (
       <div className={styles.tableUsers}>
         {!loadingUserProfile && selectedUserId && editModalVisible && (
           <EditUserModal
-            user={listUserProfile}
+            user={employeeDetail}
             editModalVisible={editModalVisible}
             closeEditModal={this.closeEditModal}
           />
         )}
         {!loadingUserProfile && selectedUserId && deleteConfirmModalVisible && (
           <ConfirmRemoveModal
-            user={listUserProfile}
+            user={employeeDetail}
             titleModal="Remove User Confirm"
             visible={deleteConfirmModalVisible}
             handleCancel={this.closeConfirmRemoveModal}
@@ -265,7 +282,7 @@ class TableUsers extends PureComponent {
         )}
         {!loadingUserProfile && selectedUserId && resetPasswordModalVisible && (
           <ResetPasswordModal
-            user={listUserProfile}
+            user={employeeDetail}
             titleModal="Reset Password"
             visible={resetPasswordModalVisible}
             handleCancel={this.closeResetPasswordModal}
@@ -276,10 +293,10 @@ class TableUsers extends PureComponent {
           loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
-          columns={this.columns}
+          columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey="userId"
+          rowKey={(record) => record._id}
           // onChange={this.onSortChange}
         />
       </div>

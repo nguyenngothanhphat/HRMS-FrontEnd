@@ -30,6 +30,9 @@ class ResetPasswordModal extends Component {
 
   render() {
     const { visible = false, loading, user } = this.props;
+    const {
+      generalInfo: { firstName = '', lastName = '', employeeId = '', workEmail = '' } = {},
+    } = user;
     return (
       <div>
         <Modal
@@ -56,10 +59,11 @@ class ResetPasswordModal extends Component {
         >
           <div className={styles.resetPasswordContent}>
             <p>
-              Are you sure to reset the password of &quot;{user.userId} - {user.fullName}&quot;?
+              Are you sure to reset the password of &quot;{employeeId} - {firstName} {lastName}
+              &quot;?
             </p>
             <Space direction="horizontal">
-              <Input disabled defaultValue={user.email} />
+              <Input disabled defaultValue={workEmail} />
               <Input.Password
                 placeholder="input password"
                 defaultValue="12345678@Tc"
