@@ -83,7 +83,7 @@ class EditUserModal extends PureComponent {
               remember: true,
               userId,
               employeeId,
-              joinDate: moment(joinDate, dateFormat),
+              joinDate: moment(joinDate),
               workEmail,
               fullName,
               role,
@@ -111,9 +111,7 @@ class EditUserModal extends PureComponent {
               name="joinDate"
               rules={[{ required: true, message: 'Please input!' }]}
             >
-              {/* <Space direction="vertical" size={12}> */}
               <DatePicker disabled format={dateFormat} />
-              {/* </Space> */}
             </Form.Item>
             <Form.Item
               label="Email"
