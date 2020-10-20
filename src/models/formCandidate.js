@@ -25,7 +25,7 @@ const info = {
   namespace: 'info',
   state: {
     rookieId: '',
-
+    processStatus: '',
     basicInformation: {
       fullName: '',
       privateEmail: '',
@@ -319,7 +319,7 @@ const info = {
         const { data } = response;
         const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, _id } });
+        yield put({ type: 'save', payload: { rookieId, _id, processStatus: 'DRAFT' } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);

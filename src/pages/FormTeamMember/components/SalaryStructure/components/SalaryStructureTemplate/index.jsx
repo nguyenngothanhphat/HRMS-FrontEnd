@@ -1,12 +1,19 @@
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button, Input } from 'antd';
+import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
 import { formatMessage } from 'umi';
 
 import styles from './index.less';
 
+const DRAFT = 'DRAFT';
+const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
+const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
+const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
+const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
+
 export default class SalaryStructureTemplate extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       isEditted: false,
       tableData: [
@@ -260,6 +267,66 @@ export default class SalaryStructureTemplate extends PureComponent {
     );
   };
 
+  _renderStatus = () => {
+    // const { checkMandatory } = this.props;
+    // const { filledBasicInformation } = checkMandatory;
+    // return !filledBasicInformation ? (
+    //   <div className={styles.normalText}>
+    //     <div className={styles.redText}>*</div>
+    //     {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+    //   </div>
+    // ) : (
+    //   <div className={styles.greenText}>
+    //     * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+    //   </div>
+    // );
+    return (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    // const { checkMandatory } = this.props;
+    // const { filledBasicInformation } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              {/* <Button
+                type="primary"
+                htmlType="submit"
+                // onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledBasicInformation}
+              >
+                Next
+              </Button> */}
+              <Button
+                type="primary"
+                htmlType="submit"
+                // onClick={this.onClickNext}
+                className={styles.bottomBar__button__primary}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const { Option } = Select;
     const { salaryTemplate, tableData } = this.state;
@@ -290,6 +357,7 @@ export default class SalaryStructureTemplate extends PureComponent {
             />
           </div>
           {this._renderFooter()}
+          {this._renderBottomBar()}
         </Form>
       </div>
     );

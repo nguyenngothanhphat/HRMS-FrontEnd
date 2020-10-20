@@ -9,6 +9,12 @@ import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
 
+const DRAFT = 'DRAFT';
+const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
+const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
+const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
+const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
+
 @connect(({ info: { salaryStructure = {}, checkMandatory = {} } = {} }) => ({
   salaryStructure,
   checkMandatory,
