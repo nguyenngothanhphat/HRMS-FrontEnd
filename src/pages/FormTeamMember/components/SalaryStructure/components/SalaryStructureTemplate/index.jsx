@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button } from 'antd';
+import { Select, Form, Table, Button, Input } from 'antd';
 import { formatMessage } from 'umi';
 
 import styles from './index.less';
@@ -11,74 +11,64 @@ export default class SalaryStructureTemplate extends PureComponent {
       isEditted: false,
       tableData: [
         {
-          shortName: 'A',
+          key: 'basic',
           title: 'Basic',
-          value: 'RS.12888',
-          isActive: false,
-          isEnableToEdit: true,
+          value: 'Rs. 12888',
+          order: 'A',
         },
         {
-          shortName: 'B',
+          key: 'hra',
           title: 'HRA',
           value: '50% of Basic',
-          isActive: false,
-          isEnableToEdit: true,
+          order: 'B',
         },
         {
-          shortName: 'C',
           title: 'Other allowances',
+          key: 'otherAllowances',
           value: 'Balance amount',
-          isActive: false,
-          isEnableToEdit: false,
+          order: 'C',
         },
         {
-          shortName: 'D',
+          key: 'totalEarning',
           title: 'Total earning (Gross)',
+          order: 'D',
           value: 'A + B + C',
-          isActive: true,
-          isEnableToEdit: false,
         },
         {
-          shortName: '',
-          title: 'Deductions',
-          value: '',
-          isActive: true,
-          isEnableToEdit: false,
+          key: 'deduction',
+          title: 'Deduction',
+          order: 'E',
+          value: ' ',
         },
         {
-          shortName: 'G',
-          title: `Employee's DF`,
-          value: '12% of Basic',
-          isActive: false,
-          isEnableToEdit: true,
+          key: 'employeesPF',
+          title: "Employee's PF",
+          value: '12 % of Basic',
+          order: 'G',
         },
         {
-          shortName: 'H',
-          title: `Employee's ESI`,
-          value: '0.75% of Gross',
-          isActive: false,
-          isEnableToEdit: true,
+          key: 'employeesESI',
+          title: "Employee's ESI",
+          value: '0.75 of Gross',
+          order: 'H',
         },
         {
-          shortName: 'I',
+          key: 'professionalTax',
           title: 'Professional Tax',
           value: 'Rs.200',
-          isActive: false,
-          isEnableToEdit: false,
+          order: 'I',
         },
         {
-          shortName: 'J',
+          key: 'tds',
           title: 'TDS',
           value: 'As per IT rules',
-          isActive: false,
-          isEnableToEdit: false,
+          order: 'J',
         },
         {
-          shortName: null,
-          title: 'Net payment',
+          key: 'netPayment',
+          title: 'Net Payment',
           value: 'F - (G + H + I + J)',
-          isActive: true,
-          isEnableToEdit: false,
+          order: ' ',
         },
       ],
       salaryTemplate: [
@@ -106,14 +96,64 @@ export default class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  _renderTableTitle = (shortName) => {
+  // componentDidMount = () => {
+  //   const { tableData } = this.state;
+  //   const newTableData = [...tableData];
+  //   console.log(newTableData);
+  // };
+
+  onFinish = (values) => {
     const { tableData } = this.state;
-    const data = tableData.find((item) => item.shortName === shortName);
-    const { isActive, title } = data;
+    console.log(values, tableData);
+  };
+
+  onClickEdit = () => {
+    const { isEditted } = this.state;
+    this.setState({
+      isEditted: !isEditted,
+    });
+  };
+
+  onClickSubmit = () => {
+    const { isEditted } = this.state;
+    this.setState({
+      isEditted: !isEditted,
+    });
+  };
+
+  isBlueText = (order) => {
+    const orderNonDisplay = ['D', 'E', ' '];
+    return orderNonDisplay.includes(order);
+  };
+
+  isEditted = (order) => {
+    const orderNonDisplay = ['A', 'B', 'G', 'H'];
+    return orderNonDisplay.includes(order);
+  };
+
+  handleChange = (e) => {
+    const { tableData } = this.state;
+    const { target } = e;
+    const { name, value } = target;
+
+    const tempTableData = [...tableData];
+    const index = tempTableData.findIndex((data) => data.key === name);
+
+    tempTableData[index].value = value;
+
+    this.setState({
+      tableData: tempTableData,
+    });
+  };
+
+  _renderTableTitle = (order) => {
+    const { tableData } = this.state;
+    const data = tableData.find((item) => item.order === order);
+    const { title } = data;
     return (
       <span
-        className={`${isActive === true ? `blue-text` : null} ${
-          shortName === null ? `big-text` : null
+        className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
+          data.order === ' ' ? `big-text` : null
         }`}
       >
         {title}
@@ -121,46 +161,58 @@ export default class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  _renderTableValue = (shortName) => {
+  _renderTableValue = (order) => {
     const { tableData, isEditted } = this.state;
-    const data = tableData.find((item) => item.shortName === shortName);
-    const { isActive, value } = data;
-    if (!isEditted) {
+    const data = tableData.find((item) => item.order === order);
+    const { value, key } = data;
+    if (this.isEditted(order) && isEditted) {
       return (
-        <span
-          className={`${isActive === true ? `blue-text` : null} ${
-            shortName === null ? `big-text` : null
-          }`}
-        >
-          {value}
-        </span>
+        <Form.Item name={key} className={styles.formInput}>
+          <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
+        </Form.Item>
       );
     }
-    return 'input';
+    return (
+      <span
+        className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
+          data.order === ' ' ? `big-text` : null
+        }`}
+      >
+        {value}
+      </span>
+    );
+  };
+
+  _renderTableOrder = (order) => {
+    if (order === 'E') {
+      return ' ';
+    }
+    return order;
   };
 
   _renderColumns = () => {
     const columns = [
       {
         title: '',
-        dataIndex: 'shortName',
+        dataIndex: 'order',
         key: 'title',
         width: '40%',
-        render: (shortName) => this._renderTableTitle(shortName),
+        render: (order) => this._renderTableTitle(order),
       },
       {
         title: '',
-        dataIndex: 'shortName',
-        key: 'shortName',
+        dataIndex: 'order',
+        key: 'order',
         width: '10%',
+        render: (order) => this._renderTableOrder(order),
       },
       {
         title: '',
-        dataIndex: 'shortName',
+        dataIndex: 'order',
         key: 'value',
         className: 'thirdColumn',
         width: '50%',
-        render: (shortName) => this._renderTableValue(shortName),
+        render: (order) => this._renderTableValue(order),
       },
       // {
       //   title: 'Action',
@@ -194,31 +246,18 @@ export default class SalaryStructureTemplate extends PureComponent {
     const { isEditted } = this.state;
     return (
       <Form.Item>
+        {' '}
         {isEditted === true ? (
-          <Button htmlType="submit" type="primary" onClick={this.onClickEdit}>
+          <Button type="primary" onClick={this.onClickEdit}>
             Done
           </Button>
         ) : (
-          <Button type="primary" onClick={this.onClickEdit}>
+          <Button htmlType="submit" type="primary" onClick={this.onClickEdit}>
             Edit
           </Button>
         )}
       </Form.Item>
     );
-  };
-
-  onClickEdit = () => {
-    const { isEditted } = this.state;
-    this.setState({
-      isEditted: !isEditted,
-    });
-  };
-
-  onClickSubmit = () => {
-    const { isEditted } = this.state;
-    this.setState({
-      isEditted: !isEditted,
-    });
   };
 
   render() {
@@ -233,7 +272,7 @@ export default class SalaryStructureTemplate extends PureComponent {
               <Select size="large" style={{ width: 280 }}>
                 {salaryTemplate.map((template) => {
                   return (
-                    <Option key={template.shortName} value={template.value}>
+                    <Option key={template.order} value={template.value}>
                       {template.name}
                     </Option>
                   );
@@ -246,7 +285,7 @@ export default class SalaryStructureTemplate extends PureComponent {
             <Table
               dataSource={tableData}
               columns={this._renderColumns()}
-              size="middle"
+              // size="large"
               pagination={false}
             />
           </div>
