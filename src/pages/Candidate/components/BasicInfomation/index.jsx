@@ -15,14 +15,6 @@ import styles from './index.less';
   tempData,
 }))
 class BasicInformation extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isOpenReminder: false,
-    };
-  }
-
   static getDerivedStateFromProps(props) {
     if ('data' in props) {
       return {
@@ -57,7 +49,7 @@ class BasicInformation extends PureComponent {
       checkStatus.filledBasicInformation = false;
     }
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
         tempData: {
           ...tempData,
@@ -76,21 +68,21 @@ class BasicInformation extends PureComponent {
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
         currentStep: currentStep + 1,
       },
     });
-    dispatch({
-      type: 'candidateInfo/updateByHR',
-      payload: {
-        fullName: values.fullName,
-        privateEmail: values.privateEmail,
-        workEmail: values.workEmail,
-        previousExperience: values.previousExperience,
-        candidate: _id,
-      },
-    });
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     fullName: values.fullName,
+    //     privateEmail: values.privateEmail,
+    //     workEmail: values.workEmail,
+    //     previousExperience: values.previousExperience,
+    //     candidate: _id,
+    //   },
+    // });
   };
 
   _renderForm = () => {
