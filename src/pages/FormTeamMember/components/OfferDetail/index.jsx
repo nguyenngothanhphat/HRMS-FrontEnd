@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 
-import { Radio, Select, Checkbox } from 'antd';
+import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
 import { currencyArr, timeoffArr, fileArr } from './mockData';
@@ -16,62 +16,102 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, offerDetail } = props;
-
-  // Get default value from "info" store
+  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const [form] = Form.useForm();
+  // Get default value from "candidateInfo" store
   const {
+    compensationType: compensationProp,
+    amountIn: currencyProp,
+    timeOffPolicy: timeoffProp,
+    hiringAgreements: agreementProp,
+    companyHandbook: handbookProp,
+    template: templateProp,
     includeOffer: includeOfferProp,
-    file: fileProp,
-    // agreement: agreementProp,
-    // handbook: handbookProp,
-    currency: currencyProp,
-    timeoff: timeoffProp,
-    compensation: compensationProp,
-  } = offerDetail;
+  } = tempData;
 
-  const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
-  const [file, setFile] = useState(fileProp);
-  const [agreement, setAgreement] = useState(true);
-  const [handbook, setHandbook] = useState(true);
-  const [compensation, setCompensation] = useState(compensationProp);
-  const [currency, setCurrency] = useState(currencyProp);
-  const [timeoff, setTimeoff] = useState(timeoffProp);
-  const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
+  // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
+  const [file, setFile] = useState(templateProp || '');
+  const [agreement, setAgreement] = useState(agreementProp);
+  const [handbook, setHandbook] = useState(handbookProp);
+  // const [compensation, setCompensation] = useState(compensationProp);
+  // const [currency, setCurrency] = useState(currencyProp);
+  // const [timeoff, setTimeoff] = useState(timeoffProp);
+  // const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
+  const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
-  // Trigger dispatch save changes to "info" store
-  useEffect(() => {
+  const checkAllFieldsValid = (allFieldsValues) => {
+    const keys = Object.keys(allFieldsValues);
+    let valid = true;
+    keys.map((key) => {
+      const value = allFieldsValues[key];
+      if (value === null || value === undefined || value.length === 0) {
+        valid = false;
+      }
+      return null;
+    });
+
+    setAllFieldsFilled(valid);
+
     if (dispatch) {
       dispatch({
-        type: 'info/save',
+        type: 'candidateInfo/save',
         payload: {
-          offerDetail: {
-            ...offerDetail,
-            includeOffer,
-            file,
-            agreement,
-            handbook,
-            currency,
-            compensation,
-            timeoff,
+          checkMandatory: {
+            ...checkMandatory,
+            filledOfferDetail: valid,
           },
         },
       });
     }
-  }, [includeOffer, file, agreement, handbook, compensation, currency, timeoff]);
-
-  const handleRadio = (e) => {
-    const { value } = e.target;
-    setIncludeOffer(value);
+    return valid;
   };
 
-  const handleTimeoffChange = (value) => {
-    if (value === 'can not') {
+  const handleFormChange = (changedValues, allFieldsValues) => {
+    const { includeOffer, compensation, currency, timeoff } = allFieldsValues;
+
+    if (timeoff === 'can not') {
       setDisplayTimeoffAlert(true);
     } else {
       setDisplayTimeoffAlert(false);
     }
-    setTimeoff(value);
+
+    checkAllFieldsValid(allFieldsValues);
+
+    if (!dispatch) {
+      return;
+    }
+
+    const { _id = '' } = data;
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          includeOffer,
+          compensationType: compensation,
+          amountIn: currency,
+          timeOffPolicy: timeoff,
+          hiringAgreements: agreement,
+          companyHandbook: handbook,
+          template: file,
+          candidate: _id,
+        },
+      },
+    });
   };
+
+  useEffect(() => {
+    const formValues = form.getFieldsValue();
+    checkAllFieldsValid({ ...formValues, agreement, handbook });
+  }, []);
+
+  useEffect(() => {
+    const allFormValues = form.getFieldsValue();
+    handleFormChange(null, allFormValues);
+    checkAllFieldsValid(allFormValues);
+  }, [file, agreement, handbook]);
 
   const handleFileChange = (value) => {
     setFile(value);
@@ -85,160 +125,239 @@ const OfferDetail = (props) => {
     setHandbook((prevState) => !prevState);
   };
 
-  const handleCurrencyChange = (value) => {
-    setCurrency(value);
+  const onClickNext = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    const { _id = '' } = data;
+    const formValues = form.getFieldsValue();
+    const { compensation, currency, timeoff } = formValues;
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        compensationType: compensation,
+        amountIn: currency,
+        timeOffPolicy: timeoff,
+        hiringAgreements: agreement,
+        companyHandbook: handbook,
+        candidate: _id,
+      },
+    });
   };
 
-  const handleCompensationChange = (value) => {
-    setCompensation(value);
+  const _renderStatus = () => {
+    return !allFieldsFilled ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  const _renderBottomBar = () => {
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{_renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                onClick={onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !allFieldsFilled ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!allFieldsFilled}
+              >
+                Proceed
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   return (
-    <div className={styles.offerDetailContainer}>
-      <div className={styles.offerDetail}>
-        <div className={styles.top}>
-          <h3 className={styles.header}>{formatMessage({ id: 'component.offerDetail.title' })}</h3>
+    <Form
+      form={form}
+      initialValues={{
+        includeOffer: includeOfferProp,
+        agreement: agreementProp,
+        compensation: compensationProp,
+        handbook: handbookProp,
+        currency: currencyProp,
+        timeoff: timeoffProp,
+      }}
+      onValuesChange={handleFormChange}
+    >
+      <div className={styles.offerDetailContainer}>
+        <div className={styles.offerDetail}>
+          <div className={styles.top}>
+            <h3 className={styles.header}>
+              {formatMessage({ id: 'component.offerDetail.title' })}
+            </h3>
 
-          <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
-        </div>
-
-        <div className={styles.middle}>
-          <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
-
-          <Radio.Group onChange={handleRadio} value={includeOffer} className={styles.radioGroup}>
-            <Radio value={false}>{formatMessage({ id: 'component.offerDetail.notInclude' })}</Radio>
-            <Radio value>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
-          </Radio.Group>
-
-          <div className={styles.wrapper1}>
-            <Select
-              value={
-                <>
-                  <FileIcon type={getFileType(file)} />
-                  {file}
-                </>
-              }
-              className={styles.select}
-              onChange={(value) => handleFileChange(value)}
-            >
-              {fileArr.map(({ name }, index) => (
-                <Option value={name} key={index}>
-                  <div className={styles.iconWrapper}>
-                    <span>{name}</span>
-                  </div>
-                </Option>
-              ))}
-            </Select>
-
-            <Alert display type="remind" header="reminder">
-              <p>
-                {formatMessage({ id: 'component.offerDetail.alertContent1' })}
-                <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
-                {formatMessage({ id: 'component.offerDetail.alertContent2' })}
-              </p>
-            </Alert>
+            <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
           </div>
 
-          <p className={styles.agreement}>
-            {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
-          </p>
+          <div className={styles.middle}>
+            <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
 
-          <Checkbox
-            disabled
-            className="checkbox"
-            checked={agreement}
-            onChange={(e) => handleAgreementChange(e.target.value)}
-          >
-            {formatMessage({ id: 'component.offerDetail.agreement' })}
-          </Checkbox>
+            <Form.Item name="includeOffer">
+              <Radio.Group className={styles.radioGroup}>
+                <Radio value={false}>
+                  {formatMessage({ id: 'component.offerDetail.notInclude' })}
+                </Radio>
+                <Radio value>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
+              </Radio.Group>
+            </Form.Item>
 
-          <p className={styles.handbook}>
-            {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
-          </p>
-
-          <Checkbox
-            disabled
-            checked={handbook}
-            onChange={(e) => handleHandbookChange(e.target.value)}
-          >
-            {formatMessage({ id: 'component.offerDetail.handbook' })}
-          </Checkbox>
-
-          <div className={styles.wrapper2}>
-            <div className={styles.compensationWrapper}>
-              <p className={styles.compensation}>
-                {formatMessage({ id: 'component.offerDetail.compensationTitle' })}
-              </p>
-
+            <div className={styles.wrapper1}>
               <Select
+                value={
+                  <>
+                    <FileIcon type={getFileType(file)} />
+                    {file}
+                  </>
+                }
                 className={styles.select}
-                value={compensation}
-                onChange={(value) => handleCompensationChange(value)}
+                onChange={(value) => handleFileChange(value)}
               >
-                <Option value="salary">Salary</Option>
-                <Option value="salary2">Salary2</Option>
-                <Option value="salary3">Salary3</Option>
+                {fileArr.map(({ name }, index) => (
+                  <Option value={name} key={index}>
+                    <div className={styles.iconWrapper}>
+                      <span>{name}</span>
+                    </div>
+                  </Option>
+                ))}
               </Select>
+
+              <Alert display type="remind" header="reminder">
+                <p>
+                  {formatMessage({ id: 'component.offerDetail.alertContent1' })}
+                  <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
+                  {formatMessage({ id: 'component.offerDetail.alertContent2' })}
+                </p>
+              </Alert>
             </div>
-            <Alert display type="info">
-              <p>
-                {formatMessage({ id: 'component.offerDetail.alertContent3' })}
-                <a> {formatMessage({ id: 'component.offerDetail.alertContent4' })}</a>
-              </p>
-            </Alert>
-          </div>
 
-          <p className={styles.amount}>
-            {formatMessage({ id: 'component.offerDetail.amountTitle' })}
-          </p>
+            <p className={styles.agreement}>
+              {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
+            </p>
 
-          <Select
-            className={styles.select}
-            value={currency}
-            onChange={(value) => handleCurrencyChange(value)}
-          >
-            {currencyArr.map(({ name, value }, index) => (
-              <Option value={value} key={index}>
-                {name}
-              </Option>
-            ))}
-          </Select>
+            <Checkbox
+              className="checkbox"
+              checked={agreement}
+              onChange={(e) => handleAgreementChange(e.target.value)}
+            >
+              {formatMessage({ id: 'component.offerDetail.agreement' })}
+            </Checkbox>
 
-          <div className={styles.wrapper3}>
-            <div className={styles.timeoffWrapper}>
-              <p className={styles.timeoff}>
-                {' '}
-                {formatMessage({ id: 'component.offerDetail.timeoffTitle' })}
-              </p>
+            <p className={styles.handbook}>
+              {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
+            </p>
 
-              <Select
-                value={timeoff}
-                className={styles.select}
-                onChange={(value) => handleTimeoffChange(value)}
-              >
-                {timeoffArr.map(({ name, value }, index) => (
+            <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
+              {formatMessage({ id: 'component.offerDetail.handbook' })}
+            </Checkbox>
+
+            <div className={styles.wrapper2}>
+              <div className={styles.compensationWrapper}>
+                <p className={styles.compensation}>
+                  {formatMessage({ id: 'component.offerDetail.compensationTitle' })}
+                </p>
+
+                <Form.Item name="compensation">
+                  <Select className={styles.select}>
+                    <Option value="salary">Salary</Option>
+                    <Option value="salary2">Salary2</Option>
+                    <Option value="salary3">Salary3</Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <Alert display type="info">
+                <p>
+                  {formatMessage({ id: 'component.offerDetail.alertContent3' })}
+                  <a> {formatMessage({ id: 'component.offerDetail.alertContent4' })}</a>
+                </p>
+              </Alert>
+            </div>
+
+            <p className={styles.amount}>
+              {formatMessage({ id: 'component.offerDetail.amountTitle' })}
+            </p>
+
+            <Form.Item name="currency">
+              <Select className={styles.select}>
+                {currencyArr.map(({ name, value }, index) => (
                   <Option value={value} key={index}>
                     {name}
                   </Option>
                 ))}
               </Select>
-            </div>
+            </Form.Item>
 
-            <Alert display={displayTimeoffAlert} type="caution">
-              <p>{formatMessage({ id: 'component.offerDetail.alertContent5' })}</p>
-            </Alert>
+            <div className={styles.wrapper3}>
+              <div className={styles.timeoffWrapper}>
+                <p className={styles.timeoff}>
+                  {' '}
+                  {formatMessage({ id: 'component.offerDetail.timeoffTitle' })}
+                </p>
+
+                <Form.Item name="timeoff">
+                  <Select className={styles.select}>
+                    {timeoffArr.map(({ name, value }, index) => (
+                      <Option value={value} key={index}>
+                        {name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+
+              <Alert display={displayTimeoffAlert} type="caution">
+                <p>{formatMessage({ id: 'component.offerDetail.alertContent5' })}</p>
+              </Alert>
+            </div>
           </div>
+
+          {_renderBottomBar()}
+        </div>
+
+        <div className={styles.rightCol}>
+          <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} />
+          <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} />
         </div>
       </div>
-
-      <div className={styles.rightCol}>
-        <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} />
-        <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} />
-      </div>
-    </div>
+    </Form>
   );
 };
 
-export default connect(({ info: { offerDetail = {} } = {} }) => ({
-  offerDetail,
-}))(OfferDetail);
+// export default connect(({ info: { offerDetail = {} } = {} }) => ({
+//   offerDetail,
+// }))(OfferDetail);
+export default connect(
+  ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+    data,
+    checkMandatory,
+    currentStep,
+    tempData,
+  }),
+)(OfferDetail);

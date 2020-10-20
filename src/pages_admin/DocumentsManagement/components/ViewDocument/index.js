@@ -41,9 +41,9 @@ class ViewDocument extends PureComponent {
 
   render() {
     const { onBackClick, data } = this.props;
-    console.log('data', data);
     const { numPages } = this.state;
 
+    const { key = '', employeeGroup = '', employee = '', attachment: { url = '' } = {} } = data;
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -60,24 +60,30 @@ class ViewDocument extends PureComponent {
             <Col xs={24} md={15}>
               {/* DOCUMENT VIEWER FRAME */}
               <div className={styles.documentPreviewFrame}>
-                <Document
-                  className={styles.pdfFrame}
-                  onLoadSuccess={this.onDocumentLoadSuccess}
-                  // eslint-disable-next-line no-console
-                  onLoadError={console.error}
-                  file="/assets/files/sample_2.pdf"
-                  loading=""
-                  noData="Document Not Found"
-                >
-                  {Array.from(new Array(numPages), (el, index) => (
-                    <Page
-                      loading=""
-                      className={styles.pdfPage}
-                      key={`page_${index + 1}`}
-                      pageNumber={index + 1}
-                    />
-                  ))}
-                </Document>
+                {identifyImageOrPdf(url) === 0 ? (
+                  <div className={styles.imageFrame}>
+                    <img alt="preview" src={url} />
+                  </div>
+                ) : (
+                  <Document
+                    className={styles.pdfFrame}
+                    onLoadSuccess={this.onDocumentLoadSuccess}
+                    // eslint-disable-next-line no-console
+                    onLoadError={console.error}
+                    file={url}
+                    loading=""
+                    noData="Document Not Found"
+                  >
+                    {Array.from(new Array(numPages), (el, index) => (
+                      <Page
+                        loading=""
+                        className={styles.pdfPage}
+                        key={`page_${index + 1}`}
+                        pageNumber={index + 1}
+                      />
+                    ))}
+                  </Document>
+                )}
               </div>
             </Col>
             <Col xs={0} md={1} />
@@ -89,7 +95,7 @@ class ViewDocument extends PureComponent {
                     Document Name
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    {data.documentName}
+                    {key}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -97,7 +103,7 @@ class ViewDocument extends PureComponent {
                     Document Type
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    {data.documentType}
+                    {employeeGroup}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -105,7 +111,7 @@ class ViewDocument extends PureComponent {
                     User ID
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    {data.userId}
+                    {employee}
                   </Col>
                 </Row>
                 <Row className={styles.infoRow}>
@@ -113,15 +119,7 @@ class ViewDocument extends PureComponent {
                     Uploaded By
                   </Col>
                   <Col className={styles.infoCol2} span={14}>
-                    {data.uploadedBy}
-                  </Col>
-                </Row>
-                <Row className={styles.infoRow}>
-                  <Col className={styles.infoCol1} span={10}>
-                    Document Info
-                  </Col>
-                  <Col className={styles.infoCol2} span={14}>
-                    None
+                    Terralogic
                   </Col>
                 </Row>
               </div>

@@ -102,6 +102,7 @@ class ViewDocument extends PureComponent {
   componentDidMount = () => {
     const { selectedFile } = this.props;
     this.fetchDocumentDetails(selectedFile);
+    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   componentWillUnmount = () => {

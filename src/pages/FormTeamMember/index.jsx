@@ -21,19 +21,19 @@ import Payroll from './components/Payroll';
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '', reId = '' } = {} },
+      match: { params: { action = '', reId } = {} },
       dispatch,
       candidateInfo,
     } = this.props;
     console.log('test', reId);
     // check action is add or review. If isReview fetch candidate by reID
-    const { data, currentStep } = candidateInfo;
+    const { data } = candidateInfo;
     const { _id } = data;
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchEmployeeById',
         payload: {
-          id: _id,
+          candidate: _id,
         },
       });
       dispatch({
@@ -45,11 +45,6 @@ class FormTeamMember extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchDocumentList',
       });
-      // if (currentStep === 1) {
-      //   dispatch({
-
-      //   })
-      // }
     }
   }
 
@@ -73,14 +68,13 @@ class FormTeamMember extends PureComponent {
         key: 'jobDetails',
         component: <JobDetails locationList={locationList} employeeTypeList={employeeTypeList} />,
       },
-      // { id: 2, name: 'Job Details', key: 'jobDetails', component: <JobDetails reId={reId} /> },
       { id: 3, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
       {
         id: 4,
         name: 'Background Check',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: <BackgroundCheck />,
+        component: <BackgroundCheck documentList={documentList} />,
       },
       { id: 5, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 6, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },

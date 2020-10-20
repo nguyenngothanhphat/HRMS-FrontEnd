@@ -40,7 +40,7 @@ class BasicInformation extends PureComponent {
     const value = Object.values(e).find((x) => x);
     const { dispatch } = this.props;
     const emailRegExp = RegExp(
-      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
 
     const { tempData, checkMandatory } = this.state;
@@ -60,7 +60,10 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData,
+        tempData: {
+          ...tempData,
+        },
+
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -77,13 +80,6 @@ class BasicInformation extends PureComponent {
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
-        // data: {
-        //   ...data,
-        //   fullName: values.fullName,
-        //   privateEmail: values.privateEmail,
-        //   workEmail: values.workEmail,
-        //   candidate: _id,
-        // },
       },
     });
     dispatch({
@@ -92,6 +88,7 @@ class BasicInformation extends PureComponent {
         fullName: values.fullName,
         privateEmail: values.privateEmail,
         workEmail: values.workEmail,
+        previousExperience: values.previousExperience,
         candidate: _id,
       },
     });
@@ -110,8 +107,7 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
-    const { isOpenReminder, data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = data;
+    const { isOpenReminder = {} } = this.state;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -194,7 +190,7 @@ class BasicInformation extends PureComponent {
               wrapperCol={{ span: 24 }}
               required={false}
               label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
-              name="experienceYear"
+              name="previousExperience"
               rules={[
                 {
                   pattern: /^[0-9]*$/,
@@ -205,7 +201,7 @@ class BasicInformation extends PureComponent {
               <Input
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="experienceYear"
+                name="previousExperience"
                 // defaultValue={experienceYear}
               />
             </Form.Item>
@@ -263,7 +259,7 @@ class BasicInformation extends PureComponent {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = data;
+    const { fullName, privateEmail, workEmail, previousExperience } = data;
     const Note = {
       title: 'Note',
       data: (
@@ -280,7 +276,7 @@ class BasicInformation extends PureComponent {
             <Form
               wrapperCol={{ span: 24 }}
               name="basic"
-              initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
+              initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
               onFocus={this.onFocus}
               onValuesChange={this.handleChange}
               onFinish={this.onFinish}
