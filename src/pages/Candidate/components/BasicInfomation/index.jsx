@@ -1,18 +1,18 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography, Button } from 'antd';
+import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+@connect(({ candidateProfile: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
   checkMandatory,
   currentStep,
   tempData,
+  loading: loading.effects['candidateProfile/fetchCandidateById'],
 }))
 class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -34,16 +34,11 @@ class BasicInformation extends PureComponent {
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
 
-    const { tempData, checkMandatory } = this.state;
+    const { tempData, checkMandatory, data } = this.state;
     tempData[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
-    if (
-      fullName !== '' &&
-      workEmail !== '' &&
-      privateEmail !== '' &&
-      emailRegExp.test(privateEmail) &&
-      emailRegExp.test(workEmail)
-    ) {
+    const { checkStatus = {} } = tempData;
+    const { fullName = '', workEmail = '', privateEmail = '' } = data;
+    if (fullName !== '' && privateEmail !== '' && emailRegExp.test(privateEmail)) {
       checkStatus.filledBasicInformation = true;
     } else {
       checkStatus.filledBasicInformation = false;
@@ -237,6 +232,7 @@ class BasicInformation extends PureComponent {
   render() {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { loading } = this.props;
     console.log('fullName', fullName);
     const Note = {
       title: 'Note',
@@ -247,6 +243,13 @@ class BasicInformation extends PureComponent {
         </Typography.Text>
       ),
     };
+    if (loading) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin />
+        </div>
+      );
+    }
     return (
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
@@ -260,6 +263,7 @@ class BasicInformation extends PureComponent {
               onFocus={this.onFocus}
               onValuesChange={this.handleChange}
               onFinish={this.onFinish}
+              loading={loading}
             >
               <div className={styles.basicInformation__top}>
                 <BasicInformationHeader />

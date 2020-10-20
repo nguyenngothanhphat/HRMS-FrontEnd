@@ -105,6 +105,7 @@ const candidateProfile = {
         const { data, statusCode } = response;
         const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
+        console.log('res', response);
         yield put({
           type: 'saveOrigin',
           payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
