@@ -10,6 +10,7 @@ const candidateProfile = {
     rookieId: '',
     data: {
       _id: '',
+      candidate: '',
     },
     tempData: {},
     basicInformation: {
@@ -87,6 +88,7 @@ const candidateProfile = {
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         console.log('data', data);
+        console.log('res', response);
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
