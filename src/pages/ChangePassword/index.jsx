@@ -19,11 +19,7 @@ class ChangePassword extends Component {
   componentDidUpdate() {
     const { statusChangePassword, dispatch } = this.props;
     if (statusChangePassword === true) {
-      this.formRef.current.setFieldsValue({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
+      this.formRef.current.resetFields();
       dispatch({
         type: 'changePassword/save',
         payload: {
