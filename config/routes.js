@@ -154,6 +154,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/documents/upload-document',
+            name: 'uploadDocument',
+            hideInMenu: true,
+            component: '../pages_admin/DocumentsManagement/components/UploadDocument',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
@@ -186,6 +193,20 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-onboarding/CreateFieldSection',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateFieldSection',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-onboarding/CreateNewField',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateNewField',
+            hideInMenu: true,
             authority: ['customer'],
           },
           {
