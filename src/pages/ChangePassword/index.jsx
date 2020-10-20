@@ -6,10 +6,33 @@ import { PageContainer } from '@/layouts/layout/src';
 import { CheckCircleFilled } from '@ant-design/icons';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, changePassword: { statusChangePassword = false } }) => ({
+  statusChangePassword,
   loading: loading.effects['changePassword/updatePassword'],
 }))
 class ChangePassword extends Component {
+  constructor(props) {
+    super(props);
+    this.formRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    const { statusChangePassword, dispatch } = this.props;
+    if (statusChangePassword === true) {
+      this.formRef.current.setFieldsValue({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+      dispatch({
+        type: 'changePassword/save',
+        payload: {
+          statusChangePassword: false,
+        },
+      });
+    }
+  }
+
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
     const valuePsw = getFieldValue('newPassword');
@@ -38,25 +61,6 @@ class ChangePassword extends Component {
     });
   };
 
-  processData = (psw) => {
-    const { signup = {} } = this.props;
-    const {
-      codeNumber = '',
-      company = {},
-      headQuarterAddress = {},
-      legalAddress = {},
-      locations = [],
-      user = {},
-    } = signup;
-    const payload = {
-      codeNumber,
-      company: { ...company, headQuarterAddress, legalAddress },
-      locations,
-      user: { ...user, password: psw },
-    };
-    return payload;
-  };
-
   render() {
     const arrText = [
       'Use a minimum of 8 characters.',
@@ -75,11 +79,7 @@ class ChangePassword extends Component {
             className={styles.changePassword__form}
             layout="vertical"
             name="basic"
-            initialValues={{
-              newPassword: '',
-              currentPassword: '',
-              confirmPassword: '',
-            }}
+            ref={this.formRef}
             onFinish={this.onFinish}
             requiredMark={false}
             style={{ marginTop: '1rem' }}
@@ -101,15 +101,21 @@ class ChangePassword extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your password!',
+                        message: formatMessage({
+                          id: 'page.changePassword.requiredCurrentPassword',
+                        }),
                       },
                       {
                         min: 8,
-                        message: 'Use a minimum of 8 characters.',
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.characters',
+                        }),
                       },
                       {
                         pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
-                        message: 'Avoid keyboard patterns (eg. Asdf )',
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.patterns',
+                        }),
                       },
                     ]}
                   >
@@ -126,15 +132,21 @@ class ChangePassword extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your password!',
+                        message: formatMessage({
+                          id: 'page.changePassword.requiredNewPassword',
+                        }),
                       },
                       {
                         min: 8,
-                        message: 'Use a minimum of 8 characters.',
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.characters',
+                        }),
                       },
                       {
                         pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
-                        message: 'Avoid keyboard patterns (eg. Asdf )',
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.patterns',
+                        }),
                       },
                     ]}
                   >
@@ -148,7 +160,21 @@ class ChangePassword extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please input confirm password!',
+                        message: formatMessage({
+                          id: 'page.changePassword.requiredCfmPassword',
+                        }),
+                      },
+                      {
+                        min: 8,
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.characters',
+                        }),
+                      },
+                      {
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
+                        message: formatMessage({
+                          id: 'page.changePassword.rules.patterns',
+                        }),
                       },
                       ({ getFieldValue }) => ({
                         validator(rule, value) {

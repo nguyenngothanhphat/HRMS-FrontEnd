@@ -8,6 +8,7 @@ export default {
 
   state: {
     statusSendEmail: false,
+    statusChangePassword: false,
   },
 
   effects: {
@@ -34,7 +35,8 @@ export default {
         dialog(errors);
       }
     },
-    *updatePassword({ payload }, { call }) {
+    *updatePassword({ payload }, { call, put }) {
+      let statusChangePassword = false;
       try {
         const response = yield call(updatePasswordAPI, payload);
         const { statusCode, message } = response;
@@ -42,9 +44,15 @@ export default {
         notification.success({
           message,
         });
+        statusChangePassword = true;
       } catch (errors) {
+        statusChangePassword = false;
         dialog(errors);
       }
+      yield put({
+        type: 'save',
+        payload: { statusChangePassword },
+      });
     },
   },
 
