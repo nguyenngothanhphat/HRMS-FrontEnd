@@ -1,24 +1,29 @@
 import { getById, getDocumentByCandidate } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
-
-import { getRookieInfo } from '@/services/formCandidate';
+import { queryCurrent } from '@/services/user';
+import { setToken } from '@/utils/token';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
     currentStep: 1,
     rookieId: '',
+    currentUser: {},
     data: {
       _id: '',
       candidate: '',
-    },
-    tempData: {
-      checkStatus: {},
       fullName: '',
       privateEmail: '',
-      experienceYear: '',
-      workLocation: '',
+      workEmail: '',
+      previousExperience: '',
     },
+    // tempData: {
+    //   checkStatus: {},
+    //   fullName: '',
+    //   privateEmail: '',
+    //   experienceYear: '',
+    //   workLocation: '',
+    // },
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
@@ -95,12 +100,10 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
-      console.log('payload model', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         const dataObj = data.find((x) => x);
-        console.log('data123', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -153,6 +156,9 @@ const candidateProfile = {
           ...action.payload,
         },
       };
+    },
+    saveCurrentUser(state, action) {
+      return { ...state, currentUser: action.payload || {} };
     },
   },
 };

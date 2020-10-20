@@ -21,7 +21,6 @@ const UserModel = {
         const response = yield call(queryCurrent);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log('response', response);
         yield put({
           type: 'saveCurrentUser',
           payload: {
