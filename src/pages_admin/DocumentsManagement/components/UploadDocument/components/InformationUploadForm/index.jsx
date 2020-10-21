@@ -34,8 +34,6 @@ class InformationUploadForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      // documentGroup: '',
-      // documentType: '',
       identityType: '',
       checkEmployeeExists: false,
       hasTyped: false,
@@ -80,20 +78,29 @@ class InformationUploadForm extends PureComponent {
   };
 
   getEmployeeDetail = (value) => {
+    const { dispatch } = this.props;
     this.setState({
       hasTyped: true,
     });
-    const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/clearEmployeeDetail',
     });
     dispatch({
       type: 'documentsManagement/fetchEmployeeDetailByShortId',
       employeeId: value,
-    }).then((statusCode) => {
+    }).then((res) => {
+      const { statusCode, data: { employee = '' } = {} } = res;
       if (statusCode === 200) {
         this.setState({
           checkEmployeeExists: true,
+        });
+        dispatch({
+          type: 'documentsManagement/fetchAdhaarCard',
+          employee,
+        });
+        dispatch({
+          type: 'documentsManagement/fetchGeneralInfo',
+          employee,
         });
       } else {
         this.setState({
@@ -129,7 +136,7 @@ class InformationUploadForm extends PureComponent {
   refreshPage = () => {
     setTimeout(() => {
       window.location.reload(false);
-    }, 3000);
+    }, 5000);
   };
 
   addDocumentSuccessfully = () => {
@@ -163,7 +170,7 @@ class InformationUploadForm extends PureComponent {
           id: documentId,
         });
       } else {
-        this.refreshPage();
+        this.addDocumentSuccessfully();
       }
     });
   };
@@ -206,20 +213,75 @@ class InformationUploadForm extends PureComponent {
           id: documentId,
         });
       } else {
-        this.refreshPage();
+        this.addDocumentSuccessfully();
       }
     });
   };
 
-  addAdhaarCard = (fieldsValue, documentId) => {
-    // const { dispatch } = this.props;
-    // const { employeeId = '', adhaarCardNumber = '' } = fieldsValue;
-    // const adhaarCardData = {
-    // };
-    // dispatch({
-    //   type: 'documentsManagement/addVisa',
-    //   data: visaData,
-    // });
+  addAndUpdateAdhaarCard = (fieldsValue, documentId) => {
+    const {
+      documentsManagement: {
+        generalInfoId = '',
+        employeeDetail: { employee = '' } = {},
+        adhaarCardDetail = {},
+      },
+      dispatch,
+    } = this.props;
+    const { adhaarNumber = '' } = fieldsValue;
+    if (adhaarCardDetail !== null) {
+      const { adhaarCardDetail: { _id = '' } = {} } = this.props;
+      const adhaarCardUpdateData = {
+        id: _id,
+        document: documentId,
+        adhaarNumber,
+      };
+      dispatch({
+        type: 'documentsManagement/updateAdhaarCard',
+        payload: adhaarCardUpdateData,
+      }).then((statusCode) => {
+        if (statusCode !== 200) {
+          dispatch({
+            type: 'documentsManagement/deleteDocument',
+            id: documentId,
+          });
+        } else {
+          dispatch({
+            type: 'documentsManagement/updateGeneralInfo',
+            payload: {
+              id: generalInfoId,
+              document: documentId,
+              adhaarCardNumber: adhaarNumber,
+            },
+          }).then(this.addDocumentSuccessfully());
+        }
+      });
+    } else {
+      const adhaarCardAddData = {
+        employee,
+        document: documentId,
+        adhaarNumber,
+      };
+      dispatch({
+        type: 'documentsManagement/addAdhaarCard',
+        payload: adhaarCardAddData,
+      }).then((statusCode) => {
+        if (statusCode !== 200) {
+          dispatch({
+            type: 'documentsManagement/deleteDocument',
+            id: documentId,
+          });
+        } else {
+          dispatch({
+            type: 'documentsManagement/updateGeneralInfo',
+            payload: {
+              id: generalInfoId,
+              document: documentId,
+              adhaarCardNumber: adhaarNumber,
+            },
+          }).then(this.addDocumentSuccessfully());
+        }
+      });
+    }
   };
 
   handleInput = (event) => {
@@ -246,8 +308,8 @@ class InformationUploadForm extends PureComponent {
       this.addDocument(fieldsValue, attachmentId, this.addPassport);
     } else if (secondType === 'Identity' && identityType === 'Visa') {
       this.addDocument(fieldsValue, attachmentId, this.addVisa);
-      // } else if (documentType === 'Identity' && identityType === 'Adhaar Card') {
-      //   this.addDocument(fieldsValue, attachmentId, this.addAdhaarCard);
+    } else if (secondType === 'Identity' && identityType === 'Adhaar Card') {
+      this.addDocument(fieldsValue, attachmentId, this.addAndUpdateAdhaarCard);
     }
   };
 
@@ -386,9 +448,7 @@ class InformationUploadForm extends PureComponent {
                   <Select onChange={this.onIdentityTypeChange}>
                     <Option value="Visa">Visa</Option>
                     <Option value="Passport">Passport</Option>
-                    <Option value="Adhaar Card" disabled>
-                      Adhaar Card
-                    </Option>
+                    <Option value="Adhaar Card">Adhaar Card</Option>
                   </Select>
                 </Form.Item>
               </Col>
