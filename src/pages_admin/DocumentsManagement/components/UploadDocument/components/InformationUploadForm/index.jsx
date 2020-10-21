@@ -10,28 +10,43 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const documentCategory = [
-  {
-    group: 'Hiring Documents',
-    subGroup: ['Consent Forms', 'Tax Documents', 'Offer Letter', 'Employment Eligibility'],
-  },
-  {
-    group: 'Qualifications/Certification',
-    subGroup: ['Certificates'],
-  },
-  {
-    group: 'Handbooks & Agreements',
-    subGroup: ['Employee Handbook', 'Agreement'],
-  },
-  {
-    group: 'PR Reports',
-    subGroup: ['Agreement'],
-  },
-  {
-    group: 'Indentification Documents',
-    subGroup: ['Identity'],
-  },
+const groupData = [
+  'Hiring Documents',
+  'Qualifications/Certification',
+  'Handbooks & Agreements',
+  'PR Reports',
+  'Indentification Documents',
 ];
+const subData = {
+  'Hiring Documents': ['Consent Forms', 'Tax Documents', 'Offer Letter', 'Employment Eligibility'],
+  'Qualifications/Certification': ['Certificates'],
+  'Handbooks & Agreements': ['Employee Handbook', 'Agreement'],
+  'PR Reports': ['Agreement'],
+  'Indentification Documents': ['Identity'],
+};
+
+// const documentCategory = [
+//   {
+//     group: 'Hiring Documents',
+//     subGroup: ['Consent Forms', 'Tax Documents', 'Offer Letter', 'Employment Eligibility'],
+//   },
+//   {
+//     group: 'Qualifications/Certification',
+//     subGroup: ['Certificates'],
+//   },
+//   {
+//     group: 'Handbooks & Agreements',
+//     subGroup: ['Employee Handbook', 'Agreement'],
+//   },
+//   {
+//     group: 'PR Reports',
+//     subGroup: ['Agreement'],
+//   },
+//   {
+//     group: 'Indentification Documents',
+//     subGroup: ['Identity'],
+//   },
+// ];
 
 @connect(({ loading, documentsManagement }) => ({
   loadingUploadDocument: loading.effects['documentsManagement/uploadDocument'],
@@ -42,12 +57,14 @@ class InformationUploadForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      documentGroup: '',
-      documentType: '',
+      // documentGroup: '',
+      // documentType: '',
       identityType: '',
       checkEmployeeExists: false,
       hasTyped: false,
       passportExisted: false,
+      type: subData[groupData[0]],
+      secondType: subData[groupData[0]][0],
     };
     this.typingTimeoutRef = React.createRef(null);
   }
@@ -59,23 +76,23 @@ class InformationUploadForm extends PureComponent {
     });
   };
 
-  onDocumentGroupChange = (value) => {
+  handleDocumentGroupChange = (value) => {
     this.setState({
-      documentGroup: value,
-      documentType: null,
-      identityType: '',
+      type: subData[value],
+      secondType: subData[value][0],
+      identityType: null,
+    });
+  };
+
+  handleDocumentTypeChange = (value) => {
+    this.setState({
+      secondType: value,
     });
   };
 
   onIdentityTypeChange = (value) => {
     this.setState({
       identityType: value,
-    });
-  };
-
-  onDocumentTypeChange = (value) => {
-    this.setState({
-      documentType: value,
     });
   };
 
@@ -266,8 +283,8 @@ class InformationUploadForm extends PureComponent {
 
   render() {
     const {
-      documentGroup,
-      documentType,
+      type,
+      secondType,
       identityType,
       checkEmployeeExists,
       hasTyped,
@@ -346,9 +363,13 @@ class InformationUploadForm extends PureComponent {
                 name="documentGroup"
                 rules={[{ required: true, message: 'Please select document group!' }]}
               >
-                <Select onChange={this.onDocumentGroupChange}>
-                  {documentCategory.map((each) => {
-                    return <Option value={each.group}>{each.group}</Option>;
+                <Select defaultValue={groupData[0]} onChange={this.handleDocumentGroupChange}>
+                  {groupData.map((each) => {
+                    return (
+                      <Option value={each} key={each}>
+                        {each}
+                      </Option>
+                    );
                   })}
                 </Select>
               </Form.Item>
@@ -359,20 +380,18 @@ class InformationUploadForm extends PureComponent {
                 name="documentType"
                 rules={[{ required: true, message: 'Please select document type!' }]}
               >
-                <Select value={documentType} onChange={this.onDocumentTypeChange}>
-                  {documentCategory.map((each) => {
-                    const { group, subGroup } = each;
-                    if (group === documentGroup) {
-                      return subGroup.map((sub) => <Option value={sub}>{sub}</Option>);
-                    }
-                    return '';
-                  })}
+                <Select defaultValue={secondType} onChange={this.handleDocumentTypeChange}>
+                  {type.map((each) => (
+                    <Option value={each} key={each}>
+                      {each}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
 
-          {documentType === 'Identity' && (
+          {secondType === 'Identity' && (
             <Row gutter={['20', '20']}>
               <Col span={12}>
                 <Form.Item
