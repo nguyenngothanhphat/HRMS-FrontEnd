@@ -5,11 +5,9 @@ import moment from 'moment';
 import AdhaarCardForm from './components/AdhaarCardForm';
 import VisaForm from './components/VisaForm';
 import PassportForm from './components/PassportForm';
-
 import styles from './index.less';
 
 const { Option } = Select;
-
 const groupData = [
   'Hiring Documents',
   'Qualifications/Certification',
@@ -25,35 +23,14 @@ const subData = {
   'Indentification Documents': ['Identity'],
 };
 
-// const documentCategory = [
-//   {
-//     group: 'Hiring Documents',
-//     subGroup: ['Consent Forms', 'Tax Documents', 'Offer Letter', 'Employment Eligibility'],
-//   },
-//   {
-//     group: 'Qualifications/Certification',
-//     subGroup: ['Certificates'],
-//   },
-//   {
-//     group: 'Handbooks & Agreements',
-//     subGroup: ['Employee Handbook', 'Agreement'],
-//   },
-//   {
-//     group: 'PR Reports',
-//     subGroup: ['Agreement'],
-//   },
-//   {
-//     group: 'Indentification Documents',
-//     subGroup: ['Identity'],
-//   },
-// ];
-
 @connect(({ loading, documentsManagement }) => ({
   loadingUploadDocument: loading.effects['documentsManagement/uploadDocument'],
   loadingEmployeeData: loading.effects['documentsManagement/fetchEmployeeData'],
   documentsManagement,
 }))
 class InformationUploadForm extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -70,6 +47,9 @@ class InformationUploadForm extends PureComponent {
   }
 
   componentDidMount = () => {
+    this.formRef.current.setFieldsValue({
+      documentType: subData[groupData[0]][0],
+    });
     const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/clearEmployeeDetail',
@@ -77,6 +57,9 @@ class InformationUploadForm extends PureComponent {
   };
 
   handleDocumentGroupChange = (value) => {
+    this.formRef.current.setFieldsValue({
+      documentType: subData[value][0],
+    });
     this.setState({
       type: subData[value],
       secondType: subData[value][0],
@@ -125,11 +108,11 @@ class InformationUploadForm extends PureComponent {
       dispatch,
       documentsManagement: { employeeDetail: { employee = '' } = {} },
     } = this.props;
-    const { documentType } = this.state;
+    const { secondType } = this.state;
     const { documentName = '', documentGroup = '' } = fieldsValue;
     const documentData = {
       key: documentName,
-      employeeGroup: documentType,
+      employeeGroup: secondType,
       parentEmployeeGroup: documentGroup,
       attachment: attachmentId,
       employee,
@@ -250,17 +233,18 @@ class InformationUploadForm extends PureComponent {
   };
 
   onFinish = (fieldsValue) => {
-    const { documentType, identityType, checkEmployeeExists } = this.state;
+    console.log('fieldsValue', fieldsValue);
+    const { secondType, identityType, checkEmployeeExists } = this.state;
     const { attachmentId = '' } = this.props;
-    if (attachmentId === '') {
-      notification.error({ message: 'Please choose file to upload!' });
-    } else if (!checkEmployeeExists) {
+    if (!checkEmployeeExists) {
       notification.error({ message: 'Employee does not exists!' });
-    } else if (documentType !== 'Identity') {
+    } else if (attachmentId === '') {
+      notification.error({ message: 'Please choose file to upload!' });
+    } else if (secondType !== 'Identity') {
       this.addDocument(fieldsValue, attachmentId, this.addDocumentSuccessfully);
-    } else if (documentType === 'Identity' && identityType === 'Passport') {
+    } else if (secondType === 'Identity' && identityType === 'Passport') {
       this.addDocument(fieldsValue, attachmentId, this.addPassport);
-    } else if (documentType === 'Identity' && identityType === 'Visa') {
+    } else if (secondType === 'Identity' && identityType === 'Visa') {
       this.addDocument(fieldsValue, attachmentId, this.addVisa);
       // } else if (documentType === 'Identity' && identityType === 'Adhaar Card') {
       //   this.addDocument(fieldsValue, attachmentId, this.addAdhaarCard);
@@ -268,9 +252,9 @@ class InformationUploadForm extends PureComponent {
   };
 
   checkPassportExists = (passportNo) => {
-    const { documentType, identityType } = this.state;
+    const { secondType, identityType } = this.state;
     const passportExisted = passportNo !== '';
-    if (documentType === 'Identity' && identityType === 'Passport') {
+    if (secondType === 'Identity' && identityType === 'Passport') {
       this.setState({
         passportExisted,
       });
@@ -303,7 +287,13 @@ class InformationUploadForm extends PureComponent {
         <div className={styles.formTitle}>
           <span>Document Information</span>
         </div>
-        <Form name="uploadForm" layout="vertical" onFinish={this.onFinish}>
+        <Form
+          name="uploadForm"
+          ref={this.formRef}
+          initialValues={{ documentGroup: groupData[0] }}
+          layout="vertical"
+          onFinish={this.onFinish}
+        >
           <Row gutter={['20', '20']}>
             <Col span={12}>
               <Form.Item
@@ -363,14 +353,10 @@ class InformationUploadForm extends PureComponent {
                 name="documentGroup"
                 rules={[{ required: true, message: 'Please select document group!' }]}
               >
-                <Select defaultValue={groupData[0]} onChange={this.handleDocumentGroupChange}>
-                  {groupData.map((each) => {
-                    return (
-                      <Option value={each} key={each}>
-                        {each}
-                      </Option>
-                    );
-                  })}
+                <Select onChange={this.handleDocumentGroupChange}>
+                  {groupData.map((each) => (
+                    <Option key={each}>{each}</Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -380,11 +366,9 @@ class InformationUploadForm extends PureComponent {
                 name="documentType"
                 rules={[{ required: true, message: 'Please select document type!' }]}
               >
-                <Select defaultValue={secondType} onChange={this.handleDocumentTypeChange}>
+                <Select onChange={this.handleDocumentTypeChange}>
                   {type.map((each) => (
-                    <Option value={each} key={each}>
-                      {each}
-                    </Option>
+                    <Option key={each}>{each}</Option>
                   ))}
                 </Select>
               </Form.Item>
