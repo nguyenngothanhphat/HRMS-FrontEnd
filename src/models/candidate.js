@@ -112,7 +112,7 @@ const candidateProfile = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { documentList: { ...data } },
+          payload: { documentList: [...data] },
         });
       } catch (error) {
         dialog(error);

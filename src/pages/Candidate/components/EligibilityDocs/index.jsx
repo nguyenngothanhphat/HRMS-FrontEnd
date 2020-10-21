@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
+import { _ } from 'lodash';
 import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -130,6 +131,36 @@ class EligibilityDocs extends PureComponent {
       loading,
       data: { documentList },
     } = this.props;
+    const groupA = [];
+    const groupB = [];
+    const groupC = [];
+    const groupD = [];
+    documentList.forEach((item) => {
+      const { candidateGroup } = item;
+      switch (candidateGroup) {
+        case 'A':
+          groupA.push(item);
+          break;
+        case 'B':
+          groupB.push(item);
+          break;
+        case 'C':
+          groupC.push(item);
+          break;
+        case 'D':
+          groupD.push(item);
+          break;
+        default:
+          break;
+      }
+    });
+    const docList = [
+      { type: 'A', name: 'Identity Proof', data: [...groupA] },
+      { type: 'B', name: 'Address Proof', data: [...groupB] },
+      { type: 'C', name: 'Educational', data: [...groupC] },
+      { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+    ];
+    console.log('docList', docList);
 
     return (
       <div className={styles.EligibilityDocs}>
