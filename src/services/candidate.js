@@ -29,3 +29,11 @@ export function updateByCandidate(params) {
     data: params,
   });
 }
+
+export function addAttachmentService(params) {
+  console.log(params);
+  return request('/api/candidate/add-attachment-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}

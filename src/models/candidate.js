@@ -1,4 +1,9 @@
-import { getById, getDocumentByCandidate, updateByCandidate } from '@/services/candidate';
+import {
+  getById,
+  getDocumentByCandidate,
+  updateByCandidate,
+  addAttachmentService,
+} from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
 const candidateProfile = {
@@ -20,6 +25,7 @@ const candidateProfile = {
       noticePeriod: '',
       dateOfJoining: '',
       documentList: [],
+      attachments: [],
     },
     tempData: {
       checkStatus: {},
@@ -134,6 +140,26 @@ const candidateProfile = {
         dialog(error);
       }
     },
+
+    *addAttachmentCandidate({ payload }, { call, put }) {
+      console.log('payload', payload);
+      try {
+        const response = yield call(addAttachmentService, payload);
+        const {
+          data,
+          statusCode,
+          data: { attachment },
+        } = response;
+        console.log('data2', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveAttachments',
+          payload: attachment,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -159,6 +185,17 @@ const candidateProfile = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    saveAttachments(state, action) {
+      const { data } = state;
+      const { attachments } = data;
+      return {
+        ...state,
+        data: {
+          ...data,
+          attachments: [...attachments, action.payload],
         },
       };
     },

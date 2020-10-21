@@ -21,104 +21,6 @@ const Note = {
   ),
 };
 
-const DummyItem = [
-  {
-    type: 'A',
-    name: 'Identity Proof',
-    data: [
-      {
-        name: 'Aahar Card',
-        uploaded: false,
-      },
-      {
-        name: 'PAN Card',
-        uploaded: false,
-      },
-      {
-        name: 'Passport',
-        uploaded: false,
-      },
-      {
-        name: 'Driving License',
-        uploaded: false,
-      },
-      {
-        name: 'Voter Card',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'B',
-    name: 'Address Proof',
-    data: [
-      {
-        name: 'Rental Agreement',
-        uploaded: false,
-      },
-      {
-        name: 'Electricity & Utility Bills',
-        uploaded: false,
-      },
-      {
-        name: 'Telephone Bills',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'C',
-    name: 'Educational',
-    data: [
-      {
-        name: 'SSLC',
-        uploaded: false,
-      },
-      {
-        name: 'Intermediate/Diploma',
-        uploaded: false,
-      },
-      {
-        name: 'Graduation',
-        uploaded: false,
-      },
-      {
-        name: 'Post Graduate',
-        uploaded: false,
-      },
-      {
-        name: 'PHP/Doctorate',
-        uploaded: false,
-      },
-    ],
-  },
-  {
-    type: 'D',
-    name: 'Technical Certifications',
-    data: [
-      {
-        name: 'Offer letter',
-        uploaded: false,
-      },
-      {
-        name: 'Appraisal letter',
-        uploaded: false,
-      },
-      {
-        name: 'Paystubs',
-        uploaded: false,
-      },
-      {
-        name: 'Form 16',
-        uploaded: false,
-      },
-      {
-        name: 'Relieving Letter',
-        uploaded: false,
-      },
-    ],
-  },
-];
 @connect(({ candidateProfile: { data, currentStep, tempData } = {}, loading }) => ({
   data,
   currentStep,
@@ -126,6 +28,27 @@ const DummyItem = [
   loading: loading.effects['upload/uploadFile'],
 }))
 class EligibilityDocs extends PureComponent {
+  handleFile = (res, index, id, docList) => {
+    const { dispatch } = this.props;
+    const arrToAdjust = JSON.parse(JSON.stringify(docList));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+      const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
+      const { statusCode, data } = res;
+      const attachment = data.find((x) => x);
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateProfile/addAttachmentCandidate',
+          payload: {
+            attachment: attachment.id,
+            document: documentId,
+          },
+        });
+      }
+    }
+  };
+
   render() {
     const {
       loading,
@@ -168,15 +91,18 @@ class EligibilityDocs extends PureComponent {
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
               <Title />
-              {DummyItem.length > 0 &&
-                DummyItem.map((item) => {
+              {docList.length > 0 &&
+                docList.map((item, index) => {
                   return (
                     <CollapseFields
                       item={item && item}
+                      index={index}
+                      docList={docList}
                       // handleChange={this.handleChange}
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}
                       // eligibilityDocs={eligibilityDocs}
+                      handleFile={this.handleFile}
                       loading={loading}
                     />
                   );
