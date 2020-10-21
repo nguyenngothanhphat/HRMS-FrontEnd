@@ -1,8 +1,28 @@
+import { getById, getDocumentByCandidate, updateByCandidate } from '@/services/candidate';
+import { dialog } from '@/utils/utils';
+
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 6,
-    basicInformation: {
+    currentStep: 1,
+    rookieId: '',
+    checkMandatory: {
+      filledBasicInformation: true,
+      filledJobDetail: false,
+    },
+    data: {
+      _id: '',
+      candidate: '',
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      previousExperience: '',
+      noticePeriod: '',
+      dateOfJoining: '',
+      documentList: [],
+    },
+    tempData: {
+      checkStatus: {},
       fullName: '',
       privateEmail: '',
       experienceYear: '',
@@ -69,12 +89,81 @@ const candidateProfile = {
       salaryStatus: 2,
     },
   },
+  effects: {
+    *fetchCandidateById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        const dataObj = data.find((x) => x);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchDocumentByCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDocumentByCandidate, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { documentList: { ...data } },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *updateByCandidateModel({ payload }, { call, put }) {
+      console.log('payload3', payload);
+      try {
+        const response = yield call(updateByCandidate, payload);
+        const { data, statusCode } = response;
+        console.log('data2', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+  },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
       };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveOrigin(state, action) {
+      const { data } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          ...action.payload,
+        },
+      };
+    },
+    saveCurrentUser(state, action) {
+      return { ...state, currentUser: action.payload || {} };
     },
   },
 };

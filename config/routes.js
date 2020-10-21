@@ -40,16 +40,6 @@ const routes = [
     ],
   },
   {
-    path: '/candidate',
-    component: '../layouts/CandidateLayout',
-    routes: [
-      {
-        path: '/candidate',
-        component: './Candidate',
-      },
-    ],
-  },
-  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -74,6 +64,18 @@ const routes = [
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
+      {
+        path: '/candidate',
+        component: '../layouts/CandidateLayout',
+        authority: ['candidate'],
+        routes: [
+          {
+            path: '/candidate',
+            component: './Candidate',
+            authority: ['candidate'],
+          },
+        ],
+      },
       {
         path: '/',
         component: '../layouts/BasicLayout',
@@ -154,6 +156,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/documents/upload-document',
+            name: 'uploadDocument',
+            hideInMenu: true,
+            component: '../pages_admin/DocumentsManagement/components/UploadDocument',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/settings',
             name: 'settings',
             icon: '/assets/images/CP-icons_settings.svg',
@@ -189,15 +198,35 @@ const routes = [
             authority: ['customer'],
           },
           {
-            path: '/employee-offboarding',
-            name: 'employeeOffBoarding',
-            icon: 'file-image',
-            component: './OffBoarding',
+            path: '/employee-onboarding/CreateFieldSection',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateFieldSection',
+            hideInMenu: true,
             authority: ['customer'],
           },
           {
+            path: '/employee-onboarding/CreateNewField',
+            name: 'Createcustomfieldsection',
+            component: './EmployeeOnboarding/components/CustomFields/components/CreateNewField',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-offboarding',
+            name: 'employeeOffBoarding',
+            icon: 'file-image',
+            component: './OffBoarding/ManagerOffBoarding',
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-offboarding/employee',
+            name: 'EmployeeOffBoarding',
+            hideInMenu: true,
+            component: './OffBoarding/EmployeeOffBoarding',
+          },
+          {
             path: '/employee-offboarding/resignation-request',
-            name: 'Resignation Request',
+            name: 'ResignationRequest',
             hideInMenu: true,
             component: './ResignationRequest',
           },

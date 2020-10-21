@@ -1,14 +1,38 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import OrgChart from 'react-orgchart';
 import 'react-orgchart/index.css';
 import './index.less';
 
-class Chart extends PureComponent {
-  _renderNode = ({ node: { name = '', position = '', src = '', children = [] } = {} }) => {
+class Chart extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataDisplay: {},
+    };
+  }
+
+  componentDidMount() {
+    const { data: dataDisplay = {} } = this.props;
+    this.setState({
+      dataDisplay,
+    });
+  }
+
+  _renderNode = ({
+    node: { name = '', position = '', src = '', children = [] } = {},
+    node = {},
+  }) => {
     return (
-      <div className="initechNode">
+      <div
+        className="initechNode"
+        onClick={() =>
+          this.setState({
+            dataDisplay: node,
+          })
+        }
+      >
         <Avatar src={src} size={64} icon={<UserOutlined />} />
         <p style={{ fontSize: '14px', fontWeight: '600', margin: '12px 0', lineHeight: '1.36' }}>
           {name}
@@ -20,11 +44,14 @@ class Chart extends PureComponent {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { dataDisplay = {} } = this.state;
 
     return (
-      <div id="initechOrgChart">
-        <OrgChart tree={data} NodeComponent={this._renderNode} />
+      <div
+        id="initechOrgChart"
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}
+      >
+        <OrgChart tree={dataDisplay} NodeComponent={this._renderNode} />
       </div>
     );
   }

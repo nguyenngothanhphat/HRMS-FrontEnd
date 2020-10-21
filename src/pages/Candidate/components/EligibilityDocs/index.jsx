@@ -118,13 +118,19 @@ const DummyItem = [
     ],
   },
 ];
-@connect(({ loading } = {}) => {
-  return {
-    loading: loading.effects['upload/uploadFile'],
-  };
-})
+@connect(({ candidateProfile: { data, currentStep, tempData } = {}, loading }) => ({
+  data,
+  currentStep,
+  tempData,
+  loading: loading.effects['upload/uploadFile'],
+}))
 class EligibilityDocs extends PureComponent {
   render() {
+    const {
+      loading,
+      data: { documentList },
+    } = this.props;
+
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -140,6 +146,7 @@ class EligibilityDocs extends PureComponent {
                       // handleCheckAll={this.handleCheckAll}
                       // testEligibility={testEligibility}
                       // eligibilityDocs={eligibilityDocs}
+                      loading={loading}
                     />
                   );
                 })}

@@ -19,9 +19,8 @@ class CandidateFieldsComponent extends PureComponent {
   };
 
   render() {
-    const { styles, candidateField, _handleSelect = () => {}, jobDetail = {} } = this.props;
+    const { styles, candidateField, candidatesNoticePeriod, prefferedDateOfJoining } = this.props;
     const { isHidden } = this.state;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetail;
     return (
       <div className={InternalStyle.CandidateFields}>
         <Typography.Title level={5} className={InternalStyle.title}>
@@ -33,7 +32,7 @@ class CandidateFieldsComponent extends PureComponent {
             <Select
               placeholder={candidateField[0].placeholder}
               className={styles}
-              onChange={(value) => _handleSelect(value, candidateField[0].title)}
+              // onChange={(value) => _handleSelect(value, candidateField[0].title)}
               defaultValue={candidatesNoticePeriod}
               disabled="true"
             >
@@ -56,7 +55,7 @@ class CandidateFieldsComponent extends PureComponent {
               picker="date"
               format="MM/DD/YYYY"
               disabled="true"
-              onChange={(value) => _handleSelect(value, candidateField[1].title)}
+              // onChange={(value) => _handleSelect(value, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining}
             />
           </Col>

@@ -35,7 +35,7 @@ const getComponent = (name) => {
       return <AwaitingApprovals />;
     case 'FinalOffers':
       return <FinalOffers />;
-    case 'FinalOfferDrafts':
+    case 'AllDrafts':
       return <AllDrafts />;
     case 'DiscardedFinalOffers': // del
       return <DiscardedFinalOffers />; // del
@@ -48,6 +48,7 @@ const getComponent = (name) => {
   }
 };
 
+@connect()
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -79,11 +80,8 @@ class OnboardingLayout extends PureComponent {
 
   handleAddBtn = () => {
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
     dispatch({
-      type: 'info/fetchCandidateInfo',
+      type: 'candidateInfo/fetchCandidateInfo',
       payload: {},
     });
   };

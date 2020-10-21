@@ -5,10 +5,10 @@ import styles from './index.less';
 
 class FieldsComponent extends PureComponent {
   render() {
-    const { Tab, jobDetails, HRField, candidateField, _handleSelect } = this.props;
+    const { Tab, HRField, candidateField, _handleSelect, data } = this.props;
     return (
       <div className={styles.FieldsComponent}>
-        <FilledByHR styles={styles.Input} Tab={Tab} jobDetails={jobDetails} HRField={HRField} />
+        <FilledByHR styles={styles.Input} Tab={Tab} HRField={HRField} data={data} />
         <FilledByCandidate
           styles={styles.Input}
           candidateField={candidateField}
