@@ -40,6 +40,7 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      joineeEmail: '',
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -103,6 +104,7 @@ const candidateInfo = {
       department: null,
       title: null,
       company: null,
+      joineeEmail: '',
       previousExperience: null,
       processStatus: 'DRAFT',
       noticePeriod: null,

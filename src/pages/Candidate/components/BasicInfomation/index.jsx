@@ -30,15 +30,12 @@ class BasicInformation extends PureComponent {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
     const { dispatch } = this.props;
-    const emailRegExp = RegExp(
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-    );
 
     const { tempData, checkMandatory, data } = this.state;
     tempData[name] = value;
     const { checkStatus = {} } = tempData;
-    const { fullName = '', workEmail = '', privateEmail = '' } = data;
-    if (fullName !== '' && privateEmail !== '' && emailRegExp.test(privateEmail)) {
+    const { fullName = '', privateEmail = '', previousExperience = '' } = data;
+    if (fullName !== '' && privateEmail !== '' && previousExperience !== '') {
       checkStatus.filledBasicInformation = true;
     } else {
       checkStatus.filledBasicInformation = false;
@@ -49,7 +46,6 @@ class BasicInformation extends PureComponent {
         tempData: {
           ...tempData,
         },
-
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -68,16 +64,21 @@ class BasicInformation extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
-    // dispatch({
-    //   type: 'candidateInfo/updateByHR',
-    //   payload: {
-    //     fullName: values.fullName,
-    //     privateEmail: values.privateEmail,
-    //     workEmail: values.workEmail,
-    //     previousExperience: values.previousExperience,
-    //     candidate: _id,
-    //   },
-    // });
+    console.log(values.fullName);
+    dispatch({
+      type: 'candidateProfile/updateByCandidateModel',
+      payload: {
+        ...data,
+        fullName: values.fullName,
+        candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/fetchDocumentByCandidate',
+      payload: {
+        candidate: _id,
+      },
+    });
   };
 
   _renderForm = () => {
@@ -118,12 +119,7 @@ class BasicInformation extends PureComponent {
                 },
               ]}
             >
-              <Input
-                // onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="privateEmail"
-                // defaultValue={privateEmail}
-              />
+              <Input className={styles.formInput} name="privateEmail" disabled="true" />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
@@ -134,24 +130,8 @@ class BasicInformation extends PureComponent {
               label={formatMessage({ id: 'component.basicInformation.workEmail' })}
               className={styles.formInput__email}
               name="workEmail"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input your email!',
-                },
-                {
-                  type: 'email',
-                  message: 'Email invalid!',
-                },
-              ]}
             >
-              <Input
-                // onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="workEmail"
-                // suffix="@terralogic.com"
-                // defaultValue={workEmail}
-              />
+              <Input className={styles.formInput} name="workEmail" disabled="true" />
             </Form.Item>
           </Col>
         </Row>
@@ -170,12 +150,7 @@ class BasicInformation extends PureComponent {
                 },
               ]}
             >
-              <Input
-                // onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="previousExperience"
-                // defaultValue={experienceYear}
-              />
+              <Input disabled="true" className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
         </Row>
@@ -231,9 +206,8 @@ class BasicInformation extends PureComponent {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { fullName, privateEmail, previousExperience } = data;
     const { loading } = this.props;
-    console.log('fullName', fullName);
     const Note = {
       title: 'Note',
       data: (
@@ -257,9 +231,7 @@ class BasicInformation extends PureComponent {
             <Form
               wrapperCol={{ span: 24 }}
               name="basic"
-              initialValues={
-                fullName.length > 1 && { fullName, privateEmail, workEmail, previousExperience }
-              }
+              initialValues={fullName.length > 1 && { fullName, privateEmail, previousExperience }}
               onFocus={this.onFocus}
               onValuesChange={this.handleChange}
               onFinish={this.onFinish}

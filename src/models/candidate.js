@@ -1,14 +1,15 @@
-import { getById, getDocumentByCandidate } from '@/services/candidate';
+import { getById, getDocumentByCandidate, updateByCandidate } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
-import { queryCurrent } from '@/services/user';
-import { setToken } from '@/utils/token';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
     currentStep: 1,
     rookieId: '',
-    currentUser: {},
+    checkMandatory: {
+      filledBasicInformation: true,
+      filledJobDetail: false,
+    },
     data: {
       _id: '',
       candidate: '',
@@ -16,22 +17,12 @@ const candidateProfile = {
       privateEmail: '',
       workEmail: '',
       previousExperience: '',
+      noticePeriod: '',
+      dateOfJoining: '',
+      documentList: [],
     },
-    // tempData: {
-    //   checkStatus: {},
-    //   fullName: '',
-    //   privateEmail: '',
-    //   experienceYear: '',
-    //   workLocation: '',
-    // },
-    checkMandatory: {
-      filledBasicInformation: false,
-      filledJobDetail: false,
-      filledCustomField: false,
-      filledOfferDetail: false,
-      salaryStatus: 2,
-    },
-    basicInformation: {
+    tempData: {
+      checkStatus: {},
       fullName: '',
       privateEmail: '',
       experienceYear: '',
@@ -105,7 +96,6 @@ const candidateProfile = {
         const { data, statusCode } = response;
         const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
-        console.log('res', response);
         yield put({
           type: 'saveOrigin',
           payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
@@ -116,15 +106,29 @@ const candidateProfile = {
     },
 
     *fetchDocumentByCandidate({ payload }, { call, put }) {
-      console.log('payload model2', payload);
       try {
         const response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
-        console.log('data2', response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { data },
+          payload: { documentList: { ...data } },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *updateByCandidateModel({ payload }, { call, put }) {
+      console.log('payload3', payload);
+      try {
+        const response = yield call(updateByCandidate, payload);
+        const { data, statusCode } = response;
+        console.log('data2', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...data },
         });
       } catch (error) {
         dialog(error);

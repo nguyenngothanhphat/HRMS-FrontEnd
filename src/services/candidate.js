@@ -21,3 +21,11 @@ export function getById(params) {
     data: params,
   });
 }
+
+export function updateByCandidate(params) {
+  console.log(params);
+  return request('/api/candidate/update-by-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}
