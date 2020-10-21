@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { UserOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
+import EditUserIcon from '@/assets/admin_iconedit.svg';
+import DeleteUserIcon from '@/assets/admin_icondelete.svg';
 import EditUserModal from '../EditUserModal';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
@@ -121,14 +122,26 @@ class TableUsers extends PureComponent {
         title: 'Action',
         dataIndex: '_id',
         width: '6%',
-        align: 'left',
+        align: 'center',
         render: (_id) => (
           <div className={styles.userAction}>
-            <UserOutlined onClick={(e) => this.editUser(_id, e)} className={styles.editUserBtn} />
-            <DeleteOutlined
+            <img
+              src={EditUserIcon}
+              alt="edit-user"
+              onClick={(e) => this.editUser(_id, e)}
+              className={styles.editUserBtn}
+            />
+            <img
+              src={DeleteUserIcon}
+              alt="delete-user"
+              onClick={(e) => this.deleteUser(_id, e)}
+              className={styles.editUserBtn}
+            />
+            {/* <UserOutlined onClick={(e) => this.editUser(_id, e)} className={styles.editUserBtn} /> */}
+            {/* <DeleteOutlined
               onClick={(e) => this.deleteUser(_id, e)}
               className={styles.deleteUserBtn}
-            />
+            /> */}
           </div>
         ),
       },
