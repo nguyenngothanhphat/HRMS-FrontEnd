@@ -498,25 +498,19 @@ const formatDate = (date) => {
   return newDate;
 };
 
-// const dateDiffInDays = (a, b) => {
-//   // a and b are javascript Date objects
-//   // console.log(a);
-//   // console.log(b);
-//   // console.log(typeof a);
-//   // console.log(typeof b);
-//   const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-//   // Discard the time and time-zone information.
-//   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-//   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-//   // console.log(utc1);
+const dateDiffInDays = (a, b) => {
+  // a and b are javascript Date objects
+  const SECOND_IN_DAY = 1000 * 60 * 60 * 24;
+  const firstDate = new Date(a);
+  const secondDate = new Date(b);
 
-//   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-// };
+  const diff = parseFloat((firstDate.getDate() - secondDate.getDate()) / SECOND_IN_DAY);
+  return diff;
+};
 
 const formatData = (list) => {
   const formatList = [];
   list.map((item) => {
-    // console.log(item);
     const {
       ticketID,
       fullName,
@@ -534,12 +528,12 @@ const formatData = (list) => {
     const dateRequest = formatDate(updatedAt);
     const expire = formatDate(updatedAt);
     // const documentVerified =
-    // console.log(dateDiffInDays(Date.now(), new Date(updatedAt)));
+    const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
 
     const rookie = {
       // rookieId: `#${_id.substring(0, 8)}`,
       rookieId: ticketID,
-      isNew: true,
+      isNew,
       rookieName: fullName,
       position: title.name,
       location: workLocation.name || 'Vietnam',
