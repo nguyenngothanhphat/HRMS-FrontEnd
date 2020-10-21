@@ -8,6 +8,7 @@ import {
   getJobTitleList,
   getReportingManagerList,
   addEmployee,
+  importEmployees,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -89,7 +90,7 @@ const employeesManagement = {
     *fetchReportingManagerList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getReportingManagerList, payload);
-        const { statusCode, data: reportingManagerList = []  } = response;
+        const { statusCode, data: reportingManagerList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
@@ -99,6 +100,18 @@ const employeesManagement = {
     *addEmployee({ payload }, { call }) {
       try {
         const response = yield call(addEmployee, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *importEmployees({ payload }, { call }) {
+      try {
+        const response = yield call(importEmployees, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({

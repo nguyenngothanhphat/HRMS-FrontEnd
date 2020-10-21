@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
 import AddEmployeeForm from './components/AddEmployeeForm';
+import ModalImportEmployee from './components/ModalImportEmployee';
 import styles from './index.less';
 
 @connect(({ loading, employee, employeesManagement }) => ({
@@ -60,6 +61,7 @@ class TableContainer extends PureComponent {
         { id: 2, name: formatMessage({ id: 'pages_admin.employees.table.inactiveEmployeesTab' }) },
       ],
       visible: false,
+      visibleImportEmployee: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -189,7 +191,9 @@ class TableContainer extends PureComponent {
   };
 
   importEmployees = () => {
-    alert('Import Employee');
+    this.setState({
+      visibleImportEmployee: true,
+    });
   };
 
   addEmployee = () => {
@@ -205,7 +209,9 @@ class TableContainer extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
+      visibleImportEmployee: false,
     });
+    this.initDataTable();
   };
 
   handleChange = (valueInput) => {
@@ -215,7 +221,7 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { tabs, collapsed, changeTab, visible } = this.state;
+    const { tabs, collapsed, changeTab, visible, visibleImportEmployee } = this.state;
     const { loadingActiveList, loadingInActiveList } = this.props;
 
     return (
@@ -252,6 +258,12 @@ class TableContainer extends PureComponent {
             visible={visible}
             handleCancel={this.handleCancel}
             getResponse={this.getResponse}
+          />
+          <ModalImportEmployee
+            titleModal="Import Employee"
+            visible={visibleImportEmployee}
+            handleCancel={this.handleCancel}
+            // getResponse={this.getResponse}
           />
         </div>
       </div>

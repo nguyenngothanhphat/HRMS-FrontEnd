@@ -48,3 +48,10 @@ export async function addEmployee(payload) {
     data: payload,
   });
 }
+
+export async function importEmployees(payload) {
+  return request('/api/employee/import', {
+    method: 'POST',
+    data: payload,
+  });
+}
