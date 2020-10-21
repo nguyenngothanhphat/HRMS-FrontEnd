@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Typography, Space, Row, Col } from 'antd';
 import { formatMessage } from 'umi';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import lightning from './assets/lightning.svg';
 
 import styles from './index.less';
 
 class SalaryAcceptanceContent extends PureComponent {
   render() {
-    const { radioTitle, note } = this.props;
+    const { radioTitle, accept } = this.props;
 
     return (
       <div className={styles.salaryAcceptanceContent}>
@@ -24,7 +24,11 @@ class SalaryAcceptanceContent extends PureComponent {
         <div className={styles.salaryAcceptanceContent__select}>
           <Row>
             <Col span={3}>
-              <CloseCircleOutlined style={{ color: 'red' }} />
+              {accept === true ? (
+                <CheckCircleOutlined style={{ color: 'green' }} />
+              ) : (
+                <CloseCircleOutlined style={{ color: 'red' }} />
+              )}
             </Col>
             <Col span={21}>
               <p className="radio__title">{radioTitle}</p>

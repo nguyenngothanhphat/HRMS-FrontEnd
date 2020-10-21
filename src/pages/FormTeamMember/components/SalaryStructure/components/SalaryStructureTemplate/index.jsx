@@ -1,10 +1,19 @@
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 
 import styles from './index.less';
 
-export default class SalaryStructureTemplate extends PureComponent {
+@connect(
+  ({
+    candidateInfo: { checkMandatory = {}, currentStep = {}, data: { processStatus = '' } = {} },
+  }) => ({
+    checkMandatory,
+    currentStep,
+    processStatus,
+  }),
+)
+class SalaryStructureTemplate extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -97,14 +106,35 @@ export default class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  // componentDidMount = () => {
-  //   const { tableData } = this.state;
-  //   const newTableData = [...tableData];
-  //   console.log(newTableData);
-  // };
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    // const { tableData } = this.state;
+    // const newTableData = [...tableData];
+    dispatch({
+      type: 'candidateInfo/fetchSalaryStructureList',
+      payload: {},
+    });
+  };
+
+  onClickPrev = () => {
+    const { dispatch, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
 
   onFinish = (values) => {
     const { tableData } = this.state;
+    const { dispatch, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
     console.log(values, tableData);
   };
 
@@ -133,6 +163,8 @@ export default class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e) => {
+    const { dispatch, checkMandatory } = this.props;
+    // const { filledSalaryStructure } = checkMandatory;
     const { tableData } = this.state;
     const { target } = e;
     const { name, value } = target;
@@ -142,6 +174,21 @@ export default class SalaryStructureTemplate extends PureComponent {
 
     tempTableData[index].value = value;
 
+    const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
+    // const check = tempTableData.forEach((item) => {
+    //   item.value = !!item.value;
+    // });
+    // const filledSalaryStructure = check.every((data) => data === true);
+    // dispatch;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: check,
+        },
+      },
+    });
     this.setState({
       tableData: tempTableData,
     });
@@ -245,52 +292,58 @@ export default class SalaryStructureTemplate extends PureComponent {
 
   _renderButtons = () => {
     const { isEditted } = this.state;
-    return (
-      <Form.Item>
-        {' '}
-        {isEditted === true ? (
-          <Button type="primary" onClick={this.onClickEdit}>
-            Done
-          </Button>
-        ) : (
-          <Button htmlType="submit" type="primary" onClick={this.onClickEdit}>
-            Edit
-          </Button>
-        )}
-      </Form.Item>
-    );
+    const { processStatus } = this.props;
+    if (processStatus === 'DRAFT' || processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
+      return (
+        <Form.Item>
+          {' '}
+          {isEditted === true ? (
+            <Button type="primary" onClick={this.onClickEdit}>
+              Done
+            </Button>
+          ) : (
+            <Button type="primary" onClick={this.onClickEdit}>
+              Edit
+            </Button>
+          )}
+        </Form.Item>
+      );
+    }
+    return <Form.Item />;
   };
 
   _renderStatus = () => {
-    // const { checkMandatory } = this.props;
-    // const { filledBasicInformation } = checkMandatory;
-    // return !filledBasicInformation ? (
-    //   <div className={styles.normalText}>
-    //     <div className={styles.redText}>*</div>
-    //     {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-    //   </div>
-    // ) : (
-    //   <div className={styles.greenText}>
-    //     * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-    //   </div>
-    // );
-    return (
+    const { checkMandatory } = this.props;
+    const { filledSalaryStructure } = checkMandatory;
+    return !filledSalaryStructure ? (
       <div className={styles.normalText}>
         <div className={styles.redText}>*</div>
         {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
       </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
     );
+    // return (
+    //   <div className={styles.normalText}>
+    //     <div className={styles.redText}>*</div>
+    //     {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+    //   </div>
+    // );
   };
 
   _renderBottomBar = () => {
-    // const { checkMandatory } = this.props;
-    // const { filledBasicInformation } = checkMandatory;
+    const { checkMandatory, processStatus } = this.props;
+    const { filledSalaryStructure } = checkMandatory;
 
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
           <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+            <div className={styles.bottomBar__status}>
+              {processStatus === 'DRAFT' ? this._renderStatus() : null}
+            </div>
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
@@ -317,7 +370,10 @@ export default class SalaryStructureTemplate extends PureComponent {
                 type="primary"
                 htmlType="submit"
                 // onClick={this.onClickNext}
-                className={styles.bottomBar__button__primary}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledSalaryStructure}
               >
                 Next
               </Button>
@@ -331,6 +387,7 @@ export default class SalaryStructureTemplate extends PureComponent {
   render() {
     const { Option } = Select;
     const { salaryTemplate, tableData } = this.state;
+    const { processStatus } = this.props;
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form onFinish={this.onFinish}>
@@ -358,9 +415,13 @@ export default class SalaryStructureTemplate extends PureComponent {
             />
           </div>
           {this._renderFooter()}
-          {this._renderBottomBar()}
+          {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+            ? this._renderBottomBar()
+            : null}
         </Form>
       </div>
     );
   }
 }
+
+export default SalaryStructureTemplate;

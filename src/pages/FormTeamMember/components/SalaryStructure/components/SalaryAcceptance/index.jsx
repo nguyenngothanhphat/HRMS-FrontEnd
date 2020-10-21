@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
@@ -46,6 +47,7 @@ class SalaryAcceptance extends PureComponent {
         <SalaryAcceptanceContent
           radioTitle={formatMessage({ id: 'component.salaryAcceptance.title1' })}
           note={formatMessage({ id: 'component.salaryAcceptance.note1' })}
+          accept
         />
       );
     }
@@ -55,6 +57,7 @@ class SalaryAcceptance extends PureComponent {
           <SalaryAcceptanceContent
             radioTitle={formatMessage({ id: 'component.salaryAcceptance.title2' })}
             note={formatMessage({ id: 'component.salaryAcceptance.note2' })}
+            accept={false}
           />
         </>
       );
@@ -65,11 +68,26 @@ class SalaryAcceptance extends PureComponent {
           <SalaryAcceptanceContent
             radioTitle={formatMessage({ id: 'component.salaryAcceptance.title3' })}
             note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
+            accept={false}
           />
           <Button type="primary" htmlType="submit">
             {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
           </Button>
         </>
+      );
+    }
+    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+      return (
+        <div className={styles.pending}>
+          <div className={styles.pendingIcon}>
+            <img src={pendingIcon} alt="icon" />
+          </div>
+          <p>
+            We are waiting for Ms. Ashwini Narayana to mark the acceptance of the shared salary
+            structure
+          </p>
+          <Button type="primary">Send form again</Button>
+        </div>
       );
     }
     return null;

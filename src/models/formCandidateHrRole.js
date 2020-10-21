@@ -5,6 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  getSalaryStructureList,
   addCandidate,
   updateByHR,
   getById,
@@ -24,6 +25,7 @@ const candidateInfo = {
       filledJobDetail: false,
       filledCustomField: false,
       filledOfferDetail: false,
+      filledSalaryStructure: true,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -104,7 +106,7 @@ const candidateInfo = {
       title: null,
       company: null,
       previousExperience: null,
-      processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+      processStatus: 'DISCARDED-PROVISONAL-OFFER',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -229,6 +231,16 @@ const candidateInfo = {
           ],
         },
       ],
+      salaryStructureData: {
+        setting: [],
+        status: 'ACTIVE',
+        _id: '5f8d2e057845200bc52840ee',
+        title: '5f6393fa2ab08f3d1291380a',
+        company: '5f6393fa2ab08f3d1291380a',
+        country: '5f6393fa2ab08f3d1291380a',
+        createdAt: '2020-10-19T06:11:17.525Z',
+        updatedAt: '2020-10-19T06:11:17.525Z',
+      },
       candidateSignature: null,
       hrManagerSignature: null,
       hrSignature: null,
@@ -379,6 +391,21 @@ const candidateInfo = {
         });
       } catch (error) {
         dialog(error);
+      }
+    },
+    *fetchSalaryStructureList(_, { call, put }) {
+      try {
+        const response = yield call(getSalaryStructureList);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { salaryStructureData: data },
+        });
+        console.log(response);
+      } catch (error) {
+        dialog(error);
+        console.log(error);
       }
     },
     *submitPhase1Effect({ payload }, { call, put }) {

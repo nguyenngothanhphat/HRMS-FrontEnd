@@ -78,3 +78,9 @@ export function submitPhase1(params) {
     data: params,
   });
 }
+
+export function getSalaryStructureList() {
+  return request('/api/salarystructure/list', {
+    method: 'POST',
+  });
+}
