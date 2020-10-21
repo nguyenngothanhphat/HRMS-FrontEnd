@@ -105,7 +105,7 @@ const CandidateLayout = (props) => {
 
     setCurrent((prevState) => prevState + 1);
     setCurrentPage((prevState) => prevState + 1);
-    console.log(currentPage);
+    // console.log(currentPage);
   };
 
   const prevScreen = () => {
