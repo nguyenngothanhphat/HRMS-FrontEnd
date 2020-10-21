@@ -21,3 +21,14 @@ export async function resetPasswordAPI(params) {
     true,
   );
 }
+
+export async function updatePasswordAPI(params) {
+  return request(
+    '/api/password-update',
+    {
+      method: 'POST',
+      data: params,
+    }
+  );
+}
+
