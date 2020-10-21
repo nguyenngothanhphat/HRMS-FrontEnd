@@ -47,6 +47,7 @@ class InformationUploadForm extends PureComponent {
       identityType: '',
       checkEmployeeExists: false,
       hasTyped: false,
+      passportExisted: false,
     };
     this.typingTimeoutRef = React.createRef(null);
   }
@@ -249,11 +250,37 @@ class InformationUploadForm extends PureComponent {
     }
   };
 
+  checkPassportExists = (passportNo) => {
+    const { documentType, identityType } = this.state;
+    const passportExisted = passportNo !== '';
+    if (documentType === 'Identity' && identityType === 'Passport') {
+      this.setState({
+        passportExisted,
+      });
+    } else {
+      this.setState({
+        passportExisted: false,
+      });
+    }
+  };
+
   render() {
-    const { documentGroup, documentType, identityType, checkEmployeeExists, hasTyped } = this.state;
     const {
-      documentsManagement: { employeeDetail: { firstName = '', lastName = '' } = '' },
+      documentGroup,
+      documentType,
+      identityType,
+      checkEmployeeExists,
+      hasTyped,
+      passportExisted,
+    } = this.state;
+    const {
+      documentsManagement: {
+        employeeDetail: { firstName = '', lastName = '', passportNo = '' } = '',
+      },
     } = this.props;
+
+    this.checkPassportExists(passportNo);
+
     return (
       <div className={styles.InformationUploadForm}>
         <div className={styles.formTitle}>
@@ -367,12 +394,23 @@ class InformationUploadForm extends PureComponent {
           )}
 
           {identityType === 'Visa' && <VisaForm />}
-          {identityType === 'Passport' && <PassportForm />}
-
+          {identityType === 'Passport' && passportNo === '' && <PassportForm />}
+          {identityType === 'Passport' && passportNo !== '' && (
+            <p style={{ fontStyle: 'italic', color: 'red' }}>
+              The passport of this employee is already existed
+            </p>
+          )}
           <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Upload
-            </Button>
+            {passportExisted ? (
+              <Button type="primary" htmlType="submit" disabled>
+                Upload
+              </Button>
+            ) : (
+              <Button type="primary" htmlType="submit">
+                Upload
+              </Button>
+            )}
+            {/* <Button type="primary" htmlType="submit"> */}
           </Form.Item>
         </Form>
       </div>
