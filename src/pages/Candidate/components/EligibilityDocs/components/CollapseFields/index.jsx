@@ -12,25 +12,11 @@ class CollapseField extends PureComponent {
     super(props);
     this.state = {
       isUpdated: false,
-      urlFile: '',
-      isAllUploaded: false,
     };
   }
 
-  // handleFile = (res, index, id) => {
-  //   console.log(res);
-  //   console.log('index cha', index);
-  //   console.log('id con', id);
-  //   const { docList } = this.props;
-  //   console.log('abc', docList);
-  //   const arrToAdjust = JSON.parse(JSON.stringify(docList));
-  //   const { data } = arrToAdjust[id];
-  //   const { statusCode } = res;
-  // };
-
   render() {
-    const { item = {}, loading, index, handleFile, docList } = this.props;
-    console.log('item data', item.data);
+    const { item = {}, loading, index, handleFile, docList, attachments } = this.props;
     const { isUpdated } = this.state;
     return (
       <div className={styles.CollapseField}>

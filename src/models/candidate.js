@@ -143,8 +143,9 @@ const candidateProfile = {
 
     *addAttachmentCandidate({ payload }, { call, put }) {
       console.log('payload', payload);
+      let response = {};
       try {
-        const response = yield call(addAttachmentService, payload);
+        response = yield call(addAttachmentService, payload);
         const {
           data,
           statusCode,
@@ -153,12 +154,13 @@ const candidateProfile = {
         console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveAttachments',
-          payload: attachment,
+          type: 'saveDocumentList',
+          payload: { ...data },
         });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
   },
   reducers: {
@@ -196,6 +198,17 @@ const candidateProfile = {
         data: {
           ...data,
           attachments: [...attachments, action.payload],
+        },
+      };
+    },
+    saveDocumentList(state, action) {
+      const { data } = state;
+      const { documentList } = data;
+      return {
+        ...state,
+        data: {
+          ...data,
+          documentList: [...documentList, action.payload],
         },
       };
     },

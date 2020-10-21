@@ -36,14 +36,25 @@ class EligibilityDocs extends PureComponent {
       const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
       const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
       const { statusCode, data } = res;
-      const attachment = data.find((x) => x);
+      const attachment1 = data.find((x) => x);
+      const { key } = arrToAdjust[typeIndex].data[nestedIndex];
+      // docList.splice(nestedIndex, 1,);
+      console.log(key);
       if (statusCode === 200) {
         dispatch({
           type: 'candidateProfile/addAttachmentCandidate',
           payload: {
-            attachment: attachment.id,
+            attachment: attachment1.id,
             document: documentId,
           },
+        }).then(({ data: { attachment } }) => {
+          if (attachment) {
+            console.log('aa', attachment);
+            dispatch({
+              type: 'candidateProfile/saveDocumentList',
+              payload: {},
+            });
+          }
         });
       }
     }
@@ -52,7 +63,7 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      data: { documentList },
+      data: { documentList, attachments },
     } = this.props;
     const groupA = [];
     const groupB = [];
@@ -104,6 +115,7 @@ class EligibilityDocs extends PureComponent {
                       // eligibilityDocs={eligibilityDocs}
                       handleFile={this.handleFile}
                       loading={loading}
+                      attachments={attachments}
                     />
                   );
                 })}
