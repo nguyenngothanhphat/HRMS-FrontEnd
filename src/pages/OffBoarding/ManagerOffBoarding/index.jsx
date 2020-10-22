@@ -7,7 +7,7 @@ import addIcon from '@/assets/addTicket.svg';
 import TabContent from './component/tabContent';
 import styles from './index.less';
 
-class ManagerOffBoading extends Component {
+class HrOffBoading extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -66,4 +66,4 @@ class ManagerOffBoading extends Component {
   }
 }
 
-export default ManagerOffBoading;
+export default HrOffBoading;

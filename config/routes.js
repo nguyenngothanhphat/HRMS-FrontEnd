@@ -214,6 +214,8 @@ const routes = [
             name: 'employeeOffBoarding',
             icon: 'file-image',
             component: './OffBoarding/ManagerOffBoarding',
+            // component: './OffBoarding/HrOffBoarding',
+
             authority: ['customer'],
           },
           {
@@ -239,6 +241,13 @@ const routes = [
             path: '/employee-offboarding/:ticketId',
             name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
+            path: '/employee-offboarding/HrRequest/:id',
+            name: 'ticketId',
+            component: './OffBoarding/HrOffBoarding/component/HrRequestTable/DetailTicket',
             hideInMenu: true,
             authority: ['customer'],
           },
