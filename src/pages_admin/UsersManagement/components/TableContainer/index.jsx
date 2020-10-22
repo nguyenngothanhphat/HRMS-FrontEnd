@@ -8,17 +8,16 @@ import importUsers from '../../../../../public/assets/images/import.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
-@connect(({ loading, employee, employeesManagement }) => ({
-  loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
-  loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
-  employee,
-  employeesManagement,
+@connect(({ loading, usersManagement }) => ({
+  loadingActiveList: loading.effects['usersManagement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['usersManagement/fetchInActiveEmployeesList'],
+  usersManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
-    if ('employee' in nextProps) {
-      const { employee: { filter = [] } = {} } = nextProps;
-      let role = [];
+    if ('usersManagement' in nextProps) {
+      const { usersManagement: { filter = [] } = {} } = nextProps;
+      let roles = [];
       let company = [];
       let location = [];
       const roleConst = 'Role';
@@ -26,7 +25,7 @@ class TableContainer extends PureComponent {
       const locationConst = 'Location';
       filter.map((item) => {
         if (item.actionFilter.name === roleConst) {
-          role = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+          roles = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
         if (item.actionFilter.name === companyConst) {
           company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -34,11 +33,11 @@ class TableContainer extends PureComponent {
         if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { role, company, location };
+        return { roles, company, location };
       });
       return {
         ...prevState,
-        role,
+        roles,
         company,
         location,
       };
@@ -52,7 +51,7 @@ class TableContainer extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: true,
-      role: [],
+      roles: [],
       location: [],
       company: [],
       filterName: '',
@@ -73,17 +72,17 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { role, location, company, filterName, tabId } = this.state;
+    const { roles, location, company, filterName, tabId } = this.state;
     const params = {
       name: filterName,
-      role,
+      roles,
       location,
       company,
     };
 
     if (
       prevState.tabId !== tabId ||
-      prevState.role.length !== role.length ||
+      prevState.roles.length !== roles.length ||
       prevState.location.length !== location.length ||
       prevState.company.length !== company.length ||
       prevState.filterName !== filterName
@@ -95,13 +94,10 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchActiveEmployeesList',
+      type: 'usersManagement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'employeesManagement/fetchInActiveEmployeesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchCompanyList',
+      type: 'usersManagement/fetchInActiveEmployeesList',
     });
   };
 
@@ -109,13 +105,13 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'employeesManagement/fetchActiveEmployeesList',
+        type: 'usersManagement/fetchActiveEmployeesList',
         payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'employeesManagement/fetchInActiveEmployeesList',
+        type: 'usersManagement/fetchInActiveEmployeesList',
         payload: params,
       });
     }
@@ -123,7 +119,7 @@ class TableContainer extends PureComponent {
 
   renderListUsers = (tabId) => {
     const {
-      employeesManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
+      usersManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
       return activeEmployeesList;
@@ -150,7 +146,7 @@ class TableContainer extends PureComponent {
     });
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/ClearFilter',
+      type: 'usersManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({

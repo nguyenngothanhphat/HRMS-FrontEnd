@@ -8,9 +8,9 @@ import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
 import styles from './index.less';
 
-@connect(({ loading, employeesManagement }) => ({
+@connect(({ loading, usersManagement }) => ({
   loadingUserProfile: loading.effects['employeesManagement/fetchEmployeeDetail'],
-  employeesManagement,
+  usersManagement,
 }))
 class TableUsers extends PureComponent {
   constructor(props) {
@@ -27,18 +27,6 @@ class TableUsers extends PureComponent {
 
   generateColumns = () => {
     const columns = [
-      {
-        title: 'User ID',
-        dataIndex: 'userId',
-        width: '8%',
-        align: 'left',
-        // defaultSortOrder: 'ascend',
-        // sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => a.userId - b.userId,
-        // },
-        render: () => <span>User ID</span>,
-      },
       {
         title: 'Employee ID',
         dataIndex: 'generalInfo',
@@ -81,9 +69,17 @@ class TableUsers extends PureComponent {
       },
       {
         title: 'Role',
-        dataIndex: 'role',
+        dataIndex: 'user',
         align: 'left',
-        render: () => <span>Role</span>,
+        render: (user = {}) => {
+          const { roles = [] } = user;
+          return roles.map((role, index) => {
+            if (roles.length - 1 === index) {
+              return <span>{role}</span>;
+            }
+            return <span>{`${role}, `}</span>;
+          });
+        },
       },
       {
         title: 'Location',
@@ -155,7 +151,7 @@ class TableUsers extends PureComponent {
   editUser = (record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchEmployeeDetail',
+      type: 'usersManagement/fetchEmployeeDetail',
       id: record,
     });
     this.setState({
@@ -274,7 +270,7 @@ class TableUsers extends PureComponent {
     };
 
     const {
-      employeesManagement: { employeeDetail = [] },
+      usersManagement: { employeeDetail = [] },
     } = this.props;
 
     return (

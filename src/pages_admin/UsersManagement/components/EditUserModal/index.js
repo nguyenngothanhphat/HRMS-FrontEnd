@@ -13,7 +13,7 @@ const layout = {
 
 class EditUserModal extends PureComponent {
   onFinish = (values) => {
-    const { email, fullName, role, location, company } = values;
+    const { email = '', fullName = '', role = '', location = '', company = '' } = values;
     const submitValues = { email, fullName, role, location, company };
     // eslint-disable-next-line no-console
     console.log('Success:', submitValues);

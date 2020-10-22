@@ -71,14 +71,6 @@ class TableDocuments extends PureComponent {
       // },
     },
     {
-      title: 'User ID',
-      dataIndex: 'employee',
-      align: 'center',
-      sorter: {
-        compare: (a, b) => a.employee.localeCompare(b.employee),
-      },
-    },
-    {
       title: 'Action',
       dataIndex: 'action',
       width: '5%',
