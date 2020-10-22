@@ -51,6 +51,17 @@ class TableDocuments extends PureComponent {
       // },
     },
     {
+      title: 'Company',
+      // dataIndex: 'uploadedBy',
+      align: 'center',
+      width: '8%',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      render: () => <span>Company</span>,
+      // sorter: {
+      //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      // },
+    },
+    {
       title: 'Created Date',
       dataIndex: 'createdAt',
       align: 'center',
