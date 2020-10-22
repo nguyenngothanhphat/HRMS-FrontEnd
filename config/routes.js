@@ -143,7 +143,7 @@ const routes = [
             path: '/candidates',
             name: 'candidates',
             icon: '/assets/images/CP-icons_Candidates.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/CandidatesManagement',
             authority: ['admin-sa'],
           },
           {
