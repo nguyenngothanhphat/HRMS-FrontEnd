@@ -25,7 +25,8 @@ const candidateProfile = {
       noticePeriod: '',
       dateOfJoining: '',
       documentList: [],
-      attachments: [],
+      attachments: {},
+      documentListToRender: [],
     },
     tempData: {
       checkStatus: {},
@@ -126,11 +127,9 @@ const candidateProfile = {
     },
 
     *updateByCandidateModel({ payload }, { call, put }) {
-      console.log('payload3', payload);
       try {
         const response = yield call(updateByCandidate, payload);
         const { data, statusCode } = response;
-        console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -142,20 +141,15 @@ const candidateProfile = {
     },
 
     *addAttachmentCandidate({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(addAttachmentService, payload);
-        const {
-          data,
-          statusCode,
-          data: { attachment },
-        } = response;
-        console.log('data2', data);
+        const { data, statusCode } = response;
+        console.log('abc', data);
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveDocumentList',
-          payload: { ...data },
+          type: 'saveOrigin',
+          payload: { attachments: data },
         });
       } catch (error) {
         dialog(error);
@@ -198,17 +192,6 @@ const candidateProfile = {
         data: {
           ...data,
           attachments: [...attachments, action.payload],
-        },
-      };
-    },
-    saveDocumentList(state, action) {
-      const { data } = state;
-      const { documentList } = data;
-      return {
-        ...state,
-        data: {
-          ...data,
-          documentList: [...documentList, action.payload],
         },
       };
     },

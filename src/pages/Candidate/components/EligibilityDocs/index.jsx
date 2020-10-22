@@ -2,8 +2,6 @@
 import React, { PureComponent } from 'react';
 import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
-import { _ } from 'lodash';
-import Warning from './components/Warning';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import StepsComponent from '../StepsComponent';
@@ -28,42 +26,10 @@ const Note = {
   loading: loading.effects['upload/uploadFile'],
 }))
 class EligibilityDocs extends PureComponent {
-  handleFile = (res, index, id, docList) => {
-    const { dispatch } = this.props;
-    const arrToAdjust = JSON.parse(JSON.stringify(docList));
-    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
-    if (arrToAdjust[typeIndex].data.length > 0) {
-      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
-      const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
-      const { statusCode, data } = res;
-      const attachment1 = data.find((x) => x);
-      const { key } = arrToAdjust[typeIndex].data[nestedIndex];
-      // docList.splice(nestedIndex, 1,);
-      console.log(key);
-      if (statusCode === 200) {
-        dispatch({
-          type: 'candidateProfile/addAttachmentCandidate',
-          payload: {
-            attachment: attachment1.id,
-            document: documentId,
-          },
-        }).then(({ data: { attachment } }) => {
-          if (attachment) {
-            console.log('aa', attachment);
-            dispatch({
-              type: 'candidateProfile/saveDocumentList',
-              payload: {},
-            });
-          }
-        });
-      }
-    }
-  };
-
-  render() {
+  componentDidMount() {
     const {
-      loading,
-      data: { documentList, attachments },
+      data: { documentList },
+      dispatch,
     } = this.props;
     const groupA = [];
     const groupB = [];
@@ -71,6 +37,7 @@ class EligibilityDocs extends PureComponent {
     const groupD = [];
     documentList.forEach((item) => {
       const { candidateGroup } = item;
+      item.isValidated = true;
       switch (candidateGroup) {
         case 'A':
           groupA.push(item);
@@ -94,28 +61,99 @@ class EligibilityDocs extends PureComponent {
       { type: 'C', name: 'Educational', data: [...groupC] },
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
     ];
-    console.log('docList', docList);
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        documentListToRender: docList,
+      },
+    });
+  }
 
+  handleFile = (res, index, id, docList) => {
+    const { dispatch } = this.props;
+    const arrToAdjust = JSON.parse(JSON.stringify(docList));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+      const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
+      const { statusCode, data } = res;
+      const Obj = arrToAdjust[typeIndex].data[nestedIndex];
+      const attachment1 = data.find((x) => x);
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateProfile/addAttachmentCandidate',
+          payload: {
+            attachment: attachment1.id,
+            document: documentId,
+          },
+        }).then(({ data: { attachment } }) => {
+          if (attachment) {
+            arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
+              ...Obj,
+              attachment,
+            });
+            console.log('adjusted', arrToAdjust);
+            dispatch({
+              type: 'candidateProfile/saveOrigin',
+              payload: {
+                documentListToRender: arrToAdjust,
+              },
+            });
+          }
+        });
+      }
+    }
+  };
+
+  handleCanCelIcon = (index, id, docList) => {
+    const { dispatch } = this.props;
+    const arrToAdjust = JSON.parse(JSON.stringify(docList));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+    const { isValidated } = docList;
+    console.log('abc');
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+      const attach = null;
+      const Obj = arrToAdjust[typeIndex].data[nestedIndex];
+      arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
+        ...Obj,
+        attachment: attach,
+        isValidated: !isValidated,
+      });
+      console.log('arrToAdjust', arrToAdjust);
+      dispatch({
+        type: 'candidateProfile/saveOrigin',
+        payload: {
+          documentListToRender: arrToAdjust,
+        },
+      });
+    }
+  };
+
+  render() {
+    const {
+      loading,
+      data: { attachments, documentListToRender, validateFileSize },
+    } = this.props;
+    console.log('render');
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
               <Title />
-              {docList.length > 0 &&
-                docList.map((item, index) => {
+              {documentListToRender.length > 0 &&
+                documentListToRender.map((item, index) => {
                   return (
                     <CollapseFields
                       item={item && item}
                       index={index}
-                      docList={docList}
-                      // handleChange={this.handleChange}
-                      // handleCheckAll={this.handleCheckAll}
-                      // testEligibility={testEligibility}
-                      // eligibilityDocs={eligibilityDocs}
+                      docList={documentListToRender}
+                      handleCanCelIcon={this.handleCanCelIcon}
                       handleFile={this.handleFile}
                       loading={loading}
                       attachments={attachments}
+                      validateFileSize={validateFileSize}
                     />
                   );
                 })}

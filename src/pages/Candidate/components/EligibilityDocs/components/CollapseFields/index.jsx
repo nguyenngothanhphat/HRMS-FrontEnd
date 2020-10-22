@@ -1,26 +1,20 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Space, Checkbox, Typography, Upload, Row, Col } from 'antd';
+import { Collapse, Space, Checkbox, Typography, Row, Col, Spin } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import UploadImage from '@/components/UploadImage';
+import undo from '@/assets/undo-signs.svg';
+import UploadImage from '../UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
 class CollapseField extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isUpdated: false,
-    };
-  }
-
   render() {
-    const { item = {}, loading, index, handleFile, docList, attachments } = this.props;
-    const { isUpdated } = this.state;
+    const { item = {}, loading, index, handleFile, docList, handleCanCelIcon } = this.props;
     return (
       <div className={styles.CollapseField}>
-        {item.data.length > 1 ? (
+        {item.data.length > 0 ? (
           <Collapse
             accordion
             expandIconPosition="right"
@@ -45,34 +39,43 @@ class CollapseField extends PureComponent {
               <Space direction="vertical" className={styles.Space}>
                 <div className={styles.Upload}>
                   {item.data.map((name, id) => (
-                    // <Row className={styles.checkboxItem}>
                     <div key={id}>
-                      {!isUpdated ? (
+                      {!name.attachment && name.isValidated ? (
                         <Row className={styles.checkboxItem}>
                           <Col span={18}>
-                            <Typography.Text>{name.key}</Typography.Text>
+                            <Typography.Text>{name.displayName}</Typography.Text>
                           </Col>
                           <Col span={5}>
-                            <UploadImage
-                              content="Choose file"
-                              getResponse={(res) => handleFile(res, index, id, docList)}
-                              // loading={loading}
-                            />
+                            {loading ? (
+                              <div className={styles.viewLoading}>
+                                <Spin />
+                              </div>
+                            ) : (
+                              <UploadImage
+                                content="Choose file"
+                                getResponse={(res) => handleFile(res, index, id, docList)}
+                                loading={loading}
+                                hideValidation
+                                typeIndex={index}
+                                nestedIndex={id}
+                                getIndexFailed={this.getIndexFailed}
+                              />
+                            )}
                           </Col>
                         </Row>
-                      ) : (
+                      ) : name.attachment ? (
                         <Row className={styles.checkboxItem}>
                           <Col span={14}>
-                            <Typography.Text>{name.name}</Typography.Text>
+                            <Typography.Text>{name.displayName}</Typography.Text>
                           </Col>
                           <Col span={5} className={styles.textAlign}>
                             <a
-                              href="#"
+                              href={name.attachment.url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={styles.viewUpLoadDataURL}
                             >
-                              fileName
+                              {name.attachment.name}
                             </a>
                           </Col>
                           <Col span={3} className={styles.textAlign}>
@@ -82,43 +85,35 @@ class CollapseField extends PureComponent {
                             <img
                               src={cancelIcon}
                               alt=""
-                              onClick={this.handleCanCelIcon}
+                              onClick={() => handleCanCelIcon(index, id, docList)}
                               className={styles.viewUpLoadDataIconCancel}
                             />
                           </Col>
                         </Row>
+                      ) : name.isValidated === false ? (
+                        <Row className={styles.checkboxItemError}>
+                          <Col span={8}>
+                            <Typography.Text>{name.displayName}</Typography.Text>
+                          </Col>
+                          <Col span={11} className={styles.textLeft}>
+                            <Typography.Text>File must be under 5Mb</Typography.Text>
+                          </Col>
+                          <Col span={3} className={styles.textAlign}>
+                            <Typography.Text className={styles.boldText}>Retry</Typography.Text>
+                          </Col>
+                          <Col span={2} className={styles.textAlignCenter}>
+                            <img
+                              src={undo}
+                              alt=""
+                              onClick={() => handleCanCelIcon(index, id, docList)}
+                              className={styles.viewUpLoadDataIconCancel}
+                            />
+                          </Col>
+                        </Row>
+                      ) : (
+                        ''
                       )}
                     </div>
-                    // <Col span={18}>
-                    //   <Typography.Text>{name.name}</Typography.Text>
-                    // </Col>
-                    // <Col span={6}>
-                    //   {!this.state.isUpdated ? (
-                    //     <UploadImage
-                    //       content="Choose file"
-                    //       getResponse={(res) => this.handleFile(res)}
-                    //     />
-                    //   ) : (
-                    //     <div>
-                    //       <a
-                    //         href="#"
-                    //         target="_blank"
-                    //         rel="noopener noreferrer"
-                    //         className={styles.viewUpLoadDataURL}
-                    //       >
-                    //         fileName
-                    //       </a>
-                    //       <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                    //       <img
-                    //         src={cancelIcon}
-                    //         alt=""
-                    //         onClick={this.handleCanCelIcon}
-                    //         className={styles.viewUpLoadDataIconCancel}
-                    //       />
-                    //     </div>
-                    //   )}
-                    // </Col>
-                    // </Row>
                   ))}
                 </div>
                 {item.type === 'D' ? (
