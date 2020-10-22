@@ -1,12 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, connect } from 'umi';
-import EditUserIcon from '@/assets/admin_iconedit.svg';
-import DeleteUserIcon from '@/assets/admin_icondelete.svg';
 import styles from './index.less';
 
-@connect(({ loading, employeesManagement }) => ({
-  loadingUserProfile: loading.effects['employeesManagement/fetchEmployeeDetail'],
+@connect(({ employeesManagement }) => ({
   employeesManagement,
 }))
 class TableCandidates extends PureComponent {
@@ -143,8 +140,7 @@ class TableCandidates extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          // rowKey={(record) => record._id}
-          // onChange={this.onSortChange}
+          rowKey="rookieId"
         />
       </div>
     );
