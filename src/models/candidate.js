@@ -9,7 +9,7 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
+    currentStep: 4,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -27,6 +27,16 @@ const candidateProfile = {
       documentList: [],
       attachments: {},
       documentListToRender: [],
+      candidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      finalOfferCandidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
     },
     tempData: {
       checkStatus: {},
@@ -34,6 +44,16 @@ const candidateProfile = {
       privateEmail: '',
       experienceYear: '',
       workLocation: '',
+      candidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      finalOfferCandidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
     },
     jobDetails: {
       position: 'EMPLOYEE',
@@ -93,6 +113,8 @@ const candidateProfile = {
       filledCandidateBasicInformation: false,
       filledCandidateJobDetails: false,
       filledCandidateCustomField: false,
+      filledOfferDetails: false,
+      filledBenefits: false,
       salaryStatus: 2,
     },
   },

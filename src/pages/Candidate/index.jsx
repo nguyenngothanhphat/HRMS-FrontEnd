@@ -33,13 +33,19 @@ const Candidate = (props) => {
   console.log(candidate);
   useEffect(() => {
     setScreen(currentStep);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
     dispatch({
       type: 'candidateProfile/fetchCandidateById',
       payload: {
         candidate,
       },
     });
-  }, [currentStep]);
+  }, []);
 
   return <div>{_renderScreen(screen)}</div>;
 };
