@@ -55,7 +55,6 @@ class CollapseField extends PureComponent {
                               nestedIndex={id}
                               getIndexFailed={this.getIndexFailed}
                             />
-                            }
                           </Col>
                         </Row>
                       ) : name.attachment ? (
