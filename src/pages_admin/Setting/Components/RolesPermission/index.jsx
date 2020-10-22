@@ -1,5 +1,6 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Input, Table } from 'antd';
+import { history } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
@@ -12,9 +13,9 @@ class RolesPermission extends PureComponent {
       visible: false,
       testReord: {},
       data: [
-        { RolesID: 20, Rolesname: 'Roles 1', Permission: 'nothing...' },
-        { RolesID: 22, Rolesname: 'Roles 2', Permission: 'nothing...' },
-        { RolesID: 24, Rolesname: 'Roles 3', Permission: 'nothing...' },
+        { RolesID: 20, Rolesname: 'Roles 1', Permission: 'view' },
+        { RolesID: 22, Rolesname: 'Roles 2', Permission: 'view' },
+        { RolesID: 24, Rolesname: 'Roles 3', Permission: 'view' },
       ],
       roleValue: '',
       getIndex: '',
@@ -84,6 +85,11 @@ class RolesPermission extends PureComponent {
     this.setState({ data: newData, roleValue: '', permissionValues: '' });
   };
 
+  handlePermission = (text, record, index) => {
+    console.log(text, record, index);
+    history.push('/settings/Permission');
+  };
+
   render() {
     const {
       selectedRowKeys,
@@ -117,6 +123,12 @@ class RolesPermission extends PureComponent {
         title: 'Permission',
         dataIndex: 'Permission',
         align: 'center',
+        render: (text, record, index) =>
+          record.RolesID !== '' ? (
+            <div onClick={() => this.handlePermission(text, record, index)}>View</div>
+          ) : (
+            ''
+          ),
       },
       {
         key: 5,

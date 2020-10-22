@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import { Affix } from 'antd';
 import LayoutAdminSetting from '@/components/LayoutAdminLeftMenu';
 import Department from './Components/Department';
@@ -9,7 +9,15 @@ import Location from './Components/Location';
 import RolesPermission from './Components/RolesPermission';
 import styles from './index.less';
 
+@connect()
 class SettingTab extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/fetchDepartment',
+    });
+  }
+
   render() {
     const listMenu = [
       {
