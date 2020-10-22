@@ -83,10 +83,10 @@ class TableFilter extends PureComponent {
       };
     });
     const formatDataRole = roles.map((item) => {
-      const { name: value, _id: label } = item;
+      const { _id: label } = item;
       return {
         label,
-        value,
+        value: label,
       };
     });
 
