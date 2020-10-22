@@ -24,8 +24,6 @@ import { getRookieInfo } from '@/services/formCandidate';
 const info = {
   namespace: 'info',
   state: {
-    rookieId: '',
-
     basicInformation: {
       fullName: '',
       privateEmail: '',
@@ -108,7 +106,7 @@ const info = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
-      salaryStatus: 2,
+      salaryStatus: 3,
     },
 
     previewOffer: {
@@ -150,6 +148,8 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    rookieId: '',
+    processStatus: '',
     currentStep: 0,
     displayComponent: {},
     testEligibility: [],
@@ -318,6 +318,7 @@ const info = {
         const response = yield call(getRookieInfo);
         const { data } = response;
         const { ticketID = '', _id = '' } = data;
+        console.log(response);
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
         history.push(`/employee-onboarding/review/${rookieId}`);

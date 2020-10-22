@@ -54,11 +54,20 @@ const employee = {
       }
     },
     *fetchListEmployeeMyTeam(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
+          company,
           department,
           location,
           employeeType,
@@ -72,11 +81,20 @@ const employee = {
       }
     },
     *fetchListEmployeeActive(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
+          company,
           department,
           location,
           employeeType,
@@ -90,11 +108,20 @@ const employee = {
       }
     },
     *fetchListEmployeeInActive(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
+          company,
           department,
           location,
           employeeType,
