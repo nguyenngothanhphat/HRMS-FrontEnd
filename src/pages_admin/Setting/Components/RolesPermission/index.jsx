@@ -1,4 +1,4 @@
-import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { DeleteOutlined, KeyOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Input, Table } from 'antd';
 import { history } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
@@ -125,8 +125,9 @@ class RolesPermission extends PureComponent {
         align: 'center',
         render: (text, record, index) =>
           record.RolesID !== '' ? (
-            <div onClick={() => this.handlePermission(text, record, index)}>View</div>
+            <KeyOutlined onClick={() => this.handlePermission(text, record, index)} />
           ) : (
+            // <div onClick={() => this.handlePermission(text, record, index)}>View</div>
             ''
           ),
       },
