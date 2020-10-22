@@ -10,25 +10,50 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, employeesManagement: { companyList = [] } }) => ({
+@connect(({ loading, employeesManagement: { companyList = [], statusImportEmployees } }) => ({
   loading: loading.effects['employeesManagement/importEmployees'],
   companyList,
+  statusImportEmployees,
 }))
 class ModalImportEmployee extends Component {
+  static getDerivedStateFromProps(props) {
+    if ('statusImportEmployees' in props && props.statusImportEmployees) {
+      return { company: '' };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      importData: {},
       employees: [],
       company: '',
-      initImport: null,
     };
     this.formRef = React.createRef();
   }
 
+  componentDidUpdate() {
+    const { statusImportEmployees, dispatch } = this.props;
+    if (statusImportEmployees) {
+      this.formRef.current.resetFields();
+      dispatch({
+        type: 'employeesManagement/save',
+        payload: {
+          statusImportEmployees: false,
+        },
+      });
+    }
+  }
+
   handleCancel = () => {
-    const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState({ company: '', employees: [] }, () => handleCancel());
+    dispatch({
+      type: 'employeesManagement/save',
+      payload: {
+        statusImportEmployees: false,
+      },
+    });
   };
 
   renderHeaderModal = () => {
@@ -51,35 +76,31 @@ class ModalImportEmployee extends Component {
       delete item.no;
       return null;
     });
-    const { company } = this.state;
-    const parseData = {
-      company,
-      employees: data,
-    };
     this.setState({
-      importData: parseData,
       employees: data,
     });
   };
 
   callAPIImportCSV = () => {
-    // const { importData } = this.state;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeesManagement/importEmployees',
-    //   payload: importData,
-    // });
-    this.formRef.current.resetFields();
-    this.setState({
-      importData: '',
-      company: '',
-      //   initImport: true,
+    const { employees, company } = this.state;
+
+    const payload = {
+      company,
+      employees,
+    };
+
+    console.log('payload', payload);
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/importEmployees',
+      payload,
     });
   };
 
   render() {
     const { visible = false, companyList, loading } = this.props;
-    const { company = '', employees, initImport } = this.state;
+    const { company = '', employees } = this.state;
     return (
       <div>
         <Modal
@@ -127,6 +148,7 @@ class ModalImportEmployee extends Component {
           </Form>
           <div className={styles.FileUploadForm}>
             <ImportCSV
+              disabled={company === ''}
               onDrop={(result) => {
                 this.handleDataUpload(result);
               }}

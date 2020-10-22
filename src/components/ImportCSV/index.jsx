@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, notification } from 'antd';
 import { dialog } from '@/utils/utils';
 import Dropzone from 'react-dropzone';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
@@ -10,6 +10,13 @@ import styles from './index.less';
 const csv = require('csvtojson');
 
 class ImportCSV extends Component {
+  static getDerivedStateFromProps(props) {
+    if ('disabled' in props && props.disabled) {
+      return { fileName: '' };
+    }
+    return null;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -58,15 +65,42 @@ class ImportCSV extends Component {
     });
   };
 
+  renderClassName = (disabled) => {
+    let className = `${styles.dropzone} `;
+    if (disabled) {
+      className += `${styles.dropzone__disabled} `;
+    }
+    return className;
+  };
+
+  showMessage = () => {
+    notification.success({ message: `Upload file successfully !` });
+  };
+
+  removeAll = (acceptedFiles) => {
+    console.log('removeAll...', acceptedFiles);
+    // acceptedFiles.length = 0
+    // acceptedFiles.splice(0, acceptedFiles.length)
+    // inputRef.current.value = ''
+    // console.log(acceptedFiles)
+  };
+
   render() {
     const { fileName } = this.state;
-    // const { initImport } = this.props;
+    const { disabled } = this.props;
     return (
-      <div className={styles.dropzone}>
-        <Dropzone accept=".csv" onDrop={this.onDrop}>
-          {({ getRootProps, getInputProps }) => (
+      <div className={this.renderClassName(disabled)}>
+        <Dropzone
+          multiple={false}
+          accept=".csv"
+          disabled={disabled}
+          noClick
+          onDrop={this.onDrop}
+          onDropAccepted={this.showMessage}
+        >
+          {({ getRootProps, getInputProps, open }) => (
             <div {...getRootProps()} className={styles.fileUploadForm}>
-              {fileName !== '' ? (
+              {fileName !== '' && !disabled ? (
                 <div className={styles.fileUploadedContainer}>
                   <p className={styles.previewIcon}>
                     <img src={csvIcon} alt="csv" />
@@ -74,7 +108,9 @@ class ImportCSV extends Component {
                   <p className={styles.fileName}>
                     Uploaded: <a>{fileName}</a>
                   </p>
-                  <Button>Choose an another file</Button>
+                  <Button type="button" onClick={open}>
+                    Choose an another file
+                  </Button>
                   <input {...getInputProps()} />
                 </div>
               ) : (
@@ -88,9 +124,9 @@ class ImportCSV extends Component {
                     <u>Drap and drop the file here</u>
                   </p>
                   <p className={styles.uploadText}>or</p>
-                  <p className={styles.uploadText}>
-                    <u>Click to choose file</u>
-                  </p>
+                  <Button type="button" onClick={open}>
+                    Choose file
+                  </Button>
                   <input {...getInputProps()} />
                 </div>
               )}

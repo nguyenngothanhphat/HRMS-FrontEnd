@@ -21,6 +21,7 @@ const employeesManagement = {
     departmentList: [],
     jobTitleList: [],
     reportingManagerList: [],
+    statusImportEmployees: false,
   },
   effects: {
     *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
@@ -109,7 +110,8 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *importEmployees({ payload }, { call }) {
+    *importEmployees({ payload }, { call, put }) {
+      let statusImportEmployees = false;
       try {
         const response = yield call(importEmployees, payload);
         const { statusCode, message } = response;
@@ -117,9 +119,11 @@ const employeesManagement = {
         notification.success({
           message,
         });
+        statusImportEmployees = true;
       } catch (errors) {
         dialog(errors);
       }
+      yield put({ type: 'save', payload: { statusImportEmployees } });
     },
   },
   reducers: {
