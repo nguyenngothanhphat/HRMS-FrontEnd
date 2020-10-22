@@ -9,7 +9,7 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 4,
+    currentStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -138,6 +138,7 @@ const candidateProfile = {
       try {
         const response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
+        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',

@@ -133,9 +133,11 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      data: { attachments, documentListToRender, validateFileSize },
+      data: { attachments, documentListToRender, validateFileSize, generatedBy },
     } = this.props;
-    console.log('render');
+    const { user } = generatedBy;
+    const { email } = user;
+    console.log(generatedBy);
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -161,22 +163,18 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
-            <StepsComponent />
-
-            {/* <SendEmail
-              formatMessage={formatMessage}
-              handleSendEmail={this.handleSendEmail}
-              handleChangeEmail={this.handleChangeEmail}
-              handleSendFormAgain={this.handleSendFormAgain}
-              email={email}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={this.handleMarkAsDone}
-              fullName={fullName}
-            /> */}
+            {documentListToRender.length > 0 &&
+            documentListToRender[0].data[0].attachment &&
+            documentListToRender[0].data[1].attachment &&
+            documentListToRender[2].data[0].attachment &&
+            documentListToRender[2].data[1].attachment &&
+            documentListToRender[2].data[2].attachment ? (
+              <SendEmail handleSendEmail={this.handleSendEmail} email={email} />
+            ) : (
+              <StepsComponent />
+            )}
           </Col>
         </Row>
-        {/* )} */}
       </div>
     );
   }

@@ -45,7 +45,7 @@ class CollapseField extends PureComponent {
                           <Col span={18}>
                             <Typography.Text>{name.displayName}</Typography.Text>
                           </Col>
-                          <Col span={5}>
+                          <Col span={5} className={styles.Padding}>
                             <UploadImage
                               content="Choose file"
                               getResponse={(res) => handleFile(res, index, id, docList)}
