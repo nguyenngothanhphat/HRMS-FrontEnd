@@ -37,7 +37,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === CHANGEPASSWORD) {
-      alert('Change Password');
+      history.push('/change-password');
 
       return;
     }
@@ -95,8 +95,8 @@ class AvatarDropdown extends React.Component {
             <br />
             <span>PIS-2400</span>
           </div>
+          <UpOutlined className={styles.menuItemIcon} />
         </div>
-        <UpOutlined className={styles.menuItemIcon} />
         <Menu.Item
           key={VIEWPROFILE}
           className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}

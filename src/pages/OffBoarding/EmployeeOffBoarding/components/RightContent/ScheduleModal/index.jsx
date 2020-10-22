@@ -50,7 +50,7 @@ class ScheduleModal extends Component {
               </Select>
             </div>
           </div>
-          <div className={styles.subText}>Meeting on</div>
+          <div className={styles.subText}>Meeting with</div>
           <div className={styles.flexContent}>
             <div>
               <Select className={styles.selectPicker} />

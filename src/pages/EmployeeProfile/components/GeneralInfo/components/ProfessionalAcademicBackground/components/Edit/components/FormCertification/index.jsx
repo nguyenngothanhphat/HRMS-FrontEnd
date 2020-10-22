@@ -1,12 +1,18 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Input, Row, Col } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Input, Row, Col, Modal } from 'antd';
+import { MinusCircleOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import UploadCertification from '../Upload';
 import s from './index.less';
 
-const CertificationInput = ({ value = [{}], onChange }) => {
+const { confirm } = Modal;
+
+const CertificationInput = ({
+  value = [{}],
+  onChange,
+  notValid,
+  handleRemoveCertification = () => {},
+}) => {
   const [list, setList] = useState(value);
-  // console.log(list);
   const [idInput, setIdInput] = useState(Date.now());
 
   const handleAddBtn = () => {
@@ -16,9 +22,25 @@ const CertificationInput = ({ value = [{}], onChange }) => {
 
   const handleRemoveBtn = (index) => {
     const newList = [...list];
+    const itemRemoved = newList[index];
+    if (itemRemoved._id) {
+      handleRemoveCertification(itemRemoved);
+    }
     newList.splice(index, 1);
     setList(newList);
     setIdInput(Date.now());
+  };
+
+  const showConfirm = (index) => {
+    confirm({
+      title: 'Do you Want to delete these items?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      onOk() {
+        handleRemoveBtn(index);
+      },
+      onCancel() {},
+    });
   };
 
   const handleFieldChange = (index, nameField, fieldValue) => {
@@ -26,7 +48,6 @@ const CertificationInput = ({ value = [{}], onChange }) => {
     const newItem = { ...item, [nameField]: fieldValue };
     const newList = [...list];
     newList.splice(index, 1, newItem);
-    console.log(newList);
     setList(newList);
   };
 
@@ -53,7 +74,7 @@ const CertificationInput = ({ value = [{}], onChange }) => {
                   {list.length > 1 ? (
                     <MinusCircleOutlined
                       className={s.iconRemove}
-                      onClick={() => handleRemoveBtn(index)}
+                      onClick={() => showConfirm(index)}
                     />
                   ) : null}
                 </div>
@@ -72,6 +93,9 @@ const CertificationInput = ({ value = [{}], onChange }) => {
           </Fragment>
         );
       })}
+      {notValid && list.length > 1 && (
+        <div style={{ color: 'red' }}>Name certification is required.</div>
+      )}
       <Row>
         <Col span={9} offset={6}>
           <div className={s.viewAddMore} onClick={handleAddBtn}>

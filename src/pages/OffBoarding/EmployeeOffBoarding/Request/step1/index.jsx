@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
 import icon from '@/assets/offboarding-schedule.svg';
 import styles from './index.less';
 
@@ -36,13 +36,9 @@ export default class Step1 extends Component {
           {/* <Input className={styles.boxReason} /> */}
           <TextArea className={styles.boxReason} />
         </div>
-        <div className={styles.subbmitForm}>
-          <div className={styles.subbmiText}>
-            By default notifications will be sent to HR, your manager and recursively loop to your
-            department head.
-          </div>
-          <Button className={styles.buttonDraft}>Save to draft</Button>
-          <Button className={styles.buttonSubmit}>Submit</Button>
+        <div className={styles.requestHRForm}>
+          <p className={styles.textBox}> Reporting Manger’s comment</p>
+          <TextArea className={styles.boxHRReason} />
         </div>
       </div>
     );

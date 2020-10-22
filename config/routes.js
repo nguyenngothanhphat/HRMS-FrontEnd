@@ -130,7 +130,7 @@ const routes = [
             name: 'addCompany',
             hideInMenu: true,
             component: '../pages_admin/CompaniesManagement/components/AddCompany',
-            authority: ['admin'],
+            authority: ['admin-sa'],
           },
           {
             path: '/companies/company-detail/:reId',
@@ -293,7 +293,12 @@ const routes = [
             hideInMenu: true,
             component: './TemplateDetails',
           },
-
+          {
+            path: '/change-password',
+            name: 'change-password',
+            hideInMenu: true,
+            component: './ChangePassword',
+          },
           {
             component: './404',
           },

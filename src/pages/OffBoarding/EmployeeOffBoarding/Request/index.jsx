@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import Step1 from './step1';
+import Step2 from './step2';
+// import Step3 from './step3';
 // import ResignationLeft from './component/ResignationLeft';
 // import Resignation from './component/ResignationRight';
 import styles from './index.less';
@@ -29,11 +31,14 @@ class ResignationRequest extends Component {
               </div>
             </div>
           </Affix>
-          <Row className={styles.content} gutter={[40, 0]}>
-            <Col span={17}>
+          <Row className={styles.content} gutter={[40, 40]}>
+            <Col span={16}>
               <Step1 />
             </Col>
-            <Col span={7} />
+            <Col span={8}>
+              <Step2 />
+              {/* <Step3 /> */}
+            </Col>
           </Row>
         </div>
       </PageContainer>
