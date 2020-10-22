@@ -1,17 +1,12 @@
 import { dialog } from '@/utils/utils';
-import {
-  getActiveCompaniesList,
-  getInActiveCompaniesList,
-  getCompanyDetails,
-} from '@/services/companiesManangement';
+import { getCompaniesList, getCompanyDetails } from '@/services/companiesManangement';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
   state: {
     currentStep: 0,
     isModified: false,
-    activeCompaniesList: [],
-    inActiveCompaniesList: [],
+    companiesList: [],
     originData: {
       companyDetails: {},
     },
@@ -51,23 +46,13 @@ const companiesManagement = {
         dialog(errors);
       }
     },
-    *fetchActiveCompaniesList(_, { call, put }) {
-      try {
-        const response = yield call(getActiveCompaniesList);
-        const { statusCode, data: activeCompaniesList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { activeCompaniesList } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
 
-    *fetchInActiveCompaniesList(_, { call, put }) {
+    *fetchCompaniesList(_, { call, put }) {
       try {
-        const response = yield call(getInActiveCompaniesList);
-        const { statusCode, data: inActiveCompaniesList = [] } = response;
+        const response = yield call(getCompaniesList);
+        const { statusCode, data: companiesList = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { inActiveCompaniesList } });
+        yield put({ type: 'save', payload: { companiesList } });
       } catch (errors) {
         dialog(errors);
       }

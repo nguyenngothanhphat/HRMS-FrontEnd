@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { Button, notification } from 'antd';
-import { dialog } from '@/utils/utils';
 import Dropzone from 'react-dropzone';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import csvIcon from '@/assets/csv-icon.png';
@@ -58,8 +57,8 @@ class ImportCSV extends Component {
             onDrop(toJson);
           });
       };
-      reader.onabort = () => dialog('File reading was aborted !');
-      reader.onerror = () => dialog('File reading has failed !');
+      reader.onabort = () => notification.error({ message: 'File reading was aborted !' });
+      reader.onerror = () => notification.error({ message: 'File reading has failed !' });
       reader.readAsBinaryString(file);
       return null;
     });
@@ -74,15 +73,17 @@ class ImportCSV extends Component {
   };
 
   showMessage = () => {
-    notification.success({ message: `Upload file successfully !` });
+    notification.success({ message: `Upload file successfully!` });
   };
 
-  removeAll = (acceptedFiles) => {
-    console.log('removeAll...', acceptedFiles);
-    // acceptedFiles.length = 0
-    // acceptedFiles.splice(0, acceptedFiles.length)
-    // inputRef.current.value = ''
-    // console.log(acceptedFiles)
+  showMessageRejected = (rejectedFiles) => {
+    rejectedFiles.map((file) => {
+      file.errors.map((error) => {
+        notification.warning({ message: error.message });
+        return null;
+      });
+      return null;
+    });
   };
 
   render() {
@@ -97,6 +98,7 @@ class ImportCSV extends Component {
           noClick
           onDrop={this.onDrop}
           onDropAccepted={this.showMessage}
+          onDropRejected={this.showMessageRejected}
         >
           {({ getRootProps, getInputProps, open }) => (
             <div {...getRootProps()} className={styles.fileUploadForm}>

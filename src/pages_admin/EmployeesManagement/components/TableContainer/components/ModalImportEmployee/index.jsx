@@ -89,8 +89,6 @@ class ModalImportEmployee extends Component {
       employees,
     };
 
-    console.log('payload', payload);
-
     const { dispatch } = this.props;
     dispatch({
       type: 'employeesManagement/importEmployees',
@@ -108,7 +106,6 @@ class ModalImportEmployee extends Component {
           className={styles.modalUpload}
           visible={visible}
           title={this.renderHeaderModal()}
-          onOk={this.handleRemoveToServer}
           onCancel={this.handleCancel}
           destroyOnClose
           footer={[
