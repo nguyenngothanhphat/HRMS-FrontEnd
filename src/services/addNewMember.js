@@ -91,3 +91,12 @@ export function getTitleListByCompany(params) {
     data: params,
   });
 }
+
+export function getTableDataByTitle(params) {
+  console.log(params);
+
+  return request('/api/salarystructure/get-by-title', {
+    method: 'POST',
+    data: params,
+  });
+}

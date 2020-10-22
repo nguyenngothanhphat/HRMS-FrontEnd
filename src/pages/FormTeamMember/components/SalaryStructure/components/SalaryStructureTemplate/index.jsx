@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
 import { formatMessage, connect } from 'umi';
-
+import doneIcon from './assets/doneIcon.png';
+import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 
 @connect(
@@ -11,6 +12,7 @@ import styles from './index.less';
       checkMandatory = {},
       currentStep = {},
       data: { processStatus = '' } = {},
+      tableData = [],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -19,6 +21,7 @@ import styles from './index.less';
     currentStep,
     processStatus,
     _id,
+    tableData,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -122,8 +125,7 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
-    const { tableData } = this.state;
+  onClickNext = () => {
     const { dispatch, currentStep } = this.props;
     dispatch({
       type: 'candidateInfo/save',
@@ -131,7 +133,10 @@ class SalaryStructureTemplate extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
-    console.log(values, tableData);
+  };
+
+  onFinish = (values) => {
+    console.log.log('hi', values);
   };
 
   onClickEdit = () => {
@@ -179,23 +184,25 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
+        tableData: tempTableData,
         checkMandatory: {
           ...checkMandatory,
           filledSalaryStructure: check,
         },
       },
     });
-    this.setState({
-      tableData: tempTableData,
-    });
   };
 
   handleChangeSelect = (value) => {
-    console.log(value);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/fetchTableData',
+      payload: { title: value },
+    });
   };
 
   _renderTableTitle = (order) => {
-    const { tableData } = this.state;
+    const { tableData } = this.props;
     const data = tableData.find((item) => item.order === order);
     const { title } = data;
     return (
@@ -210,7 +217,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableValue = (order) => {
-    const { tableData, isEditted } = this.state;
+    const { isEditted } = this.state;
+    const { tableData } = this.props;
     const data = tableData.find((item) => item.order === order);
     const { value, key } = data;
     if (this.isEditted(order) && isEditted) {
@@ -295,14 +303,16 @@ class SalaryStructureTemplate extends PureComponent {
     const { processStatus } = this.props;
     if (processStatus === 'DRAFT' || processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
       return (
-        <Form.Item>
+        <Form.Item className={styles.buttons}>
           {' '}
           {isEditted === true ? (
             <Button type="primary" onClick={this.onClickEdit}>
+              <img src={doneIcon} alt="icon" />
               {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
             </Button>
           ) : (
             <Button type="primary" onClick={this.onClickEdit}>
+              <img src={editIcon} alt="icon" />{' '}
               {formatMessage({ id: 'component.salaryStructureTemplate.edit' })}
             </Button>
           )}
@@ -369,7 +379,7 @@ class SalaryStructureTemplate extends PureComponent {
               <Button
                 type="primary"
                 htmlType="submit"
-                // onClick={this.onClickNext}
+                onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${
                   !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
                 }`}
@@ -386,7 +396,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { tableData } = this.state;
+    const { tableData } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
@@ -395,7 +405,7 @@ class SalaryStructureTemplate extends PureComponent {
           {' '}
           <div className={styles.salaryStructureTemplate_select}>
             <Form.Item label="Select a salary structure template" name="salaryTemplate">
-              {listTitle.length > 0 && (
+              {/* {listTitle.length > 0 && (
                 <Select
                   onChange={this.handleChangeSelect}
                   defaultValue={listTitle[0].name}
@@ -410,7 +420,22 @@ class SalaryStructureTemplate extends PureComponent {
                     );
                   })}
                 </Select>
-              )}
+              )} */}
+
+              <Select
+                onChange={this.handleChangeSelect}
+                placeholder="Please select a choice!"
+                size="large"
+                style={{ width: 280 }}
+              >
+                {listTitle.map((template) => {
+                  return (
+                    <Option key={template._id} value={template._id}>
+                      {template.name}
+                    </Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
           </div>
           {this._renderButtons()}

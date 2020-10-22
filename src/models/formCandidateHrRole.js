@@ -5,7 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
-  getSalaryStructureList,
+  getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
   updateByHR,
@@ -107,7 +107,7 @@ const candidateInfo = {
       title: null,
       company: null,
       previousExperience: null,
-      processStatus: 'DRAFT',
+      processStatus: 'SENT-PROVISIONAL-OFFER',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -233,16 +233,7 @@ const candidateInfo = {
         },
       ],
       listTitle: [],
-      salaryStructureData: {
-        setting: [],
-        status: 'ACTIVE',
-        _id: '5f8d2e057845200bc52840ee',
-        title: '5f6393fa2ab08f3d1291380a',
-        company: '5f6393fa2ab08f3d1291380a',
-        country: '5f6393fa2ab08f3d1291380a',
-        createdAt: '2020-10-19T06:11:17.525Z',
-        updatedAt: '2020-10-19T06:11:17.525Z',
-      },
+      tableData: [],
       candidateSignature: null,
       hrManagerSignature: null,
       hrSignature: null,
@@ -300,7 +291,6 @@ const candidateInfo = {
         dialog(errors);
       }
     },
-
     *fetchLocationList(_, { call, put }) {
       try {
         const response = yield call(getLocation);
@@ -407,6 +397,22 @@ const candidateInfo = {
         dialog(error);
       }
     },
+    *fetchTableData({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTableDataByTitle, payload);
+        const { statusCode, data } = response;
+        const { setting } = data;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { tableData: setting },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {
