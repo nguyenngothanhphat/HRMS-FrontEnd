@@ -30,6 +30,7 @@ import {
   getAdhaarcardAdd,
   getAdhaarcardUpdate,
   getAdhaardCard,
+  removeCertification,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -659,6 +660,18 @@ const employeeProfile = {
         dialog(errors);
       }
       return doc;
+    },
+    *removeCertification({ payload }, { call }) {
+      try {
+        const response = yield call(removeCertification, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
 

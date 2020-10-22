@@ -56,16 +56,17 @@
         transform: translateY(-1px);
       }
     }
-    :global {
-      .ant-btn-primary {
-        font-size: 14px;
-        width: 95px;
-        height: 40px;
-        font-weight: 600;
-        border-radius: 25px;
-        color: #fff;
-        background-color: #ffa100;
-        border: none;
+    &__submit {
+      font-size: 14px;
+      width: 95px;
+      height: 40px;
+      font-weight: 600;
+      border-radius: 25px;
+      color: #fff;
+      background-color: #ffa100;
+      border: none;
+      &:disabled {
+        opacity: 0.5;
       }
     }
   }

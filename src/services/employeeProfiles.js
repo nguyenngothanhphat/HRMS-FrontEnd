@@ -189,3 +189,10 @@ export async function getChangeHistories(payload) {
     data: payload,
   });
 }
+
+export async function removeCertification(payload) {
+  return request('/api/certification/delete', {
+    method: 'POST',
+    data: payload,
+  });
+}
