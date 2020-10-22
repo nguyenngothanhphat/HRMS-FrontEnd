@@ -33,42 +33,8 @@ class SalaryStructure extends PureComponent {
     );
   };
 
-  _renderStatus = () => {
-    return (
-      <div className={styles.greenText}>
-        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-      </div>
-    );
-  };
-
-  _renderBottomBar = () => {
-    return (
-      <div className={styles.bottomBar}>
-        <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-          </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              {' '}
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary}`}
-              >
-                Next
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </div>
-    );
-  };
-
   render() {
-    const { checkMandatory, processStatus } = this.props;
-    const { salaryStatus } = checkMandatory;
+    const { processStatus } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -92,7 +58,6 @@ class SalaryStructure extends PureComponent {
                 {/* <hr /> */}
                 <SalaryStructureTemplate />
               </div>
-              {salaryStatus === 1 ? this._renderBottomBar() : null}
             </Form>
           </div>
         </Col>

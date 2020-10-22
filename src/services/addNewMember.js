@@ -84,3 +84,10 @@ export function getSalaryStructureList() {
     method: 'POST',
   });
 }
+
+export function getTitleListByCompany(params) {
+  return request('/api/title/list-by-company', {
+    method: 'POST',
+    data: params,
+  });
+}

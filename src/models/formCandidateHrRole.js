@@ -6,6 +6,7 @@ import {
   getEmployeeTypeList,
   getManagerList,
   getSalaryStructureList,
+  getTitleListByCompany,
   addCandidate,
   updateByHR,
   getById,
@@ -106,7 +107,7 @@ const candidateInfo = {
       title: null,
       company: null,
       previousExperience: null,
-      processStatus: 'DISCARDED-PROVISONAL-OFFER',
+      processStatus: 'DRAFT',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -231,6 +232,7 @@ const candidateInfo = {
           ],
         },
       ],
+      listTitle: [],
       salaryStructureData: {
         setting: [],
         status: 'ACTIVE',
@@ -378,7 +380,6 @@ const candidateInfo = {
         dialog(error);
       }
     },
-
     *fetchEmployeeById({ payload }, { call, put }) {
       try {
         const response = yield call(getById, payload);
@@ -393,19 +394,17 @@ const candidateInfo = {
         dialog(error);
       }
     },
-    *fetchSalaryStructureList(_, { call, put }) {
+    *fetchTitleListByCompany({ payload }, { call, put }) {
       try {
-        const response = yield call(getSalaryStructureList);
+        const response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { salaryStructureData: data },
+          payload: { listTitle: data },
         });
-        console.log(response);
       } catch (error) {
         dialog(error);
-        console.log(error);
       }
     },
     *submitPhase1Effect({ payload }, { call, put }) {

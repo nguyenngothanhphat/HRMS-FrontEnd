@@ -99,6 +99,11 @@ export default {
   'component.salaryAcceptance.note3':
     'You have gone through all the contents of the table and do not accept the offer given to me.',
   'component.salaryAcceptance.closeCandidature': ' Close Candidature',
+  'component.salaryAcceptance.pendingMessage':
+    'We are waiting for Ms. Ashwini Narayana to mark the acceptance of the shared salary structure',
+  'component.salaryAcceptance.sendFormAgain': ' Send form again',
+  'component.salaryStructureTemplate.done': 'Done',
+  'component.salaryStructureTemplate.edit': 'Edit',
   'component.eligibilityDocs.TypeA': 'Type A: Identity Proof',
   'component.eligibilityDocs.aadharCard': 'Aadhar Card',
   'component.eligibilityDocs.pan': 'PAN',

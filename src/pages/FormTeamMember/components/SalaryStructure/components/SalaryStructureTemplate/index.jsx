@@ -6,11 +6,19 @@ import styles from './index.less';
 
 @connect(
   ({
-    candidateInfo: { checkMandatory = {}, currentStep = {}, data: { processStatus = '' } = {} },
+    candidateInfo: {
+      listTitle = [],
+      checkMandatory = {},
+      currentStep = {},
+      data: { processStatus = '' } = {},
+    },
+    user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
+    listTitle,
     checkMandatory,
     currentStep,
     processStatus,
+    _id,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -81,18 +89,6 @@ class SalaryStructureTemplate extends PureComponent {
           order: ' ',
         },
       ],
-      salaryTemplate: [
-        {
-          id: 0,
-          name: 'UX Designer',
-          value: 'UX Designer',
-        },
-        {
-          id: 1,
-          name: 'Business Development',
-          value: 'Business Development',
-        },
-      ],
       footerData: [
         {
           name: 'Employer’s PF',
@@ -107,12 +103,12 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
+    const { dispatch, _id } = this.props;
     // const { tableData } = this.state;
     // const newTableData = [...tableData];
     dispatch({
-      type: 'candidateInfo/fetchSalaryStructureList',
-      payload: {},
+      type: 'candidateInfo/fetchTitleListByCompany',
+      payload: { company: _id },
     });
   };
 
@@ -192,6 +188,10 @@ class SalaryStructureTemplate extends PureComponent {
     this.setState({
       tableData: tempTableData,
     });
+  };
+
+  handleChangeSelect = (value) => {
+    console.log(value);
   };
 
   _renderTableTitle = (order) => {
@@ -299,11 +299,11 @@ class SalaryStructureTemplate extends PureComponent {
           {' '}
           {isEditted === true ? (
             <Button type="primary" onClick={this.onClickEdit}>
-              Done
+              {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
             </Button>
           ) : (
             <Button type="primary" onClick={this.onClickEdit}>
-              Edit
+              {formatMessage({ id: 'component.salaryStructureTemplate.edit' })}
             </Button>
           )}
         </Form.Item>
@@ -350,7 +350,7 @@ class SalaryStructureTemplate extends PureComponent {
               {' '}
               {/* <Button
                 type="primary"
-                htmlType="submit"
+            salaryTemplate    htmlType="submit"
                 // onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${
                   !filledBasicInformation ? styles.bottomBar__button__disabled : ''
@@ -386,23 +386,31 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { salaryTemplate, tableData } = this.state;
-    const { processStatus } = this.props;
+    const { tableData } = this.state;
+    const { processStatus, listTitle = [] } = this.props;
+    // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form onFinish={this.onFinish}>
           {' '}
           <div className={styles.salaryStructureTemplate_select}>
             <Form.Item label="Select a salary structure template" name="salaryTemplate">
-              <Select size="large" style={{ width: 280 }}>
-                {salaryTemplate.map((template) => {
-                  return (
-                    <Option key={template.order} value={template.value}>
-                      {template.name}
-                    </Option>
-                  );
-                })}
-              </Select>
+              {listTitle.length > 0 && (
+                <Select
+                  onChange={this.handleChangeSelect}
+                  defaultValue={listTitle[0].name}
+                  size="large"
+                  style={{ width: 280 }}
+                >
+                  {listTitle.map((template) => {
+                    return (
+                      <Option key={template._id} value={template._id}>
+                        {template.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              )}
             </Form.Item>
           </div>
           {this._renderButtons()}

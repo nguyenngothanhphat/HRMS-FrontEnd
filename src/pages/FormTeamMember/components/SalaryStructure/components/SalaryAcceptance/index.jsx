@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
 import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import SendEmail from '../../../BackgroundCheck/components/SendEmail';
@@ -12,6 +13,14 @@ import styles from './index.less';
   processStatus,
 }))
 class SalaryAcceptance extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: false,
+    };
+  }
+
   onFinish = (values) => {
     console.log(values);
   };
@@ -82,11 +91,10 @@ class SalaryAcceptance extends PureComponent {
           <div className={styles.pendingIcon}>
             <img src={pendingIcon} alt="icon" />
           </div>
-          <p>
-            We are waiting for Ms. Ashwini Narayana to mark the acceptance of the shared salary
-            structure
-          </p>
-          <Button type="primary">Send form again</Button>
+          <p>{formatMessage({ id: 'component.salaryAcceptance.pendingMessage' })}</p>
+          <Button type="primary">
+            {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
+          </Button>
         </div>
       );
     }
@@ -99,7 +107,10 @@ class SalaryAcceptance extends PureComponent {
         <div className={styles.salaryAcceptanceWrapper}>
           <div className={styles.title}>Step forward</div>
           <div className={styles.content}>
-            <a href="#">Schedule a 1-on-1</a> to negotiate the CTC and update the same here.
+            <span className={styles.blueText} onClick={this.handleOpenSchedule}>
+              Schedule a 1-on-1
+            </span>
+            to negotiate the CTC and update the same here.
             <br />
             <br />
             Send the salary structure to the candidate to mark acceptance or
@@ -113,10 +124,30 @@ class SalaryAcceptance extends PureComponent {
     );
   };
 
+  handleOpenSchedule = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+    });
+  };
+
+  handleCandelSchedule = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   render() {
     const { processStatus } = this.props;
+    const { visible } = this.state;
+
     return (
       <div className={styles.salaryAcceptance}>
+        <ScheduleModal
+          visible={visible}
+          modalContent="Schedule 1-on-1"
+          handleCancel={this.handleCandelSchedule}
+        />
         <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
         {processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ? this._renderNegotiationForm() : ''}
       </div>
