@@ -8,11 +8,12 @@ import addTeam from './icon.js';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
-@connect(({ loading, employee }) => ({
+@connect(({ loading, employee, user: { currentUser = {} } }) => ({
   loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
   loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
   loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
+  currentUser,
 }))
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -76,6 +77,7 @@ class DirectoryComponent extends PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     const { department, location, employeeType, filterName, tabId } = this.state;
+
     const params = {
       name: filterName,
       department,
@@ -95,36 +97,55 @@ class DirectoryComponent extends PureComponent {
   }
 
   initDataTable = () => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
+    const { company } = currentUser;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
+      payload: {
+        company: company._id,
+      },
     });
     dispatch({
       type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: company._id,
+      },
     });
     dispatch({
       type: 'employee/fetchListEmployeeInActive',
+      payload: {
+        company: company._id,
+      },
     });
   };
 
   getDataTable = (params, tabId) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser } = this.props;
+    const { company } = currentUser;
+    const { name, department, location, employeeType } = params;
+    const payload = {
+      company: company._id,
+      name,
+      department,
+      location,
+      employeeType,
+    };
     if (tabId === 1) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
-        payload: params,
+        payload,
       });
     }
     if (tabId === 2) {
       dispatch({
         type: 'employee/fetchListEmployeeMyTeam',
-        payload: params,
+        payload,
       });
     }
     if (tabId === 3) {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
-        payload: params,
+        payload,
       });
     }
   };
