@@ -26,6 +26,11 @@ const subData = {
 @connect(({ loading, documentsManagement }) => ({
   loadingUploadDocument: loading.effects['documentsManagement/uploadDocument'],
   loadingEmployeeData: loading.effects['documentsManagement/fetchEmployeeData'],
+  loadingAddPassport: loading.effects['documentsManagement/addPassport'],
+  loadingAddVisa: loading.effects['documentsManagement/addVisa'],
+  loadingAddAdhaarCard: loading.effects['documentsManagement/addAdhaarCard'],
+  loadingUpdateAdhaarCard: loading.effects['documentsManagement/updateAdhaarCard'],
+  loadingUpdateGeneralInfo: loading.effects['documentsManagement/updateGeneralInfo'],
   documentsManagement,
 }))
 class InformationUploadForm extends PureComponent {
@@ -136,7 +141,7 @@ class InformationUploadForm extends PureComponent {
   refreshPage = () => {
     setTimeout(() => {
       window.location.reload(false);
-    }, 5000);
+    }, 3000);
   };
 
   addDocumentSuccessfully = () => {
@@ -145,9 +150,13 @@ class InformationUploadForm extends PureComponent {
   };
 
   addPassport = (fieldsValue, documentId) => {
-    const { dispatch, employeeDetail: { employee = '' } = {} } = this.props;
+    const {
+      dispatch,
+      documentsManagement: { employeeDetail: { employee = '' } = {} },
+    } = this.props;
+    // eslint-disable-next-line no-console
+    // console.log('employeeDetail', employeeDetail);
     const { country = '', issuedOn = '', passportNumber = '', validTill = '' } = fieldsValue;
-
     const formatIssuedOn = moment(issuedOn);
     const formatValidTill = moment(validTill);
     // console.log('uploadedDocumentId', documentId);
@@ -295,6 +304,7 @@ class InformationUploadForm extends PureComponent {
   };
 
   onFinish = (fieldsValue) => {
+    // eslint-disable-next-line no-console
     console.log('fieldsValue', fieldsValue);
     const { secondType, identityType, checkEmployeeExists } = this.state;
     const { attachmentId = '' } = this.props;
@@ -340,6 +350,12 @@ class InformationUploadForm extends PureComponent {
       documentsManagement: {
         employeeDetail: { firstName = '', lastName = '', passportNo = '' } = '',
       },
+      loadingUploadDocument,
+      loadingAddPassport,
+      loadingAddVisa,
+      loadingAddAdhaarCard,
+      loadingUpdateAdhaarCard,
+      loadingUpdateGeneralInfo,
     } = this.props;
 
     this.checkPassportExists(passportNo);
@@ -465,11 +481,34 @@ class InformationUploadForm extends PureComponent {
           )}
           <Form.Item>
             {passportExisted ? (
-              <Button type="primary" htmlType="submit" disabled>
+              <Button
+                loading={
+                  loadingUploadDocument ||
+                  loadingAddPassport ||
+                  loadingAddVisa ||
+                  loadingAddAdhaarCard ||
+                  loadingUpdateAdhaarCard ||
+                  loadingUpdateGeneralInfo
+                }
+                type="primary"
+                htmlType="submit"
+                disabled
+              >
                 Upload
               </Button>
             ) : (
-              <Button type="primary" htmlType="submit">
+              <Button
+                loading={
+                  loadingUploadDocument ||
+                  loadingAddPassport ||
+                  loadingAddVisa ||
+                  loadingAddAdhaarCard ||
+                  loadingUpdateAdhaarCard ||
+                  loadingUpdateGeneralInfo
+                }
+                type="primary"
+                htmlType="submit"
+              >
                 Upload
               </Button>
             )}

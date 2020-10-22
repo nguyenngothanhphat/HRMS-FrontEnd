@@ -22,7 +22,7 @@ const documentsManagement = {
     listDocuments: [],
     listDocumentDetail: [],
     uploadedDocument: [],
-    employeeDetail: [],
+    employeeDetail: {},
     uploadedVisa: [],
     uploadedPassport: [],
     countryList: [],
@@ -139,6 +139,7 @@ const documentsManagement = {
 
     *addPassport({ data }, { call, put }) {
       try {
+        console.log('passport data', data);
         const {
           passportNumber = '',
           passportIssuedCountry = '',
