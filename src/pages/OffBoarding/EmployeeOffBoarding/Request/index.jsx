@@ -3,7 +3,7 @@ import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import Step1 from './step1';
 import Step2 from './step2';
-import Step3 from './step3';
+// import Step3 from './step3';
 // import ResignationLeft from './component/ResignationLeft';
 // import Resignation from './component/ResignationRight';
 import styles from './index.less';

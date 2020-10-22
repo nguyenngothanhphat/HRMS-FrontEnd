@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
 import icon from '@/assets/offboarding-schedule.svg';
 import styles from './index.less';
 
