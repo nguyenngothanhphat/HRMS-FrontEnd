@@ -1,22 +1,19 @@
 import { DeleteOutlined, KeyOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Input, Table } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+@connect(({ adminSetting: { tempData: { formatData = [] } = {} } = {} }) => ({ formatData }))
 class RolesPermission extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      data: [
-        { RolesID: 20, Rolesname: 'Roles 1', Permission: 'view' },
-        { RolesID: 22, Rolesname: 'Roles 2', Permission: 'view' },
-        { RolesID: 24, Rolesname: 'Roles 3', Permission: 'view' },
-      ],
       roleValue: '',
       getIndex: '',
       permissionValues: '',
@@ -29,11 +26,14 @@ class RolesPermission extends PureComponent {
   };
 
   handleOk = (e, getIndex) => {
-    const { data } = this.state;
-    data.splice(getIndex, 1);
+    const { dispatch, formatData } = this.props;
+    formatData.splice(getIndex, 1);
     this.setState({
       visible: false,
-      data,
+    });
+    dispatch({
+      type: 'adminSetting/saveTemp',
+      payload: { formatData },
     });
   };
 
@@ -74,15 +74,19 @@ class RolesPermission extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (roleValue, permissionValues) => {
-    const { data } = this.state;
+  handleAddNewValue = (roleValue, permissionValues, data) => {
+    const { dispatch } = this.props;
     const addData = {
       RolesID: this.handleRandomNumberID(),
       Rolesname: roleValue,
       Permission: permissionValues,
     };
     const newData = [...data, addData];
-    this.setState({ data: newData, roleValue: '', permissionValues: '' });
+    this.setState({ roleValue: '', permissionValues: '' });
+    dispatch({
+      type: 'adminSetting/saveTemp',
+      payload: { formatData: newData },
+    });
   };
 
   handlePermission = (text, record, index) => {
@@ -95,11 +99,11 @@ class RolesPermission extends PureComponent {
       selectedRowKeys,
       visible,
       testReord,
-      data,
       roleValue,
       getIndex,
       permissionValues,
     } = this.state;
+    const { formatData } = this.props;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -127,7 +131,6 @@ class RolesPermission extends PureComponent {
           record.RolesID !== '' ? (
             <KeyOutlined onClick={() => this.handlePermission(text, record, index)} />
           ) : (
-            // <div onClick={() => this.handlePermission(text, record, index)}>View</div>
             ''
           ),
       },
@@ -139,7 +142,9 @@ class RolesPermission extends PureComponent {
           record.RolesID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(roleValue, permissionValues)} />
+            <PlusCircleFilled
+              onClick={() => this.handleAddNewValue(roleValue, permissionValues, formatData)}
+            />
           ),
         align: 'center',
       },
@@ -147,9 +152,10 @@ class RolesPermission extends PureComponent {
     const add = {
       RolesID: '',
       Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
-      Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
+      // Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
     };
-    const renderAdd = [...data, add];
+
+    const renderAdd = [...formatData, add];
 
     return (
       <div className={styles.RolesPermission}>

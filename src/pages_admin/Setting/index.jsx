@@ -9,12 +9,18 @@ import Location from './Components/Location';
 import RolesPermission from './Components/RolesPermission';
 import styles from './index.less';
 
-@connect()
+@connect(({ loading }) => ({ loading: loading.effects['adminSetting/fetchListRoles'] }))
 class SettingTab extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
+      type: 'adminSetting/fetchListRoles',
+    });
+    dispatch({
       type: 'employee/fetchDepartment',
+    });
+    dispatch({
+      type: 'employee/fetchLocation',
     });
   }
 
