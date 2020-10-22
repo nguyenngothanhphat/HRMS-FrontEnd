@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Space, Checkbox, Typography, Row, Col, Spin } from 'antd';
+import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import undo from '@/assets/undo-signs.svg';
@@ -46,21 +46,16 @@ class CollapseField extends PureComponent {
                             <Typography.Text>{name.displayName}</Typography.Text>
                           </Col>
                           <Col span={5}>
-                            {loading ? (
-                              <div className={styles.viewLoading}>
-                                <Spin />
-                              </div>
-                            ) : (
-                              <UploadImage
-                                content="Choose file"
-                                getResponse={(res) => handleFile(res, index, id, docList)}
-                                loading={loading}
-                                hideValidation
-                                typeIndex={index}
-                                nestedIndex={id}
-                                getIndexFailed={this.getIndexFailed}
-                              />
-                            )}
+                            <UploadImage
+                              content="Choose file"
+                              getResponse={(res) => handleFile(res, index, id, docList)}
+                              loading={loading}
+                              hideValidation
+                              typeIndex={index}
+                              nestedIndex={id}
+                              getIndexFailed={this.getIndexFailed}
+                            />
+                            }
                           </Col>
                         </Row>
                       ) : name.attachment ? (

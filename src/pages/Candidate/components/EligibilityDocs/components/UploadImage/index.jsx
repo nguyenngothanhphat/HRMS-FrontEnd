@@ -3,8 +3,9 @@ import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ candidateProfile: { data } = {} }) => ({
+@connect(({ candidateProfile: { data } = {}, loading }) => ({
   data,
+  loading: loading.effects['upload/uploadFile'],
 }))
 class UploadImage extends Component {
   beforeUpload = (file) => {
