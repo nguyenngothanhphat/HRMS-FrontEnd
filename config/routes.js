@@ -130,7 +130,7 @@ const routes = [
             name: 'addCompany',
             hideInMenu: true,
             component: '../pages_admin/CompaniesManagement/components/AddCompany',
-            authority: ['admin'],
+            authority: ['admin-sa'],
           },
           {
             path: '/companies/company-detail/:reId',
@@ -235,6 +235,13 @@ const routes = [
             component: './ResignationRequest',
           },
           {
+            path: '/employee-offboarding/request/:id',
+            name: 'request',
+            component: './OffBoarding/EmployeeOffBoarding/Request',
+            hideInMenu: true,
+            authority: ['customer'],
+          },
+          {
             path: '/employee-offboarding/:ticketId',
             name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
@@ -292,7 +299,12 @@ const routes = [
             hideInMenu: true,
             component: './TemplateDetails',
           },
-
+          {
+            path: '/change-password',
+            name: 'change-password',
+            hideInMenu: true,
+            component: './ChangePassword',
+          },
           {
             component: './404',
           },
