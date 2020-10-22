@@ -24,10 +24,17 @@ const usersManagement = {
     clearName: false,
   },
   effects: {
-    *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
+    *fetchActiveEmployeesList(
+      { payload: { status = 'ACTIVE', location = [], roles = [], company = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          location,
+          roles,
+          company,
+          name,
         });
         const { statusCode, data: activeEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -36,10 +43,17 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchInActiveEmployeesList({ payload: { status = 'INACTIVE' } = {} }, { call, put }) {
+    *fetchInActiveEmployeesList(
+      { payload: { status = 'INACTIVE', location = [], roles = [], company = [], name = '' } = {} },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          location,
+          roles,
+          company,
+          name,
         });
         const { statusCode, data: inActiveEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
