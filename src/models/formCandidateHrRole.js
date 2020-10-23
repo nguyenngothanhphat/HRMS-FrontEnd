@@ -43,6 +43,7 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      employer: '',
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -51,11 +52,11 @@ const candidateInfo = {
       timeOffPolicy: '',
       hiringAgreements: true,
       companyHandbook: true,
-
       documentList: [],
       isSentEmail: false,
       isMarkAsDone: true,
       generateLink: '',
+      newArrToAdjust: [],
       email: '',
       identityProof: {
         aadharCard: true,
@@ -83,8 +84,6 @@ const candidateInfo = {
         isChecked: false,
       },
       technicalCertification: {
-        name: '',
-        duration: '',
         poe: {
           offerLetter: false,
           appraisalLetter: false,
