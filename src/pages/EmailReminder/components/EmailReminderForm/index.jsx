@@ -234,6 +234,7 @@ class EmailReminderForm extends PureComponent {
     if (appliesToData === 'Create a condition') {
       payload = { ...values, conditionsData, emailMessage };
     }
+    payload = { ...values, emailMessage };
     console.log('Success:', payload);
   };
 
