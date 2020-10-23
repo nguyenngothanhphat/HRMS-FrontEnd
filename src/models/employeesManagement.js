@@ -22,12 +22,30 @@ const employeesManagement = {
     jobTitleList: [],
     reportingManagerList: [],
     statusImportEmployees: false,
+    filter: [],
+    clearFilter: false,
+    clearName: false,
   },
   effects: {
-    *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
+    *fetchActiveEmployeesList(
+      {
+        payload: {
+          status = 'ACTIVE',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          name,
+          department,
+          location,
+          employeeType,
         });
         const { statusCode, data: activeEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -36,10 +54,25 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchInActiveEmployeesList({ payload: { status = 'INACTIVE' } = {} }, { call, put }) {
+    *fetchInActiveEmployeesList(
+      {
+        payload: {
+          status = 'INACTIVE',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          name,
+          department,
+          location,
+          employeeType,
         });
         const { statusCode, data: inActiveEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -131,6 +164,39 @@ const employeesManagement = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveFilter(state, action) {
+      const data = [...state.filter];
+      const actionFilter = action.payload;
+      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+      if (findIndex < 0) {
+        const item = { actionFilter };
+        data.push(item);
+      } else {
+        data[findIndex] = {
+          ...data[findIndex],
+          checkedList: actionFilter.checkedList,
+        };
+      }
+      return {
+        ...state,
+        clearFilter: false,
+        filter: [...data],
+      };
+    },
+    ClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: true,
+        clearName: true,
+        filter: [],
+      };
+    },
+    offClearName(state) {
+      return {
+        ...state,
+        clearName: false,
       };
     },
   },

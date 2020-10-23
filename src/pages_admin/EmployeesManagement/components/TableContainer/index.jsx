@@ -8,16 +8,15 @@ import AddEmployeeForm from './components/AddEmployeeForm';
 import ModalImportEmployee from './components/ModalImportEmployee';
 import styles from './index.less';
 
-@connect(({ loading, employee, employeesManagement }) => ({
+@connect(({ loading, employeesManagement }) => ({
   loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
   loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
-  employee,
   employeesManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
-    if ('employee' in nextProps) {
-      const { employee: { filter = [] } = {} } = nextProps;
+    if ('employeesManagement' in nextProps) {
+      const { employeesManagement: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
@@ -148,7 +147,7 @@ class TableContainer extends PureComponent {
     });
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/ClearFilter',
+      type: 'employeesManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({

@@ -5,7 +5,8 @@ import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ employee }) => ({
+@connect(({ employeesManagement, employee }) => ({
+  employeesManagement,
   employee,
 }))
 class TabFilter extends PureComponent {
@@ -33,9 +34,6 @@ class TabFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchDepartment',
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-    });
   }
 
   toggle = () => {
@@ -46,7 +44,7 @@ class TabFilter extends PureComponent {
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({
-      type: 'employee/offClearName',
+      type: 'employeesManagement/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
@@ -59,7 +57,7 @@ class TabFilter extends PureComponent {
     const { clearText } = this.state;
     onHandleChange(clearText);
     dispatch({
-      type: 'employee/ClearFilter',
+      type: 'employeesManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({ reset: false });
@@ -70,7 +68,8 @@ class TabFilter extends PureComponent {
     const { Sider } = Layout;
     const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearName = false },
+      employee: { location = [], department = [], employeetype = [] },
+      employeesManagement: { clearName = false },
       collapsed,
       changeTab,
     } = this.props;

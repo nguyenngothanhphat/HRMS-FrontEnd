@@ -46,7 +46,9 @@ class AddEmployeeForm extends Component {
         isDisabledManager: false,
       };
     }
-    return null;
+    return {
+      isDisabledManager: true,
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -113,8 +115,26 @@ class AddEmployeeForm extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState(
+      {
+        location: [],
+        department: [],
+        isDisabled: true,
+        isDisabledManager: true,
+      },
+      () => handleCancel(),
+    );
+    dispatch({
+      type: 'employeesManagement/save',
+      payload: {
+        companyList: [],
+        departmentList: [],
+        locationList: [],
+        jobTitleList: [],
+        reportingManagerList: [],
+      },
+    });
   };
 
   handleChangeAddEmployee = () => {};

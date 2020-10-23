@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, history } from 'umi';
-import ModalConfirmRemove from '../ModalConfirmRemove';
+import ModalConfirmRemove from './components/ModalConfirmRemove';
 import styles from './index.less';
 
 class TableCompanies extends PureComponent {
