@@ -35,7 +35,7 @@ const getComponent = (name) => {
       return <AwaitingApprovals />;
     case 'FinalOffers':
       return <FinalOffers />;
-    case 'FinalOfferDrafts':
+    case 'AllDrafts':
       return <AllDrafts />;
     case 'DiscardedFinalOffers': // del
       return <DiscardedFinalOffers />; // del
@@ -134,4 +134,7 @@ class OnboardingLayout extends PureComponent {
   }
 }
 
-export default OnboardingLayout;
+// export default OnboardingLayout;
+export default connect(({ info }) => ({
+  info,
+}))(OnboardingLayout);

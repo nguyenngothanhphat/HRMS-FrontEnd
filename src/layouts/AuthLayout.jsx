@@ -10,6 +10,7 @@ const { Header, Content } = Layout;
 const AuthLayout = ({ children }) => {
   const currentUser = useSelector(({ user }) => user.currentUser);
   const history = useHistory();
+  console.log('currentUser', currentUser);
   useEffect(() => {
     if (currentUser?._id) history.push('/dashboard');
   }, [currentUser]);
