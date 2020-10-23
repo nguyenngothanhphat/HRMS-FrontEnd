@@ -1,11 +1,14 @@
 import { DeleteOutlined, KeyOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Table } from 'antd';
+import { Input, Table, Spin } from 'antd';
 import { history, connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
-@connect(({ adminSetting: { tempData: { formatData = [] } = {} } = {} }) => ({ formatData }))
+@connect(({ loading, adminSetting: { tempData: { formatData = [] } = {} } = {} }) => ({
+  loading: loading.effects['adminSetting/fetchListRoles'],
+  formatData,
+}))
 class RolesPermission extends PureComponent {
   constructor(props) {
     super(props);
@@ -103,7 +106,8 @@ class RolesPermission extends PureComponent {
       getIndex,
       permissionValues,
     } = this.state;
-    const { formatData } = this.props;
+    const { formatData, loading = true } = this.props;
+
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -149,6 +153,12 @@ class RolesPermission extends PureComponent {
         align: 'center',
       },
     ];
+    if (loading)
+      return (
+        <div className={styles.RolesPermission}>
+          <Spin loading={loading} active size="large" />
+        </div>
+      );
     const add = {
       RolesID: '',
       Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
