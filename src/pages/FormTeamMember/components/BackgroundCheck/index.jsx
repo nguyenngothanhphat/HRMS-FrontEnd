@@ -59,7 +59,7 @@ class BackgroundCheck extends Component {
   handleSendEmail = () => {
     const { dispatch } = this.props;
     const {
-      tempData: { documentList },
+      tempData: { documentList, employer },
       data: {
         department,
         workLocation,
@@ -75,9 +75,12 @@ class BackgroundCheck extends Component {
         salaryStructure,
       },
     } = this.state;
+    const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
+        newArrToAdjust,
         isSentEmail: true,
       },
     });
@@ -97,7 +100,7 @@ class BackgroundCheck extends Component {
         workEmail,
         previousExperience,
         salaryStructure,
-        documentChecklistSetting: documentList,
+        documentChecklistSetting: newArrToAdjust,
         action: 'submit',
       },
     }).then(({ statusCode }) => {
@@ -307,6 +310,17 @@ class BackgroundCheck extends Component {
     }
   };
 
+  onValuesChange = (value) => {
+    const { dispatch } = this.props;
+    const { employer } = value;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        employer,
+      },
+    });
+  };
+
   render() {
     const {
       openModal,
@@ -331,6 +345,7 @@ class BackgroundCheck extends Component {
                       handleCheckAll={this.handleCheckAll}
                       documentList={documentList}
                       tempData={tempData}
+                      onValuesChange={this.onValuesChange}
                     />
                   );
                 })}
