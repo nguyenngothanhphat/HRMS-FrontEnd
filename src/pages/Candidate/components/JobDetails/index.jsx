@@ -210,10 +210,9 @@ class JobDetails extends PureComponent {
         </Typography.Text>
       ),
     };
-    const { data = {}, currentStep } = this.props;
-    console.log('a', currentStep);
+    const { data = {} } = this.props;
     return (
-      <div className={styles.JobDetailsComponent}>
+      <div>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.JobDetailsComponent}>
