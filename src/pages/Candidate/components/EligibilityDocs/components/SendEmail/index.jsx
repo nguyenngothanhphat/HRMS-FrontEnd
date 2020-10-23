@@ -36,7 +36,7 @@ const index = ({ email, handleSendEmail }) => {
           className={style.emailForm}
           initialValues={{ email }}
         >
-          <Form.Item name="email" label="email">
+          <Form.Item name="email" label="Terralogic HR Email ID" className={style.marginBottom}>
             <Input />
           </Form.Item>
           <Form.Item>

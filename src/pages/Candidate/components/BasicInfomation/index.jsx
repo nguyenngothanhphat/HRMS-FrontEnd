@@ -79,6 +79,12 @@ class BasicInformation extends PureComponent {
         candidate: _id,
       },
     });
+    dispatch({
+      type: 'candidateProfile/fetchEmployer',
+      payload: {
+        candidate: _id,
+      },
+    });
   };
 
   _renderForm = () => {

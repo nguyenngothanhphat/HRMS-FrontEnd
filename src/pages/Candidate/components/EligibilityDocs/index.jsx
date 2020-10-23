@@ -67,6 +67,9 @@ class EligibilityDocs extends PureComponent {
         documentListToRender: docList,
       },
     });
+    // dispatch({
+    //   type:'candidate'
+    // })
   }
 
   handleFile = (res, index, id, docList) => {
@@ -130,6 +133,15 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
+  handleSendEmail = (e) => {
+    const { data, dispatch } = this.props;
+    console.log('data', data);
+    console.log('abc', e);
+    // dispatch({
+
+    // });
+  };
+
   render() {
     const {
       loading,
@@ -137,7 +149,6 @@ class EligibilityDocs extends PureComponent {
     } = this.props;
     const { user } = generatedBy;
     const { email } = user;
-    console.log(generatedBy);
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>

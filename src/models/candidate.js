@@ -3,6 +3,7 @@ import {
   getDocumentByCandidate,
   updateByCandidate,
   addAttachmentService,
+  getWorkHistory,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
@@ -170,6 +171,22 @@ const candidateProfile = {
           type: 'saveOrigin',
           payload: { attachments: data },
         });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployer({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWorkHistory, payload);
+        const { data, statusCode } = response;
+        console.log('abc', data);
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'saveOrigin',
+        //   payload: { ...data },
+        // });
       } catch (error) {
         dialog(error);
       }
