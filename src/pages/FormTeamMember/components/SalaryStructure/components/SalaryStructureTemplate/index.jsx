@@ -12,6 +12,7 @@ import styles from './index.less';
       checkMandatory = {},
       currentStep = {},
       data: { processStatus = '' } = {},
+      data,
       tableData = [],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
@@ -21,6 +22,7 @@ import styles from './index.less';
     currentStep,
     processStatus,
     _id,
+    data,
     tableData,
   }),
 )
@@ -126,11 +128,23 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, currentStep } = this.props;
+    const {
+      dispatch,
+      currentStep,
+      tableData,
+      data: { _id },
+    } = this.props;
     dispatch({
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        salaryStructure: tableData,
+        candidate: _id,
       },
     });
   };

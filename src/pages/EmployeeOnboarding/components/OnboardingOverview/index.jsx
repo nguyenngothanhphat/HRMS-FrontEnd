@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
 
-// import { PROCESS_STATUS } from './components/utils';
-
 class OnboardingOverview extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
