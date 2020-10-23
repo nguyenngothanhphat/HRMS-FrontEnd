@@ -3,7 +3,6 @@ import { Typography, Row, Col, Form, Input } from 'antd';
 import style from './index.less';
 
 const InputField = ({ onValuesChange }) => {
-  console.log('onValuesChange', onValuesChange);
   const [employer] = useState('');
   return (
     <div className={style.InputField}>
