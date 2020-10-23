@@ -40,7 +40,7 @@ class ViewDocument extends PureComponent {
   };
 
   render() {
-    const { onBackClick, data } = this.props;
+    const { onBackClick = () => {}, data = {} } = this.props;
     const { numPages } = this.state;
 
     const { key = '', employeeGroup = '', employee = '', attachment: { url = '' } = {} } = data;

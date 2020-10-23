@@ -5,6 +5,8 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  getTableDataByTitle,
+  getTitleListByCompany,
   addCandidate,
   updateByHR,
   getById,
@@ -24,6 +26,7 @@ const candidateInfo = {
       filledJobDetail: false,
       filledCustomField: false,
       filledOfferDetail: false,
+      filledSalaryStructure: true,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -40,6 +43,7 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      employer: '',
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -48,11 +52,11 @@ const candidateInfo = {
       timeOffPolicy: '',
       hiringAgreements: true,
       companyHandbook: true,
-
       documentList: [],
       isSentEmail: false,
       isMarkAsDone: true,
       generateLink: '',
+      newArrToAdjust: [],
       email: '',
       identityProof: {
         aadharCard: true,
@@ -80,8 +84,6 @@ const candidateInfo = {
         isChecked: false,
       },
       technicalCertification: {
-        name: '',
-        duration: '',
         poe: {
           offerLetter: false,
           appraisalLetter: false,
@@ -104,7 +106,7 @@ const candidateInfo = {
       title: null,
       company: null,
       previousExperience: null,
-      processStatus: 'DRAFT',
+      processStatus: 'SENT-PROVISIONAL-OFFER',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -229,6 +231,8 @@ const candidateInfo = {
           ],
         },
       ],
+      listTitle: [],
+      tableData: [],
       candidateSignature: null,
       hrManagerSignature: null,
       hrSignature: null,
@@ -286,7 +290,6 @@ const candidateInfo = {
         dialog(errors);
       }
     },
-
     *fetchLocationList(_, { call, put }) {
       try {
         const response = yield call(getLocation);
@@ -366,21 +369,49 @@ const candidateInfo = {
         dialog(error);
       }
     },
-
     *fetchEmployeeById({ payload }, { call, put }) {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        const dataObj = data.find((x) => x);
+        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+          payload: { ...data, candidate: data._id, _id: data._id },
         });
       } catch (error) {
         dialog(error);
       }
     },
+    *fetchTitleListByCompany({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTitleListByCompany, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listTitle: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchTableData({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTableDataByTitle, payload);
+        const { statusCode, data } = response;
+        const { setting } = data;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { tableData: setting },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {

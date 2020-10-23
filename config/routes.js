@@ -40,16 +40,6 @@ const routes = [
     ],
   },
   {
-    path: '/candidate',
-    component: '../layouts/CandidateLayout',
-    routes: [
-      {
-        path: '/candidate',
-        component: './Candidate',
-      },
-    ],
-  },
-  {
     path: '/forgot-password',
     component: '../layouts/AuthLayout',
     routes: [
@@ -74,6 +64,18 @@ const routes = [
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
+      {
+        path: '/candidate',
+        component: '../layouts/CandidateLayout',
+        authority: ['candidate'],
+        routes: [
+          {
+            path: '/candidate',
+            component: './Candidate',
+            authority: ['candidate'],
+          },
+        ],
+      },
       {
         path: '/',
         component: '../layouts/BasicLayout',
@@ -143,7 +145,7 @@ const routes = [
             path: '/candidates',
             name: 'candidates',
             icon: '/assets/images/CP-icons_Candidates.svg',
-            component: '../pages_admin/TestPage',
+            component: '../pages_admin/CandidatesManagement',
             authority: ['admin-sa'],
           },
           {

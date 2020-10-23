@@ -59,7 +59,7 @@ class BackgroundCheck extends Component {
   handleSendEmail = () => {
     const { dispatch } = this.props;
     const {
-      tempData: { documentList },
+      tempData: { documentList, employer },
       data: {
         department,
         workLocation,
@@ -72,11 +72,15 @@ class BackgroundCheck extends Component {
         privateEmail,
         workEmail,
         previousExperience,
+        salaryStructure,
       },
     } = this.state;
+    const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
+        newArrToAdjust,
         isSentEmail: true,
       },
     });
@@ -87,16 +91,16 @@ class BackgroundCheck extends Component {
         candidate,
         fullName,
         position,
-        employeeType,
-        department,
-        title,
-        workLocation,
-        reportingManager,
+        employeeType: employeeType._id,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
         privateEmail,
         workEmail,
         previousExperience,
-        documentChecklistSetting: documentList,
-        salaryStructure: '5f57544e899f4743e8fdb3f2',
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
         action: 'submit',
       },
     }).then(({ statusCode }) => {
@@ -306,6 +310,17 @@ class BackgroundCheck extends Component {
     }
   };
 
+  onValuesChange = (value) => {
+    const { dispatch } = this.props;
+    const { employer } = value;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        employer,
+      },
+    });
+  };
+
   render() {
     const {
       openModal,
@@ -330,6 +345,7 @@ class BackgroundCheck extends Component {
                       handleCheckAll={this.handleCheckAll}
                       documentList={documentList}
                       tempData={tempData}
+                      onValuesChange={this.onValuesChange}
                     />
                   );
                 })}
