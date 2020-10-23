@@ -24,7 +24,7 @@ const InputField = ({ onValuesChange }) => {
         <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colRight}>
           <Form labelCol={24} wrapperCol={24} layout="vertical">
             <Form.Item label="Work Duration (In year, months, days)">
-              <Input className={style.inputDate} />
+              <Input className={style.inputDate} disabled="true" />
             </Form.Item>
           </Form>
         </Col>
