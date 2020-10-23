@@ -21,19 +21,22 @@ class SalaryAcceptance extends PureComponent {
           title: 'I hereby accept this salary structure.',
           note:
             'You have gone through all the contents of the table and accept the salary as terms of your employment.',
-          processStatus: 'ACCEPT-PROVISIONAL-OFFER',
+          // processStatus: 'ACCEPT-PROVISIONAL-OFFER',
+          options: 1,
         },
         {
           title: 'I would like to re-negotiate the salary structure.',
           note:
             'You have gone through all the contents of the table. However, I would like to renegotiate.',
-          processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+          // processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+          options: 2,
         },
         {
           title: 'I would like to reject this offer.',
           note:
             'You have gone through all the contents of the table and do not accept the offer given to me.',
-          processStatus: 'DISCARDED-PROVISONAL-OFFER',
+          // processStatus: 'DISCARDED-PROVISONAL-OFFER',
+          options: 3,
         },
       ],
     };
@@ -66,18 +69,32 @@ class SalaryAcceptance extends PureComponent {
   //   });
   // };
 
+  onChangeSelect = (e) => {
+    const { value } = e.target;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        tempData: {
+          options: value,
+        },
+      },
+    });
+  };
+
   _renderSelect = () => {
     const { select } = this.state;
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
         <div className={styles.title}>Acceptance of salary structure</div>
-        <Radio.Group onChange={this.onChange}>
+        <Radio.Group defaultValue={1} onChange={this.onChangeSelect}>
           {select.map((data) => {
             return (
               <div className={styles.select}>
                 <Row>
                   <Col span={3}>
-                    <Radio checked value={data.processStatus} />
+                    <Radio checked value={data.options} />
                   </Col>
                   <Col span={21}>
                     <p className="radio__title">{data.title}</p>

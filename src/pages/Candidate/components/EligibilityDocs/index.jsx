@@ -2,11 +2,13 @@
 import React, { PureComponent } from 'react';
 import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
+import CustomModal from '@/components/CustomModal';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
+import ModalContentComponent from './components/ModalContentComponent';
 import styles from './index.less';
 
 const Note = {
@@ -26,6 +28,13 @@ const Note = {
   loading: loading.effects['upload/uploadFile'],
 }))
 class EligibilityDocs extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+    };
+  }
+
   componentDidMount() {
     const {
       data: { documentList },
@@ -110,7 +119,6 @@ class EligibilityDocs extends PureComponent {
     const arrToAdjust = JSON.parse(JSON.stringify(docList));
     const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
     const { isValidated } = docList;
-    console.log('abc');
     if (arrToAdjust[typeIndex].data.length > 0) {
       const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
       const attach = null;
@@ -130,14 +138,78 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
-  render() {
+  handleSendEmail = () => {
     const {
-      loading,
-      data: { attachments, documentListToRender, validateFileSize, generatedBy },
+      data: { dateOfJoining, noticePeriod, fullName, workDuration, employerId, generatedBy },
+      dispatch,
     } = this.props;
     const { user } = generatedBy;
     const { email } = user;
-    console.log(generatedBy);
+    dispatch({
+      type: 'candidateProfile/sendEmailByCandidate',
+      payload: {
+        dateOfJoining,
+        options: 1,
+        fullName,
+        noticePeriod,
+        hrEmail: email,
+        workHistories: [
+          {
+            id: employerId,
+            workDuration,
+          },
+        ],
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+      }
+    });
+  };
+
+  onValuesChange = (val) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        workDuration: Math.ceil(val.workDuration),
+      },
+    });
+  };
+
+  onValuesChangeEmail = (val) => {
+    const {
+      data: { generatedBy },
+      dispatch,
+    } = this.props;
+    const { user } = generatedBy;
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        generatedBy: {
+          ...generatedBy,
+          user: { ...user, email: val.email },
+        },
+      },
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
+  render() {
+    const {
+      loading,
+      data: { attachments, documentListToRender, validateFileSize, generatedBy, employerName },
+    } = this.props;
+    const { openModal } = this.state;
+    const { user } = generatedBy;
+    const { email } = user;
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -148,6 +220,7 @@ class EligibilityDocs extends PureComponent {
                 documentListToRender.map((item, index) => {
                   return (
                     <CollapseFields
+                      onValuesChange={this.onValuesChange}
                       item={item && item}
                       index={index}
                       docList={documentListToRender}
@@ -156,6 +229,7 @@ class EligibilityDocs extends PureComponent {
                       loading={loading}
                       attachments={attachments}
                       validateFileSize={validateFileSize}
+                      employerName={employerName}
                     />
                   );
                 })}
@@ -169,12 +243,21 @@ class EligibilityDocs extends PureComponent {
             documentListToRender[2].data[0].attachment &&
             documentListToRender[2].data[1].attachment &&
             documentListToRender[2].data[2].attachment ? (
-              <SendEmail handleSendEmail={this.handleSendEmail} email={email} />
+              <SendEmail
+                handleSendEmail={this.handleSendEmail}
+                email={email}
+                onValuesChangeEmail={this.onValuesChangeEmail}
+              />
             ) : (
               <StepsComponent />
             )}
           </Col>
         </Row>
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<ModalContentComponent closeModal={this.closeModal} />}
+        />
       </div>
     );
   }

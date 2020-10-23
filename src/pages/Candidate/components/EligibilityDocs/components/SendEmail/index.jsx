@@ -3,9 +3,7 @@ import { Typography, Space, Radio, Input, Form, Button } from 'antd';
 import send from './Assets/group-11.svg';
 import style from './index.less';
 
-const index = ({ email, handleSendEmail }) => {
-  console.log('initial', email);
-
+const index = ({ email, handleSendEmail, onValuesChangeEmail }) => {
   return (
     <div className={style.SendEmail}>
       <div className={style.header}>
@@ -18,7 +16,6 @@ const index = ({ email, handleSendEmail }) => {
           <Typography.Text className={style.text}>Send Form</Typography.Text>
         </Space>
       </div>
-
       <div className={style.body}>
         <Radio.Group defaultValue={1} className={style.radioContainer}>
           <Radio value={1} className={style.radioItem}>
@@ -35,8 +32,9 @@ const index = ({ email, handleSendEmail }) => {
           layout="vertical"
           className={style.emailForm}
           initialValues={{ email }}
+          onValuesChange={onValuesChangeEmail}
         >
-          <Form.Item name="email" label="email">
+          <Form.Item name="email" label="Terralogic HR Email ID" className={style.marginBottom}>
             <Input />
           </Form.Item>
           <Form.Item>

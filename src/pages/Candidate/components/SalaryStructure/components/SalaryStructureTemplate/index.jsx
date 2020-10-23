@@ -1,18 +1,18 @@
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
+import { Form, Table, Button, Input, Row, Col } from 'antd';
 import { formatMessage, connect } from 'umi';
-import doneIcon from './assets/doneIcon.png';
-import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 
 @connect(
   ({
-    candidateInfo: {
+    candidateProfile: {
       listTitle = [],
       checkMandatory = {},
       currentStep = {},
       data: { processStatus = '' } = {},
-      tableData = [],
+      tempData: { options = 1 },
+      tempData,
+      salaryStructure = [],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -21,7 +21,9 @@ import styles from './index.less';
     currentStep,
     processStatus,
     _id,
-    tableData,
+    salaryStructure,
+    options,
+    tempData,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -30,68 +32,6 @@ class SalaryStructureTemplate extends PureComponent {
 
     this.state = {
       isEditted: false,
-      tableData: [
-        {
-          key: 'basic',
-          title: 'Basic',
-          value: 'Rs. 12888',
-          order: 'A',
-        },
-        {
-          key: 'hra',
-          title: 'HRA',
-          value: '50% of Basic',
-          order: 'B',
-        },
-        {
-          title: 'Other allowances',
-          key: 'otherAllowances',
-          value: 'Balance amount',
-          order: 'C',
-        },
-        {
-          key: 'totalEarning',
-          title: 'Total earning (Gross)',
-          order: 'D',
-          value: 'A + B + C',
-        },
-        {
-          key: 'deduction',
-          title: 'Deduction',
-          order: 'E',
-          value: ' ',
-        },
-        {
-          key: 'employeesPF',
-          title: "Employee's PF",
-          value: '12 % of Basic',
-          order: 'G',
-        },
-        {
-          key: 'employeesESI',
-          title: "Employee's ESI",
-          value: '0.75 of Gross',
-          order: 'H',
-        },
-        {
-          key: 'professionalTax',
-          title: 'Professional Tax',
-          value: 'Rs.200',
-          order: 'I',
-        },
-        {
-          key: 'tds',
-          title: 'TDS',
-          value: 'As per IT rules',
-          order: 'J',
-        },
-        {
-          key: 'netPayment',
-          title: 'Net Payment',
-          value: 'F - (G + H + I + J)',
-          order: ' ',
-        },
-      ],
       footerData: [
         {
           name: 'Employer’s PF',
@@ -107,8 +47,8 @@ class SalaryStructureTemplate extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch, _id } = this.props;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+    // const { salaryStructure } = this.state;
+    // const newsalaryStructure = [...salaryStructure];
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
@@ -126,11 +66,24 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, currentStep } = this.props;
+    const { dispatch, options, tempData } = this.props;
+    console.log(options);
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     currentStep: currentStep + 1,
+    //   },
+    // });
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/updateByCandidateModel',
       payload: {
-        currentStep: currentStep + 1,
+        options,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        options: tempData.options,
       },
     });
   };
@@ -164,8 +117,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableTitle = (order) => {
-    const { tableData } = this.props;
-    const data = tableData.find((item) => item.order === order);
+    const { salaryStructure } = this.props;
+    const data = salaryStructure.find((item) => item.order === order);
     const { title } = data;
     return (
       <span
@@ -180,8 +133,8 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { tableData } = this.props;
-    const data = tableData.find((item) => item.order === order);
+    const { salaryStructure } = this.props;
+    const data = salaryStructure.find((item) => item.order === order);
     const { value, key } = data;
     if (this.isEditted(order) && isEditted) {
       return (
@@ -316,12 +269,9 @@ class SalaryStructureTemplate extends PureComponent {
               </Button>
               <Button
                 type="primary"
-                htmlType="submit"
+                // htmlType="submit"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledSalaryStructure}
+                className={`${styles.bottomBar__button__primary} `}
               >
                 Next
               </Button>
@@ -333,21 +283,21 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { tableData } = this.props;
+    const { salaryStructure } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form onFinish={this.onFinish}>
           <div className={styles.salaryStructureTemplate_table}>
             <Table
-              dataSource={tableData}
+              dataSource={salaryStructure}
               columns={this._renderColumns()}
               // size="large"
               pagination={false}
             />
           </div>
           {this._renderFooter()}
-          {/* {this._renderBottomBar()} */}
+          {this._renderBottomBar()}
         </Form>
       </div>
     );

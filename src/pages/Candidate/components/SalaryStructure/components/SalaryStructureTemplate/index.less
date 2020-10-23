@@ -101,7 +101,8 @@
   }
   &_table {
     // margin-bottom: 8 * @spacing-xxs;
-    height: 570px;
+    min-height: 570px;
+    height: max-content;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border: solid 1px #d6dce0;
@@ -124,7 +125,8 @@
 
   &_footer {
     margin-bottom: 8 * @spacing-xxs;
-    height: 79px;
+    min-height: 79px;
+    height: max-content;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border: solid 1px #d6dce0;
@@ -194,6 +196,8 @@
       :global {
         .ant-btn-primary {
           // display: none;
+          display: flex;
+          align-items: center;
           top: 0;
           width: 94px;
           height: 40px;

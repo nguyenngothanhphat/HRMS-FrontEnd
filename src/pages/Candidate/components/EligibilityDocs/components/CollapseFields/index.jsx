@@ -11,7 +11,16 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const { item = {}, loading, index, handleFile, docList, handleCanCelIcon } = this.props;
+    const {
+      item = {},
+      loading,
+      index,
+      handleFile,
+      docList,
+      handleCanCelIcon,
+      onValuesChange,
+      employerName,
+    } = this.props;
     return (
       <div className={styles.CollapseField}>
         {item.data.length > 0 ? (
@@ -35,7 +44,11 @@ class CollapseField extends PureComponent {
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >
-              {item.type === 'D' ? <InputField /> : <></>}
+              {item.type === 'D' ? (
+                <InputField onValuesChange={onValuesChange} employerName={employerName} />
+              ) : (
+                <></>
+              )}
               <Space direction="vertical" className={styles.Space}>
                 <div className={styles.Upload}>
                   {item.data.map((name, id) => (

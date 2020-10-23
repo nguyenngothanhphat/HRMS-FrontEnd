@@ -37,3 +37,19 @@ export function addAttachmentService(params) {
     data: params,
   });
 }
+
+export function getWorkHistory(params) {
+  console.log(params);
+  return request('/api/workhistory/get-by-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function sendEmailByCandidateModel(params) {
+  console.log(params);
+  return request('/api/candidate/phase-one-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}

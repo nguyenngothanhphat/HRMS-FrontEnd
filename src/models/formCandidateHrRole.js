@@ -109,7 +109,7 @@ const candidateInfo = {
       company: null,
       joineeEmail: '',
       previousExperience: null,
-      processStatus: 'SENT-PROVISIONAL-OFFER',
+      processStatus: 'DRAFT',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
