@@ -85,6 +85,12 @@ class BasicInformation extends PureComponent {
         candidate: _id,
       },
     });
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        fullName: values.fullName,
+      },
+    });
   };
 
   _renderForm = () => {

@@ -60,7 +60,6 @@ class JobDetails extends PureComponent {
       data,
       currentStep,
     } = this.props;
-    console.log('abcd', prefferedDateOfJoining._d);
 
     const convert = (str) => {
       const date = new Date(str);
@@ -72,18 +71,23 @@ class JobDetails extends PureComponent {
     const converted = convert(prefferedDateOfJoining._d);
     console.log('abc', converted);
     dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
-    dispatch({
       type: 'candidateProfile/updateByCandidateModel',
       payload: {
         ...data,
         noticePeriod: candidatesNoticePeriod,
         dateOfJoining: converted,
         candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
+        data: {
+          ...data,
+          noticePeriod: candidatesNoticePeriod,
+          dateOfJoining: converted,
+        },
       },
     });
   };

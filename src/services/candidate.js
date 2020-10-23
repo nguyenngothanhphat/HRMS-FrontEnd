@@ -45,3 +45,11 @@ export function getWorkHistory(params) {
     data: params,
   });
 }
+
+export function sendEmailByCandidateModel(params) {
+  console.log(params);
+  return request('/api/candidate/phase-one-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}

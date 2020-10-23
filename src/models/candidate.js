@@ -4,6 +4,7 @@ import {
   updateByCandidate,
   addAttachmentService,
   getWorkHistory,
+  sendEmailByCandidateModel,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
@@ -28,6 +29,7 @@ const candidateProfile = {
       documentList: [],
       attachments: {},
       documentListToRender: [],
+      workLocation: '',
       candidateSignature: {
         fileName: '',
         _id: '',
@@ -181,12 +183,23 @@ const candidateProfile = {
       try {
         response = yield call(getWorkHistory, payload);
         const { data, statusCode } = response;
-        console.log('abc', data);
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'saveOrigin',
-        //   payload: { ...data },
-        // });
+        yield put({
+          type: 'saveOrigin',
+          payload: { employerId: data._id, employerName: data.employer },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *sendEmailByCandidate({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(sendEmailByCandidateModel, payload);
+        const { statusCode } = response;
+        console.log('a', response);
+        if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }
