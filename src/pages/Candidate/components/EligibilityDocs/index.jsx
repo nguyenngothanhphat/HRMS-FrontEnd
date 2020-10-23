@@ -135,8 +135,8 @@ class EligibilityDocs extends PureComponent {
       loading,
       data: { attachments, documentListToRender, validateFileSize, generatedBy },
     } = this.props;
-    // const { user } = generatedBy;
-    // const { email } = user;
+    const { user } = generatedBy;
+    const { email } = user;
     console.log(generatedBy);
     return (
       <div className={styles.EligibilityDocs}>
