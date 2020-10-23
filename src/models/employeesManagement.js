@@ -22,6 +22,7 @@ const employeesManagement = {
     jobTitleList: [],
     reportingManagerList: [],
     statusImportEmployees: false,
+    returnEmployeesList: {},
     filter: [],
     clearFilter: false,
     clearName: false,
@@ -147,12 +148,13 @@ const employeesManagement = {
       let statusImportEmployees = false;
       try {
         const response = yield call(importEmployees, payload);
-        const { statusCode, message } = response;
+        const { statusCode, message, data: returnEmployeesList = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
         statusImportEmployees = true;
+        yield put({ type: 'save', payload: { returnEmployeesList } });
       } catch (errors) {
         dialog(errors);
       }

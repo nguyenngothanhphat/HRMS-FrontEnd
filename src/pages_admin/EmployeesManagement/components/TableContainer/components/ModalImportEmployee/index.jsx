@@ -4,17 +4,25 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Select } from 'antd';
 import { connect } from 'umi';
+import _ from 'lodash';
 import ImportCSV from '@/components/ImportCSV';
+import exportToCsv from '@/utils/exportToCsv';
 
 import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, employeesManagement: { companyList = [], statusImportEmployees } }) => ({
-  loading: loading.effects['employeesManagement/importEmployees'],
-  companyList,
-  statusImportEmployees,
-}))
+@connect(
+  ({
+    loading,
+    employeesManagement: { companyList = [], statusImportEmployees, returnEmployeesList },
+  }) => ({
+    loading: loading.effects['employeesManagement/importEmployees'],
+    companyList,
+    statusImportEmployees,
+    returnEmployeesList,
+  }),
+)
 class ModalImportEmployee extends Component {
   static getDerivedStateFromProps(props) {
     if ('statusImportEmployees' in props && props.statusImportEmployees) {
@@ -43,6 +51,15 @@ class ModalImportEmployee extends Component {
         },
       });
     }
+    const { returnEmployeesList } = this.props;
+    if (statusImportEmployees && !_.isEmpty(returnEmployeesList)) {
+      exportToCsv('export.csv', [
+        ['name', 'description'],
+        ['david', '123'],
+        ['jona', '""'],
+        ['a', 'b'],
+      ]);
+    }
   }
 
   handleCancel = () => {
@@ -52,6 +69,7 @@ class ModalImportEmployee extends Component {
       type: 'employeesManagement/save',
       payload: {
         statusImportEmployees: false,
+        returnEmployeesList: {},
       },
     });
   };
