@@ -2,7 +2,7 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Select } from 'antd';
+import { Modal, Button, Form, Input, Select, Tooltip } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -281,9 +281,14 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ required: true }]}>
+          <Form.Item
+            className={styles.reportingManager}
+            label="Reporting Manager"
+            name="reportingManager"
+            rules={[{ required: true }]}
+          >
             <Select
-              placeholder="Select Reporting Manager"
+              placeholder={isDisabledManager ? 'No Data' : 'Select Reporting Manager'}
               showArrow
               showSearch
               disabled={isDisabledManager}
@@ -297,6 +302,14 @@ class AddEmployeeForm extends Component {
                 </Option>
               ))}
             </Select>
+            <Tooltip
+              placement="top"
+              title="Reporting manager is got according to department and location."
+              overlayClassName={styles.GenEITooltip}
+              color="#568afa"
+            >
+              <span className={styles.reportingManager__tooltip}>?</span>
+            </Tooltip>
           </Form.Item>
         </Form>
       </div>
