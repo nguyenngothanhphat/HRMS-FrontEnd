@@ -20,10 +20,14 @@ class Chart extends Component {
     });
   }
 
-  _renderNode = ({
-    node: { name = '', position = '', src = '', children = [] } = {},
-    node = {},
-  }) => {
+  _renderNode = ({ node = {} }) => {
+    const {
+      generalInfo: { avatar = '', firstName = '' } = {},
+      department: { name = '' } = {},
+      location: { name: nameLocation = '' } = {},
+      user: { roles = [] } = {},
+    } = node;
+    const [role] = roles;
     return (
       <div
         className="initechNode"
@@ -33,12 +37,15 @@ class Chart extends Component {
           })
         }
       >
-        <Avatar src={src} size={64} icon={<UserOutlined />} />
+        <Avatar src={avatar} size={64} icon={<UserOutlined />} />
         <p style={{ fontSize: '14px', fontWeight: '600', margin: '12px 0', lineHeight: '1.36' }}>
-          {name}
+          {firstName}
         </p>
-        <p style={{ opacity: '0.5', margin: '0' }}>{position}</p>
-        {children.length > 0 && <div className="iconA">Total: {children.length}</div>}
+        <div>Department: {name}</div>
+        <div>Location: {nameLocation}</div>
+        <div>Role: {role}</div>
+        {/* <p style={{ opacity: '0.5', margin: '0' }}>{position}</p> */}
+        {/* {children.length > 0 && <div className="iconA">Total: {children.length}</div>} */}
       </div>
     );
   };

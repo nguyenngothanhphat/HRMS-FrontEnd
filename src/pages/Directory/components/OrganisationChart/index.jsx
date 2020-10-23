@@ -4,8 +4,9 @@ import { formatMessage, connect } from 'umi';
 import Chart from './Chart';
 import s from './index.less';
 
-@connect(({ employee: { dataOrgChart = {} } = {} }) => ({
+@connect(({ employee: { dataOrgChart = {} } = {}, loading }) => ({
   dataOrgChart,
+  loading: loading.effects['employee/fetchDataOrgChart'],
 }))
 class OrganisationChart extends Component {
   constructor(props) {
@@ -28,44 +29,7 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { dataOrgChart = {} } = this.props;
-
-    // const dummyData = {
-    //   name: 'Bill Lumbergh',
-    //   position: 'CEO',
-    //   children: [
-    //     {
-    //       name: 'Peter Gibbons',
-    //       position: 'Lead',
-    //     },
-    //     {
-    //       name: 'Anil Reddy',
-    //       position: 'Sales',
-    //       children: [
-    //         {
-    //           name: 'Peter Gibbons',
-    //           position: 'Sales 1',
-    //         },
-    //         {
-    //           name: 'Peter Gibbons',
-    //           position: 'Sales 2',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: 'Peter Gibbons',
-    //       position: 'Marketing',
-    //     },
-    //     {
-    //       name: 'Milton Waddams',
-    //       position: 'UI',
-    //     },
-    //     {
-    //       name: 'Bob Slydell',
-    //       position: 'UX',
-    //     },
-    //   ],
-    // };
+    const { dataOrgChart = {}, loading } = this.props;
 
     return (
       <div className={s.container}>
@@ -88,7 +52,9 @@ class OrganisationChart extends Component {
             </a>
           </div>
         </Row>
-        <Row style={{ marginTop: '27px' }}>{/* <Chart data={dataOrgChart} /> */}</Row>
+        <Row style={{ marginTop: '27px' }}>
+          {loading ? <div>Loading...</div> : <Chart data={dataOrgChart} />}
+        </Row>
       </div>
     );
   }
