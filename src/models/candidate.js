@@ -9,7 +9,7 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
+    currentStep: 6,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -109,6 +109,7 @@ const candidateProfile = {
         ],
       },
     ],
+    salaryStructure: [],
     checkCandidateMandatory: {
       filledCandidateBasicInformation: false,
       filledCandidateJobDetails: false,
@@ -123,11 +124,17 @@ const candidateProfile = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
+        console.log(data);
         const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+          payload: {
+            ...dataObj,
+            candidate: dataObj._id,
+            _id: dataObj._id,
+            salaryStructure: data.salaryStructure,
+          },
         });
       } catch (error) {
         dialog(error);

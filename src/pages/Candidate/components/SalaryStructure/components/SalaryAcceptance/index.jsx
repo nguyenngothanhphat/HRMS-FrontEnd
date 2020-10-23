@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Typography, Radio, Row, Col } from 'antd';
 import { connect, formatMessage } from 'umi';
 
-import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
-import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
-import pendingIcon from './assets/pendingIcon.png';
+import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 
 import styles from './index.less';
@@ -18,6 +16,26 @@ class SalaryAcceptance extends PureComponent {
 
     this.state = {
       visible: false,
+      select: [
+        {
+          title: 'I hereby accept this salary structure.',
+          note:
+            'You have gone through all the contents of the table and accept the salary as terms of your employment.',
+          processStatus: 'ACCEPT-PROVISIONAL-OFFER',
+        },
+        {
+          title: 'I would like to re-negotiate the salary structure.',
+          note:
+            'You have gone through all the contents of the table. However, I would like to renegotiate.',
+          processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+        },
+        {
+          title: 'I would like to reject this offer.',
+          note:
+            'You have gone through all the contents of the table and do not accept the offer given to me.',
+          processStatus: 'DISCARDED-PROVISONAL-OFFER',
+        },
+      ],
     };
   }
 
@@ -48,79 +66,33 @@ class SalaryAcceptance extends PureComponent {
   //   });
   // };
 
-  _renderStatus = () => {
-    const { processStatus } = this.props;
-    console.log(processStatus);
-    if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
-      return (
-        <SalaryAcceptanceContent
-          radioTitle={formatMessage({ id: 'component.salaryAcceptance.title1' })}
-          note={formatMessage({ id: 'component.salaryAcceptance.note1' })}
-          accept
-        />
-      );
-    }
-    if (processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
-      return (
-        <>
-          <SalaryAcceptanceContent
-            radioTitle={formatMessage({ id: 'component.salaryAcceptance.title2' })}
-            note={formatMessage({ id: 'component.salaryAcceptance.note2' })}
-            accept={false}
-          />
-        </>
-      );
-    }
-    if (processStatus === 'DISCARDED-PROVISONAL-OFFER') {
-      return (
-        <>
-          <SalaryAcceptanceContent
-            radioTitle={formatMessage({ id: 'component.salaryAcceptance.title3' })}
-            note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
-            accept={false}
-          />
-          <Button type="primary" htmlType="submit">
-            {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
-          </Button>
-        </>
-      );
-    }
-    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
-      return (
-        <div className={styles.pending}>
-          <div className={styles.pendingIcon}>
-            <img src={pendingIcon} alt="icon" />
-          </div>
-          <p>{formatMessage({ id: 'component.salaryAcceptance.pendingMessage' })}</p>
-          <Button type="primary">
-            {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
-          </Button>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  _renderNegotiationForm = () => {
+  _renderSelect = () => {
+    const { select } = this.state;
     return (
-      <>
-        <div className={styles.salaryAcceptanceWrapper}>
-          <div className={styles.title}>Step forward</div>
-          <div className={styles.content}>
-            <span className={styles.blueText} onClick={this.handleOpenSchedule}>
-              Schedule a 1-on-1
-            </span>
-            to negotiate the CTC and update the same here.
-            <br />
-            <br />
-            Send the salary structure to the candidate to mark acceptance or
-            <br />
-            <br />
-            <p className={styles.redText}>Close Candidature</p>
-          </div>
-        </div>
-        <SendEmail formatMessage={formatMessage} />
-      </>
+      <div className={styles.salaryAcceptanceWrapper_select}>
+        <div className={styles.title}>Acceptance of salary structure</div>
+        <Radio.Group onChange={this.onChange}>
+          {select.map((data) => {
+            return (
+              <div className={styles.select}>
+                <Row>
+                  <Col span={3}>
+                    <Radio checked value={data.processStatus} />
+                  </Col>
+                  <Col span={21}>
+                    <p className="radio__title">{data.title}</p>
+                  </Col>
+                  <Col span={3} />
+                  <Col span={21}>
+                    <p className="salaryAcceptance__note">{data.note}</p>
+                  </Col>
+                </Row>
+                {/* <Row /> */}
+              </div>
+            );
+          })}
+        </Radio.Group>
+      </div>
     );
   };
 
@@ -138,18 +110,19 @@ class SalaryAcceptance extends PureComponent {
   };
 
   render() {
-    const { processStatus } = this.props;
-    const { visible } = this.state;
-
+    const Note = {
+      title: 'Note',
+      data: (
+        <Typography.Text>
+          The Salary structure has been sent as a provisional offer. The candidate must acknowledge
+          the salary structure as a part of final negotiation in order to proceed.
+        </Typography.Text>
+      ),
+    };
     return (
       <div className={styles.salaryAcceptance}>
-        <ScheduleModal
-          visible={visible}
-          modalContent="Schedule 1-on-1"
-          handleCancel={this.handleCandelSchedule}
-        />
-        <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
-        {processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ? this._renderNegotiationForm() : ''}
+        <NoteComponent note={Note} />
+        <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
       </div>
     );
   }

@@ -9,7 +9,7 @@ import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data: { processStatus = '' } } = {} }) => ({
+@connect(({ candidateInfo: { data: { fullName = '', processStatus = '' } } = {} }) => ({
   processStatus,
 }))
 class SalaryAcceptance extends PureComponent {
@@ -49,7 +49,7 @@ class SalaryAcceptance extends PureComponent {
   // };
 
   _renderStatus = () => {
-    const { processStatus } = this.props;
+    const { processStatus, fullName } = this.props;
     console.log(processStatus);
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
@@ -91,7 +91,10 @@ class SalaryAcceptance extends PureComponent {
           <div className={styles.pendingIcon}>
             <img src={pendingIcon} alt="icon" />
           </div>
-          <p>{formatMessage({ id: 'component.salaryAcceptance.pendingMessage' })}</p>
+          <p>
+            We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
+            structure
+          </p>
           <Button type="primary">
             {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
           </Button>
