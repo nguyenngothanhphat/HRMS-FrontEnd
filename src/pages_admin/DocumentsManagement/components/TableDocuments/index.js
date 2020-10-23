@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
-import ViewDocument from '../ViewDocument';
+import ViewDocument from '@/components/ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -51,6 +51,17 @@ class TableDocuments extends PureComponent {
       // },
     },
     {
+      title: 'Company',
+      // dataIndex: 'uploadedBy',
+      align: 'center',
+      width: '8%',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      render: () => <span>Company</span>,
+      // sorter: {
+      //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      // },
+    },
+    {
       title: 'Created Date',
       dataIndex: 'createdAt',
       align: 'center',
@@ -58,14 +69,6 @@ class TableDocuments extends PureComponent {
       // sorter: {
       //   compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       // },
-    },
-    {
-      title: 'User ID',
-      dataIndex: 'employee',
-      align: 'center',
-      sorter: {
-        compare: (a, b) => a.employee.localeCompare(b.employee),
-      },
     },
     {
       title: 'Action',

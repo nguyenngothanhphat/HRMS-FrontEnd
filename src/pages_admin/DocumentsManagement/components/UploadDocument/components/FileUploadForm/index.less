@@ -4,12 +4,12 @@
   .fileUploadedContainer {
     .previewIcon {
       margin-bottom: 20px;
-      img {
-        width: 50px;
-      }
+      // img {
+      //   width: 0px;
+      // }
     }
     .fileName {
-      font-size: 18px;
+      font-size: 14px;
       a {
         // text-decoration: underline;
         color: #2c6df9;
@@ -17,8 +17,13 @@
       margin-bottom: 30px;
     }
   }
+  .uploadIcon {
+    img {
+      max-width: 120px;
+    }
+  }
   .uploadText {
-    font-size: 30px;
+    font-size: 20px;
     line-height: 1.4;
     color: #464646;
     margin: 20px 0;
@@ -27,15 +32,16 @@
     .ant-upload.ant-upload-drag {
       border-radius: 8px;
       background: #fff;
+      padding: 20px;
     }
     .ant-btn {
       background-color: #ffa100;
       border: none;
-      padding: 0 100px;
-      height: 50px;
+      padding: 0 35px;
+      height: 35px;
       border-radius: 40px;
       span {
-        font-size: 18px;
+        font-size: 14px;
         color: white;
         font-weight: bold;
       }

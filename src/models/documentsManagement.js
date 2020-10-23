@@ -9,6 +9,11 @@ import {
   getCountryList,
   getEmployeeByShortId,
   deleteDocument,
+  getGeneralInfo,
+  updateGeneralInfo,
+  getAdhaarCard,
+  addAdhaarCard,
+  updateAdhaarCard,
 } from '../services/documentsManagement';
 
 const documentsManagement = {
@@ -17,10 +22,12 @@ const documentsManagement = {
     listDocuments: [],
     listDocumentDetail: [],
     uploadedDocument: [],
-    employeeDetail: [],
+    employeeDetail: {},
     uploadedVisa: [],
     uploadedPassport: [],
     countryList: [],
+    adhaarCardDetail: {},
+    generalInfoId: '',
   },
   effects: {
     *fetchListDocuments(_, { call, put }) {
@@ -74,7 +81,7 @@ const documentsManagement = {
           type: 'save',
           payload: { employeeDetail },
         });
-        return statusCode;
+        return response;
       } catch (errors) {
         // dialog(errors);
         return '';
@@ -132,6 +139,7 @@ const documentsManagement = {
 
     *addPassport({ data }, { call, put }) {
       try {
+        console.log('passport data', data);
         const {
           passportNumber = '',
           passportIssuedCountry = '',
@@ -198,6 +206,81 @@ const documentsManagement = {
         if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
+      }
+    },
+
+    // ADHAAR CARD
+    *fetchGeneralInfo({ employee = '' }, { call, put }) {
+      try {
+        const response = yield call(getGeneralInfo, { employee });
+        const { statusCode, data: generalInfo = {} } = response;
+        if (statusCode !== 200) throw response;
+        // eslint-disable-next-line no-console
+        console.log('fetch general info success', response);
+        const { _id } = generalInfo;
+        yield put({ type: 'save', payload: { generalInfoId: _id } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *updateGeneralInfo(
+      { payload: { id = '', document = '', adhaarCardNumber = '' } },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(updateGeneralInfo, { id, document, adhaarCardNumber });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // eslint-disable-next-line no-console
+        console.log('update General Info success');
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return '';
+      }
+    },
+
+    *fetchAdhaarCard({ employee = '' }, { call, put }) {
+      try {
+        const response = yield call(getAdhaarCard, { employee });
+        const { statusCode, data: adhaarCardDetail = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { adhaarCardDetail } });
+        // eslint-disable-next-line no-console
+        console.log('get employee success', response);
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *updateAdhaarCard({ payload = {} }, { call }) {
+      try {
+        const { id = '', document = '', adhaarNumber = '' } = payload;
+        const response = yield call(updateAdhaarCard, { id, document, adhaarNumber });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // eslint-disable-next-line no-console
+        console.log('update adhaar card success');
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return '';
+      }
+    },
+
+    *addAdhaarCard({ payload = {} }, { call }) {
+      try {
+        const { employee = '', document = '', adhaarNumber = '' } = payload;
+        const response = yield call(addAdhaarCard, { employee, document, adhaarNumber });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // eslint-disable-next-line no-console
+        console.log('add adhaar card success');
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return '';
       }
     },
   },
