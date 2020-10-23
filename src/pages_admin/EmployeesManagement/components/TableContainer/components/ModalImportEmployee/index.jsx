@@ -53,14 +53,39 @@ class ModalImportEmployee extends Component {
     }
     const { returnEmployeesList } = this.props;
     if (statusImportEmployees && !_.isEmpty(returnEmployeesList)) {
-      exportToCsv('export.csv', [
-        ['name', 'description'],
-        ['david', '123'],
-        ['jona', '""'],
-        ['a', 'b'],
-      ]);
+      exportToCsv('Result_Import_Employees.csv', this.processData(returnEmployeesList.newList));
     }
   }
+
+  processData = (array) => {
+    // Uppercase first letter
+    const capsPopulations = [];
+    array.forEach((obj) => {
+      const entries = Object.entries(obj);
+      const capsEntries = entries.map((entry) => [
+        entry[0][0].toUpperCase() + entry[0].slice(1),
+        entry[1],
+      ]);
+      capsPopulations.push(Object.fromEntries(capsEntries));
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+
+    const dataExport = [];
+    // Build header
+    let result = `${keys.join('_')}`;
+    result = result.split('_');
+    dataExport.push(result);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+
+    return dataExport;
+  };
 
   handleCancel = () => {
     const { handleCancel, dispatch } = this.props;
