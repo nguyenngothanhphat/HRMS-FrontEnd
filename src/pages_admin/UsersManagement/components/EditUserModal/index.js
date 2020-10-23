@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Modal, Form, Input, DatePicker, Button, Select } from 'antd';
 import moment from 'moment';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -11,7 +12,17 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
+@connect(({ usersManagement }) => ({
+  usersManagement,
+}))
 class EditUserModal extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchCountryList',
+    });
+  };
+
   onFinish = (values) => {
     const { email = '', fullName = '', role = '', location = '', company = '' } = values;
     const submitValues = { email, fullName, role, location, company };
@@ -34,20 +45,18 @@ class EditUserModal extends PureComponent {
   };
 
   render() {
-    const { editModalVisible = () => {}, closeEditModal = () => {}, user = {} } = this.props;
+    const {
+      usersManagement: { roles = [], location = [], company = [] },
+      editModalVisible = () => {},
+      closeEditModal = () => {},
+      user = {},
+    } = this.props;
     const {
       joinDate = '',
       location: { name: locationName = '' } = {},
       company: { name: companyName = '' } = {},
-      generalInfo: {
-        userId = '',
-        employeeId = '',
-        workEmail = '',
-        firstName = '',
-        lastName = '',
-      } = {},
+      generalInfo: { employeeId = '', workEmail = '', firstName = '', lastName = '' } = {},
       status = '',
-      title: { name: role = '' } = {},
     } = user;
     const fullName = `${firstName} ${lastName}`;
     return (
@@ -81,20 +90,16 @@ class EditUserModal extends PureComponent {
             onFinish={this.onFinish}
             initialValues={{
               remember: true,
-              userId,
               employeeId,
               joinDate: moment(joinDate),
               workEmail,
               fullName,
-              role,
+              // role,
               locationName,
               companyName,
               status,
             }}
           >
-            <Form.Item label="User ID" name="userId">
-              <Input disabled />
-            </Form.Item>
             <Form.Item label="Employee ID" name="employeeId">
               <Input disabled />
             </Form.Item>
@@ -116,34 +121,68 @@ class EditUserModal extends PureComponent {
               <Input />
             </Form.Item>
             <Form.Item
-              label="Role"
-              name="role"
-              rules={[{ required: true, message: 'Please input!' }]}
+              label="Roles"
+              name="roles"
+              rules={[{ required: true, message: 'Please select roles!' }]}
             >
-              <Input />
+              <Select
+                mode="multiple"
+                allowClear
+                showArrow
+                style={{ width: '100%' }}
+                // defaultValue={['a10', 'c12']}
+                // onChange={handleChange}
+              >
+                {roles.map((item) => {
+                  const { _id = '' } = item;
+                  return (
+                    <Option key={_id} value={_id}>
+                      {_id}
+                    </Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
             <Form.Item
               label="Location"
               name="locationName"
               rules={[{ required: true, message: 'Please input!' }]}
             >
-              <Input />
+              <Select onChange={() => {}}>
+                {location.map((item) => {
+                  const { _id, name } = item;
+                  return (
+                    <Option key={_id} value={name}>
+                      {name}
+                    </Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
             <Form.Item
               label="Company"
               name="companyName"
               rules={[{ required: true, message: 'Please input!' }]}
             >
-              <Input />
+              <Select onChange={() => {}}>
+                {company.map((item) => {
+                  const { _id, name } = item;
+                  return (
+                    <Option key={_id} value={name}>
+                      {name}
+                    </Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
             <Form.Item
               label="Status"
               name="status"
               rules={[{ required: true, message: 'Please input!' }]}
             >
-              <Select disabled>
-                <Option value="Active">Active</Option>
-                <Option value="Inactive">Inactive</Option>
+              <Select>
+                <Option value="ACTIVE">ACTIVE</Option>
+                <Option value="INACTIVE">INACTIVE</Option>
               </Select>
             </Form.Item>
           </Form>

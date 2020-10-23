@@ -153,10 +153,11 @@ class TableUsers extends PureComponent {
     dispatch({
       type: 'usersManagement/fetchEmployeeDetail',
       id: record,
-    });
-    this.setState({
-      editModalVisible: true,
-      selectedUserId: record,
+    }).then(() => {
+      this.setState({
+        editModalVisible: true,
+        selectedUserId: record,
+      });
     });
   };
 
@@ -171,12 +172,13 @@ class TableUsers extends PureComponent {
   deleteUser = (record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchEmployeeDetail',
+      type: 'usersManagement/fetchEmployeeDetail',
       id: record,
-    });
-    this.setState({
-      selectedUserId: record,
-      deleteConfirmModalVisible: true,
+    }).then(() => {
+      this.setState({
+        selectedUserId: record,
+        deleteConfirmModalVisible: true,
+      });
     });
   };
 
@@ -190,12 +192,13 @@ class TableUsers extends PureComponent {
   resetPassword = (record) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchEmployeeDetail',
+      type: 'usersManagement/fetchEmployeeDetail',
       id: record,
-    });
-    this.setState({
-      selectedUserId: record,
-      resetPasswordModalVisible: true,
+    }).then(() => {
+      this.setState({
+        selectedUserId: record,
+        resetPasswordModalVisible: true,
+      });
     });
   };
 
