@@ -19,6 +19,9 @@ class FieldsComponent extends PureComponent {
       reportingManager,
       candidatesNoticePeriod,
       prefferedDateOfJoining,
+      loading1,
+      loading2,
+      loading3,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -34,6 +37,9 @@ class FieldsComponent extends PureComponent {
           title={title}
           workLocation={workLocation}
           reportingManager={reportingManager}
+          loading1={loading1}
+          loading2={loading2}
+          loading3={loading3}
         />
         <CandidateFieldsComponent
           styles={styles.Input}
