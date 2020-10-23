@@ -29,6 +29,7 @@ class OrganisationChart extends Component {
 
   render() {
     const { dataOrgChart = {} } = this.props;
+
     // const dummyData = {
     //   name: 'Bill Lumbergh',
     //   position: 'CEO',
@@ -87,9 +88,7 @@ class OrganisationChart extends Component {
             </a>
           </div>
         </Row>
-        <Row style={{ marginTop: '27px' }}>
-          <Chart data={dataOrgChart} />
-        </Row>
+        <Row style={{ marginTop: '27px' }}>{/* <Chart data={dataOrgChart} /> */}</Row>
       </div>
     );
   }
