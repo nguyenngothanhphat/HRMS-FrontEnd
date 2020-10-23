@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import TableEmployee from '../TableManager';
+import HrTable from '../TableHRManager';
 import RejectTable from '../RejectTable';
 import styles from './index.less';
 
@@ -67,10 +67,10 @@ export default class TabContent extends PureComponent {
       <div>
         <RejectTable setSelectedTab={this.setSelectedTab} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TableEmployee data={Data} /> : ''}
-          {selectedFilterTab === '2' ? <TableEmployee /> : ''}
-          {selectedFilterTab === '3' ? <TableEmployee /> : ''}
-          {selectedFilterTab === '4' ? <TableEmployee /> : ''}
+          {selectedFilterTab === '1' ? <HrTable data={Data} /> : ''}
+          {selectedFilterTab === '2' ? <HrTable /> : ''}
+          {selectedFilterTab === '3' ? <HrTable /> : ''}
+          {selectedFilterTab === '4' ? <HrTable /> : ''}
         </div>
       </div>
     );
