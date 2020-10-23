@@ -149,15 +149,11 @@ const candidateProfile = {
       }
     },
 
-    *updateByCandidateModel({ payload }, { call, put }) {
+    *updateByCandidateModel({ payload }, { call }) {
       try {
         const response = yield call(updateByCandidate, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveOrigin',
-          payload: { ...data },
-        });
       } catch (error) {
         dialog(error);
       }
