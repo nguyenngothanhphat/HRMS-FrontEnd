@@ -32,3 +32,10 @@ export async function getEmployeeDetailById(payload) {
     data: payload,
   });
 }
+
+export async function updateEmployee(payload) {
+  return request('/api/employee/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

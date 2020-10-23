@@ -16,16 +16,31 @@ const layout = {
   usersManagement,
 }))
 class EditUserModal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      companyId: '',
+      locationId: '',
+    };
+  }
+
   componentDidMount = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'usersManagement/fetchCountryList',
     });
+    const { user = {} } = this.props;
+    const { location: { _id: locationId = '' } = {}, company: { _id: companyId = '' } = {} } = user;
+    this.setState({
+      locationId,
+      companyId,
+    });
   };
 
   onFinish = (values) => {
-    const { email = '', fullName = '', role = '', location = '', company = '' } = values;
-    const submitValues = { email, fullName, role, location, company };
+    const { companyId, locationId } = this.state;
+    const { workEmail = '', fullName = '', roles = '' } = values;
+    const submitValues = { workEmail, fullName, roles, locationId, companyId };
     // eslint-disable-next-line no-console
     console.log('Success:', submitValues);
   };
@@ -53,8 +68,8 @@ class EditUserModal extends PureComponent {
     } = this.props;
     const {
       joinDate = '',
-      location: { name: locationName = '' } = {},
-      company: { name: companyName = '' } = {},
+      location: { _id: locationName = '' } = {},
+      company: { _id: companyName = '' } = {},
       generalInfo: { employeeId = '', workEmail = '', firstName = '', lastName = '' } = {},
       status = '',
     } = user;
@@ -146,13 +161,19 @@ class EditUserModal extends PureComponent {
             <Form.Item
               label="Location"
               name="locationName"
-              rules={[{ required: true, message: 'Please input!' }]}
+              rules={[{ required: true, message: 'Please select location!' }]}
             >
-              <Select onChange={() => {}}>
+              <Select
+                onChange={(key) => {
+                  this.setState({
+                    locationId: key,
+                  });
+                }}
+              >
                 {location.map((item) => {
-                  const { _id, name } = item;
+                  const { _id = '', name = '' } = item;
                   return (
-                    <Option key={_id} value={name}>
+                    <Option key={_id} value={_id}>
                       {name}
                     </Option>
                   );
@@ -162,13 +183,20 @@ class EditUserModal extends PureComponent {
             <Form.Item
               label="Company"
               name="companyName"
-              rules={[{ required: true, message: 'Please input!' }]}
+              rules={[{ required: true, message: 'Please select company!' }]}
             >
-              <Select onChange={() => {}}>
+              <Select
+                onChange={(_, key) => {
+                  const { value = '' } = key;
+                  this.setState({
+                    companyId: value,
+                  });
+                }}
+              >
                 {company.map((item) => {
-                  const { _id, name } = item;
+                  const { _id = '', name = '' } = item;
                   return (
-                    <Option key={_id} value={name}>
+                    <Option key={_id} value={_id}>
                       {name}
                     </Option>
                   );
@@ -180,7 +208,7 @@ class EditUserModal extends PureComponent {
               name="status"
               rules={[{ required: true, message: 'Please input!' }]}
             >
-              <Select>
+              <Select disabled>
                 <Option value="ACTIVE">ACTIVE</Option>
                 <Option value="INACTIVE">INACTIVE</Option>
               </Select>

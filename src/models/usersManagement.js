@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 // import { notification } from 'antd';
 import {
   getEmployeesList,
@@ -6,6 +7,7 @@ import {
   getLocationList,
   getEmployeeDetailById,
   getRoleList,
+  updateEmployee,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -98,6 +100,19 @@ const usersManagement = {
         const { statusCode, data: employeeDetail = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeDetail } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    // update employee
+    *updateEmployee({ id = '', location = '', company = '' }, { call }) {
+      try {
+        const response = yield call(getEmployeeDetailById, { id, location, company });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // eslint-disable-next-line no-console
+        console.log('update success');
       } catch (errors) {
         dialog(errors);
       }
