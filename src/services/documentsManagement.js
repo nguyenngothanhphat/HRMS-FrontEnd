@@ -68,3 +68,39 @@ export const addDocument = async (payload) => {
     data: payload,
   });
 };
+
+// adhaar card
+export const getGeneralInfo = async (payload) => {
+  return request('/api/generalinfo/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const updateGeneralInfo = async (payload) => {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const getAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const updateAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/update', {
+    method: 'POST',
+    data: payload,
+  });
+};

@@ -4,12 +4,14 @@ import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
+import AddEmployeeForm from './components/AddEmployeeForm';
 import styles from './index.less';
 
-@connect(({ loading, employee }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+@connect(({ loading, employee, employeesManagement }) => ({
+  loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
   employee,
+  employeesManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -57,6 +59,7 @@ class TableContainer extends PureComponent {
         { id: 1, name: formatMessage({ id: 'pages_admin.employees.table.activeEmployeesTab' }) },
         { id: 2, name: formatMessage({ id: 'pages_admin.employees.table.inactiveEmployeesTab' }) },
       ],
+      visible: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -92,10 +95,13 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
+      type: 'employeesManagement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeInActive',
+      type: 'employeesManagement/fetchInActiveEmployeesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
     });
   };
 
@@ -103,13 +109,13 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'employee/fetchListEmployeeActive',
+        type: 'employeesManagement/fetchActiveEmployeesList',
         payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'employee/fetchListEmployeeInActive',
+        type: 'employeesManagement/fetchInActiveEmployeesList',
         payload: params,
       });
     }
@@ -117,12 +123,12 @@ class TableContainer extends PureComponent {
 
   renderListEmployees = (tabId) => {
     const {
-      employee: { listEmployeeActive = [], listEmployeeInActive = [] },
+      employeesManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
-      return listEmployeeActive;
+      return activeEmployeesList;
     }
-    return listEmployeeInActive;
+    return inActiveEmployeesList;
   };
 
   handleToggle = () => {
@@ -152,14 +158,14 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <div className={styles.buttonAddImport} onClick={this.importEmployee}>
+        <div className={styles.buttonAddImport} onClick={this.importEmployees}>
           <img
             className={styles.buttonAddImport_imgImport}
             src="/assets/images/import.svg"
             alt="Import Employee"
           />
           <p className={styles.buttonAddImport_text}>
-            {formatMessage({ id: 'pages_admin.employees.table.importEmployee' })}
+            {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
           </p>
         </div>
         <div className={styles.buttonAddImport} onClick={this.addEmployee}>
@@ -182,12 +188,24 @@ class TableContainer extends PureComponent {
     );
   };
 
-  importEmployee = () => {
+  importEmployees = () => {
     alert('Import Employee');
   };
 
   addEmployee = () => {
-    alert('Add Employee');
+    this.openFormAddEmployee();
+  };
+
+  openFormAddEmployee = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
   };
 
   handleChange = (valueInput) => {
@@ -197,8 +215,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { tabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
+    const { tabs, collapsed, changeTab, visible } = this.state;
+    const { loadingActiveList, loadingInActiveList } = this.props;
 
     return (
       <div className={styles.tableContainer}>
@@ -214,7 +232,7 @@ class TableContainer extends PureComponent {
                 <Layout className={styles.managementLayout}>
                   <Content className="site-layout-background">
                     <TableEmployees
-                      loading={loadingListActive || loadingListInActive}
+                      loading={loadingActiveList || loadingInActiveList}
                       data={this.renderListEmployees(tab.id)}
                     />
                   </Content>
@@ -229,6 +247,12 @@ class TableContainer extends PureComponent {
               </TabPane>
             ))}
           </Tabs>
+          <AddEmployeeForm
+            titleModal="Add Employee"
+            visible={visible}
+            handleCancel={this.handleCancel}
+            getResponse={this.getResponse}
+          />
         </div>
       </div>
     );

@@ -33,10 +33,10 @@ export default class UploadDocument extends PureComponent {
           </div>
           <div className={styles.containerUploadDocuments}>
             <Row gutter={['20', '20']}>
-              <Col xs={12}>
+              <Col xs={8}>
                 <FileUploadForm getResponse={this.getResponse} />
               </Col>
-              <Col xs={12}>
+              <Col xs={16}>
                 <InformationUploadForm
                   attachmentId={fileId}
                   getUploadStatus={this.getUploadStatus}
