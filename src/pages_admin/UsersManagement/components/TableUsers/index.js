@@ -39,11 +39,11 @@ class TableUsers extends PureComponent {
         // },
       },
       {
-        title: 'Joined date',
+        title: 'Created date',
         dataIndex: 'joinedDate',
         width: '8%',
         align: 'left',
-        render: () => <span>Joined date</span>,
+        render: () => <span>Created date</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
@@ -73,8 +73,8 @@ class TableUsers extends PureComponent {
         align: 'left',
         render: (user = {}) => {
           const { roles = [] } = user;
-          return roles.map((role, index) => {
-            const color = index % 2 === 0 ? 'geekblue' : 'green';
+          return roles.map((role) => {
+            const color = 'geekblue';
             return (
               <Tag className={styles.roleTags} color={color}>
                 {role.toUpperCase()}
@@ -135,11 +135,6 @@ class TableUsers extends PureComponent {
               onClick={(e) => this.deleteUser(_id, e)}
               className={styles.editUserBtn}
             />
-            {/* <UserOutlined onClick={(e) => this.editUser(_id, e)} className={styles.editUserBtn} /> */}
-            {/* <DeleteOutlined
-              onClick={(e) => this.deleteUser(_id, e)}
-              className={styles.deleteUserBtn}
-            /> */}
           </div>
         ),
       },

@@ -39,3 +39,17 @@ export async function updateEmployee(payload) {
     data: payload,
   });
 }
+
+export async function getRolesByEmployee(payload) {
+  return request('/api/role/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateRolesByEmployee(payload) {
+  return request('/api/role/update-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}

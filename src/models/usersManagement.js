@@ -1,6 +1,5 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-// import { notification } from 'antd';
 import {
   getEmployeesList,
   getCompanyList,
@@ -8,6 +7,8 @@ import {
   getEmployeeDetailById,
   getRoleList,
   updateEmployee,
+  updateRolesByEmployee,
+  getRolesByEmployee,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -22,6 +23,7 @@ const usersManagement = {
     reportingManagerList: [],
     employeeDetail: [],
     filter: [],
+    rolesByEmployee: [],
     clearFilter: false,
     clearName: false,
   },
@@ -106,13 +108,42 @@ const usersManagement = {
     },
 
     // update employee
-    *updateEmployee({ id = '', location = '', company = '' }, { call }) {
+    *updateEmployee({ id = '', location = '', company = '', status = '' }, { call }) {
       try {
-        const response = yield call(getEmployeeDetailById, { id, location, company });
-        const { statusCode } = response;
+        const response = yield call(updateEmployee, { id, location, company, status });
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
-        // eslint-disable-next-line no-console
-        console.log('update success');
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    // update role by employee
+    *getRolesByEmployee({ employee = '' }, { call, put }) {
+      try {
+        const response = yield call(getRolesByEmployee, { employee });
+        const { statusCode, data: rolesByEmployee = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { rolesByEmployee } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return '';
+      }
+    },
+
+    // update role by employee
+    *updateRolesByEmployee({ employee = '', roles = [] }, { call }) {
+      try {
+        const response = yield call(updateRolesByEmployee, { employee, roles });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
       } catch (errors) {
         dialog(errors);
       }
