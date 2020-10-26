@@ -2,22 +2,20 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage, NavLink } from 'umi';
 import { Tabs, Layout } from 'antd';
 import TableCompanies from '../TableCompanies';
+import TabFilter from '../TabFilter';
 import styles from './index.less';
 
-@connect(({ loading, companiesManagement }) => ({
-  loadingListActive: loading.effects['companiesManagement/fetchActiveCompaniesList'],
-  loadingListInActive: loading.effects['companiesManagement/fetchInActiveCompaniesList'],
-  companiesManagement,
+@connect(({ loading, companiesManagement: { companiesList = [] } }) => ({
+  loadingCompaniesList: loading.effects['companiesManagement/fetchCompaniesList'],
+  companiesList,
 }))
 class TableContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       tabId: 1,
-      tabs: [
-        { id: 1, name: formatMessage({ id: 'pages_admin.companies.table.activeCompaniesTab' }) },
-        { id: 2, name: formatMessage({ id: 'pages_admin.companies.table.inActiveCompaniesTab' }) },
-      ],
+      collapsed: true,
+      changeTab: false,
     };
   }
 
@@ -35,35 +33,33 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'companiesManagement/fetchActiveCompaniesList',
-    });
-    dispatch({
-      type: 'companiesManagement/fetchInActiveCompaniesList',
+      type: 'companiesManagement/fetchCompaniesList',
     });
   };
 
-  getDataTable = (tabId) => {
-    const { dispatch } = this.props;
-    if (tabId === 1) {
-      dispatch({
-        type: 'companiesManagement/fetchActiveCompaniesList',
-      });
-    }
-    if (tabId === 2) {
-      dispatch({
-        type: 'companiesManagement/fetchInActiveCompaniesList',
-      });
-    }
-  };
-
-  renderCompaniesList = (tabId) => {
-    const {
-      companiesManagement: { activeCompaniesList = [], inActiveCompaniesList = [] },
-    } = this.props;
-    if (tabId === 1) {
-      return activeCompaniesList;
-    }
-    return inActiveCompaniesList;
+  rightButton = (collapsed) => {
+    return (
+      <div className={styles.tabBarExtra}>
+        <NavLink to="/companies/add-company">
+          <div className={styles.buttonAddImport}>
+            <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.companies.table.addEmployee' })}
+            </p>
+          </div>
+        </NavLink>
+        <div className={styles.filterSider} onClick={this.handleToggle}>
+          <div
+            className={`${styles.filterButton} ${
+              collapsed ? '' : `${styles.filterBackgroundButton}`
+            }`}
+          >
+            <img src="/assets/images/iconFilter.svg" alt="filter" />
+            <p className={styles.textButtonFilter}>Filter</p>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   handleToggle = () => {
@@ -73,56 +69,33 @@ class TableContainer extends PureComponent {
     });
   };
 
-  handleClickTabPane = (tabId) => {
-    this.setState({
-      tabId: Number(tabId),
-    });
-  };
-
-  rightButton = () => {
-    return (
-      <NavLink to="/companies/add-company">
-        <div className={styles.buttonAddImport}>
-          <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
-          <p className={styles.buttonAddImport_text}>
-            {formatMessage({ id: 'pages_admin.companies.table.addEmployee' })}
-          </p>
-        </div>
-      </NavLink>
-    );
-  };
-
-  handleChange = (valueInput) => {
-    this.setDebounce(valueInput);
-  };
-
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { tabs } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
-
+    const { loadingCompaniesList, companiesList } = this.props;
+    const { collapsed, changeTab } = this.state;
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableContent}>
           <Tabs
             defaultActiveKey="1"
             className={styles.tabComponent}
-            onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton()}
+            tabBarExtraContent={this.rightButton(collapsed)}
           >
-            {tabs.map((tab) => (
-              <TabPane tab={tab.name} key={tab.id}>
-                <Layout className={styles.managementLayout}>
-                  <Content className="site-layout-background">
-                    <TableCompanies
-                      loading={loadingListActive || loadingListInActive}
-                      data={this.renderCompaniesList(tab.id)}
-                    />
-                  </Content>
-                </Layout>
-              </TabPane>
-            ))}
+            <TabPane>
+              <Layout className={styles.managementLayout}>
+                <Content className="site-layout-background">
+                  <TableCompanies loading={loadingCompaniesList} data={companiesList} />
+                </Content>
+                <TabFilter
+                  onToggle={this.handleToggle}
+                  collapsed={collapsed}
+                  FormBox={this.handleFormBox}
+                  // onHandleChange={this.handleChange}
+                  changeTab={changeTab}
+                />
+              </Layout>
+            </TabPane>
           </Tabs>
         </div>
       </div>

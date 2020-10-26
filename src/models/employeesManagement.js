@@ -8,6 +8,7 @@ import {
   getJobTitleList,
   getReportingManagerList,
   addEmployee,
+  importEmployees,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -20,12 +21,34 @@ const employeesManagement = {
     departmentList: [],
     jobTitleList: [],
     reportingManagerList: [],
+    statusImportEmployees: false,
+    returnEmployeesList: {},
+    filter: [],
+    clearFilter: false,
+    clearName: false,
   },
   effects: {
-    *fetchActiveEmployeesList({ payload: { status = 'ACTIVE' } = {} }, { call, put }) {
+    *fetchActiveEmployeesList(
+      {
+        payload: {
+          status = 'ACTIVE',
+          department = [],
+          location = [],
+          company = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          name,
+          department,
+          location,
+          company,
+          employeeType,
         });
         const { statusCode, data: activeEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -34,10 +57,25 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchInActiveEmployeesList({ payload: { status = 'INACTIVE' } = {} }, { call, put }) {
+    *fetchInActiveEmployeesList(
+      {
+        payload: {
+          status = 'INACTIVE',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
+      { call, put },
+    ) {
       try {
         const response = yield call(getEmployeesList, {
           status,
+          name,
+          department,
+          location,
+          employeeType,
         });
         const { statusCode, data: inActiveEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
@@ -108,12 +146,61 @@ const employeesManagement = {
         dialog(errors);
       }
     },
+    *importEmployees({ payload }, { call, put }) {
+      let statusImportEmployees = false;
+      try {
+        const response = yield call(importEmployees, payload);
+        const { statusCode, message, data: returnEmployeesList = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        statusImportEmployees = true;
+        yield put({ type: 'save', payload: { returnEmployeesList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { statusImportEmployees } });
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveFilter(state, action) {
+      const data = [...state.filter];
+      const actionFilter = action.payload;
+      const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
+      if (findIndex < 0) {
+        const item = { actionFilter };
+        data.push(item);
+      } else {
+        data[findIndex] = {
+          ...data[findIndex],
+          checkedList: actionFilter.checkedList,
+        };
+      }
+      return {
+        ...state,
+        clearFilter: false,
+        filter: [...data],
+      };
+    },
+    ClearFilter(state) {
+      return {
+        ...state,
+        clearFilter: true,
+        clearName: true,
+        filter: [],
+      };
+    },
+    offClearName(state) {
+      return {
+        ...state,
+        clearName: false,
       };
     },
   },

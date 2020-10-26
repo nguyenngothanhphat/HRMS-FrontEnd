@@ -31,6 +31,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === VIEWPROFILE) {
+      // eslint-disable-next-line no-alert
       alert('View Profile');
 
       return;
@@ -43,6 +44,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === SETTINGS) {
+      // eslint-disable-next-line no-alert
       alert('Settings');
 
       return;

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import { formatMessage, connect } from 'umi';
 import EditUserIcon from '@/assets/admin_iconedit.svg';
 import DeleteUserIcon from '@/assets/admin_icondelete.svg';
@@ -33,17 +33,18 @@ class TableUsers extends PureComponent {
         align: 'left',
         width: '10%',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        // sortDirections: ['ascend', 'descend', 'ascend'],
+        sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
+        // compare: (a, b) =>
+        //   a.employeeId.slice(4, a.employeeId) - b.employeeId.slice(4, b.employeeId),
         // },
       },
       {
-        title: 'Joined date',
+        title: 'Created date',
         dataIndex: 'joinedDate',
         width: '8%',
         align: 'left',
-        render: () => <span>Joined date</span>,
+        render: () => <span>Created date</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
@@ -57,7 +58,7 @@ class TableUsers extends PureComponent {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        //   compare: (a, b) => a.email.localeCompare(b.email),
+        // compare: (a, b) => a.workEmail && b.workEmail && a.workEmail.localeCompare(b.workEmail),
         // },
       },
       {
@@ -73,11 +74,13 @@ class TableUsers extends PureComponent {
         align: 'left',
         render: (user = {}) => {
           const { roles = [] } = user;
-          return roles.map((role, index) => {
-            if (roles.length - 1 === index) {
-              return <span>{role}</span>;
-            }
-            return <span>{`${role}, `}</span>;
+          return roles.map((role) => {
+            const color = 'geekblue';
+            return (
+              <Tag className={styles.roleTags} color={color}>
+                {role.toUpperCase()}
+              </Tag>
+            );
           });
         },
       },
@@ -133,11 +136,6 @@ class TableUsers extends PureComponent {
               onClick={(e) => this.deleteUser(_id, e)}
               className={styles.editUserBtn}
             />
-            {/* <UserOutlined onClick={(e) => this.editUser(_id, e)} className={styles.editUserBtn} /> */}
-            {/* <DeleteOutlined
-              onClick={(e) => this.deleteUser(_id, e)}
-              className={styles.deleteUserBtn}
-            /> */}
           </div>
         ),
       },

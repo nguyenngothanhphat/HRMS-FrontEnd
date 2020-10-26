@@ -17,6 +17,7 @@ class ScheduleModal extends Component {
   };
 
   handleSubmit = () => {
+    // eslint-disable-next-line no-console
     console.log('handle');
   };
 

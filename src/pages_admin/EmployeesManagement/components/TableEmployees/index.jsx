@@ -26,7 +26,7 @@ export default class TableEmployees extends PureComponent {
       {
         title: formatMessage({ id: 'pages_admin.employees.table.joinedDate' }),
         dataIndex: 'joinedDate',
-        width: '10%',
+        width: '8%',
         align: 'left',
         render: () => <span>Aug-7,20</span>,
       },

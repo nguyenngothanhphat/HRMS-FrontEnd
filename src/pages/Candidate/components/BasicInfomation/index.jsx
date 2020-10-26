@@ -1,80 +1,101 @@
-import React, { Component } from 'react';
-import { Row, Col, Form, Input, Typography } from 'antd';
+import React, { PureComponent } from 'react';
+import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { basicInformation, checkCandidateMandatory } = {} }) => ({
-  basicInformation,
-  checkCandidateMandatory,
+@connect(({ candidateProfile: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
+  data,
+  checkMandatory,
+  currentStep,
+  tempData,
+  loading: loading.effects['candidateProfile/fetchCandidateById'],
 }))
-class BasicInformation extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      basicInformation: {},
-    };
-  }
-
+class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
-    if ('basicInformation' in props) {
-      return { basicInformation: props.basicInformation || {} };
+    if ('data' in props) {
+      return {
+        data: props.data,
+        checkMandatory: props.checkMandatory,
+        tempData: props.tempData || {},
+      };
     }
     return null;
   }
 
   handleChange = (e) => {
-    const { target } = e;
-    const { name, value } = target;
-    const { dispatch, checkCandidateMandatory } = this.props;
+    const name = Object.keys(e).find((x) => x);
+    const value = Object.values(e).find((x) => x);
+    const { dispatch } = this.props;
 
-    const emailRegExp = RegExp(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/);
-
-    const { basicInformation = {} } = this.state;
-    basicInformation[name] = value;
-    const { fullName = '', workLocation = '', privateEmail = '' } = basicInformation;
-
-    const filledCandidateBasicInformation =
-      fullName !== '' &&
-      workLocation !== '' &&
-      privateEmail !== '' &&
-      emailRegExp.test(privateEmail);
-
+    const { tempData, checkMandatory, data } = this.state;
+    tempData[name] = value;
+    const { checkStatus = {} } = tempData;
+    const { fullName = '', privateEmail = '', previousExperience = '' } = data;
+    if (fullName !== '' && privateEmail !== '' && previousExperience !== '') {
+      checkStatus.filledBasicInformation = true;
+    } else {
+      checkStatus.filledBasicInformation = false;
+    }
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        basicInformation,
-        checkCandidateMandatory: {
-          ...checkCandidateMandatory,
-          filledCandidateBasicInformation,
+        tempData: {
+          ...tempData,
+        },
+        checkMandatory: {
+          ...checkMandatory,
+          filledBasicInformation: checkStatus.filledBasicInformation,
         },
       },
     });
   };
 
-  onChangeFormData = (key, value) => {
-    const { myInfo } = this.state;
-    myInfo[key] = value;
-    this.setState({
-      myInfo,
+  onFinish = (values) => {
+    const { data } = this.state;
+    const { dispatch, currentStep } = this.props;
+    const { _id } = data;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+    console.log(values.fullName);
+    dispatch({
+      type: 'candidateProfile/updateByCandidateModel',
+      payload: {
+        ...data,
+        fullName: values.fullName,
+        candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/fetchDocumentByCandidate',
+      payload: {
+        candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/fetchEmployer',
+      payload: {
+        candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        fullName: values.fullName,
+      },
     });
   };
 
   _renderForm = () => {
-    const { basicInformation = {} } = this.state;
-    const { fullName, privateEmail, workLocation, experienceYear } = basicInformation;
     return (
-      <Form
-        className={styles.basicInformation__form}
-        wrapperCol={{ span: 24 }}
-        name="basic"
-        initialValues={{ fullName, privateEmail, workLocation, experienceYear }}
-        onFocus={this.onFocus}
-      >
+      <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
@@ -86,7 +107,7 @@ class BasicInformation extends Component {
               rules={[{ required: true, message: `'Please input your full name!'` }]}
             >
               <Input
-                onChange={(e) => this.handleChange(e)}
+                // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
               />
@@ -110,12 +131,7 @@ class BasicInformation extends Component {
                 },
               ]}
             >
-              <Input
-                onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="privateEmail"
-                // defaultValue={privateEmail}
-              />
+              <Input className={styles.formInput} name="privateEmail" disabled="true" />
             </Form.Item>
           </Col>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
@@ -123,17 +139,11 @@ class BasicInformation extends Component {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Previous experience in years*"
+              label={formatMessage({ id: 'component.basicInformation.workEmail' })}
               className={styles.formInput__email}
-              name="experienceYear"
+              name="workEmail"
             >
-              <Input
-                onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="experienceYear"
-                // suffix="@terralogic.com"
-                // defaultValue={workEmail}
-              />
+              <Input className={styles.formInput} name="workEmail" disabled="true" />
             </Form.Item>
           </Col>
         </Row>
@@ -143,23 +153,73 @@ class BasicInformation extends Component {
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label="Work Location*"
-              name="workLocation"
+              label={formatMessage({ id: 'component.basicInformation.experienceYear' })}
+              name="previousExperience"
+              rules={[
+                {
+                  pattern: /^[0-9]*$/,
+                  message: 'Year of experience invalid!',
+                },
+              ]}
             >
-              <Input
-                onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="workLocation"
-                // defaultValue={experienceYear}
-              />
+              <Input disabled="true" className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
         </Row>
-      </Form>
+      </div>
+    );
+  };
+
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+    return !filledBasicInformation ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledBasicInformation } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="primary"
+                htmlType="submit"
+                // onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledBasicInformation}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
     );
   };
 
   render() {
+    const { data = {} } = this.state;
+    const { fullName, privateEmail, previousExperience } = data;
+    const { loading } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -169,15 +229,33 @@ class BasicInformation extends Component {
         </Typography.Text>
       ),
     };
+    if (loading) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin />
+        </div>
+      );
+    }
     return (
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={styles.basicInformation}>
-            <div className={styles.basicInformation__top}>
-              <BasicInformationHeader />
-              <hr />
-              {this._renderForm()}
-            </div>
+            <Form
+              wrapperCol={{ span: 24 }}
+              name="basic"
+              initialValues={fullName.length > 1 && { fullName, privateEmail, previousExperience }}
+              onFocus={this.onFocus}
+              onValuesChange={this.handleChange}
+              onFinish={this.onFinish}
+              loading={loading}
+            >
+              <div className={styles.basicInformation__top}>
+                <BasicInformationHeader />
+                <hr />
+                {this._renderForm()}
+              </div>
+              {this._renderBottomBar()}
+            </Form>
           </div>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>

@@ -1,21 +1,22 @@
-import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Table } from 'antd';
+import { DeleteOutlined, KeyOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { Input, Table, Spin } from 'antd';
+import { history, connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+@connect(({ loading, adminSetting: { tempData: { formatData = [] } = {} } = {} }) => ({
+  loading: loading.effects['adminSetting/fetchListRoles'],
+  formatData,
+}))
 class RolesPermission extends PureComponent {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      data: [
-        { RolesID: 20, Rolesname: 'Roles 1', Permission: 'nothing...' },
-        { RolesID: 22, Rolesname: 'Roles 2', Permission: 'nothing...' },
-        { RolesID: 24, Rolesname: 'Roles 3', Permission: 'nothing...' },
-      ],
       roleValue: '',
       getIndex: '',
       permissionValues: '',
@@ -28,11 +29,14 @@ class RolesPermission extends PureComponent {
   };
 
   handleOk = (e, getIndex) => {
-    const { data } = this.state;
-    data.splice(getIndex, 1);
+    const { dispatch, formatData } = this.props;
+    formatData.splice(getIndex, 1);
     this.setState({
       visible: false,
-      data,
+    });
+    dispatch({
+      type: 'adminSetting/saveTemp',
+      payload: { formatData },
     });
   };
 
@@ -73,15 +77,24 @@ class RolesPermission extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (roleValue, permissionValues) => {
-    const { data } = this.state;
+  handleAddNewValue = (roleValue, permissionValues, data) => {
+    const { dispatch } = this.props;
     const addData = {
       RolesID: this.handleRandomNumberID(),
       Rolesname: roleValue,
       Permission: permissionValues,
     };
     const newData = [...data, addData];
-    this.setState({ data: newData, roleValue: '', permissionValues: '' });
+    this.setState({ roleValue: '', permissionValues: '' });
+    dispatch({
+      type: 'adminSetting/saveTemp',
+      payload: { formatData: newData },
+    });
+  };
+
+  handlePermission = (text, record, index) => {
+    console.log(text, record, index);
+    history.push('/settings/Permission');
   };
 
   render() {
@@ -89,11 +102,12 @@ class RolesPermission extends PureComponent {
       selectedRowKeys,
       visible,
       testReord,
-      data,
       roleValue,
       getIndex,
       permissionValues,
     } = this.state;
+    const { formatData, loading = true } = this.props;
+
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -117,6 +131,12 @@ class RolesPermission extends PureComponent {
         title: 'Permission',
         dataIndex: 'Permission',
         align: 'center',
+        render: (text, record, index) =>
+          record.RolesID !== '' ? (
+            <KeyOutlined onClick={() => this.handlePermission(text, record, index)} />
+          ) : (
+            ''
+          ),
       },
       {
         key: 5,
@@ -126,17 +146,26 @@ class RolesPermission extends PureComponent {
           record.RolesID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(roleValue, permissionValues)} />
+            <PlusCircleFilled
+              onClick={() => this.handleAddNewValue(roleValue, permissionValues, formatData)}
+            />
           ),
         align: 'center',
       },
     ];
+    if (loading)
+      return (
+        <div className={styles.RolesPermission}>
+          <Spin loading={loading} active size="large" />
+        </div>
+      );
     const add = {
       RolesID: '',
       Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
-      Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
+      // Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
     };
-    const renderAdd = [...data, add];
+
+    const renderAdd = [...formatData, add];
 
     return (
       <div className={styles.RolesPermission}>

@@ -170,6 +170,12 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/settings/Permission',
+            name: 'permission',
+            component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/directory',
             name: 'directory',
             icon: '/assets/images/directory.svg',
