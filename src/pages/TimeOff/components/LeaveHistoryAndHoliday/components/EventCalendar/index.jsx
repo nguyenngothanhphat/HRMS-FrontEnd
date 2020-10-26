@@ -129,10 +129,12 @@ export default class EventCalendar extends PureComponent {
 
   render() {
     return (
-      <div className="calendar">
-        {this.renderHeader()}
-        {this.renderDays()}
-        {this.renderCells()}
+      <div className="EventCalendar">
+        <div className="calendar">
+          {this.renderHeader()}
+          {this.renderDays()}
+          {this.renderCells()}
+        </div>
       </div>
     );
   }
