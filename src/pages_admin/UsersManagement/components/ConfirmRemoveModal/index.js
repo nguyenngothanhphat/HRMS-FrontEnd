@@ -1,8 +1,12 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ usersManagement }) => ({
+  usersManagement,
+}))
 class ConfirmRemoveModal extends Component {
   constructor(props) {
     super(props);
@@ -24,8 +28,16 @@ class ConfirmRemoveModal extends Component {
   };
 
   handleRemoveToServer = () => {
-    // eslint-disable-next-line no-console
-    console.log('handleRemoveToServer');
+    const { dispatch, user = {} } = this.props;
+    const { _id = '' } = user;
+    dispatch({
+      type: 'usersManagement/removeEmployee',
+      id: _id,
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        this.handleCancel();
+      }
+    });
   };
 
   render() {

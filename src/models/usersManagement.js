@@ -116,8 +116,25 @@ const usersManagement = {
         notification.success({
           message,
         });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
+        return null;
+      }
+    },
+
+    *removeEmployee({ id = '' }, { call }) {
+      try {
+        const response = yield call(updateEmployee, { id, status: 'INACTIVE' });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Employee Inactivated!',
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return null;
       }
     },
 

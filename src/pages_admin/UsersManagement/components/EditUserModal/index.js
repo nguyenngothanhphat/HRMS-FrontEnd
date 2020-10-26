@@ -84,6 +84,11 @@ class EditUserModal extends PureComponent {
       location: locationId,
       company: companyId,
       status,
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        const { closeEditModal = () => {} } = this.props;
+        closeEditModal();
+      }
     });
   };
 
