@@ -9,8 +9,10 @@ import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data: { fullName = '', processStatus = '' } } = {} }) => ({
+@connect(({ candidateInfo: { data: { _id = '', fullName = '', processStatus = '' } } = {} }) => ({
   processStatus,
+  _id,
+  fullName,
 }))
 class SalaryAcceptance extends PureComponent {
   constructor(props) {
@@ -48,6 +50,16 @@ class SalaryAcceptance extends PureComponent {
   //   });
   // };
 
+  onCloseCandidate = () => {
+    const { dispatch, _id } = this.props;
+    dispatch({
+      type: 'candidateInfo/closeCandidate',
+      payload: {
+        candidate: _id,
+      },
+    });
+  };
+
   _renderStatus = () => {
     const { processStatus, fullName } = this.props;
     console.log(processStatus);
@@ -79,7 +91,7 @@ class SalaryAcceptance extends PureComponent {
             note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
             accept={false}
           />
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" onClick={this.onCloseCandidate}>
             {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
           </Button>
         </>
