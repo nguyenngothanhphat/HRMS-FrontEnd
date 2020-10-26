@@ -9,11 +9,16 @@ import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data: { _id = '', fullName = '', processStatus = '' } } = {} }) => ({
-  processStatus,
-  _id,
-  fullName,
-}))
+@connect(
+  ({
+    candidateInfo: { tableData = [], data: { _id = '', fullName = '', processStatus = '' } } = {},
+  }) => ({
+    processStatus,
+    _id,
+    fullName,
+    tableData,
+  }),
+)
 class SalaryAcceptance extends PureComponent {
   constructor(props) {
     super(props);
@@ -56,6 +61,28 @@ class SalaryAcceptance extends PureComponent {
       type: 'candidateInfo/closeCandidate',
       payload: {
         candidate: _id,
+      },
+    });
+  };
+
+  onEditSalaryStructure = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
+      },
+    });
+  };
+
+  handleSendEmail = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
       },
     });
   };
@@ -107,7 +134,7 @@ class SalaryAcceptance extends PureComponent {
             We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
             structure
           </p>
-          <Button type="primary">
+          <Button type="primary" onClick={this.onEditSalaryStructure}>
             {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
           </Button>
         </div>
@@ -134,7 +161,7 @@ class SalaryAcceptance extends PureComponent {
             <p className={styles.redText}>Close Candidature</p>
           </div>
         </div>
-        <SendEmail formatMessage={formatMessage} />
+        <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
       </>
     );
   };

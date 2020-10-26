@@ -102,6 +102,11 @@ export default {
   'component.salaryAcceptance.pendingMessage':
     'We are waiting for Ms. Ashwini Narayana to mark the acceptance of the shared salary structure',
   'component.salaryAcceptance.sendFormAgain': ' Send form again',
+  'component.salaryAcceptance.submitForm': 'Submit form',
+  'component.salaryAcceptance.sendEmail': 'Send email',
+  'component.salaryAcceptance.acceptanceTitle': 'Acceptance of salary structure',
+  'component.salaryAcceptance.note':
+    '  The Salary structure has been sent as a provisional offer. The candidate must acknowledge the salary structure as a part of final negotiation in order to proceed.',
   'component.salaryStructureTemplate.done': 'Done',
   'component.salaryStructureTemplate.edit': 'Edit',
   'component.eligibilityDocs.TypeA': 'Type A: Identity Proof',

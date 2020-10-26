@@ -64,7 +64,7 @@ class SalaryStructure extends PureComponent {
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
-              {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
+              <SalaryAcceptance />
             </Row>
             {/* <Row>{processStatus === 'DRAFT' ? '' : <SalaryAcceptance />}</Row> */}
           </div>

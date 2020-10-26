@@ -235,8 +235,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory, processStatus } = this.props;
-    const { filledSalaryStructure } = checkMandatory;
+    const { processStatus } = this.props;
 
     return (
       <div className={styles.bottomBar}>
@@ -283,7 +282,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { salaryStructure } = this.props;
+    const { salaryStructure, options } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -297,7 +296,7 @@ class SalaryStructureTemplate extends PureComponent {
             />
           </div>
           {this._renderFooter()}
-          {this._renderBottomBar()}
+          {options === 1 ? this._renderBottomBar() : null}
         </Form>
       </div>
     );

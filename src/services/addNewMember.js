@@ -108,3 +108,11 @@ export function closeCandidate(params) {
     data: params,
   });
 }
+
+export function editSalaryStructure(params) {
+  console.log(params);
+  return request('/api/candidate/close-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}
