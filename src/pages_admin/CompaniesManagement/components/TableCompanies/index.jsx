@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, history } from 'umi';
-import ModalConfirmRemove from '../ModalConfirmRemove';
+import ModalConfirmRemove from './components/ModalConfirmRemove';
 import styles from './index.less';
 
 class TableCompanies extends PureComponent {
@@ -18,93 +18,76 @@ class TableCompanies extends PureComponent {
     const columns = [
       {
         title: formatMessage({ id: 'pages_admin.companies.table.companyID' }),
-        dataIndex: 'company',
-        key: 'company',
-        width: '10%',
+        dataIndex: '_id',
+        key: '_id',
+        width: '15%',
         align: 'left',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
-        sorter: {
-          compare: (a, b) => a.company.id - b.company.id,
-        },
-        render: (company) => <span>{company.id}</span>,
+        // sorter: {
+        //   compare: (a, b) => a.company.id - b.company.id,
+        // },
+        // render: (company) => <span>{company.id}</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.companyName' }),
-        dataIndex: 'company',
+        dataIndex: 'name',
         align: 'left',
         width: '10%',
-        render: (company) => <span>{company.name}</span>,
       },
       {
         title: 'DBA',
-        dataIndex: 'company',
+        dataIndex: 'dba',
         align: 'left',
-        render: (company) => <span>{company.dba}</span>,
+        // render: (company) => <span>{company.dba}</span>,
       },
       {
         title: 'EIN',
-        dataIndex: 'company',
+        dataIndex: 'ein',
         align: 'left',
-        render: (company) => <span>{company.ein}</span>,
+        // render: (company) => <span>{company.ein}</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.headQuarterAdd' }),
-        dataIndex: 'company',
+        dataIndex: 'headQuarterAddress',
         width: '15%',
         align: 'left',
-        render: (company) => <span>{company.headQuarterAddress.country}</span>,
+        render: (headQuarterAddress) => <span>{headQuarterAddress.state}</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.workLocation' }),
-        dataIndex: 'locations',
-        key: 'locations',
-        render: (locations) =>
-          locations.map((location, index) => {
-            return (
-              <span key={`${index + 1}`}>
-                {location.country}
-                <br />
-              </span>
-            );
-          }),
+        //   dataIndex: 'locations',
+        //   key: 'locations',
+        //   render: (locations) =>
+        //     locations.map((location, index) => {
+        //       return (
+        //         <span key={`${index + 1}`}>
+        //           {location.country}
+        //           <br />
+        //         </span>
+        //       );
+        //     }),
         align: 'left',
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.ownerEmail' }),
-        dataIndex: 'user',
+        // dataIndex: 'user',
         width: '15%',
         align: 'center',
-        render: (user) => <span>{user.email}</span>,
+        render: () => <span>test.name@terralogic.com</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.ownerName' }),
-        dataIndex: 'user',
+        // dataIndex: 'user',
         align: 'center',
-        render: (user) => <span>{user.firstName}</span>,
+        render: () => <span>firstName lastName</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.license' }),
-        dataIndex: 'user',
+        // dataIndex: 'user',
         align: 'center',
-        render: (user) => <span>{user.firstName}</span>,
+        render: () => <span>v4.0</span>,
         // align: 'left',
-      },
-      {
-        title: 'Action',
-        dataIndex: 'action',
-        width: '5%',
-        align: 'center',
-        render: () => (
-          <div className={styles.employeesAction}>
-            <img
-              src="assets/images/remove.svg"
-              alt="removeIcon"
-              onClick={(e) => this.deleteEmployee(e)}
-              width="15px"
-            />
-          </div>
-        ),
       },
     ];
 
@@ -159,7 +142,7 @@ class TableCompanies extends PureComponent {
   };
 
   handleCompanyDetail = (record) => {
-    history.push(`/companies/company-detail/${record.company.id}`);
+    history.push(`/companies/company-detail/${record._id}`);
   };
 
   render() {
@@ -209,7 +192,7 @@ class TableCompanies extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey={(record) => record.company.id}
+          rowKey={(record) => record._id}
           // onChange={this.onSortChange}
         />
         <ModalConfirmRemove

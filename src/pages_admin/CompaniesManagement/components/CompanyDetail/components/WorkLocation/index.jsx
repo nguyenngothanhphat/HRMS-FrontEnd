@@ -5,43 +5,41 @@ import View from './components/View';
 import AddWorkLocationForm from './components/AddWorkLocation';
 import styles from './index.less';
 
-@connect(
-  ({
-    signup: { headQuarterAddress = {}, locations, company: { name = '' } = {} } = {},
-    country: { listCountry = [] } = {},
-  }) => ({
-    name,
-    headQuarterAddress,
-    locations,
-    listCountry,
-  }),
-)
+@connect(({ // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
+  country: { listCountry = [] } = {}, companiesManagement: { locationsOfDetail = [] } }) => ({
+  // name,
+  // headQuarterAddress,
+  locationsOfDetail,
+  listCountry,
+}))
 class WorkLocation extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: props.locations.length,
+      currentIndex: props.locationsOfDetail.length,
     };
   }
 
   componentDidMount() {
-    const { locations } = this.props;
-    if (locations.length > 0) {
+    const { locationsOfDetail } = this.props;
+    if (locationsOfDetail.length > 0) {
       this.setState({
-        currentIndex: locations[locations.length - 1].index + 1,
+        currentIndex: locationsOfDetail[locationsOfDetail.length - 1].index + 1,
       });
     }
   }
 
   addWorkLocation = () => {
-    const { dispatch, locations } = this.props;
+    const { dispatch, locationsOfDetail } = this.props;
+    console.log(locationsOfDetail);
+
     const { currentIndex } = this.state;
     if (dispatch) {
       dispatch({
-        type: 'signup/save',
+        type: 'companiesManagement/save',
         payload: {
-          locations: [
-            ...locations,
+          locationsOfDetail: [
+            ...locationsOfDetail,
             {
               name: 'companyName',
               address: '',
@@ -61,14 +59,14 @@ class WorkLocation extends PureComponent {
   };
 
   handleCancelAdd = (index) => {
-    const { locations, dispatch } = this.props;
-    let newLocations = locations;
+    const { locationsOfDetail, dispatch } = this.props;
+    let newLocations = locationsOfDetail;
     newLocations = newLocations.filter((location) => location.index !== index);
     if (dispatch) {
       dispatch({
-        type: 'signup/save',
+        type: 'companiesManagement/save',
         payload: {
-          locations: newLocations,
+          locationsOfDetail: newLocations,
         },
       });
     }
@@ -94,7 +92,7 @@ class WorkLocation extends PureComponent {
       },
     ];
 
-    const { dispatch, locations, listCountry } = this.props;
+    const { dispatch, locationsOfDetail, listCountry } = this.props;
 
     return (
       <>
@@ -107,7 +105,7 @@ class WorkLocation extends PureComponent {
             </div>
           );
         })}
-        {locations.map((location, index) => {
+        {locationsOfDetail.map((location, index) => {
           const formIndex = location.index;
           return (
             <div key={`${index + 1}`} className={styles.workLocation}>
@@ -115,7 +113,7 @@ class WorkLocation extends PureComponent {
                 key={location.index}
                 dispatch={dispatch}
                 formIndex={formIndex}
-                locations={locations}
+                locations={locationsOfDetail}
                 locationItem={location}
                 listCountry={listCountry}
                 handleCancelAdd={this.handleCancelAdd}
