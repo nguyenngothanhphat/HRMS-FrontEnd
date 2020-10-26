@@ -344,6 +344,8 @@ class BottomBar extends PureComponent {
     if (
       (salaryStatus !== 1 && currentPage === HR.salaryStructure) ||
       currentPage === HR.benefits ||
+      currentPage === CANDIDATE.basicInformation ||
+      currentPage === CANDIDATE.jobDetails ||
       currentPage === HR.eligibilityDocuments
     ) {
       return null;

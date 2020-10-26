@@ -8,6 +8,7 @@ import {
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
+  closeCandidate,
   updateByHR,
   getById,
   submitPhase1,
@@ -43,6 +44,7 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      joineeEmail: '',
       employer: '',
       // Offer details
       template: 'Template.docx',
@@ -105,8 +107,9 @@ const candidateInfo = {
       department: null,
       title: null,
       company: null,
+      joineeEmail: '',
       previousExperience: null,
-      processStatus: 'SENT-PROVISIONAL-OFFER',
+      processStatus: 'DRAFT',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -406,6 +409,21 @@ const candidateInfo = {
         yield put({
           type: 'save',
           payload: { tableData: setting },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *closeCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(closeCandidate, payload);
+        const { statusCode } = response;
+        const candidate = payload._id;
+        console.log(candidate);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { candidate },
         });
       } catch (errors) {
         dialog(errors);
