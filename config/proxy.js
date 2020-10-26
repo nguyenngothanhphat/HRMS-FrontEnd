@@ -8,6 +8,7 @@
 export default {
   dev: {
     '/api/': {
+      // test
       target: 'http://localhost:4500',
       // target: 'http://api-stghrms.paxanimi.ai',
       changeOrigin: true,
