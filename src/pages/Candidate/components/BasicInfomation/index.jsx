@@ -258,12 +258,12 @@ class BasicInformation extends PureComponent {
             </Form>
           </div>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+        <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <Row style={{ width: '322px' }}>
+            <Row className={styles.stepRow}>
               <StepsComponent />
             </Row>
           </div>

@@ -31,7 +31,6 @@ class WorkLocation extends PureComponent {
 
   addWorkLocation = () => {
     const { dispatch, locationsOfDetail } = this.props;
-    console.log(locationsOfDetail);
 
     const { currentIndex } = this.state;
     if (dispatch) {
