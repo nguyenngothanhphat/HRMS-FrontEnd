@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import { formatMessage, connect } from 'umi';
 import EditUserIcon from '@/assets/admin_iconedit.svg';
 import DeleteUserIcon from '@/assets/admin_icondelete.svg';
@@ -74,10 +74,12 @@ class TableUsers extends PureComponent {
         render: (user = {}) => {
           const { roles = [] } = user;
           return roles.map((role, index) => {
-            if (roles.length - 1 === index) {
-              return <span>{role}</span>;
-            }
-            return <span>{`${role}, `}</span>;
+            const color = index % 2 === 0 ? 'geekblue' : 'green';
+            return (
+              <Tag className={styles.roleTags} color={color}>
+                {role.toUpperCase()}
+              </Tag>
+            );
           });
         },
       },
