@@ -13,6 +13,7 @@ export class Step3 extends Component {
     this.state = {};
   }
 
+  // eslint-disable-next-line consistent-return
   _renderScreen = (name) => {
     switch (name) {
       case 'Success':

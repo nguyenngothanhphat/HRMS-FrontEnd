@@ -68,6 +68,7 @@ export default {
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId': 'Ticket Id',
   'menu.setting': 'Setting',
+  'menu.permission': 'Permission',
   'menu.change-password': 'Change Password',
   'menu.Createcustomfieldsection': 'Create custom field section',
 };

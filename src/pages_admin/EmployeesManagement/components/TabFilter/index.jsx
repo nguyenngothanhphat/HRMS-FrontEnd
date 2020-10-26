@@ -5,7 +5,8 @@ import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ employee }) => ({
+@connect(({ employeesManagement, employee }) => ({
+  employeesManagement,
   employee,
 }))
 class TabFilter extends PureComponent {
@@ -15,6 +16,7 @@ class TabFilter extends PureComponent {
       EmploymentState: 'Employment Type',
       locationState: 'Location',
       departmentState: 'Department',
+      companyState: 'Company',
       all: 'All',
       text: '',
       clearText: '',
@@ -34,7 +36,7 @@ class TabFilter extends PureComponent {
       type: 'employee/fetchDepartment',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
+      type: 'employeesManagement/fetchCompanyList',
     });
   }
 
@@ -46,7 +48,7 @@ class TabFilter extends PureComponent {
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({
-      type: 'employee/offClearName',
+      type: 'employeesManagement/offClearName',
     });
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
@@ -59,7 +61,7 @@ class TabFilter extends PureComponent {
     const { clearText } = this.state;
     onHandleChange(clearText);
     dispatch({
-      type: 'employee/ClearFilter',
+      type: 'employeesManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({ reset: false });
@@ -68,9 +70,18 @@ class TabFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearName = false },
+      locationState,
+      departmentState,
+      companyState,
+      all,
+      EmploymentState,
+      text,
+      reset,
+    } = this.state;
+    const {
+      employee: { location = [], department = [], employeetype = [] },
+      employeesManagement: { clearName = false, companyList = [] },
       collapsed,
       changeTab,
     } = this.props;
@@ -90,6 +101,14 @@ class TabFilter extends PureComponent {
     });
 
     const formatDataDepartment = department.map((item) => {
+      const { name: label, _id: value } = item;
+      return {
+        label,
+        value,
+      };
+    });
+
+    const formatDataCompany = companyList.map((item) => {
       const { name: label, _id: value } = item;
       return {
         label,
@@ -152,6 +171,16 @@ class TabFilter extends PureComponent {
                 name={locationState}
                 all={all}
                 data={formatDataLocation}
+              />
+            )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <CheckList
+                key={companyState}
+                name={companyState}
+                all={all}
+                data={formatDataCompany}
               />
             )}
           </div>
