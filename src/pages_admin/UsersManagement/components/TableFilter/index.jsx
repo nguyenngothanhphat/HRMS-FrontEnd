@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-// import { filteredArr } from '@/utils/utils';
+import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ loading, usersManagement }) => ({
-  loading: loading.effects['login/login'],
+@connect(({ usersManagement }) => ({
   usersManagement,
 }))
 class TableFilter extends PureComponent {
@@ -26,13 +25,13 @@ class TableFilter extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchRolesList',
-    });
-    dispatch({
       type: 'usersManagement/fetchLocationList',
     });
     dispatch({
-      type: 'usersManagement/fetchCompaniesList',
+      type: 'usersManagement/fetchRoleList',
+    });
+    dispatch({
+      type: 'usersManagement/fetchCompanyList',
     });
   }
 
@@ -57,7 +56,7 @@ class TableFilter extends PureComponent {
     const { clearText } = this.state;
     onHandleChange(clearText);
     dispatch({
-      type: 'usersManagement/clearFilter',
+      type: 'usersManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({ reset: false });
@@ -66,35 +65,30 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { locationState, roleState, all, companyState, text, reset } = this.state;
+    const { locationState, companyState, all, roleState, text, reset } = this.state;
     const {
-      usersManagement: {
-        listLocations = [],
-        listCompanies = [],
-        listRoles = [],
-        clearName = false,
-      },
+      usersManagement: { location = [], company = [], roles = [], clearName = false },
       collapsed,
       changeTab,
     } = this.props;
 
-    const formatDataLocations = listLocations.map((item) => {
+    const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
       return {
         label,
         value,
       };
     });
-    const formatDataRoles = listRoles.map((item) => {
-      const { name: label, id: value } = item;
+    const formatDataRole = roles.map((item) => {
+      const { _id: label } = item;
       return {
         label,
-        value,
+        value: label,
       };
     });
 
-    const formatDataCompanies = listCompanies.map((item) => {
-      const { name: label, id: value } = item;
+    const formatDataCompany = company.map((item) => {
+      const { name: label, _id: value } = item;
       return {
         label,
         value,
@@ -131,7 +125,12 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckList key={roleState} name={roleState} all={all} data={formatDataRoles} />
+              <CheckList
+                key={roleState}
+                name={roleState}
+                all={all}
+                data={filteredArr(formatDataRole)}
+              />
             )}
             {reset || changeTab ? (
               ''
@@ -140,7 +139,7 @@ class TableFilter extends PureComponent {
                 key={companyState}
                 name={companyState}
                 all={all}
-                data={formatDataCompanies}
+                data={filteredArr(formatDataCompany)}
               />
             )}
             {reset || changeTab ? (
@@ -150,7 +149,7 @@ class TableFilter extends PureComponent {
                 key={locationState}
                 name={locationState}
                 all={all}
-                data={formatDataLocations}
+                data={formatDataLocation}
               />
             )}
           </div>
@@ -159,7 +158,5 @@ class TableFilter extends PureComponent {
     );
   }
 }
-
-TableFilter.propTypes = {};
 
 export default TableFilter;
