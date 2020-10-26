@@ -100,3 +100,11 @@ export function getTableDataByTitle(params) {
     data: params,
   });
 }
+
+export function closeCandidate(params) {
+  console.log(params);
+  return request('/api/candidate/close-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}

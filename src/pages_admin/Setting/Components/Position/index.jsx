@@ -1,9 +1,13 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { connect } from 'umi';
 import { Input, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+@connect(({ adminSetting: { tempData: { listTitle = [] } = {} } = {} }) => ({
+  listTitle,
+}))
 class Position extends PureComponent {
   constructor(props) {
     super(props);
@@ -11,14 +15,22 @@ class Position extends PureComponent {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      data: [
-        { PositionID: 20, PositionName: 'Position 1' },
-        { PositionID: 22, PositionName: 'Position 2' },
-        { PositionID: 24, PositionName: 'Position 3' },
-      ],
+      data: [],
       newValue: '',
       getIndex: '',
     };
+  }
+
+  componentDidMount() {
+    const { listTitle } = this.props;
+    const formatData = listTitle.map((item) => {
+      const { _id: PositionID, name: PositionName } = item;
+      return {
+        PositionID,
+        PositionName,
+      };
+    });
+    this.setState({ data: formatData });
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -79,6 +91,7 @@ class Position extends PureComponent {
 
   render() {
     const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
+
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -113,6 +126,7 @@ class Position extends PureComponent {
       PositionID: '',
       PositionName: <Input onChange={this.handleChangeValue} value={newValue} />,
     };
+
     const renderAdd = [...data, add];
 
     return (

@@ -11,6 +11,7 @@ const Model = {
   namespace: 'login',
   state: {
     status: undefined,
+    candidate: '',
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -18,6 +19,11 @@ const Model = {
         const response = yield call(accountLogin, payload);
         yield put({
           type: 'changeLoginStatus',
+          payload: response,
+        });
+        console.log('abcd', response);
+        yield put({
+          type: 'saveCandidateId',
           payload: response,
         });
         if (response.statusCode !== 200) throw response;
@@ -32,6 +38,11 @@ const Model = {
         console.log('p', params);
         let { redirect } = params;
         console.log('r', redirect);
+        if (role === 'CANDIDATE') {
+          history.replace('/candidate');
+          return;
+        }
+
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
@@ -110,6 +121,9 @@ const Model = {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
       return { ...state, status: payload.status, type: payload.type };
+    },
+    saveCandidateId(state, { payload }) {
+      return { ...state, candidate: payload.data.user.candidate };
     },
   },
 };

@@ -50,7 +50,7 @@ class SalaryStructure extends PureComponent {
     };
     return (
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={16}>
           <div className={styles.salaryStructure}>
             <Form wrapperCol={{ span: 24 }} name="basic" onFinish={this.onFinish}>
               <div className={styles.salaryStructure__top}>
@@ -61,7 +61,7 @@ class SalaryStructure extends PureComponent {
             </Form>
           </div>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={8}>
           <div className={styles.rightWrapper}>
             <Row>
               {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
