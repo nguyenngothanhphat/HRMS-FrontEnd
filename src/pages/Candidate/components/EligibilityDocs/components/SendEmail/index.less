@@ -11,28 +11,6 @@
   overflow: hidden;
   margin-top: 1rem;
   .header {
-    // .icon {
-    //   width: 64px;
-    //   height: 64px;
-    //   line-height: 64px;
-    //   text-align: center;
-    //   border-radius: 50%;
-    //   background: @blue-background-outside;
-    //   opacity: 0.55;
-    //   margin-right: 0.5rem;
-    //   .inside {
-    //     width: 47px;
-    //     height: 47px;
-    //     line-height: 47px;
-    //     margin: auto;
-    //     border-radius: 50%;
-    //     transform: translate(0, 20%);
-    //     background-color: @blue-background-inside;
-    //     .send {
-    //       transform: translate(12%, -6%);
-    //     }
-    //   }
-    // }
     .text {
       font-size: 14px;
       font-size: 14px;
@@ -42,6 +20,51 @@
       line-height: normal;
       letter-spacing: normal;
       color: #161c29;
+    }
+  }
+  .header1 {
+    text-align: center;
+  }
+  .body1 {
+    text-align: center;
+    span.coloredText {
+      font-weight: 500;
+      color: #ffa100;
+    }
+    span.boldText {
+      font-weight: bold;
+    }
+    :global {
+      .ant-typography {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.38;
+        letter-spacing: 0.12px;
+        text-align: center;
+        color: #707177;
+      }
+      .ant-btn {
+        background-color: #fff;
+        color: #ffa100;
+        border-radius: 25px;
+        height: 42px;
+        padding: 13px 24px;
+        line-height: 0.5715;
+        border-color: #ffa100;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        margin-top: 1.5rem;
+        &:focus {
+          border-color: #ffa100;
+        }
+        &:hover {
+          border-color: #ffa100;
+        }
+      }
     }
   }
   .body {
