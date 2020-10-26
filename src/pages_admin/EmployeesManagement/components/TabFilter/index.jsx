@@ -16,6 +16,7 @@ class TabFilter extends PureComponent {
       EmploymentState: 'Employment Type',
       locationState: 'Location',
       departmentState: 'Department',
+      companyState: 'Company',
       all: 'All',
       text: '',
       clearText: '',
@@ -33,6 +34,9 @@ class TabFilter extends PureComponent {
     });
     dispatch({
       type: 'employee/fetchDepartment',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
     });
   }
 
@@ -66,10 +70,18 @@ class TabFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
+    const {
+      locationState,
+      departmentState,
+      companyState,
+      all,
+      EmploymentState,
+      text,
+      reset,
+    } = this.state;
     const {
       employee: { location = [], department = [], employeetype = [] },
-      employeesManagement: { clearName = false },
+      employeesManagement: { clearName = false, companyList = [] },
       collapsed,
       changeTab,
     } = this.props;
@@ -89,6 +101,14 @@ class TabFilter extends PureComponent {
     });
 
     const formatDataDepartment = department.map((item) => {
+      const { name: label, _id: value } = item;
+      return {
+        label,
+        value,
+      };
+    });
+
+    const formatDataCompany = companyList.map((item) => {
       const { name: label, _id: value } = item;
       return {
         label,
@@ -151,6 +171,16 @@ class TabFilter extends PureComponent {
                 name={locationState}
                 all={all}
                 data={formatDataLocation}
+              />
+            )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <CheckList
+                key={companyState}
+                name={companyState}
+                all={all}
+                data={formatDataCompany}
               />
             )}
           </div>

@@ -281,27 +281,24 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            className={styles.reportingManager}
-            label="Reporting Manager"
-            name="reportingManager"
-            rules={[{ required: true }]}
-          >
-            <Select
-              placeholder={isDisabledManager ? 'No Data' : 'Select Reporting Manager'}
-              showArrow
-              showSearch
-              disabled={isDisabledManager}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {reportingManagerList.map((item) => (
-                <Option key={item}>
-                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
-                </Option>
-              ))}
-            </Select>
+          <Form.Item className={styles.reportingManager} label="Reporting Manager">
+            <Form.Item name="reportingManager" rules={[{ required: true }]}>
+              <Select
+                placeholder={isDisabledManager ? 'No Data' : 'Select Reporting Manager'}
+                showArrow
+                showSearch
+                disabled={isDisabledManager}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {reportingManagerList.map((item) => (
+                  <Option key={item._id}>
+                    {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
             <Tooltip
               placement="top"
               title="Reporting manager is got according to department and location."

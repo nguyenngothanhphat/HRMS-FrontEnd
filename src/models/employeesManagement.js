@@ -34,6 +34,7 @@ const employeesManagement = {
           status = 'ACTIVE',
           department = [],
           location = [],
+          company = [],
           employeeType = [],
           name = '',
         } = {},
@@ -46,6 +47,7 @@ const employeesManagement = {
           name,
           department,
           location,
+          company,
           employeeType,
         });
         const { statusCode, data: activeEmployeesList = [] } = response;

@@ -20,9 +20,11 @@ class TableContainer extends PureComponent {
       let employeeType = [];
       let department = [];
       let location = [];
+      let company = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const locationConst = 'Location';
+      const companyConst = 'Company';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -33,13 +35,17 @@ class TableContainer extends PureComponent {
         if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employeeType, department, location };
+        if (item.actionFilter.name === companyConst) {
+          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { employeeType, department, location, company };
       });
       return {
         ...prevState,
         department,
         location,
         employeeType,
+        company,
       };
     }
     return null;
@@ -54,6 +60,7 @@ class TableContainer extends PureComponent {
       department: [],
       location: [],
       employeeType: [],
+      company: [],
       filterName: '',
       tabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.employees.table.activeEmployeesTab' }) },
@@ -74,12 +81,13 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employeeType, filterName, tabId } = this.state;
+    const { department, location, company, employeeType, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       department,
       location,
       employeeType,
+      company,
     };
 
     if (
@@ -87,6 +95,7 @@ class TableContainer extends PureComponent {
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
+      prevState.company.length !== company.length ||
       prevState.filterName !== filterName
     ) {
       this.getDataTable(params, tabId);
