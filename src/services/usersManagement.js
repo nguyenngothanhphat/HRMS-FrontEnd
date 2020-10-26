@@ -53,3 +53,10 @@ export async function updateRolesByEmployee(payload) {
     data: payload,
   });
 }
+
+export async function updateGeneralInfo(payload) {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

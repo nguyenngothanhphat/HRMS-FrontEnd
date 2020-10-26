@@ -65,12 +65,22 @@ class EditUserModal extends PureComponent {
     });
   };
 
+  refreshUsersList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchActiveEmployeesList',
+    });
+    dispatch({
+      type: 'usersManagement/fetchInActiveEmployeesList',
+    });
+  };
+
   onFinish = (values) => {
     const { dispatch, user = {} } = this.props;
-    const { _id = '' } = user;
+    const { _id = '', generalInfo: { _id: generalInfoId = '' } = {} } = user;
     const { companyId, locationId } = this.state;
-    const { workEmail = '', fullName = '', roles = [], status = '' } = values;
-    const submitValues = { workEmail, fullName, roles, locationId, companyId };
+    const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
+    const submitValues = { workEmail, firstName, lastName, roles, locationId, companyId };
     // eslint-disable-next-line no-console
     console.log('Success:', submitValues);
     dispatch({
@@ -78,6 +88,15 @@ class EditUserModal extends PureComponent {
       employee: _id,
       roles,
     });
+
+    dispatch({
+      type: 'usersManagement/updateGeneralInfo',
+      id: generalInfoId,
+      workEmail,
+      firstName,
+      lastName,
+    });
+
     dispatch({
       type: 'usersManagement/updateEmployee',
       id: _id,
@@ -88,6 +107,7 @@ class EditUserModal extends PureComponent {
       if (statusCode === 200) {
         const { closeEditModal = () => {} } = this.props;
         closeEditModal();
+        this.refreshUsersList();
       }
     });
   };
@@ -121,7 +141,6 @@ class EditUserModal extends PureComponent {
       generalInfo: { employeeId = '', workEmail = '', firstName = '', lastName = '' } = {},
       status = '',
     } = user;
-    const fullName = `${firstName} ${lastName}`;
 
     return (
       <>
@@ -158,7 +177,8 @@ class EditUserModal extends PureComponent {
               employeeId,
               joinDate: moment(joinDate),
               workEmail,
-              fullName,
+              firstName,
+              lastName,
               locationName,
               companyName,
               status,
@@ -167,27 +187,34 @@ class EditUserModal extends PureComponent {
             <Form.Item label="Employee ID" name="employeeId">
               <Input disabled />
             </Form.Item>
-            <Form.Item label="Joined Date" name="joinDate">
+            <Form.Item label="Created Date" name="joinDate">
               <DatePicker disabled format={dateFormat} />
             </Form.Item>
             <Form.Item
               label="Email"
               name="workEmail"
-              rules={[{ required: true, message: 'Please input!' }]}
+              rules={[{ required: false, message: 'Please input work email!' }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              label="Full Name"
-              name="fullName"
-              rules={[{ required: true, message: 'Please input!' }]}
+              label="First Name"
+              name="firstName"
+              rules={[{ required: false, message: 'Please input first name!' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Last Name"
+              name="lastName"
+              rules={[{ required: false, message: 'Please input last name!' }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               label="Roles"
               name="roles"
-              rules={[{ required: true, message: 'Please select roles!' }]}
+              rules={[{ required: false, message: 'Please select roles!' }]}
             >
               <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
                 {roleList.map((item) => {

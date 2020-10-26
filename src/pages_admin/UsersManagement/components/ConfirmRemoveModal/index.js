@@ -27,6 +27,16 @@ class ConfirmRemoveModal extends Component {
     );
   };
 
+  refreshUsersList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/fetchActiveEmployeesList',
+    });
+    dispatch({
+      type: 'usersManagement/fetchInActiveEmployeesList',
+    });
+  };
+
   handleRemoveToServer = () => {
     const { dispatch, user = {} } = this.props;
     const { _id = '' } = user;
@@ -36,6 +46,7 @@ class ConfirmRemoveModal extends Component {
     }).then((statusCode) => {
       if (statusCode === 200) {
         this.handleCancel();
+        this.refreshUsersList();
       }
     });
   };

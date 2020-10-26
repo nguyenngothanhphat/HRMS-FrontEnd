@@ -145,16 +145,6 @@ class TableUsers extends PureComponent {
     }));
   };
 
-  refreshUsersList = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchActiveEmployeesList',
-    });
-    dispatch({
-      type: 'usersManagement/fetchInActiveEmployeesList',
-    });
-  };
-
   editUser = (record) => {
     const { dispatch } = this.props;
     dispatch({
@@ -173,7 +163,6 @@ class TableUsers extends PureComponent {
       editModalVisible: false,
       selectedUserId: null,
     });
-    this.refreshUsersList();
   };
 
   // delete user
@@ -195,7 +184,6 @@ class TableUsers extends PureComponent {
       selectedUserId: null,
       deleteConfirmModalVisible: false,
     });
-    this.refreshUsersList();
   };
 
   resetPassword = (record) => {

@@ -9,6 +9,7 @@ import {
   updateEmployee,
   updateRolesByEmployee,
   getRolesByEmployee,
+  updateGeneralInfo,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -165,7 +166,20 @@ const usersManagement = {
         dialog(errors);
       }
     },
+    *updateGeneralInfo({ id = '', workEmail = '', firstName = '', lastName = '' }, { call }) {
+      try {
+        const response = yield call(updateGeneralInfo, { id, workEmail, firstName, lastName });
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
+
   reducers: {
     save(state, action) {
       return {
