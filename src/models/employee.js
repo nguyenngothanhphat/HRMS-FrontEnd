@@ -6,6 +6,7 @@ import {
   getListEmployeeMyTeam,
   getListEmployeeActive,
   getListEmployeeInActive,
+  getDataOrgChart,
 } from '../services/employee';
 
 const employee = {
@@ -21,6 +22,7 @@ const employee = {
     dataRadio: [],
     clearFilter: false,
     clearName: false,
+    dataOrgChart: {},
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -54,11 +56,20 @@ const employee = {
       }
     },
     *fetchListEmployeeMyTeam(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeMyTeam, {
+          company,
           department,
           location,
           employeeType,
@@ -72,11 +83,20 @@ const employee = {
       }
     },
     *fetchListEmployeeActive(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
+          company,
           department,
           location,
           employeeType,
@@ -90,11 +110,20 @@ const employee = {
       }
     },
     *fetchListEmployeeInActive(
-      { payload: { department = [], location = [], employeeType = [], name = '' } = {} },
+      {
+        payload: {
+          company = '',
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
       { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
+          company,
           department,
           location,
           employeeType,
@@ -103,6 +132,16 @@ const employee = {
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'listEmployeeInActive', payload: { listEmployeeInActive } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchDataOrgChart(_, { call, put }) {
+      try {
+        const response = yield call(getDataOrgChart);
+        const { statusCode, data: dataOrgChart = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { dataOrgChart } });
       } catch (errors) {
         dialog(errors);
       }
@@ -173,6 +212,12 @@ const employee = {
       };
     },
     listEmployeeInActive(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    save(state, action) {
       return {
         ...state,
         ...action.payload,

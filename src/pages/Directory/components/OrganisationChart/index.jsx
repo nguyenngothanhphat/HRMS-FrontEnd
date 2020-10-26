@@ -1,15 +1,25 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Input } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import Chart from './Chart';
 import s from './index.less';
 
-class OrganChart extends PureComponent {
+@connect(({ employee: { dataOrgChart = {} } = {} }) => ({
+  dataOrgChart,
+}))
+class OrganisationChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
       q: '',
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+    });
   }
 
   handleSearch = () => {
@@ -18,42 +28,44 @@ class OrganChart extends PureComponent {
   };
 
   render() {
-    const dummyData = {
-      name: 'Bill Lumbergh',
-      position: 'CEO',
-      children: [
-        {
-          name: 'Peter Gibbons',
-          position: 'Lead',
-        },
-        {
-          name: 'Anil Reddy',
-          position: 'Sales',
-          // children: [
-          //   {
-          //     name: 'Peter Gibbons',
-          //     position: 'Sales 1',
-          //   },
-          //   {
-          //     name: 'Peter Gibbons',
-          //     position: 'Sales 2',
-          //   },
-          // ],
-        },
-        {
-          name: 'Peter Gibbons',
-          position: 'Marketing',
-        },
-        {
-          name: 'Milton Waddams',
-          position: 'UI',
-        },
-        {
-          name: 'Bob Slydell',
-          position: 'UX',
-        },
-      ],
-    };
+    const { dataOrgChart = {} } = this.props;
+
+    // const dummyData = {
+    //   name: 'Bill Lumbergh',
+    //   position: 'CEO',
+    //   children: [
+    //     {
+    //       name: 'Peter Gibbons',
+    //       position: 'Lead',
+    //     },
+    //     {
+    //       name: 'Anil Reddy',
+    //       position: 'Sales',
+    //       children: [
+    //         {
+    //           name: 'Peter Gibbons',
+    //           position: 'Sales 1',
+    //         },
+    //         {
+    //           name: 'Peter Gibbons',
+    //           position: 'Sales 2',
+    //         },
+    //       ],
+    //     },
+    //     {
+    //       name: 'Peter Gibbons',
+    //       position: 'Marketing',
+    //     },
+    //     {
+    //       name: 'Milton Waddams',
+    //       position: 'UI',
+    //     },
+    //     {
+    //       name: 'Bob Slydell',
+    //       position: 'UX',
+    //     },
+    //   ],
+    // };
 
     return (
       <div className={s.container}>
@@ -76,12 +88,10 @@ class OrganChart extends PureComponent {
             </a>
           </div>
         </Row>
-        <Row style={{ marginTop: '27px' }}>
-          <Chart data={dummyData} />
-        </Row>
+        <Row style={{ marginTop: '27px' }}>{/* <Chart data={dataOrgChart} /> */}</Row>
       </div>
     );
   }
 }
 
-export default OrganChart;
+export default OrganisationChart;

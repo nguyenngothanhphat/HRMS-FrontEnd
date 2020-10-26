@@ -11,6 +11,7 @@ const Model = {
   namespace: 'login',
   state: {
     status: undefined,
+    candidate: '',
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -20,19 +21,28 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
+        console.log('abcd', response);
+        yield put({
+          type: 'saveCandidateId',
+          payload: response,
+        });
         if (response.statusCode !== 200) throw response;
+        console.log(response);
         setToken(response.data.token);
         const [itemRole] = response.data.user.roles;
         const { _id: role = '' } = itemRole;
-        // let dummyRole = role;
-        // if (role === 'CUSTOMER') {
-        //   dummyRole = 'admin';
-        // }
-
+        console.log(response.data.user.roles);
         setAuthority(role.toLowerCase());
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
+        console.log('p', params);
         let { redirect } = params;
+        console.log('r', redirect);
+        if (role === 'CANDIDATE') {
+          history.replace('/candidate');
+          return;
+        }
+
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
@@ -47,6 +57,7 @@ const Model = {
         }
         history.replace(redirect || '/');
       } catch (errors) {
+        console.log(errors);
         dialog(errors);
       }
     },
@@ -110,6 +121,9 @@ const Model = {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
       return { ...state, status: payload.status, type: payload.type };
+    },
+    saveCandidateId(state, { payload }) {
+      return { ...state, candidate: payload.data.user.candidate };
     },
   },
 };

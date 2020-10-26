@@ -14,8 +14,12 @@ import {
   getEmployeeTypeList,
   getManagerList,
   addCandidate,
+  updateByHR,
 } from '@/services/addNewMember';
+import { history } from 'umi';
 import { dialog } from '@/utils/utils';
+
+import { getRookieInfo } from '@/services/formCandidate';
 
 const info = {
   namespace: 'info',
@@ -26,6 +30,7 @@ const info = {
       workEmail: '',
       experienceYear: '',
     },
+
     offerDetail: {
       includeOffer: false,
       file: 'Template.docx',
@@ -35,6 +40,7 @@ const info = {
       currency: 'Dollar',
       timeoff: 'can not',
     },
+
     eligibilityDocs: {
       email: '',
       generateLink: '',
@@ -47,14 +53,14 @@ const info = {
         passport: false,
         drivingLicense: false,
         voterCard: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
         telephoneBill: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       educational: {
@@ -63,7 +69,7 @@ const info = {
         graduation: true,
         postGraduate: false,
         phd: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       technicalCertification: {
@@ -75,11 +81,12 @@ const info = {
           paystubs: false,
           form16: false,
           relievingLetter: false,
-          listSelected: [],
+          checkedList: [],
           isChecked: false,
         },
       },
     },
+
     jobDetail: {
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -90,15 +97,18 @@ const info = {
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
     },
+
     salaryStructure: {
       rejectComment: '',
     },
+
     checkMandatory: {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
-      salaryStatus: 2,
+      salaryStatus: 3,
     },
+
     previewOffer: {
       file: '',
       file2: '',
@@ -114,6 +124,7 @@ const info = {
       city2: '',
       mail: '',
     },
+
     benefits: {
       medical: false,
       life: false,
@@ -137,6 +148,8 @@ const info = {
       medical: undefined,
       additionalInfo: '',
     },
+    rookieId: '',
+    processStatus: '',
     currentStep: 0,
     displayComponent: {},
     testEligibility: [],
@@ -158,6 +171,26 @@ const info = {
     loadingReportingManager: true,
     item: {},
     Obj: {},
+
+    originData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
+    tempData: {
+      basicInformation: {},
+      offerDetail: {},
+      eligibilityDocs: {},
+      jobDetail: {},
+      salaryStructure: {},
+      previewOffer: {},
+      benefits: {},
+    },
+    dataTest: {},
   },
   effects: {
     // *fetchEmployeeType(_, { call, put }) {
@@ -252,6 +285,7 @@ const info = {
         dialog(errors);
       }
     },
+
     *addCandidateByHR({ payload }, { call, put }) {
       console.log('payload model', payload);
       try {
@@ -260,7 +294,36 @@ const info = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
+        console.log(errors);
         dialog(errors);
+      }
+    },
+
+    *updateByHR({ payload }, { call, put }) {
+      console.log('payload model', payload);
+      try {
+        const response = yield call(updateByHR, payload);
+        const { statusCode, data } = response;
+        console.log('abc', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { dataTest: data } });
+      } catch (errors) {
+        console.log(errors);
+        dialog(errors);
+      }
+    },
+
+    *fetchCandidateInfo(_, { call, put }) {
+      try {
+        const response = yield call(getRookieInfo);
+        const { data } = response;
+        const { ticketID = '', _id = '' } = data;
+        console.log(response);
+        const rookieId = ticketID;
+        yield put({ type: 'save', payload: { rookieId, _id } });
+        history.push(`/employee-onboarding/review/${rookieId}`);
+      } catch (error) {
+        dialog(error);
       }
     },
   },

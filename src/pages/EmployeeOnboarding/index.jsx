@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
-import { formatMessage } from 'umi';
-
+import { connect, formatMessage } from 'umi';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 import CustomFields from './components/CustomFields';
-
 import styles from './index.less';
 
-export default class EmployeeOnboarding extends PureComponent {
+@connect(({ loading }) => ({
+  loading: loading.effects['login/login'],
+}))
+class EmployeeOnboarding extends PureComponent {
   render() {
-    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
+    const { location: { state: { defaultActiveKey = '3' } = {} } = {} } = this.props;
 
     const { TabPane } = Tabs;
     return (
@@ -56,3 +57,5 @@ export default class EmployeeOnboarding extends PureComponent {
     );
   }
 }
+
+export default EmployeeOnboarding;

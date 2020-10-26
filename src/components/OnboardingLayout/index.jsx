@@ -1,17 +1,19 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { formatMessage, connect } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
 import EligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/EligibleCandidates';
-import FinalOfferDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOfferDrafts';
+import AllDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AllDrafts';
 import FinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOffers';
 import IneligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/IneligibleCandidates';
 import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/PendingEligibilityChecks';
 import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProvisionalOffers';
 import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
+import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
+import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
 
 import MenuItem from './components/MenuItem';
 
@@ -33,15 +35,20 @@ const getComponent = (name) => {
       return <AwaitingApprovals />;
     case 'FinalOffers':
       return <FinalOffers />;
-    case 'FinalOfferDrafts':
-      return <FinalOfferDrafts />;
-    case 'DiscardedFinalOffers':
-      return <DiscardedFinalOffers />;
+    case 'AllDrafts':
+      return <AllDrafts />;
+    case 'DiscardedFinalOffers': // del
+      return <DiscardedFinalOffers />; // del
+    case 'BackgroundCheck':
+      return <BackgroundCheck />;
+    case 'DiscardedOffers':
+      return <DiscardedOffers />;
     default:
       return <PendingEligibilityChecks />;
   }
 };
 
+@connect()
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -54,10 +61,10 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     const { listMenu = [] } = this.props;
-    const firstComponent = listMenu[0].menuItem[0].component;
+    const firstComponent = listMenu[0].component;
     this.setState({
-      pageTitle: listMenu[0].menuItem[0].name,
-      selectedId: listMenu[0].menuItem[0].id,
+      pageTitle: listMenu[0].name,
+      selectedId: listMenu[0].id,
       displayComponent: getComponent(firstComponent),
     });
   }
@@ -71,6 +78,14 @@ class OnboardingLayout extends PureComponent {
     });
   };
 
+  handleAddBtn = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/fetchCandidateInfo',
+      payload: {},
+    });
+  };
+
   render() {
     const { listMenu = [] } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
@@ -78,42 +93,36 @@ class OnboardingLayout extends PureComponent {
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>
-          <Link to="/employee-onboarding/add">
-            <Button className={styles.addMember} type="primary">
-              <div className={styles.icon}>
-                <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
+          {/* <Link to="/employee-onboarding/add"> */}
+          <Button className={styles.addMember} type="primary" onClick={this.handleAddBtn}>
+            <div className={styles.icon}>
+              <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
 
-                {/* <span>Add Team Member</span> */}
-                <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
-              </div>
-            </Button>
-          </Link>
+              <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
+            </div>
+          </Button>
+          {/* </Link> */}
 
           <div className={styles.divider} />
 
           <div className={styles.leftMenu}>
-            {listMenu.map((phase) => {
-              const { id, title, menuItem } = phase;
+            {listMenu.map((item) => {
+              const { id, name, component, quantity } = item;
               const { selectedId } = this.state;
               return (
                 <div key={id}>
                   <MenuItem
                     selectedId={selectedId}
-                    title={title}
-                    menuItem={menuItem}
+                    id={id}
+                    name={name}
+                    component={component}
+                    quantity={quantity}
                     handleClick={this.handleClick}
                   />
                 </div>
               );
             })}
           </div>
-
-          {/* <Link
-            to="/employee-onboarding/review/16003134"
-            style={{ marginTop: '1rem', display: 'block' }}
-          >
-            Link review member by rookieId =16003134
-          </Link> */}
         </div>
 
         <div className={styles.viewRight}>
@@ -125,4 +134,7 @@ class OnboardingLayout extends PureComponent {
   }
 }
 
-export default OnboardingLayout;
+// export default OnboardingLayout;
+export default connect(({ info }) => ({
+  info,
+}))(OnboardingLayout);

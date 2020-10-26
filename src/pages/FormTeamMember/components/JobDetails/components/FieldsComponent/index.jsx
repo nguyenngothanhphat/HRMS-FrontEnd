@@ -7,37 +7,45 @@ class FieldsComponent extends PureComponent {
   render() {
     const {
       dropdownField,
-      handleSelect,
       candidateField,
-      jobDetail,
       departmentList,
       locationList,
       titleList,
       managerList,
       _handleSelect,
-      loadingE,
+      department,
+      title,
+      workLocation,
+      reportingManager,
+      candidatesNoticePeriod,
+      prefferedDateOfJoining,
+      loading1,
+      loading2,
+      loading3,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
         <FirstFieldsComponent
           styles={styles.Input}
           dropdownField={dropdownField}
-          handleSelect={handleSelect}
-          jobDetail={jobDetail}
           departmentList={departmentList}
           locationList={locationList}
           titleList={titleList}
           managerList={managerList}
           _handleSelect={_handleSelect}
-          loadingE={loadingE}
+          department={department}
+          title={title}
+          workLocation={workLocation}
+          reportingManager={reportingManager}
+          loading1={loading1}
+          loading2={loading2}
+          loading3={loading3}
         />
         <CandidateFieldsComponent
           styles={styles.Input}
-          dropdownField={dropdownField}
-          handleSelect={handleSelect}
           candidateField={candidateField}
-          jobDetail={jobDetail}
-          _handleSelect={_handleSelect}
+          candidatesNoticePeriod={candidatesNoticePeriod}
+          prefferedDateOfJoining={prefferedDateOfJoining}
         />
       </div>
     );

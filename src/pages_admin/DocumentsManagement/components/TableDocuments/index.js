@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
-import ViewDocument from '../ViewDocument';
+import ViewDocument from '@/components/ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -14,57 +14,61 @@ class TableDocuments extends PureComponent {
   columns = [
     {
       title: 'Document ID',
-      dataIndex: 'documentId',
+      dataIndex: '_id',
       align: 'center',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.documentId.localeCompare(b.documentId),
+        compare: (a, b) => a._id.localeCompare(b._id),
       },
     },
     {
       title: 'Document Type',
-      dataIndex: 'documentType',
+      dataIndex: 'employeeGroup',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.documentType.localeCompare(b.documentType),
+        compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
       },
     },
     {
       title: 'Document Name',
-      dataIndex: 'documentName',
+      dataIndex: 'key',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.documentName.localeCompare(b.documentName),
+        compare: (a, b) => a.key.localeCompare(b.key),
       },
     },
     {
       title: 'Uploaded By',
-      dataIndex: 'uploadedBy',
+      // dataIndex: 'uploadedBy',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
-      },
+      render: () => <span>Terralogic</span>,
+      // sorter: {
+      //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      // },
+    },
+    {
+      title: 'Company',
+      // dataIndex: 'uploadedBy',
+      align: 'center',
+      width: '8%',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      render: () => <span>Company</span>,
+      // sorter: {
+      //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      // },
     },
     {
       title: 'Created Date',
-      dataIndex: 'createdDate',
+      dataIndex: 'createdAt',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
-      },
-    },
-    {
-      title: 'User ID',
-      dataIndex: 'userId',
-      align: 'center',
-      sorter: {
-        compare: (a, b) => a.userId - b.userId,
-      },
+      // sorter: {
+      //   compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      // },
     },
     {
       title: 'Action',
@@ -103,8 +107,8 @@ class TableDocuments extends PureComponent {
   deleteDocument = (record) => {
     this.setState({
       confirmRemoveModalVisible: true,
-      documentId: record.documentId,
-      documentName: record.documentName,
+      documentId: record._id,
+      documentName: record.key,
     });
   };
 
@@ -121,11 +125,11 @@ class TableDocuments extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'documentsManagement/fetchDocumentDetail',
-      payload: record.documentId,
+      payload: record._id,
     });
     this.setState({
       isViewingDocument: true,
-      selectedDocumentId: record.documentId,
+      selectedDocumentId: record._id,
     });
   };
 
@@ -202,6 +206,7 @@ class TableDocuments extends PureComponent {
       documentsManagement: { listDocumentDetail = [] },
     } = this.props;
 
+    // console.log('listDocumentDetail', listDocumentDetail);
     return (
       <div>
         {isViewingDocument && selectedDocumentId && listDocumentDetail ? (
@@ -225,7 +230,7 @@ class TableDocuments extends PureComponent {
               columns={this.columns}
               dataSource={data}
               scroll={scroll}
-              rowKey="documentId"
+              rowKey="_id"
             />
           </div>
         )}

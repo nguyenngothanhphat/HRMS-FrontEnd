@@ -8,7 +8,7 @@ import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/ind
 
 import s from './index.less';
 
-@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
+@connect(({ candidateInfo: { currentStep = 0, displayComponent = {} } = {} }) => ({
   currentStep,
   displayComponent,
 }))
@@ -23,9 +23,17 @@ class CommonLayout extends PureComponent {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep } = props;
+    // const selectedItemId = listMenu[currentStep]
+    if (currentStep !== null) {
+      return {
+        selectedItemId: listMenu[currentStep].id,
+        displayComponent: listMenu[currentStep].component,
+      };
+    }
+
     return {
-      selectedItemId: listMenu[currentStep].id,
-      displayComponent: listMenu[currentStep].component,
+      selectedItemId: '',
+      displayComponent: <PreviewOffer />,
     };
   }
 
@@ -40,7 +48,7 @@ class CommonLayout extends PureComponent {
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'info/save',
+      type: 'candidateInfo/save',
       payload: {
         currentStep: null,
         displayComponent: <PreviewOffer />,
@@ -51,7 +59,7 @@ class CommonLayout extends PureComponent {
   _handleClick = (item) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'info/save',
+      type: 'candidateInfo/save',
       payload: {
         currentStep: item.id - 1,
         displayComponent: item.component,

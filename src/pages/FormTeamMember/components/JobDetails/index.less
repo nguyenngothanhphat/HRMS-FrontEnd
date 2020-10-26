@@ -1,7 +1,82 @@
+@spacing-xxs: 4px;
+
 .JobDetailsComponent {
   border-radius: 5px;
   border: solid 1px #d6dce0;
   background: #fff;
+  .bottomBar {
+    // position: fixed;
+    // bottom: 0;
+    // width: inherit;
+    // height: 72px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+    border: solid 1px #d6dce0;
+    background-color: #ffffff;
+    padding: 4 * @spacing-xxs;
+
+    .normalText {
+      display: flex;
+      font-family: Roboto;
+      font-size: 13px;
+      font-style: italic;
+      color: #707177;
+    }
+
+    .redText {
+      font-family: Roboto;
+      font-size: 13px;
+      font-style: italic;
+      color: #ff4949;
+    }
+
+    .greenText {
+      font-family: Roboto;
+      font-size: 13px;
+      font-style: italic;
+      color: #47c97f;
+    }
+
+    &__button {
+      text-align: right;
+      &__disabled {
+        opacity: 0.3;
+      }
+      :global {
+        .ant-btn-primary {
+          // display: none;
+          width: 94px;
+          height: 40px;
+          object-fit: contain;
+          border-radius: 25px;
+          border: solid 1px #ffa100;
+          background-color: #ffa100;
+          font-family: Roboto;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffffff;
+          &:hover {
+            background-color: #ffa100;
+            color: #ffffff;
+          }
+        }
+        .ant-btn-secondary {
+          width: 94px;
+          height: 40px;
+          object-fit: contain;
+          border-radius: 25px;
+          border: solid 0;
+          font-family: Roboto;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffa100;
+          padding-right: 41px;
+        }
+      }
+    }
+  }
   :global {
     h5.ant-typography {
       font-size: 13px;
@@ -41,5 +116,78 @@
   width: 322px;
   .stepRow {
     width: 100%;
+  }
+}
+.bottomBar {
+  // position: fixed;
+  // bottom: 0;
+  // width: inherit;
+  // height: 72px;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+  padding: 4 * @spacing-xxs;
+
+  .normalText {
+    display: flex;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: italic;
+    color: #707177;
+  }
+
+  .redText {
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: italic;
+    color: #ff4949;
+  }
+
+  .greenText {
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: italic;
+    color: #47c97f;
+  }
+
+  &__button {
+    text-align: right;
+    &__disabled {
+      opacity: 0.3;
+    }
+    :global {
+      .ant-btn-primary {
+        // display: none;
+        width: 94px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 25px;
+        border: solid 1px #ffa100;
+        background-color: #ffa100;
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.13px;
+        color: #ffffff;
+        &:hover {
+          background-color: #ffa100;
+          color: #ffffff;
+        }
+      }
+      .ant-btn-secondary {
+        width: 94px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 25px;
+        border: solid 0;
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.13px;
+        color: #ffa100;
+        padding-right: 41px;
+      }
+    }
   }
 }
