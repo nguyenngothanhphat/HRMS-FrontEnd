@@ -33,9 +33,10 @@ class TableUsers extends PureComponent {
         align: 'left',
         width: '10%',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        // sortDirections: ['ascend', 'descend', 'ascend'],
+        sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
+        // compare: (a, b) =>
+        //   a.employeeId.slice(4, a.employeeId) - b.employeeId.slice(4, b.employeeId),
         // },
       },
       {
@@ -57,7 +58,7 @@ class TableUsers extends PureComponent {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.workEmail : ''}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        //   compare: (a, b) => a.email.localeCompare(b.email),
+        // compare: (a, b) => a.workEmail && b.workEmail && a.workEmail.localeCompare(b.workEmail),
         // },
       },
       {

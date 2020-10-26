@@ -230,7 +230,7 @@ class EditUserModal extends PureComponent {
             <Form.Item
               label="Location"
               name="locationName"
-              rules={[{ required: true, message: 'Please select location!' }]}
+              rules={[{ required: false, message: 'Please select location!' }]}
             >
               <Select
                 onChange={(key) => {
@@ -252,7 +252,7 @@ class EditUserModal extends PureComponent {
             <Form.Item
               label="Company"
               name="companyName"
-              rules={[{ required: true, message: 'Please select company!' }]}
+              rules={[{ required: false, message: 'Please select company!' }]}
             >
               <Select
                 onChange={(_, key) => {
@@ -275,7 +275,7 @@ class EditUserModal extends PureComponent {
             <Form.Item
               label="Status"
               name="status"
-              rules={[{ required: true, message: 'Please input!' }]}
+              rules={[{ required: false, message: 'Please input!' }]}
             >
               <Select>
                 <Option value="ACTIVE">ACTIVE</Option>
