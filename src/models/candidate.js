@@ -1,12 +1,64 @@
+import {
+  getById,
+  getDocumentByCandidate,
+  updateByCandidate,
+  addAttachmentService,
+  getWorkHistory,
+} from '@/services/candidate';
+import { dialog } from '@/utils/utils';
+
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
-    basicInformation: {
+    currentStep: 5,
+    rookieId: '',
+    checkMandatory: {
+      filledBasicInformation: true,
+      filledJobDetail: false,
+    },
+    data: {
+      _id: '',
+      candidate: '',
+      fullName: '',
+      privateEmail: '',
+      workEmail: '',
+      previousExperience: '',
+      noticePeriod: '',
+      dateOfJoining: '',
+      documentList: [],
+      attachments: {},
+      documentListToRender: [],
+      candidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      finalOfferCandidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      benefits: [],
+    },
+    tempData: {
+      checkStatus: {},
       fullName: '',
       privateEmail: '',
       experienceYear: '',
       workLocation: '',
+      candidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      finalOfferCandidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      hrSignature: '',
+      hrManagerSignature: '',
+      benefits: [],
     },
     jobDetails: {
       position: 'EMPLOYEE',
@@ -66,7 +118,87 @@ const candidateProfile = {
       filledCandidateBasicInformation: false,
       filledCandidateJobDetails: false,
       filledCandidateCustomField: false,
+      filledOfferDetails: false,
+      filledBenefits: false,
       salaryStatus: 2,
+    },
+  },
+  effects: {
+    *fetchCandidateById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        // const dataObj = data.find((x) => x);
+        const dataObj = data;
+        if (statusCode !== 200) throw response;
+        // console.log(response);
+        // console.log(response.data.benefits);
+        // console.log({ ...dataObj, candidate: dataObj._id, _id: dataObj._id });
+        yield put({
+          type: 'saveOrigin',
+          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchDocumentByCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDocumentByCandidate, payload);
+        const { data, statusCode } = response;
+        console.log('data', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { documentList: [...data] },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *updateByCandidateModel({ payload }, { call }) {
+      try {
+        const response = yield call(updateByCandidate, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *addAttachmentCandidate({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(addAttachmentService, payload);
+        const { data, statusCode } = response;
+        console.log('abc', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { attachments: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchEmployer({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWorkHistory, payload);
+        const { data, statusCode } = response;
+        console.log('abc', data);
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'saveOrigin',
+        //   payload: { ...data },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
@@ -75,6 +207,40 @@ const candidateProfile = {
         ...state,
         ...action.payload,
       };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveOrigin(state, action) {
+      const { data } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          ...action.payload,
+        },
+      };
+    },
+    saveAttachments(state, action) {
+      const { data } = state;
+      const { attachments } = data;
+      return {
+        ...state,
+        data: {
+          ...data,
+          attachments: [...attachments, action.payload],
+        },
+      };
+    },
+    saveCurrentUser(state, action) {
+      return { ...state, currentUser: action.payload || {} };
     },
   },
 };

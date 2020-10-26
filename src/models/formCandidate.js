@@ -125,6 +125,8 @@ const info = {
       place2: '',
       city2: '',
       mail: '',
+      hrSignature: '',
+      hrManagerSignature: '',
     },
 
     benefits: {

@@ -13,7 +13,7 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo } from '@/services/formCandidate';
+import { getRookieInfo, sentForApproval, approveFinalOffer } from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -92,6 +92,10 @@ const candidateInfo = {
           isChecked: false,
         },
       },
+
+      candidateSignature: null,
+      hrSignature: {},
+      hrManagerSignature: {},
     },
     data: {
       fullName: null,
@@ -230,8 +234,8 @@ const candidateInfo = {
         },
       ],
       candidateSignature: null,
-      hrManagerSignature: null,
-      hrSignature: null,
+      hrManagerSignature: {},
+      hrSignature: {},
       hiringAgreements: null,
       companyHandbook: null,
       benefits: [],
@@ -388,6 +392,32 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *sentForApprovalEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sentForApproval, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *approveFinalOfferEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(approveFinalOffer, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
         dialog(error);
       }
