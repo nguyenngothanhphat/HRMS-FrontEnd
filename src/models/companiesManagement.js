@@ -7,6 +7,8 @@ const companiesManagement = {
     currentStep: 0,
     isModified: false,
     companiesList: [],
+    locations: [],
+    locationsDetail: [],
     originData: {
       companyDetails: {},
     },
