@@ -5,9 +5,8 @@ import InternalStyle from './FilledByHR.less';
 
 class FilledByHR extends PureComponent {
   render() {
-    const { Tab, styles, jobDetails, HRField } = this.props;
-    const { position, employeeType } = jobDetails;
-    const { department, title, workLocation, reportingManager } = jobDetails;
+    const { Tab, styles, HRField, data } = this.props;
+    const { department, title, workLocation, reportingManager, employeeType, position } = data;
     return (
       <div>
         <div className={InternalStyle.FilledByHR}>
@@ -22,7 +21,7 @@ class FilledByHR extends PureComponent {
           </div>
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={8} lg={8} xl={8} className={InternalStyle.Padding}>
-              <Typography.Text>{employeeType}</Typography.Text>
+              <Typography.Text>{employeeType.name}</Typography.Text>
             </Col>
           </Row>
         </div>
@@ -36,13 +35,13 @@ class FilledByHR extends PureComponent {
                   disabled="true"
                   defaultValue={
                     item.title === 'department'
-                      ? department
+                      ? department.name
                       : item.title === 'title'
-                      ? title
+                      ? title.name
                       : item.title === 'workLocation'
-                      ? workLocation
+                      ? workLocation.name
                       : item.title === 'reportingManager'
-                      ? reportingManager
+                      ? reportingManager.generalInfo.firstName
                       : null
                   }
                 />
