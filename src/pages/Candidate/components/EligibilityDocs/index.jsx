@@ -32,6 +32,7 @@ class EligibilityDocs extends PureComponent {
     super(props);
     this.state = {
       openModal: false,
+      isSentEmail: false,
     };
   }
 
@@ -164,8 +165,15 @@ class EligibilityDocs extends PureComponent {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
+          isSentEmail: true,
         });
       }
+    });
+  };
+
+  handleSubmitAgain = () => {
+    this.setState({
+      isSentEmail: false,
     });
   };
 
@@ -207,7 +215,7 @@ class EligibilityDocs extends PureComponent {
       loading,
       data: { attachments, documentListToRender, validateFileSize, generatedBy, employerName },
     } = this.props;
-    const { openModal } = this.state;
+    const { openModal, isSentEmail } = this.state;
     const { user } = generatedBy;
     const { email } = user;
     return (
@@ -247,6 +255,8 @@ class EligibilityDocs extends PureComponent {
                 handleSendEmail={this.handleSendEmail}
                 email={email}
                 onValuesChangeEmail={this.onValuesChangeEmail}
+                isSentEmail={isSentEmail}
+                handleSubmitAgain={this.handleSubmitAgain}
               />
             ) : (
               <StepsComponent />

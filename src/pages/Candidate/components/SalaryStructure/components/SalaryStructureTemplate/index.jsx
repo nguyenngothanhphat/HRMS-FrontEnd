@@ -8,7 +8,7 @@ import styles from './index.less';
     candidateProfile: {
       listTitle = [],
       checkMandatory = {},
-      currentStep = {},
+      currentStep,
       data: { processStatus = '' } = {},
       tempData: { options = 1 },
       tempData,
@@ -45,20 +45,10 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  componentDidMount = () => {
-    const { dispatch, _id } = this.props;
-    // const { salaryStructure } = this.state;
-    // const newsalaryStructure = [...salaryStructure];
-    dispatch({
-      type: 'candidateInfo/fetchTitleListByCompany',
-      payload: { company: _id },
-    });
-  };
-
   onClickPrev = () => {
     const { dispatch, currentStep } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
         currentStep: currentStep - 1,
       },
@@ -66,14 +56,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, options, tempData } = this.props;
-    console.log(options);
-    // dispatch({
-    //   type: 'candidateInfo/save',
-    //   payload: {
-    //     currentStep: currentStep + 1,
-    //   },
-    // });
+    const { dispatch, options, tempData, currentStep } = this.props;
+
     dispatch({
       type: 'candidateProfile/updateByCandidateModel',
       payload: {
@@ -84,6 +68,12 @@ class SalaryStructureTemplate extends PureComponent {
       type: 'candidateProfile/saveOrigin',
       payload: {
         options: tempData.options,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
       },
     });
   };

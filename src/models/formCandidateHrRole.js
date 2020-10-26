@@ -377,7 +377,6 @@ const candidateInfo = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',

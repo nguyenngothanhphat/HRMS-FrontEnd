@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import { Typography, Radio, Row, Col, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import CustomModal from '@/components/CustomModal';
 import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
+import ModalContentComponent from '../ModalContentComponent';
 
 import styles from './index.less';
 
@@ -24,6 +26,7 @@ class SalaryAcceptance extends PureComponent {
     super(props);
 
     this.state = {
+      openModal: false,
       visible: false,
       select: [
         {
@@ -50,6 +53,12 @@ class SalaryAcceptance extends PureComponent {
       ],
     };
   }
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
 
   onFinish = (values) => {
     console.log(values);
@@ -128,17 +137,23 @@ class SalaryAcceptance extends PureComponent {
     const { dispatch, email, options } = this.props;
 
     dispatch({
-      type: 'candidateProfile/updateByCandidateModel',
+      type: 'candidateProfile/sendEmailByCandidate',
       payload: {
         options,
         hrEmail: email,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        console.log('ye');
+        this.setState({
+          openModal: true,
+        });
+      }
     });
   };
 
   _renderSubmitForm = () => {
     const { email } = this.props;
-    console.log(email);
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
         <div className={styles.title}>
@@ -167,6 +182,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   render() {
+    const { openModal } = this.state;
     const { options } = this.props;
     const Note = {
       title: 'Note',
@@ -180,10 +196,14 @@ class SalaryAcceptance extends PureComponent {
       <div className={styles.salaryAcceptance}>
         <NoteComponent note={Note} />
         <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
-
         {options !== 1 && (
           <div className={styles.salaryAcceptanceWrapper}>{this._renderSubmitForm()}</div>
         )}
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<ModalContentComponent closeModal={this.closeModal} />}
+        />
       </div>
     );
   }

@@ -222,6 +222,7 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
+      console.log('saved');
       return {
         ...state,
         ...action.payload,
