@@ -59,14 +59,14 @@ class WorkLocation extends PureComponent {
   };
 
   handleCancelAdd = (index) => {
-    const { companiesManagement, dispatch } = this.props;
-    let newLocations = companiesManagement;
+    const { locationsOfDetail, dispatch } = this.props;
+    let newLocations = locationsOfDetail;
     newLocations = newLocations.filter((location) => location.index !== index);
     if (dispatch) {
       dispatch({
         type: 'companiesManagement/save',
         payload: {
-          companiesManagement: newLocations,
+          locationsOfDetail: newLocations,
         },
       });
     }
