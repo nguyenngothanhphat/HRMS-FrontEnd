@@ -55,8 +55,8 @@ export async function addEmployee(payload) {
   });
 }
 
-export async function getEmployeeDetailById(payload) {
-  return request('/api/employee/get-by-id', {
+export async function importEmployees(payload) {
+  return request('/api/employee/import', {
     method: 'POST',
     data: payload,
   });

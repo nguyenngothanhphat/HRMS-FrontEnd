@@ -7,17 +7,13 @@ import LocationForm from './components/LocationForm/index';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(
-  ({
-    signup: { headQuarterAddress = {}, locations, company: { name = '' } = {} } = {},
-    country: { listCountry = [] } = {},
-  }) => ({
-    name,
-    headQuarterAddress,
-    locations,
-    listCountry,
-  }),
-)
+@connect(({ // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
+  companiesManagement: { locations = [] }, country: { listCountry = [] } = {} }) => ({
+  // name,
+  // headQuarterAddress,
+  locations,
+  listCountry,
+}))
 class Step2 extends PureComponent {
   constructor(props) {
     super(props);
@@ -57,7 +53,7 @@ class Step2 extends PureComponent {
     const { currentIndex } = this.state;
     if (dispatch) {
       dispatch({
-        type: 'signup/save',
+        type: 'companiesManagement/save',
         payload: {
           locations: [
             ...locations,
@@ -85,7 +81,7 @@ class Step2 extends PureComponent {
     newLocations = newLocations.filter((location) => location.index !== index);
     if (dispatch) {
       dispatch({
-        type: 'signup/save',
+        type: 'companiesManagement/save',
         payload: {
           locations: newLocations,
         },
