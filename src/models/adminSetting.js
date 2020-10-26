@@ -1,13 +1,15 @@
 import { dialog } from '@/utils/utils';
-import getListRoles from '../services/adminSetting';
+import { getListRoles, getListTitle } from '../services/adminSetting';
 
 const adminSetting = {
   namespace: 'adminSetting',
   state: {
     originData: {
+      listTitle: [],
       listRoles: [],
     },
     tempData: {
+      listTitle: [],
       formatData: [],
     },
   },
@@ -23,6 +25,17 @@ const adminSetting = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listRoles } });
         yield put({ type: 'saveTemp', payload: { formatData } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListTitle(_, { call, put }) {
+      try {
+        const response = yield call(getListTitle);
+        const { statusCode, data: listTitle = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listTitle } });
+        yield put({ type: 'saveTemp', payload: { listTitle } });
       } catch (errors) {
         dialog(errors);
       }

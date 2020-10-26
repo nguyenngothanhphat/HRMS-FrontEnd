@@ -22,6 +22,9 @@ class SettingTab extends PureComponent {
     dispatch({
       type: 'employee/fetchLocation',
     });
+    dispatch({
+      type: 'adminSetting/fetchListTitle',
+    });
   }
 
   render() {
