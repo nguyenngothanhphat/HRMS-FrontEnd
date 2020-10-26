@@ -9,6 +9,7 @@ import {
   getTitleListByCompany,
   addCandidate,
   closeCandidate,
+  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
@@ -376,7 +377,6 @@ const candidateInfo = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -415,6 +415,21 @@ const candidateInfo = {
       }
     },
     *closeCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(closeCandidate, payload);
+        const { statusCode } = response;
+        const candidate = payload._id;
+        console.log(candidate);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { candidate },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *editSalaryStructure({ payload }, { call, put }) {
       try {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
