@@ -173,6 +173,7 @@ const routes = [
             path: '/settings/Permission',
             name: 'permission',
             component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
+            hideInMenu: true,
             authority: ['admin-sa'],
           },
           {
