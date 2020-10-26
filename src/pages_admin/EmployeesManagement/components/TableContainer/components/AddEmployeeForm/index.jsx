@@ -26,6 +26,7 @@ const Option = Select;
     departmentList,
     jobTitleList,
     reportingManagerList,
+    loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -41,22 +42,19 @@ class AddEmployeeForm extends Component {
     };
   }
 
-  componentDidUpdate() {
-    const { dispatch } = this.props;
-    const { company, location } = this.state;
-    if (company !== '' && location !== '') {
-      dispatch({
-        type: 'employeesManagement/fetchDepartmentList',
-        payload: {
-          company,
-          location,
-        },
+  componentDidUpdate(prevState) {
+    const { location } = this.state;
+    if (location !== '' && location !== prevState.location) {
+      this.formRef.current.setFieldsValue({
+        department: undefined,
       });
     }
   }
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
+    const { company } = this.state;
+
     switch (type) {
       case 'company':
         dispatch({
@@ -86,6 +84,13 @@ class AddEmployeeForm extends Component {
         this.setState({
           location: value,
           isDisabledDepartment: false,
+        });
+        dispatch({
+          type: 'employeesManagement/fetchDepartmentList',
+          payload: {
+            company,
+            location: value,
+          },
         });
         break;
       default:
@@ -155,6 +160,7 @@ class AddEmployeeForm extends Component {
       departmentList,
       jobTitleList,
       reportingManagerList,
+      loadingDepartment,
     } = this.props;
     const { isDisabled, isDisabledDepartment } = this.state;
     return (
@@ -251,6 +257,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Department"
               showArrow
               showSearch
+              loading={loadingDepartment}
               disabled={isDisabledDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
