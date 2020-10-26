@@ -39,3 +39,9 @@ export async function getListEmployeeInActive(payload) {
     data: payload,
   });
 }
+
+export async function getDataOrgChart() {
+  return request('/api/employee/get-chart-organisation', {
+    method: 'POST',
+  });
+}

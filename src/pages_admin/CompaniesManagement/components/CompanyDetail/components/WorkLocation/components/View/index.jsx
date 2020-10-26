@@ -24,17 +24,17 @@ class View extends PureComponent {
     });
   };
 
-  renderContentCompanyDetail = (location, isOpenEditWorkLocation) => {
-    return (
-      <>
-        {isOpenEditWorkLocation ? (
-          <Edit handleCancelEdit={this.handleCancelEdit} />
-        ) : (
-          <View location={location} />
-        )}
-      </>
-    );
-  };
+  // renderContentCompanyDetail = (location, isOpenEditWorkLocation) => {
+  //   return (
+  //     <>
+  //       {isOpenEditWorkLocation ? (
+  //         <Edit handleCancelEdit={this.handleCancelEdit} />
+  //       ) : (
+  //         <View location={location} />
+  //       )}
+  //     </>
+  //   );
+  // };
 
   render() {
     const { location } = this.props;

@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Row, Col, Select, Typography } from 'antd';
+import { Row, Col, Select, Typography, Spin } from 'antd';
 import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
@@ -21,6 +21,9 @@ class FirstFieldsComponent extends PureComponent {
       title,
       workLocation,
       reportingManager,
+      loading1,
+      loading2,
+      loading3,
     } = this.props;
     return (
       <>
@@ -30,7 +33,17 @@ class FirstFieldsComponent extends PureComponent {
               <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Select
-                  placeholder={item.placeholder}
+                  placeholder={
+                    (loading1 && item.name === 'Department') ||
+                    (loading2 && item.name === 'Job Title') ||
+                    (loading3 && item.name === 'Reporting Manager') ? (
+                      <div className={styles.viewLoading}>
+                        <Spin />
+                      </div>
+                    ) : (
+                      item.placeholder
+                    )
+                  }
                   className={styles}
                   onChange={(value) => _handleSelect(value, item.title)}
                   disabled={

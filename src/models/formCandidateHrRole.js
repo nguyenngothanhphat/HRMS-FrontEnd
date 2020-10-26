@@ -44,6 +44,7 @@ const candidateInfo = {
       titleList: [],
       managerList: [],
       joineeEmail: '',
+      employer: '',
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -52,11 +53,11 @@ const candidateInfo = {
       timeOffPolicy: '',
       hiringAgreements: true,
       companyHandbook: true,
-
       documentList: [],
       isSentEmail: false,
       isMarkAsDone: true,
       generateLink: '',
+      newArrToAdjust: [],
       email: '',
       identityProof: {
         aadharCard: true,
@@ -84,8 +85,6 @@ const candidateInfo = {
         isChecked: false,
       },
       technicalCertification: {
-        name: '',
-        duration: '',
         poe: {
           offerLetter: false,
           appraisalLetter: false,
@@ -376,11 +375,11 @@ const candidateInfo = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        const dataObj = data.find((x) => x);
+        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+          payload: { ...data, candidate: data._id, _id: data._id },
         });
       } catch (error) {
         dialog(error);

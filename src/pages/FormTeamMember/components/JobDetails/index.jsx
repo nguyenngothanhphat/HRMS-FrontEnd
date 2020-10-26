@@ -9,11 +9,14 @@ import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+@connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
   checkMandatory,
   currentStep,
   tempData,
+  loading1: loading.effects['candidateInfo/fetchDepartmentList'],
+  loading2: loading.effects['candidateInfo/fetchTitleList'],
+  loading3: loading.effects['candidateInfo/fetchManagerList'],
 }))
 class JobDetails extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -331,6 +334,7 @@ class JobDetails extends PureComponent {
         candidatesNoticePeriod,
       },
     } = this.state;
+    const { loading1, loading2, loading3 } = this.props;
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -359,6 +363,9 @@ class JobDetails extends PureComponent {
                 candidatesNoticePeriod={candidatesNoticePeriod}
                 prefferedDateOfJoining={prefferedDateOfJoining}
                 _handleSelect={this._handleSelect}
+                loading1={loading1}
+                loading2={loading2}
+                loading3={loading3}
               />
               {this._renderBottomBar()}
             </div>
