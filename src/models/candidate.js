@@ -11,7 +11,7 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 6,
+    currentStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
