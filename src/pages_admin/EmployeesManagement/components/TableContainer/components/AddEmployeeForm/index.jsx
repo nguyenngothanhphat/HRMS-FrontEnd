@@ -2,7 +2,7 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Select } from 'antd';
+import { Modal, Button, Form, Input, Select, Tooltip } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -46,7 +46,9 @@ class AddEmployeeForm extends Component {
         isDisabledManager: false,
       };
     }
-    return null;
+    return {
+      isDisabledManager: true,
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -113,8 +115,26 @@ class AddEmployeeForm extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState(
+      {
+        location: [],
+        department: [],
+        isDisabled: true,
+        isDisabledManager: true,
+      },
+      () => handleCancel(),
+    );
+    dispatch({
+      type: 'employeesManagement/save',
+      payload: {
+        companyList: [],
+        departmentList: [],
+        locationList: [],
+        jobTitleList: [],
+        reportingManagerList: [],
+      },
+    });
   };
 
   handleChangeAddEmployee = () => {};
@@ -261,22 +281,32 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select Reporting Manager"
-              showArrow
-              showSearch
-              disabled={isDisabledManager}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+          <Form.Item className={styles.reportingManager} label="Reporting Manager">
+            <Form.Item name="reportingManager" rules={[{ required: true }]}>
+              <Select
+                placeholder={isDisabledManager ? 'No Data' : 'Select Reporting Manager'}
+                showArrow
+                showSearch
+                disabled={isDisabledManager}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {reportingManagerList.map((item) => (
+                  <Option key={item._id}>
+                    {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Tooltip
+              placement="top"
+              title="Reporting manager is got according to department and location."
+              overlayClassName={styles.GenEITooltip}
+              color="#568afa"
             >
-              {reportingManagerList.map((item) => (
-                <Option key={item}>
-                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
-                </Option>
-              ))}
-            </Select>
+              <span className={styles.reportingManager__tooltip}>?</span>
+            </Tooltip>
           </Form.Item>
         </Form>
       </div>
