@@ -8,7 +8,7 @@ const companiesManagement = {
     isModified: false,
     companiesList: [],
     locations: [],
-    locationsDetail: [],
+    locationsOfDetail: [],
     originData: {
       companyDetails: {},
     },
