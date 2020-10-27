@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { isEmpty } from 'lodash';
-import { PageLoading } from '@/layouts/layout/src';
 import Header from './components/Header';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateProfile: { jobDetails, checkCandidateMandatory } = {} }) => ({
+@connect(({ candidateProfile: { data, jobDetails, checkMandatory, currentStep } = {} }) => ({
   jobDetails,
-  checkCandidateMandatory,
+  checkMandatory,
+  data,
+  currentStep,
 }))
 class JobDetails extends PureComponent {
   constructor(props) {
@@ -23,55 +23,135 @@ class JobDetails extends PureComponent {
     if ('jobDetails' in props) {
       return {
         jobDetails: props.jobDetails,
+        currentStep: props.currentStep,
       };
     }
     return null;
   }
 
-  // componentDidMount() {
-  //   const { dispatch } = this.props;
-  //   const { locationList, employeeTypeList, loadingC, loadingD } = this.state;
-
-  //   if (isEmpty(locationList)) {
-  //     dispatch({
-  //       type: 'info/fetchLocationList',
-  //       payload: {
-  //         locationList,
-  //         loadingC,
-  //       },
-  //     });
-  //   }
-  //   if (isEmpty(employeeTypeList)) {
-  //     dispatch({
-  //       type: 'info/fetchEmployeeTypeList',
-  //       payload: {
-  //         employeeTypeList,
-  //         loadingD,
-  //       },
-  //     });
-  //   }
-  // }
-
   _handleSelect = (value, name) => {
-    const { dispatch, checkCandidateMandatory } = this.props;
+    const { dispatch, checkMandatory } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
     const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
 
     if ((candidatesNoticePeriod !== '', prefferedDateOfJoining !== '')) {
-      checkCandidateMandatory.filledCandidateJobDetails = true;
+      checkMandatory.filledJobDetail = true;
     } else {
-      checkCandidateMandatory.filledCandidateJobDetails = false;
+      checkMandatory.filledJobDetail = false;
     }
     dispatch({
       type: 'candidateProfile/save',
       payload: {
         jobDetails,
-        checkCandidateMandatory: {
-          ...checkCandidateMandatory,
+        checkMandatory: {
+          ...checkMandatory,
         },
       },
     });
+  };
+
+  onClickNext = () => {
+    const { jobDetails } = this.state;
+    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+    const {
+      dispatch,
+      data: { _id },
+      data,
+      currentStep,
+    } = this.props;
+
+    const convert = (str) => {
+      const date = new Date(str);
+      const mnth = `0 ${date.getMonth() + 1}`.slice(-2);
+      const day = `0 ${date.getDate() + 1}`.slice(-2);
+      return [mnth, day, date.getFullYear()].join('/');
+    };
+
+    const converted = convert(prefferedDateOfJoining._d);
+    dispatch({
+      type: 'candidateProfile/updateByCandidateModel',
+      payload: {
+        ...data,
+        noticePeriod: candidatesNoticePeriod,
+        dateOfJoining: converted,
+        candidate: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
+        data: {
+          ...data,
+          noticePeriod: candidatesNoticePeriod,
+          dateOfJoining: converted,
+        },
+      },
+    });
+  };
+
+  onClickPrev = () => {
+    const { currentStep } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
+    return !filledJobDetail ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledJobDetail}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   render() {
@@ -129,37 +209,21 @@ class JobDetails extends PureComponent {
         </Typography.Text>
       ),
     };
-    const { jobDetails } = this.state;
+    const { data = {} } = this.props;
     return (
-      <div className={styles.JobDetailsComponent}>
-        {/* {loading === true ? (
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              <PageLoading />
-            </Col>
-            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-              <div className={styles.rightWrapper}>
-                <Row>
-                  <NoteComponent note={Note} />
-                </Row>
-                <Row className={styles.stepRow}>
-                  <StepsComponent />
-                </Row>
-              </div>
-            </Col>
-          </Row>
-        ) : ( */}
+      <div>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <div className={styles.JobDetailsComponent}>
               <Header />
               <FieldsComponent
                 Tab={Tab}
-                jobDetails={jobDetails}
+                data={data}
                 HRField={HRField}
                 candidateField={candidateField}
                 _handleSelect={this._handleSelect}
               />
+              {this._renderBottomBar()}
             </div>
           </Col>
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>

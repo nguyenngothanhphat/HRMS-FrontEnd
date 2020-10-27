@@ -4,13 +4,14 @@ import {
   updateByCandidate,
   addAttachmentService,
   getWorkHistory,
+  sendEmailByCandidateModel,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 5,
+    currentStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -25,26 +26,10 @@ const candidateProfile = {
       previousExperience: '',
       noticePeriod: '',
       dateOfJoining: '',
+      processStatus: '',
       documentList: [],
       attachments: {},
       documentListToRender: [],
-      candidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      finalOfferCandidateSignature: {
-        fileName: '',
-        _id: '',
-        url: '',
-      },
-      benefits: [],
-    },
-    tempData: {
-      checkStatus: {},
-      fullName: '',
-      privateEmail: '',
-      experienceYear: '',
       workLocation: '',
       candidateSignature: {
         fileName: '',
@@ -56,10 +41,26 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
-      hrSignature: '',
-      hrManagerSignature: '',
-      benefits: [],
     },
+    tempData: {
+      checkStatus: {},
+      fullName: '',
+      privateEmail: '',
+      experienceYear: '',
+      workLocation: '',
+      options: 1,
+      candidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+      finalOfferCandidateSignature: {
+        fileName: '',
+        _id: '',
+        url: '',
+      },
+    },
+    salaryStructure: [],
     jobDetails: {
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -128,15 +129,22 @@ const candidateProfile = {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        // const dataObj = data.find((x) => x);
-        const dataObj = data;
         if (statusCode !== 200) throw response;
-        // console.log(response);
-        // console.log(response.data.benefits);
-        // console.log({ ...dataObj, candidate: dataObj._id, _id: dataObj._id });
+        console.log(data.salaryStructure);
         yield put({
           type: 'saveOrigin',
-          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+          payload: {
+            ...data,
+            candidate: data._id,
+            _id: data._id,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            ...data,
+            salaryStructure: data.salaryStructure,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -189,12 +197,23 @@ const candidateProfile = {
       try {
         response = yield call(getWorkHistory, payload);
         const { data, statusCode } = response;
-        console.log('abc', data);
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'saveOrigin',
-        //   payload: { ...data },
-        // });
+        yield put({
+          type: 'saveOrigin',
+          payload: { employerId: data._id, employerName: data.employer },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *sendEmailByCandidate({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(sendEmailByCandidateModel, payload);
+        const { statusCode } = response;
+        console.log('a', response);
+        if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }
@@ -203,6 +222,7 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
+      console.log('saved');
       return {
         ...state,
         ...action.payload,

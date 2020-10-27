@@ -33,7 +33,9 @@ const { Option } = Select;
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      notValid: false,
+    };
   }
 
   tagRender = (props) => {
@@ -57,6 +59,18 @@ class Edit extends PureComponent {
       type: 'employeeProfile/save',
       payload: { isModified },
     });
+    if (changedValues.certification) {
+      this.checkCeritification(changedValues.certification);
+    }
+  };
+
+  checkCeritification = (listCertification) => {
+    const listNoName = listCertification.filter((item) => !item.name);
+    if (listNoName.length > 0) {
+      this.setState({ notValid: true });
+    } else {
+      this.setState({ notValid: false });
+    }
   };
 
   processDataChanges = () => {
@@ -72,7 +86,6 @@ class Edit extends PureComponent {
       _id: id = '',
     } = generalDataTemp;
     const payloadChanges = {
-      // ...generalDataOrigin,
       id,
       preJobTitle,
       skills,
@@ -99,6 +112,16 @@ class Edit extends PureComponent {
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
+  };
+
+  handleRemoveCertification = ({ _id: id }) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/removeCertification',
+      payload: {
+        id,
+      },
+    });
   };
 
   handleUpdateCertification = (list) => {
@@ -141,47 +164,6 @@ class Edit extends PureComponent {
     });
   };
 
-  checkCertification = (rule, certifications, callback) => {
-    let msg = '';
-    const isValid =
-      Array.isArray(certifications) &&
-      certifications.length > 0 &&
-      certifications.every((certification) => {
-        // console.log(certification);
-        // console.log(Object.keys(certification));
-        const keys = Object.keys(certification);
-
-        const flag = keys.every((key) => {
-          const value = certification.name; // Get "name" field
-          const checkMsg = this.buildValidator('name', value);
-          // console.log(checkMsg, value);
-          if (checkMsg.length > 0) {
-            msg = checkMsg;
-            console.log('Have error message', msg);
-            return false;
-          }
-          console.log('No error');
-          return true;
-        });
-        return flag;
-      });
-
-    console.log('isValid', isValid);
-    console.log('message', msg);
-    if (!isValid) callback(msg);
-  };
-
-  buildValidator = (fieldName, value) => {
-    // console.log('fieldName', fieldName);
-    // console.log('value', value);
-
-    let msg = '';
-    if (fieldName === 'name') {
-      msg = value.length === 0 ? 'Name is required' : '';
-    }
-    return msg;
-  };
-
   render() {
     const {
       generalData,
@@ -190,6 +172,7 @@ class Edit extends PureComponent {
       loading,
       listTitle = [],
     } = this.props;
+    const { notValid } = this.state;
     const {
       preJobTitle = '',
       skills = [],
@@ -247,16 +230,11 @@ class Edit extends PureComponent {
           <Form.Item label="Qualification" name="qualification">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="certification"
-            className={s.certificationContainer}
-            rules={[
-              {
-                validator: this.checkCertification,
-              },
-            ]}
-          >
-            <FormCertification />
+          <Form.Item name="certification" className={s.certificationContainer}>
+            <FormCertification
+              notValid={notValid}
+              handleRemoveCertification={this.handleRemoveCertification}
+            />
           </Form.Item>
           <Form.Item label="Skills" name="skills">
             <Select
@@ -277,7 +255,13 @@ class Edit extends PureComponent {
             <div className={s.viewFooter__cancel} onClick={handleCancel}>
               Cancel
             </div>
-            <Button type="primary" htmlType="submit" loading={loading}>
+            <Button
+              className={s.viewFooter__submit}
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              // disabled={notValid}
+            >
               Save
             </Button>
           </div>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Col, Tabs, Row } from 'antd';
+import { Button, Tabs } from 'antd';
 import { Link } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
-import TableEmployee from './TableEmployee';
+import TabContent from './tabContent';
 import styles from './index.less';
 
-const data = [
+const datatable = [
   {
     id: 1,
     name: 'send Request',
@@ -24,15 +24,7 @@ export default class ViewLeft extends Component {
 
   render() {
     const { TabPane } = Tabs;
-
-    const activeTitle = (
-      <Row className={styles.titleContainer}>
-        <Col span={4}>Inprogress (00)</Col>
-        <Col span={4}>On-hold (00)</Col>
-        <Col span={4}>Accepted (00)</Col>
-        <Col span={4}>Rejected (00)</Col>
-      </Row>
-    );
+    const { data = [] } = this.props;
 
     return (
       <div className={styles.Contanner}>
@@ -57,10 +49,9 @@ export default class ViewLeft extends Component {
         </Button>
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent}>
-            {data.map((tab) => (
+            {datatable.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
-                {activeTitle}
-                <TableEmployee />
+                <TabContent data={data} />
               </TabPane>
             ))}
           </Tabs>

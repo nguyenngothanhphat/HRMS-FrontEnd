@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
 import { Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal/index';
@@ -36,11 +36,55 @@ const FileInfo = [
   },
 ];
 
-const OfferDetails = () => {
-  const [signature, setSignature] = useState(null);
+const OfferDetails = (props) => {
+  const { dispatch, checkCandidateMandatory, currentStep, tempData, data } = props;
+  const { filledOfferDetails = false } = checkCandidateMandatory;
+  const { candidateSignature = {}, finalOfferCandidateSignature = {} } = tempData;
+
+  const [signature, setSignature] = useState(candidateSignature || {});
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [uploadVisible, setUploadVisible] = useState(false);
+  const [allFieldFilled, setAllFieldFilled] = useState(false);
+
+  useEffect(() => {
+    if (signature) {
+      setAllFieldFilled(true);
+    }
+    const { url = '', fileName = '' } = signature;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          candidateSignature: {
+            ...tempData.candidateSignature,
+            fileName,
+            url,
+          },
+        },
+      },
+    });
+  }, [signature]);
+
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+    if (allFieldFilled) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkCandidateMandatory: {
+            ...checkCandidateMandatory,
+            filledOfferDetails: true,
+          },
+        },
+      });
+    }
+  }, [allFieldFilled]);
+
+  // console.log(props);
 
   const handleClick = (url) => {
     setFileUrl(url);
@@ -60,6 +104,89 @@ const OfferDetails = () => {
     );
   };
 
+  const _renderStatus = () => {
+    return !filledOfferDetails ? (
+      <div className={s.normalText}>
+        <div className={s.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={s.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  const onClickNext = () => {
+    if (!dispatch) {
+      return;
+    }
+    const { fileName, url } = signature;
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        data: {
+          ...data,
+          candidateSignature: {
+            ...data.candidateSignature,
+            fileName,
+            url,
+          },
+        },
+      },
+    });
+  };
+
+  const onClickPrevious = () => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  const renderBottomBar = () => {
+    return (
+      <div className={s.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={s.bottomBar__status}>{_renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={s.bottomBar__button}>
+              <Button type="secondary" onClick={onClickPrevious}>
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={onClickNext}
+                className={`${s.bottomBar__button__primary} ${
+                  !allFieldFilled ? s.bottomBar__button__disabled : ''
+                }`}
+                disabled={!allFieldFilled}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -67,14 +194,14 @@ const OfferDetails = () => {
   const handleSubmit = () => {};
 
   const loadImage = (response) => {
-    const { data = [] } = response;
-    const { url } = data[0];
+    const { data: imageData = [] } = response;
+    const { url = '', fileName = '' } = imageData[0];
 
-    setSignature(url);
+    setSignature({ url, fileName });
   };
 
   const resetImg = () => {
-    setSignature(null);
+    setSignature({ url: '', fileName: '' });
   };
 
   return (
@@ -109,11 +236,11 @@ const OfferDetails = () => {
                 <Col md={14}>
                   <div className={s.signature}>
                     <div className={s.upload}>
-                      {!signature ? (
+                      {!signature.url ? (
                         // Default image
                         <img className={s.signatureImg} src={whiteImg} alt="" />
                       ) : (
-                        <img className={s.signatureImg} src={signature} alt="" />
+                        <img className={s.signatureImg} src={signature.url} alt="" />
                       )}
 
                       <button
@@ -138,13 +265,15 @@ const OfferDetails = () => {
                       </Button>
 
                       <span className={s.submitMessage}>
-                        {signature ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+                        {signature.url
+                          ? formatMessage({ id: 'component.previewOffer.submitted' })
+                          : ''}
                       </span>
                     </div>
                   </div>
                 </Col>
                 <Col md={10}>
-                  {signature && (
+                  {signature.url && (
                     <Alert display type="info">
                       <p>The signature has been submitted.</p>
                     </Alert>
@@ -163,6 +292,8 @@ const OfferDetails = () => {
               {_renderViewFile(FileInfo[1])}
             </div>
           </div>
+
+          {renderBottomBar()}
         </Col>
 
         <Col md={8}>
@@ -190,4 +321,24 @@ const OfferDetails = () => {
   );
 };
 
-export default OfferDetails;
+// export default OfferDetails;
+// export default connect(
+//   ({ candidateProfile: { checkMandatory: { filledOfferDetails = false } = {} } = {} }) =>
+//     candidateProfile,
+// )(OfferDetails);
+
+export default connect(
+  ({
+    candidateProfile: {
+      currentStep = 4,
+      checkCandidateMandatory = {},
+      tempData = {},
+      data = {},
+    } = {},
+  }) => ({
+    checkCandidateMandatory,
+    currentStep,
+    tempData,
+    data,
+  }),
+)(OfferDetails);

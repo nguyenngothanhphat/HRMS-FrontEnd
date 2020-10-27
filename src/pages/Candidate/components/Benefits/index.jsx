@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+import { formatMessage, connect } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal/index';
 import NoteComponent from '../NoteComponent';
 import FileContent from '../FileContent';
@@ -21,9 +22,33 @@ const Note = {
   ),
 };
 
-const Benefits = () => {
+const Benefits = (props) => {
+  const { checkCandidateMandatory, currentStep, dispatch } = props;
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [allFieldFilled, setAllFieldFilled] = useState(false);
+  const { filledBenefits = false } = checkCandidateMandatory;
+
+  useEffect(() => {
+    setAllFieldFilled(true);
+  }, []);
+
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+    if (allFieldFilled) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkCandidateMandatory: {
+            ...checkCandidateMandatory,
+            filledBenefits: true,
+          },
+        },
+      });
+    }
+  }, [allFieldFilled]);
 
   const _renderFile = (url) => {
     return <FileContent url={url} />;
@@ -55,10 +80,77 @@ const Benefits = () => {
     });
   };
 
+  const _renderStatus = () => {
+    return !filledBenefits ? (
+      <div className={s.normalText}>
+        <div className={s.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={s.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  const onClickNext = () => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+  };
+
+  const onClickPrevious = () => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  const renderBottomBar = () => {
+    return (
+      <div className={s.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={s.bottomBar__status}>{_renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={s.bottomBar__button}>
+              <Button type="secondary" onClick={onClickPrevious}>
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={onClickNext}
+                className={`${s.bottomBar__button__primary} ${
+                  !allFieldFilled ? s.bottomBar__button__disabled : ''
+                }`}
+                disabled={!allFieldFilled}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   return (
     <div className={s.benefitContainer}>
       <Row gutter={24}>
-        <Col md={16}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={s.benefits}>
             <header>
               <h2>Benefits</h2>
@@ -107,9 +199,11 @@ const Benefits = () => {
               </div>
             </main>
           </div>
+
+          {renderBottomBar()}
         </Col>
 
-        <Col md={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <NoteComponent note={Note} />
         </Col>
       </Row>
@@ -124,4 +218,9 @@ const Benefits = () => {
   );
 };
 
-export default Benefits;
+export default connect(
+  ({ candidateProfile: { currentStep = 5, checkCandidateMandatory = {} } = {} }) => ({
+    checkCandidateMandatory,
+    currentStep,
+  }),
+)(Benefits);

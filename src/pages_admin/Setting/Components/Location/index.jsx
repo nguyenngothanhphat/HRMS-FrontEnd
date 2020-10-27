@@ -1,9 +1,11 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { connect } from 'umi';
 import { Input, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+@connect(({ employee: { location = [] } = {} }) => ({ location }))
 class Location extends PureComponent {
   constructor(props) {
     super(props);
@@ -11,14 +13,19 @@ class Location extends PureComponent {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      data: [
-        { LocationID: 20, Country: 'USA' },
-        { LocationID: 22, Country: 'India' },
-        { LocationID: 24, Country: 'Viet Nam' },
-      ],
+      data: [],
       newValue: '',
       getIndex: '',
     };
+  }
+
+  componentDidMount() {
+    const { location } = this.props;
+    const formatData = location.map((item) => {
+      const { _id: LocationID, name: Country } = item;
+      return { LocationID, Country };
+    });
+    this.setState({ data: formatData });
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {

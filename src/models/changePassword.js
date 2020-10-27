@@ -1,4 +1,4 @@
-import { forgotPasswordAPI, resetPasswordAPI } from '@/services/changePassword';
+import { forgotPasswordAPI, resetPasswordAPI, updatePasswordAPI } from '@/services/changePassword';
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
@@ -8,6 +8,7 @@ export default {
 
   state: {
     statusSendEmail: false,
+    statusChangePassword: false,
   },
 
   effects: {
@@ -33,6 +34,25 @@ export default {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *updatePassword({ payload }, { call, put }) {
+      let statusChangePassword = false;
+      try {
+        const response = yield call(updatePasswordAPI, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        statusChangePassword = true;
+      } catch (errors) {
+        statusChangePassword = false;
+        dialog(errors);
+      }
+      yield put({
+        type: 'save',
+        payload: { statusChangePassword },
+      });
     },
   },
 

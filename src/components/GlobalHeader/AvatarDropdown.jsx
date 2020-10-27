@@ -31,18 +31,20 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === VIEWPROFILE) {
+      // eslint-disable-next-line no-alert
       alert('View Profile');
 
       return;
     }
 
     if (key === CHANGEPASSWORD) {
-      alert('Change Password');
+      history.push('/change-password');
 
       return;
     }
 
     if (key === SETTINGS) {
+      // eslint-disable-next-line no-alert
       alert('Settings');
 
       return;
@@ -95,8 +97,8 @@ class AvatarDropdown extends React.Component {
             <br />
             <span>PIS-2400</span>
           </div>
+          <UpOutlined className={styles.menuItemIcon} />
         </div>
-        <UpOutlined className={styles.menuItemIcon} />
         <Menu.Item
           key={VIEWPROFILE}
           className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}

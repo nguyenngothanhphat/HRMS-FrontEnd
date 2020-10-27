@@ -5,7 +5,11 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  getTableDataByTitle,
+  getTitleListByCompany,
   addCandidate,
+  closeCandidate,
+  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
@@ -24,6 +28,7 @@ const candidateInfo = {
       filledJobDetail: false,
       filledCustomField: false,
       filledOfferDetail: false,
+      filledSalaryStructure: true,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -40,6 +45,8 @@ const candidateInfo = {
       departmentList: [],
       titleList: [],
       managerList: [],
+      joineeEmail: '',
+      employer: '',
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -48,11 +55,11 @@ const candidateInfo = {
       timeOffPolicy: '',
       hiringAgreements: true,
       companyHandbook: true,
-
       documentList: [],
       isSentEmail: false,
       isMarkAsDone: true,
       generateLink: '',
+      newArrToAdjust: [],
       email: '',
       identityProof: {
         aadharCard: true,
@@ -80,8 +87,6 @@ const candidateInfo = {
         isChecked: false,
       },
       technicalCertification: {
-        name: '',
-        duration: '',
         poe: {
           offerLetter: false,
           appraisalLetter: false,
@@ -107,6 +112,7 @@ const candidateInfo = {
       department: null,
       title: null,
       company: null,
+      joineeEmail: '',
       previousExperience: null,
       processStatus: 'DRAFT',
       noticePeriod: null,
@@ -233,6 +239,8 @@ const candidateInfo = {
           ],
         },
       ],
+      listTitle: [],
+      tableData: [],
       candidateSignature: null,
       hrManagerSignature: {},
       hrSignature: {},
@@ -290,7 +298,6 @@ const candidateInfo = {
         dialog(errors);
       }
     },
-
     *fetchLocationList(_, { call, put }) {
       try {
         const response = yield call(getLocation);
@@ -372,7 +379,6 @@ const candidateInfo = {
       }
       return response;
     },
-
     *fetchEmployeeById({ payload }, { call, put }) {
       try {
         const response = yield call(getById, payload);
@@ -386,6 +392,65 @@ const candidateInfo = {
         dialog(error);
       }
     },
+    *fetchTitleListByCompany({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTitleListByCompany, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listTitle: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *fetchTableData({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTableDataByTitle, payload);
+        const { statusCode, data } = response;
+        const { setting } = data;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { tableData: setting },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *closeCandidate({ payload }, { call, put }) {
+      try {
+        const response = yield call(closeCandidate, payload);
+        const { statusCode } = response;
+        const candidate = payload._id;
+        console.log(candidate);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { candidate },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *editSalaryStructure({ payload }, { call, put }) {
+      try {
+        const response = yield call(closeCandidate, payload);
+        const { statusCode } = response;
+        const candidate = payload._id;
+        console.log(candidate);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { candidate },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {

@@ -63,9 +63,12 @@ export default {
   'menu.addCompany': 'Add Company',
   'menu.companyDetail': 'Company Detail',
   'menu.documents': 'Documents',
+  'menu.uploadDocument': 'Add Document',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId': 'Ticket Id',
   'menu.setting': 'Setting',
+  'menu.permission': 'Permission',
+  'menu.change-password': 'Change Password',
   'menu.Createcustomfieldsection': 'Create custom field section',
 };

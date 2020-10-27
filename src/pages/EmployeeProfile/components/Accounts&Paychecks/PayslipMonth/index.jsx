@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import Icon from '@ant-design/icons';
 import { connect } from 'umi';
+import DownloadFile from '@/components/DownloadFile';
 import ViewFile from './View';
 import DownloadIcon from './icon.js';
 import styles from './index.less';
@@ -35,6 +36,9 @@ class PaySlipMonth extends PureComponent {
   render() {
     const { paySlip } = this.props;
     const { isView, url } = this.state;
+    const renderDownloadIcon = () => (
+      <Icon component={DownloadIcon} className={styles.downLoadIcon} />
+    );
     return (
       <>
         {isView ? (
@@ -47,20 +51,17 @@ class PaySlipMonth extends PureComponent {
                 <div className={styles.downLoad}>
                   <p
                     className={styles.downLoadText}
-                    onClick={() => this.handleViewFile(item.attachment.url)}
+                    onClick={() => this.handleViewFile(item.attachment ? item.attachment.url : '')}
                   >
                     View
                   </p>
-                  {/* <a
-                    href={item.attachment.url ? item.attachment.url : ''}
-                    download="{item.attachment.name}"
-                  > */}
-                  <Icon
-                    component={DownloadIcon}
-                    className={styles.downLoadIcon}
-                    // onClick={() => this.handleDownLoad(item)}
-                  />
-                  {/* </a> */}
+
+                  <div className={styles.downloadFile}>
+                    <DownloadFile
+                      content={renderDownloadIcon()}
+                      url={item.attachment ? item.attachment.url : ''}
+                    />
+                  </div>
                 </div>
               </div>
             );

@@ -1,15 +1,78 @@
 import React, { PureComponent } from 'react';
-// import { Card, Row, Col } from 'antd';
-// import { formatMessage } from 'umi';
+import { Button } from 'antd';
+import { connect } from 'umi';
 import View from './components/View';
+import AddWorkLocationForm from './components/AddWorkLocation';
 import styles from './index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(({ // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
+  country: { listCountry = [] } = {}, companiesManagement: { locationsOfDetail = [] } }) => ({
+  // name,
+  // headQuarterAddress,
+  locationsOfDetail,
+  listCountry,
+}))
 class WorkLocation extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentIndex: props.locationsOfDetail.length,
+    };
+  }
+
+  componentDidMount() {
+    const { locationsOfDetail } = this.props;
+    if (locationsOfDetail.length > 0) {
+      this.setState({
+        currentIndex: locationsOfDetail[locationsOfDetail.length - 1].index + 1,
+      });
+    }
+  }
+
+  addWorkLocation = () => {
+    const { dispatch, locationsOfDetail } = this.props;
+
+    const { currentIndex } = this.state;
+    if (dispatch) {
+      dispatch({
+        type: 'companiesManagement/save',
+        payload: {
+          locationsOfDetail: [
+            ...locationsOfDetail,
+            {
+              name: 'companyName',
+              address: '',
+              country: '',
+              state: '',
+              zipCode: '',
+              isheadQuarter: false,
+              index: currentIndex,
+            },
+          ],
+        },
+      });
+    }
+    this.setState({
+      currentIndex: currentIndex + 1,
+    });
+  };
+
+  handleCancelAdd = (index) => {
+    const { locationsOfDetail, dispatch } = this.props;
+    let newLocations = locationsOfDetail;
+    newLocations = newLocations.filter((location) => location.index !== index);
+    if (dispatch) {
+      dispatch({
+        type: 'companiesManagement/save',
+        payload: {
+          locationsOfDetail: newLocations,
+        },
+      });
+    }
+  };
+
   render() {
-    const locations = [
+    const locationsList = [
       {
         name: 'Japan Office',
         address: '2-45 Minamisendanishimachi, Naka, Hiroshima, Hiroshima',
@@ -28,9 +91,11 @@ class WorkLocation extends PureComponent {
       },
     ];
 
+    const { dispatch, locationsOfDetail, listCountry } = this.props;
+
     return (
       <>
-        {locations.map((item, index) => {
+        {locationsList.map((item, index) => {
           return (
             <div key={`${index + 1}`} className={styles.workLocation}>
               <div className={styles.viewBottom}>
@@ -39,6 +104,25 @@ class WorkLocation extends PureComponent {
             </div>
           );
         })}
+        {locationsOfDetail.map((location, index) => {
+          const formIndex = location.index;
+          return (
+            <div key={`${index + 1}`} className={styles.workLocation}>
+              <AddWorkLocationForm
+                key={location.index}
+                dispatch={dispatch}
+                formIndex={formIndex}
+                locations={locationsOfDetail}
+                locationItem={location}
+                listCountry={listCountry}
+                handleCancelAdd={this.handleCancelAdd}
+              />
+            </div>
+          );
+        })}
+        <Button className={styles.btn_addLocation} type="link" onClick={this.addWorkLocation}>
+          + Add work location
+        </Button>
       </>
     );
   }

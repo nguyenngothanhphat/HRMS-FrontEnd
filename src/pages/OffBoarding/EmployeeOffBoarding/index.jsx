@@ -3,6 +3,7 @@ import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
+import RightDataTable from './components/RightContent';
 import styles from './index.less';
 
 class EmployeeOffBoading extends Component {
@@ -12,6 +13,14 @@ class EmployeeOffBoading extends Component {
   }
 
   render() {
+    const data = [
+      {
+        ticketId: 16003134,
+        requestOn: '22.08.2020',
+        reasionOfLeaving: 'The reason why I have decide to quit….',
+      },
+    ];
+
     return (
       <PageContainer>
         <div className={styles.root}>
@@ -28,11 +37,9 @@ class EmployeeOffBoading extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
             <Col span={18}>
-              <ViewLeft />
+              <ViewLeft data={data} />
             </Col>
-            <Col span={6}>
-              <ViewRight />
-            </Col>
+            <Col span={6}>{data && data ? <RightDataTable /> : <ViewRight />}</Col>
           </Row>
         </div>
       </PageContainer>

@@ -1,87 +1,106 @@
-const dataActive = [
-  {
-    documentId: 'DOC 01',
-    documentType: 'Test 1',
-    documentName: 'Here is the name 1',
-    url: '/assets/files/sample_1.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '5443',
-  },
-  {
-    documentId: 'DOC 02',
-    documentType: 'Test 2',
-    documentName: 'Here is the name 2',
-    url: '/assets/files/sample_2.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '2343',
-  },
-  {
-    documentId: 'DOC 03',
-    documentType: 'Test 3',
-    documentName: 'Here is the name 3',
-    url: '/assets/files/sample_1.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '4343',
-  },
-  {
-    documentId: 'DOC 04',
-    documentType: 'Test 4',
-    documentName: 'Here is the name 4',
-    url: '/assets/files/sample_2.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '8097',
-  },
-];
+import request from '@/utils/request';
 
-const dataInActive = [
-  {
-    documentId: 'DOC 05',
-    documentType: 'Test 5',
-    documentName: 'Here is the name 5',
-    url: '/assets/files/sample_1.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '5343',
-  },
-  {
-    documentId: 'DOC 06',
-    documentType: 'Test 6',
-    documentName: 'Here is the name 6',
-    url: '/assets/files/sample_2.pdf',
-    uploadedBy: 'Terralogic',
-    createdDate: '08/29/2020',
-    userId: '5423',
-  },
-];
-export const getListDocumentsActive = async () => {
-  return {
-    statusCode: 200,
-    data: dataActive,
-  };
-};
-export const getListDocumentsInActive = async () => {
-  return {
-    statusCode: 200,
-    data: dataInActive,
-  };
+export const getListDocuments = async () => {
+  return request('/api/document/list', {
+    method: 'POST',
+  });
 };
 
-export const getDocumentDetail = async (params) => {
-  let i = 0;
-  for (i; i < dataActive.length; i += 1) {
-    if (dataActive[i].documentId === params.documentId) {
-      return {
-        statusCode: 200,
-        data: dataActive[i],
-      };
-    }
-  }
-  return {
-    statusCode: 200,
-    data: [],
-  };
+export const getDocumentDetail = (payload) => {
+  return request('/api/document/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+// add document
+export const getEmployeeByShortId = async (payload) => {
+  return request('/api/employee/get-by-employee-id', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const getCountryList = async () => {
+  return request('/api/country/list', {
+    method: 'POST',
+  });
+};
+
+export const uploadDocument = (payload) => {
+  return request('/api/document/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const deleteDocument = (payload) => {
+  return request('/api/document/remove', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const getEmployeeData = (payload) => {
+  return request('/api/employee/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addPassport = async (payload) => {
+  return request('/api/passport/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addVisa = async (payload) => {
+  return request('/api/visa/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addDocument = async (payload) => {
+  return request('/api/document/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+// adhaar card
+export const getGeneralInfo = async (payload) => {
+  return request('/api/generalinfo/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const updateGeneralInfo = async (payload) => {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const getAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/add', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const updateAdhaarCard = async (payload) => {
+  return request('/api/adhaarcard/update', {
+    method: 'POST',
+    data: payload,
+  });
 };

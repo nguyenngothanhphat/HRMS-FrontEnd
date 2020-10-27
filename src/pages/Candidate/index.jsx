@@ -15,30 +15,47 @@ const _renderScreen = (screenNumber) => {
     case 2:
       return <JobDetails />;
     case 3:
-      return <EligibilityDocs />;
-    case 4:
-      return <OfferDetails />;
-    case 5:
-      return <Benefits />;
-    case 6:
       return <SalaryStructure />;
+    case 4:
+      return <EligibilityDocs />;
+    case 5:
+      return <OfferDetails />;
+    case 6:
+      return <Benefits />;
     default:
       return <BasicInfomation />;
   }
 };
 
 const Candidate = (props) => {
-  const { dispatch, currentStep } = props;
+  const { dispatch, currentStep, candidate } = props;
   const [screen, setScreen] = useState(currentStep);
-
+  console.log(candidate);
   useEffect(() => {
     setScreen(currentStep);
   }, [currentStep]);
+
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/fetchCandidateById',
+      payload: {
+        candidate,
+      },
+    });
+  }, []);
 
   return <div>{_renderScreen(screen)}</div>;
 };
 
 // export default Candidate;
-export default connect(({ candidateProfile: { currentStep } = {} }) => ({
-  currentStep,
-}))(Candidate);
+export default connect(
+  ({ candidateProfile: { currentStep, data, tempData } = {}, login: { candidate } }) => ({
+    currentStep,
+    data,
+    tempData,
+    candidate,
+  }),
+)(Candidate);
