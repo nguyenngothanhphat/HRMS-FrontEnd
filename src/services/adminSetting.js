@@ -24,3 +24,10 @@ export async function updateRoleWithPermission(payload) {
     data: payload,
   });
 }
+
+export async function getPermissionByIdRole(payload) {
+  return request('/api/role/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

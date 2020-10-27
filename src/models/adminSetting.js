@@ -5,6 +5,7 @@ import {
   getListTitle,
   getListPermissionOfRole,
   updateRoleWithPermission,
+  getPermissionByIdRole,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -61,6 +62,18 @@ const adminSetting = {
         dialog(errors);
       }
     },
+    *fetchPermissionByIdRole({ payload: { idRoles: _id = '' } }, { call }) {
+      let resp = [];
+      try {
+        const response = yield call(getPermissionByIdRole, { _id });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        resp = data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
     *updatePermission({ payload: { getValues = {} } }, { call }) {
       try {
         const response = yield call(updateRoleWithPermission, getValues);
@@ -69,8 +82,6 @@ const adminSetting = {
         notification.success({
           message,
         });
-        // yield put({ type: 'saveOrigin', payload: { listPermission } });
-        // yield put({ type: 'saveTemp', payload: { listPermission } });
       } catch (errors) {
         dialog(errors);
       }

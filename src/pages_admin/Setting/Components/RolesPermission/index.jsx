@@ -23,8 +23,7 @@ class RolesPermission extends PureComponent {
     };
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
+  onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
@@ -40,15 +39,14 @@ class RolesPermission extends PureComponent {
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
 
   handleClickDelete = (text, record, index) => {
-    console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
+    // console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
     this.setState({
       visible: true,
       testReord: record,
@@ -92,8 +90,8 @@ class RolesPermission extends PureComponent {
     });
   };
 
-  handlePermission = (text, record, index) => {
-    console.log(text, record, index);
+  handlePermission = (text, record) => {
+    // console.log(text, record, index);
     const { RolesID = '' } = record;
     history.push(`/settings/${RolesID}`);
   };
@@ -132,11 +130,11 @@ class RolesPermission extends PureComponent {
         title: 'Permission',
         dataIndex: 'Permission',
         align: 'center',
-        render: (text, record, index) =>
+        render: (text, record) =>
           record.RolesID !== '' ? (
             <DropboxOutlined
               className={styles.iconPermission}
-              onClick={() => this.handlePermission(text, record, index)}
+              onClick={() => this.handlePermission(text, record)}
             />
           ) : (
             ''

@@ -8,6 +8,7 @@ import styles from '../index.less';
     loading,
     adminSetting: { idRoles = '', tempData: { listPermission = [], formatData = [] } = {} } = {},
   }) => ({
+    loadingTable: loading.effects['adminSetting/fetchPermissionByIdRole'],
     loading: loading.effects['adminSetting/updatePermission'],
     idRoles,
     listPermission,
@@ -17,10 +18,21 @@ import styles from '../index.less';
 class PermissionInfo extends PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
       selectedRowKeys: [],
     };
+  }
+
+  componentDidMount() {
+    const { dispatch, idRoles } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchPermissionByIdRole',
+      payload: { idRoles },
+    }).then((resp) => {
+      const { permissions } = resp;
+      const getData = permissions.map((item) => item._id);
+      this.setState({ selectedRowKeys: getData });
+    });
   }
 
   onSelectChange = (selectedRowKeys) => {
@@ -42,7 +54,7 @@ class PermissionInfo extends PureComponent {
 
   render() {
     const { selectedRowKeys } = this.state;
-    const { listPermission, loading, idRoles } = this.props;
+    const { listPermission, loading, idRoles, loadingTable } = this.props;
     const formatDataPermission = listPermission.map((item) => {
       const { _id: PermissionID, name: PermissionName } = item;
       return { PermissionID, PermissionName };
@@ -64,6 +76,7 @@ class PermissionInfo extends PureComponent {
       <Row className={styles.displayContent} gutter={[24, 0]}>
         <Col span={24}>
           <Table
+            loading={loadingTable}
             rowSelection={rowSelection}
             columns={columns}
             dataSource={formatDataPermission}
