@@ -123,6 +123,7 @@ const PreviewOffer = (props) => {
             ...data,
             // hrSignature: id,
             hrSignature: {
+              ...data.hrSignature,
               id,
               url,
             },
@@ -159,6 +160,7 @@ const PreviewOffer = (props) => {
           data: {
             ...data,
             hrManagerSignature: {
+              ...data.hrSignature,
               id,
               url,
             },

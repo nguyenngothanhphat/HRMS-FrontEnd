@@ -243,7 +243,14 @@ const candidateInfo = {
       tableData: [],
       candidateSignature: null,
       hrManagerSignature: {},
-      hrSignature: {},
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hiringAgreements: null,
       companyHandbook: null,
       benefits: [],
@@ -374,6 +381,10 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
@@ -497,10 +508,15 @@ const candidateInfo = {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         console.log('1', data);
+
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+        });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
         });
       } catch (error) {
         dialog(error);
@@ -532,6 +548,21 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    updateSignature(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+      console.log('updateSignature');
+      console.log(data);
+      const { hrSignature = {}, hrManagerSignature = {} } = data;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          hrSignature,
+          hrManagerSignature,
         },
       };
     },

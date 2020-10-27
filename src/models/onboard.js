@@ -499,10 +499,8 @@ const dateDiffInDays = (a, b) => {
 };
 
 const formatData = (list = []) => {
-  console.log('input: ', list);
   const formatList = [];
   _.map(list, (item) => {
-    // console.log(`${key}: ${item}`);
     const {
       _id,
       ticketID,
@@ -756,13 +754,9 @@ const onboard = {
           limit: 10,
         };
         const response = yield call(getOnboardingList, req);
-        console.log('response:', response);
-        // console.log(response);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log('response', response);
         const returnedData = formatData(response.data[0].paginatedResults);
-        console.log('returnedData', returnedData);
 
         const {
           PROVISIONAL_OFFER_DRAFT,
@@ -787,7 +781,6 @@ const onboard = {
           FINAL_OFFERS,
         } = PROCESS_STATUS;
 
-        console.log(processStatus);
         // Fetch data
         switch (processStatus) {
           case PROVISIONAL_OFFER_DRAFT: {
@@ -894,7 +887,6 @@ const onboard = {
           }
 
           case SENT_FOR_APPROVAL: {
-            console.log('RUn here');
             yield put({
               type: 'saveSentForApproval',
               payload: returnedData,
