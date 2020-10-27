@@ -98,8 +98,22 @@ const candidateInfo = {
       },
 
       candidateSignature: null,
-      hrSignature: {},
-      hrManagerSignature: {},
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
     },
     data: {
       fullName: null,
@@ -242,7 +256,14 @@ const candidateInfo = {
       listTitle: [],
       tableData: [],
       candidateSignature: null,
-      hrManagerSignature: {},
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hrSignature: {
         url: '',
         fileName: '',
