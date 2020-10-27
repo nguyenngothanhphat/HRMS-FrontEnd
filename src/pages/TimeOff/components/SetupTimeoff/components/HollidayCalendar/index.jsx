@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Button, Tabs } from 'antd';
 import { listMonths, mockData } from './ListData';
 import CalanderTable from '../CalanderTable';
@@ -26,30 +26,13 @@ class HollidayCalendar extends Component {
             Add a holliday
           </Button>
         </div>
-        {/* tabBarExtraContent={OperationsSlot} */}
         <div className={s.tableWrap}>
-          <Tabs tabPosition="top" defaultActiveKey="jan">
-            {/* {listMonths.map(({ name, key }) => (
+          <Tabs tabBarExtraContent={OperationsSlot} tabPosition="top" defaultActiveKey="jan">
+            {listMonths.map(({ name, key }) => (
               <TabPane tab={name} key={key}>
                 <CalanderTable data={mockData} />
-                <div>12312</div>
               </TabPane>
-            ))} */}
-            <TabPane tab={12312311} key={1}>
-              Content of tab 1
-            </TabPane>
-            <TabPane tab={22222} key={2}>
-              Content of tab 1
-            </TabPane>
-            <TabPane tab={3333333} key={3}>
-              Content of tab 1
-            </TabPane>
-            <TabPane tab={4444444} key={4}>
-              Content of tab 1
-            </TabPane>
-            <TabPane tab={12312311} key={5}>
-              Content of tab 1
-            </TabPane>
+            ))}
           </Tabs>
         </div>
       </div>

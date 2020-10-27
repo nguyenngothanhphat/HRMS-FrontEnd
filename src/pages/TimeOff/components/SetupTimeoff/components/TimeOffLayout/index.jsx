@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Button, Tabs } from 'antd';
 import s from './index.less';
 
+const { TabPane } = Tabs;
 class TimeOffLayout extends Component {
   constructor(props) {
     super(props);
@@ -38,7 +40,7 @@ class TimeOffLayout extends Component {
     return (
       <div className={s.root}>
         <div className={s.leftMenu}>{listMenu.map((item) => this._renderItemMenu(item))}</div>
-        <div className={s.contentWrap}>{displayComponent}</div>
+        <div>{displayComponent}</div>
       </div>
     );
   }

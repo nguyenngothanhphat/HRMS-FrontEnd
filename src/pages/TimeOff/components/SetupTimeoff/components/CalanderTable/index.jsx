@@ -84,7 +84,7 @@ class CalanderTable extends PureComponent {
             total: data.length,
           }}
           rowKey="id"
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: 700, y: 'max-content' }}
           onChange={this.handleChangeTable}
         />
       </div>
