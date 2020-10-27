@@ -166,7 +166,6 @@ class RolesPermission extends PureComponent {
     const add = {
       RolesID: '',
       Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
-      // Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
     };
 
     const renderAdd = [...formatData, add];
