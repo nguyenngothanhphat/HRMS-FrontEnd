@@ -334,9 +334,9 @@ const rookieList = [
   },
 ];
 
-const employeeList = rookieList.filter(
-  (rookie) => rookie.isNew === undefined || rookie.isNew === null,
-);
+// const employeeList = rookieList.filter(
+//   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
+// );
 
 // Mock data for table
 const sentEligibilityFormsData = []; // Pending Eligibility Checks
