@@ -358,8 +358,9 @@ const candidateInfo = {
     },
 
     *fetchCandidateInfo(_, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getRookieInfo);
+        response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -369,17 +370,17 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchEmployeeById({ payload }, { call, put }) {
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        const dataObj = data.find((x) => x);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...dataObj, candidate: dataObj._id, _id: dataObj._id },
+          payload: { ...data, candidate: data._id, _id: data._id },
         });
       } catch (error) {
         dialog(error);

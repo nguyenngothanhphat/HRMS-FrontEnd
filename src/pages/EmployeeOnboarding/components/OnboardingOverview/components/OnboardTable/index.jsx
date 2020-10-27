@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage, Link, Redirect } from 'umi';
+import { formatMessage, Link, Redirect, connect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
@@ -45,6 +45,34 @@ class OnboardTable extends Component {
       );
     }
     return <p>{name}</p>;
+  };
+
+  fetchData = (id) => {
+    const { dispatch } = this.props;
+
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateInfo/fetchCandidateInfo',
+      payload: {},
+    }).then(({ data }) => {
+      const { _id } = data;
+      if (_id) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            candidate: _id,
+          },
+        });
+      }
+    });
+    // dispatch({
+    //   type: 'candidateInfo/fetchEmployeeById',
+    //   payload: {
+    //     candidate: id,
+    //   },
+    // })
   };
 
   renderAction = (id, type, actionText) => {
@@ -141,16 +169,8 @@ class OnboardTable extends Component {
         break;
     }
     return (
-      <Link to={`/employee-onboarding/review/${id}`}>
-        <span className={styles.tableActions}>
-          {actionContent}
-          {/* {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-          ) : (
-            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-          )} */}
-
-          {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
-        </span>
+      <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+        <span className={styles.tableActions}>{actionContent}</span>
       </Link>
     );
   };
@@ -333,6 +353,7 @@ class OnboardTable extends Component {
     const { pageSelected } = this.state;
     const { list } = this.props;
     const rowSize = 10;
+    console.log(this.props);
 
     const rowSelection = {
       // onChange: (selectedRowKeys, selectedRows) => {
@@ -412,4 +433,5 @@ class OnboardTable extends Component {
   }
 }
 
-export default OnboardTable;
+// export default OnboardTable;
+export default connect()(OnboardTable);

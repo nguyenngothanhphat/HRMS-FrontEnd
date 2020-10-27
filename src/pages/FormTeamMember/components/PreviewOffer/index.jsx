@@ -114,6 +114,7 @@ const PreviewOffer = (props) => {
           },
         },
       });
+
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -133,10 +134,6 @@ const PreviewOffer = (props) => {
         type: 'candidateInfo/sentForApprovalEffect',
         payload: { hrSignature: id, candidate: rookieId },
       });
-      // dispatch({
-      //   type:
-      // })
-      // setFile(url);
     }
     if (type === 'hrManager') {
       // setFile2(url);
@@ -193,12 +190,6 @@ const PreviewOffer = (props) => {
 
   useEffect(() => {
     getUserRole();
-    // Set width for each input
-    // for (let i = 0; i < inputRefs.length; i += 1) {
-    //   if (inputRefs[i]) {
-    //     inputRefs[i].style.width = `${INPUT_WIDTH[i]}px`;
-    //   }
-    // }
   }, []);
 
   useEffect(() => {
@@ -264,7 +255,8 @@ const PreviewOffer = (props) => {
         </div>
 
         {/* HR Manager signature */}
-        {role === ROLE.HRMANAGER && (
+        {/* {role === ROLE.HRMANAGER && ( */}
+        {true && (
           <>
             <div className={styles.signature}>
               <header>
