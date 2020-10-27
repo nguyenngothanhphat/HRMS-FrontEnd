@@ -3,10 +3,7 @@ import { connect, formatMessage } from 'umi';
 
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
-import NumericInput from '@/components/NumericInput';
-// import UploadImage from '@/components/UploadImage';
-import { getUserProfile } from '@/services/usersManagement';
-import logo from './components/images/brand-logo.png';
+// import logo from './components/images/brand-logo.png';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -17,7 +14,7 @@ import SendEmail from '../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
+// const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const ROLE = {
   HRMANAGER: 'HR-MANAGER',
@@ -25,7 +22,7 @@ const ROLE = {
 };
 
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {}, rookieId = '' } = props;
+  const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
 
   const {
     email: mailProp,
@@ -204,7 +201,7 @@ const PreviewOffer = (props) => {
   };
 
   const getUserRole = () => {
-    console.log(props);
+    // console.log(props);
     const { roles } = currentUser;
     const userRole = roles.find(
       (roleItem) => roleItem._id === ROLE.HRMANAGER || roleItem._id === ROLE.HR,
@@ -212,13 +209,9 @@ const PreviewOffer = (props) => {
     if (!userRole) {
       return;
     }
-    console.log(userRole);
+    // console.log(userRole);
     const { _id } = userRole;
     setRole(_id);
-  };
-
-  const handleSendEmail = () => {
-    console.log('Send email');
   };
 
   useEffect(() => {
