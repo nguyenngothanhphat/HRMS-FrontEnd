@@ -12,6 +12,7 @@ const Option = Select;
   ({
     loading,
     employeesManagement: {
+      rolesList = [],
       companyList = [],
       locationList = [],
       departmentList = [],
@@ -19,11 +20,13 @@ const Option = Select;
       reportingManagerList = [],
     },
   }) => ({
+    rolesList,
     companyList,
     locationList,
     departmentList,
     jobTitleList,
     reportingManagerList,
+    loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -33,54 +36,35 @@ class AddEmployeeForm extends Component {
     this.formRef = React.createRef();
     this.state = {
       isDisabled: true,
-      isDisabledManager: true,
-      department: [],
-      location: [],
+      isDisabledDepartment: true,
+      company: '',
+      location: '',
     };
   }
 
-  static getDerivedStateFromProps(props) {
-    const { reportingManagerList } = props;
-    if (reportingManagerList.length > 0) {
-      return {
-        isDisabledManager: false,
-      };
-    }
-    return null;
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { dispatch } = this.props;
-    const { department, location } = this.state;
-    if (
-      (prevState.department !== department || prevState.location !== location) &&
-      department.length > 0 &&
-      location.length > 0
-    ) {
-      dispatch({
-        type: 'employeesManagement/fetchReportingManagerList',
-        payload: {
-          department,
-          location,
-        },
+  componentDidUpdate(prevState) {
+    const { location } = this.state;
+    if (location !== '' && location !== prevState.location) {
+      this.formRef.current.setFieldsValue({
+        department: undefined,
       });
     }
   }
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
-    const location = [];
-    const department = [];
+    const { company } = this.state;
+
     switch (type) {
       case 'company':
         dispatch({
-          type: 'employeesManagement/fetchLocationList',
+          type: 'employeesManagement/fetchReportingManagerList',
           payload: {
             company: value,
           },
         });
         dispatch({
-          type: 'employeesManagement/fetchDepartmentList',
+          type: 'employeesManagement/fetchLocationList',
           payload: {
             company: value,
           },
@@ -93,18 +77,20 @@ class AddEmployeeForm extends Component {
         });
         this.setState({
           isDisabled: false,
+          company: value,
         });
         break;
       case 'location':
-        location.push(value);
         this.setState({
-          location,
+          location: value,
+          isDisabledDepartment: false,
         });
-        break;
-      case 'department':
-        department.push(value);
-        this.setState({
-          department,
+        dispatch({
+          type: 'employeesManagement/fetchDepartmentList',
+          payload: {
+            company,
+            location: value,
+          },
         });
         break;
       default:
@@ -113,8 +99,26 @@ class AddEmployeeForm extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState(
+      {
+        location: '',
+        company: '',
+        isDisabled: true,
+        isDisabledDepartment: true,
+      },
+      () => handleCancel(),
+    );
+    dispatch({
+      type: 'employeesManagement/save',
+      payload: {
+        companyList: [],
+        departmentList: [],
+        locationList: [],
+        jobTitleList: [],
+        reportingManagerList: [],
+      },
+    });
   };
 
   handleChangeAddEmployee = () => {};
@@ -150,13 +154,15 @@ class AddEmployeeForm extends Component {
       },
     };
     const {
+      rolesList,
       companyList,
       locationList,
       departmentList,
       jobTitleList,
       reportingManagerList,
+      loadingDepartment,
     } = this.props;
-    const { isDisabled, isDisabledManager } = this.state;
+    const { isDisabled, isDisabledDepartment } = this.state;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -199,6 +205,22 @@ class AddEmployeeForm extends Component {
           >
             <Input />
           </Form.Item>
+          <Form.Item
+            label="Roles"
+            name="roles"
+            rules={[{ required: true, message: 'Please select roles!' }]}
+          >
+            <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
+              {rolesList.map((item) => {
+                const { _id = '', name = '' } = item;
+                return (
+                  <Option key={_id} value={_id}>
+                    {name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
             <Select
               placeholder="Select Company"
@@ -235,8 +257,8 @@ class AddEmployeeForm extends Component {
               placeholder="Select Department"
               showArrow
               showSearch
-              disabled={isDisabled}
-              onChange={(value) => this.onChangeSelect('department', value)}
+              loading={loadingDepartment}
+              disabled={isDisabledDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -246,7 +268,7 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Job Title" name="jobTitle">
+          <Form.Item label="Job Title" name="title">
             <Select
               placeholder="Select Job Title"
               showArrow
@@ -261,18 +283,23 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Reporting Manager" name="reportingManager" rules={[{ required: true }]}>
+          <Form.Item
+            className={styles.reportingManager}
+            label="Reporting Manager"
+            name="manager"
+            rules={[{ required: true }]}
+          >
             <Select
               placeholder="Select Reporting Manager"
               showArrow
               showSearch
-              disabled={isDisabledManager}
+              disabled={isDisabled}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item}>
+                <Option key={item._id}>
                   {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
                 </Option>
               ))}

@@ -79,7 +79,7 @@ const routes = [
       {
         path: '/',
         component: '../layouts/BasicLayout',
-        authority: ['admin-sa', 'employee'],
+        authority: ['admin-sa', 'employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
         routes: [
           {
             path: '/',
@@ -90,7 +90,7 @@ const routes = [
             name: 'dashboard',
             icon: '/assets/images/home.svg',
             component: './Dashboard',
-            authority: ['admin-sa', 'customer'],
+            authority: ['admin-sa', 'employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
           },
           {
             path: '/users',
@@ -111,7 +111,7 @@ const routes = [
             name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
-            authority: ['admin-sa'],
+            // authority: ['admin-sa'],
           },
           {
             path: '/companies',
@@ -141,13 +141,13 @@ const routes = [
             hideInMenu: true,
             authority: ['admin-sa'],
           },
-          {
-            path: '/candidates',
-            name: 'candidates',
-            icon: '/assets/images/CP-icons_Candidates.svg',
-            component: '../pages_admin/CandidatesManagement',
-            authority: ['admin-sa'],
-          },
+          // {
+          // path: '/candidates',
+          // name: 'candidates',
+          // icon: '/assets/images/CP-icons_Candidates.svg',
+          // component: '../pages_admin/TestPage',
+          // authority: ['admin-sa'],
+          // },
           {
             path: '/documents',
             name: 'documents',
@@ -170,46 +170,52 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/settings/Permission',
+            name: 'permission',
+            component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/directory',
             name: 'directory',
             icon: '/assets/images/directory.svg',
             component: './Directory',
-            authority: ['customer'],
+            // authority: ['admin-sa', 'employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
           },
           {
             path: '/time-off',
             name: 'timeOff',
             icon: '/assets/images/timeOff.svg',
             component: './TimeOff',
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
             icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding/CreateFieldSection',
             name: 'Createcustomfieldsection',
             component: './EmployeeOnboarding/components/CustomFields/components/CreateFieldSection',
             hideInMenu: true,
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding/CreateNewField',
             name: 'Createcustomfieldsection',
             component: './EmployeeOnboarding/components/CustomFields/components/CreateNewField',
             hideInMenu: true,
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-offboarding',
@@ -217,9 +223,9 @@ const routes = [
             icon: 'file-image',
             // component: './OffBoarding/ManagerOffBoarding',
             component: './OffBoarding/HrOffBoarding',
-
-            authority: ['customer'],
+            authority: ['hr'],
           },
+
           {
             path: '/employee-offboarding/employee',
             name: 'EmployeeOffBoarding',
@@ -237,21 +243,21 @@ const routes = [
             name: 'request',
             component: './OffBoarding/EmployeeOffBoarding/Request',
             hideInMenu: true,
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-offboarding/ManagerRequest/:ticketId',
             name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-offboarding/HrRequest/:id',
             name: 'ticketId',
             component: './OffBoarding/HrOffBoarding/component/HrRequestTable/Ticket',
             hideInMenu: true,
-            authority: ['customer'],
+            authority: ['hr'],
           },
           {
             path: '/directory/employee-profile/:reId',
@@ -276,21 +282,21 @@ const routes = [
             name: 'setting',
             icon: 'setting',
             component: './Setting',
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding/:action(add)',
             name: 'addTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding/:action(review)/:reId',
             name: 'reviewTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
-            authority: ['customer'],
+            // authority: ['employee'],
           },
           {
             path: '/employee-onboarding/create-email-reminder',

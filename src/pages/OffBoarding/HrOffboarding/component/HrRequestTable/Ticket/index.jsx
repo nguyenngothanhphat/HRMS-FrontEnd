@@ -4,7 +4,6 @@ import { Affix, Row, Col } from 'antd';
 import { formatMessage } from 'umi';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
-import ActionDetailTicket from './components/ActionDetailTicket';
 import LastWorkingDay from './components/LastWorkingDay';
 import CommentsFromHR from './components/CommentFromHr';
 import InfoEmployee from './components/RightContent';
@@ -13,18 +12,8 @@ import styles from './index.less';
 class HRDetailTicket extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      isDisplayNotifications: false,
-      isOpenFormReason: false,
-    };
+    this.state = {};
   }
-
-  openFormReason = () => {
-    this.setState({
-      isDisplayNotifications: false,
-      isOpenFormReason: true,
-    });
-  };
 
   renderBlockNotifications = () => {
     return (
@@ -46,15 +35,7 @@ class HRDetailTicket extends PureComponent {
     );
   };
 
-  handleDisplayNotifications = () => {
-    this.setState({
-      isDisplayNotifications: true,
-    });
-  };
-
   render() {
-    const { isDisplayNotifications, isOpenFormReason } = this.state;
-
     return (
       <PageContainer>
         <div className={styles.hrDetailTicket}>
@@ -76,7 +57,6 @@ class HRDetailTicket extends PureComponent {
               <InfoEmployee />
             </Col>
           </Row>
-          {isDisplayNotifications ? this.renderBlockNotifications() : ''}
         </div>
       </PageContainer>
     );

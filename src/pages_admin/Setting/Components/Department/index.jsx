@@ -1,9 +1,11 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Input, Table } from 'antd';
+import { connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+@connect(({ employee: { department = [] } = {} }) => ({ department }))
 class Department extends PureComponent {
   constructor(props) {
     super(props);
@@ -11,14 +13,24 @@ class Department extends PureComponent {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      data: [
-        { DepartmentID: 20, Deparmentname: 'IT' },
-        { DepartmentID: 22, Deparmentname: 'HR' },
-        { DepartmentID: 24, Deparmentname: 'Accounting' },
-      ],
+      // data: [
+      //   { DepartmentID: 20, Deparmentname: 'IT' },
+      //   { DepartmentID: 22, Deparmentname: 'HR' },
+      //   { DepartmentID: 24, Deparmentname: 'Accounting' },
+      // ],
+      data2: [],
       newValue: '',
       getIndex: '',
     };
+  }
+
+  componentDidMount() {
+    const { department } = this.props;
+    const formatData = department.map((item) => {
+      const { _id: DepartmentID, name: Deparmentname } = item;
+      return { DepartmentID, Deparmentname };
+    });
+    this.setState({ data2: formatData });
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -27,11 +39,11 @@ class Department extends PureComponent {
   };
 
   handleOk = (e, getIndex) => {
-    const { data } = this.state;
-    data.splice(getIndex, 1);
+    const { data2 } = this.state;
+    data2.splice(getIndex, 1);
     this.setState({
       visible: false,
-      data,
+      data2,
     });
   };
 
@@ -67,18 +79,18 @@ class Department extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (newValue) => {
-    const { data } = this.state;
+  handleAddNewValue = (newValue, data2) => {
+    if (newValue === '') return;
     const addData = {
       DepartmentID: this.handleRandomNumberID(),
       Deparmentname: newValue,
     };
-    const newData = [...data, addData];
-    this.setState({ data: newData, newValue: '' });
+    const newData = [...data2, addData];
+    this.setState({ data2: newData, newValue: '' });
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
+    const { selectedRowKeys, visible, testReord, data2, newValue, getIndex } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -104,7 +116,7 @@ class Department extends PureComponent {
           record.DepartmentID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue, data2)} />
           ),
         align: 'center',
       },
@@ -113,7 +125,7 @@ class Department extends PureComponent {
       DepartmentID: '',
       Deparmentname: <Input onChange={this.handleChangeValue} value={newValue} />,
     };
-    const renderAdd = [...data, add];
+    const renderAdd = [...data2, add];
 
     return (
       <div className={styles.Department}>

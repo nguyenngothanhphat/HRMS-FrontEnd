@@ -28,7 +28,7 @@ export async function getRoleList() {
 }
 
 export async function getDepartmentList(payload) {
-  return request('/api/department/list-by-company', {
+  return request('/api/department/list', {
     method: 'POST',
     data: payload,
   });
@@ -55,8 +55,8 @@ export async function addEmployee(payload) {
   });
 }
 
-export async function getEmployeeDetailById(payload) {
-  return request('/api/employee/get-by-id', {
+export async function importEmployees(payload) {
+  return request('/api/employee/import', {
     method: 'POST',
     data: payload,
   });

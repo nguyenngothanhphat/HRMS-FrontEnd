@@ -7,7 +7,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 
 import { RightOutlined } from '@ant-design/icons';
 import logo from '../../public/assets/images/terralogic-logo.png';
-import BottomBar from '../components/BottomBar';
+// import BottomBar from '../components/BottomBar';
 import s from './CandidateLayout.less';
 
 const { Header, Content } = Layout;
@@ -36,19 +36,19 @@ const steps = [
     content: 'Second-content',
   },
   {
-    title: 'Eligibility documents',
+    title: 'Salary Structure',
     content: 'Third-content',
   },
   {
-    title: 'Offer Details',
+    title: 'Eligibility documents',
     content: 'Fourth-content',
   },
   {
-    title: 'Benefits',
+    title: 'Offer Details',
     content: 'Fifth-content',
   },
   {
-    title: 'Salary Structure',
+    title: 'Benefits',
     content: 'Last-content',
   },
 ];
@@ -77,52 +77,50 @@ const CandidateLayout = (props) => {
   const {
     children,
     currentStep,
-    dispatch,
     location = {
       pathname: '/',
     },
     route: { routes } = {},
   } = props;
 
-  const [current, setCurrent] = useState(currentStep);
-  const [currentPage, setCurrentPage] = useState(10);
+  const [current, setCurrent] = useState(1);
 
   useEffect(() => {
-    // console.log('CANDIDATE LAYOUT RENDER');
+    setCurrent(currentStep);
   }, [currentStep]);
 
-  const nextScreen = () => {
-    if (!dispatch || current === 7) {
-      return;
-    }
+  // const nextScreen = () => {
+  //   if (!dispatch || current === 7) {
+  //     return;
+  //   }
 
-    dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        currentStep: current + 1,
-      },
-    });
+  //   dispatch({
+  //     type: 'candidateProfile/save',
+  //     payload: {
+  //       currentStep: current + 1,
+  //     },
+  //   });
 
-    setCurrent((prevState) => prevState + 1);
-    setCurrentPage((prevState) => prevState + 1);
-    // console.log(currentPage);
-  };
+  //   setCurrent((prevState) => prevState + 1);
+  //   setCurrentPage((prevState) => prevState + 1);
+  //   console.log(currentPage);
+  // };
 
-  const prevScreen = () => {
-    if (!dispatch || current === 7) {
-      return;
-    }
+  // const prevScreen = () => {
+  //   if (!dispatch || current === 7) {
+  //     return;
+  //   }
 
-    dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        currentStep: current - 1,
-      },
-    });
+  //   dispatch({
+  //     type: 'candidateProfile/save',
+  //     payload: {
+  //       currentStep: current - 1,
+  //     },
+  //   });
 
-    setCurrent((prevState) => prevState - 1);
-    setCurrentPage((prevState) => prevState - 1);
-  };
+  //   setCurrent((prevState) => prevState - 1);
+  //   setCurrentPage((prevState) => prevState - 1);
+  // };
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -168,7 +166,7 @@ const CandidateLayout = (props) => {
             </Col>
             <Col md={19}>
               {children}
-              <Row gutter={[24, 0]}>
+              {/* <Row gutter={[24, 0]}>
                 <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                   <BottomBar
                     onClickPrev={prevScreen}
@@ -176,7 +174,7 @@ const CandidateLayout = (props) => {
                     currentPage={currentPage}
                   />
                 </Col>
-              </Row>
+              </Row> */}
             </Col>
           </Row>
         </Content>

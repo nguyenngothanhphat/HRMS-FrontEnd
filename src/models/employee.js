@@ -6,6 +6,7 @@ import {
   getListEmployeeMyTeam,
   getListEmployeeActive,
   getListEmployeeInActive,
+  getDataOrgChart,
 } from '../services/employee';
 
 const employee = {
@@ -21,6 +22,7 @@ const employee = {
     dataRadio: [],
     clearFilter: false,
     clearName: false,
+    dataOrgChart: {},
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -134,6 +136,16 @@ const employee = {
         dialog(errors);
       }
     },
+    *fetchDataOrgChart(_, { call, put }) {
+      try {
+        const response = yield call(getDataOrgChart);
+        const { statusCode, data: { chart: dataOrgChart = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { dataOrgChart } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     saveFilter(state, action) {
@@ -200,6 +212,12 @@ const employee = {
       };
     },
     listEmployeeInActive(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    save(state, action) {
       return {
         ...state,
         ...action.payload,

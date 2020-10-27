@@ -9,9 +9,16 @@ import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data: { processStatus = '' } } = {} }) => ({
-  processStatus,
-}))
+@connect(
+  ({
+    candidateInfo: { tableData = [], data: { _id = '', fullName = '', processStatus = '' } } = {},
+  }) => ({
+    processStatus,
+    _id,
+    fullName,
+    tableData,
+  }),
+)
 class SalaryAcceptance extends PureComponent {
   constructor(props) {
     super(props);
@@ -48,8 +55,40 @@ class SalaryAcceptance extends PureComponent {
   //   });
   // };
 
+  onCloseCandidate = () => {
+    const { dispatch, _id } = this.props;
+    dispatch({
+      type: 'candidateInfo/closeCandidate',
+      payload: {
+        candidate: _id,
+      },
+    });
+  };
+
+  onEditSalaryStructure = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
+      },
+    });
+  };
+
+  handleSendEmail = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
+      },
+    });
+  };
+
   _renderStatus = () => {
-    const { processStatus } = this.props;
+    const { processStatus, fullName } = this.props;
     console.log(processStatus);
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
@@ -79,7 +118,7 @@ class SalaryAcceptance extends PureComponent {
             note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
             accept={false}
           />
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" onClick={this.onCloseCandidate}>
             {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
           </Button>
         </>
@@ -91,8 +130,11 @@ class SalaryAcceptance extends PureComponent {
           <div className={styles.pendingIcon}>
             <img src={pendingIcon} alt="icon" />
           </div>
-          <p>{formatMessage({ id: 'component.salaryAcceptance.pendingMessage' })}</p>
-          <Button type="primary">
+          <p>
+            We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
+            structure
+          </p>
+          <Button type="primary" onClick={this.onEditSalaryStructure}>
             {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
           </Button>
         </div>
@@ -119,7 +161,7 @@ class SalaryAcceptance extends PureComponent {
             <p className={styles.redText}>Close Candidature</p>
           </div>
         </div>
-        <SendEmail formatMessage={formatMessage} />
+        <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
       </>
     );
   };

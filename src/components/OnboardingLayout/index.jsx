@@ -134,4 +134,7 @@ class OnboardingLayout extends PureComponent {
   }
 }
 
-export default OnboardingLayout;
+// export default OnboardingLayout;
+export default connect(({ info }) => ({
+  info,
+}))(OnboardingLayout);
