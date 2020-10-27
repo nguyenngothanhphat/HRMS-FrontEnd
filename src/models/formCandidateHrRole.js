@@ -98,8 +98,22 @@ const candidateInfo = {
       },
 
       candidateSignature: null,
-      hrSignature: {},
-      hrManagerSignature: {},
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
     },
     data: {
       fullName: null,
@@ -242,8 +256,22 @@ const candidateInfo = {
       listTitle: [],
       tableData: [],
       candidateSignature: null,
-      hrManagerSignature: {},
-      hrSignature: {},
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hiringAgreements: null,
       companyHandbook: null,
       benefits: [],
@@ -376,6 +404,10 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
@@ -468,11 +500,11 @@ const candidateInfo = {
       return response;
     },
 
-    *sentForApprovalEffect({ payload }, { call, put }) {
+    *sentForApprovalEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(sentForApproval, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
@@ -481,11 +513,11 @@ const candidateInfo = {
       return response;
     },
 
-    *approveFinalOfferEffect({ payload }, { call, put }) {
+    *approveFinalOfferEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(approveFinalOffer, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
@@ -499,10 +531,15 @@ const candidateInfo = {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         console.log('1', data);
+
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+        });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
         });
       } catch (error) {
         dialog(error);
@@ -534,6 +571,21 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    updateSignature(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+      console.log('updateSignature');
+      console.log(data);
+      const { hrSignature = {}, hrManagerSignature = {} } = data;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          hrSignature,
+          hrManagerSignature,
         },
       };
     },

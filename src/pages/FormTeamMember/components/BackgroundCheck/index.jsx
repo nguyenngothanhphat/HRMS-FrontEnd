@@ -359,6 +359,7 @@ class BackgroundCheck extends Component {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
             <SendEmail
+              title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
               formatMessage={formatMessage}
               handleSendEmail={this.handleSendEmail}
               handleChangeEmail={this.handleChangeEmail}
