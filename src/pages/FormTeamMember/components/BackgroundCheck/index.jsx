@@ -81,7 +81,6 @@ class BackgroundCheck extends Component {
       type: 'candidateInfo/saveTemp',
       payload: {
         newArrToAdjust,
-        isSentEmail: true,
       },
     });
 
@@ -107,6 +106,12 @@ class BackgroundCheck extends Component {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            isSentEmail: true,
+          },
         });
       }
     });
