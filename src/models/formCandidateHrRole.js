@@ -9,7 +9,6 @@ import {
   getTitleListByCompany,
   addCandidate,
   closeCandidate,
-  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
@@ -372,7 +371,7 @@ const candidateInfo = {
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+        yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
@@ -410,7 +409,6 @@ const candidateInfo = {
         const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -425,7 +423,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -440,7 +437,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
