@@ -6,7 +6,7 @@ import { Modal, Button, Form, Input, Select } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const Option = Select;
+const { Option } = Select;
 
 @connect(
   ({
@@ -18,6 +18,7 @@ const Option = Select;
       departmentList = [],
       jobTitleList = [],
       reportingManagerList = [],
+      statusAddEmployee,
     },
   }) => ({
     rolesList,
@@ -26,6 +27,7 @@ const Option = Select;
     departmentList,
     jobTitleList,
     reportingManagerList,
+    statusAddEmployee,
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
@@ -54,9 +56,19 @@ class AddEmployeeForm extends Component {
 
   componentDidUpdate(prevState) {
     const { location } = this.state;
+    const { dispatch, statusAddEmployee = false } = this.props;
     if (location !== '' && location !== prevState.location) {
       this.formRef.current.setFieldsValue({
         department: undefined,
+      });
+    }
+    if (statusAddEmployee === true) {
+      this.formRef.current.resetFields();
+      dispatch({
+        type: 'changePassword/save',
+        payload: {
+          statusChangePassword: false,
+        },
       });
     }
   }
@@ -137,6 +149,7 @@ class AddEmployeeForm extends Component {
         locationList: [],
         jobTitleList: [],
         reportingManagerList: [],
+        statusAddEmployee: false,
       },
     });
   };
@@ -149,7 +162,6 @@ class AddEmployeeForm extends Component {
       type: 'employeesManagement/addEmployee',
       payload: values,
     });
-    this.formRef.current.resetFields();
   };
 
   renderHeaderModal = () => {
@@ -226,28 +238,31 @@ class AddEmployeeForm extends Component {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Roles"
-            name="roles"
-            rules={[{ required: true, message: 'Please select roles!' }]}
-          >
+          <Form.Item label="Roles" name="roles" rules={[{ required: true }]}>
             <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
-              {rolesList.map((item) => {
-                const { _id = '', name = '' } = item;
-                return (
-                  <Option key={_id} value={_id}>
-                    {name}
-                  </Option>
-                );
-              })}
+              {rolesList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            {company ? (
-              <Select defaultValue={company._id} disabled>
-                <Option value={company._id}>{company.name}</Option>
+
+          {company ? (
+            <Form.Item
+              label="Company"
+              name="company"
+              initialValue={company._id}
+              rules={[{ required: true }]}
+            >
+              <Select disabled>
+                <Option key={company._id} value={company._id}>
+                  {company.name}
+                </Option>
               </Select>
-            ) : (
+            </Form.Item>
+          ) : (
+            <Form.Item label="Company" name="company" rules={[{ required: true }]}>
               <Select
                 placeholder="Select Company"
                 showArrow
@@ -261,8 +276,8 @@ class AddEmployeeForm extends Component {
                   <Option key={item._id}>{item.name}</Option>
                 ))}
               </Select>
-            )}
-          </Form.Item>
+            </Form.Item>
+          )}
           <Form.Item label="Location" name="location" rules={[{ required: true }]}>
             <Select
               placeholder="Select Location"
@@ -279,7 +294,7 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Department" name="department" rules={[{ required: true }]}>
+          <Form.Item label="Department" name="department">
             <Select
               placeholder="Select Department"
               showArrow

@@ -349,6 +349,7 @@ class DirectoryComponent extends PureComponent {
           getResponse={this.getResponse}
         />
         <ModalImportEmployee
+          company={company}
           titleModal="Import Employee"
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
