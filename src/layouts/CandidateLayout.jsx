@@ -36,19 +36,19 @@ const steps = [
     content: 'Second-content',
   },
   {
-    title: 'Eligibility documents',
+    title: 'Salary Structure',
     content: 'Third-content',
   },
   {
-    title: 'Offer Details',
+    title: 'Eligibility documents',
     content: 'Fourth-content',
   },
   {
-    title: 'Benefits',
+    title: 'Offer Details',
     content: 'Fifth-content',
   },
   {
-    title: 'Salary Structure',
+    title: 'Benefits',
     content: 'Last-content',
   },
 ];

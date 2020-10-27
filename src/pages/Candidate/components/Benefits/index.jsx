@@ -150,7 +150,7 @@ const Benefits = (props) => {
   return (
     <div className={s.benefitContainer}>
       <Row gutter={24}>
-        <Col md={16}>
+        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={s.benefits}>
             <header>
               <h2>Benefits</h2>
@@ -203,7 +203,7 @@ const Benefits = (props) => {
           {renderBottomBar()}
         </Col>
 
-        <Col md={8}>
+        <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <NoteComponent note={Note} />
         </Col>
       </Row>
