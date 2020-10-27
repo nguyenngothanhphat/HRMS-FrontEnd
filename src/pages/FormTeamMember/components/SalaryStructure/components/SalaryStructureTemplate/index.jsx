@@ -14,6 +14,7 @@ import styles from './index.less';
       data: { processStatus = '' } = {},
       data,
       tableData = [],
+      salaryPosition = '',
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -24,6 +25,7 @@ import styles from './index.less';
     _id,
     data,
     tableData,
+    salaryPosition,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -209,6 +211,12 @@ class SalaryStructureTemplate extends PureComponent {
 
   handleChangeSelect = (value) => {
     const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        salaryPosition: value,
+      },
+    });
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
@@ -410,7 +418,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { tableData } = this.props;
+    const { tableData, salaryPosition } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
@@ -435,8 +443,8 @@ class SalaryStructureTemplate extends PureComponent {
                   })}
                 </Select>
               )} */}
-
               <Select
+                defaultValue={salaryPosition ?? null}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"

@@ -333,6 +333,7 @@ class JobDetails extends PureComponent {
         prefferedDateOfJoining,
         candidatesNoticePeriod,
       },
+      data,
     } = this.state;
     const { loading1, loading2, loading3 } = this.props;
     return (
@@ -348,6 +349,7 @@ class JobDetails extends PureComponent {
                 employeeTypeList={employeeTypeList}
                 employeeType={employeeType}
                 position={position}
+                data={data}
               />
               <FieldsComponent
                 dropdownField={dropdownField}
@@ -366,6 +368,7 @@ class JobDetails extends PureComponent {
                 loading1={loading1}
                 loading2={loading2}
                 loading3={loading3}
+                data={data}
               />
               {this._renderBottomBar()}
             </div>

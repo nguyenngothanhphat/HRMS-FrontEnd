@@ -512,6 +512,7 @@ const formatData = (list) => {
   const formatList = [];
   list.map((item) => {
     const {
+      _id,
       ticketID,
       fullName,
       // position,
@@ -532,6 +533,7 @@ const formatData = (list) => {
 
     const rookie = {
       // rookieId: `#${_id.substring(0, 8)}`,
+      candidate: _id || '',
       rookieId: ticketID,
       isNew,
       rookieName: fullName,
@@ -767,7 +769,9 @@ const onboard = {
         // console.log(response);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log('response', response);
         const returnedData = formatData(response.data[0].paginatedResults);
+        console.log('returnedData', returnedData);
 
         const {
           PROVISIONAL_OFFER_DRAFT,

@@ -49,31 +49,23 @@ class OnboardTable extends Component {
 
   fetchData = (id) => {
     const { dispatch } = this.props;
-
     if (!dispatch) {
       return;
     }
     dispatch({
-      type: 'candidateInfo/fetchCandidateInfo',
-      payload: {},
-    }).then(({ data }) => {
-      const { _id } = data;
-      if (_id) {
-        dispatch({
-          type: 'candidateInfo/fetchEmployeeById',
-          payload: {
-            candidate: _id,
-          },
-        });
-      }
+      type: 'candidateInfo/fetchCandidateByRookie',
+      payload: {
+        rookieID: id,
+      },
     });
-    // dispatch({
-    //   type: 'candidateInfo/fetchEmployeeById',
-    //   payload: {
-    //     candidate: id,
-    //   },
-    // })
   };
+
+  // dispatch({
+  //   type: 'candidateInfo/fetchEmployeeById',
+  //   payload: {
+  //     candidate: id,
+  //   },
+  // })
 
   renderAction = (id, type, actionText) => {
     const {

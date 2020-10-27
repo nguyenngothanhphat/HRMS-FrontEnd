@@ -238,6 +238,7 @@ const candidateInfo = {
           ],
         },
       ],
+      salaryPosition: '',
       listTitle: [],
       tableData: [],
       candidateSignature: null,
@@ -369,6 +370,7 @@ const candidateInfo = {
         response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
+        console.log('data1', data);
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
@@ -379,9 +381,12 @@ const candidateInfo = {
       return response;
     },
     *fetchEmployeeById({ payload }, { call, put }) {
+      console.log('pay', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
+        console.log('data3', response);
+        console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -396,6 +401,7 @@ const candidateInfo = {
         const response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log(data);
         yield put({
           type: 'save',
           payload: { listTitle: data },
@@ -484,6 +490,21 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+    *fetchCandidateByRookie({ payload }, { call, put }) {
+      console.log('payload', payload);
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        console.log('1', data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
