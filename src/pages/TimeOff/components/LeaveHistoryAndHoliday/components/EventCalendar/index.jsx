@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import Calendar from 'react-calendar';
 import styles from './index.less';
 
 export default class EventCalendar extends PureComponent {
@@ -11,7 +10,7 @@ export default class EventCalendar extends PureComponent {
   render() {
     return (
       <div className={styles.EventCalendar}>
-        <Calendar allowPartialRange />
+        <h1>Calendar</h1>
       </div>
     );
   }
