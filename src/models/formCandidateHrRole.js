@@ -477,11 +477,11 @@ const candidateInfo = {
       return response;
     },
 
-    *sentForApprovalEffect({ payload }, { call, put }) {
+    *sentForApprovalEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(sentForApproval, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
@@ -490,11 +490,11 @@ const candidateInfo = {
       return response;
     },
 
-    *approveFinalOfferEffect({ payload }, { call, put }) {
+    *approveFinalOfferEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(approveFinalOffer, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
