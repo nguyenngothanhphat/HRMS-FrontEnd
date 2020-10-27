@@ -16,7 +16,8 @@ class ModalNoticeSuccess extends Component {
   };
 
   handleRemoveToServer = () => {
-    console.log('handleRemoveToServer');
+    const { handleRemoveToServer } = this.props;
+    this.setState({}, () => handleRemoveToServer());
   };
 
   render() {

@@ -85,7 +85,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Action</span>,
         dataIndex: 'Action',
         render: () => (
-          <div>
+          <div className={styles.rowAction}>
             <span onClick={this.push}>View Request</span>
           </div>
         ),

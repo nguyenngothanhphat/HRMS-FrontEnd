@@ -1,41 +1,39 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
-import { formatMessage } from 'umi';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import LastWorkingDay from './components/LastWorkingDay';
 import CommentsFromHR from './components/CommentFromHr';
+import ScheduleMetting from './components/SheduleMetting';
+import ActionSchedule from './components/ActionSchedule';
 import InfoEmployee from './components/RightContent';
 import styles from './index.less';
 
 class HRDetailTicket extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: false,
+      saveSchedule: false,
+    };
   }
 
-  renderBlockNotifications = () => {
-    return (
-      <Row>
-        <div className={styles.notification}>
-          <div className={styles.notification__content}>
-            <span>
-              By default notifications will be sent to HR, your manager and recursively loop to your
-              department head.
-            </span>
-            <span onClick={this.openFormReason}>
-              {formatMessage({ id: 'pages.offBoarding.putOnHold' })}
-            </span>
-            <span>{formatMessage({ id: 'pages.offBoarding.reject' })}</span>
-            <span>{formatMessage({ id: 'pages.offBoarding.accept' })}</span>
-          </div>
-        </div>
-      </Row>
-    );
+  handleChange = () => {
+    this.setState({
+      data: true,
+    });
+  };
+
+  handleSaveSchedule = () => {
+    this.setState({
+      saveSchedule: true,
+    });
   };
 
   render() {
+    const { data, saveSchedule } = this.state;
+    const { visible } = this.props;
     return (
       <PageContainer>
         <div className={styles.hrDetailTicket}>
@@ -51,10 +49,12 @@ class HRDetailTicket extends PureComponent {
               <RequesteeDetail />
               <ResignationRequestDetail />
               <CommentsFromHR />
-              <LastWorkingDay />
+              <LastWorkingDay handleRemoveToServer={this.handleChange} visible={visible} />
             </Col>
             <Col span={7}>
               <InfoEmployee />
+              {data ? <ScheduleMetting handleSubmit={this.handleSaveSchedule} /> : ''}
+              {saveSchedule ? <ActionSchedule /> : ''}
             </Col>
           </Row>
         </div>

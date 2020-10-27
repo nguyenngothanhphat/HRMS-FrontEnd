@@ -10,7 +10,6 @@ class LastWorkingDay extends PureComponent {
     super(props);
     this.state = {
       visible: false,
-      data: false,
     };
   }
 
@@ -21,11 +20,9 @@ class LastWorkingDay extends PureComponent {
     });
   };
 
-  handleCandelSchedule = () => {
-    this.setState({
-      visible: false,
-      data: true,
-    });
+  handleRemoveToServer = () => {
+    const { handleRemoveToServer } = this.props;
+    this.setState({}, () => handleRemoveToServer());
   };
 
   handleCandelSchedule = () => {
@@ -35,7 +32,8 @@ class LastWorkingDay extends PureComponent {
   };
 
   render() {
-    const { visible, data } = this.state;
+    const { visible } = this.state;
+    const { handleRemoveToServer } = this.props;
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
@@ -75,7 +73,7 @@ class LastWorkingDay extends PureComponent {
         </div>
         <ModalNoticeSuccess
           visible={visible}
-          handleRemoveToServer={this.handleSuccess}
+          handleRemoveToServer={handleRemoveToServer}
           handleCancel={this.handleCandelSchedule}
           modalContent="Your acceptance of the request has been recorded and all parties will be notified"
         />

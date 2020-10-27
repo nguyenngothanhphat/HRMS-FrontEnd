@@ -223,7 +223,7 @@ const routes = [
             icon: 'file-image',
             // component: './OffBoarding/ManagerOffBoarding',
             component: './OffBoarding/HrOffBoarding',
-            authority: ['hr'],
+            authority: ['employee'],
           },
 
           {
@@ -257,7 +257,7 @@ const routes = [
             name: 'ticketId',
             component: './OffBoarding/HrOffBoarding/component/HrRequestTable/Ticket',
             hideInMenu: true,
-            authority: ['hr'],
+            authority: ['employee'],
           },
           {
             path: '/directory/employee-profile/:reId',
