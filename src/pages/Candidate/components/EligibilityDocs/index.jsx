@@ -102,7 +102,6 @@ class EligibilityDocs extends PureComponent {
               ...Obj,
               attachment,
             });
-            console.log('adjusted', arrToAdjust);
             dispatch({
               type: 'candidateProfile/saveOrigin',
               payload: {
@@ -129,7 +128,6 @@ class EligibilityDocs extends PureComponent {
         attachment: attach,
         isValidated: !isValidated,
       });
-      console.log('arrToAdjust', arrToAdjust);
       dispatch({
         type: 'candidateProfile/saveOrigin',
         payload: {
@@ -210,6 +208,18 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
+  checkLength = (url) => {
+    if (url.length > 20) {
+      const ext = url.split('.').pop();
+      let fileName = url.split('.')[0];
+      if (fileName.length > 15) {
+        fileName = `${fileName.substring(0, 10)}...`;
+        url = `${fileName}${ext}`;
+      }
+    }
+    return url;
+  };
+
   render() {
     const {
       loading,
@@ -238,6 +248,7 @@ class EligibilityDocs extends PureComponent {
                       attachments={attachments}
                       validateFileSize={validateFileSize}
                       employerName={employerName}
+                      checkLength={this.checkLength}
                     />
                   );
                 })}

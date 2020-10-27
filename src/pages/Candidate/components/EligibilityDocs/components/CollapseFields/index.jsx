@@ -20,6 +20,7 @@ class CollapseField extends PureComponent {
       handleCanCelIcon,
       onValuesChange,
       employerName,
+      checkLength,
     } = this.props;
     return (
       <div className={styles.CollapseField}>
@@ -82,7 +83,7 @@ class CollapseField extends PureComponent {
                               rel="noopener noreferrer"
                               className={styles.viewUpLoadDataURL}
                             >
-                              {name.attachment.name}
+                              {checkLength(name.attachment.name)}
                             </a>
                           </Col>
                           <Col span={3} className={styles.textAlign}>
