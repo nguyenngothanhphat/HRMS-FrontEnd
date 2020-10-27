@@ -51,6 +51,7 @@ export default {
   'menu.dashboard': 'Dashboard',
   'menu.directory': 'Directory',
   'menu.timeOff': 'Time Off',
+  'menu.viewDocument': 'View Document',
   'menu.employeeProfile': 'Employee Profile',
   'menu.employeeOnboarding': 'Employee Onboarding',
   'menu.templateDetails': 'Template Details',
