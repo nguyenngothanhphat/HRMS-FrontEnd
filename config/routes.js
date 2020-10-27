@@ -276,6 +276,13 @@ const routes = [
             // authority: ['employee'],
           },
           {
+            path: '/view-document/:documentId',
+            name: 'viewDocument',
+            hideInMenu: true,
+            component: './ViewDocument',
+            // authority: ['employee'],
+          },
+          {
             path: '/employee-onboarding/:action(add)',
             name: 'addTeamMember',
             hideInMenu: true,
