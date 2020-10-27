@@ -4,6 +4,7 @@ import { Row, Col, Button } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
+import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -38,10 +39,13 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu, currentStep } = this.props;
+    const { listMenu, currentStep = 1 } = this.props;
+    if (!listMenu[currentStep]) {
+      return;
+    }
     this.setState({
-      selectedItemId: listMenu[currentStep].id,
-      displayComponent: listMenu[currentStep].component,
+      selectedItemId: listMenu[currentStep].id || 1,
+      displayComponent: listMenu[currentStep].component || <BasicInformation />,
     });
   }
 

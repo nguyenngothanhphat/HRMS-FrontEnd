@@ -238,6 +238,7 @@ const candidateInfo = {
           ],
         },
       ],
+      salaryPosition: '',
       listTitle: [],
       tableData: [],
       candidateSignature: null,
@@ -396,6 +397,7 @@ const candidateInfo = {
         const response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log(data);
         yield put({
           type: 'save',
           payload: { listTitle: data },
@@ -409,6 +411,8 @@ const candidateInfo = {
         const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
+        console.log('ye');
+        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',

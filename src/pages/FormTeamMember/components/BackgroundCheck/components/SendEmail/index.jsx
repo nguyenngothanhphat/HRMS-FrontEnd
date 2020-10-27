@@ -7,6 +7,7 @@ import style from './index.less';
 import copy from './Assets/copy-office.svg';
 
 const index = ({
+  title,
   formatMessage = () => {},
   handleSendEmail = () => {},
   privateEmail = '',
@@ -53,7 +54,8 @@ const index = ({
             <Typography.Text className={style.text}>Sent</Typography.Text>
           ) : (
             <Typography.Text className={style.text}>
-              {formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
+              {/* {formatMessage({ id: 'component.eligibilityDocs.sentForm' })} */}
+              {title}
             </Typography.Text>
           )}
         </Space>

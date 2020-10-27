@@ -12,6 +12,7 @@ import whiteImg from './components/images/whiteImg.png';
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
+import SendEmail from '../BackgroundCheck/components/SendEmail';
 // import SendEmail from '../EligibilityDocs/components/SendEmail';
 
 import styles from './index.less';
@@ -130,10 +131,10 @@ const PreviewOffer = (props) => {
       });
 
       // call API
-      dispatch({
-        type: 'candidateInfo/sentForApprovalEffect',
-        payload: { hrSignature: id, candidate: rookieId },
-      });
+      // dispatch({
+      //   type: 'candidateInfo/sentForApprovalEffect',
+      //   payload: { hrSignature: id, candidate: rookieId },
+      // });
     }
     if (type === 'hrManager') {
       // setFile2(url);
@@ -166,12 +167,38 @@ const PreviewOffer = (props) => {
       });
 
       // call API
-      // call API
-      dispatch({
-        type: 'candidateInfo/approveFinalOfferEffect',
-        payload: { hrManagerSignature: id, candidate: rookieId },
-      });
+      // dispatch({
+      //   type: 'candidateInfo/approveFinalOfferEffect',
+      //   payload: { hrManagerSignature: id, candidate: rookieId },
+      // });
     }
+  };
+
+  const handleSentForApproval = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    const { id } = hrSignature;
+    const { candidate } = data;
+    // call API
+    dispatch({
+      type: 'candidateInfo/sentForApprovalEffect',
+      payload: { hrSignature: id, candidate },
+    });
+  };
+
+  const handleSendFinalOffer = () => {
+    if (!dispatch) {
+      return;
+    }
+    const { id } = hrManagerSignature;
+    const { candidate } = data;
+    // call API
+    dispatch({
+      type: 'candidateInfo/approveFinalOfferEffect',
+      payload: { hrManagerSignature: id, candidate },
+    });
   };
 
   const getUserRole = () => {
@@ -186,6 +213,10 @@ const PreviewOffer = (props) => {
     console.log(userRole);
     const { _id } = userRole;
     setRole(_id);
+  };
+
+  const handleSendEmail = () => {
+    console.log('Send email');
   };
 
   useEffect(() => {
@@ -254,9 +285,62 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
+        <div className={styles.send}>
+          <header>
+            <div className={styles.icon}>
+              <div className={styles.bigGlow}>
+                <div className={styles.smallGlow}>
+                  <SendOutlined />
+                </div>
+              </div>
+            </div>
+            <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
+          </header>
+
+          <p>
+            {formatMessage({ id: 'component.previewOffer.note1' })}
+            <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
+            {formatMessage({ id: 'component.previewOffer.note3' })}
+          </p>
+
+          <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
+
+          <div className={styles.mail}>
+            <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
+
+            <Form form={mailForm} name="myForm" value={mail}>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: 'email',
+                    message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
+                  },
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
+                  },
+                ]}
+              >
+                <Input
+                  required={false}
+                  value={mail}
+                  placeholder="address@terraminds.com"
+                  onChange={(e) => setMail(e.target.value)}
+                />
+              </Form.Item>
+
+              <Button type="primary" onClick={() => handleSentForApproval()}>
+                Send for approval
+              </Button>
+            </Form>
+          </div>
+        </div>
+
         {/* HR Manager signature */}
         {/* {role === ROLE.HRMANAGER && ( */}
-        {true && (
+        {/* {true && ( */}
+        {role === ROLE.HRMANAGER && (
           <>
             <div className={styles.signature}>
               <header>
@@ -310,53 +394,14 @@ const PreviewOffer = (props) => {
               </div>
             </div>
 
-            <div className={styles.send}>
-              <header>
-                <div className={styles.icon}>
-                  <div className={styles.bigGlow}>
-                    <div className={styles.smallGlow}>
-                      <SendOutlined />
-                    </div>
-                  </div>
-                </div>
-                <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
-              </header>
-
-              <p>
-                {formatMessage({ id: 'component.previewOffer.note1' })}
-                <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
-                {formatMessage({ id: 'component.previewOffer.note3' })}
-              </p>
-
-              <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
-
-              <div className={styles.mail}>
-                <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
-
-                <Form form={mailForm} name="myForm" value={mail}>
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      {
-                        type: 'email',
-                        message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
-                      },
-                      {
-                        required: true,
-                        message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
-                      },
-                    ]}
-                  >
-                    <Input
-                      required={false}
-                      value={mail}
-                      placeholder="address@terraminds.com"
-                      onChange={(e) => setMail(e.target.value)}
-                    />
-                  </Form.Item>
-                </Form>
-              </div>
-            </div>
+            <SendEmail
+              title="Send final offer to the candidate"
+              formatMessage={formatMessage}
+              handleSendEmail={handleSendFinalOffer}
+              // handleChangeEmail={this.handleChangeEmail}
+              // handleSendFormAgain={this.handleSendFormAgain}
+              isSentEmail={false}
+            />
           </>
         )}
 
