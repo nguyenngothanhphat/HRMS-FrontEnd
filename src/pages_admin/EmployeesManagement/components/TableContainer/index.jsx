@@ -111,6 +111,9 @@ class TableContainer extends PureComponent {
       type: 'employeesManagement/fetchInActiveEmployeesList',
     });
     dispatch({
+      type: 'employeesManagement/fetchRolesList',
+    });
+    dispatch({
       type: 'employeesManagement/fetchCompanyList',
     });
   };

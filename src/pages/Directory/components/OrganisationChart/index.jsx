@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Input } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Spin } from 'antd';
+import { connect } from 'umi';
 import Chart from './Chart';
 import s from './index.less';
 
-@connect(({ employee: { dataOrgChart = {} } = {} }) => ({
+@connect(({ employee: { dataOrgChart = {} } = {}, loading }) => ({
   dataOrgChart,
+  loading: loading.effects['employee/fetchDataOrgChart'],
 }))
 class OrganisationChart extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      q: '',
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -22,73 +21,18 @@ class OrganisationChart extends Component {
     });
   }
 
-  handleSearch = () => {
-    const { q } = this.state;
-    console.log(q);
-  };
-
   render() {
-    const { dataOrgChart = {} } = this.props;
-
-    // const dummyData = {
-    //   name: 'Bill Lumbergh',
-    //   position: 'CEO',
-    //   children: [
-    //     {
-    //       name: 'Peter Gibbons',
-    //       position: 'Lead',
-    //     },
-    //     {
-    //       name: 'Anil Reddy',
-    //       position: 'Sales',
-    //       children: [
-    //         {
-    //           name: 'Peter Gibbons',
-    //           position: 'Sales 1',
-    //         },
-    //         {
-    //           name: 'Peter Gibbons',
-    //           position: 'Sales 2',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: 'Peter Gibbons',
-    //       position: 'Marketing',
-    //     },
-    //     {
-    //       name: 'Milton Waddams',
-    //       position: 'UI',
-    //     },
-    //     {
-    //       name: 'Bob Slydell',
-    //       position: 'UX',
-    //     },
-    //   ],
-    // };
+    const { dataOrgChart = {}, loading } = this.props;
 
     return (
       <div className={s.container}>
-        <Row type="flex" justify="space-between">
-          <Input
-            placeholder={formatMessage({ id: 'pages.directory.organisationChart.search' })}
-            className={s.viewSearch}
-            onChange={(e) => this.setState({ q: e.target.value })}
-            onPressEnter={this.handleSearch}
-          />
-          <div className={s.viewAction}>
-            <p className={s.viewAction__text}>
-              {formatMessage({ id: 'pages.directory.organisationChart.expandAll' })}
-            </p>
-            <p className={s.viewAction__text}>
-              {formatMessage({ id: 'pages.directory.organisationChart.collapseAll' })}
-            </p>
-            <a href="/images/myw3schoolsimage.jpg" download className={s.viewAction__textDownload}>
-              {formatMessage({ id: 'pages.directory.organisationChart.download' })}
-            </a>
+        {loading ? (
+          <div className={s.viewLoading}>
+            <Spin size="large" />
           </div>
-        </Row>
-        <Row style={{ marginTop: '27px' }}>{/* <Chart data={dataOrgChart} /> */}</Row>
+        ) : (
+          <Chart data={dataOrgChart} />
+        )}
       </div>
     );
   }

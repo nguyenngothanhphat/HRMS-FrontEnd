@@ -139,7 +139,7 @@ const employee = {
     *fetchDataOrgChart(_, { call, put }) {
       try {
         const response = yield call(getDataOrgChart);
-        const { statusCode, data: dataOrgChart = {} } = response;
+        const { statusCode, data: { chart: dataOrgChart = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { dataOrgChart } });
       } catch (errors) {

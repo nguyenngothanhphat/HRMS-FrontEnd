@@ -2,6 +2,7 @@ import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
   getEmployeesList,
+  getRoleList,
   getCompanyList,
   getLocationList,
   getDepartmentList,
@@ -16,6 +17,7 @@ const employeesManagement = {
   state: {
     activeEmployeesList: [],
     inActiveEmployeesList: [],
+    rolesList: [],
     companyList: [],
     locationList: [],
     departmentList: [],
@@ -84,6 +86,16 @@ const employeesManagement = {
         dialog(errors);
       }
     },
+    *fetchRolesList(_, { call, put }) {
+      try {
+        const response = yield call(getRoleList, {});
+        const { statusCode, data: rolesList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { rolesList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchCompanyList(_, { call, put }) {
       try {
         const response = yield call(getCompanyList);
@@ -104,9 +116,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '', location = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, { company });
+        const response = yield call(getDepartmentList, { company, location });
         const { statusCode, data: departmentList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList } });

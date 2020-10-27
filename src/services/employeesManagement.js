@@ -28,7 +28,7 @@ export async function getRoleList() {
 }
 
 export async function getDepartmentList(payload) {
-  return request('/api/department/list-by-company', {
+  return request('/api/department/list', {
     method: 'POST',
     data: payload,
   });

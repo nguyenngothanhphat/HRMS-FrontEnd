@@ -32,6 +32,7 @@ class EligibilityDocs extends PureComponent {
     super(props);
     this.state = {
       openModal: false,
+      isSentEmail: false,
     };
   }
 
@@ -101,7 +102,6 @@ class EligibilityDocs extends PureComponent {
               ...Obj,
               attachment,
             });
-            console.log('adjusted', arrToAdjust);
             dispatch({
               type: 'candidateProfile/saveOrigin',
               payload: {
@@ -128,7 +128,6 @@ class EligibilityDocs extends PureComponent {
         attachment: attach,
         isValidated: !isValidated,
       });
-      console.log('arrToAdjust', arrToAdjust);
       dispatch({
         type: 'candidateProfile/saveOrigin',
         payload: {
@@ -164,8 +163,15 @@ class EligibilityDocs extends PureComponent {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
+          isSentEmail: true,
         });
       }
+    });
+  };
+
+  handleSubmitAgain = () => {
+    this.setState({
+      isSentEmail: false,
     });
   };
 
@@ -202,12 +208,24 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
+  checkLength = (url) => {
+    if (url.length > 20) {
+      const ext = url.split('.').pop();
+      let fileName = url.split('.')[0];
+      if (fileName.length > 15) {
+        fileName = `${fileName.substring(0, 10)}...`;
+        url = `${fileName}${ext}`;
+      }
+    }
+    return url;
+  };
+
   render() {
     const {
       loading,
       data: { attachments, documentListToRender, validateFileSize, generatedBy, employerName },
     } = this.props;
-    const { openModal } = this.state;
+    const { openModal, isSentEmail } = this.state;
     const { user } = generatedBy;
     const { email } = user;
     return (
@@ -230,6 +248,7 @@ class EligibilityDocs extends PureComponent {
                       attachments={attachments}
                       validateFileSize={validateFileSize}
                       employerName={employerName}
+                      checkLength={this.checkLength}
                     />
                   );
                 })}
@@ -247,6 +266,8 @@ class EligibilityDocs extends PureComponent {
                 handleSendEmail={this.handleSendEmail}
                 email={email}
                 onValuesChangeEmail={this.onValuesChangeEmail}
+                isSentEmail={isSentEmail}
+                handleSubmitAgain={this.handleSubmitAgain}
               />
             ) : (
               <StepsComponent />

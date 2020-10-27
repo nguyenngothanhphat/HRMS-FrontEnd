@@ -1,20 +1,32 @@
 import React, { PureComponent } from 'react';
-import { Typography, Radio, Row, Col } from 'antd';
+import { Typography, Radio, Row, Col, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import CustomModal from '@/components/CustomModal';
 import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
-import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
+import ModalContentComponent from '../ModalContentComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data: { processStatus = '' } } = {} }) => ({
-  processStatus,
-}))
+@connect(
+  ({
+    candidateProfile: {
+      tempData: { options = 1 },
+      generatedBy: { user: { email = '' } = {} } = {},
+    },
+    candidateInfo: { data: { processStatus = '' } } = {},
+  }) => ({
+    processStatus,
+    options,
+    email,
+  }),
+)
 class SalaryAcceptance extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
+      openModal: false,
       visible: false,
       select: [
         {
@@ -41,6 +53,12 @@ class SalaryAcceptance extends PureComponent {
       ],
     };
   }
+
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
 
   onFinish = (values) => {
     console.log(values);
@@ -87,7 +105,9 @@ class SalaryAcceptance extends PureComponent {
     const { select } = this.state;
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
-        <div className={styles.title}>Acceptance of salary structure</div>
+        <div className={styles.title}>
+          {formatMessage({ id: 'component.salaryAcceptance.acceptanceTitle' })}
+        </div>
         <Radio.Group defaultValue={1} onChange={this.onChangeSelect}>
           {select.map((data) => {
             return (
@@ -113,6 +133,41 @@ class SalaryAcceptance extends PureComponent {
     );
   };
 
+  submitForm = () => {
+    const { dispatch, email, options } = this.props;
+
+    dispatch({
+      type: 'candidateProfile/sendEmailByCandidate',
+      payload: {
+        options,
+        hrEmail: email,
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        console.log('ye');
+        this.setState({
+          openModal: true,
+        });
+      }
+    });
+  };
+
+  _renderSubmitForm = () => {
+    const { email } = this.props;
+    return (
+      <div className={styles.salaryAcceptanceWrapper_select}>
+        <div className={styles.title}>
+          {' '}
+          {formatMessage({ id: 'component.salaryAcceptance.submitForm' })}
+        </div>
+        <Input value={email} className={styles.formInput} name="email" disabled />
+        <Button type="primary" onClick={this.submitForm}>
+          {formatMessage({ id: 'component.salaryAcceptance.sendEmail' })}
+        </Button>
+      </div>
+    );
+  };
+
   handleOpenSchedule = () => {
     const { visible } = this.state;
     this.setState({
@@ -127,12 +182,13 @@ class SalaryAcceptance extends PureComponent {
   };
 
   render() {
+    const { openModal } = this.state;
+    const { options } = this.props;
     const Note = {
       title: 'Note',
       data: (
         <Typography.Text>
-          The Salary structure has been sent as a provisional offer. The candidate must acknowledge
-          the salary structure as a part of final negotiation in order to proceed.
+          {formatMessage({ id: 'component.salaryAcceptance.note' })}
         </Typography.Text>
       ),
     };
@@ -140,6 +196,14 @@ class SalaryAcceptance extends PureComponent {
       <div className={styles.salaryAcceptance}>
         <NoteComponent note={Note} />
         <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
+        {options !== 1 && (
+          <div className={styles.salaryAcceptanceWrapper}>{this._renderSubmitForm()}</div>
+        )}
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<ModalContentComponent closeModal={this.closeModal} />}
+        />
       </div>
     );
   }
