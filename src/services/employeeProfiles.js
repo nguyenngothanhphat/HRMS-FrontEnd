@@ -183,6 +183,13 @@ export async function getDocumentById(payload) {
   });
 }
 
+export async function getEmailsListByCompany(payload) {
+  return request('/api/employee/admin-list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getChangeHistories(payload) {
   return request('/api/changehistory/get-by-employee', {
     method: 'POST',

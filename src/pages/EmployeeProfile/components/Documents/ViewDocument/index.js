@@ -99,9 +99,32 @@ class ViewDocument extends PureComponent {
     }
   };
 
+  fetchEmailsListByCompany = () => {
+    const {
+      dispatch,
+      employeeProfile: { tempData: { compensationData: { company = '' } = {} } = {} } = {},
+    } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchEmailsListByCompany',
+      payload: [company],
+    });
+  };
+
+  renderEmailsList = () => {
+    const {
+      employeeProfile: { emailsList = [] },
+    } = this.props;
+    const list = emailsList.map((user) => {
+      const { generalInfo: { workEmail = '' } = {} } = user;
+      return workEmail;
+    });
+    return list.filter((value) => value !== '');
+  };
+
   componentDidMount = () => {
     const { selectedFile } = this.props;
     this.fetchDocumentDetails(selectedFile);
+    this.fetchEmailsListByCompany();
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
@@ -346,8 +369,8 @@ class ViewDocument extends PureComponent {
                   showArrow
                   className={styles.shareViaEmailInput}
                 >
-                  {mockData.map((d) => (
-                    <Option key={d.value}>{d.value}</Option>
+                  {this.renderEmailsList().map((email) => (
+                    <Option key={email}>{email}</Option>
                   ))}
                 </Select>
               </Col>
