@@ -27,7 +27,7 @@ class FirstFieldsComponent extends PureComponent {
       data: test,
     } = this.props;
     console.log('1', this.props);
-    console.log('2', test.department);
+    console.log('2', test.workLocation);
     return (
       <>
         <div>
@@ -65,7 +65,13 @@ class FirstFieldsComponent extends PureComponent {
                       ? reportingManager
                       : test.department !== null && item.title === 'department'
                       ? test.department.name
-                      : test.workLocation !== null && item.title === 'workLocation'
+                      : test.workLocation !== null &&
+                        item.title === 'workLocation' &&
+                        test.workLocation.company
+                      ? test.workLocation.company.legalAddress.address
+                      : test.workLocation !== null &&
+                        item.title === 'workLocation' &&
+                        !test.workLocation.company
                       ? test.workLocation.legalAddress.address
                       : test.title !== null && item.title === 'title'
                       ? test.title.name
