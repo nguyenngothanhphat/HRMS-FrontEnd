@@ -49,6 +49,7 @@
     "@ant-design/pro-descriptions": "1.0.4",
     "@ant-design/pro-layout": "6.4.15",
     "@ant-design/pro-table": "2.5.13",
+    "@dabeng/react-orgchart": "^1.0.0",
     "antd": "^4.5.3",
     "axios": "^0.20.0",
     "babel-eslint": "^10.1.0",
