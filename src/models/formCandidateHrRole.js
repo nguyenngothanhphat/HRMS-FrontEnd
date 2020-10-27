@@ -354,9 +354,11 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      console.log('pl', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
