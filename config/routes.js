@@ -278,6 +278,7 @@ const routes = [
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',
+            hideInMenu: true,
             component: './ViewDocument',
             // authority: ['employee'],
           },
