@@ -504,8 +504,9 @@ const formatData = (list = []) => {
   _.map(list, (item) => {
     // console.log(`${key}: ${item}`);
     const {
-      ticketID = '',
-      fullName = '',
+      _id,
+      ticketID,
+      fullName,
       // position,
       title = '',
       workLocation = '',
@@ -521,6 +522,8 @@ const formatData = (list = []) => {
     const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
 
     const rookie = {
+      // rookieId: `#${_id.substring(0, 8)}`,
+      candidate: _id || '',
       rookieId: ticketID,
       isNew: isNew || '',
       rookieName: fullName,
@@ -757,8 +760,9 @@ const onboard = {
         // console.log(response);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log('response', response);
         const returnedData = formatData(response.data[0].paginatedResults);
-        // console.log('data: ', returnedData);
+        console.log('returnedData', returnedData);
 
         const {
           PROVISIONAL_OFFER_DRAFT,
