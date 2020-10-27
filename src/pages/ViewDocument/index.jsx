@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { connect } from 'umi';
-
+import DownloadIcon from '@/assets/download_icon.svg';
+import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -76,6 +77,13 @@ class ViewDocument extends PureComponent {
     return str1.toLowerCase().includes(str2.toLowerCase());
   };
 
+  renderDownloadIcon = () => (
+    <div>
+      <img alt="download" src={DownloadIcon} className={styles.downloadButton} />
+      <span>Download</span>
+    </div>
+  );
+
   render() {
     const { numPages } = this.state;
     const { viewDocument: { documentDetail = {} } = {} } = this.props;
@@ -84,6 +92,9 @@ class ViewDocument extends PureComponent {
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
           <span>View Document</span>
+          <div className={styles.downloadButtonArea}>
+            <DownloadFile content={this.renderDownloadIcon()} url={url} />
+          </div>
         </div>
 
         <Row className={styles.tableContent}>

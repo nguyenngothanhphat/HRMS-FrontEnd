@@ -14,41 +14,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const { Option } = Select;
 
-const mockData = [
-  {
-    id: 123,
-    value: 'ngoctuanitpy@gmail.com',
-  },
-  {
-    id: 456,
-    value: 'tuan@gmail.com',
-  },
-  {
-    id: 789,
-    value: 'example@hotmail.com',
-  },
-  {
-    id: 777,
-    value: 'elonmusk@gmail.com',
-  },
-  {
-    id: 433,
-    value: 'testemail1@gmail.com',
-  },
-  {
-    id: 889,
-    value: 'testemail2@gmail.com',
-  },
-  {
-    id: 232,
-    value: 'emailex1@hotmail.com',
-  },
-  {
-    id: 298,
-    value: 'emailex3@gmail.com',
-  },
-];
-
 const identifyImageOrPdf = (fileName) => {
   const parts = fileName.split('.');
   const ext = parts[parts.length - 1];
