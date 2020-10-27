@@ -12,7 +12,7 @@ import {
   endOfWeek,
   isSameMonth,
 } from 'date-fns';
-import './index.less';
+import styles from './index.less';
 
 export default class EventCalendar extends PureComponent {
   constructor(props) {
@@ -47,17 +47,15 @@ export default class EventCalendar extends PureComponent {
     const dateFormat = 'MMMM yyyy';
     const { currentMonth } = this.state;
     return (
-      <div className="header row flex-middle">
-        <div className="col col-start">
-          <div className="icon" onClick={this.prevMonth}>
-            chevron_left
-          </div>
-        </div>
-        <div className="col col-center">
+      <div className={styles.renderHeader}>
+        <div className={styles.monthLabel}>
           <span>{format(currentMonth, dateFormat)}</span>
         </div>
-        <div className="col col-end" onClick={this.nextMonth}>
-          <div className="icon">chevron_right</div>
+        <div className={styles.monthNavigation}>
+          <div className={styles.icon} onClick={this.prevMonth}>
+            {`<`}
+          </div>
+          <div className={styles.icon} onClick={this.nextMonth}>{`>`}</div>
         </div>
       </div>
     );
@@ -72,13 +70,13 @@ export default class EventCalendar extends PureComponent {
 
     for (let i = 0; i < 7; i += 1) {
       days.push(
-        <div className="col col-center" key={i}>
+        <div className={`${styles.col} ${styles.colCenter}`} key={i}>
           {format(addDays(startDate, i), dateFormat)}
         </div>,
       );
     }
 
-    return <div className="days row">{days}</div>;
+    return <div className={`${styles.days} ${styles.row}`}>{days}</div>;
   }
 
   renderCells() {
@@ -101,7 +99,7 @@ export default class EventCalendar extends PureComponent {
         const cloneDay = day;
         days.push(
           <div
-            className={`col cell ${
+            className={`${styles.col} ${styles.cell} ${
               !isSameMonth(day, monthStart)
                 ? 'disabled'
                 : isSameDay(day, selectedDate)
@@ -111,26 +109,26 @@ export default class EventCalendar extends PureComponent {
             key={day}
             onClick={() => this.onDateClick(parse(cloneDay))}
           >
-            <span className="number">{formattedDate}</span>
-            <span className="bg">{formattedDate}</span>
+            <span className={styles.number}>{formattedDate}</span>
+            <span className={styles.bg}>{formattedDate}</span>
           </div>,
         );
         day = addDays(day, 1);
       }
       rows.push(
-        <div className="row" key={day}>
+        <div className={styles.row} key={day}>
           {days}
         </div>,
       );
       days = [];
     }
-    return <div className="body">{rows}</div>;
+    return <div className={styles.body}>{rows}</div>;
   }
 
   render() {
     return (
-      <div className="EventCalendar">
-        <div className="calendar">
+      <div className={styles.EventCalendar}>
+        <div className={styles.calendar}>
           {this.renderHeader()}
           {this.renderDays()}
           {this.renderCells()}
