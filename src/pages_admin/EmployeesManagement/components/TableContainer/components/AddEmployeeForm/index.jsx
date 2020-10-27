@@ -42,6 +42,16 @@ class AddEmployeeForm extends Component {
     };
   }
 
+  componentDidMount() {
+    const { company } = this.props;
+    if (company !== '') {
+      this.setState({
+        isDisabled: false,
+      });
+      this.fetchData(company._id);
+    }
+  }
+
   componentDidUpdate(prevState) {
     const { location } = this.state;
     if (location !== '' && location !== prevState.location) {
@@ -51,33 +61,43 @@ class AddEmployeeForm extends Component {
     }
   }
 
+  fetchData = (_id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/fetchReportingManagerList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchLocationList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchJobTitleList',
+      payload: {
+        company: _id,
+      },
+    });
+  };
+
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
     const { company } = this.state;
 
     switch (type) {
       case 'company':
-        dispatch({
-          type: 'employeesManagement/fetchReportingManagerList',
-          payload: {
-            company: value,
-          },
-        });
-        dispatch({
-          type: 'employeesManagement/fetchLocationList',
-          payload: {
-            company: value,
-          },
-        });
-        dispatch({
-          type: 'employeesManagement/fetchJobTitleList',
-          payload: {
-            company: value,
-          },
-        });
+        this.fetchData(value);
         this.setState({
           isDisabled: false,
           company: value,
+        });
+        this.formRef.current.setFieldsValue({
+          location: undefined,
+          title: undefined,
+          manager: undefined,
         });
         break;
       case 'location':
@@ -161,6 +181,7 @@ class AddEmployeeForm extends Component {
       jobTitleList,
       reportingManagerList,
       loadingDepartment,
+      company,
     } = this.props;
     const { isDisabled, isDisabledDepartment } = this.state;
     return (
@@ -222,19 +243,25 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select Company"
-              showArrow
-              showSearch
-              onChange={(value) => this.onChangeSelect('company', value)}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {companyList.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
-              ))}
-            </Select>
+            {company ? (
+              <Select defaultValue={company._id} disabled>
+                <Option value={company._id}>{company.name}</Option>
+              </Select>
+            ) : (
+              <Select
+                placeholder="Select Company"
+                showArrow
+                showSearch
+                onChange={(value) => this.onChangeSelect('company', value)}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {companyList.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            )}
           </Form.Item>
           <Form.Item label="Location" name="location" rules={[{ required: true }]}>
             <Select

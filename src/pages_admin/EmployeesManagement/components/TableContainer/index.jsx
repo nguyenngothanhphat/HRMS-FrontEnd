@@ -202,6 +202,10 @@ class TableContainer extends PureComponent {
   };
 
   importEmployees = () => {
+    this.openFormImportEmployees();
+  };
+
+  openFormImportEmployees = () => {
     this.setState({
       visibleImportEmployee: true,
     });
@@ -265,6 +269,7 @@ class TableContainer extends PureComponent {
             ))}
           </Tabs>
           <AddEmployeeForm
+            company=""
             titleModal="Add Employee"
             visible={visible}
             handleCancel={this.handleCancel}
@@ -274,7 +279,6 @@ class TableContainer extends PureComponent {
             titleModal="Import Employee"
             visible={visibleImportEmployee}
             handleCancel={this.handleCancel}
-            // getResponse={this.getResponse}
           />
         </div>
       </div>
