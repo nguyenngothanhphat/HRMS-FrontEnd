@@ -63,6 +63,10 @@ class DirectoryComponent extends PureComponent {
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
+      roles: {
+        HR: 'HR',
+        HR_MANAGER: 'HRMANAGER',
+      },
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -242,8 +246,10 @@ class DirectoryComponent extends PureComponent {
 
   checkRole = (roles) => {
     let flag = false;
-    const checkRole = (obj) => obj._id === 'HR';
-    if (roles.some(checkRole)) {
+    const { roles: rolesConst } = this.state;
+    const checkRoleHR = (obj) => obj._id === rolesConst.HR;
+    const checkRoleHRManager = (obj) => obj._id === rolesConst.HR_MANAGER;
+    if (roles.some(checkRoleHR) || roles.some(checkRoleHRManager)) {
       flag = true;
     }
     return flag;

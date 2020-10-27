@@ -36,6 +36,18 @@ class ModalImportEmployee extends Component {
     this.state = {
       employees: [],
       company: props.company._id,
+      // objectEmployee: {
+      //   location: 'Location',
+      //   department: 'Department',
+      //   employeeId: 'Employee Id',
+      //   workEmail: 'Work Email',
+      //   personalEmail: 'Personal Email',
+      //   managerWorkEmail: 'Manager Work Email',
+      //   firstName: 'First Name',
+      //   lastName: 'Last Name',
+      //   title: 'Job Title',
+      //   personalNumber: 'Personal Number',
+      // },
     };
     this.formRef = React.createRef();
   }
