@@ -19,6 +19,16 @@ class AddCompany extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'signup/save',
+      payload: {
+        currentStep: 0,
+      },
+    });
+  }
+
   customStep = (number) => {
     const { currentStep = 0 } = this.props;
     const check = number > currentStep;

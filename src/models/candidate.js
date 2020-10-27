@@ -26,6 +26,7 @@ const candidateProfile = {
       previousExperience: '',
       noticePeriod: '',
       dateOfJoining: '',
+      processStatus: '',
       documentList: [],
       attachments: {},
       documentListToRender: [],
@@ -47,6 +48,7 @@ const candidateProfile = {
       privateEmail: '',
       experienceYear: '',
       workLocation: '',
+      options: 1,
       candidateSignature: {
         fileName: '',
         _id: '',
@@ -58,6 +60,7 @@ const candidateProfile = {
         url: '',
       },
     },
+    salaryStructure: [],
     jobDetails: {
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -127,9 +130,21 @@ const candidateProfile = {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log(data.salaryStructure);
         yield put({
           type: 'saveOrigin',
-          payload: { ...data, candidate: data._id, _id: data._id },
+          payload: {
+            ...data,
+            candidate: data._id,
+            _id: data._id,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            ...data,
+            salaryStructure: data.salaryStructure,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -207,6 +222,7 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
+      console.log('saved');
       return {
         ...state,
         ...action.payload,

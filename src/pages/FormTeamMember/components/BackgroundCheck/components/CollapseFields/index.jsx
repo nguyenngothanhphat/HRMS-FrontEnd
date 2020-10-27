@@ -7,7 +7,7 @@ import styles from './index.less';
 
 class CollapseField extends PureComponent {
   render() {
-    const { item = {}, handleCheckAll, handleChange, tempData } = this.props;
+    const { item = {}, handleCheckAll, handleChange, tempData, onValuesChange } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = tempData;
     const { poe } = technicalCertification;
     const checkedArr = item.data
@@ -63,7 +63,7 @@ class CollapseField extends PureComponent {
             }
             extra="[Can submit any of the below other than (*)mandatory]"
           >
-            {item.type === 'D' ? <InputField /> : <></>}
+            {item.type === 'D' ? <InputField onValuesChange={onValuesChange} /> : <></>}
             <Space direction="vertical">
               {checkedArr.map((data) => (
                 <Checkbox

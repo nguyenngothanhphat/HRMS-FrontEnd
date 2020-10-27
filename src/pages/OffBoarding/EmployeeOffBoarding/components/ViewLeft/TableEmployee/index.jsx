@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import { history } from 'umi';
 import empty from '@/assets/empty.svg';
-// import persion from '@/assets/people.svg';
+import persion from '@/assets/people.svg';
 import t from './index.less';
 
 class TableEmployee extends PureComponent {
@@ -9,6 +10,10 @@ class TableEmployee extends PureComponent {
     super(props);
     this.state = {};
   }
+
+  push = () => {
+    history.push('/employee-offboarding/request/112454');
+  };
 
   render() {
     // const data = [
@@ -35,6 +40,21 @@ class TableEmployee extends PureComponent {
     //     ),
     //   },
     // ];
+    const { data = [] } = this.props;
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: data.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          total
+        </span>
+      ),
+    };
 
     const columns = [
       {
@@ -56,6 +76,18 @@ class TableEmployee extends PureComponent {
       {
         title: <span className={t.title}>Assigned</span>,
         dataIndex: 'assigned',
+        render: () => (
+          <div className={t.rowAction}>
+            <p>
+              <span>
+                <img src={persion} style={{ marginTop: '10px' }} alt="" />
+              </span>
+              <span>
+                <img src={persion} style={{ marginTop: '10px' }} alt="" />
+              </span>
+            </p>
+          </div>
+        ),
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,
@@ -64,6 +96,11 @@ class TableEmployee extends PureComponent {
       {
         title: <span className={t.title}>Action</span>,
         dataIndex: 'action',
+        render: () => (
+          <div className={t.rowAction}>
+            <span onClick={this.push}>View Request</span>
+          </div>
+        ),
       },
     ];
 
@@ -79,11 +116,11 @@ class TableEmployee extends PureComponent {
             ),
           }}
           columns={columns}
-          // dataSource={data}
-          // pagination={{
-          //   ...pagination,
-          //   total: data.length,
-          // }}
+          dataSource={data}
+          pagination={{
+            ...pagination,
+            total: data.length,
+          }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}

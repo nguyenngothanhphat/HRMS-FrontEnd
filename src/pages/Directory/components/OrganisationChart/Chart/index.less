@@ -7,6 +7,23 @@
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
   display: inline-block;
   position: relative;
+  cursor: pointer;
+  &__textName {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 12px 0;
+    line-height: 1.36;
+    color: rgb(44, 109, 249);
+  }
+  &__textInfo {
+    color: rgb(112, 113, 119);
+    font-weight: normal;
+    font-size: 13px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.38;
+    letter-spacing: normal;
+  }
 }
 
 .iconA {
@@ -22,4 +39,44 @@
 
 #initechOrgChart .nodeLineBorderTop {
   border-top: solid 1px #bcbcbc;
+}
+
+.listEmployee {
+  &__title {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgb(44, 109, 249);
+    margin: 0px;
+  }
+}
+
+.buttonBack {
+  width: 157px;
+  height: 40px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: rgb(255, 255, 255);
+  font-weight: 500;
+  border-radius: 25px;
+  border: 1px solid rgb(255, 161, 0);
+  background-color: rgb(255, 161, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.5;
+  }
+  &:active {
+    transform: translateY(-1px);
+  }
+}
+
+.employeesOfDepartment {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }

@@ -84,20 +84,31 @@ export default {
   'component.noteComponent.title': 'Note',
   'component.salaryStructureHeader.title': 'Salary Structure',
   'component.salaryStructureHeader.subTitle':
-    'The pay division as per the position of ‘UX Designer’ has been given below.',
+    'The pay division is as per the selected Job title. Additionally you may enter a new salary structure. To do so Download salary structure template  and upload',
   'component.salaryStructure.tableWrapper':
     ' The table of salary structure should populate here. Need clarification here if this table or information is editable by the HR?',
   'component.salaryAcceptanceContent.content': 'Acceptance of salary structure by candidate',
-  'component.salaryAcceptance.title1': 'I hereby accept this salary structure.',
+  'component.salaryAcceptance.title1': 'The salary structure has been accepted by the candidate.',
   'component.salaryAcceptance.note1':
     'You have gone through all the contents of the table and accept the salary as terms of your employment.',
-  'component.salaryAcceptance.title2': 'I would like to re-negotiate the salary structure.',
+  'component.salaryAcceptance.title2':
+    'A re-negotiation as been asked by the candidate on the salary structure',
   'component.salaryAcceptance.note2':
     'You have gone through all the contents of the table. However, I would like to renegotiate.',
-  'component.salaryAcceptance.title3': 'I would like to reject this offer.',
+  'component.salaryAcceptance.title3': 'The salary structure has been rejected by the candidate.',
   'component.salaryAcceptance.note3':
     'You have gone through all the contents of the table and do not accept the offer given to me.',
   'component.salaryAcceptance.closeCandidature': ' Close Candidature',
+  'component.salaryAcceptance.pendingMessage':
+    'We are waiting for Ms. Ashwini Narayana to mark the acceptance of the shared salary structure',
+  'component.salaryAcceptance.sendFormAgain': ' Send form again',
+  'component.salaryAcceptance.submitForm': 'Submit form',
+  'component.salaryAcceptance.sendEmail': 'Send email',
+  'component.salaryAcceptance.acceptanceTitle': 'Acceptance of salary structure',
+  'component.salaryAcceptance.note':
+    '  The Salary structure has been sent as a provisional offer. The candidate must acknowledge the salary structure as a part of final negotiation in order to proceed.',
+  'component.salaryStructureTemplate.done': 'Done',
+  'component.salaryStructureTemplate.edit': 'Edit',
   'component.eligibilityDocs.TypeA': 'Type A: Identity Proof',
   'component.eligibilityDocs.aadharCard': 'Aadhar Card',
   'component.eligibilityDocs.pan': 'PAN',

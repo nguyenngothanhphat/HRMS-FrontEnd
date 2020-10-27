@@ -73,3 +73,41 @@ export function submitPhase1(params) {
     data: params,
   });
 }
+
+export function getSalaryStructureList() {
+  return request('/api/salarystructure/list', {
+    method: 'POST',
+  });
+}
+
+export function getTitleListByCompany(params) {
+  return request('/api/title/list-by-company', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function getTableDataByTitle(params) {
+  console.log(params);
+
+  return request('/api/salarystructure/get-by-title', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function closeCandidate(params) {
+  console.log(params);
+  return request('/api/candidate/close-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function editSalaryStructure(params) {
+  console.log(params);
+  return request('/api/candidate/close-candidate', {
+    method: 'POST',
+    data: params,
+  });
+}

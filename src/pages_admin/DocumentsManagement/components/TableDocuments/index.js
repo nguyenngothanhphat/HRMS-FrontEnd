@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
-import ViewDocument from '../ViewDocument';
+import moment from 'moment';
+import ViewDocument from '@/components/ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -44,10 +45,21 @@ class TableDocuments extends PureComponent {
       title: 'Uploaded By',
       // dataIndex: 'uploadedBy',
       align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
+      // sortDirections: ['ascend', 'descend', 'ascend'],
       render: () => <span>Terralogic</span>,
       // sorter: {
       //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
+      // },
+    },
+    {
+      title: 'Company',
+      dataIndex: 'company',
+      align: 'center',
+      width: '8%',
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      render: () => <span>Company</span>,
+      // sorter: {
+      //   compare: (a, b) => a.company.localeCompare(b.company),
       // },
     },
     {
@@ -55,16 +67,12 @@ class TableDocuments extends PureComponent {
       dataIndex: 'createdAt',
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-      // },
-    },
-    {
-      title: 'User ID',
-      dataIndex: 'employee',
-      align: 'center',
+      render: (createdAt) => {
+        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
+        return <span>{formatedDate}</span>;
+      },
       sorter: {
-        compare: (a, b) => a.employee.localeCompare(b.employee),
+        compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       },
     },
     {

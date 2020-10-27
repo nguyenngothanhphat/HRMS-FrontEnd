@@ -2,112 +2,196 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
+import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import SendEmail from '../../../BackgroundCheck/components/SendEmail';
 
 import styles from './index.less';
 
-@connect(({ info: { salaryStructure = {} } = {} }) => ({
-  salaryStructure,
-}))
+@connect(
+  ({
+    candidateInfo: { tableData = [], data: { _id = '', fullName = '', processStatus = '' } } = {},
+  }) => ({
+    processStatus,
+    _id,
+    fullName,
+    tableData,
+  }),
+)
 class SalaryAcceptance extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: false,
+    };
+  }
+
   onFinish = (values) => {
     console.log(values);
   };
 
-  static getDerivedStateFromProps(props) {
-    if ('salaryStructure' in props) {
-      return { salaryStructure: props.salaryStructure || {} };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props) {
+  //   if ('salaryStructure' in props) {
+  //     return { salaryStructure: props.salaryStructure || {} };
+  //   }
+  //   return null;
+  // }
 
-  handleChange = (e) => {
-    const { target } = e;
-    const { name, value } = target;
-    const { dispatch } = this.props;
+  // handleChange = (e) => {
+  //   const { target } = e;
+  //   const { name, value } = target;
+  //   const { dispatch } = this.props;
 
-    const { salaryStructure = {} } = this.state;
-    salaryStructure[name] = value;
+  //   const { salaryStructure = {} } = this.state;
+  //   salaryStructure[name] = value;
 
+  //   dispatch({
+  //     type: 'info/save',
+  //     payload: {
+  //       salaryStructure,
+  //     },
+  //   });
+  // };
+
+  onCloseCandidate = () => {
+    const { dispatch, _id } = this.props;
     dispatch({
-      type: 'info/save',
+      type: 'candidateInfo/closeCandidate',
       payload: {
-        salaryStructure,
+        candidate: _id,
+      },
+    });
+  };
+
+  onEditSalaryStructure = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
+      },
+    });
+  };
+
+  handleSendEmail = () => {
+    const { dispatch, _id, tableData } = this.props;
+    dispatch({
+      type: 'candidateInfo/editSalaryStructure',
+      payload: {
+        candidate: _id,
+        setting: tableData,
       },
     });
   };
 
   _renderStatus = () => {
-    const { salaryStatus } = this.props;
-
-    if (salaryStatus === 1) {
+    const { processStatus, fullName } = this.props;
+    console.log(processStatus);
+    if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
         <SalaryAcceptanceContent
           radioTitle={formatMessage({ id: 'component.salaryAcceptance.title1' })}
           note={formatMessage({ id: 'component.salaryAcceptance.note1' })}
+          accept
         />
       );
     }
-    if (salaryStatus === 2) {
+    if (processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
       return (
         <>
           <SalaryAcceptanceContent
             radioTitle={formatMessage({ id: 'component.salaryAcceptance.title2' })}
             note={formatMessage({ id: 'component.salaryAcceptance.note2' })}
+            accept={false}
           />
         </>
       );
     }
-    if (salaryStatus === 3) {
-      const { salaryStructure = {} } = this.state;
-      const { rejectComment } = salaryStructure;
+    if (processStatus === 'DISCARDED-PROVISONAL-OFFER') {
       return (
         <>
           <SalaryAcceptanceContent
             radioTitle={formatMessage({ id: 'component.salaryAcceptance.title3' })}
             note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
+            accept={false}
           />
-          <hr />
-          <Form
-            className={styles.basicInformation__form}
-            wrapperCol={{ span: 24 }}
-            name="basic"
-            initialValues={{ rejectComment }}
-            onFinish={this.onFinish}
-            onFocus={this.onFocus}
-          >
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label="Comment"
-              name="rejectComment"
-            >
-              <Input
-                onChange={(e) => this.handleChange(e)}
-                className={styles.formInput}
-                name="rejectComment"
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
-              </Button>
-            </Form.Item>
-          </Form>
+          <Button type="primary" onClick={this.onCloseCandidate}>
+            {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
+          </Button>
         </>
+      );
+    }
+    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+      return (
+        <div className={styles.pending}>
+          <div className={styles.pendingIcon}>
+            <img src={pendingIcon} alt="icon" />
+          </div>
+          <p>
+            We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
+            structure
+          </p>
+          <Button type="primary" onClick={this.onEditSalaryStructure}>
+            {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
+          </Button>
+        </div>
       );
     }
     return null;
   };
 
+  _renderNegotiationForm = () => {
+    return (
+      <>
+        <div className={styles.salaryAcceptanceWrapper}>
+          <div className={styles.title}>Step forward</div>
+          <div className={styles.content}>
+            <span className={styles.blueText} onClick={this.handleOpenSchedule}>
+              Schedule a 1-on-1
+            </span>
+            to negotiate the CTC and update the same here.
+            <br />
+            <br />
+            Send the salary structure to the candidate to mark acceptance or
+            <br />
+            <br />
+            <p className={styles.redText}>Close Candidature</p>
+          </div>
+        </div>
+        <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
+      </>
+    );
+  };
+
+  handleOpenSchedule = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+    });
+  };
+
+  handleCandelSchedule = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   render() {
-    const { salaryStatus } = this.props;
+    const { processStatus } = this.props;
+    const { visible } = this.state;
+
     return (
       <div className={styles.salaryAcceptance}>
+        <ScheduleModal
+          visible={visible}
+          modalContent="Schedule 1-on-1"
+          handleCancel={this.handleCandelSchedule}
+        />
         <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
-        {salaryStatus === 2 ? <SendEmail formatMessage={formatMessage} /> : ''}
+        {processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ? this._renderNegotiationForm() : ''}
       </div>
     );
   }

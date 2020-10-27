@@ -15,13 +15,13 @@ const _renderScreen = (screenNumber) => {
     case 2:
       return <JobDetails />;
     case 3:
-      return <EligibilityDocs />;
-    case 4:
-      return <OfferDetails />;
-    case 5:
-      return <Benefits />;
-    case 6:
       return <SalaryStructure />;
+    case 4:
+      return <EligibilityDocs />;
+    case 5:
+      return <OfferDetails />;
+    case 6:
+      return <Benefits />;
     default:
       return <BasicInfomation />;
   }

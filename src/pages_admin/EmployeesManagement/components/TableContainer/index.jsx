@@ -4,23 +4,27 @@ import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
 import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
+import AddEmployeeForm from './components/AddEmployeeForm';
+import ModalImportEmployee from './components/ModalImportEmployee';
 import styles from './index.less';
 
-@connect(({ loading, employee }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-  employee,
+@connect(({ loading, employeesManagement }) => ({
+  loadingActiveList: loading.effects['employeesManagement/fetchActiveEmployeesList'],
+  loadingInActiveList: loading.effects['employeesManagement/fetchInActiveEmployeesList'],
+  employeesManagement,
 }))
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
-    if ('employee' in nextProps) {
-      const { employee: { filter = [] } = {} } = nextProps;
+    if ('employeesManagement' in nextProps) {
+      const { employeesManagement: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
       let location = [];
+      let company = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const locationConst = 'Location';
+      const companyConst = 'Company';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -31,13 +35,17 @@ class TableContainer extends PureComponent {
         if (item.actionFilter.name === locationConst) {
           location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employeeType, department, location };
+        if (item.actionFilter.name === companyConst) {
+          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { employeeType, department, location, company };
       });
       return {
         ...prevState,
         department,
         location,
         employeeType,
+        company,
       };
     }
     return null;
@@ -52,11 +60,14 @@ class TableContainer extends PureComponent {
       department: [],
       location: [],
       employeeType: [],
+      company: [],
       filterName: '',
       tabs: [
         { id: 1, name: formatMessage({ id: 'pages_admin.employees.table.activeEmployeesTab' }) },
         { id: 2, name: formatMessage({ id: 'pages_admin.employees.table.inactiveEmployeesTab' }) },
       ],
+      visible: false,
+      visibleImportEmployee: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -70,12 +81,13 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employeeType, filterName, tabId } = this.state;
+    const { department, location, company, employeeType, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       department,
       location,
       employeeType,
+      company,
     };
 
     if (
@@ -83,6 +95,7 @@ class TableContainer extends PureComponent {
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
       prevState.employeeType.length !== employeeType.length ||
+      prevState.company.length !== company.length ||
       prevState.filterName !== filterName
     ) {
       this.getDataTable(params, tabId);
@@ -92,10 +105,16 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
+      type: 'employeesManagement/fetchActiveEmployeesList',
     });
     dispatch({
-      type: 'employee/fetchListEmployeeInActive',
+      type: 'employeesManagement/fetchInActiveEmployeesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchRolesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
     });
   };
 
@@ -103,13 +122,13 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     if (tabId === 1) {
       dispatch({
-        type: 'employee/fetchListEmployeeActive',
+        type: 'employeesManagement/fetchActiveEmployeesList',
         payload: params,
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'employee/fetchListEmployeeInActive',
+        type: 'employeesManagement/fetchInActiveEmployeesList',
         payload: params,
       });
     }
@@ -117,12 +136,12 @@ class TableContainer extends PureComponent {
 
   renderListEmployees = (tabId) => {
     const {
-      employee: { listEmployeeActive = [], listEmployeeInActive = [] },
+      employeesManagement: { activeEmployeesList = [], inActiveEmployeesList = [] },
     } = this.props;
     if (tabId === 1) {
-      return listEmployeeActive;
+      return activeEmployeesList;
     }
-    return listEmployeeInActive;
+    return inActiveEmployeesList;
   };
 
   handleToggle = () => {
@@ -140,7 +159,7 @@ class TableContainer extends PureComponent {
     });
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/ClearFilter',
+      type: 'employeesManagement/ClearFilter',
     });
     setTimeout(() => {
       this.setState({
@@ -152,14 +171,14 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <div className={styles.buttonAddImport} onClick={this.importEmployee}>
+        <div className={styles.buttonAddImport} onClick={this.importEmployees}>
           <img
             className={styles.buttonAddImport_imgImport}
             src="/assets/images/import.svg"
             alt="Import Employee"
           />
           <p className={styles.buttonAddImport_text}>
-            {formatMessage({ id: 'pages_admin.employees.table.importEmployee' })}
+            {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
           </p>
         </div>
         <div className={styles.buttonAddImport} onClick={this.addEmployee}>
@@ -182,12 +201,28 @@ class TableContainer extends PureComponent {
     );
   };
 
-  importEmployee = () => {
-    alert('Import Employee');
+  importEmployees = () => {
+    this.setState({
+      visibleImportEmployee: true,
+    });
   };
 
   addEmployee = () => {
-    alert('Add Employee');
+    this.openFormAddEmployee();
+  };
+
+  openFormAddEmployee = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      visibleImportEmployee: false,
+    });
+    this.initDataTable();
   };
 
   handleChange = (valueInput) => {
@@ -197,8 +232,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { tabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListInActive } = this.props;
+    const { tabs, collapsed, changeTab, visible, visibleImportEmployee } = this.state;
+    const { loadingActiveList, loadingInActiveList } = this.props;
 
     return (
       <div className={styles.tableContainer}>
@@ -214,7 +249,7 @@ class TableContainer extends PureComponent {
                 <Layout className={styles.managementLayout}>
                   <Content className="site-layout-background">
                     <TableEmployees
-                      loading={loadingListActive || loadingListInActive}
+                      loading={loadingActiveList || loadingInActiveList}
                       data={this.renderListEmployees(tab.id)}
                     />
                   </Content>
@@ -229,6 +264,18 @@ class TableContainer extends PureComponent {
               </TabPane>
             ))}
           </Tabs>
+          <AddEmployeeForm
+            titleModal="Add Employee"
+            visible={visible}
+            handleCancel={this.handleCancel}
+            getResponse={this.getResponse}
+          />
+          <ModalImportEmployee
+            titleModal="Import Employee"
+            visible={visibleImportEmployee}
+            handleCancel={this.handleCancel}
+            // getResponse={this.getResponse}
+          />
         </div>
       </div>
     );

@@ -17,18 +17,6 @@ export default class TableEmployees extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
-        title: formatMessage({ id: 'pages_admin.employees.table.userID' }),
-        dataIndex: 'userId',
-        width: '8%',
-        align: 'left',
-        defaultSortOrder: 'ascend',
-        sortDirections: ['ascend', 'descend', 'ascend'],
-        sorter: {
-          compare: (a, b) => a.userId - b.userId,
-        },
-        render: () => <span>User ID</span>,
-      },
-      {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         align: 'left',
@@ -38,16 +26,18 @@ export default class TableEmployees extends PureComponent {
       {
         title: formatMessage({ id: 'pages_admin.employees.table.joinedDate' }),
         dataIndex: 'joinedDate',
-        width: '10%',
+        width: '8%',
         align: 'left',
         render: () => <span>Aug-7,20</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
-        dataIndex: 'email',
+        dataIndex: 'generalInfo',
         width: '15%',
         align: 'center',
-        render: () => <span>emailTemplate@terralogic.com</span>,
+        render: (generalInfo) => (
+          <span>{generalInfo && generalInfo.workEmail ? generalInfo.workEmail : ''}</span>
+        ),
       },
       {
         title: formatMessage({ id: 'component.directory.table.fullName' }),
