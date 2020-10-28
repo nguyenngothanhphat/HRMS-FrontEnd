@@ -214,6 +214,38 @@ const PreviewOffer = (props) => {
     setRole(_id);
   };
 
+  const handleHrSignatureSubmit = () => {
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        hrSignature: hrSignatureProp,
+      },
+    });
+  };
+
+  const handleHrManagerSignatureSubmit = () => {
+    console.log('Click1');
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+
+    console.log('Click2');
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        hrManagerSignature: hrManagerSignatureProp,
+      },
+    });
+  };
+
   useEffect(() => {
     getUserRole();
   }, []);
@@ -222,6 +254,10 @@ const PreviewOffer = (props) => {
     // Save changes to store whenever input fields change
     saveChanges();
   }, [mail, hrSignature, hrManagerSignature]);
+
+  useEffect(() => {
+    console.log('Rerender here');
+  }, [hrSignatureProp, hrManagerSignatureProp]);
 
   return (
     <div className={styles.previewContainer}>
@@ -268,7 +304,7 @@ const PreviewOffer = (props) => {
           <div className={styles.submitContainer}>
             <Button
               type="primary"
-              onClick={handleSubmit}
+              onClick={handleHrSignatureSubmit}
               className={`${hrSignature.url ? styles.active : styles.disable}`}
             >
               {formatMessage({ id: 'component.previewOffer.submit' })}
@@ -375,8 +411,8 @@ const PreviewOffer = (props) => {
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"
-                  disabled={hrManagerSignature.url !== null}
-                  onClick={handleSubmit}
+                  disabled={!hrManagerSignature.url}
+                  onClick={handleHrManagerSignatureSubmit}
                   className={`${hrManagerSignature.url ? styles.active : styles.disable}`}
                 >
                   {formatMessage({ id: 'component.previewOffer.submit' })}
