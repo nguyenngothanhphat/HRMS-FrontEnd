@@ -16,7 +16,12 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo, sentForApproval, approveFinalOffer } from '@/services/formCandidate';
+import {
+  getRookieInfo,
+  sentForApproval,
+  approveFinalOffer,
+  getTemplates,
+} from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -114,6 +119,9 @@ const candidateInfo = {
         id: '',
         _id: '',
       },
+
+      defaultTemplates: [],
+      customTemplates: [],
     },
     data: {
       fullName: null,
@@ -134,6 +142,9 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      salaryStructure: {
+        salaryPosition: '',
+      },
       id: '',
       candidate: '',
       documentChecklistSetting: [
@@ -252,7 +263,6 @@ const candidateInfo = {
           ],
         },
       ],
-      salaryPosition: '',
       listTitle: [],
       tableData: [],
       candidateSignature: null,
@@ -547,6 +557,23 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    *fetchTemplate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTemplates);
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'updateTemplate',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
 
   reducers: {
@@ -576,11 +603,10 @@ const candidateInfo = {
         },
       };
     },
+
     updateSignature(state, action) {
       const { tempData } = state;
       const data = action.payload;
-      console.log('updateSignature');
-      console.log(data);
       const { hrSignature = {}, hrManagerSignature = {} } = data;
       return {
         ...state,
@@ -588,6 +614,27 @@ const candidateInfo = {
           ...tempData,
           hrSignature,
           hrManagerSignature,
+        },
+      };
+    },
+
+    updateTemplate(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+
+      if (!data) {
+        return state;
+      }
+
+      const defaultTemplates = data.filter((template) => template.default === true);
+      const customTemplates = data.filter((template) => template.default === false);
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          defaultTemplates,
+          customTemplates,
         },
       };
     },
