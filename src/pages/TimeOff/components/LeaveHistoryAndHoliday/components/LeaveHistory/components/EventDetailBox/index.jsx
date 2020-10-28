@@ -8,7 +8,6 @@ export default class EventDetailBox extends PureComponent {
   render() {
     const { data = [], color = 0 } = this.props;
     const { from = '', to = '', type = '', duration = '', description = '' } = data;
-    console.log('color', color);
     return (
       <Row className={styles.EventDetailBox}>
         <Col xs={3} className={styles.dateAndMonth}>
