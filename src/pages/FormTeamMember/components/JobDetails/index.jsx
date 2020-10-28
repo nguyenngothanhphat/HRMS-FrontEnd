@@ -31,6 +31,42 @@ class JobDetails extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    const {
+      data,
+      tempData,
+      checkMandatory,
+      tempData: { checkStatus },
+    } = this.state;
+    const { dispatch } = this.props;
+    console.log('data', data);
+    if (data.department !== null) {
+      if (data.department && data.title && data.workLocation && data.reportingManager) {
+        checkStatus.filledJobDetail = true;
+      } else {
+        checkStatus.filledJobDetail = false;
+      }
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: checkStatus.filledJobDetail,
+          },
+        },
+      });
+      dispatch({
+        type: 'candidateInfo/fetchEmployeeById',
+        payload: {
+          candidate: data.candidate,
+        },
+      });
+    }
+  }
+
   handleRadio = (e) => {
     const { target } = e;
     const { name, value } = target;
@@ -333,8 +369,10 @@ class JobDetails extends PureComponent {
         prefferedDateOfJoining,
         candidatesNoticePeriod,
       },
+      data,
     } = this.state;
     const { loading1, loading2, loading3 } = this.props;
+
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -348,6 +386,7 @@ class JobDetails extends PureComponent {
                 employeeTypeList={employeeTypeList}
                 employeeType={employeeType}
                 position={position}
+                data={data}
               />
               <FieldsComponent
                 dropdownField={dropdownField}
@@ -366,6 +405,7 @@ class JobDetails extends PureComponent {
                 loading1={loading1}
                 loading2={loading2}
                 loading3={loading3}
+                data={data}
               />
               {this._renderBottomBar()}
             </div>

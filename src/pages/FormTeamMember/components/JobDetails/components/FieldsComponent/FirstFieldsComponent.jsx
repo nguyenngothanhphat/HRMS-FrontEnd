@@ -24,7 +24,10 @@ class FirstFieldsComponent extends PureComponent {
       loading1,
       loading2,
       loading3,
+      data: test,
     } = this.props;
+    console.log('1', this.props);
+    console.log('2', test.workLocation);
     return (
       <>
         <div>
@@ -52,16 +55,42 @@ class FirstFieldsComponent extends PureComponent {
                     (item.title === 'title' && titleList.length <= 0)
                   }
                   defaultValue={
-                    item.title === 'department'
+                    item.title === 'department' && test.department === null
                       ? department
-                      : item.title === 'title'
+                      : item.title === 'title' && test.title === null
                       ? title
-                      : item.title === 'workLocation'
+                      : item.title === 'workLocation' && test.workLocation === null
                       ? workLocation
-                      : item.title === 'reportingManager'
+                      : item.title === 'reportingManager' && test.reportingManager === null
                       ? reportingManager
+                      : test.department !== null && item.title === 'department'
+                      ? test.department.name
+                      : test.workLocation !== null &&
+                        item.title === 'workLocation' &&
+                        test.workLocation.company
+                      ? test.workLocation.company.legalAddress.address
+                      : test.workLocation !== null &&
+                        item.title === 'workLocation' &&
+                        !test.workLocation.company
+                      ? test.workLocation.legalAddress.address
+                      : test.title !== null && item.title === 'title'
+                      ? test.title.name
+                      : test.title !== null && item.title === 'reportingManager'
+                      ? test.reportingManager.generalInfo.firstName
                       : null
                   }
+                  // {...(test.department !== null && {
+                  //   value:
+                  //     test.department !== null && item.title === 'department'
+                  //       ? test.department.name
+                  //       : test.workLocation !== null && item.title === 'workLocation'
+                  //       ? test.workLocation.legalAddress.address
+                  //       : test.title !== null && item.title === 'title'
+                  //       ? test.title.name
+                  //       : test.title !== null && item.title === 'reportingManager'
+                  //       ? test.reportingManager.generalInfo.firstName
+                  //       : '',
+                  // })}
                 >
                   {item.title === 'workLocation'
                     ? locationList.map((data, index) => (
