@@ -106,12 +106,8 @@ class ModalImportEmployee extends Component {
 
     // Get keys, header csv
     const keys = Object.keys(capsPopulations[0]);
-
     const dataExport = [];
-    // Build header
-    let result = `${keys.join('_')}`;
-    result = result.split('_');
-    dataExport.push(result);
+    dataExport.push(keys);
 
     // Add the rows
     capsPopulations.forEach((obj) => {
