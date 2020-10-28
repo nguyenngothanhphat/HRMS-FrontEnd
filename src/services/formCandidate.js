@@ -21,3 +21,16 @@ export async function approveFinalOffer(payload) {
     data: payload,
   });
 }
+
+export async function getTemplates() {
+  return request('/api/template/list', {
+    method: 'POST',
+  });
+}
+
+export async function removeTemplate(payload) {
+  return request('/api/template/remove', {
+    method: 'POST',
+    data: payload, // _id
+  });
+}

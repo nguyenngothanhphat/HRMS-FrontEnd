@@ -137,16 +137,16 @@ class ModalUpload extends Component {
   };
 
   makeClientCrop = async (crop) => {
-    const { fileUploaded: { name = '' } = {} } = this.state;
+    const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     if (this.imageRef && crop.width && crop.height) {
       const croppedImage = await this.getCroppedImg(this.imageRef, crop);
-      const file = new File([croppedImage], name, { type: 'image/jpeg' });
+      const file = new File([croppedImage], name, { type });
       this.setState({ croppedImage: file });
     }
   };
 
   getCroppedImg = (image, crop) => {
-    const { fileUploaded: { name = '' } = {} } = this.state;
+    const { fileUploaded: { name = '', type = '' } = {} } = this.state;
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
@@ -171,7 +171,7 @@ class ModalUpload extends Component {
         }
         Object.assign(blob, { name, lastModifiedDate: new Date() });
         return resolve(blob);
-      }, 'image/jpeg');
+      }, type);
     });
   };
 

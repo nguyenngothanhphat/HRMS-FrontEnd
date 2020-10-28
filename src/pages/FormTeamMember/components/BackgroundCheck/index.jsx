@@ -28,9 +28,10 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, data } = {} }) => ({
+@connect(({ candidateInfo: { tempData, data, tableData } = {} }) => ({
   tempData,
   data,
+  tableData,
 }))
 class BackgroundCheck extends Component {
   constructor(props) {
@@ -48,6 +49,123 @@ class BackgroundCheck extends Component {
       };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const {
+      data,
+      tempData: { documentList, technicalCertification, isSentEmail },
+      dispatch,
+    } = this.props;
+    if (data.documentChecklistSetting !== documentList) {
+      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
+      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
+      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
+      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
+      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+      const listSelectedA = arrA.map((x) => x.key);
+      const listSelectedB = arrB.map((x) => x.key);
+      const listSelectedC = arrC.map((x) => x.key);
+      const listSelectedD = arrD.map((x) => x.key);
+      const listA = arrToAdjust[0].data.map((x) => {
+        if (listSelectedA.includes(x.key)) {
+          x.value = true;
+        } else {
+          x.value = false;
+        }
+        return x;
+      });
+      const listC = arrToAdjust[2].data.map((x) => {
+        if (listSelectedC.includes(x.key)) {
+          x.value = true;
+        } else {
+          x.value = false;
+        }
+        return x;
+      });
+      const listB = arrToAdjust[1].data.map((x) => {
+        if (listSelectedB.includes(x.key)) {
+          x.value = true;
+        } else {
+          x.value = false;
+        }
+        return x;
+      });
+      const listD = arrToAdjust[3].data.map((x) => {
+        if (listSelectedD.includes(x.key)) {
+          x.value = true;
+        } else {
+          x.value = false;
+        }
+        return x;
+      });
+      const a = listA.map((x) => x.value);
+      const b = listB.map((x) => x.value);
+      const c = listC.map((x) => x.value);
+      const d = listD.map((x) => x.value);
+      let isCheckedA;
+      let isCheckedB;
+      let isCheckedC;
+      let isCheckedD;
+
+      if (listSelectedA.length === arrToAdjust[0].data.length) {
+        isCheckedA = true;
+      }
+      if (listSelectedB.length === arrToAdjust[1].data.length) {
+        isCheckedB = true;
+      }
+      if (listSelectedC.length === arrToAdjust[2].data.length) {
+        isCheckedC = true;
+      }
+      if (listSelectedD.length === arrToAdjust[3].data.length) {
+        isCheckedD = true;
+      }
+
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          documentList: data.documentChecklistSetting,
+          isSentEmail,
+          identityProof: {
+            aaharCard: a[0],
+            PAN: a[1],
+            passport: a[2],
+            drivingLicense: a[3],
+            voterCard: a[4],
+            isChecked: isCheckedA,
+            listSelected: listSelectedA,
+          },
+          addressProof: {
+            rentalAgreement: b[0],
+            electricityBill: b[1],
+            telephoneBill: b[2],
+            listSelected: listSelectedB,
+            isChecked: isCheckedB,
+          },
+          educational: {
+            sslc: c[0],
+            diploma: c[1],
+            graduation: c[2],
+            postGraduate: c[3],
+            phd: c[4],
+            listSelected: listSelectedC,
+            isChecked: isCheckedC,
+          },
+          technicalCertification: {
+            ...technicalCertification,
+            poe: {
+              offerLetter: d[0],
+              appraisalLetter: d[1],
+              paystubs: d[2],
+              form16: d[3],
+              relievingLetter: d[4],
+              listSelected: listSelectedD,
+              isChecked: isCheckedD,
+            },
+          },
+        },
+      });
+    }
   }
 
   closeModal = () => {

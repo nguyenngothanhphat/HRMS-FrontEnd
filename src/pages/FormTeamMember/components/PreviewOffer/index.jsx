@@ -75,20 +75,6 @@ const PreviewOffer = (props) => {
     }
   };
 
-  const handleSubmit = () => {
-    // Check if mail address is valid
-    const mailError = mailForm.getFieldError('email');
-    if (mailError.length > 0 || mail.length === 0) {
-      return;
-    }
-
-    // setFile(null);
-    setHrSignature({});
-    setHrManagerSignature({});
-    setMail('');
-    resetForm();
-  };
-
   const loadImage = (type, response) => {
     const { data: responseData = [] } = response;
     const { url, id } = responseData[0];
@@ -201,7 +187,6 @@ const PreviewOffer = (props) => {
   };
 
   const getUserRole = () => {
-    // console.log(props);
     const { roles } = currentUser;
     const userRole = roles.find(
       (roleItem) => roleItem._id === ROLE.HRMANAGER || roleItem._id === ROLE.HR,
@@ -209,7 +194,6 @@ const PreviewOffer = (props) => {
     if (!userRole) {
       return;
     }
-    // console.log(userRole);
     const { _id } = userRole;
     setRole(_id);
   };
@@ -230,13 +214,11 @@ const PreviewOffer = (props) => {
   };
 
   const handleHrManagerSignatureSubmit = () => {
-    console.log('Click1');
     const { _id } = data;
     if (!dispatch || !_id) {
       return;
     }
 
-    console.log('Click2');
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -255,9 +237,7 @@ const PreviewOffer = (props) => {
     saveChanges();
   }, [mail, hrSignature, hrManagerSignature]);
 
-  useEffect(() => {
-    console.log('Rerender here');
-  }, [hrSignatureProp, hrManagerSignatureProp]);
+  useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
 
   return (
     <div className={styles.previewContainer}>
@@ -363,7 +343,7 @@ const PreviewOffer = (props) => {
                 </Form.Item>
 
                 <Button type="primary" onClick={() => handleSentForApproval()}>
-                  Send for approval
+                  {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
                 </Button>
               </Form>
             </div>
@@ -430,8 +410,6 @@ const PreviewOffer = (props) => {
               title="Send final offer to the candidate"
               formatMessage={formatMessage}
               handleSendEmail={handleSendFinalOffer}
-              // handleChangeEmail={this.handleChangeEmail}
-              // handleSendFormAgain={this.handleSendFormAgain}
               isSentEmail={false}
             />
           </>
@@ -456,9 +434,6 @@ const PreviewOffer = (props) => {
             setUploadVisible2(false);
           }}
         />
-
-        {/* Render Send Mail */}
-        {/* {file && file2 && <SendEmail />} */}
       </div>
     </div>
   );
