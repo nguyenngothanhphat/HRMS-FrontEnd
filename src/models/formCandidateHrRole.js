@@ -593,6 +593,16 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    editTemplateEffect({ payload }, { call, put }) {
+      try {
+        const { id = '' } = payload;
+        // http://localhost:8001/template-details/5f97cd35fc92a3a34bdb2185
+        history.push(`/template-details/${id}`);
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
 
   reducers: {
