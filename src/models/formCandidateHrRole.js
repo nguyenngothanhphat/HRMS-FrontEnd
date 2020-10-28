@@ -134,6 +134,9 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      salaryStructure: {
+        salaryPosition: '',
+      },
       id: '',
       candidate: '',
       documentChecklistSetting: [
@@ -252,7 +255,6 @@ const candidateInfo = {
           ],
         },
       ],
-      salaryPosition: '',
       listTitle: [],
       tableData: [],
       candidateSignature: null,
