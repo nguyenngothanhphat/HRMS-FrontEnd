@@ -12,6 +12,7 @@ const adminSetting = {
   namespace: 'adminSetting',
   state: {
     idRoles: '',
+    Rolesname: '',
     originData: {
       listTitle: [],
       listRoles: [],

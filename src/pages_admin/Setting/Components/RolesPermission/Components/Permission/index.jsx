@@ -18,7 +18,8 @@ class Permission extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      match: { params: { reId: idRoles = '' } = {} },
+      // match: { params: { reId: idRoles = '' } = {} },
+      idRoles,
     } = this.props;
     dispatch({
       type: 'adminSetting/fetchListRoles',
@@ -32,7 +33,6 @@ class Permission extends PureComponent {
   render() {
     const { loading } = this.props;
     const dataRoles = JSON.parse(localStorage.getItem('dataRoles'));
-    // console.log(dataRoles);
     const listMenuRoles = dataRoles.map((item, index) => {
       const { RolesID, Rolesname } = item;
       return {

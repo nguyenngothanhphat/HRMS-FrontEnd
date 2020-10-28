@@ -6,7 +6,8 @@ import s from './index.less';
 
 const { confirm } = Modal;
 
-@connect(({ employeeProfile: { isModified } = {} }) => ({
+@connect(({ employeeProfile: { isModified } = {}, adminSetting: { Rolesname = '' } = {} }) => ({
+  Rolesname,
   isModified,
 }))
 class CommonLayout extends PureComponent {
@@ -19,10 +20,13 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu } = this.props;
+    const { listMenu, Rolesname } = this.props;
+    console.log(listMenu, Rolesname);
+    const listMenuFilter = listMenu.filter((item) => item.name === Rolesname);
+    console.log(listMenuFilter);
     this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
+      selectedItemId: listMenuFilter[0].id,
+      displayComponent: listMenuFilter[0].component,
     });
   }
 
