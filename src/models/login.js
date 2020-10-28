@@ -62,6 +62,7 @@ const Model = {
       setToken('');
       setAuthority('');
       localStorage.removeItem('dataRoles');
+      localStorage.removeItem('Rolesname');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {

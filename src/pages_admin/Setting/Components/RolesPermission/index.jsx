@@ -92,12 +92,8 @@ class RolesPermission extends PureComponent {
 
   handlePermission = (text, record) => {
     // console.log(text, record, index);
-    const { dispatch } = this.props;
     const { Rolesname = '' } = record;
-    dispatch({
-      type: 'adminSetting/save',
-      payload: { Rolesname },
-    });
+    localStorage.setItem('Rolesname', Rolesname);
     history.push(`/settings/Permission`);
   };
 
