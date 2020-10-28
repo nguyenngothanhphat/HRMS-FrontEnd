@@ -11,27 +11,32 @@ class Option extends Component {
     super(props);
 
     this.state = {
-      checked: true,
+      checked: false,
     };
   }
 
   onChangeRadio = (key, value, description, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, tempSettings, settingsList } = this.props;
     const { checked } = this.state;
-    const array = [...tempSettings];
-    const index = settings.findIndex((item) => item.key === key);
+    let array = [...tempSettings];
+    console.log(array);
+    const index = settingsList.findIndex((item) => item.key === key);
 
-    const setting = {
-      key,
-      description,
-      value,
-    };
-    if (checked === false) {
-      array.slice(index, 1);
+    if (checked !== false) {
+      const tempArray = array.filter((item) => item.key !== key);
+      console.log(tempArray);
+      array = [...tempArray];
+      //   console.log(checked);
+      //   console.log(array);
     } else {
+      const setting = {
+        key,
+        description,
+        value,
+      };
       array[index] = setting;
     }
-    console.log(array);
+
     dispatch({
       type: 'employeeSetting/save',
       payload: {
@@ -45,7 +50,7 @@ class Option extends Component {
   };
 
   onChangeInput = (option, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, tempSettings, settingsList } = this.props;
     const { target } = e;
     const { name, value } = target;
     const setting = {
@@ -54,9 +59,9 @@ class Option extends Component {
       value,
     };
     const array = [...tempSettings];
-
-    const index = settings.findIndex((item) => item.key === name);
-    array[index] = setting;
+    console.log(array);
+    const index = settingsList.findIndex((item) => item.key === name);
+    array[index] = settingsList;
     dispatch({
       type: 'employeeSetting/save',
       payload: {

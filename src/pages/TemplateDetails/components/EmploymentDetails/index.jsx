@@ -31,7 +31,7 @@ class EmploymentDetails extends PureComponent {
     ];
     const { settings } = this.props;
     return settings.map((option) => {
-      return <Option settings={settings} option={option} />;
+      return <Option settingsList={settings} option={option} />;
     });
   };
 

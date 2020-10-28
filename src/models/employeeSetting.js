@@ -7,6 +7,14 @@ const employeeSetting = {
     defaultTemplateList: [],
     currentTemplate: {},
     tempSettings: [],
+    newTemplateData: {
+      title: '',
+      htmlContent: '',
+      settings: [],
+      fullname: '',
+      signature: '',
+      designation: '',
+    },
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
