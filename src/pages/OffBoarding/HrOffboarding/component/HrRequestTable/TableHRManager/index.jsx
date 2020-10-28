@@ -6,14 +6,14 @@ import { history } from 'umi';
 // import persion from '@/assets/people.svg';
 import styles from './index.less';
 
-class TableEmployee extends PureComponent {
+class HrTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   push = () => {
-    history.push('/employee-offboarding/ManagerRequest/16001288');
+    history.push('/employee-offboarding/HrRequest/1854545');
   };
 
   render() {
@@ -54,14 +54,6 @@ class TableEmployee extends PureComponent {
         dataIndex: 'name',
       },
       {
-        title: <span className={styles.title}>Current Project </span>,
-        dataIndex: 'currentProject',
-      },
-      {
-        title: <span className={styles.title}>Project Manager </span>,
-        dataIndex: 'projectManager',
-      },
-      {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: () => (
@@ -78,15 +70,22 @@ class TableEmployee extends PureComponent {
         ),
       },
       {
-        title: <span className={styles.title}>1-on-1 date</span>,
-        dataIndex: 'date',
+        title: <span className={styles.title}>Department</span>,
+        dataIndex: 'department',
+      },
+      {
+        title: <span className={styles.title}>LWD</span>,
+        dataIndex: 'lwd',
+      },
+      {
+        title: <span className={styles.title}>LWD Change</span>,
+        dataIndex: 'LwdChange',
       },
       {
         title: <span className={styles.title}>Action</span>,
         dataIndex: 'Action',
         render: () => (
           <div className={styles.rowAction}>
-            <span>Set 1-on-1</span>
             <span onClick={this.push}>View Request</span>
           </div>
         ),
@@ -94,7 +93,7 @@ class TableEmployee extends PureComponent {
     ];
 
     return (
-      <div className={styles.tableStyles}>
+      <div className={styles.HRtableStyles}>
         <Table
           locale={{
             emptyText: (
@@ -119,4 +118,4 @@ class TableEmployee extends PureComponent {
     );
   }
 }
-export default TableEmployee;
+export default HrTable;
