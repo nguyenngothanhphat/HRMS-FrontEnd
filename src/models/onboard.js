@@ -1,4 +1,5 @@
 import getOnboardingList from '@/services/onboard';
+import _ from 'lodash';
 import { dialog } from '@/utils/utils';
 
 const rookieList = [
@@ -333,35 +334,35 @@ const rookieList = [
   },
 ];
 
-const employeeList = rookieList.filter(
-  (rookie) => rookie.isNew === undefined || rookie.isNew === null,
-);
+// const employeeList = rookieList.filter(
+//   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
+// );
 
 // Mock data for table
-const sentEligibilityFormsData = rookieList; // Pending Eligibility Checks
-const receivedSubmittedDocumentsData = rookieList; // Pending Eligibility Checks
-const eligibleCandidatesData = rookieList;
-const ineligibleCandidatesData = rookieList;
-const sentProvisionalOffersData = rookieList; // Provisional Offers
-const acceptedProvisionalOffersData = rookieList; // Provisional Offers
-const renegotiateProvisionalOffersData = rookieList; // Provisional Offers
-// const receivedProvisionalOffersData = rookieList; // Provisional Offers (delete)
-const discardedProvisionalOffersData = employeeList;
-const sentForApprovalsData = employeeList; // Awaiting Approvals
-const approvedOffersData = employeeList; // Awaiting Approvals
-const approvedFinalOffersData = employeeList; // Awaiting Approvals
-const pendingApprovalsData = employeeList; // Awaiting Approvals  del
-const rejectFinalOfferData = employeeList; // Awaiting Approvals  del
-const acceptedFinalOffersData = employeeList; // Final Offers
-const sentFinalOffersData = rookieList; // Final Offers
-const renegotiateFinalOffersData = rookieList; // Final Offers
-const provisionalOfferDraftsData = employeeList; // All Drafts
-const finalOfferDraftsData = employeeList; // All Drafts
-const discardedFinalOffersData = rookieList;
-const provisionalOffersData = rookieList; // Discarded Offers
-const finalOffersData = rookieList; // Discarded Offers
+const sentEligibilityFormsData = []; // Pending Eligibility Checks
+const receivedSubmittedDocumentsData = []; // Pending Eligibility Checks
+const eligibleCandidatesData = [];
+const ineligibleCandidatesData = [];
+const sentProvisionalOffersData = []; // Provisional Offers
+const acceptedProvisionalOffersData = []; // Provisional Offers
+const renegotiateProvisionalOffersData = []; // Provisional Offers
+// const receivedProvisionalOffersData = []; // Provisional Offers (delete)
+const discardedProvisionalOffersData = [];
+const sentForApprovalsData = []; // Awaiting Approvals
+const approvedOffersData = []; // Awaiting Approvals
+const approvedFinalOffersData = []; // Awaiting Approvals
+const pendingApprovalsData = []; // Awaiting Approvals  del
+const rejectFinalOfferData = []; // Awaiting Approvals  del
+const acceptedFinalOffersData = []; // Final Offers
+const sentFinalOffersData = []; // Final Offers
+const renegotiateFinalOffersData = []; // Final Offers
+const provisionalOfferDraftsData = []; // All Drafts
+const finalOfferDraftsData = []; // All Drafts
+const discardedFinalOffersData = [];
+const provisionalOffersData = []; // Discarded Offers
+const finalOffersData = []; // Discarded Offers
 
-const pendingData = rookieList; // Background Checks
+const pendingData = []; // Background Checks
 
 const MENU_DATA = [
   {
@@ -412,44 +413,27 @@ const MENU_DATA = [
   },
 ];
 
-// const PROCESS_STATUS = {
-//   SENT_ELIGIBILITY_FORMS: 'SENT-ELIGIBILITY-FORMS',
-//   RECEIVED_SUBMITTED_DOCUMENTS: 'RECEIVED-SUBMITTED-DOCUMENTS',
-//   ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATES-FOR-OFFERS',
-//   INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATES',
-//   SENT_PROVISIONAL_OFFERS: 'SENT-PROVISION-OFFER',
-//   RECEIVED_PROVISIONAL_OFFERS: 'RECEIVED-PROVISION-OFFER',
-//   DISCARDED_PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
-//   PENDING_APPROVALS: 'PENDING-APPROVAL',
-//   APPROVED_FINAL_OFFERS: 'APPROVED-FINAL-OFFERS',
-//   REJECT_FINAL_OFFERS: 'REJECT-FINAL-OFFER',
-//   SENT_FINAL_OFFERS: 'SENT-FINAL-OFFER',
-//   ACCEPTED_FINAL_OFFERS: 'ACCEPT-OFFER',
-//   FINAL_OFFERS_DRAFTS: 'FINAL-OFFER-DRAFES',
-//   DISCARDED_FINAL_OFFERS: 'ACCEPT-OFFER',
-// };
-
 const PROCESS_STATUS = {
-  PROVISIONAL_OFFER_DRAFT: 'PROVISIONAL_OFFER_DRAFT',
-  FINAL_OFFERS_DRAFT: 'FINAL_OFFERS_DRAFT',
+  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
+  FINAL_OFFERS_DRAFT: 'FINAL-OFFERS-DRAFT',
 
   SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPTED_PROVISIONAL_OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE_PROVISIONAL_OFFER',
+  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPTED-PROVISIONAL-OFFER',
+  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISIONAL-OFFER',
 
   PENDING: 'PENDING-BACKGROUND-CHECK',
-  ELIGIBLE_CANDIDATES: 'ELIGIBLE_CANDIDATE',
-  INELIGIBLE_CANDIDATES: 'INELIGIBLE_CANDIDATE',
+  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
+  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
 
-  SENT_FOR_APPROVAL: 'SENT_FOR_APPROVAL',
-  APPROVED_OFFERS: 'APPROVED_OFFERS',
+  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
+  APPROVED_OFFERS: 'APPROVED-OFFERS',
 
-  SENT_FINAL_OFFERS: 'SENT_FINAL_OFFERS',
-  ACCEPTED_FINAL_OFFERS: 'ACCEPTED_FINAL_OFFERS',
-  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE_FINAL_OFFERS',
+  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
+  ACCEPTED_FINAL_OFFERS: 'ACCEPTED-FINAL-OFFERS',
+  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
 
-  PROVISIONAL_OFFERS: 'PROVISIONAL_OFFERS',
-  FINAL_OFFERS: 'FINAL_OFFERS',
+  PROVISIONAL_OFFERS: 'PROVISIONAL-OFFERS',
+  FINAL_OFFERS: 'FINAL-OFFERS',
 };
 
 const formatMonth = (month) => {
@@ -489,6 +473,9 @@ const formatDay = (day) => {
 };
 
 const formatDate = (date) => {
+  if (!date) {
+    return '';
+  }
   const dateObj = new Date(date);
   const month = dateObj.getUTCMonth() + 1; // months from 1-12
   const day = dateObj.getUTCDate();
@@ -499,6 +486,9 @@ const formatDate = (date) => {
 };
 
 const dateDiffInDays = (a, b) => {
+  if (!a || !b) {
+    return 10;
+  }
   // a and b are javascript Date objects
   const SECOND_IN_DAY = 1000 * 60 * 60 * 24;
   const firstDate = new Date(a);
@@ -508,48 +498,48 @@ const dateDiffInDays = (a, b) => {
   return diff;
 };
 
-const formatData = (list) => {
+const formatData = (list = []) => {
   const formatList = [];
-  list.map((item) => {
+  _.map(list, (item) => {
     const {
+      _id,
       ticketID,
       fullName,
       // position,
-      title,
-      workLocation,
-      updatedAt,
-      createdAt,
+      title = '',
+      workLocation = '',
+      updatedAt = '',
+      createdAt = '',
       comments = 'Passport submission pending …',
     } = item;
-    // console.log(ticketID, fullName, title, workLocation, updatedAt, createdAt, comments);
-    const dateSent = formatDate(createdAt);
-    const dateReceived = formatDate(updatedAt);
-    const dateJoin = formatDate(updatedAt);
-    const dateRequest = formatDate(updatedAt);
-    const expire = formatDate(updatedAt);
-    // const documentVerified =
+    const dateSent = formatDate(createdAt) || '';
+    const dateReceived = formatDate(updatedAt) || '';
+    const dateJoin = formatDate(updatedAt) || '';
+    const dateRequest = formatDate(updatedAt) || '';
+    const expire = formatDate(updatedAt) || '';
     const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
 
     const rookie = {
       // rookieId: `#${_id.substring(0, 8)}`,
+      candidate: _id || '',
       rookieId: ticketID,
-      isNew,
+      isNew: isNew || '',
       rookieName: fullName,
       position: title.name,
       location: workLocation.name || 'Vietnam',
-      comments,
-      dateSent,
-      dateReceived,
-      dateJoin,
-      dateRequest,
-      expire,
+      comments: comments || '',
+      dateSent: dateSent || '',
+      dateReceived: dateReceived || '',
+      dateJoin: dateJoin || '',
+      dateRequest: dateRequest || '',
+      expire: expire || '',
       documentVerified: '4/5',
       resubmit: 1,
       changeRequest: '-',
     };
     formatList.push(rookie);
-    return null;
   });
+
   return formatList;
 };
 
@@ -761,10 +751,9 @@ const onboard = {
         const req = {
           processStatus: [processStatus],
           page: 1,
-          limit: 1,
+          limit: 10,
         };
         const response = yield call(getOnboardingList, req);
-        // console.log(response);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const returnedData = formatData(response.data[0].paginatedResults);
