@@ -12,6 +12,8 @@ class EditForm extends PureComponent {
   };
 
   render() {
+    const { currentTemplate } = this.props;
+    const { settings } = currentTemplate;
     const { TabPane } = Tabs;
     return (
       <div className={styles.EditForm}>
@@ -21,7 +23,7 @@ class EditForm extends PureComponent {
             tab={formatMessage({ id: 'component.editForm.employmentDetails' })}
             key="1"
           >
-            <EmploymentDetails />
+            <EmploymentDetails settings={settings} />
           </TabPane>
           <TabPane
             className={styles.tabs}
