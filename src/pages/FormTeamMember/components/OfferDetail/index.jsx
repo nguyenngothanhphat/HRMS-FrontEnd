@@ -152,6 +152,21 @@ const OfferDetail = (props) => {
         candidate: _id,
       },
     });
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        data: {
+          ...data,
+          compensationType: compensation,
+          amountIn: currency,
+          timeOffPolicy: timeoff,
+          hiringAgreements: agreement,
+          companyHandbook: handbook,
+          candidate: _id,
+        },
+      },
+    });
   };
 
   const _renderStatus = () => {
