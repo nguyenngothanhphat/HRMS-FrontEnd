@@ -51,19 +51,50 @@ class BackgroundCheck extends Component {
     return null;
   }
 
-  // componentDidMount() {
-  //   const { data, tempData, dispatch } = this.props;
-  //   if (data.documentChecklistSetting !== tempData.documentList) {
-  //     dispatch({
-  //       type: 'candidateInfo/saveTemp',
-  //       payload: {
-  //         documentList: data.documentChecklistSetting,
-  //       },
-  //     });
-  //     const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-  //     const index = arrToAdjust.findIndex((x))
-  //   }
-  // }
+  componentDidMount() {
+    const {
+      data,
+      tempData: { documentList, identityProof, addressProof, educational, technicalCertification },
+      dispatch,
+    } = this.props;
+    const { poe } = technicalCertification;
+    if (data.documentChecklistSetting !== documentList) {
+      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
+      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
+      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
+      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
+      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+      const listSelectedA = arrA.map((x) => x.key);
+      const listSelectedB = arrB.map((x) => x.key);
+      const listSelectedC = arrC.map((x) => x.key);
+      const listSelectedD = arrD.map((x) => x.key);
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          documentList: data.documentChecklistSetting,
+          identityProof: {
+            ...identityProof,
+            listSelected: listSelectedA,
+          },
+          addressProof: {
+            ...addressProof,
+            listSelected: listSelectedB,
+          },
+          educational: {
+            ...educational,
+            listSelected: listSelectedC,
+          },
+          technicalCertification: {
+            ...technicalCertification,
+            poe: {
+              ...poe,
+              listSelected: listSelectedD,
+            },
+          },
+        },
+      });
+    }
+  }
 
   closeModal = () => {
     this.setState({
@@ -72,7 +103,7 @@ class BackgroundCheck extends Component {
   };
 
   handleSendEmail = () => {
-    const { dispatch, tableData } = this.props;
+    const { dispatch } = this.props;
     const {
       tempData: { documentList, employer },
       data: {
