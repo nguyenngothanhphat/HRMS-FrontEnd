@@ -140,7 +140,7 @@ class ModalUpload extends Component {
     const { fileUploaded: { name = '' } = {} } = this.state;
     if (this.imageRef && crop.width && crop.height) {
       const croppedImage = await this.getCroppedImg(this.imageRef, crop);
-      const file = new File([croppedImage], name, { type: 'image/jpeg' });
+      const file = new File([croppedImage], name, { type: 'image/png' });
       this.setState({ croppedImage: file });
     }
   };

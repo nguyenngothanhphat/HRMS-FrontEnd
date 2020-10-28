@@ -8,9 +8,15 @@ import styles from './index.less';
 
 const Template = (props) => {
   const { type, files, dispatch } = props;
-  // const [urlToDownload, setUrlToDownload] = useState(
-  //   'http://www.africau.edu/images/default/sample.pdf',
-  // );
+
+  const editTemplate = (id) => {
+    dispatch({
+      type: 'candidateInfo/editTemplateEffect',
+      payload: {
+        id,
+      },
+    });
+  };
 
   const removeTemplate = (id) => {
     dispatch({
@@ -49,7 +55,7 @@ const Template = (props) => {
 
               <div className={styles.rowIconContainer}>
                 <DownloadFile content={<DownloadOutlined />} url={url} />
-                <EditOutlined />
+                <EditOutlined onClick={() => editTemplate(_id)} />
                 <DeleteOutlined onClick={() => removeTemplate(_id)} />
               </div>
             </div>
