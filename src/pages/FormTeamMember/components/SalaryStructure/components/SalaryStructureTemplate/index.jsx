@@ -146,11 +146,13 @@ class SalaryStructureTemplate extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
+    console.log('tableData', tableData);
+    console.log('title', salaryPosition);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
-          salaryPosition,
+          title: salaryPosition,
           settings: tableData,
         },
         candidate: _id,
