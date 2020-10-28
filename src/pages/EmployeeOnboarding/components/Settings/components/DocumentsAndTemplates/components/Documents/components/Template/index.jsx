@@ -4,6 +4,7 @@ import { formatMessage } from 'umi';
 import menuIcon from './assets/menuIcon.svg';
 import deleteIcon from './assets/deleteIcon.svg';
 import downloadIcon from './assets/downloadIcon.svg';
+import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
 
 import styles from './index.less';
 
@@ -41,13 +42,9 @@ class Template extends PureComponent {
     const { template } = this.props;
     return (
       <div className={styles.Template}>
-        <img
-          className={styles.thumbnail}
-          src={Object.values(template.templateThumbnail)}
-          alt="thumbnails"
-        />
+        <img className={styles.thumbnail} src={lectusTinciduntEros} alt="thumbnails" />
         <div className={styles.template_info}>
-          <p>{template.templateName}</p>
+          <p>{template.title}</p>
           <Dropdown
             className={styles.icon}
             trigger={['click']}
