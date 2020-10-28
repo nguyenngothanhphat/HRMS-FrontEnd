@@ -217,20 +217,26 @@ const routes = [
             hideInMenu: true,
             // authority: ['employee'],
           },
-          {
-            path: '/employee-offboarding',
-            name: 'employeeOffBoarding',
-            icon: 'file-image',
-            // component: './OffBoarding/ManagerOffBoarding',
-            component: './OffBoarding/HrOffBoarding',
-            authority: ['employee'],
-          },
-
+          // {
+          //   path: '/employee-offboarding',
+          //   name: 'employeeOffBoarding',
+          //   icon: 'file-image',
+          //   component: './OffBoarding/ManagerOffBoarding',
+          //   authority: ['employee'],
+          // },
+          // {
+          //   path: '/employee-offboarding',
+          //   name: 'employeeOffBoarding',
+          //   icon: 'file-image',
+          //   component: './OffBoarding/HrOffBoarding',
+          //   authority: ['hr'],
+          // },
           {
             path: '/employee-offboarding/employee',
-            name: 'EmployeeOffBoarding',
-            hideInMenu: true,
+            name: 'OffBoarding',
+            icon: 'file-image',
             component: './OffBoarding/EmployeeOffBoarding',
+            // authority: ['employee'],
           },
           {
             path: '/employee-offboarding/resignation-request',
@@ -257,7 +263,7 @@ const routes = [
             name: 'ticketId',
             component: './OffBoarding/HrOffBoarding/component/HrRequestTable/Ticket',
             hideInMenu: true,
-            authority: ['employee'],
+            // authority: ['hr'],
           },
           {
             path: '/directory/employee-profile/:reId',
