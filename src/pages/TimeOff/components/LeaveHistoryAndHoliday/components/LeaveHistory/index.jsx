@@ -39,7 +39,7 @@ const leaveHistoryData = [
     description: 'Family Event',
   },
 ];
-export default class EventCalendar extends PureComponent {
+export default class LeaveHistory extends PureComponent {
   weekdays = moment.weekdays(); // ["Sunday", "Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday"]
 
   weekdaysShort = moment.weekdaysShort(); // ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -166,6 +166,7 @@ export default class EventCalendar extends PureComponent {
       return (
         <th key={day} className="week-day">
           {day.slice(0, 1)}
+          {/* get first letter of weekdays */}
         </th>
       );
     });

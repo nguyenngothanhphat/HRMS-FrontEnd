@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import Holiday from './components/Holiday';
-import EventCalendar from './components/EventCalendar';
+import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -46,12 +46,12 @@ export default class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
-        <Tabs defaultActiveKey="2" tabBarExtraContent={this.operations()}>
+        <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Request History" key="1">
-            Request History
+            <LeaveHistory />
           </TabPane>
           <TabPane tab="Holiday" key="2">
-            {activeShowType === 1 ? <Holiday /> : <EventCalendar />}
+            {activeShowType === 1 ? <Holiday /> : ''}
           </TabPane>
         </Tabs>
       </div>

@@ -34,7 +34,7 @@ export default class Holiday extends PureComponent {
           return (
             <Row className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>
-                <span>{moment(row.time).locale('en').format('MMMM')}</span>
+                <span>{moment(row.time).locale('en').format('MMM')}</span>
                 <span>{moment(row.time).locale('en').format('DD')}</span>
               </Col>
               <Col xs={15} className={styles.eventOfDay}>
