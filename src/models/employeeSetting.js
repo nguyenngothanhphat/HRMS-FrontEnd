@@ -9,9 +9,9 @@ const employeeSetting = {
     tempSettings: [],
     newTemplateData: {
       settings: [],
-      fullname: '',
-      signature: '',
-      designation: '',
+      fullname: '123',
+      signature: '123',
+      designation: '123',
     },
   },
   effects: {
