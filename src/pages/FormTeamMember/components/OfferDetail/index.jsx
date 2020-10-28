@@ -17,7 +17,6 @@ const { Option } = Select;
 
 const OfferDetail = (props) => {
   const { dispatch, checkMandatory, currentStep, data, tempData } = props;
-  const [form] = Form.useForm();
   // Get default value from "candidateInfo" store
   const {
     compensationType: compensationProp,
@@ -27,7 +26,14 @@ const OfferDetail = (props) => {
     companyHandbook: handbookProp,
     template: templateProp,
     includeOffer: includeOfferProp,
+
+    defaultTemplates: defaultTemplatesProp,
+    customTemplates: customTemplatesProp,
   } = tempData;
+
+  const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
+  const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
+  const [form] = Form.useForm();
 
   // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
   const [file, setFile] = useState(templateProp || '');
@@ -357,8 +363,10 @@ const OfferDetail = (props) => {
         </div>
 
         <div className={styles.rightCol}>
-          <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} />
-          <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} />
+          {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
+          {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
+          <Template type="default" files={defaultTemplates} />
+          <Template files={customTemplates} />
         </div>
       </div>
     </Form>
