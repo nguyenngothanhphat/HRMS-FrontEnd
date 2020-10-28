@@ -17,10 +17,17 @@ const leaveHistoryData = [
     description: 'Family Event',
   },
   {
-    from: '10/19/2020',
-    to: '10/23/2020',
+    from: '10/27/2020',
+    to: '10/29/2020',
     type: 'CL',
-    duration: 5,
+    duration: 3,
+    description: 'Family Event',
+  },
+  {
+    from: '11/6/2020',
+    to: '11/7/2020',
+    type: 'CL',
+    duration: 2,
     description: 'Family Event',
   },
 ];
@@ -176,7 +183,7 @@ export default class EventCalendar extends PureComponent {
       leaveHistoryData.forEach((value) => {
         const eventFromDay = moment(value.from).format('D');
         const eventFromMonth = moment(value.from).format('M');
-        const eventFromYear = moment(value.to).format('Y');
+        const eventFromYear = moment(value.from).format('Y');
         const eventToDay = moment(value.to).format('D');
         const eventToMonth = moment(value.to).format('M');
         const eventToYear = moment(value.to).format('Y');
@@ -272,15 +279,33 @@ export default class EventCalendar extends PureComponent {
         <div className="eventDetailContainer">
           <div className="eventDetailPart">
             <span className="title">Upcoming</span>
-            {leaveHistoryData.map((value) => (
-              <EventDetailBox data={value} />
-            ))}
+            {leaveHistoryData.map((value) => {
+              const eventFromDay = moment(value.from).format('D');
+              const eventFromMonth = moment(value.from).format('M');
+              const eventToMonth = moment(value.from).format('M');
+              const eventFromYear = moment(value.from).format('Y');
+              if (
+                ((currentDay < eventFromDay * 1 && this.selectedMonth() === eventFromMonth * 1) ||
+                  eventFromMonth * 1 > currentMonth ||
+                  eventToMonth * 1 <= this.selectedMonth()) &&
+                this.selectedYear() === eventFromYear
+              )
+                return <EventDetailBox data={value} />;
+            })}
           </div>
           <div className="eventDetailPart">
             <div className="title">Leave taken</div>
-            {leaveHistoryData.map((value) => (
-              <EventDetailBox data={value} />
-            ))}
+            {leaveHistoryData.map((value) => {
+              const eventFromDay = moment(value.from).format('D');
+              const eventFromMonth = moment(value.from).format('M');
+              const eventFromYear = moment(value.from).format('Y');
+              if (
+                currentDay >= eventFromDay * 1 &&
+                this.selectedMonth() === eventFromMonth &&
+                this.selectedYear() === eventFromYear
+              )
+                return <EventDetailBox data={value} />;
+            })}
           </div>
         </div>
       </div>
