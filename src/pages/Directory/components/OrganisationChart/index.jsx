@@ -23,7 +23,6 @@ class OrganisationChart extends Component {
   }
 
   renderNode = ({ nodeData }) => {
-    // const { title = '', name = '' } = nodeData;
     const {
       generalInfo: { avatar = '', firstName = '' } = {},
       department: { name = '' } = {},
