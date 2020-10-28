@@ -21,6 +21,7 @@ import {
   sentForApproval,
   approveFinalOffer,
   getTemplates,
+  removeTemplate,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -570,6 +571,23 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    *removeTemplateEffect({ payload }, { call, put }) {
+      try {
+        // const { id = '' } = payload;
+        const response = yield call(removeTemplate, payload); // payload: id
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'fetchTemplate',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
 
   reducers: {
@@ -634,6 +652,27 @@ const candidateInfo = {
         },
       };
     },
+
+    // removeTemplate(state, action) {
+    //   const { tempData } = state;
+    //   const data = action.payload;
+
+    //   if (!data) {
+    //     return state;
+    //   }
+
+    //   const defaultTemplates = data.filter((template) => template.default === true);
+    //   const customTemplates = data.filter((template) => template.default === false);
+
+    //   return {
+    //     ...state,
+    //     tempData: {
+    //       ...tempData,
+    //       defaultTemplates,
+    //       customTemplates,
+    //     },
+    //   };
+    // },
   },
 };
 
