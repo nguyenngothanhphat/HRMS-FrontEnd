@@ -4,6 +4,8 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './index.less';
 
+// moment.locale('en').format('dd');
+
 export default class EventCalendar extends PureComponent {
   weekdays = moment.weekdays(); // ["Sunday", "Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday"]
 
@@ -18,9 +20,20 @@ export default class EventCalendar extends PureComponent {
     this.style.width = this.width; // add this
     this.state = {
       dateContext: moment(),
-      selectedDay: null,
+      currentDay: 0,
+      currentMonth: 0,
+      currentYear: 0,
     };
   }
+
+  componentDidMount = () => {
+    const { dateContext } = this.state;
+    this.setState({
+      currentDay: dateContext.format('D'),
+      currentMonth: dateContext.format('M'),
+      currentYear: dateContext.format('Y'),
+    });
+  };
 
   year = () => {
     const { dateContext } = this.state;
@@ -39,30 +52,23 @@ export default class EventCalendar extends PureComponent {
 
   currentDate = () => {
     const { dateContext } = this.state;
-    // eslint-disable-next-line no-console
-    console.log('currentDate: ', dateContext.get('date'));
     return dateContext.get('date');
   };
 
-  currentDay = () => {
+  selectedMonth = () => {
     const { dateContext } = this.state;
-    return dateContext.format('D');
+    return dateContext.format('M');
+  };
+
+  selectedYear = () => {
+    const { dateContext } = this.state;
+    return dateContext.format('Y');
   };
 
   firstDayOfMonth = () => {
     const { dateContext } = this.state;
     const firstDay = moment(dateContext).startOf('month').format('d'); // Day of week 0...1..5...6
     return firstDay;
-  };
-
-  setMonth = (month) => {
-    const { dateContext } = this.state;
-    const monthNo = this.months.indexOf(month);
-    let dateContext1 = { ...dateContext };
-    dateContext1 = moment(dateContext1).set('month', monthNo);
-    this.setState({
-      dateContext: dateContext1,
-    });
   };
 
   nextMonth = () => {
@@ -85,31 +91,6 @@ export default class EventCalendar extends PureComponent {
     });
     const { onPrevMonth } = this.props;
     if (onPrevMonth) onPrevMonth();
-  };
-
-  onSelectChange = (e, data) => {
-    this.setMonth(data);
-    const { onMonthChange } = this.props;
-    if (onMonthChange) onMonthChange();
-  };
-
-  SelectList = (props) => {
-    const popup = props.data.map((data) => {
-      return (
-        <div key={data}>
-          <a
-            href="#"
-            onClick={(e) => {
-              this.onSelectChange(e, data);
-            }}
-          >
-            {data}
-          </a>
-        </div>
-      );
-    });
-
-    return <div className="month-popup">{popup}</div>;
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -145,6 +126,7 @@ export default class EventCalendar extends PureComponent {
   };
 
   render() {
+    const { currentMonth, currentDay, currentYear } = this.state;
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
@@ -159,22 +141,22 @@ export default class EventCalendar extends PureComponent {
       blanks.push(<td key={i * 80} className="emptySlot" />);
     }
 
-    console.log('blanks: ', blanks);
-
-    const { selectedDay } = this.state;
-
     const daysInMonth = [];
     for (let d = 1; d <= this.daysInMonth(); d += 1) {
-      const className = d === this.currentDay() ? 'day current-day' : 'day';
-      const selectedClass = d === selectedDay ? ' selected-day ' : '';
+      const className =
+        d === currentDay * 1 &&
+        currentMonth === this.selectedMonth() &&
+        currentYear === this.selectedYear()
+          ? 'day current-day'
+          : 'day';
       daysInMonth.push(
-        <td key={d} className={className + selectedClass}>
+        <td key={d} className={className}>
           <span>{d}</span>
         </td>,
       );
     }
 
-    console.log('days: ', daysInMonth);
+    // console.log('days: ', daysInMonth);
 
     const totalSlots = [...blanks, ...daysInMonth];
     const rows = [];
