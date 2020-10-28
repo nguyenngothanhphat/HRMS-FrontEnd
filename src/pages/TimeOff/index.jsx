@@ -93,18 +93,6 @@ export default class TimeOff extends PureComponent {
           <TabPane tab="Setup Timeoff policy" key="setupTimeOff">
             {this._renderSetupTimeoff()}
           </TabPane>
-          <TabPane tab="Setup Timeoff policy" key="setupTimeOff1">
-            <div>123412</div>
-          </TabPane>
-          <TabPane tab="Setup Timeoff policy" key="setupTimeOff2">
-            <div>123412</div>
-          </TabPane>
-          <TabPane tab="Setup Timeoff policy" key="setupTimeOff2">
-            <div>123412</div>
-          </TabPane>
-          <TabPane tab="Setup Timeoff policy" key="setupTimeOff3">
-            <div>123412</div>
-          </TabPane>
         </Tabs>
       </PageContainer>
     );
