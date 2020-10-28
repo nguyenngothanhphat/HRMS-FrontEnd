@@ -22,6 +22,7 @@ class FieldsComponent extends PureComponent {
       loading1,
       loading2,
       loading3,
+      data,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -40,6 +41,7 @@ class FieldsComponent extends PureComponent {
           loading1={loading1}
           loading2={loading2}
           loading3={loading3}
+          data={data}
         />
         <CandidateFieldsComponent
           styles={styles.Input}

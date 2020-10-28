@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi';
-import { Form, Radio } from 'antd';
+import { Form, Radio, Input } from 'antd';
+import Option from '../Option';
 
 import styles from './index.less';
 
@@ -28,15 +29,9 @@ class EmploymentDetails extends PureComponent {
         name: 'employmentType2 ',
       },
     ];
-    return radioList.map((radio) => {
-      return (
-        <Form.Item name={radio.name} label={radio.label}>
-          <Radio.Group>
-            <Radio value>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
-            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
-          </Radio.Group>
-        </Form.Item>
-      );
+    const { settings } = this.props;
+    return settings.map((option) => {
+      return <Option settings={settings} option={option} />;
     });
   };
 

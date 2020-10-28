@@ -9,7 +9,6 @@ import {
   getTitleListByCompany,
   addCandidate,
   closeCandidate,
-  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
@@ -17,7 +16,7 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo } from '@/services/formCandidate';
+import { getRookieInfo, sentForApproval, approveFinalOffer } from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -96,6 +95,24 @@ const candidateInfo = {
           listSelected: [],
           isChecked: false,
         },
+      },
+
+      candidateSignature: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
       },
     },
     data: {
@@ -239,10 +256,24 @@ const candidateInfo = {
       listTitle: [],
       tableData: [],
       candidateSignature: null,
-      hrManagerSignature: null,
-      hrSignature: null,
-      hiringAgreements: null,
-      companyHandbook: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hiringAgreements: true,
+      companyHandbook: true,
       benefits: [],
       comments: null,
       status: '',
@@ -351,9 +382,11 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      console.log('pl', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -362,22 +395,32 @@ const candidateInfo = {
     },
 
     *fetchCandidateInfo(_, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getRookieInfo);
+        response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
+        console.log('data1', data);
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+        yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchEmployeeById({ payload }, { call, put }) {
+      console.log('pay', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
+        console.log('data3', response);
+        console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -406,8 +449,6 @@ const candidateInfo = {
         const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
-        console.log('ye');
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -422,7 +463,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -437,7 +477,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -459,6 +498,52 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+
+    *sentForApprovalEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(sentForApproval, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *approveFinalOfferEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(approveFinalOffer, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchCandidateByRookie({ payload }, { call, put }) {
+      console.log('payload', payload);
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        console.log('1', data);
+
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+        });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
@@ -486,6 +571,21 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    updateSignature(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+      console.log('updateSignature');
+      console.log(data);
+      const { hrSignature = {}, hrManagerSignature = {} } = data;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          hrSignature,
+          hrManagerSignature,
         },
       };
     },
