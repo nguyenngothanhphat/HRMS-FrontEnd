@@ -61,6 +61,8 @@ const Model = {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
+      localStorage.removeItem('dataRoles');
+      localStorage.removeItem('Rolesname');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {

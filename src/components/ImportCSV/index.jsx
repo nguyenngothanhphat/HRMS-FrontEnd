@@ -4,9 +4,8 @@ import { Button, notification } from 'antd';
 import Dropzone from 'react-dropzone';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import csvIcon from '@/assets/csv-icon.png';
+import csv from 'csvtojson';
 import styles from './index.less';
-
-const csv = require('csvtojson');
 
 class ImportCSV extends Component {
   static getDerivedStateFromProps(props) {
@@ -45,9 +44,9 @@ class ImportCSV extends Component {
                 Object.keys(aCsvRow).map((aKey) => {
                   const valueToAddInBuiltObject = aCsvRow[aKey];
                   const keyToAddInBuiltObject = csvRows[0][aKey];
-                  let formatKey = keyToAddInBuiltObject.replace(/\s/g, '');
-                  formatKey = formatKey.charAt(0).toLowerCase() + formatKey.slice(1);
-                  builtObject[formatKey] = valueToAddInBuiltObject;
+                  // let formatKey = keyToAddInBuiltObject.replace(/\s/g, '');
+                  // formatKey = formatKey.charAt(0).toLowerCase() + formatKey.slice(1);
+                  builtObject[keyToAddInBuiltObject] = valueToAddInBuiltObject;
                   return null;
                 });
                 toJson.push(builtObject);

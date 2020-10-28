@@ -173,6 +173,7 @@ const routes = [
             path: '/settings/Permission',
             name: 'permission',
             component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
+            hideInMenu: true,
             authority: ['admin-sa'],
           },
           {
@@ -217,18 +218,26 @@ const routes = [
             hideInMenu: true,
             // authority: ['employee'],
           },
-          {
-            path: '/employee-offboarding',
-            name: 'employeeOffBoarding',
-            icon: 'file-image',
-            component: './OffBoarding/ManagerOffBoarding',
-            // authority: ['employee'],
-          },
+          // {
+          //   path: '/employee-offboarding',
+          //   name: 'employeeOffBoarding',
+          //   icon: 'file-image',
+          //   component: './OffBoarding/ManagerOffBoarding',
+          //   authority: ['employee'],
+          // },
+          // {
+          //   path: '/employee-offboarding',
+          //   name: 'employeeOffBoarding',
+          //   icon: 'file-image',
+          //   component: './OffBoarding/HrOffBoarding',
+          //   authority: ['hr'],
+          // },
           {
             path: '/employee-offboarding/employee',
-            name: 'EmployeeOffBoarding',
-            hideInMenu: true,
+            name: 'OffBoarding',
+            icon: 'file-image',
             component: './OffBoarding/EmployeeOffBoarding',
+            // authority: ['employee'],
           },
           {
             path: '/employee-offboarding/resignation-request',
@@ -244,11 +253,18 @@ const routes = [
             // authority: ['employee'],
           },
           {
-            path: '/employee-offboarding/:ticketId',
+            path: '/employee-offboarding/ManagerRequest/:ticketId',
             name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
             // authority: ['employee'],
+          },
+          {
+            path: '/employee-offboarding/HrRequest/:id',
+            name: 'ticketId',
+            component: './OffBoarding/HrOffBoarding/component/HrRequestTable/Ticket',
+            hideInMenu: true,
+            // authority: ['hr'],
           },
           {
             path: '/directory/employee-profile/:reId',
@@ -273,6 +289,13 @@ const routes = [
             name: 'setting',
             icon: 'setting',
             component: './Setting',
+            // authority: ['employee'],
+          },
+          {
+            path: '/view-document/:documentId',
+            name: 'viewDocument',
+            hideInMenu: true,
+            component: './ViewDocument',
             // authority: ['employee'],
           },
           {

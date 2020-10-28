@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty, isString, isNull } from 'lodash';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -29,6 +29,94 @@ class JobDetails extends PureComponent {
       };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const {
+      data,
+      tempData,
+      checkMandatory,
+      tempData: { checkStatus },
+    } = this.state;
+    const { dispatch } = this.props;
+    if (data.department !== null) {
+      if (data.department && data.title && data.workLocation && data.reportingManager) {
+        checkStatus.filledJobDetail = true;
+      } else {
+        checkStatus.filledJobDetail = false;
+      }
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: checkStatus.filledJobDetail,
+          },
+        },
+      });
+      if (isString(data.department)) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            candidate: data._id,
+          },
+        });
+      }
+      if (!isNull(data.department)) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            candidate: data._id,
+          },
+        }).then(({ statusCode, data: test }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'candidateInfo/saveTemp',
+              payload: {
+                employeeType: test.employeeType._id,
+                position: test.position,
+              },
+            });
+          }
+        });
+      }
+    } else {
+      if (data.department && data.title && data.workLocation && data.reportingManager) {
+        checkStatus.filledJobDetail = true;
+      } else {
+        checkStatus.filledJobDetail = false;
+      }
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: checkStatus.filledJobDetail,
+          },
+        },
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        workLocation: null,
+        title: null,
+        employeeType: '5f50c2541513a742582206f9',
+        position: 'EMPLOYEE',
+        department: null,
+        reportingManager: null,
+      },
+    });
   }
 
   handleRadio = (e) => {
@@ -87,12 +175,6 @@ class JobDetails extends PureComponent {
         },
       });
 
-      dispatch({
-        type: 'candidateInfo/saveOrigin',
-        payload: {
-          company: _id,
-        },
-      });
       if (!isEmpty(workLocation)) {
         dispatch({
           type: 'candidateInfo/fetchDepartmentList',
@@ -333,8 +415,10 @@ class JobDetails extends PureComponent {
         prefferedDateOfJoining,
         candidatesNoticePeriod,
       },
+      data,
     } = this.state;
     const { loading1, loading2, loading3 } = this.props;
+
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -348,6 +432,7 @@ class JobDetails extends PureComponent {
                 employeeTypeList={employeeTypeList}
                 employeeType={employeeType}
                 position={position}
+                data={data}
               />
               <FieldsComponent
                 dropdownField={dropdownField}
@@ -366,6 +451,7 @@ class JobDetails extends PureComponent {
                 loading1={loading1}
                 loading2={loading2}
                 loading3={loading3}
+                data={data}
               />
               {this._renderBottomBar()}
             </div>

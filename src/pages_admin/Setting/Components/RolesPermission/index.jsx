@@ -1,4 +1,4 @@
-import { DeleteOutlined, KeyOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { DeleteOutlined, DropboxOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { Input, Table, Spin } from 'antd';
 import { history, connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
@@ -23,8 +23,7 @@ class RolesPermission extends PureComponent {
     };
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
+  onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
@@ -40,15 +39,14 @@ class RolesPermission extends PureComponent {
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
 
   handleClickDelete = (text, record, index) => {
-    console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
+    // console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
     this.setState({
       visible: true,
       testReord: record,
@@ -92,9 +90,11 @@ class RolesPermission extends PureComponent {
     });
   };
 
-  handlePermission = (text, record, index) => {
-    console.log(text, record, index);
-    history.push('/settings/Permission');
+  handlePermission = (text, record) => {
+    // console.log(text, record, index);
+    const { Rolesname = '' } = record;
+    localStorage.setItem('Rolesname', Rolesname);
+    history.push(`/settings/Permission`);
   };
 
   render() {
@@ -131,9 +131,12 @@ class RolesPermission extends PureComponent {
         title: 'Permission',
         dataIndex: 'Permission',
         align: 'center',
-        render: (text, record, index) =>
+        render: (text, record) =>
           record.RolesID !== '' ? (
-            <KeyOutlined onClick={() => this.handlePermission(text, record, index)} />
+            <DropboxOutlined
+              className={styles.iconPermission}
+              onClick={() => this.handlePermission(text, record)}
+            />
           ) : (
             ''
           ),
@@ -162,7 +165,6 @@ class RolesPermission extends PureComponent {
     const add = {
       RolesID: '',
       Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
-      // Permission: <Input onChange={this.handleChangeValuePermission} value={permissionValues} />,
     };
 
     const renderAdd = [...formatData, add];
