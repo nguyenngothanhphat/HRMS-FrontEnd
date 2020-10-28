@@ -73,13 +73,15 @@
     margin: 10px 0;
     .changeMonthBtn {
       span {
-        padding-left: 10px;
+        padding: 3px;
         color: #2058d1;
         font-weight: bold;
         font-size: 10px;
         cursor: pointer;
         &:hover {
-          opacity: 0.7;
+          background-color: #2058d1;
+          color: white;
+          border-radius: 1px;
         }
       }
     }
@@ -100,6 +102,14 @@
   .markEventBegin {
     position: relative;
   }
+  .markEventBegin::before {
+    content: '•';
+    position: absolute;
+    margin-left: 6px;
+    margin-top: 8px;
+    z-index: 1;
+    font-size: 24px;
+  }
   .markEventBegin::after {
     content: '';
     position: absolute;
@@ -112,6 +122,15 @@
   .markEventEnd {
     position: relative;
   }
+  .markEventEnd::before {
+    content: '•';
+    position: absolute;
+    right: 50%;
+    // margin-right: 10px;
+    margin-top: 8px;
+    z-index: 1;
+    font-size: 24px;
+  }
   .markEventEnd::after {
     content: '';
     position: absolute;
@@ -121,10 +140,10 @@
     margin-bottom: -2px;
     border-bottom: 3px solid #d6dce0;
   }
+
   .lineClassName {
-    span {
-    }
     border-bottom: 3px solid #d6dce0;
+    bottom: 0;
   }
 
   // eventDetailContainer

@@ -6,12 +6,20 @@ import EventDetailBox from './components/EventDetailBox';
 
 import './index.less';
 
-// moment.locale('en').format('dd');
+moment.locale('en');
+moment.updateLocale('en', { weekdaysMin: 'U_M_T_W_R_F_S'.split('_') });
 
 const leaveHistoryData = [
   {
     from: '10/4/2020',
     to: '10/5/2020',
+    type: 'CL',
+    duration: 1,
+    description: 'Family Event',
+  },
+  {
+    from: '10/30/2020',
+    to: '10/31/2020',
     type: 'CL',
     duration: 1,
     description: 'Family Event',
@@ -157,7 +165,7 @@ export default class EventCalendar extends PureComponent {
     const weekdays = this.weekdaysShort.map((day) => {
       return (
         <th key={day} className="week-day">
-          {day}
+          {day.slice(0, 1)}
         </th>
       );
     });
@@ -223,8 +231,6 @@ export default class EventCalendar extends PureComponent {
       );
     }
 
-    // console.log('days: ', daysInMonth);
-
     const totalSlots = [...blanks, ...daysInMonth];
     const rows = [];
     let cells = [];
@@ -282,13 +288,18 @@ export default class EventCalendar extends PureComponent {
             {leaveHistoryData.map((value) => {
               const eventFromDay = moment(value.from).format('D');
               const eventFromMonth = moment(value.from).format('M');
-              const eventToMonth = moment(value.from).format('M');
               const eventFromYear = moment(value.from).format('Y');
+              console.log('currentDay', currentDay, 'eventFromDay', eventFromDay);
+
               if (
-                ((currentDay < eventFromDay * 1 && this.selectedMonth() === eventFromMonth * 1) ||
-                  eventFromMonth * 1 > currentMonth ||
-                  eventToMonth * 1 <= this.selectedMonth()) &&
-                this.selectedYear() === eventFromYear
+                (currentDay < eventFromDay * 1 &&
+                  this.selectedMonth() * 1 === eventFromMonth * 1 &&
+                  this.selectedYear() * 1 === eventFromYear * 1 &&
+                  currentMonth * 1 === this.selectedMonth() * 1 &&
+                  currentYear * 1 === this.selectedYear() * 1) ||
+                (currentMonth * 1 < this.selectedMonth() * 1 &&
+                  eventFromMonth * 1 >= this.selectedMonth() * 1 &&
+                  eventFromYear * 1 >= this.selectedYear() * 1)
               )
                 return <EventDetailBox data={value} />;
             })}
@@ -298,11 +309,15 @@ export default class EventCalendar extends PureComponent {
             {leaveHistoryData.map((value) => {
               const eventFromDay = moment(value.from).format('D');
               const eventFromMonth = moment(value.from).format('M');
+              const eventToMonth = moment(value.to).format('M');
               const eventFromYear = moment(value.from).format('Y');
               if (
-                currentDay >= eventFromDay * 1 &&
-                this.selectedMonth() === eventFromMonth &&
-                this.selectedYear() === eventFromYear
+                ((eventFromDay * 1 <= currentDay * 1 &&
+                  eventFromMonth * 1 === this.selectedMonth() * 1 &&
+                  currentMonth * 1 === this.selectedMonth() * 1) ||
+                  (eventToMonth * 1 < this.selectedMonth() * 1 &&
+                    eventFromMonth * 1 === this.selectedMonth() * 1)) &&
+                eventFromYear * 1 === this.selectedYear() * 1
               )
                 return <EventDetailBox data={value} />;
             })}
