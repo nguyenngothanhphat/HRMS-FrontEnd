@@ -6,8 +6,9 @@ import styles from './index.less';
 
 export default class EventDetailBox extends PureComponent {
   render() {
-    const { data = [] } = this.props;
+    const { data = [], color = 0 } = this.props;
     const { from = '', to = '', type = '', duration = '', description = '' } = data;
+    console.log('color', color);
     return (
       <Row className={styles.EventDetailBox}>
         <Col xs={3} className={styles.dateAndMonth}>
@@ -21,7 +22,14 @@ export default class EventDetailBox extends PureComponent {
         <Col xs={13} className={styles.eventOfDay}>
           {description}
         </Col>
-        <Col className={styles.dayInWeek} xs={5}>
+        <Col
+          className={
+            color === 1
+              ? `${styles.dayInWeek} ${styles.upcomingColor}`
+              : `${styles.dayInWeek} ${styles.leaveTakenColor}`
+          }
+          xs={5}
+        >
           {`-`}
           {duration}
           {type}

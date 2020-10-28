@@ -2,12 +2,12 @@
   position: relative;
   padding-bottom: 10px;
   .day,
-  .empty-slot,
-  .week-day {
+  .emptySlot,
+  .weekDay {
     text-align: center;
   }
 
-  .week-day {
+  .weekDay {
     font-size: 0.8em;
   }
 
@@ -18,10 +18,11 @@
     padding: 7px 0;
     span {
       padding: 6px;
+      color: black;
     }
   }
 
-  .current-day {
+  .currentDay {
     span {
       // border: 1px solid black;
       border-radius: 50%;
@@ -31,38 +32,23 @@
     }
   }
 
-  .month-popup {
-    position: absolute;
-    padding: 5px;
-    background: white;
-    border: 2px solid skyblue;
-  }
-
-  .month-popup div {
-    padding: 0.3em;
-  }
-
-  .nav-month {
+  .navMonth {
     position: absolute;
     top: 0.6em;
     font-size: 0.6em;
     right: 3px;
   }
 
-  .editor-year {
-    max-width: 3.6em;
-  }
-
-  .label-month,
-  .label-year {
+  .labelMonth,
+  .labelYear {
     font-size: 14px;
   }
-  .label-year {
+  .labelYear {
     font-weight: bold;
     padding-left: 5px;
   }
 
-  .label-month {
+  .labelMonth {
     cursor: pointer;
   }
 
@@ -160,11 +146,19 @@
       }
     }
   }
+
   .eventDetailContainer::before {
     content: '';
     position: absolute;
     left: -30px;
     width: 150%;
     border-top: 1px solid #d6dce0;
+  }
+
+  .upcomingColor {
+    color: #60f93a;
+  }
+  .leaveTakenColor {
+    color: #ff5252;
   }
 }

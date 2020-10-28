@@ -4,7 +4,7 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import EventDetailBox from './components/EventDetailBox';
 
-import './index.less';
+import styles from './index.less';
 
 moment.locale('en');
 moment.updateLocale('en', { weekdaysMin: 'U_M_T_W_R_F_S'.split('_') });
@@ -130,7 +130,7 @@ export default class LeaveHistory extends PureComponent {
   onChangeMonth = (e, month) => {};
 
   MonthNav = () => {
-    return <span className="label-month">{this.month()}</span>;
+    return <span className={styles.labelMonth}>{this.month()}</span>;
   };
 
   setYear = (year) => {
@@ -155,7 +155,60 @@ export default class LeaveHistory extends PureComponent {
   };
 
   YearNav = () => {
-    return <span className="label-year">{this.year()}</span>;
+    return <span className={styles.labelYear}>{this.year()}</span>;
+  };
+
+  checkASingleDay = (day, month, year) => {
+    const { currentMonth, currentDay, currentYear } = this.state;
+    if (
+      (day > currentDay && month === currentMonth && year === currentYear) ||
+      (month > currentMonth && year >= currentYear)
+    ) {
+      return 1; // upcoming date
+    }
+    return 0; // leave taken day
+  };
+
+  checkIfUpcomingOrLeaveTaken = (value) => {
+    const { currentMonth, currentDay, currentYear } = this.state;
+    const eventFromDay = moment(value.from).format('D');
+    const eventFromMonth = moment(value.from).format('M');
+    const eventFromYear = moment(value.from).format('Y');
+    const eventToMonth = moment(value.to).format('M');
+    if (
+      (currentDay < eventFromDay * 1 &&
+        this.selectedMonth() * 1 === eventFromMonth * 1 &&
+        this.selectedYear() * 1 === eventFromYear * 1 &&
+        currentMonth * 1 === this.selectedMonth() * 1 &&
+        currentYear * 1 === this.selectedYear() * 1) ||
+      (currentMonth * 1 < this.selectedMonth() * 1 &&
+        eventFromMonth * 1 >= this.selectedMonth() * 1 &&
+        eventFromYear * 1 >= this.selectedYear() * 1)
+    )
+      return 1;
+    if (
+      ((eventFromDay * 1 <= currentDay * 1 &&
+        eventFromMonth * 1 === this.selectedMonth() * 1 &&
+        currentMonth * 1 === this.selectedMonth() * 1) ||
+        (eventToMonth * 1 < this.selectedMonth() * 1 &&
+          eventFromMonth * 1 === this.selectedMonth() * 1)) &&
+      eventFromYear * 1 === this.selectedYear() * 1
+    )
+      return 2;
+    return '';
+  };
+
+  renderData = (id) => {
+    const upcomingData = [];
+    const leaveTakenData = [];
+    leaveHistoryData.map((value) => {
+      const check = this.checkIfUpcomingOrLeaveTaken(value);
+      if (check === 1) upcomingData.push(value);
+      else if (check === 2) leaveTakenData.push(value);
+      return '';
+    });
+    if (id === 1) return upcomingData;
+    return leaveTakenData;
   };
 
   render() {
@@ -164,7 +217,7 @@ export default class LeaveHistory extends PureComponent {
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
-        <th key={day} className="week-day">
+        <th key={day} className={styles.weekDay}>
           {day.slice(0, 1)}
           {/* get first letter of weekdays */}
         </th>
@@ -173,7 +226,7 @@ export default class LeaveHistory extends PureComponent {
 
     const blanks = [];
     for (let i = 0; i < this.firstDayOfMonth(); i += 1) {
-      blanks.push(<td key={i * 80} className="emptySlot" />);
+      blanks.push(<td key={i * 80} className={styles.emptySlot} />);
     }
 
     const daysInMonth = [];
@@ -182,13 +235,13 @@ export default class LeaveHistory extends PureComponent {
         d === currentDay * 1 &&
         currentMonth === this.selectedMonth() &&
         currentYear === this.selectedYear()
-          ? 'day current-day'
-          : 'day';
+          ? `${styles.day} ${styles.currentDay}`
+          : styles.day;
 
       let eventMarkBeginClassName = '';
       let eventMarkEndClassName = '';
       let lineClassName = '';
-
+      let colorClassName = '';
       leaveHistoryData.forEach((value) => {
         const eventFromDay = moment(value.from).format('D');
         const eventFromMonth = moment(value.from).format('M');
@@ -196,36 +249,43 @@ export default class LeaveHistory extends PureComponent {
         const eventToDay = moment(value.to).format('D');
         const eventToMonth = moment(value.to).format('M');
         const eventToYear = moment(value.to).format('Y');
-
         if (
           d === eventFromDay * 1 &&
-          this.selectedMonth() === eventFromMonth &&
-          this.selectedYear() === eventFromYear
-        )
-          eventMarkBeginClassName = ' markEventBegin ';
+          this.selectedMonth() * 1 === eventFromMonth * 1 &&
+          this.selectedYear() * 1 === eventFromYear * 1
+        ) {
+          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+            colorClassName = styles.upcomingColor;
+          } else colorClassName = styles.leaveTakenColor;
+          eventMarkBeginClassName = styles.markEventBegin;
+        }
 
         if (
           d === eventToDay * 1 &&
-          this.selectedMonth() === eventToMonth &&
-          this.selectedYear() === eventToYear
-        )
-          eventMarkEndClassName = ' markEventEnd ';
+          this.selectedMonth() * 1 === eventToMonth * 1 &&
+          this.selectedYear() * 1 === eventToYear * 1
+        ) {
+          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+            colorClassName = styles.upcomingColor;
+          } else colorClassName = styles.leaveTakenColor;
+          eventMarkEndClassName = styles.markEventEnd;
+        }
 
         if (
           d > eventFromDay * 1 &&
-          d < eventToDay &&
-          this.selectedYear() === eventFromYear &&
-          this.selectedYear() === eventToYear &&
-          this.selectedMonth() === eventFromMonth &&
-          this.selectedMonth() === eventToMonth
+          d < eventToDay * 1 &&
+          this.selectedYear() * 1 === eventFromYear * 1 &&
+          this.selectedYear() * 1 === eventToYear * 1 &&
+          this.selectedMonth() * 1 === eventFromMonth * 1 &&
+          this.selectedMonth() * 1 === eventToMonth * 1
         )
-          lineClassName = ' lineClassName ';
+          lineClassName = styles.lineClassName;
       });
 
       daysInMonth.push(
         <td
           key={d}
-          className={className + lineClassName + eventMarkBeginClassName + eventMarkEndClassName}
+          className={`${className} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
         >
           <span>{d}</span>
         </td>,
@@ -256,13 +316,13 @@ export default class LeaveHistory extends PureComponent {
     });
 
     return (
-      <div className="EventCalendar">
-        <div className="headerContainer">
+      <div className={styles.EventCalendar}>
+        <div className={styles.headerContainer}>
           <div>
             {this.MonthNav()}
             {this.YearNav()}
           </div>
-          <div className="changeMonthBtn">
+          <div className={styles.changeMonthBtn}>
             <span
               onClick={() => {
                 this.prevMonth();
@@ -279,49 +339,22 @@ export default class LeaveHistory extends PureComponent {
             </span>
           </div>
         </div>
-        <table className="daysTable">
-          <tr className="daysInMonth">{weekdays}</tr>
+        <table className={styles.daysTable}>
+          <tr className={styles.daysInMonth}>{weekdays}</tr>
           {trElems}
         </table>
-        <div className="eventDetailContainer">
-          <div className="eventDetailPart">
-            <span className="title">Upcoming</span>
-            {leaveHistoryData.map((value) => {
-              const eventFromDay = moment(value.from).format('D');
-              const eventFromMonth = moment(value.from).format('M');
-              const eventFromYear = moment(value.from).format('Y');
-              console.log('currentDay', currentDay, 'eventFromDay', eventFromDay);
-
-              if (
-                (currentDay < eventFromDay * 1 &&
-                  this.selectedMonth() * 1 === eventFromMonth * 1 &&
-                  this.selectedYear() * 1 === eventFromYear * 1 &&
-                  currentMonth * 1 === this.selectedMonth() * 1 &&
-                  currentYear * 1 === this.selectedYear() * 1) ||
-                (currentMonth * 1 < this.selectedMonth() * 1 &&
-                  eventFromMonth * 1 >= this.selectedMonth() * 1 &&
-                  eventFromYear * 1 >= this.selectedYear() * 1)
-              )
-                return <EventDetailBox data={value} />;
-            })}
+        <div className={styles.eventDetailContainer}>
+          <div className={styles.eventDetailPart}>
+            <span className={styles.title}>Upcoming</span>
+            {this.renderData(1).map((value) => (
+              <EventDetailBox data={value} color={1} />
+            ))}
           </div>
-          <div className="eventDetailPart">
-            <div className="title">Leave taken</div>
-            {leaveHistoryData.map((value) => {
-              const eventFromDay = moment(value.from).format('D');
-              const eventFromMonth = moment(value.from).format('M');
-              const eventToMonth = moment(value.to).format('M');
-              const eventFromYear = moment(value.from).format('Y');
-              if (
-                ((eventFromDay * 1 <= currentDay * 1 &&
-                  eventFromMonth * 1 === this.selectedMonth() * 1 &&
-                  currentMonth * 1 === this.selectedMonth() * 1) ||
-                  (eventToMonth * 1 < this.selectedMonth() * 1 &&
-                    eventFromMonth * 1 === this.selectedMonth() * 1)) &&
-                eventFromYear * 1 === this.selectedYear() * 1
-              )
-                return <EventDetailBox data={value} />;
-            })}
+          <div className={styles.eventDetailPart}>
+            <div className={styles.title}>Leave taken</div>
+            {this.renderData(2).map((value) => (
+              <EventDetailBox data={value} color={2} />
+            ))}
           </div>
         </div>
       </div>
