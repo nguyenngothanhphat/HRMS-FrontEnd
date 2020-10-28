@@ -501,6 +501,7 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
+      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);

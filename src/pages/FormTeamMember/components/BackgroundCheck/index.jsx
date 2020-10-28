@@ -28,9 +28,10 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, data } = {} }) => ({
+@connect(({ candidateInfo: { tempData, data, tableData } = {} }) => ({
   tempData,
   data,
+  tableData,
 }))
 class BackgroundCheck extends Component {
   constructor(props) {
@@ -71,7 +72,7 @@ class BackgroundCheck extends Component {
   };
 
   handleSendEmail = () => {
-    const { dispatch } = this.props;
+    const { dispatch, tableData } = this.props;
     const {
       tempData: { documentList, employer },
       data: {
