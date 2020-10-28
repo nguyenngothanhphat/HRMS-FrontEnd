@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
-import { Link, formatMessage } from 'umi';
+import { Link, formatMessage, connect } from 'umi';
 
 import Template from './components/Template';
 import consecteturMorbi from './assets/consecteturMorbi.png';
@@ -14,53 +14,64 @@ import recent3 from './assets/recent3.png';
 
 import styles from './index.less';
 
+@connect(({ employeeSetting: { defaultTemplateList } }) => ({
+  defaultTemplateList,
+}))
 class Documents extends PureComponent {
   _renderTemplates = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { consecteturMorbi },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { fringillaPulvinar },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { lectusTinciduntEros },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 4,
-        templateThumbnail: { lectusTinciduntEros2 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 5,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 6,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 7,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
+    const { defaultTemplateList } = this.props;
+    // const templates = [
+    //   {
+    //     templateId: 1,
+    //     templateThumbnail: { consecteturMorbi },
+    //     templateName: 'Consectetur morbi ',
+    //   },
+    //   {
+    //     templateId: 2,
+    //     templateThumbnail: { fringillaPulvinar },
+    //     templateName: 'Fringilla pulvinar ',
+    //   },
+    //   {
+    //     templateId: 3,
+    //     templateThumbnail: { lectusTinciduntEros },
+    //     templateName: 'Lectus tincidunt eros ',
+    //   },
+    //   {
+    //     templateId: 4,
+    //     templateThumbnail: { lectusTinciduntEros2 },
+    //     templateName: 'Lectus tincidunt eros ',
+    //   },
+    //   {
+    //     templateId: 5,
+    //     templateThumbnail: { lectusTinciduntEros3 },
+    //     templateName: 'Lectus tincidunt eros ',
+    //   },
+    //   {
+    //     templateId: 6,
+    //     templateThumbnail: { lectusTinciduntEros3 },
+    //     templateName: 'Lectus tincidunt eros ',
+    //   },
+    //   {
+    //     templateId: 7,
+    //     templateThumbnail: { lectusTinciduntEros3 },
+    //     templateName: 'Lectus tincidunt eros ',
+    //   },
+    // ];
+    return defaultTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
+          <Link to={`/template-details/${template._id}`}>
             <Template template={template} />
           </Link>
         </Col>
       );
+    });
+  };
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/fetchDefaultTemplateList',
     });
   };
 

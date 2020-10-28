@@ -27,3 +27,10 @@ export async function getTemplates() {
     method: 'POST',
   });
 }
+
+export async function removeTemplate(payload) {
+  return request('/api/template/remove', {
+    method: 'POST',
+    data: payload, // _id
+  });
+}

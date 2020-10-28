@@ -119,6 +119,14 @@ const OfferDetail = (props) => {
     checkAllFieldsValid(allFormValues);
   }, [file, agreement, handbook]);
 
+  useEffect(() => {
+    setDefaultTemplates(defaultTemplatesProp);
+  }, [defaultTemplatesProp]);
+
+  useEffect(() => {
+    setCustomTemplates(customTemplatesProp);
+  }, [customTemplatesProp]);
+
   const handleFileChange = (value) => {
     setFile(value);
   };
@@ -365,8 +373,8 @@ const OfferDetail = (props) => {
         <div className={styles.rightCol}>
           {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
           {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
-          <Template type="default" files={defaultTemplates} />
-          <Template files={customTemplates} />
+          <Template dispatch={dispatch} type="default" files={defaultTemplates} />
+          <Template dispatch={dispatch} files={customTemplates} />
         </div>
       </div>
     </Form>
