@@ -86,14 +86,22 @@ class ModalImportEmployee extends Component {
 
   processData = (array) => {
     // Uppercase first letter
-    const capsPopulations = [];
-    array.forEach((obj) => {
-      const entries = Object.entries(obj);
-      const capsEntries = entries.map((entry) => [
-        entry[0][0].toUpperCase() + entry[0].slice(1),
-        entry[1],
-      ]);
-      capsPopulations.push(Object.fromEntries(capsEntries));
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      return {
+        'Employee Id': item.employeeId,
+        Location: item.location,
+        Department: item.department,
+        'Work Email': item.workEmail,
+        'Personal Email': item.personalEmail,
+        'Manager Work Email': item.managerWorkEmail,
+        'First Name': item.firstName,
+        'Last Name': item.lastName,
+        Title: item.title,
+        'Personal Number': item.personalNumber,
+        'Is Added': item.isAdded,
+        Status: item.status,
+      };
     });
 
     // Get keys, header csv
