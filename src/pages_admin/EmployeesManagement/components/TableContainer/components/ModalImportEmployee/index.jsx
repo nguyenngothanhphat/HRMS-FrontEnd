@@ -26,6 +26,9 @@ const { Option } = Select;
 class ModalImportEmployee extends Component {
   static getDerivedStateFromProps(props) {
     if ('statusImportEmployees' in props && props.statusImportEmployees) {
+      if (props.company !== '') {
+        return { company: props.company._id };
+      }
       return { company: '' };
     }
     return null;
@@ -67,9 +70,17 @@ class ModalImportEmployee extends Component {
     if (
       statusImportEmployees &&
       !_.isEmpty(returnEmployeesList) &&
-      !_.isEmpty(returnEmployeesList.newList)
+      (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
     ) {
-      exportToCsv('Result_Import_Employees.csv', this.processData(returnEmployeesList.newList));
+      const existList = returnEmployeesList.existList.map((item) => {
+        return {
+          ...item,
+          isAdded: false,
+          status: '[FAILED] - Work Email existed!',
+        };
+      });
+      const exportData = [...returnEmployeesList.newList, ...existList];
+      exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
 
@@ -224,7 +235,7 @@ class ModalImportEmployee extends Component {
           </Form>
           <div className={styles.FileUploadForm}>
             <ImportCSV
-              disabled={company === '' && companyProps === ''}
+              disabled={company === ''}
               onDrop={(result) => {
                 this.handleDataUpload(result);
               }}

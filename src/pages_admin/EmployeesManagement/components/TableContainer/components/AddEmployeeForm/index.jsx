@@ -65,9 +65,9 @@ class AddEmployeeForm extends Component {
     if (statusAddEmployee === true) {
       this.formRef.current.resetFields();
       dispatch({
-        type: 'changePassword/save',
+        type: 'employeesManagement/save',
         payload: {
-          statusChangePassword: false,
+          statusAddEmployee: false,
         },
       });
     }
