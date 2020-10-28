@@ -3,8 +3,8 @@ import { Form, Radio, Input } from 'antd';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeSetting: { tempSettings = {} } }) => ({
-  tempSettings,
+@connect(({ employeeSetting: { newTemplateData: { settings = {} } = {} } }) => ({
+  settings,
 }))
 class Option extends Component {
   constructor(props) {
@@ -16,9 +16,9 @@ class Option extends Component {
   }
 
   onChangeRadio = (key, value, description, e) => {
-    const { dispatch, tempSettings, settingsList } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { checked } = this.state;
-    let array = [...tempSettings];
+    let array = [...settings];
     console.log(array);
     const index = settingsList.findIndex((item) => item.key === key);
 
@@ -40,7 +40,9 @@ class Option extends Component {
     dispatch({
       type: 'employeeSetting/save',
       payload: {
-        tempSettings: array,
+        newTemplateData: {
+          settings: array,
+        },
       },
     });
 
@@ -50,7 +52,7 @@ class Option extends Component {
   };
 
   onChangeInput = (option, e) => {
-    const { dispatch, tempSettings, settingsList } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { target } = e;
     const { name, value } = target;
     const setting = {
@@ -58,14 +60,16 @@ class Option extends Component {
       description: option.description,
       value,
     };
-    const array = [...tempSettings];
+    const array = [...settings];
     console.log(array);
     const index = settingsList.findIndex((item) => item.key === name);
-    array[index] = settingsList;
+    array[index] = setting;
     dispatch({
       type: 'employeeSetting/save',
       payload: {
-        tempSettings: array,
+        newTemplateData: {
+          settings: array,
+        },
       },
     });
   };

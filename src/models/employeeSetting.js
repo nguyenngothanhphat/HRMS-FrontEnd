@@ -8,8 +8,6 @@ const employeeSetting = {
     currentTemplate: {},
     tempSettings: [],
     newTemplateData: {
-      title: '',
-      htmlContent: '',
       settings: [],
       fullname: '',
       signature: '',
