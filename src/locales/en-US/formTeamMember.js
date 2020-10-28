@@ -71,6 +71,7 @@ export default {
   'component.previewOffer.hrMail': 'HR Email ID',
   'component.previewOffer.invalidMailErr': 'The input is not valid email!',
   'component.previewOffer.emptyMailErr': 'Please input your email!',
+  'component.previewOffer.sendForApproval': 'Send for approval',
   'component.customField.title': 'custom fields',
   'component.customField.subTitle':
     ' All documents supporting candidate’s employment eligibility will be displayed here',

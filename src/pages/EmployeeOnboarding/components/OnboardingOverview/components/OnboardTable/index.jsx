@@ -245,8 +245,8 @@ class OnboardTable extends Component {
         width: getColumnWidth('dateJoin', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'No. Of documents verified',
+        // title: 'No. Of documents verified',
+        title: formatMessage({ id: 'component.onboardingOverview.documentVerified' }),
         dataIndex: 'documentVerified',
         key: 'document',
         columnName: DOCUMENT,
@@ -254,8 +254,8 @@ class OnboardTable extends Component {
         align: 'center',
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Resubmits',
+        // title: 'Resubmits',
+        title: formatMessage({ id: 'component.onboardingOverview.resubmit' }),
         dataIndex: 'resubmit',
         key: 'resubmit',
         columnName: RESUBMIT,
@@ -263,24 +263,24 @@ class OnboardTable extends Component {
         align: 'center',
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Expires on',
+        // title: 'Expires on',
+        title: formatMessage({ id: 'component.onboardingOverview.expire' }),
         dataIndex: 'expire',
         key: 'expire',
         columnName: EXPIRE,
         width: getColumnWidth('expire', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Change request',
+        // title: 'Change request',
+        title: formatMessage({ id: 'component.onboardingOverview.changeRequest' }),
         dataIndex: 'changeRequest',
         key: 'changeRequest',
         columnName: CHANGE_REQUEST,
         width: getColumnWidth('changeRequest', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Request date',
+        // title: 'Request date',
+        title: formatMessage({ id: 'component.onboardingOverview.requestDate' }),
         dataIndex: 'dateRequest',
         key: 'dateRequest',
         columnName: DATE_REQUEST,
@@ -305,25 +305,6 @@ class OnboardTable extends Component {
           const { rookieId = '' } = currentRecord;
           const id = rookieId.replace('#', '') || '';
           return this.renderAction(id, type, actionText);
-          // return (
-          //   <Link to={`/employee-onboarding/review/${id}`}>
-          //     <span className={styles.tableActions}>
-          //       {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-          //         <>
-          //           <span>{actionText}</span>
-
-          //           <span className={styles.viewDraft}>
-          //             {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-          //           </span>
-          //         </>
-          //       ) : (
-          //         <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-          //       )}
-
-          //       <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
-          //     </span>
-          //   </Link>
-          // );
         },
         columnName: ACTION,
       },
