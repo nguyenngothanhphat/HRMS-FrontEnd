@@ -1,16 +1,17 @@
+/* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Radio, Typography, Row, Col } from 'antd';
 import styles from './index.less';
 
 class RadioComponent extends PureComponent {
   render() {
-    const { Tab, handleRadio, employeeTypeList, employeeType, position } = this.props;
+    const { Tab, handleRadio, employeeTypeList, employeeType, position, data: test } = this.props;
     return (
       <div className={styles.RadioComponent}>
         <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>
         <Radio.Group
           className={styles.Padding}
-          defaultValue={position}
+          defaultValue={position !== 'EMPLOYEE' ? test.position : position}
           onChange={(e) => handleRadio(e)}
           name={Tab.positionTab.name}
         >
@@ -30,7 +31,7 @@ class RadioComponent extends PureComponent {
         </Typography.Title>
         <Radio.Group
           className={styles.paddingRadio}
-          defaultValue={employeeType}
+          defaultValue={typeof test.employeeType === 'string' && employeeType}
           onChange={(e) => handleRadio(e)}
           name={Tab.classificationTab.name}
         >

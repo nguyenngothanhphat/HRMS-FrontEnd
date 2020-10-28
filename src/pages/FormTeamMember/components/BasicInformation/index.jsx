@@ -35,6 +35,44 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    const {
+      data,
+      tempData,
+      checkMandatory,
+      tempData: { checkStatus },
+    } = this.state;
+    const { dispatch } = this.props;
+    const emailRegExp = RegExp(
+      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
+    );
+    if (data.fullName !== '') {
+      if (
+        data.fullName !== '' &&
+        data.workEmail !== '' &&
+        data.privateEmail !== '' &&
+        emailRegExp.test(data.privateEmail) &&
+        emailRegExp.test(data.workEmail)
+      ) {
+        checkStatus.filledBasicInformation = true;
+      } else {
+        checkStatus.filledBasicInformation = false;
+      }
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledBasicInformation: checkStatus.filledBasicInformation,
+          },
+        },
+      });
+    }
+  }
+
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
@@ -43,15 +81,20 @@ class BasicInformation extends PureComponent {
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
 
-    const { tempData, checkMandatory } = this.state;
+    const { tempData, checkMandatory, data } = this.state;
     tempData[name] = value;
     const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
     if (
-      fullName !== '' &&
-      workEmail !== '' &&
-      privateEmail !== '' &&
-      emailRegExp.test(privateEmail) &&
-      emailRegExp.test(workEmail)
+      (fullName !== '' &&
+        workEmail !== '' &&
+        privateEmail !== '' &&
+        emailRegExp.test(privateEmail) &&
+        emailRegExp.test(workEmail)) ||
+      (data.fullName !== '' &&
+        data.workEmail !== '' &&
+        data.privateEmail !== '' &&
+        emailRegExp.test(data.privateEmail) &&
+        emailRegExp.test(data.workEmail))
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
