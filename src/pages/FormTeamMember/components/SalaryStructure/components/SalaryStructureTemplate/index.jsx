@@ -11,10 +11,9 @@ import styles from './index.less';
       listTitle = [],
       checkMandatory = {},
       currentStep = {},
-      data: { processStatus = '' } = {},
+      data: { processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
       data,
       tableData = [],
-      salaryPosition = '',
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -110,12 +109,16 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id } = this.props;
+    const { dispatch, _id, salaryPosition } = this.props;
     // const { tableData } = this.state;
     // const newTableData = [...tableData];
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
+    });
+    dispatch({
+      type: 'candidateInfo/fetchTableData',
+      payload: { title: salaryPosition },
     });
   };
 
@@ -134,6 +137,7 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       currentStep,
       tableData,
+      salaryPosition,
       data: { _id },
     } = this.props;
     dispatch({
@@ -145,7 +149,10 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
-        salaryStructure: tableData,
+        salaryStructure: {
+          salaryPosition,
+          settings: tableData,
+        },
         candidate: _id,
       },
     });
@@ -210,11 +217,13 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch } = this.props;
+    const { dispatch, data, salaryStructure } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateInfo/saveOrigin',
       payload: {
-        salaryPosition: value,
+        salaryStructure: {
+          salaryPosition: value,
+        },
       },
     });
     dispatch({
