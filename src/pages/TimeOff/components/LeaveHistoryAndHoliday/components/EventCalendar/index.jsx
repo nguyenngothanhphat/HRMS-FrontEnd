@@ -2,10 +2,28 @@
 import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import EventDetailBox from './components/EventDetailBox';
+
 import './index.less';
 
 // moment.locale('en').format('dd');
 
+const leaveHistoryData = [
+  {
+    from: '10/4/2020',
+    to: '10/5/2020',
+    type: 'CL',
+    duration: 1,
+    description: 'Family Event',
+  },
+  {
+    from: '10/19/2020',
+    to: '10/23/2020',
+    type: 'CL',
+    duration: 5,
+    description: 'Family Event',
+  },
+];
 export default class EventCalendar extends PureComponent {
   weekdays = moment.weekdays(); // ["Sunday", "Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday"]
 
@@ -127,6 +145,7 @@ export default class EventCalendar extends PureComponent {
 
   render() {
     const { currentMonth, currentDay, currentYear } = this.state;
+
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
@@ -149,8 +168,49 @@ export default class EventCalendar extends PureComponent {
         currentYear === this.selectedYear()
           ? 'day current-day'
           : 'day';
+
+      let eventMarkBeginClassName = '';
+      let eventMarkEndClassName = '';
+      let lineClassName = '';
+
+      leaveHistoryData.forEach((value) => {
+        const eventFromDay = moment(value.from).format('D');
+        const eventFromMonth = moment(value.from).format('M');
+        const eventFromYear = moment(value.to).format('Y');
+        const eventToDay = moment(value.to).format('D');
+        const eventToMonth = moment(value.to).format('M');
+        const eventToYear = moment(value.to).format('Y');
+
+        if (
+          d === eventFromDay * 1 &&
+          this.selectedMonth() === eventFromMonth &&
+          this.selectedYear() === eventFromYear
+        )
+          eventMarkBeginClassName = ' markEventBegin ';
+
+        if (
+          d === eventToDay * 1 &&
+          this.selectedMonth() === eventToMonth &&
+          this.selectedYear() === eventToYear
+        )
+          eventMarkEndClassName = ' markEventEnd ';
+
+        if (
+          d > eventFromDay * 1 &&
+          d < eventToDay &&
+          this.selectedYear() === eventFromYear &&
+          this.selectedYear() === eventToYear &&
+          this.selectedMonth() === eventFromMonth &&
+          this.selectedMonth() === eventToMonth
+        )
+          lineClassName = ' lineClassName ';
+      });
+
       daysInMonth.push(
-        <td key={d} className={className}>
+        <td
+          key={d}
+          className={className + lineClassName + eventMarkBeginClassName + eventMarkEndClassName}
+        >
           <span>{d}</span>
         </td>,
       );
@@ -209,6 +269,20 @@ export default class EventCalendar extends PureComponent {
           <tr className="daysInMonth">{weekdays}</tr>
           {trElems}
         </table>
+        <div className="eventDetailContainer">
+          <div className="eventDetailPart">
+            <span className="title">Upcoming</span>
+            {leaveHistoryData.map((value) => (
+              <EventDetailBox data={value} />
+            ))}
+          </div>
+          <div className="eventDetailPart">
+            <div className="title">Leave taken</div>
+            {leaveHistoryData.map((value) => (
+              <EventDetailBox data={value} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
