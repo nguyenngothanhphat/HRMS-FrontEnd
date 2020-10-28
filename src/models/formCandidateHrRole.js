@@ -16,7 +16,13 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo, sentForApproval, approveFinalOffer } from '@/services/formCandidate';
+import {
+  getRookieInfo,
+  sentForApproval,
+  approveFinalOffer,
+  getTemplates,
+  removeTemplate,
+} from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -114,6 +120,9 @@ const candidateInfo = {
         id: '',
         _id: '',
       },
+
+      defaultTemplates: [],
+      customTemplates: [],
     },
     data: {
       fullName: null,
@@ -134,6 +143,9 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      salaryStructure: {
+        salaryPosition: '',
+      },
       id: '',
       candidate: '',
       documentChecklistSetting: [
@@ -252,7 +264,6 @@ const candidateInfo = {
           ],
         },
       ],
-      salaryPosition: '',
       listTitle: [],
       tableData: [],
       candidateSignature: null,
@@ -386,6 +397,7 @@ const candidateInfo = {
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('res', response);
         console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -415,9 +427,9 @@ const candidateInfo = {
       return response;
     },
     *fetchEmployeeById({ payload }, { call, put }) {
-      console.log('pay', payload);
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         console.log('data3', response);
         console.log('data2', data);
@@ -429,6 +441,7 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTitleListByCompany({ payload }, { call, put }) {
       try {
@@ -488,6 +501,7 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
+      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);
@@ -545,6 +559,50 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    *fetchTemplate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTemplates);
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'updateTemplate',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *removeTemplateEffect({ payload }, { call, put }) {
+      try {
+        // const { id = '' } = payload;
+        const response = yield call(removeTemplate, payload); // payload: id
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'fetchTemplate',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    editTemplateEffect({ payload }, { call, put }) {
+      try {
+        const { id = '' } = payload;
+        // http://localhost:8001/template-details/5f97cd35fc92a3a34bdb2185
+        history.push(`/template-details/${id}`);
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
 
   reducers: {
@@ -574,11 +632,10 @@ const candidateInfo = {
         },
       };
     },
+
     updateSignature(state, action) {
       const { tempData } = state;
       const data = action.payload;
-      console.log('updateSignature');
-      console.log(data);
       const { hrSignature = {}, hrManagerSignature = {} } = data;
       return {
         ...state,
@@ -589,6 +646,48 @@ const candidateInfo = {
         },
       };
     },
+
+    updateTemplate(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+
+      if (!data) {
+        return state;
+      }
+
+      const defaultTemplates = data.filter((template) => template.default === true);
+      const customTemplates = data.filter((template) => template.default === false);
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          defaultTemplates,
+          customTemplates,
+        },
+      };
+    },
+
+    // removeTemplate(state, action) {
+    //   const { tempData } = state;
+    //   const data = action.payload;
+
+    //   if (!data) {
+    //     return state;
+    //   }
+
+    //   const defaultTemplates = data.filter((template) => template.default === true);
+    //   const customTemplates = data.filter((template) => template.default === false);
+
+    //   return {
+    //     ...state,
+    //     tempData: {
+    //       ...tempData,
+    //       defaultTemplates,
+    //       customTemplates,
+    //     },
+    //   };
+    // },
   },
 };
 

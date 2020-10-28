@@ -321,12 +321,6 @@ const OfferDetails = (props) => {
   );
 };
 
-// export default OfferDetails;
-// export default connect(
-//   ({ candidateProfile: { checkMandatory: { filledOfferDetails = false } = {} } = {} }) =>
-//     candidateProfile,
-// )(OfferDetails);
-
 export default connect(
   ({
     candidateProfile: {

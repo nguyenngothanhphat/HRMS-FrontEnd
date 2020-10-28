@@ -11,10 +11,9 @@ import styles from './index.less';
       listTitle = [],
       checkMandatory = {},
       currentStep = {},
-      data: { processStatus = '' } = {},
+      data: { title = {}, processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
       data,
       tableData = [],
-      salaryPosition = '',
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -26,6 +25,7 @@ import styles from './index.less';
     data,
     tableData,
     salaryPosition,
+    title,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -110,13 +110,20 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id } = this.props;
+    const { dispatch, _id, title } = this.props;
+    const idTitle = title?._id;
     // const { tableData } = this.state;
     // const newTableData = [...tableData];
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
     });
+    if (idTitle !== undefined) {
+      dispatch({
+        type: 'candidateInfo/fetchTableData',
+        payload: { title: idTitle },
+      });
+    }
   };
 
   onClickPrev = () => {
@@ -134,6 +141,7 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       currentStep,
       tableData,
+      salaryPosition,
       data: { _id },
     } = this.props;
     dispatch({
@@ -142,10 +150,15 @@ class SalaryStructureTemplate extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
+    console.log('tableData', tableData);
+    console.log('title', salaryPosition);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
-        salaryStructure: tableData,
+        salaryStructure: {
+          title: salaryPosition,
+          settings: tableData,
+        },
         candidate: _id,
       },
     });
@@ -212,9 +225,11 @@ class SalaryStructureTemplate extends PureComponent {
   handleChangeSelect = (value) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateInfo/saveOrigin',
       payload: {
-        salaryPosition: value,
+        salaryStructure: {
+          salaryPosition: value,
+        },
       },
     });
     dispatch({
@@ -418,8 +433,9 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { tableData, salaryPosition } = this.props;
+    const { tableData, title } = this.props;
     const { processStatus, listTitle = [] } = this.props;
+    const idTitle = title?._id;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -444,7 +460,7 @@ class SalaryStructureTemplate extends PureComponent {
                 </Select>
               )} */}
               <Select
-                defaultValue={salaryPosition ?? null}
+                defaultValue={idTitle ?? null}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"
