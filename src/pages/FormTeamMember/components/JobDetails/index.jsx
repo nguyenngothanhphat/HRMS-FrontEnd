@@ -73,7 +73,6 @@ class JobDetails extends PureComponent {
           },
         }).then(({ statusCode, data: test }) => {
           if (statusCode === 200) {
-            console.log('abc', test);
             dispatch({
               type: 'candidateInfo/saveTemp',
               payload: {
@@ -102,17 +101,6 @@ class JobDetails extends PureComponent {
           },
         },
       });
-      // dispatch({
-      //   type: 'candidateInfo/saveTemp',
-      //   payload: {
-      //     workLocation: null,
-      //     title: null,
-      //     employeeType: '5f50c2541513a742582206f9',
-      //     position: 'EMPLOYEE',
-      //     department: null,
-      //     reportingManager: null,
-      //   },
-      // });
     }
   }
 

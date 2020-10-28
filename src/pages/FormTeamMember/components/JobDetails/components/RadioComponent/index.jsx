@@ -1,13 +1,12 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Radio, Typography, Row, Col } from 'antd';
-import { isString, isObject } from 'lodash';
+import { isObject } from 'lodash';
 import styles from './index.less';
 
 class RadioComponent extends PureComponent {
   render() {
     const { Tab, handleRadio, employeeTypeList, employeeType, position, data: test } = this.props;
-    console.log('asd', isObject(test.employeeType));
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
