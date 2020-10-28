@@ -12,7 +12,6 @@
   }
 
   .day {
-    cursor: pointer;
     // height: 24px;
     font-size: 12px;
     padding: 7px 0;
@@ -73,8 +72,8 @@
     }
   }
   table {
-    width: 109% !important;
-    margin-left: -12px;
+    width: 100% !important;
+    // margin-left: -12px;
     tr {
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -93,9 +92,9 @@
     content: '•';
     position: absolute;
     margin-left: 6px;
-    margin-top: 8px;
+    margin-top: 10px;
     z-index: 1;
-    font-size: 24px;
+    font-size: 20px;
   }
   .markEventBegin::after {
     content: '';
@@ -103,8 +102,8 @@
     right: 0;
     width: 50%;
     bottom: 0;
-    margin-bottom: -2px;
-    border-bottom: 3px solid #d6dce0;
+    margin-bottom: -1px;
+    border-bottom: 2px solid #d6dce0;
   }
   .markEventEnd {
     position: relative;
@@ -112,11 +111,11 @@
   .markEventEnd::before {
     content: '•';
     position: absolute;
-    right: 50%;
+    right: 40%;
     // margin-right: 10px;
-    margin-top: 8px;
+    margin-top: 10px;
     z-index: 1;
-    font-size: 24px;
+    font-size: 20px;
   }
   .markEventEnd::after {
     content: '';
@@ -124,12 +123,12 @@
     left: 0;
     width: 50%;
     bottom: 0;
-    margin-bottom: -2px;
-    border-bottom: 3px solid #d6dce0;
+    margin-bottom: -1px;
+    border-bottom: 2px solid #d6dce0;
   }
 
   .lineClassName {
-    border-bottom: 3px solid #d6dce0;
+    border-bottom: 2px solid #d6dce0;
     bottom: 0;
   }
 

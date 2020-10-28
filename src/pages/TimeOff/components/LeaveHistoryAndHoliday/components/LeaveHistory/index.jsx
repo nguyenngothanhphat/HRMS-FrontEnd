@@ -7,7 +7,6 @@ import EventDetailBox from './components/EventDetailBox';
 import styles from './index.less';
 
 moment.locale('en');
-moment.updateLocale('en', { weekdaysMin: 'U_M_T_W_R_F_S'.split('_') });
 
 const leaveHistoryData = [
   {
@@ -36,6 +35,20 @@ const leaveHistoryData = [
     to: '11/7/2020',
     type: 'CL',
     duration: 2,
+    description: 'Family Event',
+  },
+  {
+    from: '11/26/2020',
+    to: '11/29/2020',
+    type: 'CL',
+    duration: 4,
+    description: 'Family Event',
+  },
+  {
+    from: '12/8/2020',
+    to: '12/10/2020',
+    type: 'CL',
+    duration: 3,
     description: 'Family Event',
   },
 ];

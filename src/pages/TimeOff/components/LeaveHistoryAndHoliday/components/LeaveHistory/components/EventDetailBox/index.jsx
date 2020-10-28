@@ -5,11 +5,16 @@ import moment from 'moment';
 import styles from './index.less';
 
 export default class EventDetailBox extends PureComponent {
+  onEventClick = () => {
+    // eslint-disable-next-line no-alert
+    alert('View Leave Request');
+  };
+
   render() {
     const { data = [], color = 0 } = this.props;
     const { from = '', to = '', type = '', duration = '', description = '' } = data;
     return (
-      <Row className={styles.EventDetailBox}>
+      <Row onClick={this.onEventClick} className={styles.EventDetailBox}>
         <Col xs={3} className={styles.dateAndMonth}>
           <span>{moment(from).locale('en').format('MMM')}</span>
           <span>{moment(from).locale('en').format('DD')}</span>
