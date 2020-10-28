@@ -81,7 +81,6 @@ class BackgroundCheck extends Component {
       type: 'candidateInfo/saveTemp',
       payload: {
         newArrToAdjust,
-        isSentEmail: true,
       },
     });
 
@@ -107,6 +106,12 @@ class BackgroundCheck extends Component {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            isSentEmail: true,
+          },
         });
       }
     });
@@ -354,6 +359,7 @@ class BackgroundCheck extends Component {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
             <SendEmail
+              title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
               formatMessage={formatMessage}
               handleSendEmail={this.handleSendEmail}
               handleChangeEmail={this.handleChangeEmail}
