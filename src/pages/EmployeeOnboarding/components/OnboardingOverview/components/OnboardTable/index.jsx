@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu } from 'antd';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage, Link, Redirect, connect } from 'umi';
+import { formatMessage, Link, connect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
@@ -14,7 +14,7 @@ import styles from './index.less';
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1, openModal: false, currentRecord: {}, redirectScreen: null };
+    this.state = { pageSelected: 1, openModal: false, currentRecord: {} };
   }
 
   handleActionClick = (tableType) => {
@@ -345,7 +345,6 @@ class OnboardTable extends Component {
     const { pageSelected } = this.state;
     const { list } = this.props;
     const rowSize = 10;
-    console.log(this.props);
 
     const rowSelection = {
       // onChange: (selectedRowKeys, selectedRows) => {
@@ -402,9 +401,9 @@ class OnboardTable extends Component {
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
             pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            onRow={(record, rowIndex) => {
+            onRow={(record) => {
               return {
-                onMouseEnter: (event) => {
+                onMouseEnter: () => {
                   this.setState({
                     currentRecord: record,
                   });

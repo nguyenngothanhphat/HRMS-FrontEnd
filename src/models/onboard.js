@@ -477,7 +477,8 @@ const formatDate = (date) => {
     return '';
   }
   const dateObj = new Date(date);
-  const month = dateObj.getUTCMonth() + 1; // months from 1-12
+  const month = dateObj.getUTCMonth(); // months from 1-12
+  // const month = dateObj.getUTCMonth() + 1; // months from 1-12
   const day = dateObj.getUTCDate();
   const year = dateObj.getUTCFullYear();
 
@@ -510,7 +511,7 @@ const formatData = (list = []) => {
       workLocation = '',
       updatedAt = '',
       createdAt = '',
-      comments = 'Passport submission pending …',
+      comments = '',
     } = item;
     const dateSent = formatDate(createdAt) || '';
     const dateReceived = formatDate(updatedAt) || '';
@@ -526,15 +527,15 @@ const formatData = (list = []) => {
       isNew: isNew || '',
       rookieName: fullName,
       position: title.name,
-      location: workLocation.name || 'Vietnam',
+      location: workLocation.name || '',
       comments: comments || '',
       dateSent: dateSent || '',
       dateReceived: dateReceived || '',
       dateJoin: dateJoin || '',
       dateRequest: dateRequest || '',
       expire: expire || '',
-      documentVerified: '4/5',
-      resubmit: 1,
+      documentVerified: '',
+      resubmit: 0,
       changeRequest: '-',
     };
     formatList.push(rookie);
