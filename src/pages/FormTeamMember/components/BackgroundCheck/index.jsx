@@ -50,6 +50,20 @@ class BackgroundCheck extends Component {
     return null;
   }
 
+  // componentDidMount() {
+  //   const { data, tempData, dispatch } = this.props;
+  //   if (data.documentChecklistSetting !== tempData.documentList) {
+  //     dispatch({
+  //       type: 'candidateInfo/saveTemp',
+  //       payload: {
+  //         documentList: data.documentChecklistSetting,
+  //       },
+  //     });
+  //     const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
+  //     const index = arrToAdjust.findIndex((x))
+  //   }
+  // }
+
   closeModal = () => {
     this.setState({
       openModal: false,

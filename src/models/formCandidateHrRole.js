@@ -386,6 +386,7 @@ const candidateInfo = {
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('res', response);
         console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -415,9 +416,9 @@ const candidateInfo = {
       return response;
     },
     *fetchEmployeeById({ payload }, { call, put }) {
-      console.log('pay', payload);
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         console.log('data3', response);
         console.log('data2', data);
@@ -429,6 +430,7 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTitleListByCompany({ payload }, { call, put }) {
       try {

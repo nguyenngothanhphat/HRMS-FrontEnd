@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty, isString, isNull } from 'lodash';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -39,7 +39,6 @@ class JobDetails extends PureComponent {
       tempData: { checkStatus },
     } = this.state;
     const { dispatch } = this.props;
-    console.log('data', data);
     if (data.department !== null) {
       if (data.department && data.title && data.workLocation && data.reportingManager) {
         checkStatus.filledJobDetail = true;
@@ -58,13 +57,78 @@ class JobDetails extends PureComponent {
           },
         },
       });
+      if (isString(data.department)) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            candidate: data._id,
+          },
+        });
+      }
+      if (!isNull(data.department)) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            candidate: data._id,
+          },
+        }).then(({ statusCode, data: test }) => {
+          if (statusCode === 200) {
+            console.log('abc', test);
+            dispatch({
+              type: 'candidateInfo/saveTemp',
+              payload: {
+                employeeType: test.employeeType._id,
+                position: test.position,
+              },
+            });
+          }
+        });
+      }
+    } else {
+      if (data.department && data.title && data.workLocation && data.reportingManager) {
+        checkStatus.filledJobDetail = true;
+      } else {
+        checkStatus.filledJobDetail = false;
+      }
       dispatch({
-        type: 'candidateInfo/fetchEmployeeById',
+        type: 'candidateInfo/save',
         payload: {
-          candidate: data.candidate,
+          tempData: {
+            ...tempData,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: checkStatus.filledJobDetail,
+          },
         },
       });
+      // dispatch({
+      //   type: 'candidateInfo/saveTemp',
+      //   payload: {
+      //     workLocation: null,
+      //     title: null,
+      //     employeeType: '5f50c2541513a742582206f9',
+      //     position: 'EMPLOYEE',
+      //     department: null,
+      //     reportingManager: null,
+      //   },
+      // });
     }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        workLocation: null,
+        title: null,
+        employeeType: '5f50c2541513a742582206f9',
+        position: 'EMPLOYEE',
+        department: null,
+        reportingManager: null,
+      },
+    });
   }
 
   handleRadio = (e) => {
@@ -123,12 +187,6 @@ class JobDetails extends PureComponent {
         },
       });
 
-      dispatch({
-        type: 'candidateInfo/saveOrigin',
-        payload: {
-          company: _id,
-        },
-      });
       if (!isEmpty(workLocation)) {
         dispatch({
           type: 'candidateInfo/fetchDepartmentList',
