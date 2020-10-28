@@ -4,9 +4,8 @@ import { Button, notification } from 'antd';
 import Dropzone from 'react-dropzone';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import csvIcon from '@/assets/csv-icon.png';
+import csv from 'csvtojson';
 import styles from './index.less';
-
-const csv = require('csvtojson');
 
 class ImportCSV extends Component {
   static getDerivedStateFromProps(props) {
