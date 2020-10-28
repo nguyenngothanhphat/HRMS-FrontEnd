@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Select } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -212,7 +212,7 @@ class AddEmployeeForm extends Component {
           {...formLayout}
         >
           <Form.Item
-            label="Name"
+            label={formatMessage({ id: 'addEmployee.name' })}
             name="firstName"
             rules={[
               { required: true },
@@ -225,20 +225,24 @@ class AddEmployeeForm extends Component {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Personal Email"
+            label={formatMessage({ id: 'addEmployee.personalEmail' })}
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Work Email"
+            label={formatMessage({ id: 'addEmployee.workEmail' })}
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Roles" name="roles" rules={[{ required: true }]}>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.roles' })}
+            name="roles"
+            rules={[{ required: true }]}
+          >
             <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
               {rolesList.map((item) => (
                 <Option key={item._id} value={item._id}>
@@ -250,7 +254,7 @@ class AddEmployeeForm extends Component {
 
           {company ? (
             <Form.Item
-              label="Company"
+              label={formatMessage({ id: 'addEmployee.company' })}
               name="company"
               initialValue={company._id}
               rules={[{ required: true }]}
@@ -262,9 +266,13 @@ class AddEmployeeForm extends Component {
               </Select>
             </Form.Item>
           ) : (
-            <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+            <Form.Item
+              label={formatMessage({ id: 'addEmployee.company' })}
+              name="company"
+              rules={[{ required: true }]}
+            >
               <Select
-                placeholder="Select Company"
+                placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
                 showArrow
                 showSearch
                 onChange={(value) => this.onChangeSelect('company', value)}
@@ -278,9 +286,13 @@ class AddEmployeeForm extends Component {
               </Select>
             </Form.Item>
           )}
-          <Form.Item label="Location" name="location" rules={[{ required: true }]}>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.location' })}
+            name="location"
+            rules={[{ required: true }]}
+          >
             <Select
-              placeholder="Select Location"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -294,9 +306,9 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Department" name="department">
+          <Form.Item label={formatMessage({ id: 'addEmployee.department' })} name="department">
             <Select
-              placeholder="Select Department"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
               showArrow
               showSearch
               loading={loadingDepartment}
@@ -310,9 +322,9 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Job Title" name="title">
+          <Form.Item label={formatMessage({ id: 'addEmployee.jobTitle' })} name="title">
             <Select
-              placeholder="Select Job Title"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -327,12 +339,12 @@ class AddEmployeeForm extends Component {
           </Form.Item>
           <Form.Item
             className={styles.reportingManager}
-            label="Reporting Manager"
+            label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Select Reporting Manager"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -364,7 +376,7 @@ class AddEmployeeForm extends Component {
         destroyOnClose
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
-            Cancel
+            {formatMessage({ id: 'employee.button.cancel' })}
           </div>,
           <Button
             key="submit"
@@ -374,7 +386,7 @@ class AddEmployeeForm extends Component {
             loading={loading}
             className={styles.btnSubmit}
           >
-            Submit
+            {formatMessage({ id: 'employee.button.submit' })}
           </Button>,
         ]}
       >
