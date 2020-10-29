@@ -24,6 +24,7 @@ const employeesManagement = {
     jobTitleList: [],
     reportingManagerList: [],
     statusImportEmployees: false,
+    statusAddEmployee: false,
     returnEmployeesList: {},
     filter: [],
     clearFilter: false,
@@ -146,7 +147,8 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *addEmployee({ payload }, { call }) {
+    *addEmployee({ payload }, { call, put }) {
+      let statusAddEmployee = false;
       try {
         const response = yield call(addEmployee, payload);
         const { statusCode, message } = response;
@@ -154,9 +156,12 @@ const employeesManagement = {
         notification.success({
           message,
         });
+        statusAddEmployee = true;
       } catch (errors) {
+        statusAddEmployee = false;
         dialog(errors);
       }
+      yield put({ type: 'save', payload: { statusAddEmployee } });
     },
     *importEmployees({ payload }, { call, put }) {
       let statusImportEmployees = false;

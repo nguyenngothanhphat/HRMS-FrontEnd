@@ -92,8 +92,9 @@ class RolesPermission extends PureComponent {
 
   handlePermission = (text, record) => {
     // console.log(text, record, index);
-    const { RolesID = '' } = record;
-    history.push(`/settings/${RolesID}`);
+    const { Rolesname = '' } = record;
+    localStorage.setItem('Rolesname', Rolesname);
+    history.push(`/settings/Permission`);
   };
 
   render() {

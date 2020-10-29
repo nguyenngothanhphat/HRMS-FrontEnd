@@ -3,10 +3,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Select } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-const Option = Select;
+const { Option } = Select;
 
 @connect(
   ({
@@ -18,6 +18,7 @@ const Option = Select;
       departmentList = [],
       jobTitleList = [],
       reportingManagerList = [],
+      statusAddEmployee,
     },
   }) => ({
     rolesList,
@@ -26,6 +27,7 @@ const Option = Select;
     departmentList,
     jobTitleList,
     reportingManagerList,
+    statusAddEmployee,
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
@@ -42,14 +44,56 @@ class AddEmployeeForm extends Component {
     };
   }
 
+  componentDidMount() {
+    const { company } = this.props;
+    if (company !== '') {
+      this.setState({
+        isDisabled: false,
+      });
+      this.fetchData(company._id);
+    }
+  }
+
   componentDidUpdate(prevState) {
     const { location } = this.state;
+    const { dispatch, statusAddEmployee = false } = this.props;
     if (location !== '' && location !== prevState.location) {
       this.formRef.current.setFieldsValue({
         department: undefined,
       });
     }
+    if (statusAddEmployee === true) {
+      this.formRef.current.resetFields();
+      dispatch({
+        type: 'employeesManagement/save',
+        payload: {
+          statusAddEmployee: false,
+        },
+      });
+    }
   }
+
+  fetchData = (_id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/fetchReportingManagerList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchLocationList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchJobTitleList',
+      payload: {
+        company: _id,
+      },
+    });
+  };
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
@@ -57,27 +101,15 @@ class AddEmployeeForm extends Component {
 
     switch (type) {
       case 'company':
-        dispatch({
-          type: 'employeesManagement/fetchReportingManagerList',
-          payload: {
-            company: value,
-          },
-        });
-        dispatch({
-          type: 'employeesManagement/fetchLocationList',
-          payload: {
-            company: value,
-          },
-        });
-        dispatch({
-          type: 'employeesManagement/fetchJobTitleList',
-          payload: {
-            company: value,
-          },
-        });
+        this.fetchData(value);
         this.setState({
           isDisabled: false,
           company: value,
+        });
+        this.formRef.current.setFieldsValue({
+          location: undefined,
+          title: undefined,
+          manager: undefined,
         });
         break;
       case 'location':
@@ -117,6 +149,7 @@ class AddEmployeeForm extends Component {
         locationList: [],
         jobTitleList: [],
         reportingManagerList: [],
+        statusAddEmployee: false,
       },
     });
   };
@@ -129,7 +162,6 @@ class AddEmployeeForm extends Component {
       type: 'employeesManagement/addEmployee',
       payload: values,
     });
-    this.formRef.current.resetFields();
   };
 
   renderHeaderModal = () => {
@@ -161,6 +193,7 @@ class AddEmployeeForm extends Component {
       jobTitleList,
       reportingManagerList,
       loadingDepartment,
+      company,
     } = this.props;
     const { isDisabled, isDisabledDepartment } = this.state;
     return (
@@ -179,7 +212,7 @@ class AddEmployeeForm extends Component {
           {...formLayout}
         >
           <Form.Item
-            label="Name"
+            label={formatMessage({ id: 'addEmployee.name' })}
             name="firstName"
             rules={[
               { required: true },
@@ -192,53 +225,74 @@ class AddEmployeeForm extends Component {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Personal Email"
+            label={formatMessage({ id: 'addEmployee.personalEmail' })}
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Work Email"
+            label={formatMessage({ id: 'addEmployee.workEmail' })}
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Roles"
+            label={formatMessage({ id: 'addEmployee.roles' })}
             name="roles"
-            rules={[{ required: true, message: 'Please select roles!' }]}
+            rules={[{ required: true }]}
           >
             <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
-              {rolesList.map((item) => {
-                const { _id = '', name = '' } = item;
-                return (
-                  <Option key={_id} value={_id}>
-                    {name}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select Company"
-              showArrow
-              showSearch
-              onChange={(value) => this.onChangeSelect('company', value)}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {companyList.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
+              {rolesList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
+                </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Location" name="location" rules={[{ required: true }]}>
+
+          {company ? (
+            <Form.Item
+              label={formatMessage({ id: 'addEmployee.company' })}
+              name="company"
+              initialValue={company._id}
+              rules={[{ required: true }]}
+            >
+              <Select disabled>
+                <Option key={company._id} value={company._id}>
+                  {company.name}
+                </Option>
+              </Select>
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label={formatMessage({ id: 'addEmployee.company' })}
+              name="company"
+              rules={[{ required: true }]}
+            >
+              <Select
+                placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
+                showArrow
+                showSearch
+                onChange={(value) => this.onChangeSelect('company', value)}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {companyList.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.location' })}
+            name="location"
+            rules={[{ required: true }]}
+          >
             <Select
-              placeholder="Select Location"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -252,9 +306,9 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Department" name="department" rules={[{ required: true }]}>
+          <Form.Item label={formatMessage({ id: 'addEmployee.department' })} name="department">
             <Select
-              placeholder="Select Department"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
               showArrow
               showSearch
               loading={loadingDepartment}
@@ -268,9 +322,9 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Job Title" name="title">
+          <Form.Item label={formatMessage({ id: 'addEmployee.jobTitle' })} name="title">
             <Select
-              placeholder="Select Job Title"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -285,12 +339,12 @@ class AddEmployeeForm extends Component {
           </Form.Item>
           <Form.Item
             className={styles.reportingManager}
-            label="Reporting Manager"
+            label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
             rules={[{ required: true }]}
           >
             <Select
-              placeholder="Select Reporting Manager"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch
               disabled={isDisabled}
@@ -322,7 +376,7 @@ class AddEmployeeForm extends Component {
         destroyOnClose
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
-            Cancel
+            {formatMessage({ id: 'employee.button.cancel' })}
           </div>,
           <Button
             key="submit"
@@ -332,7 +386,7 @@ class AddEmployeeForm extends Component {
             loading={loading}
             className={styles.btnSubmit}
           >
-            Submit
+            {formatMessage({ id: 'employee.button.submit' })}
           </Button>,
         ]}
       >
