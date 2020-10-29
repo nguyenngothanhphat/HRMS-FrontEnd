@@ -208,7 +208,7 @@ const PreviewOffer = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        hrSignature: hrSignatureProp,
+        hrSignature: hrSignatureProp.id,
       },
     });
   };
@@ -223,7 +223,7 @@ const PreviewOffer = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        hrManagerSignature: hrManagerSignatureProp,
+        hrManagerSignature: hrManagerSignatureProp.id,
       },
     });
   };
