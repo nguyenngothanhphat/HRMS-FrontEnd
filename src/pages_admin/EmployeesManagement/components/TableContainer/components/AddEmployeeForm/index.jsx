@@ -131,12 +131,16 @@ class AddEmployeeForm extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch } = this.props;
+    const { handleCancel, dispatch, company } = this.props;
+    let isDisabled = true;
+    if (company !== '') {
+      isDisabled = false;
+    }
     this.setState(
       {
         location: '',
         company: '',
-        isDisabled: true,
+        isDisabled,
         isDisabledDepartment: true,
       },
       () => handleCancel(),
