@@ -35,22 +35,22 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevState, prevProps) {
     const {
+      dispatch,
       data,
       tempData,
       checkMandatory,
       tempData: { checkStatus },
-    } = this.state;
-    const { dispatch } = this.props;
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-    if (data.fullName !== '') {
+    if (prevProps.data.fullName !== data.fullName && data.fullName !== null) {
       if (
-        data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
+        data.fullName !== null &&
+        data.workEmail !== null &&
+        data.privateEmail !== null &&
         emailRegExp.test(data.privateEmail) &&
         emailRegExp.test(data.workEmail)
       ) {
@@ -373,6 +373,7 @@ class BasicInformation extends PureComponent {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
     const { loading1 } = this.props;
+    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (

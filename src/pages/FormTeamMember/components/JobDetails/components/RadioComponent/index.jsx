@@ -34,7 +34,8 @@ class RadioComponent extends PureComponent {
             <Radio.Group
               className={styles.paddingRadio}
               defaultValue={
-                test.employeeType !== null && isObject(test.employeeType)
+                (test.employeeType !== null || test.employeeType !== undefined) &&
+                isObject(test.employeeType)
                   ? test.employeeType._id
                   : employeeType
               }
