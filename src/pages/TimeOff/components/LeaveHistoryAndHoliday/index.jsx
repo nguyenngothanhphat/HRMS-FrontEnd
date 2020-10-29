@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import Holiday from './components/Holiday';
@@ -26,18 +26,22 @@ export default class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.menu}>
-        <img
-          src={ListIcon}
-          className={activeShowType === 1 ? styles.activeShowType : ''}
-          onClick={() => this.handleSelectShowType(1)}
-          alt="list"
-        />
-        <img
-          src={CalendarIcon}
-          className={activeShowType === 2 ? styles.activeShowType : ''}
-          onClick={() => this.handleSelectShowType(2)}
-          alt="calendar"
-        />
+        <Tooltip title="List View">
+          <img
+            src={ListIcon}
+            className={activeShowType === 1 ? styles.activeShowType : ''}
+            onClick={() => this.handleSelectShowType(1)}
+            alt="list"
+          />
+        </Tooltip>
+        <Tooltip title="Calendar View">
+          <img
+            src={CalendarIcon}
+            className={activeShowType === 2 ? styles.activeShowType : ''}
+            onClick={() => this.handleSelectShowType(2)}
+            alt="calendar"
+          />
+        </Tooltip>
       </div>
     );
   };
