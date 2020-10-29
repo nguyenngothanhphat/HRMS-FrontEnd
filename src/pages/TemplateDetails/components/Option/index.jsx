@@ -34,12 +34,9 @@ class Option extends Component {
     }
 
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveTemplate',
       payload: {
-        ...newTemplateData,
-        newTemplateData: {
-          settings: array,
-        },
+        settings: array,
       },
     });
 
