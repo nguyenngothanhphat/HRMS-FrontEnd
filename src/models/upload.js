@@ -1,6 +1,7 @@
 import { notification } from 'antd';
 import { uploadFile } from '@/services/upload';
 import { dialog } from '@/utils/utils';
+import employeeSetting from './employeeSetting';
 
 export default {
   namespace: 'upload',

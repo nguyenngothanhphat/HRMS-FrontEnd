@@ -24,6 +24,21 @@ class EmployeeOnboarding extends PureComponent {
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"
               >
+                <div className={styles.options}>
+                  <Row gutter={[24, 0]}>
+                    <Col>
+                      <Button className={styles.generate} type="text">
+                        {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button className={styles.view} type="link">
+                        {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
+                        (15)
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
                 <OnboardingOverview />
               </TabPane>
               <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
@@ -36,21 +51,6 @@ class EmployeeOnboarding extends PureComponent {
                 <CustomFields />
               </TabPane>
             </Tabs>
-
-            <div className={styles.options}>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={styles.generate} type="primary">
-                    {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-                  </Button>
-                </Col>
-                <Col>
-                  <Button className={styles.view} type="secondary">
-                    {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
-                  </Button>
-                </Col>
-              </Row>
-            </div>
           </div>
         </div>
       </PageContainer>

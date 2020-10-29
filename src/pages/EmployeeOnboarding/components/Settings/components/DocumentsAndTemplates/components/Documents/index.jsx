@@ -1,68 +1,28 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Skeleton } from 'antd';
 import { Link, formatMessage, connect } from 'umi';
 
 import Template from './components/Template';
-import consecteturMorbi from './assets/consecteturMorbi.png';
-import fringillaPulvinar from './assets/fringillaPulvinar.png';
-import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
-import lectusTinciduntEros2 from './assets/lectusTinciduntEros2.png';
-import lectusTinciduntEros3 from './assets/lectusTinciduntEros3.png';
-import recent1 from './assets/recent1.png';
-import recent2 from './assets/recent2.png';
-import recent3 from './assets/recent3.png';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { defaultTemplateList } }) => ({
+@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
   defaultTemplateList,
+  customTemplateList,
+  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
 }))
 class Documents extends PureComponent {
   _renderTemplates = () => {
-    const { defaultTemplateList } = this.props;
-    // const templates = [
-    //   {
-    //     templateId: 1,
-    //     templateThumbnail: { consecteturMorbi },
-    //     templateName: 'Consectetur morbi ',
-    //   },
-    //   {
-    //     templateId: 2,
-    //     templateThumbnail: { fringillaPulvinar },
-    //     templateName: 'Fringilla pulvinar ',
-    //   },
-    //   {
-    //     templateId: 3,
-    //     templateThumbnail: { lectusTinciduntEros },
-    //     templateName: 'Lectus tincidunt eros ',
-    //   },
-    //   {
-    //     templateId: 4,
-    //     templateThumbnail: { lectusTinciduntEros2 },
-    //     templateName: 'Lectus tincidunt eros ',
-    //   },
-    //   {
-    //     templateId: 5,
-    //     templateThumbnail: { lectusTinciduntEros3 },
-    //     templateName: 'Lectus tincidunt eros ',
-    //   },
-    //   {
-    //     templateId: 6,
-    //     templateThumbnail: { lectusTinciduntEros3 },
-    //     templateName: 'Lectus tincidunt eros ',
-    //   },
-    //   {
-    //     templateId: 7,
-    //     templateThumbnail: { lectusTinciduntEros3 },
-    //     templateName: 'Lectus tincidunt eros ',
-    //   },
-    // ];
+    const { defaultTemplateList, loadingDefaultTemplateList } = this.props;
+    if (loadingDefaultTemplateList) {
+      <Skeleton loading={loadingDefaultTemplateList} active />;
+    }
     return defaultTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Link to={`/template-details/${template._id}`}>
-            <Template template={template} />
-          </Link>
+          {/* <Link to={`/template-details/${template._id}`}> */}
+          <Template template={template} />
+          {/* </Link> */}
         </Col>
       );
     });
@@ -73,45 +33,36 @@ class Documents extends PureComponent {
     dispatch({
       type: 'employeeSetting/fetchDefaultTemplateList',
     });
+    dispatch({
+      type: 'employeeSetting/fetchCustomTemplateList',
+    });
   };
 
   _renderRecentDocuments = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { recent1 },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { recent2 },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { recent3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
+    const { customTemplateList, loadingDefaultTemplateList } = this.props;
+    return customTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
-            <Template template={template} />
-          </Link>
+          {/* <Link to={`/template-details/${template._id}`}> */}
+          <Template loading={loadingDefaultTemplateList} template={template} />
+          {/* </Link> */}
         </Col>
       );
     });
   };
 
   render() {
+    const { loadingDefaultTemplateList } = this.props;
+
     return (
       <div className={styles.Documents}>
         <p className={styles.Documents_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.defaultTemplate' })}
         </p>
-        <Row gutter={[4, 12]}>{this._renderTemplates()}</Row>
+        <Row gutter={[4, 12]} loading={loadingDefaultTemplateList}>
+          {this._renderTemplates()}
+        </Row>
         <p className={styles.Documents_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.recentDocuments' })}

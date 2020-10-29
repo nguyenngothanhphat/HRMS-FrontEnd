@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
-import { Link, formatMessage } from 'umi';
+import { Link, formatMessage, connect } from 'umi';
 import { Button } from 'antd';
 import offerIcon from './assets/offer-icon.svg';
 import sentIcon from './assets/sent-icon.svg';
 import styles from './index.less';
 
+@connect(
+  ({
+    employeeSetting: {
+      currentTemplate: { title = '', htmlContent = '' } = {},
+      newTemplateData: { settings = [], fullname = '', signature = '' },
+    },
+  }) => ({
+    settings,
+    fullname,
+    signature,
+    title,
+    htmlContent,
+  }),
+)
 class ModalContent extends Component {
   constructor(props) {
     super(props);
@@ -27,15 +41,25 @@ class ModalContent extends Component {
   }
 
   onNext = () => {
-    const { onNext = {} } = this.props;
+    const { dispatch, onNext = {}, settings, fullname, signature, title, htmlContent } = this.props;
+    dispatch({
+      type: 'employeeSetting/addCustomTemplate',
+      payload: {
+        title,
+        html: htmlContent,
+        settings,
+        fullname,
+        signature,
+      },
+    });
     onNext();
   };
 
-  render() {
+  _renderModal = () => {
     const { modalContent } = this.state;
     const { content = {} } = this.props;
     return (
-      <div className={styles.ModalContent}>
+      <>
         <img src={modalContent[content].icon} alt="icon" />
         <div className={styles.ModalContent_title}>{modalContent[content].title}</div>
         <div className={styles.ModalContent_content}>{modalContent[content].content}</div>
@@ -50,13 +74,17 @@ class ModalContent extends Component {
               state: { defaultActiveKey: '2' },
             }}
           >
-            <Button onClick={this.onNext} type="primary">
-              {modalContent[content].button}
-            </Button>
+            <Button type="primary">{modalContent[content].button}</Button>
           </Link>
         )}
-      </div>
+      </>
     );
+  };
+
+  render() {
+    // const { urlImage } = this.props;
+    // console.log(urlImage);
+    return <div className={styles.ModalContent}>{this._renderModal()}</div>;
   }
 }
 
