@@ -1,10 +1,11 @@
 import { dialog } from '@/utils/utils';
-import getHolidaysList from '../services/timeOff';
+import { getHolidaysList, getLeavingListByEmployee } from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
     holidaysList: [],
+    leavingList: [],
   },
   effects: {
     *fetchHolidaysList(_, { call, put }) {
@@ -15,6 +16,19 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { holidaysList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeavingList(_, { call, put }) {
+      try {
+        const response = yield call(getLeavingListByEmployee);
+        const { statusCode, data: leavingList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { leavingList },
         });
       } catch (errors) {
         dialog(errors);

@@ -8,50 +8,6 @@ import styles from './index.less';
 
 moment.locale('en');
 
-const leaveHistoryData = [
-  {
-    from: '10/4/2020',
-    to: '10/5/2020',
-    type: 'CL',
-    duration: 1,
-    description: 'Family Event',
-  },
-  {
-    from: '10/30/2020',
-    to: '10/31/2020',
-    type: 'CL',
-    duration: 1,
-    description: 'Family Event',
-  },
-  {
-    from: '10/27/2020',
-    to: '10/29/2020',
-    type: 'CL',
-    duration: 3,
-    description: 'Family Event',
-  },
-  {
-    from: '11/6/2020',
-    to: '11/7/2020',
-    type: 'CL',
-    duration: 2,
-    description: 'Family Event',
-  },
-  {
-    from: '11/26/2020',
-    to: '11/29/2020',
-    type: 'CL',
-    duration: 4,
-    description: 'Family Event',
-  },
-  {
-    from: '12/8/2020',
-    to: '12/10/2020',
-    type: 'CL',
-    duration: 3,
-    description: 'Family Event',
-  },
-];
 export default class HolidayCalendar extends PureComponent {
   weekdays = moment.weekdays(); // ["Sunday", "Monday", "Tuesday", "Wednessday", "Thursday", "Friday", "Saturday"]
 
@@ -188,7 +144,7 @@ export default class HolidayCalendar extends PureComponent {
       let eventMarkEndClassName = '';
       let lineClassName = '';
       let colorClassName = '';
-
+      let eventMarkSingleClassName = '';
       holidaysList.forEach((value) => {
         const { fromDate: from = '', toDate: to = '' } = value; // parse
 
@@ -198,43 +154,58 @@ export default class HolidayCalendar extends PureComponent {
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
+
         if (
           d === eventFromDay * 1 &&
-          this.selectedMonth() * 1 === eventFromMonth * 1 &&
-          this.selectedYear() * 1 === eventFromYear * 1
-        ) {
-          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-            colorClassName = styles.upcomingColor;
-          } else colorClassName = styles.leaveTakenColor;
-          eventMarkBeginClassName = styles.markEventBegin;
-        }
-
-        if (
           d === eventToDay * 1 &&
-          this.selectedMonth() * 1 === eventToMonth * 1 &&
-          this.selectedYear() * 1 === eventToYear * 1
+          eventFromMonth * 1 === eventToMonth * 1 &&
+          eventFromYear * 1 === eventToYear * 1 &&
+          eventFromMonth * 1 === this.selectedMonth() * 1 &&
+          eventFromYear * 1 === this.selectedYear() * 1
         ) {
           if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
             colorClassName = styles.upcomingColor;
           } else colorClassName = styles.leaveTakenColor;
-          eventMarkEndClassName = styles.markEventEnd;
-        }
 
-        if (
-          d > eventFromDay * 1 &&
-          d < eventToDay * 1 &&
-          this.selectedYear() * 1 === eventFromYear * 1 &&
-          this.selectedYear() * 1 === eventToYear * 1 &&
-          this.selectedMonth() * 1 === eventFromMonth * 1 &&
-          this.selectedMonth() * 1 === eventToMonth * 1
-        )
-          lineClassName = styles.lineClassName;
+          eventMarkSingleClassName = styles.eventMarkSingleClassName;
+        } else {
+          if (
+            d === eventFromDay * 1 &&
+            this.selectedMonth() * 1 === eventFromMonth * 1 &&
+            this.selectedYear() * 1 === eventFromYear * 1
+          ) {
+            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+              colorClassName = styles.upcomingColor;
+            } else colorClassName = styles.leaveTakenColor;
+            eventMarkBeginClassName = styles.markEventBegin;
+          }
+          if (
+            d === eventToDay * 1 &&
+            this.selectedMonth() * 1 === eventToMonth * 1 &&
+            this.selectedYear() * 1 === eventToYear * 1
+          ) {
+            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+              colorClassName = styles.upcomingColor;
+            } else colorClassName = styles.leaveTakenColor;
+            eventMarkEndClassName = styles.markEventEnd;
+          }
+
+          if (
+            d > eventFromDay * 1 &&
+            d < eventToDay * 1 &&
+            this.selectedYear() * 1 === eventFromYear * 1 &&
+            this.selectedYear() * 1 === eventToYear * 1 &&
+            this.selectedMonth() * 1 === eventFromMonth * 1 &&
+            this.selectedMonth() * 1 === eventToMonth * 1
+          )
+            lineClassName = styles.lineClassName;
+        }
       });
 
       daysInMonth.push(
         <td
           key={d}
-          className={`${className} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
+          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
         >
           <span>{d}</span>
         </td>,
@@ -246,8 +217,11 @@ export default class HolidayCalendar extends PureComponent {
   checkASingleDay = (day, month, year) => {
     const { currentMonth, currentDay, currentYear } = this.state;
     if (
-      (day > currentDay && month === currentMonth && year === currentYear) ||
-      (month > currentMonth && year >= currentYear)
+      (day * 1 > currentDay * 1 &&
+        month * 1 === currentMonth * 1 &&
+        year * 1 === currentYear * 1) ||
+      (month * 1 > currentMonth * 1 && year * 1 === currentYear * 1) ||
+      year * 1 > currentYear * 1
     ) {
       return 1; // upcoming date
     }
@@ -255,34 +229,13 @@ export default class HolidayCalendar extends PureComponent {
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
-    const { currentMonth, currentDay, currentYear } = this.state;
     const { fromDate: from = '', toDate: to = '' } = value; // parse
 
     const eventFromDay = moment(from).format('D');
     const eventFromMonth = moment(from).format('M');
     const eventFromYear = moment(from).format('Y');
-    const eventToMonth = moment(to).format('M');
-    if (
-      (currentDay < eventFromDay * 1 &&
-        this.selectedMonth() * 1 === eventFromMonth * 1 &&
-        this.selectedYear() * 1 === eventFromYear * 1 &&
-        currentMonth * 1 === this.selectedMonth() * 1 &&
-        currentYear * 1 === this.selectedYear() * 1) ||
-      (currentMonth * 1 < this.selectedMonth() * 1 &&
-        eventFromMonth * 1 === this.selectedMonth() * 1 &&
-        eventFromYear * 1 >= this.selectedYear() * 1)
-    )
-      return 1; // upcoming
-    if (
-      ((eventFromDay * 1 <= currentDay * 1 &&
-        eventFromMonth * 1 === this.selectedMonth() * 1 &&
-        currentMonth * 1 === this.selectedMonth() * 1) ||
-        (eventToMonth * 1 < this.selectedMonth() * 1 &&
-          eventFromMonth * 1 === this.selectedMonth() * 1)) &&
-      eventFromYear * 1 === this.selectedYear() * 1
-    )
-      return 2; // leave taken
-    return '';
+    if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
+    return 2; // leave taken
   };
 
   renderData = (id, holidaysList) => {

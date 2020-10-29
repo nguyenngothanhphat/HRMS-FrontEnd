@@ -24,6 +24,9 @@ class LeaveHistoryAndHoliday extends PureComponent {
     dispatch({
       type: 'timeOff/fetchHolidaysList',
     });
+    dispatch({
+      type: 'timeOff/fetchLeavingList',
+    });
   };
 
   handleSelectShowType = (value) => {
@@ -58,12 +61,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [] } = {} } = this.props;
+    const { timeOff: { holidaysList = [], leavingList = [] } = {} } = this.props;
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Request History" key="1">
-            <LeaveHistory />
+            <LeaveHistory leavingList={leavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holiday" key="2">
             <Holiday holidaysList={holidaysList} activeShowType={activeShowType} />

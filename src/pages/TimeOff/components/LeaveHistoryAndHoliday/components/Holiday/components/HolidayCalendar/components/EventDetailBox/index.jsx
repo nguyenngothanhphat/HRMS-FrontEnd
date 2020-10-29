@@ -12,19 +12,19 @@ export default class EventDetailBox extends PureComponent {
 
   render() {
     const { data = [], color = 0 } = this.props;
-    const { from = '', to = '', type = '', duration = '', description = '' } = data;
+    const { fromDate = '', name = '' } = data;
     return (
       <Row onClick={this.onEventClick} className={styles.EventDetailBox}>
         <Col xs={3} className={styles.dateAndMonth}>
-          <span>{moment(from).locale('en').format('MMM')}</span>
-          <span>{moment(from).locale('en').format('DD')}</span>
+          <span>{moment(fromDate).locale('en').format('MMM')}</span>
+          <span>{moment(fromDate).locale('en').format('DD')}</span>
         </Col>
-        <Col xs={3} className={styles.dateAndMonth}>
-          <span>{moment(to).locale('en').format('MMM')}</span>
-          <span>{moment(to).locale('en').format('DD')}</span>
-        </Col>
+        {/* <Col xs={3} className={styles.dateAndMonth}>
+          <span>{moment(toDate).locale('en').format('MMM')}</span>
+          <span>{moment(toDate).locale('en').format('DD')}</span>
+        </Col> */}
         <Col xs={13} className={styles.eventOfDay}>
-          {description}
+          {name}
         </Col>
         <Col
           className={
@@ -34,9 +34,6 @@ export default class EventDetailBox extends PureComponent {
           }
           xs={5}
         >
-          {`-`}
-          {duration}
-          {type}
           <span>
             <RightOutlined className={styles.arrowIcon} />
           </span>
