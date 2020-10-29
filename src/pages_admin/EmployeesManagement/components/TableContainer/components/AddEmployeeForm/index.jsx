@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
+import _ from 'lodash';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -73,7 +74,7 @@ class AddEmployeeForm extends Component {
   componentDidUpdate(prevState) {
     const { location } = this.state;
     const { dispatch, statusAddEmployee = false } = this.props;
-    if (location !== '' && location !== prevState.location) {
+    if (statusAddEmployee && location !== '' && location !== prevState.location) {
       this.formRef.current.setFieldsValue({
         department: undefined,
       });
@@ -97,12 +98,12 @@ class AddEmployeeForm extends Component {
         company: _id,
       },
     });
-    dispatch({
-      type: 'employeesManagement/fetchLocationList',
-      payload: {
-        company: _id,
-      },
-    });
+    // dispatch({
+    //   type: 'employeesManagement/fetchLocationList',
+    //   payload: {
+    //     company: _id,
+    //   },
+    // });
     dispatch({
       type: 'employeesManagement/fetchJobTitleList',
       payload: {
@@ -336,9 +337,13 @@ class AddEmployeeForm extends Component {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {locationList.map((item) => (
-                <Option key={item._id}>{item.headQuarterAddress.address}</Option>
-              ))}
+              {locationList.map((item) => {
+                const { headQuarterAddress = {}, _id = '' } = item;
+                if (!_.isEmpty(headQuarterAddress)) {
+                  return <Option key={_id}>{headQuarterAddress.address}</Option>;
+                }
+                return null;
+              })}
             </Select>
           </Form.Item>
           <Form.Item
