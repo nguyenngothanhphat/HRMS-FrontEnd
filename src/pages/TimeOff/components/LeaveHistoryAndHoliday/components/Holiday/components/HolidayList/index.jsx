@@ -9,19 +9,27 @@ export default class HolidayList extends PureComponent {
     return (
       <div className={styles.HolidayList}>
         {holidaysList.map((row) => {
-          const { fromDate = '', name = '' } = row;
+          const { fromDate = '', toDate = '', name = '' } = row;
           return (
             <Row className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>
                 <span>{moment(fromDate).locale('en').format('MMM')}</span>
                 <span>{moment(fromDate).locale('en').format('DD')}</span>
               </Col>
-              <Col xs={15} className={styles.eventOfDay}>
+              {fromDate !== toDate ? (
+                <Col xs={4} className={styles.dateAndMonth}>
+                  <span>{moment(toDate).locale('en').format('MMM')}</span>
+                  <span>{moment(toDate).locale('en').format('DD')}</span>
+                </Col>
+              ) : (
+                <Col xs={4} />
+              )}
+              <Col xs={16} className={styles.eventOfDay}>
                 {name}
               </Col>
-              <Col className={styles.dayInWeek} xs={5}>
+              {/* <Col className={styles.dayInWeek} xs={5}>
                 {moment(fromDate).locale('en').format('ddd')}
-              </Col>
+              </Col> */}
             </Row>
           );
         })}

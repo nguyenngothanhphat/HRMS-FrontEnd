@@ -142,34 +142,15 @@ export default class LeaveHistoryCalendar extends PureComponent {
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
-    const { currentMonth, currentDay, currentYear } = this.state;
-    const { fromDate: from = '', toDate: to = '' } = value;
+    const { fromDate: from = '' } = value;
 
     const eventFromDay = moment(from).format('D');
     const eventFromMonth = moment(from).format('M');
     const eventFromYear = moment(from).format('Y');
-    const eventToMonth = moment(to).format('M');
-    if (
-      (currentDay < eventFromDay * 1 &&
-        this.selectedMonth() * 1 === eventFromMonth * 1 &&
-        this.selectedYear() * 1 === eventFromYear * 1 &&
-        currentMonth * 1 === this.selectedMonth() * 1 &&
-        currentYear * 1 === this.selectedYear() * 1) ||
-      (currentMonth * 1 < this.selectedMonth() * 1 &&
-        eventFromMonth * 1 === this.selectedMonth() * 1 &&
-        eventFromYear * 1 >= this.selectedYear() * 1)
-    )
-      return 1; // upcoming
-    if (
-      ((eventFromDay * 1 <= currentDay * 1 &&
-        eventFromMonth * 1 === this.selectedMonth() * 1 &&
-        currentMonth * 1 === this.selectedMonth() * 1) ||
-        (eventToMonth * 1 < this.selectedMonth() * 1 &&
-          eventFromMonth * 1 === this.selectedMonth() * 1)) &&
-      eventFromYear * 1 === this.selectedYear() * 1
-    )
-      return 2; // leave taken
-    return '';
+    // const eventToMonth = moment(to).format('M');
+    if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
+
+    return 2; // leave taken
   };
 
   renderData = (id) => {
