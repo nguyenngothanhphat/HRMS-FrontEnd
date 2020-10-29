@@ -426,7 +426,7 @@ const PROCESS_STATUS = {
   INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
 
   SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
-  APPROVED_OFFERS: 'APPROVED-OFFERS',
+  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
 
   SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
   ACCEPTED_FINAL_OFFERS: 'ACCEPTED-FINAL-OFFERS',
@@ -518,13 +518,15 @@ const formatData = (list = []) => {
     const dateJoin = formatDate(updatedAt) || '';
     const dateRequest = formatDate(updatedAt) || '';
     const expire = formatDate(updatedAt) || '';
-    const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    let isNew = false;
+    if (fullName) {
+      isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    }
 
     const rookie = {
-      // rookieId: `#${_id.substring(0, 8)}`,
       candidate: _id || '',
-      rookieId: ticketID,
-      isNew: isNew || '',
+      rookieId: `#${ticketID}`,
+      isNew,
       rookieName: fullName,
       position: title.name,
       location: workLocation.name || '',
@@ -752,12 +754,12 @@ const onboard = {
         const req = {
           processStatus: [processStatus],
           page: 1,
-          limit: 10,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const returnedData = formatData(response.data[0].paginatedResults);
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
 
         const {
           PROVISIONAL_OFFER_DRAFT,
@@ -1203,22 +1205,37 @@ const onboard = {
         let newQuantity = item.quantity;
         let dataLength = 0;
         if (key === 'allDrafts') {
-          dataLength = state.onboardingOverview.allDrafts.provisionalOfferDrafts.length;
+          dataLength =
+            state.onboardingOverview.allDrafts.provisionalOfferDrafts.length +
+            state.onboardingOverview.allDrafts.finalOfferDrafts.length;
         }
         if (key === 'provisionalOffers') {
-          dataLength = state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length;
+          dataLength =
+            state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length +
+            state.onboardingOverview.provisionalOffers.acceptedProvisionalOffers.length +
+            state.onboardingOverview.provisionalOffers.renegotiateProvisionalOffers.length;
         }
         if (key === 'backgroundChecks') {
-          dataLength = state.onboardingOverview.backgroundCheck.pending.length;
+          dataLength =
+            state.onboardingOverview.backgroundCheck.pending.length +
+            state.onboardingOverview.backgroundCheck.eligibleCandidates.length +
+            state.onboardingOverview.backgroundCheck.ineligibleCandidates.length;
         }
         if (key === 'awaitingApprovals') {
-          dataLength = state.onboardingOverview.awaitingApprovals.sentForApprovals.length;
+          dataLength =
+            state.onboardingOverview.awaitingApprovals.sentForApprovals.length +
+            state.onboardingOverview.awaitingApprovals.approvedOffers.length;
         }
         if (key === 'finalOffers') {
-          dataLength = state.onboardingOverview.finalOffers.acceptedFinalOffers.length;
+          dataLength =
+            state.onboardingOverview.finalOffers.acceptedFinalOffers.length +
+            state.onboardingOverview.finalOffers.sentFinalOffers.length +
+            state.onboardingOverview.finalOffers.renegotiateFinalOffers.length;
         }
         if (key === 'discardedOffers') {
-          dataLength = state.onboardingOverview.discardedOffers.provisionalOffers.length;
+          dataLength =
+            state.onboardingOverview.discardedOffers.provisionalOffers.length +
+            state.onboardingOverview.discardedOffers.finalOffers.length;
         }
         newQuantity = dataLength;
         newItem = { ...newItem, quantity: newQuantity };

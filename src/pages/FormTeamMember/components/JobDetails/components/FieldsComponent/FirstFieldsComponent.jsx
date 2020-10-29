@@ -56,27 +56,36 @@ class FirstFieldsComponent extends PureComponent {
                         (item.title === 'title' && titleList.length <= 0)
                       }
                       defaultValue={
-                        item.title === 'department' && test.department === null
+                        item.title === 'department' &&
+                        (test.department === null || test.department === undefined)
                           ? department
-                          : item.title === 'title' && test.title === null
+                          : item.title === 'title' &&
+                            (test.title === null || test.title === undefined)
                           ? title
-                          : item.title === 'workLocation' && test.workLocation === null
+                          : item.title === 'workLocation' &&
+                            (test.workLocation === null || test.workLocation === undefined)
                           ? workLocation
-                          : item.title === 'reportingManager' && test.reportingManager === null
+                          : item.title === 'reportingManager' &&
+                            (test.reportingManager === null || test.reportingManager === undefined)
                           ? reportingManager
-                          : test.department !== null && item.title === 'department'
+                          : (test.department !== null || test.department !== undefined) &&
+                            item.title === 'department'
                           ? test.department.name
-                          : test.workLocation !== null &&
+                          : (test.workLocation !== null || item.workLocation !== undefined) &&
                             item.title === 'workLocation' &&
                             test.workLocation.company
                           ? test.workLocation.company.legalAddress.address
-                          : test.workLocation !== null &&
+                          : (test.workLocation !== null || item.workLocation !== undefined) &&
                             item.title === 'workLocation' &&
                             !test.workLocation.company
                           ? test.workLocation.legalAddress.address
-                          : test.title !== null && item.title === 'title'
+                          : (test.title !== null || test.title !== undefined) &&
+                            item.title === 'title'
                           ? test.title.name
-                          : test.title !== null && item.title === 'reportingManager'
+                          : (test.reportingManager !== null ||
+                              test.reportingManager !== undefined) &&
+                            test.reportingManager.generalInfo !== undefined &&
+                            item.title === 'reportingManager'
                           ? test.reportingManager.generalInfo.firstName
                           : null
                       }
