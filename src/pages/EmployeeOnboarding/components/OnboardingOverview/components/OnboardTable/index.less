@@ -6,6 +6,9 @@
 @border-color: #d6dce0;
 @checkbox-background: #e7eaee;
 @checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
 
 .mixin-border-bottom-row {
   border-bottom: solid 1px #d6dce0;
@@ -37,7 +40,7 @@
       overflow: hidden;
       margin: 0;
       letter-spacing: 0.12px;
-      color: #2c6df9;
+      color: @blue;
       font-weight: 500;
       // margin-right: 10px;
       text-transform: capitalize;
@@ -79,6 +82,24 @@
     .ant-table-row {
       height: 55px;
     }
+
+    .anticon-delete {
+      margin-left: 6px !important;
+
+      &:hover {
+        svg {
+          path {
+            fill: @red !important;
+          }
+        }
+        // color: @red !important;
+      }
+      svg {
+        transform: initial !important;
+        color: @blue !important;
+      }
+    }
+
     td.ant-table-cell {
       width: 84px;
       height: 15px;

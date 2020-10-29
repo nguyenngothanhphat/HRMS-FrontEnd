@@ -1,4 +1,4 @@
-import getOnboardingList from '@/services/onboard';
+import { getOnboardingList, deleteDraft } from '@/services/onboard';
 import _ from 'lodash';
 import { dialog } from '@/utils/utils';
 
@@ -987,6 +987,33 @@ const onboard = {
         dialog(errors);
       }
     },
+
+    *deleteTicketDraft({ payload }, { call, put }) {
+      try {
+        const { id = '' } = payload;
+        const req = {
+          rookieID: id,
+        };
+        const response = yield call(deleteDraft, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+
+        // deleteTicket
+        yield put({
+          type: 'deleteTicket',
+          payload: id,
+        });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: PROVISIONAL_OFFER_DRAFT,
+        //   },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -1260,6 +1287,27 @@ const onboard = {
         settings: {
           optionalOnboardQuestions: {
             nameList: action.payload.nameList,
+          },
+        },
+      };
+    },
+
+    deleteTicket(state, action) {
+      const { payload } = action;
+      const {
+        onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
+      } = state;
+      const newList = provisionalOfferDrafts.filter((item) => {
+        const { rookieId } = item;
+        return rookieId !== `#${payload}`;
+      });
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          allDrafts: {
+            ...state.onboardingOverview.allDrafts,
+            provisionalOfferDrafts: newList,
           },
         },
       };

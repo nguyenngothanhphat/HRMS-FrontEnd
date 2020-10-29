@@ -222,15 +222,26 @@ class FormTeamMember extends PureComponent {
         id: 2,
         name: 'Job Details',
         key: 'jobDetails',
-        component: <JobDetails locationList={locationList} employeeTypeList={employeeTypeList} />,
+        component: (
+          <JobDetails
+            locationList={locationList}
+            employeeTypeList={employeeTypeList}
+            loading={loading1}
+          />
+        ),
       },
-      { id: 3, name: 'Salary Structure', key: 'salaryStructure', component: <SalaryStructure /> },
+      {
+        id: 3,
+        name: 'Salary Structure',
+        key: 'salaryStructure',
+        component: <SalaryStructure loading={loading1} />,
+      },
       {
         id: 4,
         name: 'Background Check',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: <BackgroundCheck documentList={documentList} />,
+        component: <BackgroundCheck documentList={documentList} loading={loading1} />,
       },
       { id: 5, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 6, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },
