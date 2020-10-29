@@ -90,6 +90,19 @@ class TemplateDetailsForm extends PureComponent {
     }
   };
 
+  handleChangeInput = (e) => {
+    const { dispatch } = this.props;
+    const { target } = e;
+    const { value } = target;
+
+    dispatch({
+      type: 'employeeSetting/saveCurrentTemplate',
+      payload: {
+        title: value,
+      },
+    });
+  };
+
   render() {
     const { currentTemplate } = this.props;
     const { title = '', htmlContent = '', updatedAt = '' } = currentTemplate;
@@ -108,7 +121,7 @@ class TemplateDetailsForm extends PureComponent {
                 >
                   <Row gutter={[24, 0]}>
                     <Col span={16}>
-                      <Input value={title} />
+                      <Input value={title} onChange={this.handleChangeInput} />
                     </Col>
                     <Col span={8}>
                       <Input defaultValue="Terralogic.png" />

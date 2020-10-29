@@ -262,7 +262,7 @@ const routes = [
           {
             path: '/employee-offboarding/HrRequest/:id',
             name: 'ticketId',
-            component: './OffBoarding/HrOffBoarding/component/HrRequestTable/Ticket',
+            component: './OffBoarding/HrOffboarding/component/HrRequestTable/Ticket',
             hideInMenu: true,
             // authority: ['hr'],
           },
