@@ -59,7 +59,7 @@ class CandidateFieldsComponent extends PureComponent {
               defaultValue={prefferedDateOfJoining}
             />
           </Col>
-          <Col xs={16} sm={16} md={14} lg={10} xl={10}>
+          <Col xs={16} sm={16} md={12} lg={12} xl={12}>
             {!isHidden ? (
               <div className={InternalStyle.warning}>
                 <button
@@ -99,13 +99,14 @@ class CandidateFieldsComponent extends PureComponent {
                   <Typography.Title className={InternalStyle.TitleText} level={5}>
                     {formatMessage({ id: 'component.reminder.title' })}
                   </Typography.Title>
+                  <br />
+                  <Typography.Text className={InternalStyle.ContentText}>
+                    {formatMessage({ id: 'component.jobDetail.reminder.content' })}
+                    <p className={InternalStyle.BoldText}>
+                      {formatMessage({ id: 'component.jobDetail.reminder.content2' })}
+                    </p>
+                  </Typography.Text>
                 </div>
-                <Typography.Text className={InternalStyle.ContentText}>
-                  {formatMessage({ id: 'component.jobDetail.reminder.content' })}
-                  <p className={InternalStyle.BoldText}>
-                    {formatMessage({ id: 'component.jobDetail.reminder.content2' })}
-                  </p>
-                </Typography.Text>
               </div>
             ) : null}
           </Col>
