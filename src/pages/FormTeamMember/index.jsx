@@ -15,27 +15,18 @@ import Payroll from './components/Payroll';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
-@connect(({ candidateInfo = {} }) => ({
+@connect(({ candidateInfo = {}, loading }) => ({
   candidateInfo,
+  loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
 }))
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '', reId } = {} },
+      match: { params: { action = '' } = {} },
       dispatch,
-      candidateInfo,
     } = this.props;
-    console.log('test', reId);
     // check action is add or review. If isReview fetch candidate by reID
-    const { data } = candidateInfo;
-    const { _id } = data;
     if (action === 'review') {
-      dispatch({
-        type: 'candidateInfo/fetchEmployeeById',
-        payload: {
-          candidate: _id,
-        },
-      });
       dispatch({
         type: 'candidateInfo/fetchLocationList',
       });
@@ -216,6 +207,7 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId = '' } = {} },
       candidateInfo,
+      loading1,
     } = this.props;
     const { tempData: { locationList, employeeTypeList, documentList } = {} } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
@@ -224,7 +216,7 @@ class FormTeamMember extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: <BasicInformation reId={reId} />,
+        component: <BasicInformation reId={reId} loading1={loading1} />,
       },
       {
         id: 2,

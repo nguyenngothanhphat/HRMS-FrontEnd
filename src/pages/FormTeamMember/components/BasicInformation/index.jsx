@@ -1,7 +1,7 @@
+/* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography, Button } from 'antd';
+import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
@@ -35,22 +35,22 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevState, prevProps) {
     const {
+      dispatch,
       data,
       tempData,
       checkMandatory,
       tempData: { checkStatus },
-    } = this.state;
-    const { dispatch } = this.props;
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-    if (data.fullName !== '') {
+    if (prevProps.data.fullName !== data.fullName && data.fullName !== null) {
       if (
-        data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
+        data.fullName !== null &&
+        data.workEmail !== null &&
+        data.privateEmail !== null &&
         emailRegExp.test(data.privateEmail) &&
         emailRegExp.test(data.workEmail)
       ) {
@@ -117,7 +117,17 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const {
+      dispatch,
+      currentStep,
+      tempData: {
+        documentList,
+        identityProof,
+        addressProof,
+        educational,
+        technicalCertification: { poe },
+      },
+    } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/save',
@@ -135,6 +145,65 @@ class BasicInformation extends PureComponent {
         candidate: _id,
       },
     });
+    if (
+      data.documentChecklistSetting !== undefined ||
+      (data.documentList && data.documentChecklistSetting !== documentList)
+    ) {
+      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
+      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
+      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
+      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
+      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+      const listSelectedA = arrA.map((x) => x.key);
+      const listSelectedB = arrB.map((x) => x.key);
+      const listSelectedC = arrC.map((x) => x.key);
+      const listSelectedD = arrD.map((x) => x.key);
+      let isCheckedA;
+      let isCheckedB;
+      let isCheckedC;
+      let isCheckedD;
+
+      if (listSelectedA.length === arrToAdjust[0].data.length) {
+        isCheckedA = true;
+      }
+      if (listSelectedB.length === arrToAdjust[1].data.length) {
+        isCheckedB = true;
+      }
+      if (listSelectedC.length === arrToAdjust[2].data.length) {
+        isCheckedC = true;
+      }
+      if (listSelectedD.length === arrToAdjust[3].data.length) {
+        isCheckedD = true;
+      }
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          documentList: data.documentChecklistSetting,
+          identityProof: {
+            ...identityProof,
+            isChecked: isCheckedA,
+            checkedList: listSelectedA,
+          },
+          addressProof: {
+            ...addressProof,
+            checkedList: listSelectedB,
+            isChecked: isCheckedB,
+          },
+          educational: {
+            ...educational,
+            checkedList: listSelectedC,
+            isChecked: isCheckedC,
+          },
+          technicalCertification: {
+            poe: {
+              ...poe,
+              checkedList: listSelectedD,
+              isChecked: isCheckedD,
+            },
+          },
+        },
+      });
+    }
   };
 
   onClickClose = () => {
@@ -303,6 +372,8 @@ class BasicInformation extends PureComponent {
   render() {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { loading1 } = this.props;
+    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (
@@ -314,35 +385,43 @@ class BasicInformation extends PureComponent {
     };
     return (
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-          <div className={styles.basicInformation}>
-            <Form
-              wrapperCol={{ span: 24 }}
-              name="basic"
-              initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
-              onFocus={this.onFocus}
-              onValuesChange={this.handleChange}
-              onFinish={this.onFinish}
-            >
-              <div className={styles.basicInformation__top}>
-                <BasicInformationHeader />
-                <hr />
-                {this._renderForm()}
+        {loading1 ? (
+          <div className={styles.viewLoading}>
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <div className={styles.basicInformation}>
+                <Form
+                  wrapperCol={{ span: 24 }}
+                  name="basic"
+                  initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
+                  onFocus={this.onFocus}
+                  onValuesChange={this.handleChange}
+                  onFinish={this.onFinish}
+                >
+                  <div className={styles.basicInformation__top}>
+                    <BasicInformationHeader />
+                    <hr />
+                    {this._renderForm()}
+                  </div>
+                  {this._renderBottomBar()}
+                </Form>
               </div>
-              {this._renderBottomBar()}
-            </Form>
-          </div>
-        </Col>
-        <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-          <div className={styles.rightWrapper}>
-            <Row>
-              <NoteComponent note={Note} />
-            </Row>
-            <Row className={styles.stepRow}>
-              <StepsComponent />
-            </Row>
-          </div>
-        </Col>
+            </Col>
+            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+              <div className={styles.rightWrapper}>
+                <Row>
+                  <NoteComponent note={Note} />
+                </Row>
+                <Row className={styles.stepRow}>
+                  <StepsComponent />
+                </Row>
+              </div>
+            </Col>
+          </>
+        )}
       </Row>
     );
   }
