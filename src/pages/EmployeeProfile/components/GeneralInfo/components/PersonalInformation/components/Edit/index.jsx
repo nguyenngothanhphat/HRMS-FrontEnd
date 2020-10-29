@@ -155,8 +155,7 @@ class Edit extends PureComponent {
             name="personalEmail"
             rules={[
               {
-                // eslint-disable-next-line no-useless-escape
-                pattern: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                type: 'email',
                 message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
               },
             ]}
@@ -188,8 +187,7 @@ class Edit extends PureComponent {
             name="linkedIn"
             rules={[
               {
-                // eslint-disable-next-line no-useless-escape
-                pattern: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                type: 'email',
                 message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
               },
             ]}
