@@ -160,12 +160,13 @@ class SalaryStructureTemplate extends PureComponent {
           settings: tableData,
         },
         candidate: _id,
+        currentStep,
       },
     });
   };
 
   onFinish = (values) => {
-    console.log.log('hi', values);
+    console.log('hi', values);
   };
 
   onClickEdit = () => {

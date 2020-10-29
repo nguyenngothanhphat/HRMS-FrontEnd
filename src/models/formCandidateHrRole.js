@@ -397,6 +397,7 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      console.log('payload', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
@@ -499,6 +500,7 @@ const candidateInfo = {
 
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
+      console.log('payload', payload);
       try {
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
