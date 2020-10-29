@@ -15,7 +15,7 @@ export default class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      viewInformation: false,
+      viewInformation: true,
     };
   }
 

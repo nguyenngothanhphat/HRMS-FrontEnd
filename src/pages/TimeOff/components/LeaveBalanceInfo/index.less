@@ -4,6 +4,7 @@
   width: 100%;
   background-color: white;
   padding: 20px;
+  position: relative;
   .title {
     font-size: 18px;
     font-weight: bold;
@@ -54,5 +55,18 @@
         opacity: 0.8 !important;
       }
     }
+  }
+  &::after {
+    height: 13px;
+    content: '';
+    width: 13px;
+    background-color: white;
+    position: absolute;
+    top: 9px;
+    left: 0;
+    margin-left: -7px;
+    border-top: #d6dce0 solid 1px;
+    border-left: #d6dce0 solid 1px;
+    transform: rotate(315deg);
   }
 }
