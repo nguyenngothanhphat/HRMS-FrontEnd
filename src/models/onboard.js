@@ -518,13 +518,16 @@ const formatData = (list = []) => {
     const dateJoin = formatDate(updatedAt) || '';
     const dateRequest = formatDate(updatedAt) || '';
     const expire = formatDate(updatedAt) || '';
-    const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    let isNew = false;
+    if (fullName) {
+      isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    }
 
     const rookie = {
       // rookieId: `#${_id.substring(0, 8)}`,
       candidate: _id || '',
-      rookieId: ticketID,
-      isNew: isNew || '',
+      rookieId: `#${ticketID}`,
+      isNew,
       rookieName: fullName,
       position: title.name,
       location: workLocation.name || '',
