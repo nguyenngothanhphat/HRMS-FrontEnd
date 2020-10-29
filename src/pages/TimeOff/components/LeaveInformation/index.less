@@ -3,7 +3,7 @@
   border-radius: 5px;
   background: white;
   width: 100%;
-  padding: 15px;
+  padding: 20px;
   position: relative;
   .totalLeaveBalance {
     display: flex;
@@ -44,6 +44,7 @@
     }
     :global {
       .ant-collapse {
+        width: 100%;
         background-color: white;
         > .ant-collapse {
           border: none;
@@ -94,12 +95,14 @@
     .secondTitle {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       margin-bottom: 30px;
       &__left {
         font-weight: bold;
+        line-height: 1;
       }
       &__right {
+        line-height: 1;
         font-size: 9px;
         a {
           text-decoration: underline;

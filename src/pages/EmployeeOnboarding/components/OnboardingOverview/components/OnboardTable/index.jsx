@@ -406,4 +406,6 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect()(OnboardTable);
+export default connect(({ candidateInfo }) => ({
+  isAddNewMember: candidateInfo.isAddNewMember,
+}))(OnboardTable);

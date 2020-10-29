@@ -518,13 +518,15 @@ const formatData = (list = []) => {
     const dateJoin = formatDate(updatedAt) || '';
     const dateRequest = formatDate(updatedAt) || '';
     const expire = formatDate(updatedAt) || '';
-    const isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    let isNew = false;
+    if (fullName) {
+      isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
+    }
 
     const rookie = {
-      // rookieId: `#${_id.substring(0, 8)}`,
       candidate: _id || '',
-      rookieId: ticketID,
-      isNew: isNew || '',
+      rookieId: `#${ticketID}`,
+      isNew,
       rookieName: fullName,
       position: title.name,
       location: workLocation.name || '',
@@ -752,12 +754,12 @@ const onboard = {
         const req = {
           processStatus: [processStatus],
           page: 1,
-          limit: 10,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const returnedData = formatData(response.data[0].paginatedResults);
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
 
         const {
           PROVISIONAL_OFFER_DRAFT,
