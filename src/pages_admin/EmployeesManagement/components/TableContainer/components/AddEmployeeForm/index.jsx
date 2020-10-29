@@ -394,7 +394,7 @@ class AddEmployeeForm extends Component {
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item.generalInfo._id}>
+                <Option key={item._id}>
                   {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
                 </Option>
               ))}
