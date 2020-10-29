@@ -184,6 +184,20 @@ const routes = [
             // authority: ['admin-sa', 'employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
           },
           {
+            path: '/time-off/compoff-request',
+            name: 'Request for Compoff',
+            hideInMenu: true,
+            component: './TimeOff/components/compoffRequest',
+            // authority: ['employee'],
+          },
+          {
+            path: '/time-off/leave-request',
+            name: 'Apply for timeoff',
+            hideInMenu: true,
+            component: './TimeOff/components/leaveRequest',
+            // authority: ['employee'],
+          },
+          {
             path: '/time-off',
             name: 'timeOff',
             icon: '/assets/images/timeOff.svg',
