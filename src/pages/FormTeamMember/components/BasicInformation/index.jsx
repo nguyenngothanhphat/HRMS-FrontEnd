@@ -120,13 +120,13 @@ class BasicInformation extends PureComponent {
     const {
       dispatch,
       currentStep,
-      tempData: {
-        documentList,
-        identityProof,
-        addressProof,
-        educational,
-        technicalCertification: { poe },
-      },
+      // tempData: {
+      //   documentList,
+      //   identityProof,
+      //   addressProof,
+      //   educational,
+      //   technicalCertification: { poe },
+      // },
     } = this.props;
     const { _id } = data;
     dispatch({
@@ -143,67 +143,68 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
+        currentStep,
       },
     });
-    if (
-      data.documentChecklistSetting !== undefined ||
-      (data.documentList && data.documentChecklistSetting !== documentList)
-    ) {
-      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.key);
-      const listSelectedB = arrB.map((x) => x.key);
-      const listSelectedC = arrC.map((x) => x.key);
-      const listSelectedD = arrD.map((x) => x.key);
-      let isCheckedA;
-      let isCheckedB;
-      let isCheckedC;
-      let isCheckedD;
+    // if (
+    //   data.documentChecklistSetting !== undefined ||
+    //   (data.documentList && data.documentChecklistSetting !== documentList)
+    // ) {
+    //   const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
+    //   const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
+    //   const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
+    //   const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
+    //   const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+    //   const listSelectedA = arrA.map((x) => x.key);
+    //   const listSelectedB = arrB.map((x) => x.key);
+    //   const listSelectedC = arrC.map((x) => x.key);
+    //   const listSelectedD = arrD.map((x) => x.key);
+    //   let isCheckedA;
+    //   let isCheckedB;
+    //   let isCheckedC;
+    //   let isCheckedD;
 
-      if (listSelectedA.length === arrToAdjust[0].data.length) {
-        isCheckedA = true;
-      }
-      if (listSelectedB.length === arrToAdjust[1].data.length) {
-        isCheckedB = true;
-      }
-      if (listSelectedC.length === arrToAdjust[2].data.length) {
-        isCheckedC = true;
-      }
-      if (listSelectedD.length === arrToAdjust[3].data.length) {
-        isCheckedD = true;
-      }
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          documentList: data.documentChecklistSetting,
-          identityProof: {
-            ...identityProof,
-            isChecked: isCheckedA,
-            checkedList: listSelectedA,
-          },
-          addressProof: {
-            ...addressProof,
-            checkedList: listSelectedB,
-            isChecked: isCheckedB,
-          },
-          educational: {
-            ...educational,
-            checkedList: listSelectedC,
-            isChecked: isCheckedC,
-          },
-          technicalCertification: {
-            poe: {
-              ...poe,
-              checkedList: listSelectedD,
-              isChecked: isCheckedD,
-            },
-          },
-        },
-      });
-    }
+    //   if (listSelectedA.length === arrToAdjust[0].data.length) {
+    //     isCheckedA = true;
+    //   }
+    //   if (listSelectedB.length === arrToAdjust[1].data.length) {
+    //     isCheckedB = true;
+    //   }
+    //   if (listSelectedC.length === arrToAdjust[2].data.length) {
+    //     isCheckedC = true;
+    //   }
+    //   if (listSelectedD.length === arrToAdjust[3].data.length) {
+    //     isCheckedD = true;
+    //   }
+    //   dispatch({
+    //     type: 'candidateInfo/saveTemp',
+    //     payload: {
+    //       documentList: data.documentChecklistSetting,
+    //       identityProof: {
+    //         ...identityProof,
+    //         isChecked: isCheckedA,
+    //         checkedList: listSelectedA,
+    //       },
+    //       addressProof: {
+    //         ...addressProof,
+    //         checkedList: listSelectedB,
+    //         isChecked: isCheckedB,
+    //       },
+    //       educational: {
+    //         ...educational,
+    //         checkedList: listSelectedC,
+    //         isChecked: isCheckedC,
+    //       },
+    //       technicalCertification: {
+    //         poe: {
+    //           ...poe,
+    //           checkedList: listSelectedD,
+    //           isChecked: isCheckedD,
+    //         },
+    //       },
+    //     },
+    //   });
+    // }
   };
 
   onClickClose = () => {

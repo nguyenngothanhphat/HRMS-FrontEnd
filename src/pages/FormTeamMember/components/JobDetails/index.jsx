@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button } from 'antd';
+import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty, isString, isNull } from 'lodash';
 import Header from './components/Header';
@@ -240,6 +240,7 @@ class JobDetails extends PureComponent {
         reportingManager,
         company,
         candidate: _id,
+        currentStep,
       },
     });
   };
@@ -417,55 +418,63 @@ class JobDetails extends PureComponent {
       },
       data,
     } = this.state;
-    const { loading1, loading2, loading3 } = this.props;
-    console.log('render', data);
+    const { loading1, loading2, loading3, loading } = this.props;
     return (
       <>
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <div className={styles.JobDetailsComponent}>
-              <Header />
-              <RadioComponent
-                Tab={Tab}
-                handleRadio={this.handleRadio}
-                tempData={tempData}
-                employeeTypeList={employeeTypeList}
-                employeeType={employeeType}
-                position={position}
-                data={data}
-              />
-              <FieldsComponent
-                dropdownField={dropdownField}
-                candidateField={candidateField}
-                departmentList={departmentList}
-                locationList={locationList}
-                titleList={titleList}
-                managerList={managerList}
-                department={department}
-                workLocation={workLocation}
-                title={title}
-                reportingManager={reportingManager}
-                candidatesNoticePeriod={candidatesNoticePeriod}
-                prefferedDateOfJoining={prefferedDateOfJoining}
-                _handleSelect={this._handleSelect}
-                loading1={loading1}
-                loading2={loading2}
-                loading3={loading3}
-                data={data}
-              />
-              {this._renderBottomBar()}
+          {loading ? (
+            <div className={styles.viewLoading}>
+              <Spin />
             </div>
-          </Col>
-          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
-                <NoteComponent note={Note} />
-              </Row>
-              <Row className={styles.stepRow}>
-                <StepsComponent />
-              </Row>
-            </div>
-          </Col>
+          ) : (
+            <>
+              {' '}
+              <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                <div className={styles.JobDetailsComponent}>
+                  <Header />
+                  <RadioComponent
+                    Tab={Tab}
+                    handleRadio={this.handleRadio}
+                    tempData={tempData}
+                    employeeTypeList={employeeTypeList}
+                    employeeType={employeeType}
+                    position={position}
+                    data={data}
+                  />
+                  <FieldsComponent
+                    dropdownField={dropdownField}
+                    candidateField={candidateField}
+                    departmentList={departmentList}
+                    locationList={locationList}
+                    titleList={titleList}
+                    managerList={managerList}
+                    department={department}
+                    workLocation={workLocation}
+                    title={title}
+                    reportingManager={reportingManager}
+                    candidatesNoticePeriod={candidatesNoticePeriod}
+                    prefferedDateOfJoining={prefferedDateOfJoining}
+                    _handleSelect={this._handleSelect}
+                    loading1={loading1}
+                    loading2={loading2}
+                    loading3={loading3}
+                    data={data}
+                  />
+                  {this._renderBottomBar()}
+                </div>
+              </Col>
+              <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+                <div className={styles.rightWrapper}>
+                  <Row>
+                    <NoteComponent note={Note} />
+                  </Row>
+                  <Row className={styles.stepRow}>
+                    <StepsComponent />
+                  </Row>
+                </div>
+              </Col>
+            </>
+          )}
         </Row>
       </>
     );
