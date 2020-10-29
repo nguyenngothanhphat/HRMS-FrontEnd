@@ -29,6 +29,9 @@ const { Option } = Select;
     reportingManagerList,
     statusAddEmployee,
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
+    loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
+    loadingTitle: loading.effects['employeesManagement/fetchJobTitleList'],
+    loadingManager: loading.effects['employeesManagement/fetchReportingManagerList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -215,6 +218,9 @@ class AddEmployeeForm extends Component {
       jobTitleList,
       reportingManagerList,
       loadingDepartment,
+      loadingLocation,
+      loadingTitle,
+      loadingManager,
       company,
     } = this.props;
     const { isDisabled, isDisabledDepartment } = this.state;
@@ -323,7 +329,8 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingLocation}
+              loading={loadingLocation}
               onChange={(value) => this.onChangeSelect('location', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -344,7 +351,7 @@ class AddEmployeeForm extends Component {
               showArrow
               showSearch
               loading={loadingDepartment}
-              disabled={isDisabledDepartment}
+              disabled={isDisabledDepartment || loadingDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -359,7 +366,8 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingTitle}
+              loading={loadingTitle}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -379,7 +387,8 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingManager}
+              loading={loadingManager}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
