@@ -31,6 +31,7 @@ class TableUsers extends PureComponent {
         title: 'Full name',
         dataIndex: 'generalInfo',
         align: 'left',
+        fixed: 'left',
         render: (generalInfo) =>
           generalInfo ? (
             <span className={styles.fullname}>
