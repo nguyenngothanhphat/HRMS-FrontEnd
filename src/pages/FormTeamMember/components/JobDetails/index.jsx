@@ -219,16 +219,19 @@ class JobDetails extends PureComponent {
   onClickNext = () => {
     const {
       currentStep,
-      data: { _id, company },
+      data: {
+        _id,
+        company,
+        // workLocation1,
+        // employeeType1,
+        // department1,
+        // title1,
+        // reportingManager1,
+        // position1,
+      },
       tempData: { position, employeeType, workLocation, department, title, reportingManager },
     } = this.state;
     const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -238,10 +241,25 @@ class JobDetails extends PureComponent {
         department,
         title,
         reportingManager,
+        // position1:position1,
+        // employeeType1:employeeType1,
+        // workLocation1:workLocation1,
+        // department1:department1,
+        // title1:title1,
+        // reportingManager1:reportingManager1,
         company,
         candidate: _id,
-        currentStep,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data.currentStep,
+          },
+        });
+      }
     });
   };
 

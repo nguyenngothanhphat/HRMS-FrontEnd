@@ -226,6 +226,7 @@ class FormTeamMember extends PureComponent {
           <JobDetails
             locationList={locationList}
             employeeTypeList={employeeTypeList}
+            reId={reId}
             loading={loading1}
           />
         ),
@@ -234,14 +235,14 @@ class FormTeamMember extends PureComponent {
         id: 3,
         name: 'Salary Structure',
         key: 'salaryStructure',
-        component: <SalaryStructure loading={loading1} />,
+        component: <SalaryStructure loading={loading1} reId={reId} />,
       },
       {
         id: 4,
         name: 'Background Check',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: <BackgroundCheck documentList={documentList} loading={loading1} />,
+        component: <BackgroundCheck documentList={documentList} loading={loading1} reId={reId} />,
       },
       { id: 5, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
       { id: 6, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },

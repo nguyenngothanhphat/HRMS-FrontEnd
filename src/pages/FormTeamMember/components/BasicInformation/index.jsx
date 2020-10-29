@@ -35,6 +35,26 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    const {
+      tempData: { fullName },
+      dispatch,
+      reId: rookieID,
+    } = this.props;
+    if (fullName === undefined) {
+      dispatch({
+        type: 'candidateInfo/fetchCandidateByRookie',
+        payload: {
+          rookieID,
+        },
+      }).then(({ statusCode, data }) => {
+        if (statusCode === 200) {
+          console.log('data', data);
+        }
+      });
+    }
+  }
+
   componentDidUpdate(prevState, prevProps) {
     const {
       dispatch,
@@ -71,6 +91,27 @@ class BasicInformation extends PureComponent {
         },
       });
     }
+  }
+
+  componentWillUnmount() {
+    const {
+      data,
+      data: { fullName, privateEmail, workEmail, previousExperience },
+    } = this.state;
+    const { dispatch, currentStep, tempData } = this.props;
+    const { _id } = data;
+    console.log('data', tempData);
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        fullName,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        candidate: _id,
+        currentStep,
+      },
+    });
   }
 
   handleChange = (e) => {
@@ -130,12 +171,6 @@ class BasicInformation extends PureComponent {
     } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
-    dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         fullName: values.fullName,
@@ -143,68 +178,18 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
-        currentStep,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
-    // if (
-    //   data.documentChecklistSetting !== undefined ||
-    //   (data.documentList && data.documentChecklistSetting !== documentList)
-    // ) {
-    //   const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-    //   const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-    //   const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-    //   const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-    //   const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-    //   const listSelectedA = arrA.map((x) => x.key);
-    //   const listSelectedB = arrB.map((x) => x.key);
-    //   const listSelectedC = arrC.map((x) => x.key);
-    //   const listSelectedD = arrD.map((x) => x.key);
-    //   let isCheckedA;
-    //   let isCheckedB;
-    //   let isCheckedC;
-    //   let isCheckedD;
-
-    //   if (listSelectedA.length === arrToAdjust[0].data.length) {
-    //     isCheckedA = true;
-    //   }
-    //   if (listSelectedB.length === arrToAdjust[1].data.length) {
-    //     isCheckedB = true;
-    //   }
-    //   if (listSelectedC.length === arrToAdjust[2].data.length) {
-    //     isCheckedC = true;
-    //   }
-    //   if (listSelectedD.length === arrToAdjust[3].data.length) {
-    //     isCheckedD = true;
-    //   }
-    //   dispatch({
-    //     type: 'candidateInfo/saveTemp',
-    //     payload: {
-    //       documentList: data.documentChecklistSetting,
-    //       identityProof: {
-    //         ...identityProof,
-    //         isChecked: isCheckedA,
-    //         checkedList: listSelectedA,
-    //       },
-    //       addressProof: {
-    //         ...addressProof,
-    //         checkedList: listSelectedB,
-    //         isChecked: isCheckedB,
-    //       },
-    //       educational: {
-    //         ...educational,
-    //         checkedList: listSelectedC,
-    //         isChecked: isCheckedC,
-    //       },
-    //       technicalCertification: {
-    //         poe: {
-    //           ...poe,
-    //           checkedList: listSelectedD,
-    //           isChecked: isCheckedD,
-    //         },
-    //       },
-    //     },
-    //   });
-    // }
   };
 
   onClickClose = () => {

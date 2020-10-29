@@ -397,15 +397,17 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('payload', payload);
+      // console.log('payload', payload);
+      let response = {};
       try {
-        const response = yield call(updateByHR, payload);
+        response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *fetchCandidateInfo(_, { call, put }) {
@@ -500,7 +502,7 @@ const candidateInfo = {
 
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
-      console.log('payload', payload);
+      // console.log('payload', payload);
       try {
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
@@ -538,13 +540,19 @@ const candidateInfo = {
       return response;
     },
     *fetchCandidateByRookie({ payload }, { call, put }) {
+      // console.log('abc', payload);
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        // console.log('4', data);
         yield put({
           type: 'save',
-          payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+          payload: {
+            currentStep: data.currentStep,
+            data: { ...data, candidate: data._id, _id: data._id },
+          },
         });
         yield put({
           type: 'updateSignature',
@@ -553,6 +561,7 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchTemplate(_, { call, put }) {
@@ -656,7 +665,7 @@ const candidateInfo = {
         },
       };
     },
-    setDefaultTable(state, action) {
+    setDefaultTable(state) {
       return {
         ...state,
         tableData: [
