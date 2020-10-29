@@ -82,7 +82,15 @@ class OnboardingLayout extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/fetchCandidateInfo',
-      payload: {},
+    }).then(({ ticketID: rookieID }) => {
+      if (rookieID) {
+        dispatch({
+          type: 'candidateInfo/fetchEmployeeById',
+          payload: {
+            rookieID,
+          },
+        });
+      }
     });
   };
 

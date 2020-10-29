@@ -133,13 +133,13 @@ class BackgroundCheck extends Component {
             drivingLicense: a[3],
             voterCard: a[4],
             isChecked: isCheckedA,
-            listSelected: listSelectedA,
+            checkedList: listSelectedA,
           },
           addressProof: {
             rentalAgreement: b[0],
             electricityBill: b[1],
             telephoneBill: b[2],
-            listSelected: listSelectedB,
+            checkedList: listSelectedB,
             isChecked: isCheckedB,
           },
           educational: {
@@ -148,7 +148,7 @@ class BackgroundCheck extends Component {
             graduation: c[2],
             postGraduate: c[3],
             phd: c[4],
-            listSelected: listSelectedC,
+            checkedList: listSelectedC,
             isChecked: isCheckedC,
           },
           technicalCertification: {
@@ -159,7 +159,7 @@ class BackgroundCheck extends Component {
               paystubs: d[2],
               form16: d[3],
               relievingLetter: d[4],
-              listSelected: listSelectedD,
+              checkedList: listSelectedD,
               isChecked: isCheckedD,
             },
           },

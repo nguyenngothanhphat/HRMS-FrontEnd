@@ -30,7 +30,6 @@ class CollapseField extends PureComponent {
         data.key !== 'intermediateDiploma' &&
         data.key !== 'graduation',
     );
-
     return (
       <div className={styles.CollapseField}>
         <Collapse
