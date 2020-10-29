@@ -184,7 +184,7 @@ class BackgroundCheck extends Component {
         reportingManager,
         title,
         employeeType,
-        candidate,
+        _id,
         fullName,
         position,
         privateEmail,
@@ -205,7 +205,7 @@ class BackgroundCheck extends Component {
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
-        candidate,
+        candidate: _id,
         fullName,
         position,
         employeeType: employeeType._id,

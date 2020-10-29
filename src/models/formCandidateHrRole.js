@@ -40,7 +40,10 @@ const candidateInfo = {
     statusCodeToValidate: null,
     isAddNewMember: false,
     tempData: {
-      checkStatus: {},
+      checkStatus: {
+        filledBasicInformation: false,
+        filledJobDetail: false,
+      },
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
       previousExperience: null,

@@ -72,7 +72,7 @@ class JobDetails extends PureComponent {
             candidate: data._id,
           },
         }).then(({ statusCode, data: test }) => {
-          if (statusCode === 200) {
+          if (statusCode === 200 && test.employeeType !== undefined) {
             dispatch({
               type: 'candidateInfo/saveTemp',
               payload: {
@@ -418,7 +418,7 @@ class JobDetails extends PureComponent {
       data,
     } = this.state;
     const { loading1, loading2, loading3 } = this.props;
-
+    console.log('render', data);
     return (
       <>
         <Row gutter={[24, 0]}>
