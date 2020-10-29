@@ -44,6 +44,19 @@ class AddEmployeeForm extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    if ('statusAddEmployee' in props && props.statusAddEmployee) {
+      if (props.company === '') {
+        return {
+          isDisabledDepartment: true,
+          isDisabled: true,
+        };
+      }
+      return { isDisabledDepartment: true };
+    }
+    return null;
+  }
+
   componentDidMount() {
     const { company } = this.props;
     if (company !== '') {
@@ -133,9 +146,25 @@ class AddEmployeeForm extends Component {
   handleCancel = () => {
     const { handleCancel, dispatch, company } = this.props;
     let isDisabled = true;
+    let payload = {
+      companyList: [],
+      departmentList: [],
+      locationList: [],
+      jobTitleList: [],
+      reportingManagerList: [],
+      statusAddEmployee: false,
+    };
     if (company !== '') {
       isDisabled = false;
+      payload = {
+        companyList: [],
+        statusAddEmployee: false,
+      };
     }
+    dispatch({
+      type: 'employeesManagement/save',
+      payload,
+    });
     this.setState(
       {
         location: '',
@@ -145,17 +174,6 @@ class AddEmployeeForm extends Component {
       },
       () => handleCancel(),
     );
-    dispatch({
-      type: 'employeesManagement/save',
-      payload: {
-        companyList: [],
-        departmentList: [],
-        locationList: [],
-        jobTitleList: [],
-        reportingManagerList: [],
-        statusAddEmployee: false,
-      },
-    });
   };
 
   handleChangeAddEmployee = () => {};
@@ -247,7 +265,13 @@ class AddEmployeeForm extends Component {
             name="roles"
             rules={[{ required: true }]}
           >
-            <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
+            <Select
+              mode="multiple"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              placeholder="Select Roles"
+            >
               {rolesList.map((item) => (
                 <Option key={item._id} value={item._id}>
                   {item.name}
@@ -310,7 +334,11 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label={formatMessage({ id: 'addEmployee.department' })} name="department">
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.department' })}
+            name="department"
+            rules={[{ required: true }]}
+          >
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
               showArrow
@@ -357,7 +385,7 @@ class AddEmployeeForm extends Component {
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item._id}>
+                <Option key={item.generalInfo._id}>
                   {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
                 </Option>
               ))}
