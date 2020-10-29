@@ -1,0 +1,159 @@
+.HolidayCalendar {
+  position: relative;
+  padding-bottom: 10px;
+  .day,
+  .emptySlot,
+  .weekDay {
+    text-align: center;
+  }
+
+  .weekDay {
+    font-size: 0.8em;
+  }
+
+  .day {
+    // height: 24px;
+    font-size: 12px;
+    padding: 7px 0;
+    span {
+      padding: 6px;
+      color: black;
+    }
+  }
+
+  .currentDay {
+    span {
+      // border: 1px solid black;
+      border-radius: 50%;
+      font-weight: bold;
+      color: white;
+      background-color: #2058d1;
+    }
+  }
+
+  .navMonth {
+    position: absolute;
+    top: 0.6em;
+    font-size: 0.6em;
+    right: 3px;
+  }
+
+  .labelMonth,
+  .labelYear {
+    font-size: 14px;
+  }
+  .labelYear {
+    font-weight: bold;
+    padding-left: 5px;
+  }
+
+  .labelMonth {
+    cursor: pointer;
+  }
+
+  .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    // margin: 15px 0;
+    padding: 20px;
+    .changeMonthBtn {
+      span {
+        padding: 3px;
+        color: #2058d1;
+        font-weight: bold;
+        font-size: 10px;
+        cursor: pointer;
+        &:hover {
+          background-color: #2058d1;
+          color: white;
+          border-radius: 1px;
+        }
+      }
+    }
+  }
+  .daysTable {
+    padding: 0 7px;
+    table {
+      width: 100% !important;
+      // margin-left: -12px;
+      tr {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+    }
+  }
+
+  // marks
+  .markEventBegin {
+    position: relative;
+  }
+  .markEventBegin::before {
+    content: '•';
+    position: absolute;
+    margin-left: 6px;
+    margin-top: 10px;
+    z-index: 1;
+    font-size: 20px;
+  }
+  .markEventBegin::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 50%;
+    bottom: 0;
+    margin-bottom: -1px;
+    border-bottom: 2px solid #d6dce0;
+  }
+  .markEventEnd {
+    position: relative;
+  }
+  .markEventEnd::before {
+    content: '•';
+    position: absolute;
+    right: 40%;
+    // margin-right: 10px;
+    margin-top: 10px;
+    z-index: 1;
+    font-size: 20px;
+  }
+  .markEventEnd::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 50%;
+    bottom: 0;
+    margin-bottom: -1px;
+    border-bottom: 2px solid #d6dce0;
+  }
+
+  .lineClassName {
+    border-bottom: 2px solid #d6dce0;
+    bottom: 0;
+  }
+
+  // eventDetailContainer
+  .eventDetailContainer {
+    border-top: 1px solid #d6dce0;
+    padding: 0px 20px 10px 20px;
+    margin-top: 30px;
+    .eventDetailPart {
+      .title {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 4;
+      }
+    }
+  }
+
+  .upcomingColor {
+    color: #60f93a;
+  }
+  .leaveTakenColor {
+    color: #ff5252;
+  }
+}

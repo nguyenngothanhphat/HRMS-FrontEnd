@@ -2,19 +2,29 @@ import React, { PureComponent } from 'react';
 import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { connect } from 'umi';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-
-export default class LeaveHistoryAndHoliday extends PureComponent {
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       activeShowType: 1, // 1: list, 2: calendar
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchHolidaysList',
+    });
+  };
 
   handleSelectShowType = (value) => {
     this.setState({
@@ -48,6 +58,7 @@ export default class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
+    const { timeOff: { holidaysList = [] } = {} } = this.props;
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
@@ -55,10 +66,11 @@ export default class LeaveHistoryAndHoliday extends PureComponent {
             <LeaveHistory />
           </TabPane>
           <TabPane tab="Holiday" key="2">
-            {activeShowType === 1 ? <Holiday /> : ''}
+            <Holiday holidaysList={holidaysList} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>
     );
   }
 }
+export default LeaveHistoryAndHoliday;
