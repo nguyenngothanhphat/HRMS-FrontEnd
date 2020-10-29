@@ -46,6 +46,7 @@ class TableUsers extends PureComponent {
         dataIndex: 'generalInfo',
         align: 'left',
         width: '10%',
+        className: `${styles.employeeId}`,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {

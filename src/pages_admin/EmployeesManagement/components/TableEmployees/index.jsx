@@ -36,6 +36,7 @@ export default class TableEmployees extends PureComponent {
         dataIndex: 'generalInfo',
         align: 'left',
         width: '10%',
+        className: `${styles.employeeId} `,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
       },
       {

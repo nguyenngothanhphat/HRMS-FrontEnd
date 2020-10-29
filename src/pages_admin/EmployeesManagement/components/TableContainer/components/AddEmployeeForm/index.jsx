@@ -366,7 +366,11 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label={formatMessage({ id: 'addEmployee.jobTitle' })} name="title">
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.jobTitle' })}
+            name="title"
+            rules={[{ required: true }]}
+          >
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
