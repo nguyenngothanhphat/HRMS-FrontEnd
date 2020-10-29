@@ -43,6 +43,7 @@ const OfferDetail = (props) => {
   // const [currency, setCurrency] = useState(currencyProp);
   // const [timeoff, setTimeoff] = useState(timeoffProp);
   // const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
+  const [displayTemplate, setDisplayTemplate] = useState(includeOfferProp);
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
@@ -87,6 +88,8 @@ const OfferDetail = (props) => {
     if (!dispatch) {
       return;
     }
+
+    setDisplayTemplate(includeOffer);
 
     const { _id = '' } = data;
 
@@ -258,34 +261,36 @@ const OfferDetail = (props) => {
               </Radio.Group>
             </Form.Item>
 
-            <div className={styles.wrapper1}>
-              <Select
-                value={
-                  <>
-                    <FileIcon type={getFileType(file)} />
-                    {file}
-                  </>
-                }
-                className={styles.select}
-                onChange={(value) => handleFileChange(value)}
-              >
-                {fileArr.map(({ name }, index) => (
-                  <Option value={name} key={index}>
-                    <div className={styles.iconWrapper}>
-                      <span>{name}</span>
-                    </div>
-                  </Option>
-                ))}
-              </Select>
+            {displayTemplate && (
+              <div className={styles.wrapper1}>
+                <Select
+                  value={
+                    <>
+                      <FileIcon type={getFileType(file)} />
+                      {file}
+                    </>
+                  }
+                  className={styles.select}
+                  onChange={(value) => handleFileChange(value)}
+                >
+                  {fileArr.map(({ name }, index) => (
+                    <Option value={name} key={index}>
+                      <div className={styles.iconWrapper}>
+                        <span>{name}</span>
+                      </div>
+                    </Option>
+                  ))}
+                </Select>
 
-              <Alert display type="remind" header="reminder">
-                <p>
-                  {formatMessage({ id: 'component.offerDetail.alertContent1' })}
-                  <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
-                  {formatMessage({ id: 'component.offerDetail.alertContent2' })}
-                </p>
-              </Alert>
-            </div>
+                <Alert display type="remind" header="reminder">
+                  <p>
+                    {formatMessage({ id: 'component.offerDetail.alertContent1' })}
+                    <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
+                    {formatMessage({ id: 'component.offerDetail.alertContent2' })}
+                  </p>
+                </Alert>
+              </div>
+            )}
 
             <p className={styles.agreement}>
               {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
