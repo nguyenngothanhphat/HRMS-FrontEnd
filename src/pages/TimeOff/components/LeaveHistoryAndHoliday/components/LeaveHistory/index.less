@@ -55,7 +55,8 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin: 15px 0;
+    // margin: 15px 0;
+    padding: 20px;
     .changeMonthBtn {
       span {
         padding: 3px;
@@ -71,16 +72,19 @@
       }
     }
   }
-  table {
-    width: 100% !important;
-    // margin-left: -12px;
-    tr {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
+  .daysTable {
+    padding: 0 7px;
+    table {
+      width: 100% !important;
+      // margin-left: -12px;
+      tr {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
     }
   }
 
@@ -134,25 +138,16 @@
 
   // eventDetailContainer
   .eventDetailContainer {
-    margin: 25px 0 0 0;
-    position: relative;
-    padding-top: 1px;
+    border-top: 1px solid #d6dce0;
+    padding: 0px 20px 10px 20px;
+    margin-top: 30px;
     .eventDetailPart {
-      margin-top: 10px;
       .title {
         font-size: 14px;
         font-weight: bold;
-        line-height: 3;
+        line-height: 4;
       }
     }
-  }
-
-  .eventDetailContainer::before {
-    content: '';
-    position: absolute;
-    left: -30px;
-    width: 150%;
-    border-top: 1px solid #d6dce0;
   }
 
   .upcomingColor {

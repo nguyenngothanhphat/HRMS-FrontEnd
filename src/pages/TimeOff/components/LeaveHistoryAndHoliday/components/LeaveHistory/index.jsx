@@ -195,10 +195,10 @@ export default class LeaveHistory extends PureComponent {
         currentMonth * 1 === this.selectedMonth() * 1 &&
         currentYear * 1 === this.selectedYear() * 1) ||
       (currentMonth * 1 < this.selectedMonth() * 1 &&
-        eventFromMonth * 1 >= this.selectedMonth() * 1 &&
+        eventFromMonth * 1 === this.selectedMonth() * 1 &&
         eventFromYear * 1 >= this.selectedYear() * 1)
     )
-      return 1;
+      return 1; // upcoming
     if (
       ((eventFromDay * 1 <= currentDay * 1 &&
         eventFromMonth * 1 === this.selectedMonth() * 1 &&
@@ -207,7 +207,7 @@ export default class LeaveHistory extends PureComponent {
           eventFromMonth * 1 === this.selectedMonth() * 1)) &&
       eventFromYear * 1 === this.selectedYear() * 1
     )
-      return 2;
+      return 2; // leave taken
     return '';
   };
 
@@ -352,10 +352,12 @@ export default class LeaveHistory extends PureComponent {
             </span>
           </div>
         </div>
-        <table className={styles.daysTable}>
-          <tr className={styles.daysInMonth}>{weekdays}</tr>
-          {trElems}
-        </table>
+        <div className={styles.daysTable}>
+          <table>
+            <tr className={styles.daysInMonth}>{weekdays}</tr>
+            {trElems}
+          </table>
+        </div>
         <div className={styles.eventDetailContainer}>
           <div className={styles.eventDetailPart}>
             <span className={styles.title}>Upcoming</span>
