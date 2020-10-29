@@ -13,38 +13,17 @@ import styles from './index.less';
       currentStep = {},
       data: { title = {}, processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
       data,
-      tableData = [],
-    },
-    user: { currentUser: { company: { _id = '' } = {} } = {} },
-  }) => ({
-    listTitle,
-    checkMandatory,
-    currentStep,
-    processStatus,
-    _id,
-    data,
-    tableData,
-    salaryPosition,
-    title,
-  }),
-)
-class SalaryStructureTemplate extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isEditted: false,
-      tableData: [
+      tableData = [
         {
           key: 'basic',
           title: 'Basic',
-          value: 'Rs. 12888',
+          value: ' ',
           order: 'A',
         },
         {
           key: 'hra',
           title: 'HRA',
-          value: '50% of Basic',
+          value: ' ',
           order: 'B',
         },
         {
@@ -68,13 +47,13 @@ class SalaryStructureTemplate extends PureComponent {
         {
           key: 'employeesPF',
           title: "Employee's PF",
-          value: '12 % of Basic',
+          value: ' ',
           order: 'G',
         },
         {
           key: 'employeesESI',
           title: "Employee's ESI",
-          value: '0.75 of Gross',
+          value: ' ',
           order: 'H',
         },
         {
@@ -96,6 +75,26 @@ class SalaryStructureTemplate extends PureComponent {
           order: ' ',
         },
       ],
+    },
+    user: { currentUser: { company: { _id = '' } = {} } = {} },
+  }) => ({
+    listTitle,
+    checkMandatory,
+    currentStep,
+    processStatus,
+    _id,
+    data,
+    tableData,
+    salaryPosition,
+    title,
+  }),
+)
+class SalaryStructureTemplate extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditted: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -122,6 +121,10 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchTableData',
         payload: { title: idTitle },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/setDefaultTable',
       });
     }
   };

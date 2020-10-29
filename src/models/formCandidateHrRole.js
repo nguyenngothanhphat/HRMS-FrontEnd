@@ -656,6 +656,73 @@ const candidateInfo = {
         },
       };
     },
+    setDefaultTable(state, action) {
+      return {
+        ...state,
+        tableData: [
+          {
+            key: 'basic',
+            title: 'Basic',
+            value: ' ',
+            order: 'A',
+          },
+          {
+            key: 'hra',
+            title: 'HRA',
+            value: ' ',
+            order: 'B',
+          },
+          {
+            title: 'Other allowances',
+            key: 'otherAllowances',
+            value: 'Balance amount',
+            order: 'C',
+          },
+          {
+            key: 'totalEarning',
+            title: 'Total earning (Gross)',
+            order: 'D',
+            value: 'A + B + C',
+          },
+          {
+            key: 'deduction',
+            title: 'Deduction',
+            order: 'E',
+            value: ' ',
+          },
+          {
+            key: 'employeesPF',
+            title: "Employee's PF",
+            value: ' ',
+            order: 'G',
+          },
+          {
+            key: 'employeesESI',
+            title: "Employee's ESI",
+            value: ' ',
+            order: 'H',
+          },
+          {
+            key: 'professionalTax',
+            title: 'Professional Tax',
+            value: 'Rs.200',
+            order: 'I',
+          },
+          {
+            key: 'tds',
+            title: 'TDS',
+            value: 'As per IT rules',
+            order: 'J',
+          },
+          {
+            key: 'netPayment',
+            title: 'Net Payment',
+            value: 'F - (G + H + I + J)',
+            order: ' ',
+          },
+        ],
+      };
+    },
 
     // removeTemplate(state, action) {
     //   const { tempData } = state;
