@@ -9,7 +9,6 @@ import {
   getTitleListByCompany,
   addCandidate,
   closeCandidate,
-  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
@@ -17,7 +16,13 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo } from '@/services/formCandidate';
+import {
+  getRookieInfo,
+  sentForApproval,
+  approveFinalOffer,
+  getTemplates,
+  removeTemplate,
+} from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -97,6 +102,27 @@ const candidateInfo = {
           isChecked: false,
         },
       },
+
+      candidateSignature: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+
+      defaultTemplates: [],
+      customTemplates: [],
     },
     data: {
       fullName: null,
@@ -117,6 +143,9 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      salaryStructure: {
+        salaryPosition: '',
+      },
       id: '',
       candidate: '',
       documentChecklistSetting: [
@@ -238,10 +267,24 @@ const candidateInfo = {
       listTitle: [],
       tableData: [],
       candidateSignature: null,
-      hrManagerSignature: null,
-      hrSignature: null,
-      hiringAgreements: null,
-      companyHandbook: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hiringAgreements: true,
+      companyHandbook: true,
       benefits: [],
       comments: null,
       status: '',
@@ -350,9 +393,12 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      console.log('pl', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('res', response);
+        console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -361,22 +407,32 @@ const candidateInfo = {
     },
 
     *fetchCandidateInfo(_, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getRookieInfo);
+        response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
+        console.log('data1', data);
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+        yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchEmployeeById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
+        console.log('data3', response);
+        console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -385,12 +441,14 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTitleListByCompany({ payload }, { call, put }) {
       try {
         const response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log(data);
         yield put({
           type: 'save',
           payload: { listTitle: data },
@@ -404,7 +462,6 @@ const candidateInfo = {
         const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -419,7 +476,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -434,7 +490,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -446,6 +501,7 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
+      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);
@@ -456,6 +512,96 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+
+    *sentForApprovalEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(sentForApproval, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *approveFinalOfferEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(approveFinalOffer, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchCandidateByRookie({ payload }, { call, put }) {
+      console.log('payload', payload);
+      try {
+        const response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        console.log('1', data);
+
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { currentStep: 0, data: { ...data, candidate: data._id, _id: data._id } },
+        });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchTemplate({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTemplates);
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'updateTemplate',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *removeTemplateEffect({ payload }, { call, put }) {
+      try {
+        // const { id = '' } = payload;
+        const response = yield call(removeTemplate, payload); // payload: id
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+
+        console.log(data);
+        yield put({
+          type: 'fetchTemplate',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    editTemplateEffect({ payload }, { call, put }) {
+      try {
+        const { id = '' } = payload;
+        // http://localhost:8001/template-details/5f97cd35fc92a3a34bdb2185
+        history.push(`/template-details/${id}`);
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
@@ -486,6 +632,62 @@ const candidateInfo = {
         },
       };
     },
+
+    updateSignature(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+      const { hrSignature = {}, hrManagerSignature = {} } = data;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          hrSignature,
+          hrManagerSignature,
+        },
+      };
+    },
+
+    updateTemplate(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+
+      if (!data) {
+        return state;
+      }
+
+      const defaultTemplates = data.filter((template) => template.default === true);
+      const customTemplates = data.filter((template) => template.default === false);
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          defaultTemplates,
+          customTemplates,
+        },
+      };
+    },
+
+    // removeTemplate(state, action) {
+    //   const { tempData } = state;
+    //   const data = action.payload;
+
+    //   if (!data) {
+    //     return state;
+    //   }
+
+    //   const defaultTemplates = data.filter((template) => template.default === true);
+    //   const customTemplates = data.filter((template) => template.default === false);
+
+    //   return {
+    //     ...state,
+    //     tempData: {
+    //       ...tempData,
+    //       defaultTemplates,
+    //       customTemplates,
+    //     },
+    //   };
+    // },
   },
 };
 

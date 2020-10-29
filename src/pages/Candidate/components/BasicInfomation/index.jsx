@@ -64,7 +64,6 @@ class BasicInformation extends PureComponent {
         currentStep: currentStep + 1,
       },
     });
-    console.log(values.fullName);
     dispatch({
       type: 'candidateProfile/updateByCandidateModel',
       payload: {

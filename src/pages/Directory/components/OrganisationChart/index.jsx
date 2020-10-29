@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Spin } from 'antd';
+import { Avatar, Spin } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import Chart from './Chart';
+import OrganizationChart from '@dabeng/react-orgchart';
 import s from './index.less';
 
 @connect(({ employee: { dataOrgChart = {} } = {}, loading }) => ({
@@ -21,6 +22,25 @@ class OrganisationChart extends Component {
     });
   }
 
+  renderNode = ({ nodeData }) => {
+    const {
+      generalInfo: { avatar = '', firstName = '' } = {},
+      department: { name = '' } = {},
+      location: { name: nameLocation = '' } = {},
+      user: { roles = [] } = {},
+    } = nodeData;
+    const [role] = roles;
+    return (
+      <div className={s.chartNode}>
+        <Avatar src={avatar} size={64} icon={<UserOutlined />} />
+        <p className="chartNode__textName">{firstName}</p>
+        <div className="chartNode__textInfo">Department: {name}</div>
+        <div className="chartNode__textInfo">Location: {nameLocation}</div>
+        <div className="chartNode__textInfo">Role: {role}</div>
+      </div>
+    );
+  };
+
   render() {
     const { dataOrgChart = {}, loading } = this.props;
 
@@ -31,7 +51,12 @@ class OrganisationChart extends Component {
             <Spin size="large" />
           </div>
         ) : (
-          <Chart data={dataOrgChart} />
+          <OrganizationChart
+            datasource={dataOrgChart}
+            NodeTemplate={this.renderNode}
+            chartClass={s.myChart}
+            containerClass={s.chartContainer}
+          />
         )}
       </div>
     );

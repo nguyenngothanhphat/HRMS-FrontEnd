@@ -14,41 +14,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const { Option } = Select;
 
-const mockData = [
-  {
-    id: 123,
-    value: 'ngoctuanitpy@gmail.com',
-  },
-  {
-    id: 456,
-    value: 'tuan@gmail.com',
-  },
-  {
-    id: 789,
-    value: 'example@hotmail.com',
-  },
-  {
-    id: 777,
-    value: 'elonmusk@gmail.com',
-  },
-  {
-    id: 433,
-    value: 'testemail1@gmail.com',
-  },
-  {
-    id: 889,
-    value: 'testemail2@gmail.com',
-  },
-  {
-    id: 232,
-    value: 'emailex1@hotmail.com',
-  },
-  {
-    id: 298,
-    value: 'emailex3@gmail.com',
-  },
-];
-
 const identifyImageOrPdf = (fileName) => {
   const parts = fileName.split('.');
   const ext = parts[parts.length - 1];
@@ -99,9 +64,32 @@ class ViewDocument extends PureComponent {
     }
   };
 
+  fetchEmailsListByCompany = () => {
+    const {
+      dispatch,
+      employeeProfile: { tempData: { compensationData: { company = '' } = {} } = {} } = {},
+    } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchEmailsListByCompany',
+      payload: [company],
+    });
+  };
+
+  renderEmailsList = () => {
+    const {
+      employeeProfile: { emailsList = [] },
+    } = this.props;
+    const list = emailsList.map((user) => {
+      const { generalInfo: { workEmail = '' } = {} } = user;
+      return workEmail;
+    });
+    return list.filter((value) => value !== '');
+  };
+
   componentDidMount = () => {
     const { selectedFile } = this.props;
     this.fetchDocumentDetails(selectedFile);
+    this.fetchEmailsListByCompany();
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
@@ -346,8 +334,8 @@ class ViewDocument extends PureComponent {
                   showArrow
                   className={styles.shareViaEmailInput}
                 >
-                  {mockData.map((d) => (
-                    <Option key={d.value}>{d.value}</Option>
+                  {this.renderEmailsList().map((email) => (
+                    <Option key={email}>{email}</Option>
                   ))}
                 </Select>
               </Col>

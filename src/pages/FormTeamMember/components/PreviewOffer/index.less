@@ -14,7 +14,7 @@
   display: flex;
 
   .left {
-    padding: 63px 55px 78px 55px;
+    // padding: 63px 55px 78px 55px;
     height: fit-content;
     flex: 1;
     background-color: white;
@@ -117,6 +117,18 @@
       border: solid 1px @border-color;
       background-color: white;
       padding: 25px;
+      margin-bottom: 16px;
+
+      button {
+        height: 40px;
+        border-radius: 25px;
+        border: solid 1px #ffa100;
+        background-color: #ffa100;
+
+        span {
+          color: white !important;
+        }
+      }
 
       header {
         display: flex;
@@ -129,7 +141,7 @@
 
         h2 {
           font-weight: 500;
-          font-size: 18px;
+          font-size: 14px;
           color: @header-color;
           margin-left: 16px;
         }

@@ -69,7 +69,6 @@ class JobDetails extends PureComponent {
     };
 
     const converted = convert(prefferedDateOfJoining._d);
-    console.log('abc', converted);
     dispatch({
       type: 'candidateProfile/updateByCandidateModel',
       payload: {

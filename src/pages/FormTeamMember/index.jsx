@@ -45,7 +45,171 @@ class FormTeamMember extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchDocumentList',
       });
+      dispatch({
+        type: 'candidateInfo/fetchTemplate',
+      });
     }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveOrigin',
+      payload: {
+        fullName: null,
+        privateEmail: null,
+        workEmail: null,
+        workLocation: null,
+        position: 'EMPLOYEE',
+        employeeType: null,
+        department: null,
+        title: null,
+        company: null,
+        joineeEmail: '',
+        previousExperience: null,
+        processStatus: 'DRAFT',
+        noticePeriod: null,
+        dateOfJoining: null,
+        reportingManager: null,
+        compensationType: null,
+        amountIn: null,
+        timeOffPolicy: null,
+        id: '',
+        candidate: '',
+        documentChecklistSetting: [
+          {
+            type: 'A',
+            name: 'Identity Proof',
+            data: [
+              {
+                key: 'aadharCard',
+                alias: 'Aadhar Card',
+                value: true,
+              },
+              {
+                key: 'panCard',
+                alias: 'PAN Card',
+                value: true,
+              },
+              {
+                key: 'passport',
+                alias: 'Passport',
+                value: false,
+              },
+              {
+                key: 'drivingLicence',
+                alias: 'Driving Licence',
+                value: false,
+              },
+              {
+                key: 'voterCard',
+                alias: 'Voter Card',
+                value: false,
+              },
+            ],
+          },
+          {
+            type: 'B',
+            name: 'Address Proof',
+            data: [
+              {
+                key: 'rentalAgreement',
+                alias: 'Rental Agreement',
+                value: false,
+              },
+              {
+                key: 'electricityUtilityBills',
+                alias: 'Electricity & Utility Bills',
+                value: false,
+              },
+              {
+                key: 'telephoneBills',
+                alias: 'Telephone Bills',
+                value: false,
+              },
+            ],
+          },
+          {
+            type: 'C',
+            name: 'Educational',
+            data: [
+              {
+                key: 'sslc',
+                alias: 'SSLC',
+                value: true,
+              },
+              {
+                key: 'intermediateDiploma',
+                alias: 'Intermedidate/Diploma',
+                value: true,
+              },
+              {
+                key: 'graduation',
+                alias: 'Graduation',
+                value: true,
+              },
+              {
+                key: 'postGraduate',
+                alias: 'Post Graduate',
+                value: false,
+              },
+              {
+                key: 'phdDoctorate',
+                alias: 'PHD/Doctorate',
+                value: false,
+              },
+            ],
+          },
+          {
+            type: 'D',
+            name: 'Technical Certifications',
+            data: [
+              {
+                key: 'offerLetter',
+                alias: 'Offer letter',
+                value: false,
+              },
+              {
+                key: 'appraisalLetter',
+                alias: 'Appraisal letter',
+                value: false,
+              },
+              {
+                key: 'paysTubs',
+                alias: 'Paystubs',
+                value: false,
+              },
+              {
+                key: 'form16',
+                alias: 'Form 16',
+                value: false,
+              },
+              {
+                key: 'relievingLetter',
+                alias: 'Relieving Letter',
+                value: false,
+              },
+            ],
+          },
+        ],
+        salaryPosition: '',
+        listTitle: [],
+        tableData: [],
+        candidateSignature: null,
+        hrManagerSignature: {},
+        hrSignature: {},
+        hiringAgreements: null,
+        companyHandbook: null,
+        benefits: [],
+        comments: null,
+        status: '',
+        _id: '',
+        ticketID: '',
+        generatedBy: '',
+        createdAt: '',
+        updatedAt: '',
+      },
+    });
   }
 
   render() {

@@ -21,24 +21,20 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-        console.log('abcd', response);
         yield put({
           type: 'saveCandidateId',
           payload: response,
         });
         if (response.statusCode !== 200) throw response;
-        console.log(response);
         setToken(response.data.token);
-        const [itemRole] = response.data.user.roles;
-        const { _id: role = '' } = itemRole;
-        console.log(response.data.user.roles);
-        setAuthority(role.toLowerCase());
+        const arrayRoles = response.data.user.roles;
+        const formatArrRoles = arrayRoles.map((item) => item._id.toLowerCase());
+        setAuthority(formatArrRoles);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        console.log('p', params);
         let { redirect } = params;
-        console.log('r', redirect);
-        if (role === 'CANDIDATE') {
+
+        if (formatArrRoles.indexOf('candidate') > -1) {
           history.replace('/candidate');
           return;
         }
@@ -57,7 +53,6 @@ const Model = {
         }
         history.replace(redirect || '/');
       } catch (errors) {
-        console.log(errors);
         dialog(errors);
       }
     },
@@ -66,6 +61,8 @@ const Model = {
       const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
+      localStorage.removeItem('dataRoles');
+      localStorage.removeItem('Rolesname');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {
@@ -93,9 +90,9 @@ const Model = {
           payload: response,
         });
         setToken(response.data.token);
-        const [itemRole] = response.data.user.roles;
-        const { _id: role = '' } = itemRole;
-        setAuthority(role.toLowerCase());
+        const arrayRoles = response.data.user.roles;
+        const formatArrRoles = arrayRoles.map((item) => item._id.toLowerCase());
+        setAuthority(formatArrRoles);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
