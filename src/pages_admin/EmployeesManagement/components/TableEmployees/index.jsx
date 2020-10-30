@@ -17,10 +17,26 @@ export default class TableEmployees extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
+        title: formatMessage({ id: 'component.directory.table.fullName' }),
+        dataIndex: 'generalInfo',
+        align: 'left',
+        fixed: 'left',
+        width: '12%',
+        render: (generalInfo) =>
+          generalInfo ? (
+            <span className={styles.fullName}>
+              {`${generalInfo.firstName} ${generalInfo.lastName}`}
+            </span>
+          ) : (
+            ''
+          ),
+      },
+      {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         align: 'left',
         width: '10%',
+        className: `${styles.employeeId} `,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
       },
       {
@@ -34,17 +50,10 @@ export default class TableEmployees extends PureComponent {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
         dataIndex: 'generalInfo',
         width: '15%',
-        align: 'center',
+        align: 'left',
         render: (generalInfo) => (
           <span>{generalInfo && generalInfo.workEmail ? generalInfo.workEmail : ''}</span>
         ),
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.fullName' }),
-        dataIndex: 'generalInfo',
-        align: 'center',
-        render: (generalInfo) =>
-          generalInfo ? <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span> : '',
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
@@ -57,7 +66,7 @@ export default class TableEmployees extends PureComponent {
         title: 'Job Title',
         dataIndex: 'title',
         // width: '10%',
-        align: 'center',
+        align: 'left',
         render: (title) => <span>{title ? title.name : ''}</span>,
       },
       {
@@ -90,7 +99,7 @@ export default class TableEmployees extends PureComponent {
         dataIndex: 'employeeType',
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
-        // align: 'left',
+        align: 'center',
         width: '10%',
       },
       {
