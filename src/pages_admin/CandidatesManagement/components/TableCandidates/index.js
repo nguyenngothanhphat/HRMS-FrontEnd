@@ -19,7 +19,7 @@ class TableCandidates extends PureComponent {
     const columns = [
       {
         title: 'Rookie ID',
-        dataIndex: 'rookieId',
+        dataIndex: 'ticketID',
         align: 'left',
         width: '10%',
         // defaultSortOrder: 'ascend',
@@ -30,7 +30,7 @@ class TableCandidates extends PureComponent {
       },
       {
         title: 'Rookie Name',
-        dataIndex: 'rookieName',
+        dataIndex: 'fullName',
         align: 'left',
         width: '20%',
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -40,7 +40,7 @@ class TableCandidates extends PureComponent {
       },
       {
         title: 'Joined date',
-        dataIndex: 'joinedDate',
+        dataIndex: 'updatedAt',
         align: 'left',
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
@@ -59,8 +59,9 @@ class TableCandidates extends PureComponent {
       },
       {
         title: 'Location',
-        dataIndex: 'location',
+        dataIndex: 'workLocation',
         align: 'left',
+        render: (workLocation) => <span>{workLocation ? workLocation.name : ''}</span>,
       },
       {
         title: 'Action',
