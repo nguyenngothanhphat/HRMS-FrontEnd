@@ -184,6 +184,7 @@ class AddEmployeeForm extends Component {
 
   handleSubmitEmployee = (values) => {
     const { dispatch } = this.props;
+    console.log(values);
     dispatch({
       type: 'employeesManagement/addEmployee',
       payload: values,
@@ -240,6 +241,19 @@ class AddEmployeeForm extends Component {
           onFinish={this.handleSubmitEmployee}
           {...formLayout}
         >
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.employeeID' })}
+            name="employeeId"
+            rules={[
+              { required: true },
+              {
+                pattern: /^[a-zA-Z0-9\s_.-]*$/,
+                message: 'Employee ID is not a validate ID!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.name' })}
             name="firstName"
@@ -338,9 +352,9 @@ class AddEmployeeForm extends Component {
               }
             >
               {locationList.map((item) => {
-                const { headQuarterAddress = {}, _id = '' } = item;
-                if (!_.isEmpty(headQuarterAddress)) {
-                  return <Option key={_id}>{headQuarterAddress.address}</Option>;
+                const { name = '', _id = '' } = item;
+                if (!_.isEmpty(name)) {
+                  return <Option key={_id}>{name}</Option>;
                 }
                 return null;
               })}
