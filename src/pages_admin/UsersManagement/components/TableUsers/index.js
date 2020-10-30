@@ -28,10 +28,25 @@ class TableUsers extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
+        title: 'Full name',
+        dataIndex: 'generalInfo',
+        align: 'left',
+        fixed: 'left',
+        render: (generalInfo) =>
+          generalInfo ? (
+            <span className={styles.fullname}>
+              {`${generalInfo.firstName} ${generalInfo.lastName}`}
+            </span>
+          ) : (
+            ''
+          ),
+      },
+      {
         title: 'Employee ID',
         dataIndex: 'generalInfo',
         align: 'left',
         width: '10%',
+        className: `${styles.employeeId}`,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
@@ -60,13 +75,6 @@ class TableUsers extends PureComponent {
         // sorter: {
         // compare: (a, b) => a.workEmail && b.workEmail && a.workEmail.localeCompare(b.workEmail),
         // },
-      },
-      {
-        title: 'Full name',
-        dataIndex: 'generalInfo',
-        align: 'left',
-        render: (generalInfo) =>
-          generalInfo ? <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span> : '',
       },
       {
         title: 'Role',

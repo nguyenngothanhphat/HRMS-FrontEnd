@@ -65,6 +65,7 @@ class DirectoryComponent extends PureComponent {
       visibleImportEmployee: false,
       roles: {
         HR: 'HR',
+        HR_MANAGER: 'HR-MANAGER',
       },
     };
     this.setDebounce = debounce((query) => {
@@ -247,8 +248,8 @@ class DirectoryComponent extends PureComponent {
     let flag = false;
     const { roles: rolesConst } = this.state;
     const checkRoleHR = (obj) => obj._id === rolesConst.HR;
-    // const checkRoleHRManager = (obj) => obj._id === rolesConst.HR_MANAGER;
-    if (roles.some(checkRoleHR)) {
+    const checkRoleHRManager = (obj) => obj._id === rolesConst.HR_MANAGER;
+    if (roles.some(checkRoleHR) || roles.some(checkRoleHRManager)) {
       flag = true;
     }
     return flag;
@@ -355,7 +356,7 @@ class DirectoryComponent extends PureComponent {
         />
         <ModalImportEmployee
           company={company}
-          titleModal="Import Employee"
+          titleModal="Import Employees"
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
         />

@@ -4,6 +4,15 @@
 
 .tableUsers {
   padding: 24px 24px 0 24px;
+  .fullname {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #2c6df9;
+    font-weight: 500;
+  }
+  .employeeId {
+    padding-left: 16px !important;
+  }
   :global {
     .ant-table-body {
       overflow-x: auto !important;
@@ -36,6 +45,10 @@
     .ant-table-tbody > tr > td {
       .mixin-border-bottom-row();
       color: #464646;
+    }
+
+    .ant-table-tbody > tr.ant-table-row:hover > td {
+      cursor: pointer;
     }
 
     // Sort active icon
