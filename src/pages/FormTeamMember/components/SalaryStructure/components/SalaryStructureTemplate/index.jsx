@@ -111,8 +111,7 @@ class SalaryStructureTemplate extends PureComponent {
   componentDidMount = () => {
     const { dispatch, _id, title } = this.props;
     const idTitle = title?._id;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
