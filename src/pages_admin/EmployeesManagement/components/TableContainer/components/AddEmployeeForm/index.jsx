@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Input, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
+import _ from 'lodash';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -29,6 +30,9 @@ const { Option } = Select;
     reportingManagerList,
     statusAddEmployee,
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
+    loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
+    loadingTitle: loading.effects['employeesManagement/fetchJobTitleList'],
+    loadingManager: loading.effects['employeesManagement/fetchReportingManagerList'],
     loading: loading.effects['employeesManagement/addEmployee'],
   }),
 )
@@ -44,6 +48,19 @@ class AddEmployeeForm extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    if ('statusAddEmployee' in props && props.statusAddEmployee) {
+      if (props.company === '') {
+        return {
+          isDisabledDepartment: true,
+          isDisabled: true,
+        };
+      }
+      return { isDisabledDepartment: true };
+    }
+    return null;
+  }
+
   componentDidMount() {
     const { company } = this.props;
     if (company !== '') {
@@ -57,7 +74,7 @@ class AddEmployeeForm extends Component {
   componentDidUpdate(prevState) {
     const { location } = this.state;
     const { dispatch, statusAddEmployee = false } = this.props;
-    if (location !== '' && location !== prevState.location) {
+    if (statusAddEmployee && location !== '' && location !== prevState.location) {
       this.formRef.current.setFieldsValue({
         department: undefined,
       });
@@ -81,12 +98,12 @@ class AddEmployeeForm extends Component {
         company: _id,
       },
     });
-    dispatch({
-      type: 'employeesManagement/fetchLocationList',
-      payload: {
-        company: _id,
-      },
-    });
+    // dispatch({
+    //   type: 'employeesManagement/fetchLocationList',
+    //   payload: {
+    //     company: _id,
+    //   },
+    // });
     dispatch({
       type: 'employeesManagement/fetchJobTitleList',
       payload: {
@@ -131,27 +148,36 @@ class AddEmployeeForm extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch } = this.props;
+    const { handleCancel, dispatch, company } = this.props;
+    let isDisabled = true;
+    let payload = {
+      companyList: [],
+      departmentList: [],
+      locationList: [],
+      jobTitleList: [],
+      reportingManagerList: [],
+      statusAddEmployee: false,
+    };
+    if (company !== '') {
+      isDisabled = false;
+      payload = {
+        companyList: [],
+        statusAddEmployee: false,
+      };
+    }
+    dispatch({
+      type: 'employeesManagement/save',
+      payload,
+    });
     this.setState(
       {
         location: '',
         company: '',
-        isDisabled: true,
+        isDisabled,
         isDisabledDepartment: true,
       },
       () => handleCancel(),
     );
-    dispatch({
-      type: 'employeesManagement/save',
-      payload: {
-        companyList: [],
-        departmentList: [],
-        locationList: [],
-        jobTitleList: [],
-        reportingManagerList: [],
-        statusAddEmployee: false,
-      },
-    });
   };
 
   handleChangeAddEmployee = () => {};
@@ -193,6 +219,9 @@ class AddEmployeeForm extends Component {
       jobTitleList,
       reportingManagerList,
       loadingDepartment,
+      loadingLocation,
+      loadingTitle,
+      loadingManager,
       company,
     } = this.props;
     const { isDisabled, isDisabledDepartment } = this.state;
@@ -243,7 +272,13 @@ class AddEmployeeForm extends Component {
             name="roles"
             rules={[{ required: true }]}
           >
-            <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
+            <Select
+              mode="multiple"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              placeholder="Select Roles"
+            >
               {rolesList.map((item) => (
                 <Option key={item._id} value={item._id}>
                   {item.name}
@@ -295,24 +330,33 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingLocation}
+              loading={loadingLocation}
               onChange={(value) => this.onChangeSelect('location', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {locationList.map((item) => (
-                <Option key={item._id}>{item.headQuarterAddress.address}</Option>
-              ))}
+              {locationList.map((item) => {
+                const { headQuarterAddress = {}, _id = '' } = item;
+                if (!_.isEmpty(headQuarterAddress)) {
+                  return <Option key={_id}>{headQuarterAddress.address}</Option>;
+                }
+                return null;
+              })}
             </Select>
           </Form.Item>
-          <Form.Item label={formatMessage({ id: 'addEmployee.department' })} name="department">
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.department' })}
+            name="department"
+            rules={[{ required: true }]}
+          >
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
               showArrow
               showSearch
               loading={loadingDepartment}
-              disabled={isDisabledDepartment}
+              disabled={isDisabledDepartment || loadingDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -322,12 +366,17 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label={formatMessage({ id: 'addEmployee.jobTitle' })} name="title">
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.jobTitle' })}
+            name="title"
+            rules={[{ required: true }]}
+          >
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingTitle}
+              loading={loadingTitle}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -347,7 +396,8 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch
-              disabled={isDisabled}
+              disabled={isDisabled || loadingManager}
+              loading={loadingManager}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }

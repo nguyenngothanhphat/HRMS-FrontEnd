@@ -74,6 +74,7 @@ class PermissionInfo extends PureComponent {
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
+      columnWidth: '20%',
     };
 
     const columns = [
@@ -81,7 +82,7 @@ class PermissionInfo extends PureComponent {
         key: 2,
         title: 'Permission name',
         dataIndex: 'PermissionName',
-        align: 'center',
+        align: 'left',
       },
     ];
     return (

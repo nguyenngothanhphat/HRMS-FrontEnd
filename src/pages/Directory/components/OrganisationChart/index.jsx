@@ -33,10 +33,10 @@ class OrganisationChart extends Component {
     return (
       <div className={s.chartNode}>
         <Avatar src={avatar} size={64} icon={<UserOutlined />} />
-        <p className="chartNode__textName">{firstName}</p>
-        <div className="chartNode__textInfo">Department: {name}</div>
-        <div className="chartNode__textInfo">Location: {nameLocation}</div>
-        <div className="chartNode__textInfo">Role: {role}</div>
+        <p className={s.chartNode__textName}>{firstName}</p>
+        <div className={s.chartNode__textInfo}>Department: {name}</div>
+        <div className={s.chartNode__textInfo}>Location: {nameLocation}</div>
+        <div className={s.chartNode__textInfo}>Role: {role}</div>
       </div>
     );
   };

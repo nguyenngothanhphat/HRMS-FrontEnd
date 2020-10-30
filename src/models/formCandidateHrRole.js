@@ -38,8 +38,12 @@ const candidateInfo = {
     },
     currentStep: 0,
     statusCodeToValidate: null,
+    isAddNewMember: false,
     tempData: {
-      checkStatus: {},
+      checkStatus: {
+        filledBasicInformation: false,
+        filledJobDetail: false,
+      },
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
       previousExperience: null,
@@ -72,14 +76,14 @@ const candidateInfo = {
         passport: false,
         drivingLicense: false,
         voterCard: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
         telephoneBill: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       educational: {
@@ -88,7 +92,7 @@ const candidateInfo = {
         graduation: true,
         postGraduate: false,
         phd: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       technicalCertification: {
@@ -98,7 +102,7 @@ const candidateInfo = {
           paystubs: false,
           form16: false,
           relievingLetter: false,
-          listSelected: [],
+          checkedList: [],
           isChecked: false,
         },
       },
@@ -393,12 +397,10 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('pl', payload);
+      console.log('payload', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('res', response);
-        console.log('received', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -412,7 +414,6 @@ const candidateInfo = {
         response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
-        console.log('data1', data);
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
@@ -431,8 +432,6 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log('data3', response);
-        console.log('data2', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -448,7 +447,6 @@ const candidateInfo = {
         const response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data);
         yield put({
           type: 'save',
           payload: { listTitle: data },
@@ -501,8 +499,8 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
-      console.log('pl', payload);
       let response = {};
+      console.log('payload', payload);
       try {
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
@@ -540,12 +538,9 @@ const candidateInfo = {
       return response;
     },
     *fetchCandidateByRookie({ payload }, { call, put }) {
-      console.log('payload', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log('1', data);
-
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -560,14 +555,11 @@ const candidateInfo = {
       }
     },
 
-    *fetchTemplate({ payload }, { call, put }) {
+    *fetchTemplate(_, { call, put }) {
       try {
         const response = yield call(getTemplates);
         const { data, statusCode } = response;
-
         if (statusCode !== 200) throw response;
-
-        console.log(data);
         yield put({
           type: 'updateTemplate',
           payload: data,
@@ -581,11 +573,8 @@ const candidateInfo = {
       try {
         // const { id = '' } = payload;
         const response = yield call(removeTemplate, payload); // payload: id
-        const { data, statusCode } = response;
-
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-
-        console.log(data);
         yield put({
           type: 'fetchTemplate',
         });
@@ -594,7 +583,7 @@ const candidateInfo = {
       }
     },
 
-    editTemplateEffect({ payload }, { call, put }) {
+    editTemplateEffect({ payload }) {
       try {
         const { id = '' } = payload;
         // http://localhost:8001/template-details/5f97cd35fc92a3a34bdb2185
@@ -665,6 +654,73 @@ const candidateInfo = {
           defaultTemplates,
           customTemplates,
         },
+      };
+    },
+    setDefaultTable(state, action) {
+      return {
+        ...state,
+        tableData: [
+          {
+            key: 'basic',
+            title: 'Basic',
+            value: ' ',
+            order: 'A',
+          },
+          {
+            key: 'hra',
+            title: 'HRA',
+            value: ' ',
+            order: 'B',
+          },
+          {
+            title: 'Other allowances',
+            key: 'otherAllowances',
+            value: 'Balance amount',
+            order: 'C',
+          },
+          {
+            key: 'totalEarning',
+            title: 'Total earning (Gross)',
+            order: 'D',
+            value: 'A + B + C',
+          },
+          {
+            key: 'deduction',
+            title: 'Deduction',
+            order: 'E',
+            value: ' ',
+          },
+          {
+            key: 'employeesPF',
+            title: "Employee's PF",
+            value: ' ',
+            order: 'G',
+          },
+          {
+            key: 'employeesESI',
+            title: "Employee's ESI",
+            value: ' ',
+            order: 'H',
+          },
+          {
+            key: 'professionalTax',
+            title: 'Professional Tax',
+            value: 'Rs.200',
+            order: 'I',
+          },
+          {
+            key: 'tds',
+            title: 'TDS',
+            value: 'As per IT rules',
+            order: 'J',
+          },
+          {
+            key: 'netPayment',
+            title: 'Net Payment',
+            value: 'F - (G + H + I + J)',
+            order: ' ',
+          },
+        ],
       };
     },
 
