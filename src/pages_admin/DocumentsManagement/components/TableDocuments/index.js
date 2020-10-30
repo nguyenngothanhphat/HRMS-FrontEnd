@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 import moment from 'moment';
-import ViewDocument from '@/components/ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -103,8 +102,6 @@ class TableDocuments extends PureComponent {
       confirmRemoveModalVisible: false,
       documentId: '',
       documentName: '',
-      isViewingDocument: false,
-      selectedDocumentId: null,
     };
   }
 
@@ -127,22 +124,7 @@ class TableDocuments extends PureComponent {
 
   // view document
   viewDocument = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'documentsManagement/fetchDocumentDetail',
-      payload: record._id,
-    });
-    this.setState({
-      isViewingDocument: true,
-      selectedDocumentId: record._id,
-    });
-  };
-
-  closeDocument = () => {
-    this.setState({
-      isViewingDocument: false,
-      selectedDocumentId: null,
-    });
+    history.push(`/view-document/${record._id}`);
   };
 
   // pagination
@@ -175,8 +157,6 @@ class TableDocuments extends PureComponent {
       documentId,
       documentName,
       confirmRemoveModalVisible,
-      isViewingDocument,
-      selectedDocumentId,
     } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -207,38 +187,28 @@ class TableDocuments extends PureComponent {
       onChange: this.onSelectChange,
     };
 
-    const {
-      documentsManagement: { listDocumentDetail = [] },
-    } = this.props;
-
     // console.log('listDocumentDetail', listDocumentDetail);
     return (
-      <div>
-        {isViewingDocument && selectedDocumentId && listDocumentDetail ? (
-          <ViewDocument data={listDocumentDetail} onBackClick={this.closeDocument} />
-        ) : (
-          <div className={styles.tableDocuments}>
-            {documentId !== '' && (
-              <ConfirmRemoveModal
-                visible={confirmRemoveModalVisible}
-                titleModal="Remove Document Confirm"
-                handleCancel={this.closeConfirmRemoveModal}
-                id={documentId}
-                name={documentName}
-              />
-            )}
-            <Table
-              size="small"
-              loading={loading}
-              rowSelection={rowSelection}
-              pagination={{ ...pagination, total: data.length }}
-              columns={this.columns}
-              dataSource={data}
-              scroll={scroll}
-              rowKey="_id"
-            />
-          </div>
+      <div className={styles.tableDocuments}>
+        {documentId !== '' && (
+          <ConfirmRemoveModal
+            visible={confirmRemoveModalVisible}
+            titleModal="Remove Document Confirm"
+            handleCancel={this.closeConfirmRemoveModal}
+            id={documentId}
+            name={documentName}
+          />
         )}
+        <Table
+          size="small"
+          loading={loading}
+          rowSelection={rowSelection}
+          pagination={{ ...pagination, total: data.length }}
+          columns={this.columns}
+          dataSource={data}
+          scroll={scroll}
+          rowKey="_id"
+        />
       </div>
     );
   }
