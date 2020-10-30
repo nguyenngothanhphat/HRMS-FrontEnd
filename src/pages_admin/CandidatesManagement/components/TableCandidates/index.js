@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
@@ -42,6 +43,9 @@ class TableCandidates extends PureComponent {
         title: 'Joined date',
         dataIndex: 'updatedAt',
         align: 'left',
+        render: (updatedAt) => (
+          <span>{updatedAt ? moment(updatedAt).locale('en').format('MMM Do, YYYY') : ''}</span>
+        ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
