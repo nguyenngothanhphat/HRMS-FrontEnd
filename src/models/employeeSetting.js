@@ -19,9 +19,9 @@ const employeeSetting = {
     newTemplate: {},
     newTemplateData: {
       settings: [],
-      fullname: '123',
-      signature: '123',
-      designation: '123',
+      fullname: '',
+      signature: '',
+      designation: '',
     },
   },
   effects: {
