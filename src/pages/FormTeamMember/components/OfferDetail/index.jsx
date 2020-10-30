@@ -17,6 +17,7 @@ const { Option } = Select;
 
 const OfferDetail = (props) => {
   const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
     compensationType: compensationProp,
@@ -114,6 +115,19 @@ const OfferDetail = (props) => {
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues, agreement, handbook });
+    // return () => {
+    //   if (!dispatch) {
+    //     return;
+    //   }
+    //   const { _id = '' } = data;
+    //   dispatch({
+    //     type: 'candidateInfo/updateByHR',
+    //     payload: {
+    //       candidate: _id,
+    //       currentStep: nextStep,
+    //     },
+    //   });
+    // };
   }, []);
 
   useEffect(() => {
@@ -154,7 +168,7 @@ const OfferDetail = (props) => {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        currentStep: currentStep + 1,
+        currentStep: nextStep,
       },
     });
 
@@ -167,6 +181,7 @@ const OfferDetail = (props) => {
         hiringAgreements: agreement,
         companyHandbook: handbook,
         candidate: _id,
+        currentStep: nextStep,
       },
     });
 

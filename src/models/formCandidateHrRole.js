@@ -547,11 +547,12 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         // console.log('4', data);
+        const { currentStep = 0, _id } = data;
         yield put({
           type: 'save',
           payload: {
-            currentStep: data.currentStep,
-            data: { ...data, candidate: data._id, _id: data._id },
+            currentStep,
+            data: { ...data, candidate: _id, _id },
           },
         });
         yield put({
