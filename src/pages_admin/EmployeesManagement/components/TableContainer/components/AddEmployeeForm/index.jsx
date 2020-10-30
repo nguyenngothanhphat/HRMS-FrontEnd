@@ -98,12 +98,12 @@ class AddEmployeeForm extends Component {
         company: _id,
       },
     });
-    // dispatch({
-    //   type: 'employeesManagement/fetchLocationList',
-    //   payload: {
-    //     company: _id,
-    //   },
-    // });
+    dispatch({
+      type: 'employeesManagement/fetchLocationList',
+      payload: {
+        company: _id,
+      },
+    });
     dispatch({
       type: 'employeesManagement/fetchJobTitleList',
       payload: {
