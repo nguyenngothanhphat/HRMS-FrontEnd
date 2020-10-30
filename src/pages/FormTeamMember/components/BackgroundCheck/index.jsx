@@ -66,6 +66,21 @@ class BackgroundCheck extends Component {
       dispatch,
     } = this.props;
     console.log('abc');
+
+    // save step
+    const { currentStep } = this.props;
+    const { candidate = '' } = data;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
+
     if (data.documentChecklistSetting !== documentList) {
       console.log('inside');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
