@@ -2,9 +2,10 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Select } from 'antd';
+import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
+import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -184,10 +185,13 @@ class AddEmployeeForm extends Component {
 
   handleSubmitEmployee = (values) => {
     const { dispatch } = this.props;
-    console.log(values);
+    const payload = {
+      ...values,
+      joinDate: moment(values).format('YYYY-MM-DD'),
+    };
     dispatch({
       type: 'employeesManagement/addEmployee',
-      payload: values,
+      payload,
     });
   };
 
@@ -266,6 +270,13 @@ class AddEmployeeForm extends Component {
             ]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
+            name="joinDate"
+            rules={[{ required: true }]}
+          >
+            <DatePicker style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
