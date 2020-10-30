@@ -24,7 +24,7 @@ class RequestInfonation extends Component {
             <div lassName={styles.titleText}>Duration</div>
             <div className={styles.datetimeFlex}>
               <DatePicker className={styles.timePicker} />
-              <DatePicker className={styles.timePicker} />
+              <DatePicker className={styles.timePicker} format="To  MM/DD" />
             </div>
           </div>
           <div className={styles.extraTime} />

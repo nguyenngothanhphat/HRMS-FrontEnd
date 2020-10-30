@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col } from 'antd';
 import warningNoteIcon from '@/assets/warning-icon.svg';
+import ListSpentTime from './ListSpentTime';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -38,7 +39,11 @@ class LeftMenu extends Component {
               <DatePicker className={styles.timePicker} />
             </div>
           </div>
-          <div className={styles.extraTime} />
+
+          <div className={styles.extraTime}>
+            <div lassName={styles.titleText}>Extra time spent</div>
+            <ListSpentTime />
+          </div>
           <div className={styles.Description}>
             <div className={styles.titleText}>Description</div>
             <TextArea className={styles.textArea} />

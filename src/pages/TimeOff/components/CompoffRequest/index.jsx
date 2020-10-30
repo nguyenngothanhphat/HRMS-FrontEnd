@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
 import LeftMenu from './LeftMenu';
+import RightContent from './RightContent';
 import styles from './index.less';
 
 class HRDetailTicket extends PureComponent {
@@ -23,7 +24,9 @@ class HRDetailTicket extends PureComponent {
             <Col span={17}>
               <LeftMenu />
             </Col>
-            <Col span={7}>Chain of Approval</Col>
+            <Col span={7}>
+              <RightContent />
+            </Col>
           </Row>
         </div>
       </PageContainer>
