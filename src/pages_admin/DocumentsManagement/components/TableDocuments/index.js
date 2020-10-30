@@ -202,6 +202,12 @@ class TableDocuments extends PureComponent {
         <Table
           size="small"
           loading={loading}
+          onRow={(record) => {
+            return {
+              onClick: () => this.viewDocument(record),
+              // click row
+            };
+          }}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
