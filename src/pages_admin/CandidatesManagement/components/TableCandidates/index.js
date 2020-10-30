@@ -19,9 +19,22 @@ class TableCandidates extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
+        title: 'Rookie Name',
+        dataIndex: 'fullName',
+        align: 'left',
+        fixed: 'left',
+        width: '15%',
+        render: (fullName) => <span className={styles.fullName}>{fullName}</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
+        // },
+      },
+      {
         title: 'Rookie ID',
         dataIndex: 'ticketID',
         align: 'left',
+        className: `${styles.rookieId}`,
         width: '10%',
         // defaultSortOrder: 'ascend',
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -29,16 +42,7 @@ class TableCandidates extends PureComponent {
         //   compare: (a, b) => a.userId - b.userId,
         // },
       },
-      {
-        title: 'Rookie Name',
-        dataIndex: 'fullName',
-        align: 'left',
-        width: '20%',
-        // sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
-        // },
-      },
+
       {
         title: 'Joined date',
         dataIndex: 'updatedAt',
@@ -66,6 +70,11 @@ class TableCandidates extends PureComponent {
         dataIndex: 'workLocation',
         align: 'left',
         render: (workLocation) => <span>{workLocation ? workLocation.name : ''}</span>,
+      },
+      {
+        title: 'Status',
+        dataIndex: 'processStatus',
+        align: 'left',
       },
       {
         title: 'Action',
