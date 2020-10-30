@@ -7,8 +7,10 @@ import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 
-@connect(({ info: { benefits } = {} }) => ({
+@connect(({ info: { benefits } = {}, candidateInfo: { data = {}, currentStep = 0 } = {} }) => ({
   benefits,
+  data,
+  currentStep,
 }))
 class Benefit extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -16,6 +18,21 @@ class Benefit extends PureComponent {
       return { benefits: props.benefits || {} };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { data = {}, dispatch, currentStep } = this.props;
+    const { candidate = '' } = data;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
   }
 
   handleChange = (checkedList, arr, title) => {
