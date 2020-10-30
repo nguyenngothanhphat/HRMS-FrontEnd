@@ -277,7 +277,7 @@ class TableContainer extends PureComponent {
           />
           <ModalImportEmployee
             company=""
-            titleModal="Import Employee"
+            titleModal="Import Employees"
             visible={visibleImportEmployee}
             handleCancel={this.handleCancel}
           />
