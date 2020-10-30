@@ -144,6 +144,8 @@ export default class LeaveHistoryCalendar extends PureComponent {
       let lineClassName = '';
       let colorClassName = '';
       let eventMarkSingleClassName = '';
+      let weekDayCheckClassName = '';
+
       leavingList.forEach((value) => {
         const { fromDate: from = '', toDate: to = '' } = value;
         const eventFromDay = moment(from).format('D');
@@ -152,6 +154,9 @@ export default class LeaveHistoryCalendar extends PureComponent {
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
+        if (this.checkWeekDay(d, this.selectedMonth(), this.selectedYear()) === 'Sun') {
+          weekDayCheckClassName = styles.sundayColor;
+        }
         if (
           d === eventFromDay * 1 &&
           d === eventToDay * 1 &&
@@ -203,9 +208,9 @@ export default class LeaveHistoryCalendar extends PureComponent {
       daysInMonth.push(
         <td
           key={d}
-          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
+          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName} `}
         >
-          <span>{d}</span>
+          <span className={`${weekDayCheckClassName}`}>{d}</span>
         </td>,
       );
     }
@@ -224,6 +229,11 @@ export default class LeaveHistoryCalendar extends PureComponent {
       return 1; // upcoming date
     }
     return 0; // leave taken day
+  };
+
+  checkWeekDay = (day, month, year) => {
+    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    return weekDayName;
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
@@ -256,7 +266,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
-        <th key={day} className={styles.weekDay}>
+        <th key={day} className={`${styles.weekDay} ${day === 'Sun' ? styles.sundayColor : ''} `}>
           {day.slice(0, 1)}
           {/* get first letter of weekdays */}
         </th>

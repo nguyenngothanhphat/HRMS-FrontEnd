@@ -23,7 +23,7 @@ export default class EventDetailBox extends PureComponent {
         )}
 
         <Col xs={13} className={styles.eventOfDay}>
-          {name}
+          <span>{name}</span>
         </Col>
       </Row>
     );

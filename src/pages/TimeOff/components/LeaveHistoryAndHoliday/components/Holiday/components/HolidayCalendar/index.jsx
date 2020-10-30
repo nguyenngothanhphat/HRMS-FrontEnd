@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import EventDetailBox from './components/EventDetailBox';
+import EventDetailBox from './EventDetailBox';
 
 import styles from './index.less';
 
@@ -145,16 +145,19 @@ export default class HolidayCalendar extends PureComponent {
       let lineClassName = '';
       let colorClassName = '';
       let eventMarkSingleClassName = '';
+      let weekDayCheckClassName = '';
+
       holidaysList.forEach((value) => {
         const { fromDate: from = '', toDate: to = '' } = value; // parse
-
         const eventFromDay = moment(from).format('D');
         const eventFromMonth = moment(from).format('M');
         const eventFromYear = moment(from).format('Y');
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
-
+        if (this.checkWeekDay(d, this.selectedMonth(), this.selectedYear()) === 'Sun') {
+          weekDayCheckClassName = styles.sundayColor;
+        }
         if (
           d === eventFromDay * 1 &&
           d === eventToDay * 1 &&
@@ -207,7 +210,7 @@ export default class HolidayCalendar extends PureComponent {
           key={d}
           className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
         >
-          <span>{d}</span>
+          <span className={`${weekDayCheckClassName}`}>{d}</span>
         </td>,
       );
     }
@@ -226,6 +229,11 @@ export default class HolidayCalendar extends PureComponent {
       return 1; // upcoming date
     }
     return 0; // leave taken day
+  };
+
+  checkWeekDay = (day, month, year) => {
+    const weekDayName = moment(`${month * 1}/${day * 1}/${year * 1}`).format('ddd');
+    return weekDayName;
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
@@ -258,7 +266,7 @@ export default class HolidayCalendar extends PureComponent {
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
-        <th key={day} className={styles.weekDay}>
+        <th key={day} className={`${styles.weekDay} ${day === 'Sun' ? styles.sundayColor : ''} `}>
           {day.slice(0, 1)}
           {/* get first letter of weekdays */}
         </th>
