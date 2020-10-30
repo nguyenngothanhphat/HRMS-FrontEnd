@@ -1004,6 +1004,10 @@ const onboard = {
           type: 'deleteTicket',
           payload: id,
         });
+        yield put({
+          type: 'updateMenuQuantity',
+          payload: {},
+        });
         // yield put({
         //   type: 'fetchOnboardList',
         //   payload: {

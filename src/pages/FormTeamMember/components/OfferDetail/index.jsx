@@ -115,20 +115,21 @@ const OfferDetail = (props) => {
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues, agreement, handbook });
-    // return () => {
-    //   if (!dispatch) {
-    //     return;
-    //   }
-    //   const { _id = '' } = data;
-    //   dispatch({
-    //     type: 'candidateInfo/updateByHR',
-    //     payload: {
-    //       candidate: _id,
-    //       currentStep: nextStep,
-    //     },
-    //   });
-    // };
   }, []);
+
+  useEffect(() => {
+    const { candidate } = data;
+    if (!dispatch || !candidate) {
+      return;
+    }
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        currentStep,
+      },
+    });
+  }, [data.candidate]);
 
   useEffect(() => {
     const allFormValues = form.getFieldsValue();
