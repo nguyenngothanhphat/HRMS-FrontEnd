@@ -153,7 +153,7 @@ class ModalImportEmployee extends Component {
         employeeId: item['Employee Id'],
         firstName: item['First Name'],
         lastName: item['Last Name'],
-        joinDate: moment(item['Joined Date']).format('YYYY-MM-DD'),
+        joinDate: moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
         department: item.Department,
@@ -179,8 +179,6 @@ class ModalImportEmployee extends Component {
       company,
       employees,
     };
-
-    // console.log('payload', payload);
 
     const { dispatch } = this.props;
     dispatch({
