@@ -74,7 +74,7 @@ class AddEmployeeForm extends Component {
   componentDidUpdate(prevState) {
     const { location } = this.state;
     const { dispatch, statusAddEmployee = false } = this.props;
-    if (statusAddEmployee && location !== '' && location !== prevState.location) {
+    if (statusAddEmployee || (location !== '' && location !== prevState.location)) {
       this.formRef.current.setFieldsValue({
         department: undefined,
       });
