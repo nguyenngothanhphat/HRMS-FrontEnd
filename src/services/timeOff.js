@@ -47,7 +47,7 @@ const mockData1 = [
   {
     name: `Family Event 1`,
     fromDate: '11/1/2020',
-    toDate: '11/1/2021',
+    toDate: '11/1/2020',
     duration: 1,
     type: 'CL',
   },

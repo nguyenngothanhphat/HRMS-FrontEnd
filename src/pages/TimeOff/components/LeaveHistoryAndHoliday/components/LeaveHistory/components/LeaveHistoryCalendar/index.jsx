@@ -127,6 +127,91 @@ export default class LeaveHistoryCalendar extends PureComponent {
     return <span className={styles.labelYear}>{this.year()}</span>;
   };
 
+  renderCalendar = () => {
+    const { currentMonth, currentDay, currentYear } = this.state;
+    const { leavingList = [] } = this.props;
+    const daysInMonth = [];
+    for (let d = 1; d <= this.daysInMonth(); d += 1) {
+      const className =
+        d === currentDay * 1 &&
+        currentMonth === this.selectedMonth() &&
+        currentYear === this.selectedYear()
+          ? `${styles.day} ${styles.currentDay}`
+          : styles.day;
+
+      let eventMarkBeginClassName = '';
+      let eventMarkEndClassName = '';
+      let lineClassName = '';
+      let colorClassName = '';
+      let eventMarkSingleClassName = '';
+      leavingList.forEach((value) => {
+        const { fromDate: from = '', toDate: to = '' } = value;
+        const eventFromDay = moment(from).format('D');
+        const eventFromMonth = moment(from).format('M');
+        const eventFromYear = moment(from).format('Y');
+        const eventToDay = moment(to).format('D');
+        const eventToMonth = moment(to).format('M');
+        const eventToYear = moment(to).format('Y');
+        if (
+          d === eventFromDay * 1 &&
+          d === eventToDay * 1 &&
+          eventFromMonth * 1 === eventToMonth * 1 &&
+          eventFromYear * 1 === eventToYear * 1 &&
+          eventFromMonth * 1 === this.selectedMonth() * 1 &&
+          eventFromYear * 1 === this.selectedYear() * 1
+        ) {
+          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+            colorClassName = styles.upcomingColor;
+          } else colorClassName = styles.leaveTakenColor;
+
+          eventMarkSingleClassName = styles.eventMarkSingleClassName;
+        } else {
+          if (
+            d === eventFromDay * 1 &&
+            this.selectedMonth() * 1 === eventFromMonth * 1 &&
+            this.selectedYear() * 1 === eventFromYear * 1
+          ) {
+            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+              colorClassName = styles.upcomingColor;
+            } else colorClassName = styles.leaveTakenColor;
+            eventMarkBeginClassName = styles.markEventBegin;
+          }
+
+          if (
+            d === eventToDay * 1 &&
+            this.selectedMonth() * 1 === eventToMonth * 1 &&
+            this.selectedYear() * 1 === eventToYear * 1
+          ) {
+            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+              colorClassName = styles.upcomingColor;
+            } else colorClassName = styles.leaveTakenColor;
+            eventMarkEndClassName = styles.markEventEnd;
+          }
+
+          if (
+            d > eventFromDay * 1 &&
+            d < eventToDay * 1 &&
+            this.selectedYear() * 1 === eventFromYear * 1 &&
+            this.selectedYear() * 1 === eventToYear * 1 &&
+            this.selectedMonth() * 1 === eventFromMonth * 1 &&
+            this.selectedMonth() * 1 === eventToMonth * 1
+          )
+            lineClassName = styles.lineClassName;
+        }
+      });
+
+      daysInMonth.push(
+        <td
+          key={d}
+          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
+        >
+          <span>{d}</span>
+        </td>,
+      );
+    }
+    return daysInMonth;
+  };
+
   checkASingleDay = (day, month, year) => {
     const { currentMonth, currentDay, currentYear } = this.state;
     if (
@@ -168,8 +253,6 @@ export default class LeaveHistoryCalendar extends PureComponent {
   };
 
   render() {
-    const { currentMonth, currentDay, currentYear } = this.state;
-
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
@@ -185,70 +268,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
       blanks.push(<td key={i * 80} className={styles.emptySlot} />);
     }
 
-    const daysInMonth = [];
-    for (let d = 1; d <= this.daysInMonth(); d += 1) {
-      const className =
-        d === currentDay * 1 &&
-        currentMonth === this.selectedMonth() &&
-        currentYear === this.selectedYear()
-          ? `${styles.day} ${styles.currentDay}`
-          : styles.day;
-
-      let eventMarkBeginClassName = '';
-      let eventMarkEndClassName = '';
-      let lineClassName = '';
-      let colorClassName = '';
-      const { leavingList = [] } = this.props;
-      leavingList.forEach((value) => {
-        const { fromDate: from = '', toDate: to = '' } = value;
-        const eventFromDay = moment(from).format('D');
-        const eventFromMonth = moment(from).format('M');
-        const eventFromYear = moment(from).format('Y');
-        const eventToDay = moment(to).format('D');
-        const eventToMonth = moment(to).format('M');
-        const eventToYear = moment(to).format('Y');
-        if (
-          d === eventFromDay * 1 &&
-          this.selectedMonth() * 1 === eventFromMonth * 1 &&
-          this.selectedYear() * 1 === eventFromYear * 1
-        ) {
-          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-            colorClassName = styles.upcomingColor;
-          } else colorClassName = styles.leaveTakenColor;
-          eventMarkBeginClassName = styles.markEventBegin;
-        }
-
-        if (
-          d === eventToDay * 1 &&
-          this.selectedMonth() * 1 === eventToMonth * 1 &&
-          this.selectedYear() * 1 === eventToYear * 1
-        ) {
-          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-            colorClassName = styles.upcomingColor;
-          } else colorClassName = styles.leaveTakenColor;
-          eventMarkEndClassName = styles.markEventEnd;
-        }
-
-        if (
-          d > eventFromDay * 1 &&
-          d < eventToDay * 1 &&
-          this.selectedYear() * 1 === eventFromYear * 1 &&
-          this.selectedYear() * 1 === eventToYear * 1 &&
-          this.selectedMonth() * 1 === eventFromMonth * 1 &&
-          this.selectedMonth() * 1 === eventToMonth * 1
-        )
-          lineClassName = styles.lineClassName;
-      });
-
-      daysInMonth.push(
-        <td
-          key={d}
-          className={`${className} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName}`}
-        >
-          <span>{d}</span>
-        </td>,
-      );
-    }
+    const daysInMonth = this.renderCalendar();
 
     const totalSlots = [...blanks, ...daysInMonth];
     const rows = [];
