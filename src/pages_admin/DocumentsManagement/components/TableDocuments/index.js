@@ -26,19 +26,19 @@ class TableDocuments extends PureComponent {
       title: 'Document Type',
       dataIndex: 'employeeGroup',
       align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      },
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
+      // },
     },
     {
       title: 'Document Name',
       dataIndex: 'key',
       align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.key.localeCompare(b.key),
-      },
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => a.key.localeCompare(b.key),
+      // },
     },
     {
       title: 'Uploaded By',
