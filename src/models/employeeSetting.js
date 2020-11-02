@@ -129,11 +129,20 @@ const employeeSetting = {
     },
     saveCurrentTemplate(state, action) {
       const { currentTemplate } = state;
-
       return {
         ...state,
         currentTemplate: {
           ...currentTemplate,
+          ...action.payload,
+        },
+      };
+    },
+    saveEmployeeSetting(state, action) {
+      const { newTemplateData } = state;
+      return {
+        ...state,
+        newTemplateData: {
+          ...newTemplateData,
           ...action.payload,
         },
       };
