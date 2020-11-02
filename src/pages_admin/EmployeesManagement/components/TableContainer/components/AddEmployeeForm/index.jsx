@@ -74,11 +74,6 @@ class AddEmployeeForm extends Component {
   componentDidUpdate() {
     const { dispatch, statusAddEmployee = false } = this.props;
     if (statusAddEmployee) {
-      this.formRef.current.setFieldsValue({
-        department: undefined,
-      });
-    }
-    if (statusAddEmployee === true) {
       this.formRef.current.resetFields();
       dispatch({
         type: 'employeesManagement/save',
