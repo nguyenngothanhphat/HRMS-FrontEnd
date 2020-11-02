@@ -295,7 +295,15 @@ const routes = [
             name: 'viewDocument',
             hideInMenu: true,
             component: './ViewDocument',
-            authority: ['employee', 'hr', 'admin-csa', 'admin-cla', 'admin-cda', 'leader'],
+            authority: [
+              'employee',
+              'hr',
+              'admin-csa',
+              'admin-cla',
+              'admin-cda',
+              'leader',
+              'admin-sa',
+            ],
           },
           {
             path: '/employee-onboarding/:action(add)',
