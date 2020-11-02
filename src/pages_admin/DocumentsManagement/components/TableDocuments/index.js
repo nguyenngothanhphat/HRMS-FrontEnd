@@ -143,6 +143,10 @@ class TableDocuments extends PureComponent {
       isViewingDocument: false,
       selectedDocumentId: null,
     });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'documentsManagement/clearDocumentDetail',
+    });
   };
 
   // pagination

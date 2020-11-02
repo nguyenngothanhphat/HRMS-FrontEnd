@@ -7,13 +7,28 @@ import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
 import TimeOffRequests from './components/TimeOffRequests';
+import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
 import styles from './index.less';
 
 export default class TimeOff extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewInformation: false,
+    };
+  }
+
   buttonOnClick = () => {
     // eslint-disable-next-line no-alert
     alert('Clicked Button');
+  };
+
+  onInformationCLick = () => {
+    const { viewInformation } = this.state;
+    this.setState({
+      viewInformation: !viewInformation,
+    });
   };
 
   render() {
@@ -31,6 +46,7 @@ export default class TimeOff extends PureComponent {
         your manager and supervisor, it will be credited to your total leave balance.
       </p>,
     ];
+    const { viewInformation } = this.state;
     return (
       <PageContainer>
         <Affix offsetTop={40}>
@@ -40,10 +56,10 @@ export default class TimeOff extends PureComponent {
         </Affix>
         <div className={styles.TimeOff}>
           <Row gutter={[20, 20]}>
-            <Col xs={6}>
+            <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation />
+                  <LeaveInformation onInformationCLick={this.onInformationCLick} />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />
@@ -53,33 +69,41 @@ export default class TimeOff extends PureComponent {
                 </Col>
               </Row>
             </Col>
-            <Col xs={18}>
-              <Row gutter={[20, 20]}>
-                <Col span={15}>
-                  <ApplyRequest
-                    title="Apply for Timeoff from Office"
-                    describe={describeText[0]}
-                    buttonText="Request Time Off"
-                    onClick={this.buttonOnClick}
-                    type={1}
-                  />
-                </Col>
-                <Col span={9}>
-                  <ApplyRequest
-                    title="Apply for Compoff"
-                    describe={describeText[1]}
-                    onClick={this.buttonOnClick}
-                    buttonText="Request Compoff"
-                    type={2}
-                  />
-                </Col>
-              </Row>
-              <Row gutter={[20, 20]}>
-                <Col span={24}>
-                  <TimeOffRequests />
-                </Col>
-              </Row>
-            </Col>
+            {!viewInformation && (
+              <Col xs={24} md={18}>
+                <Row gutter={[20, 20]}>
+                  <Col xs={24} lg={15}>
+                    <ApplyRequest
+                      title="Apply for Timeoff from Office"
+                      describe={describeText[0]}
+                      buttonText="Request Time Off"
+                      onClick={this.buttonOnClick}
+                      type={1}
+                    />
+                  </Col>
+                  <Col xs={24} lg={9}>
+                    <ApplyRequest
+                      title="Apply for Compoff"
+                      describe={describeText[1]}
+                      onClick={this.buttonOnClick}
+                      buttonText="Request Compoff"
+                      type={2}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={[20, 20]}>
+                  <Col span={24}>
+                    <TimeOffRequests />
+                  </Col>
+                </Row>
+              </Col>
+            )}
+
+            {viewInformation && (
+              <Col xs={24} md={18}>
+                <LeaveBalanceInfo onClose={this.onInformationCLick} />
+              </Col>
+            )}
           </Row>
         </div>
       </PageContainer>

@@ -118,12 +118,8 @@ export default class LeaveInformation extends PureComponent {
     );
   };
 
-  moreInformationClick = () => {
-    // eslint-disable-next-line no-alert
-    alert('More information icon clicked');
-  };
-
   render() {
+    const { onInformationCLick = () => {} } = this.props;
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
@@ -140,7 +136,7 @@ export default class LeaveInformation extends PureComponent {
           </Collapse>
         </div>
         <Tooltip title="More information">
-          <div onClick={this.moreInformationClick} className={styles.infoIcon}>
+          <div onClick={onInformationCLick} className={styles.infoIcon}>
             <InfoCircleOutlined />
           </div>
         </Tooltip>

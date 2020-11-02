@@ -1,20 +1,25 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { formatMessage, connect } from 'umi';
-import LayoutAdminSetting from '@/components/LayoutAdminLeftMenu';
+import LayoutAdminSetting from '@/components/LayoutRoles&PermissionLeftMenu';
 import { Affix, Spin } from 'antd';
 import PermissionInfo from './PermissionInfo';
 import styles from './index.less';
 
-@connect(({ loading, adminSetting: { idRoles = '' } = {} }) => ({
-  idRoles,
-  loading: loading.effects['adminSetting/fetchListPermissionOfRole'],
-}))
+@connect(
+  ({ loading, adminSetting: { idRoles = '', tempData: { formatData = [] } = {} } = {} }) => ({
+    idRoles,
+    formatData,
+    loadingRoles: loading.effects['adminSetting/fetchListRoles'],
+    loading: loading.effects['adminSetting/fetchListPermissionOfRole'],
+  }),
+)
 class Permission extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      match: { params: { reId: idRoles = '' } = {} },
+      // match: { params: { reId: idRoles = '' } = {} },
+      idRoles,
     } = this.props;
     dispatch({
       type: 'adminSetting/fetchListRoles',
@@ -26,14 +31,16 @@ class Permission extends PureComponent {
   }
 
   render() {
-    const { loading, idRoles } = this.props;
-    const listMenu = [
-      {
-        id: 1,
-        name: idRoles,
-        component: <PermissionInfo />,
-      },
-    ];
+    const { loading } = this.props;
+    const dataRoles = JSON.parse(localStorage.getItem('dataRoles'));
+    const listMenuRoles = dataRoles.map((item, index) => {
+      const { RolesID, Rolesname } = item;
+      return {
+        id: index + 1,
+        name: Rolesname,
+        component: <PermissionInfo id={RolesID} />,
+      };
+    });
     if (loading)
       return (
         <div className={styles.Permission}>
@@ -49,7 +56,7 @@ class Permission extends PureComponent {
             </div>
           </Affix>
           <div>
-            <LayoutAdminSetting listMenu={listMenu} />
+            <LayoutAdminSetting listMenu={listMenuRoles} />
           </div>
         </div>
       </PageContainer>

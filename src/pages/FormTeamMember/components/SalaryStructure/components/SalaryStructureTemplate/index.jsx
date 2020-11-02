@@ -217,9 +217,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, tableData } = this.props;
     // const { filledSalaryStructure } = checkMandatory;
-    const { tableData } = this.state;
     const { target } = e;
     const { name, value } = target;
 
