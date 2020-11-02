@@ -2,16 +2,43 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Menu, Dropdown, Button } from 'antd';
 import { ThunderboltFilled, CloseOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 import OrganChart from './components/OrganisationChart';
 import DirectoryComponent from './components/Directory';
 
-export default class Directory extends PureComponent {
+@connect(({ user: { currentUser = {} } }) => ({ currentUser }))
+class Directory extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = {
+      open: false,
+      roles: {
+        employee: 'EMPLOYEE',
+      },
+      checkRoleEmployee: false,
+    };
   }
+
+  componentDidMount() {
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
+    const checkRoleEmployee = this.checkRoleEmployee(roles);
+    this.setState({
+      checkRoleEmployee,
+    });
+  }
+
+  checkRoleEmployee = (roles) => {
+    let flag = false;
+    const { roles: rolesConst } = this.state;
+    const checkRole = (obj) => obj._id === rolesConst.employee;
+    if (roles.length === 1 && roles.some(checkRole)) {
+      flag = true;
+    }
+    return flag;
+  };
 
   handleLogClick = () => {
     const { open } = this.state;
@@ -65,12 +92,16 @@ export default class Directory extends PureComponent {
 
   render() {
     const { TabPane } = Tabs;
+    const { checkRoleEmployee } = this.state;
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
-          <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
+          <Tabs
+            defaultActiveKey="1"
+            tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
+          >
             <TabPane tab={formatMessage({ id: 'pages.directory.directoryTab' })} key="1">
-              <DirectoryComponent />
+              <DirectoryComponent checkRoleEmployee={checkRoleEmployee} />
             </TabPane>
             <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
               <OrganChart />
@@ -81,3 +112,5 @@ export default class Directory extends PureComponent {
     );
   }
 }
+
+export default Directory;
