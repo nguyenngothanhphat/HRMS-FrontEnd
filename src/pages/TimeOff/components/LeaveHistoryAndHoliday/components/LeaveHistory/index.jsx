@@ -292,6 +292,7 @@ export default class LeaveHistory extends PureComponent {
           this.selectedMonth() * 1 === eventFromMonth * 1 &&
           this.selectedMonth() * 1 === eventToMonth * 1
         )
+          // eslint-disable-next-line prefer-destructuring
           lineClassName = styles.lineClassName;
       });
 
@@ -327,7 +328,6 @@ export default class LeaveHistory extends PureComponent {
     const trElems = rows.map((d, i) => {
       return <tr key={`${(i + 1) * 100}`}>{d}</tr>;
     });
-
     return (
       <div className={styles.EventCalendar}>
         <div className={styles.headerContainer}>
