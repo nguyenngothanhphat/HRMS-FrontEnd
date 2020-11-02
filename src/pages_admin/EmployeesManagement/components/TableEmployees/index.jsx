@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, history } from 'umi';
+import moment from 'moment';
 import ModalConfirmRemove from '../ModalConfirmRemove';
 import styles from './index.less';
 
@@ -41,10 +42,11 @@ export default class TableEmployees extends PureComponent {
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.joinedDate' }),
-        dataIndex: 'joinedDate',
+        dataIndex: 'joinDate',
         width: '8%',
         align: 'left',
-        render: () => <span>Aug-7,20</span>,
+        render: (joinDate) =>
+          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
