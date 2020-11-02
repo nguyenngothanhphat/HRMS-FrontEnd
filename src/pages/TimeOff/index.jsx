@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Tabs } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
+import { history } from 'umi';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
@@ -11,9 +12,14 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 export default class TimeOff extends PureComponent {
-  buttonOnClick = () => {
+  buttonOnClickComp = () => {
     // eslint-disable-next-line no-alert
-    alert('Clicked Button');
+    history.push(`/time-off/compoff-request`);
+  };
+
+  buttonOnClickLeave = () => {
+    // eslint-disable-next-line no-alert
+    history.push(`/time-off/leave-request`);
   };
 
   _renderLandingPage = () => {
@@ -54,7 +60,7 @@ export default class TimeOff extends PureComponent {
                   title="Apply for Timeoff from Office"
                   describe={describeText[0]}
                   buttonText="Request Time Off"
-                  onClick={this.buttonOnClick}
+                  onClick={this.buttonOnClickLeave}
                   type={1}
                 />
               </Col>
@@ -62,7 +68,7 @@ export default class TimeOff extends PureComponent {
                 <ApplyRequest
                   title="Apply for Compoff"
                   describe={describeText[1]}
-                  onClick={this.buttonOnClick}
+                  onClick={this.buttonOnClickComp}
                   buttonText="Request Compoff"
                   type={2}
                 />

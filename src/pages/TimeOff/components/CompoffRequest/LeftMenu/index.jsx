@@ -12,8 +12,8 @@ class LeftMenu extends Component {
   render() {
     const options = [
       { value: 'gold', data: 'muti' },
-      { value: 'lime', data: 'ac' },
-      { value: 'green', data: 'bd' },
+      { value: 'lime', data: 'muti' },
+      { value: 'green', data: 'muti' },
     ];
 
     return (

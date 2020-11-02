@@ -6,7 +6,7 @@ import styles from './index.less';
 
 // const { Step } = Steps;
 
-export class TerminationWorkflow extends Component {
+export class RightContet extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -28,18 +28,18 @@ export class TerminationWorkflow extends Component {
     const arr1 = [
       {
         id: 1,
-        body: 1,
-        text: 'Request ',
+        body: '',
+        text: 'Rose Mary',
       },
       {
         id: 2,
-        body: 2,
-        text: 'Manager ',
+        body: '',
+        text: 'Aditya Venkatesan',
       },
       {
         id: 3,
-        body: 3,
-        text: 'HR ',
+        body: '',
+        text: 'Thammu Ayappa',
       },
     ];
 
@@ -54,4 +54,4 @@ export class TerminationWorkflow extends Component {
   }
 }
 
-export default TerminationWorkflow;
+export default RightContet;
