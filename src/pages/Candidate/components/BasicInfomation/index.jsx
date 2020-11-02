@@ -7,10 +7,10 @@ import StepsComponent from '../StepsComponent';
 
 import styles from './index.less';
 
-@connect(({ candidateProfile: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
+@connect(({ candidateProfile: { data, checkMandatory, localStep, tempData } = {}, loading }) => ({
   data,
   checkMandatory,
-  currentStep,
+  localStep,
   tempData,
   loading: loading.effects['candidateProfile/fetchCandidateById'],
 }))
@@ -56,12 +56,12 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch, localStep } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
     dispatch({

@@ -76,51 +76,23 @@ const getLineWidth = (value) => {
 const CandidateLayout = (props) => {
   const {
     children,
-    currentStep,
+    localStep,
     location = {
       pathname: '/',
     },
     route: { routes } = {},
+    ticketId,
   } = props;
 
   const [current, setCurrent] = useState(1);
 
   useEffect(() => {
-    setCurrent(currentStep);
-  }, [currentStep]);
+    setCurrent(localStep);
+  }, [localStep]);
 
-  // const nextScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current + 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState + 1);
-  //   setCurrentPage((prevState) => prevState + 1);
-  //   console.log(currentPage);
-  // };
-
-  // const prevScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current - 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState - 1);
-  //   setCurrentPage((prevState) => prevState - 1);
-  // };
+  useEffect(() => {
+    console.log('candidate layout');
+  }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -141,7 +113,7 @@ const CandidateLayout = (props) => {
         </div>
 
         <div className={s.headerRight}>
-          <span className={s.id}>Rookie ID : 213222434</span>
+          <span className={s.id}>Rookie ID : {ticketId}</span>
 
           <Button type="link" block>
             Cancel
@@ -184,7 +156,10 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(({ candidateProfile: { currentStep, checkCandidateMandatory } = {} }) => ({
-  currentStep,
-  checkCandidateMandatory,
-}))(CandidateLayout);
+export default connect(
+  ({ candidateProfile: { localStep, ticketId, checkCandidateMandatory } = {} }) => ({
+    localStep,
+    checkCandidateMandatory,
+    ticketId,
+  }),
+)(CandidateLayout);

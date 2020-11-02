@@ -11,7 +11,10 @@ import { dialog } from '@/utils/utils';
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
+    candidate: '',
+    ticketId: '',
+    // currentStep: 1,
+    localStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -130,7 +133,7 @@ const candidateProfile = {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data.salaryStructure);
+        console.log(data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -143,7 +146,9 @@ const candidateProfile = {
           type: 'save',
           payload: {
             ...data,
-            salaryStructure: data.salaryStructure,
+            candidate: data._id,
+            ticketId: data.ticketID,
+            salaryStructure: data.salaryStructure.settings,
           },
         });
       } catch (error) {

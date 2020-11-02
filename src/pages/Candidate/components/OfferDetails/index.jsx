@@ -37,7 +37,7 @@ const FileInfo = [
 ];
 
 const OfferDetails = (props) => {
-  const { dispatch, checkCandidateMandatory, currentStep, tempData, data } = props;
+  const { dispatch, checkCandidateMandatory, localStep, tempData, data } = props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
   const { candidateSignature = {}, finalOfferCandidateSignature = {} } = tempData;
 
@@ -126,7 +126,7 @@ const OfferDetails = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
 
@@ -152,7 +152,7 @@ const OfferDetails = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };
@@ -324,14 +324,14 @@ const OfferDetails = (props) => {
 export default connect(
   ({
     candidateProfile: {
-      currentStep = 4,
+      localStep = 4,
       checkCandidateMandatory = {},
       tempData = {},
       data = {},
     } = {},
   }) => ({
     checkCandidateMandatory,
-    currentStep,
+    localStep,
     tempData,
     data,
   }),

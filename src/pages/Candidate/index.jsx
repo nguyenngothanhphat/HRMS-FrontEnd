@@ -28,12 +28,12 @@ const _renderScreen = (screenNumber) => {
 };
 
 const Candidate = (props) => {
-  const { dispatch, currentStep, candidate } = props;
-  const [screen, setScreen] = useState(currentStep);
+  const { dispatch, localStep, candidate } = props;
+  const [screen, setScreen] = useState(localStep);
   console.log(candidate);
   useEffect(() => {
-    setScreen(currentStep);
-  }, [currentStep]);
+    setScreen(localStep);
+  }, [localStep]);
 
   useEffect(() => {
     if (!dispatch) {
@@ -52,8 +52,8 @@ const Candidate = (props) => {
 
 // export default Candidate;
 export default connect(
-  ({ candidateProfile: { currentStep, data, tempData } = {}, login: { candidate } }) => ({
-    currentStep,
+  ({ candidateProfile: { localStep, data, tempData } = {}, login: { candidate } }) => ({
+    localStep,
     data,
     tempData,
     candidate,
