@@ -115,7 +115,7 @@ class Location extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { listCountry } = this.props;
+    const { listCountry, location } = this.props;
     const {
       selectedRowKeys,
       visible,
@@ -164,12 +164,60 @@ class Location extends PureComponent {
       },
       {
         key: 6,
-        title: 'Address',
-        dataIndex: 'Address',
+        title: 'Head Quarter Address',
+        dataIndex: 'headQuarterAddress',
         align: 'center',
       },
       {
-        key: 3,
+        key: 7,
+        title: 'Head Quarter Country',
+        dataIndex: 'headQuarterCountry',
+        align: 'center',
+      },
+      {
+        key: 8,
+        title: 'Head Quarter State',
+        dataIndex: 'headQuarterState',
+        align: 'center',
+      },
+      {
+        key: 9,
+        title: 'Head Quarter ZipCode',
+        dataIndex: 'headQuarterZipCode',
+        align: 'center',
+      },
+      {
+        key: 6,
+        title: 'Head Quarter Address',
+        dataIndex: 'headQuarterAddress',
+        align: 'center',
+      },
+      {
+        key: 10,
+        title: 'Legal Address',
+        dataIndex: 'legalAddress',
+        align: 'center',
+      },
+      {
+        key: 11,
+        title: 'Legal Country',
+        dataIndex: 'legalCountry',
+        align: 'center',
+      },
+      {
+        key: 12,
+        title: 'Legal State',
+        dataIndex: 'legalState',
+        align: 'center',
+      },
+      {
+        key: 13,
+        title: 'Legal ZipCode',
+        dataIndex: 'legalZipCode',
+        align: 'center',
+      },
+      {
+        key: 19,
         title: 'Action',
         dataIndex: 'Action',
         render: (text, record, index) =>
@@ -181,6 +229,12 @@ class Location extends PureComponent {
         align: 'center',
       },
     ];
+    const getListCompany = location.map((item) => {
+      const {
+        company: { _id: id, name: nameCompany },
+      } = item;
+      return { id, nameCompany };
+    });
     const formatListCountry = listCountry.map((item) => {
       const { _id: id, name: nameCountry } = item;
       return { id, nameCountry };
@@ -200,6 +254,18 @@ class Location extends PureComponent {
           ))}
         </Select>
       ),
+      Company: (
+        <Select
+          style={{ width: 150 }}
+          onChange={(value) => this.handleChangeValue(value, 'company')}
+        >
+          {getListCompany.map((item) => (
+            <Option key={item.id} value={item.id}>
+              {item.nameCompany}
+            </Option>
+          ))}
+        </Select>
+      ),
       Phone: <Input onChange={(e) => this.handleChangeValue(e, 'phone')} value={phone} />,
       Address: <Input onChange={(e) => this.handleChangeValue(e, 'address')} value={address} />,
     };
@@ -214,7 +280,7 @@ class Location extends PureComponent {
           size="small"
           pagination={false}
           rowKey="LocationID"
-          scroll={{ x: 1300 }}
+          scroll={{ x: 2300 }}
         />
 
         <Modal
