@@ -16,13 +16,14 @@ class Option extends Component {
   }
 
   onChangeRadio = (key, value, description, e) => {
-    const { dispatch, settings, settingsList, newTemplateData } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { checked } = this.state;
     let array = [...settings];
     const index = settingsList.findIndex((item) => item.key === key);
 
     if (checked !== false) {
-      const tempArray = array.filter((item) => item.key !== key);
+      const tempArray = array.filter((item) => item?.key !== key && item !== undefined);
+      console.log(tempArray);
       array = [...tempArray];
     } else {
       const setting = {
@@ -46,7 +47,7 @@ class Option extends Component {
   };
 
   onChangeInput = (option, e) => {
-    const { dispatch, settings, settingsList, newTemplateData } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { target } = e;
     const { name, value } = target;
     const setting = {
@@ -58,12 +59,9 @@ class Option extends Component {
     const index = settingsList.findIndex((item) => item.key === name);
     array[index] = setting;
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveEmployeeSetting',
       payload: {
-        ...newTemplateData,
-        newTemplateData: {
-          settings: array,
-        },
+        settings: array,
       },
     });
   };
