@@ -380,9 +380,9 @@ class DirectoryComponent extends PureComponent {
 
   renderButtonFilter = (tabId, collapsed) => {
     const {
-      tabList: { myTeam },
+      tabList: { myTeam, viewProfile },
     } = this.state;
-    if (tabId !== myTeam) {
+    if (tabId !== myTeam && tabId !== viewProfile) {
       return (
         <div className={styles.filterSider} onClick={this.handleToggle}>
           {collapsed ? (
@@ -431,7 +431,7 @@ class DirectoryComponent extends PureComponent {
               />
             ) : null}
           </Content>
-          {tab.id !== myTeam ? (
+          {tab.id !== myTeam && tab.id !== viewProfile ? (
             <TableFilter
               onToggle={this.handleToggle}
               collapsed={collapsed}
