@@ -19,6 +19,7 @@ class Option extends Component {
     const { dispatch, settings, settingsList, newTemplateData } = this.props;
     const { checked } = this.state;
     let array = [...settings];
+    console.log('array', array);
     const index = settingsList.findIndex((item) => item.key === key);
 
     if (checked !== false) {

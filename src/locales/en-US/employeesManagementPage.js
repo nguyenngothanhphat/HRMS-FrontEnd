@@ -10,6 +10,7 @@ export default {
   'pages_admin.employees.tabFilter.filter': 'Filters',
   'pages_admin.employees.tabFilter.reset': 'Reset',
   'pages_admin.employees.tabFilter.name': 'Name',
+  'addEmployee.employeeID': 'Employee ID',
   'addEmployee.name': 'Name',
   'addEmployee.personalEmail': 'Personal Email',
   'addEmployee.workEmail': 'Work Email',
