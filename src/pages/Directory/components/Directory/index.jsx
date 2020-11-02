@@ -157,6 +157,7 @@ class DirectoryComponent extends PureComponent {
 
     const permissionImport = 'P_EMPLOYEES_B_IMPORT_EMPLOYEES_VIEW';
     const permissionAdd = 'P_EMPLOYEES_B_ADD_EMPLOYEE_VIEW';
+    const allPermissions = 'P_DIRECTORY_ALL';
     let checkImport = false;
     let checkAdd = false;
 
@@ -164,12 +165,13 @@ class DirectoryComponent extends PureComponent {
 
     const findIndexImport = groupPermissions.indexOf(permissionImport);
     const findIndexAdd = groupPermissions.indexOf(permissionAdd);
+    const findIndexAllPermissions = groupPermissions.indexOf(allPermissions);
 
-    if (findIndexImport !== -1) {
+    if (findIndexImport !== -1 || findIndexAllPermissions !== -1) {
       checkImport = true;
     }
 
-    if (findIndexAdd !== -1) {
+    if (findIndexAdd !== -1 || findIndexAllPermissions !== -1) {
       checkAdd = true;
     }
 
@@ -187,14 +189,19 @@ class DirectoryComponent extends PureComponent {
     const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
     const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
     const tabInAcive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+    const allPermissions = 'P_DIRECTORY_ALL';
 
     const groupPermissions = this.generatePermissions(roles);
 
     const findIndexActive = groupPermissions.indexOf(tabActive);
     const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
     const findIndexInActive = groupPermissions.indexOf(tabInAcive);
+    const findIndexAllPermissions = groupPermissions.indexOf(allPermissions);
 
-    if (findIndexActive !== -1 && findIndexMyTeam !== -1 && findIndexInActive !== -1) {
+    if (
+      findIndexAllPermissions ||
+      (findIndexActive !== -1 && findIndexMyTeam !== -1 && findIndexInActive !== -1)
+    ) {
       this.setState({
         tabId: active,
         bottabs: [
