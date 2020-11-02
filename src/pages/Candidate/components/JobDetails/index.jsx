@@ -70,7 +70,7 @@ class JobDetails extends PureComponent {
 
     const converted = convert(prefferedDateOfJoining._d);
     dispatch({
-      type: 'candidateProfile/updateByCandidateModel',
+      type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         ...data,
         noticePeriod: candidatesNoticePeriod,

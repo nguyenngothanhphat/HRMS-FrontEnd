@@ -14,7 +14,7 @@ const candidateProfile = {
     candidate: '',
     ticketId: '',
     // currentStep: 1,
-    localStep: 1,
+    localStep: 5,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -171,7 +171,7 @@ const candidateProfile = {
       }
     },
 
-    *updateByCandidateModel({ payload }, { call }) {
+    *updateByCandidateEffect({ payload }, { call }) {
       try {
         const response = yield call(updateByCandidate, payload);
         const { statusCode } = response;

@@ -65,7 +65,7 @@ class BasicInformation extends PureComponent {
       },
     });
     dispatch({
-      type: 'candidateProfile/updateByCandidateModel',
+      type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         ...data,
         fullName: values.fullName,
