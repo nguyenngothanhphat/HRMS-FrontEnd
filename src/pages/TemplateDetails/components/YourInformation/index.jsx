@@ -19,7 +19,7 @@ const propsUpload = {
 };
 
 @connect(({ loading, upload: { urlImage = '' } }) => ({
-  loading: loading.effects['upload/uploadFile'],
+  loadingUploadFile: loading.effects['employeeSetting/uploadFile'],
   urlImage,
 }))
 class YourInformation extends PureComponent {
@@ -101,7 +101,7 @@ class YourInformation extends PureComponent {
   };
 
   handleUploadToServer = () => {
-    const { dispatch, getResponse = () => {}, urlImage } = this.props;
+    const { dispatch, getResponse = () => {}, onNext } = this.props;
     const { croppedImage } = this.state;
     const formData = new FormData();
     formData.append('uri', croppedImage);
@@ -110,9 +110,11 @@ class YourInformation extends PureComponent {
       payload: formData,
       isUploadSignature: true,
       // });
-    }).then((resp) => {
-      getResponse(resp);
-    });
+    })
+      .then((resp) => {
+        getResponse(resp);
+      })
+      .then(() => onNext());
   };
 
   onImageLoaded = (image) => {
@@ -166,10 +168,12 @@ class YourInformation extends PureComponent {
     });
   };
 
-  onNext = async () => {
-    const { onNext = {} } = this.props;
-    onNext();
+  onNext = () => {
+    const { onNext = {}, loadingUploadFile } = this.props;
     this.handleUploadToServer();
+
+    if (loadingUploadFile) {
+    }
   };
 
   handleChangeInput = (e) => {
@@ -186,7 +190,7 @@ class YourInformation extends PureComponent {
   };
 
   render() {
-    // const { widthImage = '' } = this.props;
+    const { loadingUploadFile } = this.props;
     const { imageUrl, crop } = this.state;
     const width = '231' || 'auto';
 
@@ -280,7 +284,7 @@ class YourInformation extends PureComponent {
             </Col>
           </Row>
         </Form>
-        <Button onClick={this.onNext} type="primary">
+        <Button onClick={this.onNext} type="primary" loading={loadingUploadFile}>
           {formatMessage({ id: 'component.editForm.next' })}
         </Button>
       </div>
