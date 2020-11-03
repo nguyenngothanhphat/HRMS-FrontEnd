@@ -16,7 +16,7 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData, processStatus = '' } = props;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
@@ -47,6 +47,8 @@ const OfferDetail = (props) => {
   const [displayTemplate, setDisplayTemplate] = useState(includeOfferProp);
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
+  // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
+  const [disableAll, setDisableAll] = useState(false);
 
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
@@ -269,7 +271,7 @@ const OfferDetail = (props) => {
             <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
 
             <Form.Item name="includeOffer">
-              <Radio.Group className={styles.radioGroup}>
+              <Radio.Group className={styles.radioGroup} disabled={disableAll}>
                 <Radio value={false}>
                   {formatMessage({ id: 'component.offerDetail.notInclude' })}
                 </Radio>
@@ -288,6 +290,7 @@ const OfferDetail = (props) => {
                   }
                   className={styles.select}
                   onChange={(value) => handleFileChange(value)}
+                  disabled={disableAll}
                 >
                   {fileArr.map(({ name }, index) => (
                     <Option value={name} key={index}>
@@ -316,6 +319,7 @@ const OfferDetail = (props) => {
               className="checkbox"
               checked={agreement}
               onChange={(e) => handleAgreementChange(e.target.value)}
+              disabled={disableAll}
             >
               {formatMessage({ id: 'component.offerDetail.agreement' })}
             </Checkbox>
@@ -324,7 +328,11 @@ const OfferDetail = (props) => {
               {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
             </p>
 
-            <Checkbox checked={handbook} onChange={(e) => handleHandbookChange(e.target.value)}>
+            <Checkbox
+              checked={handbook}
+              onChange={(e) => handleHandbookChange(e.target.value)}
+              disabled={disableAll}
+            >
               {formatMessage({ id: 'component.offerDetail.handbook' })}
             </Checkbox>
 
@@ -335,7 +343,7 @@ const OfferDetail = (props) => {
                 </p>
 
                 <Form.Item name="compensation">
-                  <Select className={styles.select}>
+                  <Select className={styles.select} disabled={disableAll}>
                     <Option value="salary">Salary</Option>
                     <Option value="salary2">Salary2</Option>
                     <Option value="salary3">Salary3</Option>
@@ -355,7 +363,7 @@ const OfferDetail = (props) => {
             </p>
 
             <Form.Item name="currency">
-              <Select className={styles.select}>
+              <Select className={styles.select} disabled={disableAll}>
                 {currencyArr.map(({ name, value }, index) => (
                   <Option value={value} key={index}>
                     {name}
@@ -372,7 +380,7 @@ const OfferDetail = (props) => {
                 </p>
 
                 <Form.Item name="timeoff">
-                  <Select className={styles.select}>
+                  <Select className={styles.select} disabled={disableAll}>
                     {timeoffArr.map(({ name, value }, index) => (
                       <Option value={value} key={index}>
                         {name}
