@@ -7,14 +7,16 @@ import Settings from './components/Settings';
 import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
   loading: loading.effects['login/login'],
+  roles,
 }))
 class EmployeeOnboarding extends PureComponent {
   render() {
     const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
 
     const { TabPane } = Tabs;
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOnboarding}>
