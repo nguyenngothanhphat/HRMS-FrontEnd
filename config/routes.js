@@ -164,6 +164,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/time-off-management',
+            name: 'timeOffManagement',
+            icon: '/assets/images/timeOff.svg',
+            component: '../pages_admin/TimeOffManagement',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/documents/upload-document',
             name: 'uploadDocument',
             hideInMenu: true,
