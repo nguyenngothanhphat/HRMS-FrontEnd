@@ -28,7 +28,7 @@ export default class OptionsHeader extends PureComponent {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xs={9}>
+              <Col xs={8}>
                 <span className={styles.itemLabel}>Duration</span>
                 <div>
                   <Row gutter={['20', '20']}>
@@ -47,7 +47,7 @@ export default class OptionsHeader extends PureComponent {
                 </div>
               </Col>
 
-              <Col xs={5}>
+              <Col xs={7}>
                 <span className={styles.itemLabel}>Status</span>
                 <Form.Item name="status">
                   <Checkbox.Group style={{ width: '100%' }}>
@@ -68,13 +68,20 @@ export default class OptionsHeader extends PureComponent {
                   </Checkbox.Group>
                 </Form.Item>
               </Col>
-              <Col xs={5}>
-                <Row gutter={['20', '20']}>
-                  <Col xs={24}>
-                    <Button htmlType="submit">Get data</Button>
+              <Col xs={4}>
+                <Row
+                  className={styles.buttons}
+                  align="middle"
+                  justify="center"
+                  gutter={['20', '20']}
+                >
+                  <Col>
+                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
                   </Col>
-                  <Col xs={24}>
-                    <Button>Download as CSV</Button>
+                  <Col>
+                    <Button className={styles.submitBtn} htmlType="submit">
+                      Get data
+                    </Button>
                   </Col>
                 </Row>
               </Col>

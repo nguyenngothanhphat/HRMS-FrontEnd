@@ -5,12 +5,36 @@
     .itemLabel {
       padding-bottom: 10px;
       font-weight: bold;
+      font-size: 13px;
+    }
+
+    .buttons {
+      .submitBtn {
+        background-color: #ffa100;
+        border: none;
+        border-radius: 35px;
+        span {
+          color: white;
+          font-weight: bold;
+        }
+      }
+
+      .downloadCSVBtn {
+        background-color: white;
+        border-radius: 35px;
+        span {
+          color: #ffa100;
+          font-weight: bold;
+        }
+      }
     }
   }
   :global {
     .ant-form-item {
       display: flex;
       flex-direction: column;
+      padding-top: 10px;
+      margin-bottom: 0;
     }
     .ant-picker {
       width: 100%;
@@ -23,20 +47,8 @@
     .ant-form-item-label {
       text-align: left;
     }
-
-    .ant-form-item {
-      padding-top: 10px;
-    }
-
-    // buttons
-    .ant-btn {
-      background-color: #ffa100;
-      border: none;
-      border-radius: 35px;
-      span {
-        color: white;
-        font-weight: bold;
-      }
+    .ant-checkbox-wrapper {
+      font-size: 13px;
     }
   }
 }

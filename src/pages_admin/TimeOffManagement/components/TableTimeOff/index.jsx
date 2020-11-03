@@ -1,12 +1,17 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, Link } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
 class TableTimeOff extends PureComponent {
   columns = [
+    {
+      title: 'No.',
+      key: 'index',
+      width: '5%',
+      render: (text, record, index) => index + 1,
+    },
     {
       title: 'Employee ID',
       dataIndex: 'employeeId',
@@ -136,7 +141,7 @@ class TableTimeOff extends PureComponent {
     };
 
     return (
-      <div className={styles.tableDocuments}>
+      <div className={styles.TableTimeOff}>
         <Table
           size="small"
           loading={loading}
