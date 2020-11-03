@@ -21,9 +21,9 @@ const Note = {
   ),
 };
 
-@connect(({ candidateProfile: { data, currentStep, tempData } = {}, loading }) => ({
+@connect(({ candidateProfile: { data, localStep, tempData } = {}, loading }) => ({
   data,
-  currentStep,
+  localStep,
   tempData,
   loading: loading.effects['upload/uploadFile'],
 }))
