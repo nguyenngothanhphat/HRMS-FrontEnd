@@ -36,67 +36,14 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      tempData: { fullName },
-      dispatch,
-      reId: rookieID,
-    } = this.props;
-    if (fullName === undefined) {
-      dispatch({
-        type: 'candidateInfo/fetchCandidateByRookie',
-        payload: {
-          rookieID,
-        },
-      }).then(({ statusCode, data }) => {
-        if (statusCode === 200) {
-          console.log('data', data);
-        }
-      });
-    }
-  }
-
-  componentDidUpdate(prevState, prevProps) {
-    const {
-      dispatch,
-      data,
-      tempData,
-      checkMandatory,
-      tempData: { checkStatus },
-    } = this.props;
-    const emailRegExp = RegExp(
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-    );
-    if (prevProps.data.fullName !== data.fullName && data.fullName !== null) {
-      if (
-        data.fullName !== null &&
-        data.workEmail !== null &&
-        data.privateEmail !== null &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail)
-      ) {
-        checkStatus.filledBasicInformation = true;
-      } else {
-        checkStatus.filledBasicInformation = false;
-      }
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledBasicInformation: checkStatus.filledBasicInformation,
-          },
-        },
-      });
-    }
+    this.checkBottomBar();
+    console.log('abc');
   }
 
   componentWillUnmount() {
     const {
       data,
-      data: { fullName, privateEmail, workEmail, previousExperience },
+      tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch, currentStep, tempData } = this.props;
     const { _id } = data;
@@ -117,37 +64,36 @@ class BasicInformation extends PureComponent {
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
-    const { dispatch } = this.props;
+    const { tempData } = this.props;
+    tempData[name] = value;
+    this.checkBottomBar();
+  };
+
+  checkBottomBar = () => {
+    const {
+      tempData: { fullName, privateEmail, workEmail, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-
-    const { tempData, checkMandatory, data } = this.state;
-    tempData[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
     if (
-      (fullName !== '' &&
-        workEmail !== '' &&
-        privateEmail !== '' &&
-        emailRegExp.test(privateEmail) &&
-        emailRegExp.test(workEmail)) ||
-      (data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail))
+      fullName !== null &&
+      workEmail !== null &&
+      privateEmail !== null &&
+      emailRegExp.test(privateEmail) &&
+      emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
+      console.log('xyz1');
     } else {
       checkStatus.filledBasicInformation = false;
+      console.log('xyz');
     }
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData: {
-          ...tempData,
-        },
-
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,

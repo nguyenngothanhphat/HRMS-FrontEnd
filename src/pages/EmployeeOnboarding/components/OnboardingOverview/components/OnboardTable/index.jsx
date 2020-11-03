@@ -63,25 +63,16 @@ class OnboardTable extends Component {
     return <p>{name}</p>;
   };
 
-  fetchData = (id) => {
-    const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'candidateInfo/fetchCandidateByRookie',
-      payload: {
-        rookieID: id,
-      },
-    });
+  fetchData = () => {
+    // const { dispatch } = this.props;
+    // if (!dispatch) {
+    //   return;
+    // }
+    // dispatch({
+    //   type: 'candidateInfo/fetchCandidateInfo',
+    // });
+    console.log('abc');
   };
-
-  // dispatch({
-  //   type: 'candidateInfo/fetchEmployeeById',
-  //   payload: {
-  //     candidate: id,
-  //   },
-  // })
 
   renderAction = (id, type, actionText) => {
     const {
@@ -100,7 +91,7 @@ class OnboardTable extends Component {
         actionContent = (
           <>
             {/* <span>{actionText}</span> */}
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
               <span>Continue</span>
             </Link>
 

@@ -160,7 +160,6 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
-
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
