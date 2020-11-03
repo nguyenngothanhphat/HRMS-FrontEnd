@@ -25,7 +25,7 @@ const PreviewOffer = (props) => {
   const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
 
   const {
-    email: mailProp,
+    // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
   } = tempData;
@@ -38,6 +38,7 @@ const PreviewOffer = (props) => {
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
@@ -50,9 +51,9 @@ const PreviewOffer = (props) => {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const resetForm = () => {
-    mailForm.resetFields();
-  };
+  // const resetForm = () => {
+  //   mailForm.resetFields();
+  // };
 
   const resetImg = (type) => {
     if (type === 'hr') {
