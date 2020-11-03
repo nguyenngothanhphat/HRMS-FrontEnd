@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, Row, Col, Form, Input } from 'antd';
 import style from './index.less';
 
-const InputField = ({ onValuesChange }) => {
-  const [employer] = useState('');
+const InputField = ({ onValuesChange, documentChecklistSetting }) => {
+  const { employer } = documentChecklistSetting[3];
   return (
     <div className={style.InputField}>
       <Typography.Text className={style.text}>Employer 1 Details</Typography.Text>

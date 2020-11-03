@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
@@ -37,6 +38,8 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
+    // const { currentStep } = this.props;
+    // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
@@ -44,9 +47,8 @@ class BasicInformation extends PureComponent {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep, tempData } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    console.log('data', tempData);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -81,6 +83,7 @@ class BasicInformation extends PureComponent {
       fullName !== null &&
       workEmail !== null &&
       privateEmail !== null &&
+      workEmail !== privateEmail &&
       emailRegExp.test(privateEmail) &&
       emailRegExp.test(workEmail)
     ) {
@@ -201,6 +204,14 @@ class BasicInformation extends PureComponent {
                   type: 'email',
                   message: 'Email invalid!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue('privateEmail') !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Two emails cannot be the same!'));
+                  },
+                }),
               ]}
             >
               <Input
@@ -292,7 +303,6 @@ class BasicInformation extends PureComponent {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
     const { loading1 } = this.props;
-    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (

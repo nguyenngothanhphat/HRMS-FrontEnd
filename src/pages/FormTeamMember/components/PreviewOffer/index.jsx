@@ -25,19 +25,21 @@ const PreviewOffer = (props) => {
   const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
 
   const {
-    email: mailProp,
+    // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
+    fullName: candidateName = '',
   } = data;
 
   // const inputRefs = [];
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
@@ -50,9 +52,9 @@ const PreviewOffer = (props) => {
 
   const [openModal, setOpenModal] = useState(false);
 
-  const resetForm = () => {
-    mailForm.resetFields();
-  };
+  // const resetForm = () => {
+  //   mailForm.resetFields();
+  // };
 
   const resetImg = (type) => {
     if (type === 'hr') {
@@ -220,11 +222,11 @@ const PreviewOffer = (props) => {
     }
 
     dispatch({
-      type: 'candidateInfo/updateByHR',
+      type: 'candidateInfo/addManagerSignatureEffect',
       payload: {
         candidate: _id,
         hrManagerSignature: hrManagerSignatureProp.id,
-        currentStep: 6,
+        // currentStep: 6,
       },
     });
   };
@@ -239,6 +241,10 @@ const PreviewOffer = (props) => {
   }, [mail, hrSignature, hrManagerSignature]);
 
   useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
+
+  useEffect(() => {
+    setCandidateSignature(candidateSignatureProp);
+  }, [candidateSignatureProp]);
 
   const closeModal = () => {
     setOpenModal(false);
@@ -264,7 +270,15 @@ const PreviewOffer = (props) => {
             <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
           </header>
 
-          <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p>
+          {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+          {hrSignature.user ? (
+            <p>
+              Undersigned - {hrSignature.user.employee.generalInfo.firstName}{' '}
+              {hrSignature.user.employee.generalInfo.lastName}
+            </p>
+          ) : (
+            <p>Undersigned</p>
+          )}
 
           <div className={styles.upload}>
             {!hrSignature.url ? (
@@ -369,7 +383,15 @@ const PreviewOffer = (props) => {
                 <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
               </header>
 
-              <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p>
+              {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
+              {hrManagerSignature.user ? (
+                <p>
+                  Undersigned - {hrManagerSignature.user.employee.generalInfo.firstName}{' '}
+                  {hrManagerSignature.user.employee.generalInfo.lastName}
+                </p>
+              ) : (
+                <p>Undersigned</p>
+              )}
 
               <div className={styles.upload}>
                 {!hrManagerSignature.url ? (
@@ -422,14 +444,15 @@ const PreviewOffer = (props) => {
                 <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
               </header>
 
-              <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p>
+              {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+              <p>Undersigned- {candidateName}</p>
 
               <div className={styles.upload}>
-                {!candidateSignature.url ? (
+                {candidateSignature !== null && candidateSignature.url ? (
                   // Default image
-                  <img className={styles.signatureImg} src={whiteImg} alt="" />
-                ) : (
                   <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+                ) : (
+                  <img className={styles.signatureImg} src={whiteImg} alt="" />
                 )}
               </div>
 
