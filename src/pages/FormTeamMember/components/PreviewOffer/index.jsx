@@ -28,12 +28,14 @@ const PreviewOffer = (props) => {
     email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
+    candidateSignature: candidateSignatureProp,
   } = tempData;
 
   // const inputRefs = [];
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   const [uploadVisible2, setUploadVisible2] = useState(false);
@@ -350,8 +352,6 @@ const PreviewOffer = (props) => {
           </div>
         )}
         {/* HR Manager signature */}
-        {/* {role === ROLE.HRMANAGER && ( */}
-        {/* {true && ( */}
         {role === ROLE.HRMANAGER && (
           <>
             <div className={styles.signature}>
