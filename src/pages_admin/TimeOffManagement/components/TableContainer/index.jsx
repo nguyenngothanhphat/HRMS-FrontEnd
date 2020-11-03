@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import OptionsHeader from '../OptionsHeader';
-import TableDocuments from '../TableDocuments';
+import TableTimeOff from '../TableTimeOff';
 import styles from './index.less';
 
-@connect(({ loading, documentsManagement }) => ({
-  loadingList: loading.effects['documentsManagement/fetchListDocuments'],
-  documentsManagement,
+@connect(({ loading, timeOffManagement }) => ({
+  loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
+  timeOffManagement,
 }))
 class TableContainer extends PureComponent {
   componentDidMount() {
@@ -16,34 +16,33 @@ class TableContainer extends PureComponent {
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'documentsManagement/fetchListDocuments',
+      type: 'timeOffManagement/fetchListTimeOff',
     });
   };
 
   getDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'documentsManagement/fetchListDocuments',
+      type: 'timeOffManagement/fetchListTimeOff',
     });
   };
 
-  renderListDocuments = () => {
+  renderListTimeOff = () => {
     const {
-      documentsManagement: { listDocuments = [] },
+      timeOffManagement: { listTimeOff = [] },
     } = this.props;
-    return listDocuments;
+    return listTimeOff;
   };
 
   render() {
     const { loadingList } = this.props;
-
     return (
       <div className={styles.TimeOffTableContainer}>
         <div className={styles.optionsHeader}>
-          <OptionsHeader />
+          <OptionsHeader reloadData={this.getDataTable} />
         </div>
         <div className={styles.contentContainer}>
-          <TableDocuments loading={loadingList} data={this.renderListDocuments()} />
+          <TableTimeOff loading={loadingList} data={this.renderListTimeOff()} />
         </div>
       </div>
     );

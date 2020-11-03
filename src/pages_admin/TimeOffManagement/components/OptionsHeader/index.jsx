@@ -5,11 +5,15 @@ import styles from './index.less';
 const { Option } = Select;
 export default class OptionsHeader extends PureComponent {
   onFinish = (values) => {
+    // eslint-disable-next-line no-console
     console.log('values', values);
+    const { reloadData = () => {} } = this.props;
+    reloadData();
   };
 
   render() {
     const dateFormat = 'Do MMM YYYY';
+
     return (
       <div className={styles.OptionsHeader}>
         <div className={styles.container}>

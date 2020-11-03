@@ -1,93 +1,72 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
-import { formatMessage, connect, history } from 'umi';
+import { formatMessage, Link } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-@connect(({ loading, documentsManagement }) => ({
-  loadingDocumentDetail: loading.effects['documentsManagement/fetchDocumentDetail'],
-  documentsManagement,
-}))
-class TableDocuments extends PureComponent {
+class TableTimeOff extends PureComponent {
   columns = [
     {
-      title: 'Document ID',
-      dataIndex: '_id',
-      align: 'center',
+      title: 'Employee ID',
+      dataIndex: 'employeeId',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a._id.localeCompare(b._id),
+        compare: (a, b) => a.employeeId.localeCompare(b.employeeId),
       },
     },
     {
-      title: 'Document Type',
-      dataIndex: 'employeeGroup',
-      align: 'center',
+      title: 'Full Name',
+      dataIndex: 'fullName',
       // sortDirections: ['ascend', 'descend', 'ascend'],
       // sorter: {
       //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
       // },
     },
     {
-      title: 'Document Name',
-      dataIndex: 'key',
-      align: 'center',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a.key.localeCompare(b.key),
-      // },
-    },
-    {
-      title: 'Uploaded By',
-      // dataIndex: 'uploadedBy',
-      align: 'center',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      render: () => <span>Terralogic</span>,
-      // sorter: {
-      //   compare: (a, b) => a.uploadedBy.localeCompare(b.uploadedBy),
-      // },
-    },
-    {
-      title: 'Company',
-      dataIndex: 'company',
-      align: 'center',
-      width: '8%',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      render: () => <span>Company</span>,
-      // sorter: {
-      //   compare: (a, b) => a.company.localeCompare(b.company),
-      // },
-    },
-    {
-      title: 'Created Date',
-      dataIndex: 'createdAt',
-      align: 'center',
+      title: 'From Date',
+      dataIndex: 'fromDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      render: (createdAt) => {
-        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
+      render: (fromDate) => {
+        const formatedDate = moment(fromDate).format('MM/DD/YYYY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
-        compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
+    },
+    {
+      title: 'To Date',
+      dataIndex: 'toDate',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      render: (toDate) => {
+        const formatedDate = moment(toDate).format('MM/DD/YYYY');
+        return <span>{formatedDate}</span>;
+      },
+      sorter: {
+        compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
+      },
+    },
+    {
+      title: 'Count/Q.ty',
+      dataIndex: 'count',
+    },
+    {
+      title: 'Leave Type',
+      dataIndex: 'leaveType',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
     },
     {
       title: 'Action',
       dataIndex: 'action',
-      width: '5%',
       align: 'center',
-      render: (text, record) => (
+      render: () => (
         <div className={styles.documentAction}>
-          <FileTextOutlined
-            onClick={() => this.viewDocument(record)}
-            className={styles.viewDocumentBtn}
-          />
-          <DeleteOutlined
-            onClick={(e) => this.deleteDocument(e, record)}
-            className={styles.deleteDocumentBtn}
-          />
+          <Link>View Request</Link>
         </div>
       ),
     },
@@ -98,34 +77,8 @@ class TableDocuments extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
-      confirmRemoveModalVisible: false,
-      documentId: '',
-      documentName: '',
     };
   }
-
-  // delete
-  deleteDocument = (e, record) => {
-    e.stopPropagation();
-    this.setState({
-      confirmRemoveModalVisible: true,
-      documentId: record._id,
-      documentName: record.key,
-    });
-  };
-
-  closeConfirmRemoveModal = () => {
-    this.setState({
-      confirmRemoveModalVisible: false,
-      documentId: '',
-      documentName: '',
-    });
-  };
-
-  // view document
-  viewDocument = (record) => {
-    history.push(`/view-document/${record._id}`);
-  };
 
   // pagination
   onChangePagination = (pageNumber) => {
@@ -187,21 +140,15 @@ class TableDocuments extends PureComponent {
         <Table
           size="small"
           loading={loading}
-          onRow={(record) => {
-            return {
-              onClick: () => this.viewDocument(record),
-              // click row
-            };
-          }}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
-          rowKey="_id"
+          rowKey="employeeId"
         />
       </div>
     );
   }
 }
-export default TableDocuments;
+export default TableTimeOff;
