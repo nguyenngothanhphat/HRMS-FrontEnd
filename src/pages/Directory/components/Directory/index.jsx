@@ -288,8 +288,8 @@ class DirectoryComponent extends PureComponent {
 
   rightButton = (roles, collapsed) => {
     const { tabId } = this.state;
-    const permissionImport = 'P_EMPLOYEES_B_IMPORT_EMPLOYEES_VIEW';
-    const permissionAdd = 'P_EMPLOYEES_B_ADD_EMPLOYEE_VIEW';
+    const permissionImport = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
+    const permissionAdd = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
 
     const groupPermissions = this.generatePermissions(roles);
 
