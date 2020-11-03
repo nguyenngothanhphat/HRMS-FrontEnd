@@ -23,7 +23,7 @@ const _renderScreen = (screenNumber) => {
     case 6:
       return <Benefits />;
     default:
-      return <BasicInfomation />;
+      return null;
   }
 };
 
