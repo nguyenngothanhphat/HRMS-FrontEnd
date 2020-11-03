@@ -76,54 +76,37 @@ const getLineWidth = (value) => {
 const CandidateLayout = (props) => {
   const {
     children,
-    currentStep,
+    localStep,
     location = {
       pathname: '/',
     },
     route: { routes } = {},
+    ticketId,
+    dispatch,
   } = props;
 
   const [current, setCurrent] = useState(1);
 
   useEffect(() => {
-    setCurrent(currentStep);
-  }, [currentStep]);
+    setCurrent(localStep);
+  }, [localStep]);
 
-  // const nextScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current + 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState + 1);
-  //   setCurrentPage((prevState) => prevState + 1);
-  //   console.log(currentPage);
-  // };
-
-  // const prevScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current - 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState - 1);
-  //   setCurrentPage((prevState) => prevState - 1);
-  // };
+  // useEffect(() => {
+  //   console.log('candidate layout');
+  // }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
+  };
+
+  const handleCancel = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'login/logout',
+    });
   };
 
   return (
@@ -141,9 +124,9 @@ const CandidateLayout = (props) => {
         </div>
 
         <div className={s.headerRight}>
-          <span className={s.id}>Rookie ID : 213222434</span>
+          <span className={s.id}>Rookie ID : {ticketId}</span>
 
-          <Button type="link" block>
+          <Button type="link" block onClick={handleCancel}>
             Cancel
           </Button>
         </div>
@@ -159,23 +142,8 @@ const CandidateLayout = (props) => {
                   ))}
                 </Steps>
               </div>
-
-              {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
-              Next
-            </button> */}
             </Col>
-            <Col md={19}>
-              {children}
-              {/* <Row gutter={[24, 0]}>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                  <BottomBar
-                    onClickPrev={prevScreen}
-                    onClickNext={nextScreen}
-                    currentPage={currentPage}
-                  />
-                </Col>
-              </Row> */}
-            </Col>
+            <Col md={19}>{children}</Col>
           </Row>
         </Content>
       </Authorized>
@@ -184,7 +152,10 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(({ candidateProfile: { currentStep, checkCandidateMandatory } = {} }) => ({
-  currentStep,
-  checkCandidateMandatory,
-}))(CandidateLayout);
+export default connect(
+  ({ candidateProfile: { localStep, ticketId, checkCandidateMandatory } = {} }) => ({
+    localStep,
+    checkCandidateMandatory,
+    ticketId,
+  }),
+)(CandidateLayout);
