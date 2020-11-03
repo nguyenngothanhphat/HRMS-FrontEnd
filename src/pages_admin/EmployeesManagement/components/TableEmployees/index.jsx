@@ -147,6 +147,7 @@ export default class TableEmployees extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-alert
     alert('EDIT USER', key);
   };
 

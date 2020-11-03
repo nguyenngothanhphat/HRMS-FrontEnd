@@ -169,6 +169,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
             colorClassName = styles.upcomingColor;
           } else colorClassName = styles.leaveTakenColor;
 
+          // eslint-disable-next-line prefer-destructuring
           eventMarkSingleClassName = styles.eventMarkSingleClassName;
         } else {
           if (
@@ -201,6 +202,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
             this.selectedMonth() * 1 === eventFromMonth * 1 &&
             this.selectedMonth() * 1 === eventToMonth * 1
           )
+            // eslint-disable-next-line prefer-destructuring
             lineClassName = styles.lineClassName;
         }
       });
