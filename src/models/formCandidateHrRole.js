@@ -276,7 +276,6 @@ const candidateInfo = {
       ],
       listTitle: [],
       tableData: [],
-      candidateSignature: null,
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -286,6 +285,14 @@ const candidateInfo = {
         _id: '',
       },
       hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      candidateSignature: {
         url: '',
         fileName: '',
         name: '',

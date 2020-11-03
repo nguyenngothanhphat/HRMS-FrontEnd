@@ -82,6 +82,7 @@ const CandidateLayout = (props) => {
     },
     route: { routes } = {},
     ticketId,
+    dispatch,
   } = props;
 
   const [current, setCurrent] = useState(1);
@@ -90,12 +91,22 @@ const CandidateLayout = (props) => {
     setCurrent(localStep);
   }, [localStep]);
 
-  useEffect(() => {
-    console.log('candidate layout');
-  }, []);
+  // useEffect(() => {
+  //   console.log('candidate layout');
+  // }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
+  };
+
+  const handleCancel = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'login/logout',
+    });
   };
 
   return (
@@ -115,7 +126,7 @@ const CandidateLayout = (props) => {
         <div className={s.headerRight}>
           <span className={s.id}>Rookie ID : {ticketId}</span>
 
-          <Button type="link" block>
+          <Button type="link" block onClick={handleCancel}>
             Cancel
           </Button>
         </div>
@@ -131,23 +142,8 @@ const CandidateLayout = (props) => {
                   ))}
                 </Steps>
               </div>
-
-              {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
-              Next
-            </button> */}
             </Col>
-            <Col md={19}>
-              {children}
-              {/* <Row gutter={[24, 0]}>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                  <BottomBar
-                    onClickPrev={prevScreen}
-                    onClickNext={nextScreen}
-                    currentPage={currentPage}
-                  />
-                </Col>
-              </Row> */}
-            </Col>
+            <Col md={19}>{children}</Col>
           </Row>
         </Content>
       </Authorized>

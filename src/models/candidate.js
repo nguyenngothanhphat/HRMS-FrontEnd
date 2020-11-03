@@ -143,6 +143,12 @@ const candidateProfile = {
           },
         });
         yield put({
+          type: 'saveTemp',
+          payload: {
+            candidateSignature: data.candidateSignature,
+          },
+        });
+        yield put({
           type: 'save',
           payload: {
             ...data,
