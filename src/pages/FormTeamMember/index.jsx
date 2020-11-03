@@ -15,8 +15,9 @@ import Payroll from './components/Payroll';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
-@connect(({ candidateInfo = {}, loading }) => ({
+@connect(({ candidateInfo = {}, user, loading }) => ({
   candidateInfo,
+  user,
   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
   loading2: loading.effects['candidateInfo/fetchCandidateInfo'],
 }))
@@ -25,9 +26,13 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
-      candidateInfo: { data },
+      user: {
+        currentUser: { company },
+      },
+      // candidateInfo,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
+    // console.log(candidateInfo.currentStep);
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchCandidateByRookie',
@@ -35,11 +40,11 @@ class FormTeamMember extends PureComponent {
           rookieID: reId,
         },
       });
-      if (data.company._id.length > 0) {
+      if (company._id.length > 0) {
         dispatch({
           type: 'candidateInfo/fetchLocationListByCompany',
           payload: {
-            company: data.company._id,
+            company: company._id,
           },
         });
       }

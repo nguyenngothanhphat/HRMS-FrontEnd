@@ -94,8 +94,7 @@ export function getTitleListByCompany(params) {
 }
 
 export function getTableDataByTitle(params) {
-  console.log(params);
-
+  // console.log(params);
   return request('/api/salarystructure/get-by-title', {
     method: 'POST',
     data: params,
@@ -103,7 +102,7 @@ export function getTableDataByTitle(params) {
 }
 
 export function closeCandidate(params) {
-  console.log(params);
+  // console.log(params);
   return request('/api/candidate/close-candidate', {
     method: 'POST',
     data: params,
@@ -111,7 +110,7 @@ export function closeCandidate(params) {
 }
 
 export function editSalaryStructure(params) {
-  console.log(params);
+  // console.log(params);
   return request('/api/candidate/close-candidate', {
     method: 'POST',
     data: params,
@@ -119,7 +118,7 @@ export function editSalaryStructure(params) {
 }
 
 export function addManagerSignature(params) {
-  console.log(params);
+  // console.log(params);
   return request('/api/candidate/add-manager-signature', {
     method: 'POST',
     data: params,

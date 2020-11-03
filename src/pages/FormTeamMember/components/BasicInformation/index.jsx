@@ -38,6 +38,8 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
+    // const { currentStep } = this.props;
+    // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
