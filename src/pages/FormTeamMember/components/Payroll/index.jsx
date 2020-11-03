@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography } from 'antd';
+import { connect } from 'umi';
 
 import PayrollSettingsHeader from './components/PayrollSettingsHeader';
 import NoteComponent from '../NoteComponent';
@@ -8,7 +9,11 @@ import LolipopIcon from '../../../../../public/assets/images/lolipop.png';
 
 import styles from './index.less';
 
-class BasicInformation extends PureComponent {
+@connect(({ candidateInfo: { data = {}, currentStep = 0 } = {} }) => ({
+  data,
+  currentStep,
+}))
+class PayrollSetting extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -19,6 +24,21 @@ class BasicInformation extends PureComponent {
       return { basicInformation: props.basicInformation || {} };
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { data = {}, dispatch, currentStep } = this.props;
+    const { candidate = '' } = data;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
   }
 
   _renderForm = () => {
@@ -74,4 +94,4 @@ class BasicInformation extends PureComponent {
   }
 }
 
-export default BasicInformation;
+export default PayrollSetting;
