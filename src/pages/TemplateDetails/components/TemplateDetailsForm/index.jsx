@@ -1,6 +1,6 @@
 /* eslint-disable react/no-danger */
 import React, { PureComponent } from 'react';
-import { Form, Input, Row, Col, Button } from 'antd';
+import { Form, Input, Row, Col, Button, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 
@@ -12,8 +12,9 @@ import formOutlined from './assets/form-outlined.svg';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { currentTemplate = {} } }) => ({
+@connect(({ loading, employeeSetting: { currentTemplate = {} } }) => ({
   currentTemplate,
+  loadingTemplate: loading.effects['employeeSetting/fetchTemplateById'],
 }))
 class TemplateDetailsForm extends PureComponent {
   constructor(props) {
@@ -26,7 +27,6 @@ class TemplateDetailsForm extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch, templateId } = this.props;
-    console.log(this.props);
     dispatch({
       type: 'employeeSetting/fetchTemplateById',
       payload: {
@@ -54,6 +54,19 @@ class TemplateDetailsForm extends PureComponent {
   closeModal = () => {
     this.setState({
       openModal: false,
+    });
+  };
+
+  handleChangeInput = (e) => {
+    const { dispatch } = this.props;
+    const { target } = e;
+    const { value } = target;
+
+    dispatch({
+      type: 'employeeSetting/saveCurrentTemplate',
+      payload: {
+        title: value,
+      },
     });
   };
 
@@ -90,21 +103,13 @@ class TemplateDetailsForm extends PureComponent {
     }
   };
 
-  handleChangeInput = (e) => {
-    const { dispatch } = this.props;
-    const { target } = e;
-    const { value } = target;
-
-    dispatch({
-      type: 'employeeSetting/saveCurrentTemplate',
-      payload: {
-        title: value,
-      },
-    });
+  _renderLoading = () => {
+    const { loadingTemplate } = this.props;
+    return <Skeleton loading={loadingTemplate} active />;
   };
 
   render() {
-    const { currentTemplate } = this.props;
+    const { currentTemplate, loadingTemplate } = this.props;
     const { title = '', htmlContent = '', updatedAt = '' } = currentTemplate;
     const date = new Date(updatedAt);
     return (
@@ -137,7 +142,11 @@ class TemplateDetailsForm extends PureComponent {
               </div>
               <hr />
               <div className={styles.TemplateDetailsForm_template_content}>
-                <span dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                {loadingTemplate ? (
+                  this._renderLoading()
+                ) : (
+                  <span dangerouslySetInnerHTML={{ __html: htmlContent }} />
+                )}
               </div>
               <div className={styles.TemplateDetailsForm_template_button}>
                 {' '}

@@ -15,7 +15,7 @@ export default class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      viewInformation: true,
+      viewInformation: false,
     };
   }
 
@@ -56,7 +56,7 @@ export default class TimeOff extends PureComponent {
         </Affix>
         <div className={styles.TimeOff}>
           <Row gutter={[20, 20]}>
-            <Col xs={6}>
+            <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
                   <LeaveInformation onInformationCLick={this.onInformationCLick} />
@@ -70,9 +70,9 @@ export default class TimeOff extends PureComponent {
               </Row>
             </Col>
             {!viewInformation && (
-              <Col xs={18}>
+              <Col xs={24} md={18}>
                 <Row gutter={[20, 20]}>
-                  <Col span={15}>
+                  <Col xs={24} lg={15}>
                     <ApplyRequest
                       title="Apply for Timeoff from Office"
                       describe={describeText[0]}
@@ -81,7 +81,7 @@ export default class TimeOff extends PureComponent {
                       type={1}
                     />
                   </Col>
-                  <Col span={9}>
+                  <Col xs={24} lg={9}>
                     <ApplyRequest
                       title="Apply for Compoff"
                       describe={describeText[1]}
@@ -100,7 +100,7 @@ export default class TimeOff extends PureComponent {
             )}
 
             {viewInformation && (
-              <Col xs={18}>
+              <Col xs={24} md={18}>
                 <LeaveBalanceInfo onClose={this.onInformationCLick} />
               </Col>
             )}

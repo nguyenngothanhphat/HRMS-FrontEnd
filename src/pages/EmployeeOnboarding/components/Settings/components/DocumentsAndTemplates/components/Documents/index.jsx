@@ -10,12 +10,23 @@ import styles from './index.less';
   defaultTemplateList,
   customTemplateList,
   loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
+  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
 }))
 class Documents extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/fetchDefaultTemplateList',
+    });
+    dispatch({
+      type: 'employeeSetting/fetchCustomTemplateList',
+    });
+  };
+
   _renderTemplates = () => {
     const { defaultTemplateList, loadingDefaultTemplateList } = this.props;
     if (loadingDefaultTemplateList) {
-      <Skeleton loading={loadingDefaultTemplateList} active />;
+      return <Skeleton loading={loadingDefaultTemplateList} active />;
     }
     return defaultTemplateList.map((template) => {
       return (
@@ -28,23 +39,16 @@ class Documents extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateList',
-    });
-    dispatch({
-      type: 'employeeSetting/fetchCustomTemplateList',
-    });
-  };
-
   _renderRecentDocuments = () => {
-    const { customTemplateList, loadingDefaultTemplateList } = this.props;
+    const { customTemplateList, loadingCustomTemplateList } = this.props;
+    if (loadingCustomTemplateList) {
+      return <Skeleton loading={loadingCustomTemplateList} active />;
+    }
     return customTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
           {/* <Link to={`/template-details/${template._id}`}> */}
-          <Template loading={loadingDefaultTemplateList} template={template} />
+          <Template loading={loadingCustomTemplateList} template={template} />
           {/* </Link> */}
         </Col>
       );
@@ -52,17 +56,13 @@ class Documents extends PureComponent {
   };
 
   render() {
-    const { loadingDefaultTemplateList } = this.props;
-
     return (
       <div className={styles.Documents}>
         <p className={styles.Documents_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.defaultTemplate' })}
         </p>
-        <Row gutter={[4, 12]} loading={loadingDefaultTemplateList}>
-          {this._renderTemplates()}
-        </Row>
+        <Row gutter={[4, 12]}>{this._renderTemplates()}</Row>
         <p className={styles.Documents_title}>
           {' '}
           {formatMessage({ id: 'component.documentAndTemplates.recentDocuments' })}

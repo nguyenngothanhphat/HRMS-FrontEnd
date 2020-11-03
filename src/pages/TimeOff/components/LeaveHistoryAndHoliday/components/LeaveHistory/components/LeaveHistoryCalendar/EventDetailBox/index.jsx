@@ -12,7 +12,7 @@ export default class EventDetailBox extends PureComponent {
 
   render() {
     const { data = [], color = 0 } = this.props;
-    const { from = '', to = '', type = '', duration = '', description = '' } = data;
+    const { fromDate: from = '', toDate: to = '', type = '', duration = '', name = '' } = data;
     return (
       <Row onClick={this.onEventClick} className={styles.EventDetailBox}>
         <Col xs={3} className={styles.dateAndMonth}>
@@ -24,7 +24,7 @@ export default class EventDetailBox extends PureComponent {
           <span>{moment(to).locale('en').format('DD')}</span>
         </Col>
         <Col xs={13} className={styles.eventOfDay}>
-          {description}
+          {name}
         </Col>
         <Col
           className={
