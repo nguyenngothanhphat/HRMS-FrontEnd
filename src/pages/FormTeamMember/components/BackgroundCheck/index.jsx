@@ -65,7 +65,6 @@ class BackgroundCheck extends Component {
       },
       dispatch,
     } = this.props;
-
     // save step
     const { currentStep } = this.props;
     const { candidate = '' } = data;
@@ -81,7 +80,6 @@ class BackgroundCheck extends Component {
     }
 
     if (data.documentChecklistSetting !== documentList) {
-      console.log('inside');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
       const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
@@ -108,7 +106,6 @@ class BackgroundCheck extends Component {
       if (listSelectedD.length === arrToAdjust[3].data.length) {
         isCheckedD = true;
       }
-
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
