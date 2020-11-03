@@ -117,3 +117,11 @@ export function editSalaryStructure(params) {
     data: params,
   });
 }
+
+export function addManagerSignature(params) {
+  console.log(params);
+  return request('/api/candidate/add-manager-signature', {
+    method: 'POST',
+    data: params,
+  });
+}

@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
@@ -80,6 +81,7 @@ class BasicInformation extends PureComponent {
       fullName !== null &&
       workEmail !== null &&
       privateEmail !== null &&
+      workEmail !== privateEmail &&
       emailRegExp.test(privateEmail) &&
       emailRegExp.test(workEmail)
     ) {
@@ -200,6 +202,14 @@ class BasicInformation extends PureComponent {
                   type: 'email',
                   message: 'Email invalid!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue('privateEmail') !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Two emails cannot be the same!'));
+                  },
+                }),
               ]}
             >
               <Input

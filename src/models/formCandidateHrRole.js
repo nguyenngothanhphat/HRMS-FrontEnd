@@ -13,6 +13,7 @@ import {
   getById,
   submitPhase1,
   getLocationListByCompany,
+  addManagerSignature,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -277,7 +278,6 @@ const candidateInfo = {
       ],
       listTitle: [],
       tableData: [],
-      candidateSignature: null,
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -287,6 +287,14 @@ const candidateInfo = {
         _id: '',
       },
       hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      candidateSignature: {
         url: '',
         fileName: '',
         name: '',
@@ -423,6 +431,21 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(updateByHR, payload);
+        const { statusCode, data } = response;
+        console.log('data', data);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *addManagerSignatureEffect({ payload }, { call, put }) {
+      console.log('payload', payload);
+      let response = {};
+      try {
+        response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
         console.log('data', data);
         if (statusCode !== 200) throw response;

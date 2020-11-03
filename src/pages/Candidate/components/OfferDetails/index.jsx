@@ -39,13 +39,17 @@ const FileInfo = [
 const OfferDetails = (props) => {
   const { dispatch, checkCandidateMandatory, localStep, tempData, data } = props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
-  const { candidateSignature = {}, finalOfferCandidateSignature = {} } = tempData;
+  const { candidateSignature: candidateSignatureProp = {} } = data;
 
-  const [signature, setSignature] = useState(candidateSignature || {});
+  const [signature, setSignature] = useState(candidateSignatureProp || {});
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [uploadVisible, setUploadVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
+
+  useEffect(() => {
+    setSignature(candidateSignatureProp);
+  }, [candidateSignatureProp]);
 
   useEffect(() => {
     if (signature.url) {
@@ -83,8 +87,6 @@ const OfferDetails = (props) => {
       });
     }
   }, [allFieldFilled]);
-
-  // console.log(props);
 
   const handleClick = (url) => {
     setFileUrl(url);
@@ -161,10 +163,10 @@ const OfferDetails = (props) => {
     return (
       <div className={s.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col sm={4} md={16} span={16}>
             <div className={s.bottomBar__status}>{_renderStatus()}</div>
           </Col>
-          <Col span={8}>
+          <Col sm={8} md={8} span={8}>
             <div className={s.bottomBar__button}>
               <Button type="secondary" onClick={onClickPrevious}>
                 Previous
@@ -214,10 +216,8 @@ const OfferDetails = (props) => {
   };
 
   const resetImg = () => {
-    setSignature({ url: '', id: '' });
+    setSignature({ ...signature, url: '', id: '' });
   };
-
-  console.log(props);
 
   return (
     <div className={s.offerDetailsContainer}>
@@ -248,7 +248,10 @@ const OfferDetails = (props) => {
                 system.
               </p>
               <Row gutter={16} style={{ marginTop: '24px' }}>
-                <Col md={14}>
+                <Col
+                  // sm={8}
+                  md={14}
+                >
                   <div className={s.signature}>
                     <div className={s.upload}>
                       {!signature.url ? (
@@ -267,14 +270,15 @@ const OfferDetails = (props) => {
                         {formatMessage({ id: 'component.previewOffer.uploadNew' })}
                       </button>
 
-                      <CancelIcon resetImg={() => resetImg('hr')} />
+                      <CancelIcon resetImg={() => resetImg()} />
                     </div>
 
                     <div className={s.submitContainer}>
                       <Button
                         type="primary"
                         onClick={handleSubmit}
-                        className={`${signature ? s.active : s.disable}`}
+                        className={`${signature.url ? s.active : s.disable}`}
+                        disabled={!signature.url}
                       >
                         {formatMessage({ id: 'component.previewOffer.submit' })}
                       </Button>
@@ -287,7 +291,11 @@ const OfferDetails = (props) => {
                     </div>
                   </div>
                 </Col>
-                <Col md={10}>
+                <Col
+                  // sm={4}
+                  md={10}
+                  className={s.alert}
+                >
                   {signature.url && (
                     <Alert display type="info">
                       <p>The signature has been submitted.</p>
