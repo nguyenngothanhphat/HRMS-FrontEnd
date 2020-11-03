@@ -131,6 +131,7 @@ class DirectoryComponent extends PureComponent {
       tabId = 'inActive';
     }
 
+    // Set tabId for myTeam to hide button Filter
     if (findIndexActive === -1 && findIndexInActive === -1) {
       tabId = 'myTeam';
     }
