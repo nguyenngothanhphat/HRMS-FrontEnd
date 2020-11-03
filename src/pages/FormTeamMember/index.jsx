@@ -18,15 +18,22 @@ import Payroll from './components/Payroll';
 @connect(({ candidateInfo = {}, loading }) => ({
   candidateInfo,
   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
+  loading2: loading.effects['candidateInfo/fetchCandidateInfo'],
 }))
 class FormTeamMember extends PureComponent {
   componentDidMount() {
     const {
-      match: { params: { action = '' } = {} },
+      match: { params: { action = '', reId } = {} },
       dispatch,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
     if (action === 'review') {
+      dispatch({
+        type: 'candidateInfo/fetchCandidateByRookie',
+        payload: {
+          rookieID: reId,
+        },
+      });
       dispatch({
         type: 'candidateInfo/fetchLocationList',
       });

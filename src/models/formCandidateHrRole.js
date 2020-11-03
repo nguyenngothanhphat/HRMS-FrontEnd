@@ -56,6 +56,11 @@ const candidateInfo = {
       managerList: [],
       joineeEmail: '',
       employer: '',
+      department: null,
+      workLocation: null,
+      title: null,
+      reportingManager: null,
+
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -69,6 +74,7 @@ const candidateInfo = {
       isMarkAsDone: true,
       generateLink: '',
       newArrToAdjust: [],
+      company: '',
       email: '',
       identityProof: {
         aadharCard: true,
@@ -335,9 +341,11 @@ const candidateInfo = {
       }
     },
 
-    *fetchTitleList({ payload: { company = '' } }, { call, put }) {
+    *fetchTitleList({ payload = {} }, { call, put }) {
+      let response;
+      console.log('pl', payload);
       try {
-        const response = yield call(getTitleList, { company });
+        response = yield call(getTitleList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -347,6 +355,7 @@ const candidateInfo = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchLocationList(_, { call, put }) {
       try {
@@ -404,11 +413,12 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      // console.log('payload', payload);
+      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -425,10 +435,15 @@ const candidateInfo = {
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        console.log('data', data);
+        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
         yield put({
           type: 'updateSignature',
           payload: data,
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { ...data },
         });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
@@ -436,6 +451,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {
@@ -446,14 +462,21 @@ const candidateInfo = {
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
         });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            ...data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
     *fetchTitleListByCompany({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTitleListByCompany, payload);
+        response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -463,6 +486,7 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTableData({ payload }, { call, put }) {
       try {
@@ -509,7 +533,7 @@ const candidateInfo = {
 
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
-      // console.log('payload', payload);
+      console.log('payload', payload);
       try {
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
@@ -553,13 +577,17 @@ const candidateInfo = {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        // console.log('4', data);
-        const { currentStep = 0, _id } = data;
+        const { _id } = data;
         yield put({
           type: 'save',
           payload: {
-            currentStep,
             data: { ...data, candidate: _id, _id },
+          },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            ...data,
           },
         });
         yield put({

@@ -386,12 +386,12 @@ const routes = [
             component: './ViewDocument',
             authority: [
               'employee',
-              'hr-manager',
               'hr',
               'admin-csa',
               'admin-cla',
               'admin-cda',
               'leader',
+              'admin-sa',
             ],
           },
           {
