@@ -85,10 +85,10 @@ class BackgroundCheck extends Component {
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
       const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
       const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.key);
-      const listSelectedB = arrB.map((x) => x.key);
-      const listSelectedC = arrC.map((x) => x.key);
-      const listSelectedD = arrD.map((x) => x.key);
+      const listSelectedA = arrA.map((x) => x.alias);
+      const listSelectedB = arrB.map((x) => x.alias);
+      const listSelectedC = arrC.map((x) => x.alias);
+      const listSelectedD = arrD.map((x) => x.alias);
       let isCheckedA;
       let isCheckedB;
       let isCheckedC;
@@ -418,7 +418,7 @@ class BackgroundCheck extends Component {
       openModal,
       tempData,
       tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
-      data: { privateEmail },
+      data: { privateEmail, documentChecklistSetting },
     } = this.state;
     const { loading } = this.props;
     return (
@@ -445,6 +445,7 @@ class BackgroundCheck extends Component {
                           documentList={documentList}
                           tempData={tempData}
                           onValuesChange={this.onValuesChange}
+                          documentChecklistSetting={documentChecklistSetting}
                         />
                       );
                     })}
