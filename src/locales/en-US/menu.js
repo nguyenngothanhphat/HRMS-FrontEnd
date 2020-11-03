@@ -65,6 +65,7 @@ export default {
   'menu.companyDetail': 'Company Detail',
   'menu.documents': 'Documents',
   'menu.uploadDocument': 'Add Document',
+  'menu.timeOffManagement': 'Time Off',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId': 'Ticket Id',
