@@ -4,6 +4,7 @@ export default {
   'pages.directory.organisationChartTab': 'Organisation Chart',
   'pages.directory.directory.activeEmployeesTab': 'Active Employees',
   'pages.directory.directory.myTeamTab': 'My Team',
+  'pages.directory.directory.viewProfile': 'View Profile',
   'pages.directory.directory.inactiveEmployeesTab': 'Inactive Employees',
   'pages.directory.directory.setUpNewProfile': 'Set Up New Profile',
   'pages.directory.directory.addTeamMember': 'Add team member',
