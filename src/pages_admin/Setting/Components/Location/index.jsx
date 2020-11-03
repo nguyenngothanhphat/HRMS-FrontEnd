@@ -25,9 +25,14 @@ class Location extends PureComponent {
       testReord: {},
       data: [],
       country: '',
-      address: '',
       name: '',
       phone: '',
+      headQuarterAddress: '',
+      headQuarterState: '',
+      headQuarterZipCode: '',
+      legalAddress: '',
+      legalState: '',
+      legalZipCode: '',
       getIndex: '',
     };
   }
@@ -39,10 +44,30 @@ class Location extends PureComponent {
         _id: LocationID,
         name: Name,
         country: { name: Country },
-        company: { name: Company },
+        company: {
+          name: Company,
+          headQuarterAddress: {
+            address: headQuarterAddress,
+            state: headQuarterState,
+            zipCode: headQuarterZipCode,
+          },
+          legalAddress: { address: legalAddress, state: legalState, zipCode: legalZipCode },
+        },
         phone: Phone,
       } = item;
-      return { LocationID, Name, Country, Company, Phone };
+      return {
+        LocationID,
+        Name,
+        Country,
+        Company,
+        Phone,
+        headQuarterAddress,
+        headQuarterState,
+        headQuarterZipCode,
+        legalAddress,
+        legalState,
+        legalZipCode,
+      };
     });
     this.setState({ data: formatData });
   }
@@ -85,10 +110,10 @@ class Location extends PureComponent {
       const { value } = e.target;
       this.setState({ country: value });
     }
-    if (conditionValues === 'address') {
-      const { value } = e.target;
-      this.setState({ address: value });
-    }
+    // if (conditionValues === 'address') {
+    //   const { value } = e.target;
+    //   this.setState({ address: value });
+    // }
   };
 
   handleRandomNumberID = () => {
@@ -102,15 +127,14 @@ class Location extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (country, address) => {
+  handleAddNewValue = (country) => {
     const { data } = this.state;
     const addData = {
       LocationID: this.handleRandomNumberID(),
       Country: country,
-      Address: address,
     };
     const newData = [...data, addData];
-    this.setState({ data: newData, country: '', address: '' });
+    this.setState({ data: newData, country: '' });
   };
 
   render() {
@@ -122,10 +146,15 @@ class Location extends PureComponent {
       testReord,
       data,
       country,
-      address,
       getIndex,
       name,
       phone,
+      headQuarterAddress,
+      headQuarterState,
+      headQuarterZipCode,
+      legalAddress,
+      legalState,
+      legalZipCode,
     } = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -187,12 +216,6 @@ class Location extends PureComponent {
         align: 'center',
       },
       {
-        key: 6,
-        title: 'Head Quarter Address',
-        dataIndex: 'headQuarterAddress',
-        align: 'center',
-      },
-      {
         key: 10,
         title: 'Legal Address',
         dataIndex: 'legalAddress',
@@ -224,7 +247,7 @@ class Location extends PureComponent {
           record.LocationID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(country, address)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue(country)} />
           ),
         align: 'center',
       },
@@ -267,7 +290,33 @@ class Location extends PureComponent {
         </Select>
       ),
       Phone: <Input onChange={(e) => this.handleChangeValue(e, 'phone')} value={phone} />,
-      Address: <Input onChange={(e) => this.handleChangeValue(e, 'address')} value={address} />,
+      headQuarterAddress: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterAddress')}
+          value={headQuarterAddress}
+        />
+      ),
+      headQuarterState: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterState')}
+          value={headQuarterState}
+        />
+      ),
+      headQuarterZipCode: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterZipCode')}
+          value={headQuarterZipCode}
+        />
+      ),
+      legalAddress: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalAddress')} value={legalAddress} />
+      ),
+      legalState: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalState')} value={legalState} />
+      ),
+      legalZipCode: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalZipCode')} value={legalZipCode} />
+      ),
     };
     const renderAdd = [...data, add];
 

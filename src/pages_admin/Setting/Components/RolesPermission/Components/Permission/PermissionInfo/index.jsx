@@ -47,7 +47,10 @@ class PermissionInfo extends PureComponent {
     }
   }
 
-  onSelectChange = (selectedRowKeys) => {
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    // const { selectedRowKeys } = this.state;
+    console.log(selectedRows);
+    // const findAll =  selectedRowKeys.indexOf()
     this.setState({ selectedRowKeys });
   };
 
@@ -71,6 +74,57 @@ class PermissionInfo extends PureComponent {
       const { _id: PermissionID, name: PermissionName } = item;
       return { PermissionID, PermissionName };
     });
+    // const getListDIRECTORY = formatDataPermission
+    //   .filter((item) => Object.keys(item).some((k) => item[k].includes('P_DIRECTORY')))
+    //   .map((item, index) => {
+    //     const key = index + 11;
+    //     return { key, ...item };
+    //   });
+    // const formatListDIRECTORY = getListDIRECTORY.map((item, index) => {
+    //   const key = index + 11;
+    //   return { key, ...item };
+    // });
+    // const getListUser = formatDataPermission
+    //   .filter((item) => Object.keys(item).some((k) => item[k].includes('P_USERS')))
+    //   .map((item, index) => {
+    //     const key = index + 21;
+    //     return { key, ...item };
+    //   });
+    // const formatListUSER = getListUser.map((item, index) => {
+    //   const key = index + 21;
+    //   return { key, ...item };
+    // });
+    // const getListSETTING = formatDataPermission
+    //   .filter((item) => Object.keys(item).some((k) => item[k].includes('P_SETTINGS')))
+    //   .map((item, index) => {
+    //     const key = index + 51;
+    //     return { key, ...item };
+    //   });
+    // const formatListSETTING = getListSETTING.map((item, index) => {
+    //   const key = index + 51;
+    //   return { key, ...item };
+    // });
+    // console.log(selectedRowKeys);
+    // console.log(filterNameDirectoryAll);
+    // const newData = [
+    //   {
+    //     key: 1,
+    //     PermissionID: 'All DIRECTORY',
+    //     PermissionName: 'DIRECTORY',
+    //     children: getListDIRECTORY,
+    //   },
+    //   {
+    //     key: 2,
+    //     PermissionID: 'USER_All',
+    //     PermissionName: 'USER',
+    //     children: getListUser,
+    //   },
+    //   {
+    //     key: 5,
+    //     PermissionName: 'SETTING',
+    //     children: getListSETTING,
+    //   },
+    // ];
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -90,12 +144,12 @@ class PermissionInfo extends PureComponent {
         <Col span={24}>
           <Table
             loading={loadingTable}
-            rowSelection={rowSelection}
+            rowSelection={{ ...rowSelection }}
             columns={columns}
             dataSource={formatDataPermission}
             size="small"
             pagination={false}
-            rowKey="PermissionID"
+            rowKey={(record) => record.PermissionID}
           />
         </Col>
         <Col span={24} className={styles.spaceFooter}>
