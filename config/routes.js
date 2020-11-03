@@ -219,15 +219,7 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: [
-              'employee',
-              'hr-manager',
-              'hr',
-              'admin-csa',
-              'admin-cla',
-              'admin-cda',
-              'leader',
-            ],
+            authority: ['P_ONBOARDING_VIEW'],
           },
           {
             path: '/time-off',
