@@ -35,11 +35,6 @@ class TableFilter extends PureComponent {
     });
   }
 
-  toggle = () => {
-    const { onToggle } = this.props;
-    onToggle();
-  };
-
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
     dispatch({

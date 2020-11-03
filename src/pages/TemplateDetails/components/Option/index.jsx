@@ -3,39 +3,42 @@ import { Form, Radio, Input } from 'antd';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeSetting: { tempSettings = {} } }) => ({
-  tempSettings,
+@connect(({ employeeSetting: { newTemplateData: { settings = {} } = {} } }) => ({
+  settings,
 }))
 class Option extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      checked: true,
+      checked: false,
     };
   }
 
   onChangeRadio = (key, value, description, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { checked } = this.state;
-    const array = [...tempSettings];
-    const index = settings.findIndex((item) => item.key === key);
+    let array = [...settings];
+    console.log('array', array);
+    const index = settingsList.findIndex((item) => item.key === key);
 
-    const setting = {
-      key,
-      description,
-      value,
-    };
-    if (checked === false) {
-      array.slice(index, 1);
+    if (checked !== false) {
+      const tempArray = array.filter((item) => item?.key !== key && item !== undefined);
+      console.log(tempArray);
+      array = [...tempArray];
     } else {
+      const setting = {
+        key,
+        description,
+        value,
+      };
       array[index] = setting;
     }
-    console.log(array);
+
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveTemplate',
       payload: {
-        tempSettings: array,
+        settings: array,
       },
     });
 
@@ -45,7 +48,7 @@ class Option extends Component {
   };
 
   onChangeInput = (option, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { target } = e;
     const { name, value } = target;
     const setting = {
@@ -53,14 +56,13 @@ class Option extends Component {
       description: option.description,
       value,
     };
-    const array = [...tempSettings];
-
-    const index = settings.findIndex((item) => item.key === name);
+    const array = [...settings];
+    const index = settingsList.findIndex((item) => item.key === name);
     array[index] = setting;
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveEmployeeSetting',
       payload: {
-        tempSettings: array,
+        settings: array,
       },
     });
   };

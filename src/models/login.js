@@ -58,23 +58,17 @@ const Model = {
     },
 
     *logout(_, { put }) {
-      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
+      localStorage.removeItem('dataRoles');
+      localStorage.removeItem('Rolesname');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {
           currentUser: {},
         },
       });
-      if (window.location.pathname !== '/login' && !redirect) {
-        history.replace({
-          pathname: '/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
-      }
+      history.replace('/login');
     },
     *loginThirdParty({ payload }, { call, put }) {
       try {

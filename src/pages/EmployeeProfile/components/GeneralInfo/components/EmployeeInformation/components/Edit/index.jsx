@@ -303,7 +303,7 @@ class Edit extends PureComponent {
             name="workEmail"
             rules={[
               {
-                pattern: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/,
+                type: 'email',
                 message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
               },
             ]}

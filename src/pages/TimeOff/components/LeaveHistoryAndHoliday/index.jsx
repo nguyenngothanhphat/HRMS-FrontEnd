@@ -1,20 +1,33 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { connect } from 'umi';
 import Holiday from './components/Holiday';
-
+import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-
-export default class LeaveHistoryAndHoliday extends PureComponent {
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       activeShowType: 1, // 1: list, 2: calendar
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchHolidaysList',
+    });
+    dispatch({
+      type: 'timeOff/fetchLeavingList',
+    });
+  };
 
   handleSelectShowType = (value) => {
     this.setState({
@@ -26,35 +39,41 @@ export default class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.menu}>
-        <img
-          src={ListIcon}
-          className={activeShowType === 1 ? styles.activeShowType : ''}
-          onClick={() => this.handleSelectShowType(1)}
-          alt="list"
-        />
-        <img
-          src={CalendarIcon}
-          className={activeShowType === 2 ? styles.activeShowType : ''}
-          onClick={() => this.handleSelectShowType(2)}
-          alt="calendar"
-        />
+        <Tooltip title="List View">
+          <img
+            src={ListIcon}
+            className={activeShowType === 1 ? styles.activeShowType : ''}
+            onClick={() => this.handleSelectShowType(1)}
+            alt="list"
+          />
+        </Tooltip>
+        <Tooltip title="Calendar View">
+          <img
+            src={CalendarIcon}
+            className={activeShowType === 2 ? styles.activeShowType : ''}
+            onClick={() => this.handleSelectShowType(2)}
+            alt="calendar"
+          />
+        </Tooltip>
       </div>
     );
   };
 
   render() {
     const { activeShowType } = this.state;
+    const { timeOff: { holidaysList = [], leavingList = [] } = {} } = this.props;
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
-        <Tabs defaultActiveKey="2" tabBarExtraContent={this.operations()}>
-          <TabPane tab=" Request History" key="1">
-            Request History
+        <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
+          <TabPane tab="Request History" key="1">
+            <LeaveHistory leavingList={leavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holiday" key="2">
-            {activeShowType === 1 ? <Holiday /> : ''}
+            <Holiday holidaysList={holidaysList} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>
     );
   }
 }
+export default LeaveHistoryAndHoliday;
