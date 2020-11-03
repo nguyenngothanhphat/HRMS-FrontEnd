@@ -175,11 +175,14 @@ class DirectoryComponent extends PureComponent {
 
     roles.map((role) => {
       const { permissions = [] } = role;
-      groupPermissions = [...permissions];
+      groupPermissions = [...groupPermissions, ...permissions];
       return null;
     });
 
-    return groupPermissions;
+    // Remove duplicates
+    const permissionsUnique = groupPermissions.filter((v, i, a) => a.indexOf(v) === i);
+
+    return permissionsUnique;
   };
 
   getDataTable = (params, tabId) => {
