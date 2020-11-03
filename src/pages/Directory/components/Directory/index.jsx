@@ -125,7 +125,7 @@ class DirectoryComponent extends PureComponent {
     // const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
     const findIndexInActive = groupPermissions.indexOf(tabInActive);
 
-    let tabId = '';
+    let tabId = 'active';
 
     if (findIndexActive === -1) {
       tabId = 'inActive';
