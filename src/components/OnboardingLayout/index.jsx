@@ -83,6 +83,12 @@ class OnboardingLayout extends PureComponent {
     dispatch({
       type: 'candidateInfo/fetchCandidateInfo',
     });
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: 0,
+      },
+    });
   };
 
   render() {

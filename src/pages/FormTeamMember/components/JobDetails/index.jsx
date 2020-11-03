@@ -33,21 +33,23 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
+    const { dispatch, candidate, currentStep } = this.props;
     this.checkBottomBar();
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
   }
 
   componentWillUnmount() {
     const {
       dispatch,
-      tempData: {
-        department,
-        workLocation,
-        title,
-        // reportingManager,
-        position,
-        employeeType,
-        _id,
-      },
+      tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
       currentStep,
     } = this.props;
     dispatch({
@@ -56,8 +58,8 @@ class JobDetails extends PureComponent {
         workLocation: workLocation ? workLocation._id : '',
         department: department ? department._id : '',
         title: title ? title._id : '',
-        // reportingManager: reportingManager._id || '',
-        employeeType: employeeType ? employeeType._id : '',
+        reportingManager: reportingManager.length > 0 ? reportingManager._id : '',
+        employeeType,
         position,
         candidate: _id,
         currentStep,
@@ -93,7 +95,6 @@ class JobDetails extends PureComponent {
   };
 
   handleRadio = (e) => {
-    console.log('e', e);
     const { target } = e;
     const { name, value } = target;
     const { dispatch } = this.props;
@@ -122,7 +123,6 @@ class JobDetails extends PureComponent {
       const {
         company: { _id },
       } = selectedWorkLocation;
-      console.log('selected', _id);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -155,7 +155,6 @@ class JobDetails extends PureComponent {
       } = this.props;
       const changedtitleList = JSON.parse(JSON.stringify(titleList));
       const selectedTitle = changedtitleList.find((data) => data._id === value);
-      console.log('selectedTitle', selectedTitle);
       dispatch({
         type: 'candidateInfo/save',
         payload: {

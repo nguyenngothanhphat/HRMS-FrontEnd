@@ -37,7 +37,6 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
-    console.log('abc');
   }
 
   componentWillUnmount() {
@@ -86,10 +85,8 @@ class BasicInformation extends PureComponent {
       emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
-      console.log('xyz1');
     } else {
       checkStatus.filledBasicInformation = false;
-      console.log('xyz');
     }
     dispatch({
       type: 'candidateInfo/save',
@@ -104,17 +101,7 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const {
-      dispatch,
-      currentStep,
-      // tempData: {
-      //   documentList,
-      //   identityProof,
-      //   addressProof,
-      //   educational,
-      //   technicalCertification: { poe },
-      // },
-    } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',

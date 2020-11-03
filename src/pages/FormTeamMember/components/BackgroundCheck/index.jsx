@@ -65,7 +65,6 @@ class BackgroundCheck extends Component {
       },
       dispatch,
     } = this.props;
-    console.log('abc');
 
     // save step
     const { currentStep } = this.props;

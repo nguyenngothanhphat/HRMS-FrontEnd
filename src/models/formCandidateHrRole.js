@@ -429,7 +429,7 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         console.log('data', data);
-        yield put({ type: 'save', payload: { currentStep: 0, rookieId, data: { ...data, _id } } });
+        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
         yield put({
           type: 'updateSignature',
           payload: data,
@@ -570,12 +570,10 @@ const candidateInfo = {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        // console.log('4', data);
-        const { currentStep = 0, _id } = data;
+        const { _id } = data;
         yield put({
           type: 'save',
           payload: {
-            currentStep,
             data: { ...data, candidate: _id, _id },
           },
         });
