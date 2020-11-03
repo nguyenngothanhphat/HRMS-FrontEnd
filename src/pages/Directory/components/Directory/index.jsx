@@ -80,20 +80,7 @@ class DirectoryComponent extends PureComponent {
 
   componentDidMount() {
     this.initDataTable();
-    const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexActive = groupPermissions.indexOf(tabActive);
-
-    if (findIndexActive === -1) {
-      this.setState({
-        tabId: 'inActive',
-      });
-    }
+    this.initTabId();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -122,6 +109,36 @@ class DirectoryComponent extends PureComponent {
       return { tabId: 'active', changeTab: false };
     };
   }
+
+  // Define tabID to filter
+  initTabId = () => {
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
+    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
+    // const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+
+    const groupPermissions = this.generatePermissions(roles);
+
+    const findIndexActive = groupPermissions.indexOf(tabActive);
+    // const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
+    const findIndexInActive = groupPermissions.indexOf(tabInActive);
+
+    let tabId = '';
+
+    if (findIndexActive === -1) {
+      tabId = 'inActive';
+    }
+
+    if (findIndexActive === -1 && findIndexInActive === -1) {
+      tabId = 'myTeam';
+    }
+
+    this.setState({
+      tabId,
+    });
+  };
 
   initDataTable = () => {
     const { dispatch, currentUser } = this.props;
