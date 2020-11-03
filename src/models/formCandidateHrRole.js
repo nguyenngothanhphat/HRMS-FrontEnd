@@ -12,6 +12,7 @@ import {
   updateByHR,
   getById,
   submitPhase1,
+  addManagerSignature,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -417,6 +418,21 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(updateByHR, payload);
+        const { statusCode, data } = response;
+        console.log('data', data);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *addManagerSignatureEffect({ payload }, { call, put }) {
+      console.log('payload', payload);
+      let response = {};
+      try {
+        response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
         console.log('data', data);
         if (statusCode !== 200) throw response;
