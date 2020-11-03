@@ -23,7 +23,10 @@ class Option extends Component {
     const index = settingsList.findIndex((item) => item.key === key);
 
     if (checked !== false) {
-      const tempArray = array.filter((item) => item?.key !== key && item !== undefined);
+      // const tempArray = array.filter((item) => item?.key !== key && item !== undefined);
+      const tempArray = array.map((item) => {
+        return item?.key === key ? null : item;
+      });
       console.log(tempArray);
       array = [...tempArray];
     } else {

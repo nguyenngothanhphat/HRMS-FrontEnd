@@ -37,6 +37,7 @@ const candidateInfo = {
       salaryStatus: 2,
     },
     currentStep: 0,
+    settingStep: 0,
     statusCodeToValidate: null,
     isAddNewMember: false,
     tempData: {
