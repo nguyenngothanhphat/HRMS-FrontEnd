@@ -35,66 +35,54 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(prevState, prevProps) {
+  componentDidMount() {
+    this.checkBottomBar();
+  }
+
+  componentWillUnmount() {
     const {
-      dispatch,
       data,
-      tempData,
-      checkMandatory,
-      tempData: { checkStatus },
-    } = this.props;
-    const emailRegExp = RegExp(
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-    );
-    if (prevProps.data.fullName !== data.fullName && data.fullName !== null) {
-      if (
-        data.fullName !== null &&
-        data.workEmail !== null &&
-        data.privateEmail !== null &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail)
-      ) {
-        checkStatus.filledBasicInformation = true;
-      } else {
-        checkStatus.filledBasicInformation = false;
-      }
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledBasicInformation: checkStatus.filledBasicInformation,
-          },
-        },
-      });
-    }
+      tempData: { fullName, privateEmail, workEmail, previousExperience },
+    } = this.state;
+    const { dispatch, currentStep, tempData } = this.props;
+    const { _id } = data;
+    console.log('data', tempData);
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        fullName,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        candidate: _id,
+        currentStep,
+      },
+    });
   }
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
-    const { dispatch } = this.props;
+    const { tempData } = this.props;
+    tempData[name] = value;
+    this.checkBottomBar();
+  };
+
+  checkBottomBar = () => {
+    const {
+      tempData: { fullName, privateEmail, workEmail, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-
-    const { tempData, checkMandatory, data } = this.state;
-    tempData[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
     if (
-      (fullName !== '' &&
-        workEmail !== '' &&
-        privateEmail !== '' &&
-        emailRegExp.test(privateEmail) &&
-        emailRegExp.test(workEmail)) ||
-      (data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail))
+      fullName !== null &&
+      workEmail !== null &&
+      privateEmail !== null &&
+      emailRegExp.test(privateEmail) &&
+      emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
@@ -103,10 +91,6 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData: {
-          ...tempData,
-        },
-
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -117,24 +101,8 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const {
-      dispatch,
-      currentStep,
-      tempData: {
-        documentList,
-        identityProof,
-        addressProof,
-        educational,
-        technicalCertification: { poe },
-      },
-    } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -143,67 +111,18 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
-    if (
-      data.documentChecklistSetting !== undefined ||
-      (data.documentList && data.documentChecklistSetting !== documentList)
-    ) {
-      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.key);
-      const listSelectedB = arrB.map((x) => x.key);
-      const listSelectedC = arrC.map((x) => x.key);
-      const listSelectedD = arrD.map((x) => x.key);
-      let isCheckedA;
-      let isCheckedB;
-      let isCheckedC;
-      let isCheckedD;
-
-      if (listSelectedA.length === arrToAdjust[0].data.length) {
-        isCheckedA = true;
-      }
-      if (listSelectedB.length === arrToAdjust[1].data.length) {
-        isCheckedB = true;
-      }
-      if (listSelectedC.length === arrToAdjust[2].data.length) {
-        isCheckedC = true;
-      }
-      if (listSelectedD.length === arrToAdjust[3].data.length) {
-        isCheckedD = true;
-      }
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          documentList: data.documentChecklistSetting,
-          identityProof: {
-            ...identityProof,
-            isChecked: isCheckedA,
-            checkedList: listSelectedA,
-          },
-          addressProof: {
-            ...addressProof,
-            checkedList: listSelectedB,
-            isChecked: isCheckedB,
-          },
-          educational: {
-            ...educational,
-            checkedList: listSelectedC,
-            isChecked: isCheckedC,
-          },
-          technicalCertification: {
-            poe: {
-              ...poe,
-              checkedList: listSelectedD,
-              isChecked: isCheckedD,
-            },
-          },
-        },
-      });
-    }
   };
 
   onClickClose = () => {

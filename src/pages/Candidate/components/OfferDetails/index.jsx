@@ -37,7 +37,7 @@ const FileInfo = [
 ];
 
 const OfferDetails = (props) => {
-  const { dispatch, checkCandidateMandatory, currentStep, tempData, data } = props;
+  const { dispatch, checkCandidateMandatory, localStep, tempData, data } = props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
   const { candidateSignature = {}, finalOfferCandidateSignature = {} } = tempData;
 
@@ -48,10 +48,10 @@ const OfferDetails = (props) => {
   const [allFieldFilled, setAllFieldFilled] = useState(false);
 
   useEffect(() => {
-    if (signature) {
+    if (signature.url) {
       setAllFieldFilled(true);
     }
-    const { url = '', fileName = '' } = signature;
+    const { url = '', id = '' } = signature;
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -59,7 +59,7 @@ const OfferDetails = (props) => {
           ...tempData,
           candidateSignature: {
             ...tempData.candidateSignature,
-            fileName,
+            id,
             url,
           },
         },
@@ -121,12 +121,12 @@ const OfferDetails = (props) => {
     if (!dispatch) {
       return;
     }
-    const { fileName, url } = signature;
+    const { id, url } = signature;
 
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
 
@@ -137,7 +137,7 @@ const OfferDetails = (props) => {
           ...data,
           candidateSignature: {
             ...data.candidateSignature,
-            fileName,
+            id,
             url,
           },
         },
@@ -152,7 +152,7 @@ const OfferDetails = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };
@@ -191,18 +191,33 @@ const OfferDetails = (props) => {
     setModalVisible(false);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    if (!dispatch) {
+      return;
+    }
+    const { id } = signature;
+    const { candidate } = data;
+    dispatch({
+      type: 'candidateProfile/updateByCandidateEffect',
+      payload: {
+        candidateSignature: id,
+        candidate,
+      },
+    });
+  };
 
   const loadImage = (response) => {
     const { data: imageData = [] } = response;
-    const { url = '', fileName = '' } = imageData[0];
+    const { url = '', id = '' } = imageData[0];
 
-    setSignature({ url, fileName });
+    setSignature({ url, id });
   };
 
   const resetImg = () => {
-    setSignature({ url: '', fileName: '' });
+    setSignature({ url: '', id: '' });
   };
+
+  console.log(props);
 
   return (
     <div className={s.offerDetailsContainer}>
@@ -324,14 +339,14 @@ const OfferDetails = (props) => {
 export default connect(
   ({
     candidateProfile: {
-      currentStep = 4,
+      localStep = 4,
       checkCandidateMandatory = {},
       tempData = {},
       data = {},
     } = {},
   }) => ({
     checkCandidateMandatory,
-    currentStep,
+    localStep,
     tempData,
     data,
   }),

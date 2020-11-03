@@ -33,6 +33,7 @@ const adminSetting = {
           return { RolesID, Rolesname };
         });
         if (statusCode !== 200) throw response;
+        localStorage.setItem('dataRoles', JSON.stringify(formatData));
         yield put({ type: 'saveOrigin', payload: { listRoles } });
         yield put({ type: 'saveTemp', payload: { formatData } });
       } catch (errors) {
@@ -62,7 +63,7 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *fetchPermissionByIdRole({ payload: { idRoles: _id = '' } }, { call }) {
+    *fetchPermissionByIdRole({ payload: { id: _id = '' } = {} }, { call }) {
       let resp = [];
       try {
         const response = yield call(getPermissionByIdRole, { _id });

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { map } from 'lodash';
@@ -28,10 +28,11 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, data, tableData } = {} }) => ({
+@connect(({ candidateInfo: { tempData, data, tableData, currentStep } }) => ({
   tempData,
   data,
   tableData,
+  currentStep,
 }))
 class BackgroundCheck extends Component {
   constructor(props) {
@@ -54,10 +55,33 @@ class BackgroundCheck extends Component {
   componentDidMount() {
     const {
       data,
-      tempData: { documentList, technicalCertification, isSentEmail },
+      tempData: {
+        documentList,
+        isSentEmail,
+        identityProof,
+        addressProof,
+        educational,
+        technicalCertification: { poe },
+      },
       dispatch,
     } = this.props;
+
+    // save step
+    const { currentStep } = this.props;
+    const { candidate = '' } = data;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
+
     if (data.documentChecklistSetting !== documentList) {
+      console.log('inside');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
       const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
@@ -67,42 +91,6 @@ class BackgroundCheck extends Component {
       const listSelectedB = arrB.map((x) => x.key);
       const listSelectedC = arrC.map((x) => x.key);
       const listSelectedD = arrD.map((x) => x.key);
-      const listA = arrToAdjust[0].data.map((x) => {
-        if (listSelectedA.includes(x.key)) {
-          x.value = true;
-        } else {
-          x.value = false;
-        }
-        return x;
-      });
-      const listC = arrToAdjust[2].data.map((x) => {
-        if (listSelectedC.includes(x.key)) {
-          x.value = true;
-        } else {
-          x.value = false;
-        }
-        return x;
-      });
-      const listB = arrToAdjust[1].data.map((x) => {
-        if (listSelectedB.includes(x.key)) {
-          x.value = true;
-        } else {
-          x.value = false;
-        }
-        return x;
-      });
-      const listD = arrToAdjust[3].data.map((x) => {
-        if (listSelectedD.includes(x.key)) {
-          x.value = true;
-        } else {
-          x.value = false;
-        }
-        return x;
-      });
-      const a = listA.map((x) => x.value);
-      const b = listB.map((x) => x.value);
-      const c = listC.map((x) => x.value);
-      const d = listD.map((x) => x.value);
       let isCheckedA;
       let isCheckedB;
       let isCheckedC;
@@ -127,38 +115,23 @@ class BackgroundCheck extends Component {
           documentList: data.documentChecklistSetting,
           isSentEmail,
           identityProof: {
-            aaharCard: a[0],
-            PAN: a[1],
-            passport: a[2],
-            drivingLicense: a[3],
-            voterCard: a[4],
+            ...identityProof,
             isChecked: isCheckedA,
             checkedList: listSelectedA,
           },
           addressProof: {
-            rentalAgreement: b[0],
-            electricityBill: b[1],
-            telephoneBill: b[2],
+            ...addressProof,
             checkedList: listSelectedB,
             isChecked: isCheckedB,
           },
           educational: {
-            sslc: c[0],
-            diploma: c[1],
-            graduation: c[2],
-            postGraduate: c[3],
-            phd: c[4],
+            ...educational,
             checkedList: listSelectedC,
             isChecked: isCheckedC,
           },
           technicalCertification: {
-            ...technicalCertification,
             poe: {
-              offerLetter: d[0],
-              appraisalLetter: d[1],
-              paystubs: d[2],
-              form16: d[3],
-              relievingLetter: d[4],
+              ...poe,
               checkedList: listSelectedD,
               isChecked: isCheckedD,
             },
@@ -201,7 +174,6 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
-
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
@@ -451,59 +423,68 @@ class BackgroundCheck extends Component {
       tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
       data: { privateEmail },
     } = this.state;
+    const { loading } = this.props;
     return (
       <>
-        <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
-          <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
-            <div className={styles.eliContainer}>
-              <Warning formatMessage={formatMessage} />
-              <Title formatMessage={formatMessage} />
-              {documentList.length > 0 &&
-                documentList.map((item) => {
-                  return (
-                    <CollapseFields
-                      key={item.id}
-                      item={item && item}
-                      handleChange={this.handleChange}
-                      handleCheckAll={this.handleCheckAll}
-                      documentList={documentList}
-                      tempData={tempData}
-                      onValuesChange={this.onValuesChange}
-                    />
-                  );
-                })}
-            </div>
-          </Col>
-          <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
-            <NoteComponent note={note} />
-            <SendEmail
-              title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
-              formatMessage={formatMessage}
-              handleSendEmail={this.handleSendEmail}
-              handleChangeEmail={this.handleChangeEmail}
-              handleSendFormAgain={this.handleSendFormAgain}
-              isSentEmail={isSentEmail}
-              generateLink={generateLink}
-              handleMarkAsDone={this.handleMarkAsDone}
-              fullName={fullName}
-              handleValueChange={this.handleValueChange}
-              privateEmail={privateEmail}
-            />
-          </Col>
-        </Row>
-        <CustomModal
-          open={openModal}
-          closeModal={this.closeModal}
-          content={
-            <ModalContentComponent
+        {loading ? (
+          <div className={styles.viewLoading}>
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
+              <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
+                <div className={styles.eliContainer}>
+                  <Warning formatMessage={formatMessage} />
+                  <Title formatMessage={formatMessage} />
+                  {documentList.length > 0 &&
+                    documentList.map((item) => {
+                      return (
+                        <CollapseFields
+                          key={item.id}
+                          item={item && item}
+                          handleChange={this.handleChange}
+                          handleCheckAll={this.handleCheckAll}
+                          documentList={documentList}
+                          tempData={tempData}
+                          onValuesChange={this.onValuesChange}
+                        />
+                      );
+                    })}
+                </div>
+              </Col>
+              <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
+                <NoteComponent note={note} />
+                <SendEmail
+                  title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
+                  formatMessage={formatMessage}
+                  handleSendEmail={this.handleSendEmail}
+                  handleChangeEmail={this.handleChangeEmail}
+                  handleSendFormAgain={this.handleSendFormAgain}
+                  isSentEmail={isSentEmail}
+                  generateLink={generateLink}
+                  handleMarkAsDone={this.handleMarkAsDone}
+                  fullName={fullName}
+                  handleValueChange={this.handleValueChange}
+                  privateEmail={privateEmail}
+                />
+              </Col>
+            </Row>
+            <CustomModal
+              open={openModal}
               closeModal={this.closeModal}
-              isSentEmail={isSentEmail}
-              isMarkAsDone={isMarkAsDone}
-              tempData={tempData}
-              privateEmail={privateEmail}
+              content={
+                <ModalContentComponent
+                  closeModal={this.closeModal}
+                  isSentEmail={isSentEmail}
+                  isMarkAsDone={isMarkAsDone}
+                  tempData={tempData}
+                  privateEmail={privateEmail}
+                />
+              }
             />
-          }
-        />
+          </>
+        )}
       </>
     );
   }

@@ -1,0 +1,41 @@
+.EventDetailBox {
+  background-color: #568afa12;
+  border-radius: 5px;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  :global {
+    .ant-col {
+      font-size: 13px;
+      color: #464646;
+    }
+  }
+  .eventOfDay {
+    padding-left: 5px;
+  }
+  .dateAndMonth {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    span {
+      font-size: 11px;
+      font-weight: bold;
+    }
+  }
+  .dayInWeek {
+    text-align: right;
+    .arrowIcon {
+      color: #707177;
+      font-weight: bold;
+      padding-left: 5px;
+    }
+  }
+  .upcomingColor {
+    color: #60f93a;
+  }
+  .leaveTakenColor {
+    color: #ff5252;
+  }
+}

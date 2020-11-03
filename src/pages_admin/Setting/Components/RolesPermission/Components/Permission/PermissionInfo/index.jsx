@@ -3,36 +3,48 @@ import { connect, history } from 'umi';
 import { Row, Col, Table, Button } from 'antd';
 import styles from '../index.less';
 
-@connect(
-  ({
-    loading,
-    adminSetting: { idRoles = '', tempData: { listPermission = [], formatData = [] } = {} } = {},
-  }) => ({
-    loadingTable: loading.effects['adminSetting/fetchPermissionByIdRole'],
-    loading: loading.effects['adminSetting/updatePermission'],
-    idRoles,
-    listPermission,
-    formatData,
-  }),
-)
+@connect(({ loading, adminSetting: { tempData: { listPermission = [] } = {} } = {} }) => ({
+  loadingTable: loading.effects['adminSetting/fetchPermissionByIdRole'],
+  loading: loading.effects['adminSetting/updatePermission'],
+  listPermission,
+}))
 class PermissionInfo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       selectedRowKeys: [],
+      currentId: '',
     };
   }
 
   componentDidMount() {
-    const { dispatch, idRoles } = this.props;
+    const { dispatch, id } = this.props;
+    this.setState({
+      currentId: id,
+    });
     dispatch({
       type: 'adminSetting/fetchPermissionByIdRole',
-      payload: { idRoles },
+      payload: { id },
     }).then((resp) => {
       const { permissions } = resp;
       const getData = permissions.map((item) => item._id);
-      this.setState({ selectedRowKeys: getData });
+      this.setState({ selectedRowKeys: getData, currentId: id });
     });
+  }
+
+  componentDidUpdate() {
+    const { currentId } = this.state;
+    const { id, dispatch } = this.props;
+    if (id !== currentId) {
+      dispatch({
+        type: 'adminSetting/fetchPermissionByIdRole',
+        payload: { id },
+      }).then((resp) => {
+        const { permissions } = resp;
+        const getData = permissions.map((item) => item._id);
+        this.setState({ selectedRowKeys: getData, currentId: id });
+      });
+    }
   }
 
   onSelectChange = (selectedRowKeys) => {
@@ -43,9 +55,9 @@ class PermissionInfo extends PureComponent {
     history.push('/settings/');
   };
 
-  handleSubmit = (selectedRowKeys, idRoles) => {
-    const { dispatch } = this.props;
-    const getValues = { _id: idRoles, permissions: selectedRowKeys };
+  handleSubmit = (selectedRowKeys) => {
+    const { dispatch, id } = this.props;
+    const getValues = { _id: id, permissions: selectedRowKeys };
     dispatch({
       type: 'adminSetting/updatePermission',
       payload: { getValues },
@@ -54,7 +66,7 @@ class PermissionInfo extends PureComponent {
 
   render() {
     const { selectedRowKeys } = this.state;
-    const { listPermission, loading, idRoles, loadingTable } = this.props;
+    const { listPermission, loading, loadingTable } = this.props;
     const formatDataPermission = listPermission.map((item) => {
       const { _id: PermissionID, name: PermissionName } = item;
       return { PermissionID, PermissionName };
@@ -62,6 +74,7 @@ class PermissionInfo extends PureComponent {
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
+      columnWidth: '20%',
     };
 
     const columns = [
@@ -69,7 +82,7 @@ class PermissionInfo extends PureComponent {
         key: 2,
         title: 'Permission name',
         dataIndex: 'PermissionName',
-        align: 'center',
+        align: 'left',
       },
     ];
     return (
@@ -92,7 +105,7 @@ class PermissionInfo extends PureComponent {
           <Button
             loading={loading}
             className={styles.buttonFooter}
-            onClick={() => this.handleSubmit(selectedRowKeys, idRoles)}
+            onClick={() => this.handleSubmit(selectedRowKeys)}
           >
             Submit
           </Button>

@@ -23,7 +23,7 @@ const Note = {
 };
 
 const Benefits = (props) => {
-  const { checkCandidateMandatory, currentStep, dispatch } = props;
+  const { checkCandidateMandatory, localStep, dispatch } = props;
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
@@ -100,7 +100,7 @@ const Benefits = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
   };
@@ -112,7 +112,7 @@ const Benefits = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };
@@ -219,8 +219,8 @@ const Benefits = (props) => {
 };
 
 export default connect(
-  ({ candidateProfile: { currentStep = 5, checkCandidateMandatory = {} } = {} }) => ({
+  ({ candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {} }) => ({
     checkCandidateMandatory,
-    currentStep,
+    localStep,
   }),
 )(Benefits);

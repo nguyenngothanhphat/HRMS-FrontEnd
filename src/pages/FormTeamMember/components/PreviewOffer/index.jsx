@@ -182,7 +182,7 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/approveFinalOfferEffect',
-      payload: { hrManagerSignature: id, candidate },
+      payload: { hrManagerSignature: id, candidate, options: 'accept' },
     });
   };
 
