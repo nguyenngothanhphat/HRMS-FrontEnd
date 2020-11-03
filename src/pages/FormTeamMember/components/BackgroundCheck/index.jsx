@@ -57,7 +57,6 @@ class BackgroundCheck extends Component {
       data,
       tempData: {
         documentList,
-        isSentEmail,
         identityProof,
         addressProof,
         educational,
@@ -80,6 +79,7 @@ class BackgroundCheck extends Component {
     }
 
     if (data.documentChecklistSetting !== documentList) {
+      console.log('1');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
       const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
@@ -110,7 +110,6 @@ class BackgroundCheck extends Component {
         type: 'candidateInfo/saveTemp',
         payload: {
           documentList: data.documentChecklistSetting,
-          isSentEmail,
           identityProof: {
             ...identityProof,
             isChecked: isCheckedA,
@@ -420,6 +419,7 @@ class BackgroundCheck extends Component {
       tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
+    console.log('poe', tempData.technicalCertification.poe.checkedList);
     const { loading } = this.props;
     return (
       <>

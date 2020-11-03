@@ -44,9 +44,8 @@ class BasicInformation extends PureComponent {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep, tempData } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    console.log('data', tempData);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -292,7 +291,6 @@ class BasicInformation extends PureComponent {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
     const { loading1 } = this.props;
-    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (

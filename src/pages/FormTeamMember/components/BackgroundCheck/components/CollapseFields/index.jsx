@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import { Collapse, Space, Checkbox, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import { isEmpty } from 'lodash';
 import InputField from '../InputField';
 import styles from './index.less';
 
@@ -95,41 +94,17 @@ class CollapseField extends PureComponent {
                 className={styles.checkboxItem}
                 options={defaultArr.map((data) => data.alias)}
                 onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
-                // value={
-                //   item.type === 'A'
-                //     ? identityProof.checkedList
-                //     : item.type === 'B'
-                //     ? addressProof.checkedList
-                //     : item.type === 'C'
-                //     ? educational.checkedList
-                //     : item.type === 'D'
-                //     ? poe.checkedList
-                //     : []
-                // }
-                {...(isEmpty(identityProof.checkedList && item.type === 'A') && {
-                  value: identityProof.checkedList,
-                })}
-                {...(isEmpty(addressProof.checkedList && item.type === 'B') && {
-                  value: addressProof.checkedList,
-                })}
-                {...(isEmpty(educational.checkedList && item.type === 'C') && {
-                  value: educational.checkedList,
-                })}
-                {...(isEmpty(poe.checkedList && item.type === 'D') && {
-                  value: poe.checkedList,
-                })}
-                {...(!isEmpty(identityProof.checkedList && item.type === 'A') && {
-                  defaultValue: identityProof.checkedList,
-                })}
-                {...(!isEmpty(addressProof.checkedList && item.type === 'B') && {
-                  defaultValue: addressProof.checkedList,
-                })}
-                {...(!isEmpty(educational.checkedList && item.type === 'C') && {
-                  defaultValue: educational.checkedList,
-                })}
-                {...(!isEmpty(poe.checkedList && item.type === 'D') && {
-                  defaultValue: poe.checkedList,
-                })}
+                value={
+                  item.type === 'A'
+                    ? identityProof.checkedList
+                    : item.type === 'B'
+                    ? addressProof.checkedList
+                    : item.type === 'C'
+                    ? educational.checkedList
+                    : item.type === 'D'
+                    ? poe.checkedList
+                    : []
+                }
               />
               {item.type === 'D' ? (
                 <Space direction="horizontal">

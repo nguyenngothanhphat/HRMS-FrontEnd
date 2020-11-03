@@ -74,6 +74,12 @@ export function submitPhase1(params) {
   });
 }
 
+export function getLocationListByCompany(params) {
+  return request('/api/location/get-by-company', {
+    method: 'POST',
+    data: params,
+  });
+}
 export function getSalaryStructureList() {
   return request('/api/salarystructure/list', {
     method: 'POST',

@@ -25,6 +25,7 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
+      candidateInfo: { data },
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
     if (action === 'review') {
@@ -34,9 +35,14 @@ class FormTeamMember extends PureComponent {
           rookieID: reId,
         },
       });
-      dispatch({
-        type: 'candidateInfo/fetchLocationList',
-      });
+      if (data.company._id.length > 0) {
+        dispatch({
+          type: 'candidateInfo/fetchLocationListByCompany',
+          payload: {
+            company: data.company._id,
+          },
+        });
+      }
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });
@@ -285,6 +291,7 @@ class FormTeamMember extends PureComponent {
         };
       }) || [];
     return (
+      // {loading1 && loading 2 ? }
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
           <Affix offsetTop={40}>
