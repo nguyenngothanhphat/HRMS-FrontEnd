@@ -72,6 +72,7 @@ const Benefits = (props) => {
     return list.map((item, index) => {
       const { name, url } = item;
       return (
+        // eslint-disable-next-line react/no-array-index-key
         <div key={`${index} + a`} className={s.file} onClick={() => handleClick(url)}>
           <span className={s.fileName}>{name}</span>
           <img src={FileIcon} alt="file icon" />
