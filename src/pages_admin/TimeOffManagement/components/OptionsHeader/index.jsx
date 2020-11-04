@@ -23,8 +23,8 @@ export default class OptionsHeader extends PureComponent {
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
                   <Select onChange={() => {}}>
-                    <Option value="Company A">User A</Option>
-                    <Option value="Company B">User B</Option>
+                    <Option value="User A">User A</Option>
+                    <Option value="User B">User B</Option>
                   </Select>
                 </Form.Item>
               </Col>
