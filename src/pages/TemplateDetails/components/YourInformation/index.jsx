@@ -169,11 +169,7 @@ class YourInformation extends PureComponent {
   };
 
   onNext = () => {
-    const { onNext = {}, loadingUploadFile } = this.props;
     this.handleUploadToServer();
-
-    if (loadingUploadFile) {
-    }
   };
 
   handleChangeInput = (e) => {
@@ -184,7 +180,7 @@ class YourInformation extends PureComponent {
     dispatch({
       type: 'employeeSetting/saveTemplate',
       payload: {
-        fullName: value,
+        fullname: value,
       },
     });
   };

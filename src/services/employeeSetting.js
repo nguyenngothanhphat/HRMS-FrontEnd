@@ -20,6 +20,7 @@ export async function getTemplateById(payload) {
 }
 
 export async function addCustomTemplate(payload) {
+  console.log(payload);
   return request('/api/template/add', {
     method: 'POST',
     data: payload,
