@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import CommonLayout from '@/components/CommonLayout';
+import SettingLayout from '@/components/SettingLayout';
 
 import BackgroundChecks from './components/BackgroundChecks';
 import CompanySignatory from './components/CompanySignatory';
@@ -50,7 +50,7 @@ class Settings extends PureComponent {
     ];
     return (
       <div>
-        <CommonLayout listMenu={listMenu} currentPage="settings" />
+        <SettingLayout listMenu={listMenu} currentPage="settings" />
       </div>
     );
   }
