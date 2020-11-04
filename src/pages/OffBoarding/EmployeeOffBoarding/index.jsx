@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
+import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
 import RightDataTable from './components/RightContent';
 import styles from './index.less';
 
+@connect(({ offboarding: { list = [] } = {} }) => ({
+  list,
+}))
 class EmployeeOffBoading extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +17,9 @@ class EmployeeOffBoading extends Component {
   }
 
   render() {
+    const { list } = this.props;
+
+    console.log(`${list}145645646456464564`);
     const data = [
       {
         ticketId: 16003134,
