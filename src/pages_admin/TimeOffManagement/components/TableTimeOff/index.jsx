@@ -56,6 +56,7 @@ class TableTimeOff extends PureComponent {
     {
       title: 'Count/Q.ty',
       dataIndex: 'count',
+      width: '10%',
     },
     {
       title: 'Leave Type',
@@ -113,7 +114,7 @@ class TableTimeOff extends PureComponent {
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
-      x: '100vw',
+      x: '',
       y: '',
     };
     const pagination = {

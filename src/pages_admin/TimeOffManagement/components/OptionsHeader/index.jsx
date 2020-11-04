@@ -76,12 +76,12 @@ export default class OptionsHeader extends PureComponent {
                   gutter={['20', '20']}
                 >
                   <Col>
-                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
-                  </Col>
-                  <Col>
                     <Button className={styles.submitBtn} htmlType="submit">
                       Get data
                     </Button>
+                  </Col>
+                  <Col>
+                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
                   </Col>
                 </Row>
               </Col>
