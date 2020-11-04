@@ -39,7 +39,6 @@ const Candidate = (props) => {
   }, [localStep]);
 
   useEffect(() => {
-    console.log('CANDIDATE RENDER');
     if (!dispatch) {
       return;
     }

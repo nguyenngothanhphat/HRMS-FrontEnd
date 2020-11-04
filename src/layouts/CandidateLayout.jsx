@@ -128,7 +128,6 @@ const CandidateLayout = (props) => {
   };
 
   const handleStepClick = (id) => {
-    console.log(id);
     if (!dispatch) {
       return;
     }
@@ -173,7 +172,7 @@ const CandidateLayout = (props) => {
                     return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
                   })}
                 </Steps>
-                <button className={s.btn} onClick={renderPreviewOffer}>
+                <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
                   Preview offer letter
                 </button>
               </div>

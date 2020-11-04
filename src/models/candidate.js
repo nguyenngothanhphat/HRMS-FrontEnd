@@ -130,12 +130,10 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
-      console.log('fetchCandidate payload', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log('fetchCandidate data', data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -168,7 +166,6 @@ const candidateProfile = {
       try {
         const response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -180,7 +177,6 @@ const candidateProfile = {
     },
 
     *updateByCandidateEffect({ payload }, { call }) {
-      console.log('payload', payload);
       try {
         const response = yield call(updateByCandidate, payload);
         const { statusCode } = response;
@@ -195,7 +191,6 @@ const candidateProfile = {
       try {
         response = yield call(addAttachmentService, payload);
         const { data, statusCode } = response;
-        console.log('abc', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -226,7 +221,6 @@ const candidateProfile = {
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;
-        console.log('a', response);
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -239,7 +233,6 @@ const candidateProfile = {
       try {
         response = yield call(candidateFinalOffer, payload);
         const { statusCode } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -249,7 +242,6 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
-      console.log('saved');
       return {
         ...state,
         ...action.payload,
