@@ -7,6 +7,7 @@ import OfferDetails from './components/OfferDetails';
 import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
+import PreviewOffer from './components/PreviewOffer';
 
 const _renderScreen = (screenNumber) => {
   switch (screenNumber) {
@@ -22,6 +23,8 @@ const _renderScreen = (screenNumber) => {
       return <OfferDetails />;
     case 6:
       return <Benefits />;
+    case 7:
+      return <PreviewOffer />;
     default:
       return null;
   }
@@ -30,7 +33,7 @@ const _renderScreen = (screenNumber) => {
 const Candidate = (props) => {
   const { dispatch, localStep, candidate } = props;
   const [screen, setScreen] = useState(localStep);
-  console.log(candidate);
+  // console.log(candidate);
   useEffect(() => {
     setScreen(localStep);
   }, [localStep]);

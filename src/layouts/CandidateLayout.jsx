@@ -109,6 +109,18 @@ const CandidateLayout = (props) => {
     });
   };
 
+  const renderPreviewOffer = () => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: 7,
+      },
+    });
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -141,6 +153,9 @@ const CandidateLayout = (props) => {
                     <Step key={item.title} title={item.title} />
                   ))}
                 </Steps>
+                <button className={s.btn} onClick={renderPreviewOffer}>
+                  Preview offer letter
+                </button>
               </div>
             </Col>
             <Col md={19}>{children}</Col>
