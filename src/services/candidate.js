@@ -53,10 +53,3 @@ export function sendEmailByCandidateModel(params) {
     data: params,
   });
 }
-
-export function candidateFinalOffer(payload) {
-  return request('/api/candidate/candidate-final-offer', {
-    method: 'POST',
-    data: payload,
-  });
-}

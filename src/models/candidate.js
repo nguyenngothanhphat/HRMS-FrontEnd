@@ -130,11 +130,12 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
+      console.log('fetchCandidate payload', payload);
       try {
         const response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data);
+        console.log('fetchCandidate data', data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -179,6 +180,7 @@ const candidateProfile = {
     },
 
     *updateByCandidateEffect({ payload }, { call }) {
+      console.log('payload', payload);
       try {
         const response = yield call(updateByCandidate, payload);
         const { statusCode } = response;
