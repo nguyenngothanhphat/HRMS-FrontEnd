@@ -33,11 +33,9 @@ const _renderScreen = (screenNumber) => {
 const Candidate = (props) => {
   const { dispatch, localStep, candidate } = props;
   const [screen, setScreen] = useState(localStep);
-  // console.log(candidate);
   useEffect(() => {
     setScreen(localStep);
   }, [localStep]);
-
   useEffect(() => {
     if (!dispatch) {
       return;
@@ -47,6 +45,25 @@ const Candidate = (props) => {
       payload: {
         candidate,
       },
+    }).then(({ data, statusCode }) => {
+      if (statusCode === 200) {
+        const { _id, documentChecklistSetting } = data;
+        const { employer } = documentChecklistSetting[3];
+        dispatch({
+          type: 'candidateProfile/fetchDocumentByCandidate',
+          payload: {
+            candidate: _id,
+          },
+        });
+        if (employer.length > 1) {
+          dispatch({
+            type: 'candidateProfile/fetchEmployer',
+            payload: {
+              candidate: _id,
+            },
+          });
+        }
+      }
     });
   }, []);
 

@@ -24,7 +24,7 @@ class CollapseField extends PureComponent {
     } = this.props;
     return (
       <div className={styles.CollapseField}>
-        {item.data.length > 0 ? (
+        {item.data.length > 0 || item.type === 'D' ? (
           <Collapse
             accordion
             expandIconPosition="right"

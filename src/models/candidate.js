@@ -130,8 +130,9 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -160,6 +161,7 @@ const candidateProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchDocumentByCandidate({ payload }, { call, put }) {
@@ -218,6 +220,7 @@ const candidateProfile = {
     },
     *sendEmailByCandidate({ payload }, { call }) {
       let response = {};
+      console.log('sendEmail payload', payload);
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;

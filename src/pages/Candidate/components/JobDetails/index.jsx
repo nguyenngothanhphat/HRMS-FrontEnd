@@ -72,7 +72,6 @@ class JobDetails extends PureComponent {
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        ...data,
         noticePeriod: candidatesNoticePeriod,
         dateOfJoining: converted,
         candidate: _id,
