@@ -25,6 +25,7 @@ class FirstFieldsComponent extends PureComponent {
       loading1,
       loading2,
       loading3,
+      processStatus,
     } = this.props;
     return (
       <>
@@ -50,7 +51,8 @@ class FirstFieldsComponent extends PureComponent {
                   disabled={
                     !!(item.title === 'reportingManager' && managerList.length <= 0) ||
                     (item.title === 'department' && departmentList.length <= 0) ||
-                    (item.title === 'title' && titleList.length <= 0)
+                    (item.title === 'title' && titleList.length <= 0) ||
+                    (item.title === 'workLocation' && processStatus === 'SENT-PROVISIONAL-OFFER')
                   }
                   // {...(item.title === 'department' &&
                   //   (!isNull(department) || !isUndefined(department)) && {

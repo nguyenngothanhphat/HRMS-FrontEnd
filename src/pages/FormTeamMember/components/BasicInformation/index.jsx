@@ -38,6 +38,8 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
+    // const { currentStep } = this.props;
+    // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
@@ -45,9 +47,8 @@ class BasicInformation extends PureComponent {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep, tempData } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    console.log('data', tempData);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -141,6 +142,7 @@ class BasicInformation extends PureComponent {
 
   _renderForm = () => {
     const { isOpenReminder = {} } = this.state;
+    const { processStatus } = this.props;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -157,6 +159,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
               />
             </Form.Item>
           </Col>
@@ -182,6 +185,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -217,6 +221,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -243,6 +248,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="previousExperience"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={experienceYear}
               />
             </Form.Item>
@@ -302,7 +308,6 @@ class BasicInformation extends PureComponent {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
     const { loading1 } = this.props;
-    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (

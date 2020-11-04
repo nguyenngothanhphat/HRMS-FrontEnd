@@ -12,6 +12,7 @@ import {
   updateByHR,
   getById,
   submitPhase1,
+  getLocationListByCompany,
   addManagerSignature,
 } from '@/services/addNewMember';
 import { history } from 'umi';
@@ -344,7 +345,6 @@ const candidateInfo = {
 
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
-      console.log('pl', payload);
       try {
         response = yield call(getTitleList, payload);
         const { statusCode, data } = response;
@@ -372,6 +372,19 @@ const candidateInfo = {
       }
     },
 
+    *fetchLocationListByCompany({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getLocationListByCompany, payload);
+        const { statusCode, data: locationList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { locationList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
@@ -414,12 +427,12 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('payload', payload);
+      // console.log('payload', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('data', data);
+        // console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -429,12 +442,12 @@ const candidateInfo = {
     },
 
     *addManagerSignatureEffect({ payload }, { call, put }) {
-      console.log('payload', payload);
+      // console.log('payload', payload);
       let response = {};
       try {
         response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
-        console.log('data', data);
+        // console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -451,7 +464,7 @@ const candidateInfo = {
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        console.log('data', data);
+        // console.log('abc', data);
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
         yield put({
           type: 'updateSignature',
@@ -549,7 +562,6 @@ const candidateInfo = {
 
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
-      console.log('payload', payload);
       try {
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
@@ -587,17 +599,26 @@ const candidateInfo = {
       return response;
     },
     *fetchCandidateByRookie({ payload }, { call, put }) {
-      // console.log('abc', payload);
       let response = {};
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
+        // console.log('data', data);
+        // console.log('currentStep', data.currentStep);
         if (statusCode !== 200) throw response;
         const { _id } = data;
         yield put({
           type: 'save',
           payload: {
-            data: { ...data, candidate: _id, _id },
+            currentStep: data.currentStep,
+          },
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...data,
+            candidate: _id,
+            _id,
           },
         });
         yield put({

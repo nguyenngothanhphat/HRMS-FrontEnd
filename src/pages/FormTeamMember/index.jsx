@@ -15,8 +15,9 @@ import Payroll from './components/Payroll';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
-@connect(({ candidateInfo = {}, loading }) => ({
+@connect(({ candidateInfo = {}, user, loading }) => ({
   candidateInfo,
+  user,
   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
   loading2: loading.effects['candidateInfo/fetchCandidateInfo'],
 }))
@@ -25,8 +26,13 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
+      user: {
+        currentUser: { company },
+      },
+      // candidateInfo,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
+    // console.log(candidateInfo.currentStep);
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchCandidateByRookie',
@@ -34,9 +40,14 @@ class FormTeamMember extends PureComponent {
           rookieID: reId,
         },
       });
-      dispatch({
-        type: 'candidateInfo/fetchLocationList',
-      });
+      if (company._id.length > 0) {
+        dispatch({
+          type: 'candidateInfo/fetchLocationListByCompany',
+          payload: {
+            company: company._id,
+          },
+        });
+      }
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });
@@ -314,6 +325,7 @@ class FormTeamMember extends PureComponent {
       }) || [];
 
     return (
+      // {loading1 && loading 2 ? }
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
           <Affix offsetTop={40}>
