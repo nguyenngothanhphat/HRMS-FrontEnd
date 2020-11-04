@@ -15,8 +15,9 @@ import Payroll from './components/Payroll';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
-@connect(({ candidateInfo = {}, loading }) => ({
+@connect(({ candidateInfo = {}, user, loading }) => ({
   candidateInfo,
+  user,
   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
   loading2: loading.effects['candidateInfo/fetchCandidateInfo'],
 }))
@@ -25,8 +26,13 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
+      user: {
+        currentUser: { company },
+      },
+      // candidateInfo,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
+    // console.log(candidateInfo.currentStep);
     if (action === 'review') {
       dispatch({
         type: 'candidateInfo/fetchCandidateByRookie',
@@ -34,9 +40,14 @@ class FormTeamMember extends PureComponent {
           rookieID: reId,
         },
       });
-      dispatch({
-        type: 'candidateInfo/fetchLocationList',
-      });
+      if (company._id.length > 0) {
+        dispatch({
+          type: 'candidateInfo/fetchLocationListByCompany',
+          payload: {
+            company: company._id,
+          },
+        });
+      }
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });
@@ -216,14 +227,19 @@ class FormTeamMember extends PureComponent {
       candidateInfo,
       loading1,
     } = this.props;
-    const { tempData: { locationList, employeeTypeList, documentList } = {} } = candidateInfo;
+    const {
+      tempData: { locationList, employeeTypeList, documentList } = {},
+      data: { processStatus = '' } = {},
+    } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
     const listMenu = [
       {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: <BasicInformation reId={reId} loading1={loading1} />,
+        component: (
+          <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
+        ),
       },
       {
         id: 2,
@@ -235,6 +251,7 @@ class FormTeamMember extends PureComponent {
             employeeTypeList={employeeTypeList}
             reId={reId}
             loading={loading1}
+            processStatus={processStatus}
           />
         ),
       },
@@ -242,18 +259,40 @@ class FormTeamMember extends PureComponent {
         id: 3,
         name: 'Salary Structure',
         key: 'salaryStructure',
-        component: <SalaryStructure loading={loading1} reId={reId} />,
+        component: <SalaryStructure loading={loading1} reId={reId} processStatus={processStatus} />,
       },
       {
         id: 4,
         name: 'Background Check',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: <BackgroundCheck documentList={documentList} loading={loading1} reId={reId} />,
+        component: (
+          <BackgroundCheck
+            documentList={documentList}
+            loading={loading1}
+            reId={reId}
+            processStatus={processStatus}
+          />
+        ),
       },
-      { id: 5, name: 'Offer Details', key: 'offerDetails', component: <OfferDetail /> },
-      { id: 6, name: 'Payroll Settings', key: 'payrollSettings', component: <Payroll /> },
-      { id: 7, name: 'Benefits', key: 'benefits', component: <Benefit /> },
+      {
+        id: 5,
+        name: 'Offer Details',
+        key: 'offerDetails',
+        component: <OfferDetail processStatus={processStatus} />,
+      },
+      {
+        id: 6,
+        name: 'Payroll Settings',
+        key: 'payrollSettings',
+        component: <Payroll processStatus={processStatus} />,
+      },
+      {
+        id: 7,
+        name: 'Benefits',
+        key: 'benefits',
+        component: <Benefit processStatus={processStatus} />,
+      },
       // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       // {
       //   id: 9,
@@ -284,7 +323,9 @@ class FormTeamMember extends PureComponent {
           isComplete: candidateProcess[key],
         };
       }) || [];
+
     return (
+      // {loading1 && loading 2 ? }
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
           <Affix offsetTop={40}>

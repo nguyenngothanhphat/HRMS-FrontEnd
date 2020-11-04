@@ -116,8 +116,7 @@ class SalaryStructureTemplate extends PureComponent {
       data: { salaryStructure },
     } = this.props;
     const idTitle = title?._id;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
