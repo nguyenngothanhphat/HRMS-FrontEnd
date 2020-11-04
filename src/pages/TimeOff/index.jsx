@@ -1,16 +1,17 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Affix } from 'antd';
-
+import React, { Fragment, PureComponent } from 'react';
+import { Row, Col, Tabs, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
 import TimeOffRequests from './components/TimeOffRequests';
+import SetupTimeoff from './components/SetupTimeoff';
 import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
 import styles from './index.less';
 
+const { TabPane } = Tabs;
 export default class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
@@ -31,7 +32,7 @@ export default class TimeOff extends PureComponent {
     });
   };
 
-  render() {
+  _renderLandingPage = () => {
     const describeText = [
       <p>
         Apply for leaves with/without pay, work from home or client office.
@@ -48,7 +49,7 @@ export default class TimeOff extends PureComponent {
     ];
     const { viewInformation } = this.state;
     return (
-      <PageContainer>
+      <>
         <Affix offsetTop={40}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage__text}>Time Off</p>
@@ -106,6 +107,25 @@ export default class TimeOff extends PureComponent {
             )}
           </Row>
         </div>
+      </>
+    );
+  };
+
+  _renderSetupTimeoff = () => {
+    return <SetupTimeoff />;
+  };
+
+  render() {
+    return (
+      <PageContainer>
+        <Tabs defaultActiveKey="langdingPage">
+          <TabPane tab="Landing page" key="langdingPage">
+            {this._renderLandingPage()}
+          </TabPane>
+          <TabPane tab="Setup Timeoff policy" key="setupTimeOff">
+            {this._renderSetupTimeoff()}
+          </TabPane>
+        </Tabs>
       </PageContainer>
     );
   }
