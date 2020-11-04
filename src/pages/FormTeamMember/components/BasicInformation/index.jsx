@@ -1,7 +1,8 @@
+/* eslint-disable compat/compat */
+/* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography, Button } from 'antd';
+import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
@@ -36,65 +37,55 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
+    this.checkBottomBar();
+    // const { currentStep } = this.props;
+    // console.log('basicInfo currentStep', currentStep);
+  }
+
+  componentWillUnmount() {
     const {
       data,
-      tempData,
-      checkMandatory,
-      tempData: { checkStatus },
+      tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch } = this.props;
-    const emailRegExp = RegExp(
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-    );
-    if (data.fullName !== '') {
-      if (
-        data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail)
-      ) {
-        checkStatus.filledBasicInformation = true;
-      } else {
-        checkStatus.filledBasicInformation = false;
-      }
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledBasicInformation: checkStatus.filledBasicInformation,
-          },
-        },
-      });
-    }
+    const { dispatch, currentStep } = this.props;
+    const { _id } = data;
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        fullName,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        candidate: _id,
+        currentStep,
+      },
+    });
   }
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
-    const { dispatch } = this.props;
+    const { tempData } = this.props;
+    tempData[name] = value;
+    this.checkBottomBar();
+  };
+
+  checkBottomBar = () => {
+    const {
+      tempData: { fullName, privateEmail, workEmail, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-
-    const { tempData, checkMandatory, data } = this.state;
-    tempData[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
     if (
-      (fullName !== '' &&
-        workEmail !== '' &&
-        privateEmail !== '' &&
-        emailRegExp.test(privateEmail) &&
-        emailRegExp.test(workEmail)) ||
-      (data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail))
+      fullName !== null &&
+      workEmail !== null &&
+      privateEmail !== null &&
+      workEmail !== privateEmail &&
+      emailRegExp.test(privateEmail) &&
+      emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
@@ -103,10 +94,6 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData: {
-          ...tempData,
-        },
-
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -120,12 +107,6 @@ class BasicInformation extends PureComponent {
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
-    dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         fullName: values.fullName,
@@ -133,7 +114,17 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
   };
 
@@ -213,6 +204,14 @@ class BasicInformation extends PureComponent {
                   type: 'email',
                   message: 'Email invalid!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue('privateEmail') !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Two emails cannot be the same!'));
+                  },
+                }),
               ]}
             >
               <Input
@@ -303,6 +302,7 @@ class BasicInformation extends PureComponent {
   render() {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { loading1 } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -314,35 +314,43 @@ class BasicInformation extends PureComponent {
     };
     return (
       <Row gutter={[24, 0]}>
-        <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-          <div className={styles.basicInformation}>
-            <Form
-              wrapperCol={{ span: 24 }}
-              name="basic"
-              initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
-              onFocus={this.onFocus}
-              onValuesChange={this.handleChange}
-              onFinish={this.onFinish}
-            >
-              <div className={styles.basicInformation__top}>
-                <BasicInformationHeader />
-                <hr />
-                {this._renderForm()}
+        {loading1 ? (
+          <div className={styles.viewLoading}>
+            <Spin />
+          </div>
+        ) : (
+          <>
+            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+              <div className={styles.basicInformation}>
+                <Form
+                  wrapperCol={{ span: 24 }}
+                  name="basic"
+                  initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
+                  onFocus={this.onFocus}
+                  onValuesChange={this.handleChange}
+                  onFinish={this.onFinish}
+                >
+                  <div className={styles.basicInformation__top}>
+                    <BasicInformationHeader />
+                    <hr />
+                    {this._renderForm()}
+                  </div>
+                  {this._renderBottomBar()}
+                </Form>
               </div>
-              {this._renderBottomBar()}
-            </Form>
-          </div>
-        </Col>
-        <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-          <div className={styles.rightWrapper}>
-            <Row>
-              <NoteComponent note={Note} />
-            </Row>
-            <Row className={styles.stepRow}>
-              <StepsComponent />
-            </Row>
-          </div>
-        </Col>
+            </Col>
+            <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+              <div className={styles.rightWrapper}>
+                <Row>
+                  <NoteComponent note={Note} />
+                </Row>
+                <Row className={styles.stepRow}>
+                  <StepsComponent />
+                </Row>
+              </div>
+            </Col>
+          </>
+        )}
       </Row>
     );
   }

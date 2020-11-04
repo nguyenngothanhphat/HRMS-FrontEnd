@@ -4,14 +4,14 @@ import { connect, formatMessage } from 'umi';
 import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
+import CustomModal from '@/components/CustomModal';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 import SendEmail from '../BackgroundCheck/components/SendEmail';
-// import SendEmail from '../EligibilityDocs/components/SendEmail';
-
+import ModalContent from './components/ModalContent';
 import styles from './index.less';
 
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
@@ -25,27 +25,36 @@ const PreviewOffer = (props) => {
   const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
 
   const {
-    email: mailProp,
+    // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
   } = tempData;
+  const {
+    candidateSignature: candidateSignatureProp = {},
+    privateEmail: candidateEmailProp = '',
+    fullName: candidateName = '',
+  } = data;
 
   // const inputRefs = [];
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  // eslint-disable-next-line no-unused-vars
+  const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   const [uploadVisible2, setUploadVisible2] = useState(false);
 
-  const [mail, setMail] = useState(mailProp || '');
+  const [mail, setMail] = useState(candidateEmailProp || '');
   const [mailForm] = Form.useForm();
 
   const [role, setRole] = useState('');
 
-  const resetForm = () => {
-    mailForm.resetFields();
-  };
+  const [openModal, setOpenModal] = useState(false);
+
+  // const resetForm = () => {
+  //   mailForm.resetFields();
+  // };
 
   const resetImg = (type) => {
     if (type === 'hr') {
@@ -113,12 +122,6 @@ const PreviewOffer = (props) => {
           },
         },
       });
-
-      // call API
-      // dispatch({
-      //   type: 'candidateInfo/sentForApprovalEffect',
-      //   payload: { hrSignature: id, candidate: rookieId },
-      // });
     }
     if (type === 'hrManager') {
       // setFile2(url);
@@ -150,12 +153,6 @@ const PreviewOffer = (props) => {
           },
         },
       });
-
-      // call API
-      // dispatch({
-      //   type: 'candidateInfo/approveFinalOfferEffect',
-      //   payload: { hrManagerSignature: id, candidate: rookieId },
-      // });
     }
   };
 
@@ -182,7 +179,11 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/approveFinalOfferEffect',
-      payload: { hrManagerSignature: id, candidate },
+      payload: { hrManagerSignature: id, candidate, options: 1 },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        setOpenModal(true);
+      }
     });
   };
 
@@ -208,7 +209,8 @@ const PreviewOffer = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        hrSignature: hrSignatureProp,
+        hrSignature: hrSignatureProp.id,
+        currentStep: 6,
       },
     });
   };
@@ -220,10 +222,11 @@ const PreviewOffer = (props) => {
     }
 
     dispatch({
-      type: 'candidateInfo/updateByHR',
+      type: 'candidateInfo/addManagerSignatureEffect',
       payload: {
         candidate: _id,
-        hrManagerSignature: hrManagerSignatureProp,
+        hrManagerSignature: hrManagerSignatureProp.id,
+        // currentStep: 6,
       },
     });
   };
@@ -238,6 +241,14 @@ const PreviewOffer = (props) => {
   }, [mail, hrSignature, hrManagerSignature]);
 
   useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
+
+  useEffect(() => {
+    setCandidateSignature(candidateSignatureProp);
+  }, [candidateSignatureProp]);
+
+  const closeModal = () => {
+    setOpenModal(false);
+  };
 
   return (
     <div className={styles.previewContainer}>
@@ -259,7 +270,15 @@ const PreviewOffer = (props) => {
             <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
           </header>
 
-          <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p>
+          {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+          {hrSignature.user ? (
+            <p>
+              Undersigned - {hrSignature.user.employee.generalInfo.firstName}{' '}
+              {hrSignature.user.employee.generalInfo.lastName}
+            </p>
+          ) : (
+            <p>Undersigned</p>
+          )}
 
           <div className={styles.upload}>
             {!hrSignature.url ? (
@@ -350,8 +369,6 @@ const PreviewOffer = (props) => {
           </div>
         )}
         {/* HR Manager signature */}
-        {/* {role === ROLE.HRMANAGER && ( */}
-        {/* {true && ( */}
         {role === ROLE.HRMANAGER && (
           <>
             <div className={styles.signature}>
@@ -366,7 +383,15 @@ const PreviewOffer = (props) => {
                 <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
               </header>
 
-              <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p>
+              {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
+              {hrManagerSignature.user ? (
+                <p>
+                  Undersigned - {hrManagerSignature.user.employee.generalInfo.firstName}{' '}
+                  {hrManagerSignature.user.employee.generalInfo.lastName}
+                </p>
+              ) : (
+                <p>Undersigned</p>
+              )}
 
               <div className={styles.upload}>
                 {!hrManagerSignature.url ? (
@@ -406,12 +431,44 @@ const PreviewOffer = (props) => {
               </div>
             </div>
 
-            <SendEmail
-              title="Send final offer to the candidate"
-              formatMessage={formatMessage}
-              handleSendEmail={handleSendFinalOffer}
-              isSentEmail={false}
-            />
+            {/* Candidate Signature */}
+            <div className={styles.signature}>
+              <header>
+                <div className={styles.icon}>
+                  <div className={styles.bigGlow}>
+                    <div className={styles.smallGlow}>
+                      <EditOutlined />
+                    </div>
+                  </div>
+                </div>
+                <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
+              </header>
+
+              {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+              <p>Undersigned- {candidateName}</p>
+
+              <div className={styles.upload}>
+                {candidateSignature !== null && candidateSignature.url ? (
+                  // Default image
+                  <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+                ) : (
+                  <img className={styles.signatureImg} src={whiteImg} alt="" />
+                )}
+              </div>
+
+              <div className={styles.submitContainer} />
+            </div>
+
+            {/* Send final offer */}
+            <div style={{ marginBottom: '16px' }}>
+              <SendEmail
+                title="Send final offer to the candidate"
+                formatMessage={formatMessage}
+                handleSendEmail={handleSendFinalOffer}
+                isSentEmail={false}
+                privateEmail={candidateEmailProp}
+              />
+            </div>
           </>
         )}
 
@@ -433,6 +490,19 @@ const PreviewOffer = (props) => {
           handleCancel={() => {
             setUploadVisible2(false);
           }}
+        />
+
+        <CustomModal
+          open={openModal}
+          closeModal={closeModal}
+          content={
+            <ModalContent
+              closeModal={closeModal}
+              tempData={tempData}
+              candidateEmail={mail}
+              // privateEmail={privateEmail}
+            />
+          }
         />
       </div>
     </div>

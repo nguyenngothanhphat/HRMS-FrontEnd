@@ -3,39 +3,54 @@ import { Form, Radio, Input } from 'antd';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeeSetting: { tempSettings = {} } }) => ({
-  tempSettings,
+@connect(({ employeeSetting: { newTemplateData: { settings = {} } = {} } }) => ({
+  settings,
 }))
 class Option extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      checked: true,
+      checked: false,
     };
   }
 
+  componentDidMount = () => {
+    const { dispatch, settingsList } = this.props;
+    dispatch({
+      type: 'employeeSetting/saveEmployeeSetting',
+      payload: {
+        settings: settingsList,
+      },
+    });
+  };
+
   onChangeRadio = (key, value, description, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { checked } = this.state;
-    const array = [...tempSettings];
-    const index = settings.findIndex((item) => item.key === key);
+    const array = [...settings];
+    const index = settingsList.findIndex((item) => item.key === key);
+    let tempValue = '';
+
+    if (checked === false) {
+      tempValue = settingsList[index].value;
+    } else {
+      tempValue = value;
+    }
 
     const setting = {
       key,
       description,
-      value,
+      value: tempValue,
+      isEdited: !checked,
     };
-    if (checked === false) {
-      array.slice(index, 1);
-    } else {
-      array[index] = setting;
-    }
-    console.log(array);
+
+    array[index] = setting;
+
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveTemplate',
       payload: {
-        tempSettings: array,
+        settings: array,
       },
     });
 
@@ -45,22 +60,24 @@ class Option extends Component {
   };
 
   onChangeInput = (option, e) => {
-    const { dispatch, tempSettings, settings } = this.props;
+    const { dispatch, settings, settingsList } = this.props;
     const { target } = e;
     const { name, value } = target;
     const setting = {
       key: option.key,
       description: option.description,
       value,
+      isEdited: true,
     };
-    const array = [...tempSettings];
+    const array = [...settings];
+    const index = settingsList.findIndex((item) => item.key === name);
 
-    const index = settings.findIndex((item) => item.key === name);
     array[index] = setting;
+
     dispatch({
-      type: 'employeeSetting/save',
+      type: 'employeeSetting/saveEmployeeSetting',
       payload: {
-        tempSettings: array,
+        settings: array,
       },
     });
   };
@@ -80,8 +97,8 @@ class Option extends Component {
             onChange={(e) => this.onChangeRadio(option.key, option.value, option.description, e)}
             defaultValue={checked}
           >
-            <Radio value>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
-            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
+            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
+            <Radio value>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
             <Input
               name={option.key}
               disabled={!checked}

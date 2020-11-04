@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
@@ -10,6 +10,7 @@ import TableFilter from '../TableFilter';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
+
 @connect(({ loading, employee, user: { currentUser = {} } }) => ({
   loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
   loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -56,16 +57,19 @@ class DirectoryComponent extends PureComponent {
       location: [],
       employeeType: [],
       filterName: '',
-      tabId: 1,
+      tabList: {
+        active: 'active',
+        myTeam: 'myTeam',
+        inActive: 'inActive',
+        viewProfile: 'viewProfile',
+      },
+      tabId: 'active',
       changeTab: false,
       collapsed: false,
       pageSelected: 1,
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
-      roles: {
-        HR: 'HR',
-      },
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -75,24 +79,8 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount() {
-    const { currentUser } = this.props;
-    const { roles = [] } = currentUser;
-    if (this.checkRole(roles)) {
-      this.setState({
-        tabId: 1,
-        bottabs: [
-          { id: 1, name: formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }) },
-          { id: 2, name: formatMessage({ id: 'pages.directory.directory.myTeamTab' }) },
-          { id: 3, name: formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }) },
-        ],
-      });
-    } else {
-      this.setState({
-        tabId: 2,
-        bottabs: [{ id: 2, name: formatMessage({ id: 'pages.directory.directory.myTeamTab' }) }],
-      });
-    }
     this.initDataTable();
+    this.initTabId();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -117,10 +105,41 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.setState({
-      tabId: 1,
-    });
+    this.setState = () => {
+      return { tabId: 'active', changeTab: false };
+    };
   }
+
+  // Define tabID to filter
+  initTabId = () => {
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
+    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
+    // const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+
+    const groupPermissions = this.generatePermissions(roles);
+
+    const findIndexActive = groupPermissions.indexOf(tabActive);
+    // const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
+    const findIndexInActive = groupPermissions.indexOf(tabInActive);
+
+    let tabId = 'active';
+
+    if (findIndexActive === -1) {
+      tabId = 'inActive';
+    }
+
+    // Set tabId for myTeam to hide button Filter
+    if (findIndexActive === -1 && findIndexInActive === -1) {
+      tabId = 'myTeam';
+    }
+
+    this.setState({
+      tabId,
+    });
+  };
 
   initDataTable = () => {
     const { dispatch, currentUser } = this.props;
@@ -151,7 +170,25 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  generatePermissions = (roles) => {
+    let groupPermissions = [];
+
+    roles.map((role) => {
+      const { permissions = [] } = role;
+      groupPermissions = [...groupPermissions, ...permissions];
+      return null;
+    });
+
+    // Remove duplicates
+    const permissionsUnique = groupPermissions.filter((v, i, a) => a.indexOf(v) === i);
+
+    return permissionsUnique;
+  };
+
   getDataTable = (params, tabId) => {
+    const {
+      tabList: { active, myTeam, inActive },
+    } = this.state;
     const { dispatch, currentUser } = this.props;
     const { company } = currentUser;
     const { name, department, location, employeeType } = params;
@@ -162,19 +199,19 @@ class DirectoryComponent extends PureComponent {
       location,
       employeeType,
     };
-    if (tabId === 1) {
+    if (tabId === active) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload,
       });
     }
-    if (tabId === 2) {
+    if (tabId === myTeam) {
       dispatch({
         type: 'employee/fetchListEmployeeMyTeam',
         payload,
       });
     }
-    if (tabId === 3) {
+    if (tabId === inActive) {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
         payload,
@@ -186,10 +223,13 @@ class DirectoryComponent extends PureComponent {
     const {
       employee: { listEmployeeActive = [], listEmployeeMyTeam = [], listEmployeeInActive = [] },
     } = this.props;
-    if (tabId === 1) {
+    const {
+      tabList: { active, myTeam },
+    } = this.state;
+    if (tabId === active) {
       return listEmployeeActive;
     }
-    if (tabId === 2) {
+    if (tabId === myTeam) {
       return listEmployeeMyTeam;
     }
     return listEmployeeInActive;
@@ -208,10 +248,16 @@ class DirectoryComponent extends PureComponent {
 
   handleClickTabPane = (tabId) => {
     this.setState({
-      tabId: Number(tabId),
+      tabId,
       changeTab: true,
       filterName: '',
     });
+    const {
+      tabList: { viewProfile },
+    } = this.state;
+    if (tabId === viewProfile) {
+      this.viewProfile();
+    }
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
@@ -243,45 +289,52 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  checkRole = (roles) => {
-    let flag = false;
-    const { roles: rolesConst } = this.state;
-    const checkRoleHR = (obj) => obj._id === rolesConst.HR;
-    // const checkRoleHRManager = (obj) => obj._id === rolesConst.HR_MANAGER;
-    if (roles.some(checkRoleHR)) {
-      flag = true;
-    }
-    return flag;
-  };
+  rightButton = (roles, collapsed) => {
+    const { tabId } = this.state;
+    const permissionImport = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
+    const permissionAdd = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
 
-  rightButton = (collapsed) => {
-    const { currentUser } = this.props;
-    const { roles = [] } = currentUser;
+    const groupPermissions = this.generatePermissions(roles);
+
+    const findIndexImport = groupPermissions.indexOf(permissionImport);
+    const findIndexAdd = groupPermissions.indexOf(permissionAdd);
+
     return (
       <div className={styles.tabBarExtra}>
-        {this.checkRole(roles) ? (
-          <>
-            {' '}
-            <div className={styles.buttonAddImport} onClick={this.importEmployees}>
-              <img
-                className={styles.buttonAddImport_imgImport}
-                src="/assets/images/import.svg"
-                alt="Import Employee"
-              />
-              <p className={styles.buttonAddImport_text}>
-                {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
-              </p>
-            </div>
-            <div className={styles.buttonAddImport} onClick={this.addEmployee}>
-              <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
-              <p className={styles.buttonAddImport_text}>
-                {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
-              </p>
-            </div>
-          </>
-        ) : (
-          ''
+        {findIndexImport !== -1 && (
+          <div className={styles.buttonAddImport} onClick={this.importEmployees}>
+            <img
+              className={styles.buttonAddImport_imgImport}
+              src="/assets/images/import.svg"
+              alt="Import Employee"
+            />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.employees.table.importEmployees' })}
+            </p>
+          </div>
         )}
+
+        {findIndexAdd !== -1 && (
+          <div className={styles.buttonAddImport} onClick={this.addEmployee}>
+            <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.employees.table.addEmployee' })}
+            </p>
+          </div>
+        )}
+
+        {this.renderButtonFilter(tabId, collapsed)}
+      </div>
+    );
+  };
+
+  renderButtonFilter = (tabId, collapsed) => {
+    const { checkRoleEmployee } = this.props;
+    const {
+      tabList: { myTeam },
+    } = this.state;
+    if (!checkRoleEmployee && tabId !== myTeam) {
+      return (
         <div className={styles.filterSider} onClick={this.handleToggle}>
           {collapsed ? (
             <div className={styles.filterBackgroundButton_isCollapsed} />
@@ -293,32 +346,106 @@ class DirectoryComponent extends PureComponent {
             <p className={styles.textButtonFilter}>Filter</p>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return null;
+  };
+
+  viewProfile = () => {
+    const { currentUser } = this.props;
+    const { employee } = currentUser;
+    history.push(`/employees/employee-profile/${employee._id}`);
   };
 
   renderTabPane = () => {
-    const { bottabs, collapsed, changeTab } = this.state;
-    const { loadingListActive, loadingListMyTeam, loadingListInActive } = this.props;
-    return bottabs.map((tab) => (
-      <TabPane tab={tab.name} key={tab.id}>
+    const {
+      tabList: { active, myTeam, inActive, viewProfile },
+    } = this.state;
+    const {
+      loadingListActive,
+      loadingListMyTeam,
+      loadingListInActive,
+      checkRoleEmployee,
+      currentUser: { roles = [] },
+    } = this.props;
+
+    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
+    const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+
+    const groupPermissions = this.generatePermissions(roles);
+
+    const findIndexActive = groupPermissions.indexOf(tabActive);
+    const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
+    const findIndexInActive = groupPermissions.indexOf(tabInActive);
+
+    return (
+      <>
+        {findIndexActive !== -1 &&
+          this.renderTab(
+            formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
+            active,
+            loadingListActive,
+          )}
+        {findIndexMyTeam !== -1 &&
+          !checkRoleEmployee &&
+          this.renderTab(
+            formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
+            myTeam,
+            loadingListMyTeam,
+          )}
+        {findIndexMyTeam !== -1 && checkRoleEmployee && (
+          <>
+            {this.renderTab(
+              formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
+              myTeam,
+              loadingListMyTeam,
+            )}
+            <TabPane
+              tab={formatMessage({ id: 'pages.directory.directory.viewProfile' })}
+              key={viewProfile}
+            />
+          </>
+        )}
+        {findIndexInActive !== -1 &&
+          this.renderTab(
+            formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
+            inActive,
+            loadingListInActive,
+          )}
+      </>
+    );
+  };
+
+  renderTab = (tabName, key, loading) => {
+    const { checkRoleEmployee } = this.props;
+    const {
+      collapsed,
+      changeTab,
+      tabList: { myTeam },
+    } = this.state;
+    return (
+      <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
             <DirectoryTable
-              loading={loadingListActive || loadingListMyTeam || loadingListInActive}
-              list={this.renderListEmployee(tab.id)}
+              checkRoleEmployee={checkRoleEmployee}
+              loading={loading}
+              list={this.renderListEmployee(key)}
             />
           </Content>
-          <TableFilter
-            onToggle={this.handleToggle}
-            collapsed={collapsed}
-            onHandleChange={this.handleChange}
-            FormBox={this.handleFormBox}
-            changeTab={changeTab}
-          />
+          {key !== myTeam && (
+            <TableFilter
+              onToggle={this.handleToggle}
+              collapsed={collapsed}
+              onHandleChange={this.handleChange}
+              FormBox={this.handleFormBox}
+              changeTab={changeTab}
+            />
+          )}
         </Layout>
       </TabPane>
-    ));
+    );
   };
 
   handleCancel = () => {
@@ -330,18 +457,19 @@ class DirectoryComponent extends PureComponent {
   };
 
   render() {
-    const { currentUser } = this.props;
-    const { company } = currentUser;
+    const {
+      currentUser: { company, roles = [] },
+    } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 
     return (
       <div className={styles.DirectoryComponent}>
         <div className={styles.contentContainer}>
           <Tabs
-            defaultActiveKey="1"
+            // defaultActiveKey="active"
             className={styles.TabComponent}
             onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton(collapsed)}
+            tabBarExtraContent={this.rightButton(roles, collapsed)}
           >
             {this.renderTabPane()}
           </Tabs>
@@ -355,7 +483,7 @@ class DirectoryComponent extends PureComponent {
         />
         <ModalImportEmployee
           company={company}
-          titleModal="Import Employee"
+          titleModal="Import Employees"
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
         />

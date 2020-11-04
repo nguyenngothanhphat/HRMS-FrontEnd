@@ -1,17 +1,24 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
 import t from './index.less';
 
 class CalanderTable extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedRowKeys: [],
+    };
+  }
+
+  componentDidMount() {
+    moment.locale('en');
   }
 
   render() {
     const { data = [] } = this.props;
+    const { selectedRowKeys } = this.state;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -29,42 +36,30 @@ class CalanderTable extends PureComponent {
 
     const columns = [
       {
-        title: <span className={t.title}>Ticket ID</span>,
-        dataIndex: 'ticketId',
+        title: <span className={t.title}>Holliday Title</span>,
+        dataIndex: 'hollidayTitle',
       },
       {
-        title: <span className={t.title}>Requested on</span>,
-        dataIndex: 'requestOn',
+        title: <span className={t.title}>Date</span>,
+        dataIndex: 'date',
+        render: (date) => <span>{moment(date).locale('en').format('Do MMM')}</span>,
       },
       {
-        title: <span className={t.title}>LWD</span>,
-        dataIndex: 'lwd',
+        title: <span className={t.title}>Day</span>,
+        dataIndex: 'date',
+        render: (date) => <span>{moment(date).locale('en').format('dddd')}</span>,
       },
       {
-        title: <span className={t.title}>LWD Change</span>,
-        dataIndex: 'lwdChange',
-      },
-      {
-        title: <span className={t.title}>Assigned</span>,
-        dataIndex: 'assigned',
-        render: () => (
-          <div className={t.rowAction}>
-            <p>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-            </p>
-          </div>
-        ),
-      },
-      {
-        title: <span className={t.title}>Reason of leaving</span>,
-        dataIndex: 'reasionOfLeaving',
+        title: <span className={t.title}>Holliday Type</span>,
+        dataIndex: 'hollidayType',
       },
     ];
+
+    const rowSelection = {
+      type: 'checkbox',
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
 
     return (
       <div className={t.styles}>
@@ -73,18 +68,19 @@ class CalanderTable extends PureComponent {
             emptyText: (
               <span>
                 <img src={empty} alt="" />
-                <p className={t.textEmpty}>No resignation request is submitted</p>
+                <p className={t.textEmpty}>No data</p>
               </span>
             ),
           }}
           columns={columns}
           dataSource={data}
+          rowSelection={rowSelection}
           pagination={{
             ...pagination,
             total: data.length,
           }}
           rowKey="id"
-          scroll={{ x: 700, y: 'max-content' }}
+          scroll={{ x: 800 }}
           onChange={this.handleChangeTable}
         />
       </div>

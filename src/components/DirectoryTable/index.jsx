@@ -152,7 +152,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {}, pageSelected } = this.state;
-    const { list = [], loading } = this.props;
+    const { list = [], loading, checkRoleEmployee } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -177,6 +177,9 @@ class DirectoryTable extends Component {
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
+            if (checkRoleEmployee) {
+              return null;
+            }
             return {
               onClick: () => this.handleProfileEmployee(record._id), // click row
             };

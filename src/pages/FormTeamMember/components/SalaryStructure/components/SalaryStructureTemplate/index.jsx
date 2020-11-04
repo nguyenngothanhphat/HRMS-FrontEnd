@@ -13,38 +13,17 @@ import styles from './index.less';
       currentStep = {},
       data: { title = {}, processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
       data,
-      tableData = [],
-    },
-    user: { currentUser: { company: { _id = '' } = {} } = {} },
-  }) => ({
-    listTitle,
-    checkMandatory,
-    currentStep,
-    processStatus,
-    _id,
-    data,
-    tableData,
-    salaryPosition,
-    title,
-  }),
-)
-class SalaryStructureTemplate extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isEditted: false,
-      tableData: [
+      tableData = [
         {
           key: 'basic',
           title: 'Basic',
-          value: 'Rs. 12888',
+          value: ' ',
           order: 'A',
         },
         {
           key: 'hra',
           title: 'HRA',
-          value: '50% of Basic',
+          value: ' ',
           order: 'B',
         },
         {
@@ -68,13 +47,13 @@ class SalaryStructureTemplate extends PureComponent {
         {
           key: 'employeesPF',
           title: "Employee's PF",
-          value: '12 % of Basic',
+          value: ' ',
           order: 'G',
         },
         {
           key: 'employeesESI',
           title: "Employee's ESI",
-          value: '0.75 of Gross',
+          value: ' ',
           order: 'H',
         },
         {
@@ -96,6 +75,26 @@ class SalaryStructureTemplate extends PureComponent {
           order: ' ',
         },
       ],
+    },
+    user: { currentUser: { company: { _id = '' } = {} } = {} },
+  }) => ({
+    listTitle,
+    checkMandatory,
+    currentStep,
+    processStatus,
+    _id,
+    data,
+    tableData,
+    salaryPosition,
+    title,
+  }),
+)
+class SalaryStructureTemplate extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditted: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -110,10 +109,14 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id, title } = this.props;
+    const {
+      dispatch,
+      _id,
+      title,
+      data: { salaryStructure },
+    } = this.props;
     const idTitle = title?._id;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
@@ -122,6 +125,19 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchTableData',
         payload: { title: idTitle },
+      });
+      dispatch({
+        type: 'candidateInfo/saveOrigin',
+        payload: {
+          salaryStructure: {
+            ...salaryStructure,
+            title: title._id,
+          },
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/setDefaultTable',
       });
     }
   };
@@ -141,31 +157,38 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       currentStep,
       tableData,
-      salaryPosition,
-      data: { _id },
-    } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
+      // salaryPosition,
+      data: {
+        _id,
+        salaryStructure: { title },
       },
-    });
-    console.log('tableData', tableData);
-    console.log('title', salaryPosition);
+      data,
+    } = this.props;
+    console.log('data', data);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
-          title: salaryPosition,
+          title,
           settings: tableData,
         },
         candidate: _id,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
   };
 
   onFinish = (values) => {
-    console.log.log('hi', values);
+    console.log('hi', values);
   };
 
   onClickEdit = () => {
@@ -193,9 +216,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, tableData } = this.props;
     // const { filledSalaryStructure } = checkMandatory;
-    const { tableData } = this.state;
     const { target } = e;
     const { name, value } = target;
 
@@ -338,7 +360,11 @@ class SalaryStructureTemplate extends PureComponent {
   _renderButtons = () => {
     const { isEditted } = this.state;
     const { processStatus } = this.props;
-    if (processStatus === 'DRAFT' || processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
+    if (
+      processStatus === 'DRAFT' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'SENT-PROVISIONAL-OFFER'
+    ) {
       return (
         <Form.Item className={styles.buttons}>
           {' '}

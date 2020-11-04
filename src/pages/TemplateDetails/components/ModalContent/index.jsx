@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
-import { Link, formatMessage } from 'umi';
+import { Link, formatMessage, connect } from 'umi';
 import { Button } from 'antd';
 import offerIcon from './assets/offer-icon.svg';
 import sentIcon from './assets/sent-icon.svg';
 import styles from './index.less';
 
+@connect(
+  ({
+    loading,
+    employeeSetting: {
+      currentTemplate: { title = '', htmlContent = '', thumbnail = '' } = {},
+      newTemplateData: { settings = [], fullname = '', signature = '' },
+    },
+  }) => ({
+    loadingAddCustomTemplate: loading.effects['employeeSetting/addCustomTemplate'],
+    settings,
+    fullname,
+    thumbnail,
+    signature,
+    title,
+    htmlContent,
+  }),
+)
 class ModalContent extends Component {
   constructor(props) {
     super(props);
@@ -27,20 +44,41 @@ class ModalContent extends Component {
   }
 
   onNext = () => {
-    const { onNext = {} } = this.props;
-    onNext();
+    const {
+      dispatch,
+      onNext = {},
+      settings,
+      fullname,
+      signature,
+      title,
+      htmlContent,
+      thumbnail,
+    } = this.props;
+    const newSetting = settings.filter((item) => item !== null && item !== undefined);
+    console.log(newSetting);
+    dispatch({
+      type: 'employeeSetting/addCustomTemplate',
+      payload: {
+        title,
+        html: htmlContent,
+        settings: newSetting,
+        fullname,
+        signature,
+        thumbnail,
+      },
+    }).then(() => onNext());
   };
 
-  render() {
+  _renderModal = () => {
     const { modalContent } = this.state;
-    const { content = {} } = this.props;
+    const { content = {}, loadingAddCustomTemplate } = this.props;
     return (
-      <div className={styles.ModalContent}>
+      <>
         <img src={modalContent[content].icon} alt="icon" />
         <div className={styles.ModalContent_title}>{modalContent[content].title}</div>
         <div className={styles.ModalContent_content}>{modalContent[content].content}</div>
         {content === 0 ? (
-          <Button onClick={this.onNext} type="primary">
+          <Button loading={loadingAddCustomTemplate} onClick={this.onNext} type="primary">
             {modalContent[content].button}
           </Button>
         ) : (
@@ -50,13 +88,17 @@ class ModalContent extends Component {
               state: { defaultActiveKey: '2' },
             }}
           >
-            <Button onClick={this.onNext} type="primary">
-              {modalContent[content].button}
-            </Button>
+            <Button type="primary">{modalContent[content].button}</Button>
           </Link>
         )}
-      </div>
+      </>
     );
+  };
+
+  render() {
+    // const { urlImage } = this.props;
+    // console.log(urlImage);
+    return <div className={styles.ModalContent}>{this._renderModal()}</div>;
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Menu, Dropdown } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect, Link } from 'umi';
 import menuIcon from './assets/menuIcon.svg';
 import deleteIcon from './assets/deleteIcon.svg';
 import downloadIcon from './assets/downloadIcon.svg';
@@ -8,31 +8,48 @@ import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
 
 import styles from './index.less';
 
+@connect(({ employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
+  defaultTemplateList,
+  customTemplateList,
+}))
 class Template extends PureComponent {
+  onRemoveTemplate = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/removeTemplateById',
+      payload: {
+        id,
+      },
+    });
+    dispatch({
+      type: 'employeeSetting/fetchDefaultTemplateList',
+    });
+    dispatch({
+      type: 'employeeSetting/fetchCustomTemplateList',
+    });
+  };
+
   _renderMenu = () => {
+    const { template } = this.props;
+    const id = template._id;
     return (
       <Menu>
         <Menu.Item>
           <a
             className={styles.menuItem}
-            target="_blank"
             rel="noopener noreferrer"
-            href="http://www.alipay.com/"
+            target="_blank"
+            href={template.attachment.url}
           >
             <img src={downloadIcon} alt="menu" />{' '}
             {formatMessage({ id: 'component.documentAndTemplates.download' })}
           </a>
         </Menu.Item>
-        <Menu.Item>
-          <a
-            className={styles.menuItem}
-            target="_blank"
-            rel="noopener noreferrer"
-            href="http://www.taobao.com/"
-          >
+        <Menu.Item onClick={() => this.onRemoveTemplate(id)}>
+          <span className={styles.menuItem}>
             <img src={deleteIcon} alt="menu" />{' '}
             {formatMessage({ id: 'component.documentAndTemplates.delete' })}
-          </a>
+          </span>
         </Menu.Item>
       </Menu>
     );
@@ -42,9 +59,17 @@ class Template extends PureComponent {
     const { template } = this.props;
     return (
       <div className={styles.Template}>
-        <img className={styles.thumbnail} src={lectusTinciduntEros} alt="thumbnails" />
+        <Link to={`/template-details/${template._id}`}>
+          {template.thumbnail === '' ? (
+            <img className={styles.thumbnail} src={lectusTinciduntEros} alt="thumbnails" />
+          ) : (
+            <img className={styles.thumbnail} src={template.thumbnail} alt="thumbnails" />
+          )}
+        </Link>
         <div className={styles.template_info}>
-          <p>{template.title}</p>
+          <Link to={`/template-details/${template._id}`}>
+            <p>{template.title}</p>
+          </Link>
           <Dropdown
             className={styles.icon}
             trigger={['click']}

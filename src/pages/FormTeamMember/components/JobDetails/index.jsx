@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button } from 'antd';
+import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { isEmpty, isString, isNull } from 'lodash';
+import { isEmpty } from 'lodash';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -17,6 +17,7 @@ import styles from './index.less';
   loading1: loading.effects['candidateInfo/fetchDepartmentList'],
   loading2: loading.effects['candidateInfo/fetchTitleList'],
   loading3: loading.effects['candidateInfo/fetchManagerList'],
+  loading4: loading.effects['candidateInfo/fetchCandidateByRookie'],
 }))
 class JobDetails extends PureComponent {
   static getDerivedStateFromProps(props) {
@@ -32,92 +33,66 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      data,
-      tempData,
-      checkMandatory,
-      tempData: { checkStatus },
-    } = this.state;
-    const { dispatch } = this.props;
-    if (data.department !== null) {
-      if (data.department && data.title && data.workLocation && data.reportingManager) {
-        checkStatus.filledJobDetail = true;
-      } else {
-        checkStatus.filledJobDetail = false;
-      }
+    const { dispatch, candidate, currentStep } = this.props;
+    this.checkBottomBar();
+    if (dispatch && candidate) {
       dispatch({
-        type: 'candidateInfo/save',
+        type: 'candidateInfo/updateByHR',
         payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledJobDetail: checkStatus.filledJobDetail,
-          },
-        },
-      });
-      if (isString(data.department)) {
-        dispatch({
-          type: 'candidateInfo/fetchEmployeeById',
-          payload: {
-            candidate: data._id,
-          },
-        });
-      }
-      if (!isNull(data.department)) {
-        dispatch({
-          type: 'candidateInfo/fetchEmployeeById',
-          payload: {
-            candidate: data._id,
-          },
-        }).then(({ statusCode, data: test }) => {
-          if (statusCode === 200) {
-            dispatch({
-              type: 'candidateInfo/saveTemp',
-              payload: {
-                employeeType: test.employeeType._id,
-                position: test.position,
-              },
-            });
-          }
-        });
-      }
-    } else {
-      if (data.department && data.title && data.workLocation && data.reportingManager) {
-        checkStatus.filledJobDetail = true;
-      } else {
-        checkStatus.filledJobDetail = false;
-      }
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledJobDetail: checkStatus.filledJobDetail,
-          },
+          candidate,
+          currentStep,
         },
       });
     }
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
+      currentStep,
+    } = this.props;
     dispatch({
-      type: 'candidateInfo/saveTemp',
+      type: 'candidateInfo/updateByHR',
       payload: {
-        workLocation: null,
-        title: null,
-        employeeType: '5f50c2541513a742582206f9',
-        position: 'EMPLOYEE',
-        department: null,
-        reportingManager: null,
+        workLocation: workLocation ? workLocation._id : '',
+        department: department ? department._id : '',
+        title: title ? title._id : '',
+        reportingManager: reportingManager.length > 0 ? reportingManager._id : '',
+        employeeType,
+        position,
+        candidate: _id,
+        currentStep,
       },
     });
   }
+
+  checkBottomBar = () => {
+    const {
+      tempData: { department, workLocation, title, reportingManager, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
+    if (
+      department !== null &&
+      workLocation !== null &&
+      title !== null &&
+      reportingManager !== null
+    ) {
+      checkStatus.filledJobDetail = true;
+    } else {
+      checkStatus.filledJobDetail = false;
+    }
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        checkMandatory: {
+          ...checkMandatory,
+          filledJobDetail: checkStatus.filledJobDetail,
+        },
+      },
+    });
+  };
 
   handleRadio = (e) => {
     const { target } = e;
@@ -138,26 +113,11 @@ class JobDetails extends PureComponent {
 
   _handleSelect = (value, name) => {
     const { dispatch, locationList } = this.props;
-    const { tempData = {}, checkMandatory } = this.state;
+    const { tempData = {} } = this.state;
     tempData[name] = value;
-    const { department, title, workLocation, reportingManager, checkStatus = {} } = tempData;
+    const { department, workLocation } = tempData;
 
-    if (department && title && workLocation && reportingManager) {
-      checkStatus.filledJobDetail = true;
-    } else {
-      checkStatus.filledJobDetail = false;
-    }
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        tempData,
-        checkMandatory: {
-          ...checkMandatory,
-          filledJobDetail: checkStatus.filledJobDetail,
-        },
-      },
-    });
-    if (name === 'workLocation' || name === 'jobTitle') {
+    if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
       const {
@@ -169,8 +129,8 @@ class JobDetails extends PureComponent {
           tempData: {
             ...tempData,
             company: _id,
-            location: selectedWorkLocation._id,
-            workLocation: selectedWorkLocation._id,
+            location: selectedWorkLocation,
+            workLocation: selectedWorkLocation,
           },
         },
       });
@@ -189,6 +149,21 @@ class JobDetails extends PureComponent {
           },
         });
       }
+    } else if (name === 'title') {
+      const {
+        tempData: { titleList },
+      } = this.props;
+      const changedtitleList = JSON.parse(JSON.stringify(titleList));
+      const selectedTitle = changedtitleList.find((data) => data._id === value);
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            title: selectedTitle,
+          },
+        },
+      });
     } else if (name === 'department') {
       const { location, departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
@@ -198,13 +173,13 @@ class JobDetails extends PureComponent {
         payload: {
           tempData: {
             ...tempData,
-            department: selectedDepartment._id,
+            department: selectedDepartment,
           },
         },
       });
       if (!isEmpty(department)) {
-        const departmentTemp = [department];
-        const locationTemp = [location];
+        const departmentTemp = [department._id];
+        const locationTemp = [location._id];
         dispatch({
           type: 'candidateInfo/fetchManagerList',
           payload: {
@@ -214,33 +189,51 @@ class JobDetails extends PureComponent {
         });
       }
     }
+    if (name === 'reportingManager') {
+      const { managerList } = tempData;
+      const changedManagerList = JSON.parse(JSON.stringify(managerList));
+      const selectedManager = changedManagerList.find((data) => data._id === value);
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            reportingManager: selectedManager,
+          },
+        },
+      });
+    }
+    this.checkBottomBar();
   };
 
   onClickNext = () => {
     const {
       currentStep,
-      data: { _id, company },
+      data: { _id },
       tempData: { position, employeeType, workLocation, department, title, reportingManager },
     } = this.state;
     const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         position,
         employeeType,
-        workLocation,
-        department,
-        title,
-        reportingManager,
-        company,
+        workLocation: workLocation._id,
+        department: department._id,
+        title: title._id,
+        reportingManager: reportingManager._id,
         candidate: _id,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data.currentStep,
+          },
+        });
+      }
     });
   };
 
@@ -417,55 +410,64 @@ class JobDetails extends PureComponent {
       },
       data,
     } = this.state;
-    const { loading1, loading2, loading3 } = this.props;
-
+    const { loading1, loading2, loading3, loading, loading4 } = this.props;
     return (
       <>
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <div className={styles.JobDetailsComponent}>
-              <Header />
-              <RadioComponent
-                Tab={Tab}
-                handleRadio={this.handleRadio}
-                tempData={tempData}
-                employeeTypeList={employeeTypeList}
-                employeeType={employeeType}
-                position={position}
-                data={data}
-              />
-              <FieldsComponent
-                dropdownField={dropdownField}
-                candidateField={candidateField}
-                departmentList={departmentList}
-                locationList={locationList}
-                titleList={titleList}
-                managerList={managerList}
-                department={department}
-                workLocation={workLocation}
-                title={title}
-                reportingManager={reportingManager}
-                candidatesNoticePeriod={candidatesNoticePeriod}
-                prefferedDateOfJoining={prefferedDateOfJoining}
-                _handleSelect={this._handleSelect}
-                loading1={loading1}
-                loading2={loading2}
-                loading3={loading3}
-                data={data}
-              />
-              {this._renderBottomBar()}
+          {loading4 || loading ? (
+            <div className={styles.viewLoading}>
+              <Spin />
             </div>
-          </Col>
-          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
-            <div className={styles.rightWrapper}>
-              <Row>
-                <NoteComponent note={Note} />
-              </Row>
-              <Row className={styles.stepRow}>
-                <StepsComponent />
-              </Row>
-            </div>
-          </Col>
+          ) : (
+            <>
+              {' '}
+              <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+                <div className={styles.JobDetailsComponent}>
+                  <Header />
+                  <RadioComponent
+                    Tab={Tab}
+                    handleRadio={this.handleRadio}
+                    tempData={tempData}
+                    employeeTypeList={employeeTypeList}
+                    employeeType={employeeType}
+                    position={position}
+                    data={data}
+                  />
+                  <FieldsComponent
+                    dropdownField={dropdownField}
+                    candidateField={candidateField}
+                    departmentList={departmentList}
+                    locationList={locationList}
+                    titleList={titleList}
+                    managerList={managerList}
+                    department={department}
+                    workLocation={workLocation}
+                    title={title}
+                    reportingManager={reportingManager}
+                    candidatesNoticePeriod={candidatesNoticePeriod}
+                    prefferedDateOfJoining={prefferedDateOfJoining}
+                    _handleSelect={this._handleSelect}
+                    loading1={loading1}
+                    loading2={loading2}
+                    loading3={loading3}
+                    data={data}
+                    tempData={tempData}
+                  />
+                  {this._renderBottomBar()}
+                </div>
+              </Col>
+              <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+                <div className={styles.rightWrapper}>
+                  <Row>
+                    <NoteComponent note={Note} />
+                  </Row>
+                  <Row className={styles.stepRow}>
+                    <StepsComponent />
+                  </Row>
+                </div>
+              </Col>
+            </>
+          )}
         </Row>
       </>
     );
