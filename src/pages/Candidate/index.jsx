@@ -39,6 +39,7 @@ const Candidate = (props) => {
   }, [localStep]);
 
   useEffect(() => {
+    console.log('CANDIDATE RENDER');
     if (!dispatch) {
       return;
     }
@@ -55,7 +56,10 @@ const Candidate = (props) => {
 
 // export default Candidate;
 export default connect(
-  ({ candidateProfile: { localStep, data, tempData } = {}, login: { candidate } }) => ({
+  ({
+    candidateProfile: { localStep, data, tempData } = {},
+    user: { currentUser: { candidate = '' } = {} } = {},
+  }) => ({
     localStep,
     data,
     tempData,
