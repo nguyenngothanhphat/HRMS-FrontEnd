@@ -154,7 +154,7 @@ class TableCandidates extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey="rookieId"
+          rowKey={(record) => record.ticketID}
         />
       </div>
     );
