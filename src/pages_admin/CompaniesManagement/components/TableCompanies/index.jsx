@@ -132,6 +132,13 @@ class TableCompanies extends PureComponent {
     });
   };
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   // onSortChange = (pagination, filters, sorter, extra) => {
   //   console.log('params', pagination, filters, sorter, extra);
   // };
