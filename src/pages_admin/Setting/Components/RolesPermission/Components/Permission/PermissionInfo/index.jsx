@@ -19,6 +19,7 @@ class PermissionInfo extends PureComponent {
 
   componentDidMount() {
     const { dispatch, id } = this.props;
+    console.log(id);
     this.setState({
       currentId: id,
     });
@@ -47,35 +48,8 @@ class PermissionInfo extends PureComponent {
     }
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    // const { listRowKeys } = this.state;
-    selectedRows.forEach((item) => {
-      if (item.children) {
-        // console.log('abc');
-      }
-      // console.log('not abc');
-    });
-    // const condition = getChildren.findIndex((item) => item !== '');
-    // console.log(getChildren[condition]);
-    // console.log(condition);
-    // if (getChildren[condition]) {
-    //   const formatData = [];
-    //   getChildren[condition].map((item) => {
-    //     const { PermissionID } = item;
-    //     return formatData.push(PermissionID);
-    //   });
-    //   const newData = [...selectedRowKeys, ...formatData];
-    //   const filterData = newData.filter((elem, index, self) => {
-    //     return index === self.indexOf(elem);
-    //   });
-    //   console.log(filterData);
-    //   this.setState({ listRowKeys: filterData });
-    // } else {
-    //   this.setState({ listRowKeys: selectedRowKeys });
-    // }
-    // const findAll = selectedRowKeys.findIndex((item) => item.includes('All'));
-    // console.log(selectedRowKeys, findAll);
-    // this.setState({ listRowKeys: selectedRowKeys });
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ listRowKeys: selectedRowKeys });
   };
 
   handleCancel = () => {
@@ -93,7 +67,7 @@ class PermissionInfo extends PureComponent {
 
   render() {
     const { listRowKeys } = this.state;
-    // console.log(listRowKeys);
+    console.log(listRowKeys);
     const { listPermission, loading, loadingTable } = this.props;
     const formatDataPermission = listPermission.map((item) => {
       const { _id: PermissionID, name: PermissionName } = item;
@@ -159,22 +133,18 @@ class PermissionInfo extends PureComponent {
       },
       {
         key: 5,
+        PermissionID: 'All SETTING',
         PermissionName: 'SETTING',
         children: getListSETTING,
       },
     ];
+
     const rowSelection = {
       selectedRowKeys: listRowKeys,
+      checkStrictly: false,
       onChange: (selectedRowKeys, selectedRows) =>
         this.onSelectChange(selectedRowKeys, selectedRows),
       columnWidth: '20%',
-      // onSelect: (record, selected, selectedRows) => {
-      //   this.getValues(record);
-      // },
-      // onSelectAll: (selected, selectedRows, changeRows) => {
-      //   console.log(changeRows);
-      //   changeRows.map((item) => this.getValues(item));
-      // },
     };
 
     const columns = [
@@ -190,11 +160,10 @@ class PermissionInfo extends PureComponent {
         <Col span={24}>
           <Table
             loading={loadingTable}
-            rowSelection={rowSelection}
+            rowSelection={{ ...rowSelection }}
             columns={columns}
             dataSource={newData}
             indentSize={0}
-            // dataSource={formatDataPermission}
             size="small"
             pagination={false}
             rowKey={(record) => record.PermissionID}
