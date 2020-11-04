@@ -15,11 +15,13 @@ import s from './index.less';
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
+      tempData: { valueToFinalOffer = 0 } = {},
     } = {},
   }) => ({
     currentStep,
     displayComponent,
     processStatus,
+    valueToFinalOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -85,8 +87,8 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus } = this.props;
-    return processStatus === 'DRAFT';
+    const { processStatus, valueToFinalOffer } = this.props;
+    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
   };
 
   render() {

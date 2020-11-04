@@ -228,7 +228,7 @@ class FormTeamMember extends PureComponent {
       loading1,
     } = this.props;
     const {
-      tempData: { locationList, employeeTypeList, documentList } = {},
+      tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
     } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
@@ -279,19 +279,21 @@ class FormTeamMember extends PureComponent {
         id: 5,
         name: 'Offer Details',
         key: 'offerDetails',
-        component: <OfferDetail processStatus={processStatus} />,
+        component: (
+          <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
+        ),
       },
       {
         id: 6,
         name: 'Payroll Settings',
         key: 'payrollSettings',
-        component: <Payroll processStatus={processStatus} />,
+        component: <Payroll processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
       {
         id: 7,
         name: 'Benefits',
         key: 'benefits',
-        component: <Benefit processStatus={processStatus} />,
+        component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
       // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       // {
