@@ -233,6 +233,17 @@ const PreviewOffer = (props) => {
 
   useEffect(() => {
     getUserRole();
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        currentStep: 0,
+      },
+    });
   }, []);
 
   useEffect(() => {

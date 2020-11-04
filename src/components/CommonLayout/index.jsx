@@ -37,6 +37,12 @@ class CommonLayout extends Component {
     const { listMenu, currentStep } = props;
     // const selectedItemId = listMenu[currentStep]
     if (currentStep !== null) {
+      if (currentStep === 0) {
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
       return {
         selectedItemId: listMenu[currentStep].id,
         displayComponent: listMenu[currentStep].component,
