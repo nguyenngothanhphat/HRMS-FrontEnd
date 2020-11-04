@@ -54,7 +54,7 @@ class BackgroundCheck extends Component {
 
   componentDidMount() {
     const {
-      data,
+      data = {},
       tempData: {
         documentList,
         identityProof,
@@ -66,6 +66,7 @@ class BackgroundCheck extends Component {
     } = this.props;
     // save step
     const { currentStep } = this.props;
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '' } = data;
 
     dispatch({
@@ -74,23 +75,25 @@ class BackgroundCheck extends Component {
         valueToFinalOffer: 0,
       },
     });
-
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
-          currentStep,
+          currentStep: currentStepLocal,
         },
       });
     }
 
     if (data.documentChecklistSetting !== documentList) {
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+
+      const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
+      const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
+      const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
+      const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
+      console.log('arrToAdjust', arrToAdjust);
+      // console.log('documnetList', documentList);
       const listSelectedA = arrA.map((x) => x.alias);
       const listSelectedB = arrB.map((x) => x.alias);
       const listSelectedC = arrC.map((x) => x.alias);
@@ -112,6 +115,11 @@ class BackgroundCheck extends Component {
       if (listSelectedD.length === arrToAdjust[3].data.length) {
         isCheckedD = true;
       }
+      // console.log('listSelectedA', listSelectedA);
+      // console.log('listSelectedB', listSelectedB);
+      // console.log('listSelectedC', listSelectedC);
+      // console.log('listSelectedD', listSelectedD);
+
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
@@ -141,7 +149,43 @@ class BackgroundCheck extends Component {
         },
       });
     }
+    window.addEventListener('unload', this.handleUnload, false);
   }
+
+  componentWillUnmount() {
+    // const { data } = this.state;
+    // const { dispatch, currentStep } = this.props;
+    // console.log('current', currentStep);
+    // const { _id } = data;
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     candidate: _id,
+    //     currentStep,
+    //   },
+    // });
+    this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    // this.handleUpdateByHR();
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
+    const { data } = this.state;
+    const { dispatch, currentStep } = this.props;
+    const { _id } = data;
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        currentStep,
+      },
+    });
+  };
 
   closeModal = () => {
     this.setState({
@@ -151,7 +195,7 @@ class BackgroundCheck extends Component {
 
   changeValueToFinalOffer = (e) => {
     const { dispatch } = this.props;
-    console.log('e', e.target.value);
+    // console.log('e', e.target.value);
     if (e.target.value === 1) {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -445,7 +489,6 @@ class BackgroundCheck extends Component {
       },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
-    console.log('poe', tempData.technicalCertification.poe.checkedList);
     const { loading, processStatus } = this.props;
     return (
       <>

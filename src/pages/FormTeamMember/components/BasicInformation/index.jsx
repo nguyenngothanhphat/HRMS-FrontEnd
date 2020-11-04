@@ -38,16 +38,64 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
-    // const { currentStep } = this.props;
+    const { dispatch, data, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        employeeType: '5f50c2541513a742582206f9',
+      },
+    });
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+    const { candidate = '' } = data;
+    console.log(candidate, currentStepLocal);
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: currentStepLocal,
+        },
+      });
+    }
     // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
+    // const {
+    //   data,
+    //   tempData: { fullName, privateEmail, workEmail, previousExperience },
+    // } = this.state;
+    // const { dispatch, currentStep } = this.props;
+    // console.log('current', currentStep);
+    // const { _id } = data;
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     fullName,
+    //     privateEmail,
+    //     workEmail,
+    //     previousExperience,
+    //     candidate: _id,
+    //     currentStep,
+    //   },
+    // });
+    this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    // this.handleUpdateByHR();
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
     const {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch, currentStep } = this.props;
+    console.log('current', currentStep);
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -60,7 +108,7 @@ class BasicInformation extends PureComponent {
         currentStep,
       },
     });
-  }
+  };
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);

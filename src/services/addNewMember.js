@@ -111,7 +111,7 @@ export function closeCandidate(params) {
 
 export function editSalaryStructure(params) {
   // console.log(params);
-  return request('/api/candidate/close-candidate', {
+  return request('/api/candidate/phase-one-hr', {
     method: 'POST',
     data: params,
   });
