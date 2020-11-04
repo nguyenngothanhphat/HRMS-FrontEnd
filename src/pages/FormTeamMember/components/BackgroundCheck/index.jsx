@@ -420,7 +420,7 @@ class BackgroundCheck extends Component {
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
     console.log('poe', tempData.technicalCertification.poe.checkedList);
-    const { loading } = this.props;
+    const { loading, processStatus } = this.props;
     return (
       <>
         {loading ? (
@@ -446,6 +446,7 @@ class BackgroundCheck extends Component {
                           tempData={tempData}
                           onValuesChange={this.onValuesChange}
                           documentChecklistSetting={documentChecklistSetting}
+                          processStatus={processStatus}
                         />
                       );
                     })}

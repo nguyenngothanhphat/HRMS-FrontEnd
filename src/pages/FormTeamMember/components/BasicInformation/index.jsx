@@ -142,6 +142,7 @@ class BasicInformation extends PureComponent {
 
   _renderForm = () => {
     const { isOpenReminder = {} } = this.state;
+    const { processStatus } = this.props;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -158,6 +159,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
               />
             </Form.Item>
           </Col>
@@ -183,6 +185,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -218,6 +221,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -244,6 +248,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="previousExperience"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={experienceYear}
               />
             </Form.Item>

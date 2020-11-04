@@ -410,7 +410,7 @@ class JobDetails extends PureComponent {
       },
       data,
     } = this.state;
-    const { loading1, loading2, loading3, loading, loading4 } = this.props;
+    const { loading1, loading2, loading3, loading, loading4, processStatus } = this.props;
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -432,8 +432,10 @@ class JobDetails extends PureComponent {
                     employeeType={employeeType}
                     position={position}
                     data={data}
+                    processStatus={processStatus}
                   />
                   <FieldsComponent
+                    processStatus={processStatus}
                     dropdownField={dropdownField}
                     candidateField={candidateField}
                     departmentList={departmentList}

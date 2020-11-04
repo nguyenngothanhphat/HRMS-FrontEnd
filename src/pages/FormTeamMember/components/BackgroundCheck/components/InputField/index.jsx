@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, Row, Col, Form, Input } from 'antd';
 import style from './index.less';
 
-const InputField = ({ onValuesChange, documentChecklistSetting }) => {
+const InputField = ({ onValuesChange, documentChecklistSetting, processStatus }) => {
   const { employer } = documentChecklistSetting[3];
   return (
     <div className={style.InputField}>
@@ -17,7 +17,10 @@ const InputField = ({ onValuesChange, documentChecklistSetting }) => {
             initialValues={{ employer }}
           >
             <Form.Item label="Name of the employer*" name="employer">
-              <Input className={style.input} />
+              <Input
+                className={style.input}
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+              />
             </Form.Item>
           </Form>
         </Col>
