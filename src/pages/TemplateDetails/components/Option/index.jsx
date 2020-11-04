@@ -15,28 +15,37 @@ class Option extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const { dispatch, settingsList } = this.props;
+    dispatch({
+      type: 'employeeSetting/saveEmployeeSetting',
+      payload: {
+        settings: settingsList,
+      },
+    });
+  };
+
   onChangeRadio = (key, value, description, e) => {
     const { dispatch, settings, settingsList } = this.props;
     const { checked } = this.state;
-    let array = [...settings];
-    console.log('array', array);
+    const array = [...settings];
     const index = settingsList.findIndex((item) => item.key === key);
+    let tempValue = '';
 
-    if (checked !== false) {
-      // const tempArray = array.filter((item) => item?.key !== key && item !== undefined);
-      const tempArray = array.map((item) => {
-        return item?.key === key ? null : item;
-      });
-      console.log(tempArray);
-      array = [...tempArray];
+    if (checked === false) {
+      tempValue = settingsList[index].value;
     } else {
-      const setting = {
-        key,
-        description,
-        value,
-      };
-      array[index] = setting;
+      tempValue = value;
     }
+
+    const setting = {
+      key,
+      description,
+      value: tempValue,
+      isEdited: !checked,
+    };
+
+    array[index] = setting;
 
     dispatch({
       type: 'employeeSetting/saveTemplate',
@@ -58,10 +67,13 @@ class Option extends Component {
       key: option.key,
       description: option.description,
       value,
+      isEdited: true,
     };
     const array = [...settings];
     const index = settingsList.findIndex((item) => item.key === name);
+
     array[index] = setting;
+
     dispatch({
       type: 'employeeSetting/saveEmployeeSetting',
       payload: {
@@ -85,8 +97,8 @@ class Option extends Component {
             onChange={(e) => this.onChangeRadio(option.key, option.value, option.description, e)}
             defaultValue={checked}
           >
-            <Radio value>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
-            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
+            <Radio value={false}>{formatMessage({ id: 'component.employmentDetails.yes' })}</Radio>
+            <Radio value>{formatMessage({ id: 'component.employmentDetails.no' })}</Radio>
             <Input
               name={option.key}
               disabled={!checked}
