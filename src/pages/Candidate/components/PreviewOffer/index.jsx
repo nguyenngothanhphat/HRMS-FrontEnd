@@ -23,7 +23,7 @@ const ROLE = {
 };
 
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
+  const { dispatch, currentUser = {}, tempData = {}, data = {}, candidate } = props;
 
   // const {
   //   // email: mailProp,
@@ -216,9 +216,25 @@ const PreviewOffer = (props) => {
     });
   };
 
-  // useEffect(() => {
-  //   getUserRole();
-  // }, []);
+  const handleFinalSubmit = () => {
+    console.log('Final submit');
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/submitCandidateFinalOffer',
+      payload: {
+        candidate,
+        candidateFinalSignature: candidateSignature.id,
+        options: 1,
+      },
+    });
+    // submitCandidateFinalOffer
+  };
+
+  const disableFinalSubmit = () => {
+    return candidateSignature === null && !candidateSignature.url;
+  };
 
   useEffect(() => {
     // Save changes to store whenever input fields change
@@ -318,7 +334,7 @@ const PreviewOffer = (props) => {
         </div>
 
         {/* HR Manager signature */}
-        <>
+        {hrManagerSignature.url && ( // If there is a signature of HR Manager
           <div className={styles.signature}>
             <header>
               <div className={styles.icon}>
@@ -367,48 +383,59 @@ const PreviewOffer = (props) => {
               </span>
             </div> */}
           </div>
+        )}
 
-          {/* Candidate Signature */}
-          <div className={styles.signature}>
-            <header>
-              <div className={styles.icon}>
-                <div className={styles.bigGlow}>
-                  <div className={styles.smallGlow}>
-                    <EditOutlined />
-                  </div>
+        {/* Candidate Signature */}
+        <div className={styles.signature}>
+          <header>
+            <div className={styles.icon}>
+              <div className={styles.bigGlow}>
+                <div className={styles.smallGlow}>
+                  <EditOutlined />
                 </div>
               </div>
-              <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
-            </header>
-
-            {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-            <p>Undersigned- {candidateName}</p>
-
-            <div className={styles.upload}>
-              {candidateSignature !== null && candidateSignature.url ? (
-                // Default image
-                <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-              ) : (
-                <img className={styles.signatureImg} src={whiteImg} alt="" />
-              )}
-
-              <button
-                type="submit"
-                onClick={() => {
-                  setUploadVisible1(true);
-                }}
-              >
-                {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-              </button>
-
-              <CancelIcon resetImg={() => resetImg('hr')} />
             </div>
+            <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
+          </header>
 
-            <div className={styles.submitContainer} />
+          {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+          <p>Undersigned - {candidateName}</p>
+
+          <div className={styles.upload}>
+            {candidateSignature !== null && candidateSignature.url ? (
+              // Default image
+              <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+            ) : (
+              <img className={styles.signatureImg} src={whiteImg} alt="" />
+            )}
+
+            <button
+              type="submit"
+              onClick={() => {
+                setUploadVisible1(true);
+              }}
+            >
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+            </button>
+
+            <CancelIcon resetImg={() => resetImg('hr')} />
           </div>
 
-          {/* Send final offer */}
-          {/* <div style={{ marginBottom: '16px' }}>
+          {/* <div className={styles.submitContainer} /> */}
+          <Button
+            type="primary"
+            disabled={!candidateSignature.url}
+            className={
+              candidateSignature.url ? `${styles.proceed}` : `${styles.proceed} ${styles.disabled}`
+            }
+            onClick={() => handleFinalSubmit()}
+          >
+            Submit & Proceed
+          </Button>
+        </div>
+
+        {/* Send final offer */}
+        {/* <div style={{ marginBottom: '16px' }}>
             <SendEmail
               title="Send final offer to the candidate"
               formatMessage={formatMessage}
@@ -417,7 +444,6 @@ const PreviewOffer = (props) => {
               privateEmail={candidateEmailProp}
             />
           </div> */}
-        </>
 
         <ModalUpload
           visible={uploadVisible1}
@@ -454,13 +480,14 @@ export default connect(
     loading,
     user: { currentUser = {} } = {},
     // candidateInfo: { rookieId = '', tempData = {}, data = {} } = {},
-    candidateProfile: { tempData = {}, data = {} } = {},
+    candidateProfile: { tempData = {}, data = {}, candidate = '' } = {},
   }) => ({
     previewOffer,
     loading: loading.effects['upload/uploadFile'],
     currentUser,
     tempData,
     data,
+    candidate,
     // rookieId,
   }),
 )(PreviewOffer);

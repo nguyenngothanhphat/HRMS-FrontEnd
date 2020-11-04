@@ -5,6 +5,7 @@ import {
   addAttachmentService,
   getWorkHistory,
   sendEmailByCandidateModel,
+  candidateFinalOffer,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
@@ -224,6 +225,19 @@ const candidateProfile = {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;
         console.log('a', response);
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *submitCandidateFinalOffer({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(candidateFinalOffer, payload);
+        const { statusCode } = response;
+        console.log(response);
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
