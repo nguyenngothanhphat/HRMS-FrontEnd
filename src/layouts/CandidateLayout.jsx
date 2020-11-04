@@ -28,26 +28,32 @@ const noMatch = (
 
 const steps = [
   {
+    id: 1,
     title: 'Basic Infomation',
     content: 'First-content',
   },
   {
+    id: 2,
     title: 'Job Details',
     content: 'Second-content',
   },
   {
+    id: 3,
     title: 'Salary Structure',
     content: 'Third-content',
   },
   {
+    id: 4,
     title: 'Eligibility documents',
     content: 'Fourth-content',
   },
   {
+    id: 5,
     title: 'Offer Details',
     content: 'Fifth-content',
   },
   {
+    id: 6,
     title: 'Benefits',
     content: 'Last-content',
   },
@@ -121,6 +127,19 @@ const CandidateLayout = (props) => {
     });
   };
 
+  const handleStepClick = (id) => {
+    console.log(id);
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: id,
+      },
+    });
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -149,9 +168,10 @@ const CandidateLayout = (props) => {
             <Col md={5}>
               <div className={s.stepContainer}>
                 <Steps current={current - 1} direction="vertical">
-                  {steps.map((item) => (
-                    <Step key={item.title} title={item.title} />
-                  ))}
+                  {steps.map((item) => {
+                    const { title, id } = item;
+                    return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
+                  })}
                 </Steps>
                 <button className={s.btn} onClick={renderPreviewOffer}>
                   Preview offer letter

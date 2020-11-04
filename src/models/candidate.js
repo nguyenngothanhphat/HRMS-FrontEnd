@@ -15,7 +15,7 @@ const candidateProfile = {
     candidate: '',
     ticketId: '',
     // currentStep: 1,
-    localStep: 5,
+    localStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,

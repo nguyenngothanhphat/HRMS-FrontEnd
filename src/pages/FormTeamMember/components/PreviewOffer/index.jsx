@@ -432,32 +432,34 @@ const PreviewOffer = (props) => {
             </div>
 
             {/* Candidate Signature */}
-            <div className={styles.signature}>
-              <header>
-                <div className={styles.icon}>
-                  <div className={styles.bigGlow}>
-                    <div className={styles.smallGlow}>
-                      <EditOutlined />
+            {candidateSignature.url && (
+              <div className={styles.signature}>
+                <header>
+                  <div className={styles.icon}>
+                    <div className={styles.bigGlow}>
+                      <div className={styles.smallGlow}>
+                        <EditOutlined />
+                      </div>
                     </div>
                   </div>
+                  <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
+                </header>
+
+                {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+                <p>Undersigned- {candidateName}</p>
+
+                <div className={styles.upload}>
+                  {candidateSignature !== null && candidateSignature.url ? (
+                    // Default image
+                    <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+                  ) : (
+                    <img className={styles.signatureImg} src={whiteImg} alt="" />
+                  )}
                 </div>
-                <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
-              </header>
 
-              {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-              <p>Undersigned- {candidateName}</p>
-
-              <div className={styles.upload}>
-                {candidateSignature !== null && candidateSignature.url ? (
-                  // Default image
-                  <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-                ) : (
-                  <img className={styles.signatureImg} src={whiteImg} alt="" />
-                )}
+                <div className={styles.submitContainer} />
               </div>
-
-              <div className={styles.submitContainer} />
-            </div>
+            )}
 
             {/* Send final offer */}
             <div style={{ marginBottom: '16px' }}>
