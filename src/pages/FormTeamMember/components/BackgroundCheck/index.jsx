@@ -68,6 +68,13 @@ class BackgroundCheck extends Component {
     const { currentStep } = this.props;
     const { candidate = '' } = data;
 
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        valueToFinalOffer: 0,
+      },
+    });
+
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
@@ -79,7 +86,6 @@ class BackgroundCheck extends Component {
     }
 
     if (data.documentChecklistSetting !== documentList) {
-      console.log('1');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
       const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
@@ -141,6 +147,19 @@ class BackgroundCheck extends Component {
     this.setState({
       openModal: false,
     });
+  };
+
+  changeValueToFinalOffer = (e) => {
+    const { dispatch } = this.props;
+    console.log('e', e.target.value);
+    if (e.target.value === 1) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          valueToFinalOffer: 1,
+        },
+      });
+    }
   };
 
   handleSendEmail = () => {
@@ -416,7 +435,14 @@ class BackgroundCheck extends Component {
     const {
       openModal,
       tempData,
-      tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
+      tempData: {
+        documentList,
+        isSentEmail,
+        isMarkAsDone,
+        generateLink,
+        fullName,
+        valueToFinalOffer,
+      },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
     console.log('poe', tempData.technicalCertification.poe.checkedList);
@@ -466,6 +492,9 @@ class BackgroundCheck extends Component {
                   fullName={fullName}
                   handleValueChange={this.handleValueChange}
                   privateEmail={privateEmail}
+                  processStatus={processStatus}
+                  valueToFinalOffer={valueToFinalOffer}
+                  changeValueToFinalOffer={this.changeValueToFinalOffer}
                 />
               </Col>
             </Row>

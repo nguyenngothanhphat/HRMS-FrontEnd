@@ -10,6 +10,17 @@
   padding-bottom: 0;
   overflow: hidden;
   margin-top: 1rem;
+  .s {
+    margin-bottom: 20px;
+    :global {
+      .ant-typography {
+        font-weight: 500 !important;
+      }
+    }
+  }
+  .s1 {
+    margin-bottom: 0 !important;
+  }
   .header {
     // .icon {
     //   width: 64px;
@@ -69,6 +80,9 @@
     display: none;
     .emailForm {
       position: relative;
+      .margin {
+        margin-bottom: 0 !important;
+      }
       :global {
         .ant-form-item-label {
           label {

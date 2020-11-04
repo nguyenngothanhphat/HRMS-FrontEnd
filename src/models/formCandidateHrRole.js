@@ -62,7 +62,7 @@ const candidateInfo = {
       workLocation: null,
       title: null,
       reportingManager: null,
-
+      valueToFinalOffer: 0,
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
