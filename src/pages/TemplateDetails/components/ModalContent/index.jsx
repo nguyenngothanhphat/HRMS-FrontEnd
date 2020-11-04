@@ -9,13 +9,14 @@ import styles from './index.less';
   ({
     loading,
     employeeSetting: {
-      currentTemplate: { title = '', htmlContent = '' } = {},
+      currentTemplate: { title = '', htmlContent = '', thumbnail = '' } = {},
       newTemplateData: { settings = [], fullname = '', signature = '' },
     },
   }) => ({
     loadingAddCustomTemplate: loading.effects['employeeSetting/addCustomTemplate'],
     settings,
     fullname,
+    thumbnail,
     signature,
     title,
     htmlContent,
@@ -43,7 +44,16 @@ class ModalContent extends Component {
   }
 
   onNext = () => {
-    const { dispatch, onNext = {}, settings, fullname, signature, title, htmlContent } = this.props;
+    const {
+      dispatch,
+      onNext = {},
+      settings,
+      fullname,
+      signature,
+      title,
+      htmlContent,
+      thumbnail,
+    } = this.props;
     const newSetting = settings.filter((item) => item !== null && item !== undefined);
     console.log(newSetting);
     dispatch({
@@ -54,6 +64,7 @@ class ModalContent extends Component {
         settings: newSetting,
         fullname,
         signature,
+        thumbnail,
       },
     }).then(() => onNext());
   };

@@ -105,7 +105,7 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
       } catch (errors) {
-        dialog(errorsI);
+        dialog(errors);
       }
     },
   },
