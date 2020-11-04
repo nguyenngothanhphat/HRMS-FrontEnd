@@ -25,6 +25,13 @@ class TableUsers extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -40,6 +47,9 @@ class TableUsers extends PureComponent {
           ) : (
             ''
           ),
+        sorter: {
+          compare: (a, b) => a.generalInfo.firstName.localeCompare(b.generalInfo.firstName),
+        },
       },
       {
         title: 'Employee ID',
@@ -50,8 +60,9 @@ class TableUsers extends PureComponent {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        // compare: (a, b) =>
-        //   a.employeeId.slice(4, a.employeeId) - b.employeeId.slice(4, b.employeeId),
+        //   compare: (a, b) =>
+        //     a.generalInfo.employeeId.slice(4, a.generalInfo.employeeId) -
+        //     b.generalInfo.employeeId.slice(4, b.generalInfo.employeeId),
         // },
       },
       {
@@ -60,7 +71,7 @@ class TableUsers extends PureComponent {
         width: '8%',
         align: 'left',
         render: () => <span>Created date</span>,
-        // sortDirections: ['ascend', 'descend', 'ascend'],
+        sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
         // },
@@ -227,13 +238,6 @@ class TableUsers extends PureComponent {
       pageSelected: 1,
     });
   };
-
-  componentDidUpdate(prevProps) {
-    const { data } = this.props;
-    if (prevProps.data !== data) {
-      this.setFirstPage();
-    }
-  }
 
   // onSortChange = (pagination, filters, sorter, extra) => {
   //   console.log('params', pagination, filters, sorter, extra);

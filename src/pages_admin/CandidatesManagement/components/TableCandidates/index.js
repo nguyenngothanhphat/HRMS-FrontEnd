@@ -16,6 +16,13 @@ class TableCandidates extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -101,13 +108,6 @@ class TableCandidates extends PureComponent {
       pageSelected: 1,
     });
   };
-
-  componentDidUpdate(prevProps) {
-    const { data } = this.props;
-    if (prevProps.data !== data) {
-      this.setFirstPage();
-    }
-  }
 
   // onSortChange = (pagination, filters, sorter, extra) => {
   //   console.log('params', pagination, filters, sorter, extra);
