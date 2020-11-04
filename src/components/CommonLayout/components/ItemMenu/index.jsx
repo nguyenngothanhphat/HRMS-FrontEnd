@@ -18,7 +18,6 @@ export default class ItemMenu extends PureComponent {
 
   render() {
     const { item = {}, handelClick = () => {}, selectedItemId, isDisabled = false } = this.props;
-    console.log(isDisabled);
     const { id = '', name = '', isComplete = false } = item;
 
     // const className = isActive ? s.itemMenuActive : s.itemMenu;

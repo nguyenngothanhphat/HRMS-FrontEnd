@@ -92,32 +92,23 @@ class CommonLayout extends Component {
   };
 
   isDisabled = (index) => {
-    console.log('index: ', index);
     if (this.disablePhase2()) {
-      if (index === 4 || index === 5 || index === 6) {
-        console.log(true);
+      if (index === 4 || index === 5 || index === 6 || index === 7) {
         return true;
       }
-      console.log(false);
       return false;
     }
-    console.log(false);
     return false;
   };
 
   render() {
     const { listMenu = [], currentPage = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
-    const menu = listMenu;
-    // if (this.disablePhase2()) {
-    //   menu = listMenu.slice(0, 4);
-    // }
-    // console.log(menu);
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
           <div className={s.viewLeft__menu}>
-            {menu.map((item, index) => (
+            {listMenu.map((item, index) => (
               <ItemMenu
                 key={item.id}
                 item={item}
@@ -127,8 +118,18 @@ class CommonLayout extends Component {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && !this.disablePhase2() && (
-                <Button type="primary" ghost onClick={this._handlePreviewOffer}>
+              {currentPage !== 'settings' && (
+                <Button
+                  type="primary"
+                  className={this.isDisabled(7) ? s.disabled : ''}
+                  ghost
+                  onClick={() => {
+                    if (this.isDisabled(7)) {
+                      return;
+                    }
+                    this._handlePreviewOffer();
+                  }}
+                >
                   Preview offer letter
                 </Button>
               )}
