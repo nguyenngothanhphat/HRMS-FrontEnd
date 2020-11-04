@@ -3,6 +3,7 @@ import { Table, Tag } from 'antd';
 import { formatMessage, connect } from 'umi';
 import EditUserIcon from '@/assets/admin_iconedit.svg';
 import DeleteUserIcon from '@/assets/admin_icondelete.svg';
+import moment from 'moment';
 import EditUserModal from '../EditUserModal';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
@@ -67,14 +68,15 @@ class TableUsers extends PureComponent {
       },
       {
         title: 'Created date',
-        dataIndex: 'joinedDate',
-        width: '8%',
+        dataIndex: 'joinDate',
+        // width: '8%',
         align: 'left',
-        render: () => <span>Created date</span>,
+        render: (joinDate) =>
+          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
         sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
-        // },
+        sorter: {
+          compare: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+        },
       },
       {
         title: 'Email',
