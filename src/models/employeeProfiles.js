@@ -31,6 +31,7 @@ import {
   getAdhaarcardUpdate,
   getAdhaardCard,
   removeCertification,
+  getEmailsListByCompany,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -76,6 +77,7 @@ const employeeProfile = {
     documentDetail: {},
     groupViewingDocuments: [],
     AdhaarCard: {},
+    emailsList: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -566,6 +568,21 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { newDocument },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+      try {
+        const response = yield call(getEmailsListByCompany, {
+          company,
+        });
+        const { statusCode, data: emailsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { emailsList },
         });
       } catch (errors) {
         dialog(errors);

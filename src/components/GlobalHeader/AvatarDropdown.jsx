@@ -19,6 +19,7 @@ class AvatarDropdown extends React.Component {
   onMenuClick = (event) => {
     const { key } = event;
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
+    const { currentUser } = this.props;
     if (key === LOGOUT) {
       const { dispatch } = this.props;
       if (dispatch) {
@@ -31,8 +32,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === VIEWPROFILE) {
-      // eslint-disable-next-line no-alert
-      alert('View Profile');
+      history.push(`/employees/employee-profile/${currentUser.employee._id}`);
 
       return;
     }

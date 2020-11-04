@@ -1,0 +1,42 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+.Option {
+  .option {
+    display: inline;
+  }
+  :global {
+    .ant-radio-group {
+      display: flex;
+      justify-items: center;
+      align-items: center;
+    }
+    .ant-form-item-label {
+      margin-top: 15px;
+      label {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.14;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+    .ant-radio-wrapper {
+      margin-right: 40px;
+      span {
+        padding-right: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.14;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+    .ant-form-item {
+      margin-bottom: 15px;
+    }
+    .ant-form-item-control {
+      text-align: end;
+    }
+  }
+}

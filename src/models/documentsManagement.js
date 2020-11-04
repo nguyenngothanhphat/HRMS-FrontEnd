@@ -63,6 +63,14 @@ const documentsManagement = {
     //   }
     // },
 
+    *clearDocumentDetail(_, { put }) {
+      try {
+        yield put({ type: 'save', payload: { listDocumentDetail: [] } });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+
     *clearEmployeeDetail(_, { put }) {
       try {
         yield put({ type: 'save', payload: { employeeDetail: [] } });

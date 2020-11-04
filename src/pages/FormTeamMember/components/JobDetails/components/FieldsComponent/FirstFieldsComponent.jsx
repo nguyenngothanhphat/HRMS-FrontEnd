@@ -3,6 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Typography, Spin } from 'antd';
+import { isNull, isEmpty } from 'lodash';
 import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
@@ -51,17 +52,84 @@ class FirstFieldsComponent extends PureComponent {
                     (item.title === 'department' && departmentList.length <= 0) ||
                     (item.title === 'title' && titleList.length <= 0)
                   }
-                  defaultValue={
-                    item.title === 'department'
-                      ? department
-                      : item.title === 'title'
-                      ? title
-                      : item.title === 'workLocation'
-                      ? workLocation
-                      : item.title === 'reportingManager'
-                      ? reportingManager
-                      : null
-                  }
+                  // {...(item.title === 'department' &&
+                  //   (!isNull(department) || !isUndefined(department)) && {
+                  //     defaultValue: department.name,
+                  //   })}
+                  // {...(item.title === 'title' &&
+                  //   (!isNull(title) || !isUndefined(title)) && {
+                  //     defaultValue: title.name,
+                  //   })}
+                  // {...(item.title === 'workLocation' &&
+                  //   (!isNull(workLocation) || !isUndefined(workLocation)) && {
+                  //     defaultValue: workLocation.legalAddress.address,
+                  //   })}
+                  {...(item.title === 'department' &&
+                    !isNull(department) && {
+                      defaultValue: department.name,
+                    })}
+                  {...(item.title === 'title' &&
+                    !isNull(title) && {
+                      defaultValue: title.name,
+                    })}
+                  {...(item.title === 'workLocation' &&
+                    !isNull(workLocation) && {
+                      defaultValue: workLocation.legalAddress.address,
+                    })}
+                  {...(item.title === 'reportingManager' &&
+                    !isEmpty(reportingManager) && {
+                      defaultValue: reportingManager.generalInfo.firstName,
+                    })}
+                  // {...(item.title === 'workLocation' &&
+                  //   (!isNull(workLocation) ||
+                  //     (!isUndefined(workLocation) && isUndefined(workLocation.company)) ||
+                  //     isNull(workLocation.company)) && {
+                  //     defaultValue: workLocation.legalAddress.address,
+                  //   })}
+                  // {...(item.title === 'workLocation' &&
+                  //   (!isNull(workLocation) ||
+                  //     (!isUndefined(workLocation) && !isUndefined(workLocation.company))) && {
+                  //     defaultValue: workLocation.company.legalAddress.address,
+                  //   })}
+                  // {...(item.title === 'reportingManager' &&
+                  //   (!isNull(reportingManager) || !isUndefined(reportingManager)) && {
+                  //     defaultValue: reportingManager.generalInfo.firstName,
+                  //   })}
+                  // defaultValue={
+                  //   item.title === 'department' &&
+                  //   (tempData.department === null || tempData.department === undefined)
+                  //     ? department
+                  //     : item.title === 'title' &&
+                  //       (tempData.title === null || tempData.title === undefined)
+                  //     ? title
+                  //     : item.title === 'workLocation' &&
+                  //       (tempData.workLocation === null || tempData.workLocation === undefined)
+                  //     ? workLocation
+                  //     : item.title === 'reportingManager' &&
+                  //       (tempData.reportingManager === null ||
+                  //         tempData.reportingManager === undefined)
+                  //     ? reportingManager
+                  //     : (tempData.department !== null || tempData.department !== undefined) &&
+                  //       item.title === 'department'
+                  //     ? tempData.department.name
+                  //     : (tempData.workLocation !== null || tempData.workLocation !== undefined) &&
+                  //       item.title === 'workLocation' &&
+                  //       tempData.workLocation.company
+                  //     ? tempData.workLocation.company.legalAddress.address
+                  //     : (tempData.workLocation !== null || tempData.workLocation !== undefined) &&
+                  //       item.title === 'workLocation' &&
+                  //       !tempData.workLocation.company
+                  //     ? tempData.workLocation.legalAddress.address
+                  //     : (tempData.title !== null || tempData.title !== undefined) &&
+                  //       item.title === 'title'
+                  //     ? tempData.title.name
+                  //     : (tempData.reportingManager !== null ||
+                  //         tempData.reportingManager !== undefined) &&
+                  //       tempData.reportingManager.generalInfo !== undefined &&
+                  //       item.title === 'reportingManager'
+                  //     ? tempData.reportingManager.generalInfo.firstName
+                  //     : null
+                  // }
                 >
                   {item.title === 'workLocation'
                     ? locationList.map((data, index) => (

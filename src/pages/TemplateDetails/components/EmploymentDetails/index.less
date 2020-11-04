@@ -1,8 +1,16 @@
 .EmploymentDetails {
-  padding-top: 40px;
   padding-bottom: 40px;
+  .option {
+    display: inline;
+  }
   :global {
+    .ant-radio-group {
+      display: flex;
+      justify-items: center;
+      align-items: center;
+    }
     .ant-form-item-label {
+      margin-top: 15px;
       label {
         font-size: 14px;
         font-weight: 500;
@@ -12,7 +20,7 @@
       }
     }
     .ant-radio-wrapper {
-      margin-left: 40px;
+      margin-right: 40px;
       span {
         padding-right: 0;
         font-size: 14px;

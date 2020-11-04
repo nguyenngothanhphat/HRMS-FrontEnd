@@ -11,3 +11,23 @@ export async function getListTitle() {
     method: 'POST',
   });
 }
+
+export async function getListPermissionOfRole(payload) {
+  return request('/api/permission/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateRoleWithPermission(payload) {
+  return request('/api/role/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPermissionByIdRole(payload) {
+  return request('/api/role/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

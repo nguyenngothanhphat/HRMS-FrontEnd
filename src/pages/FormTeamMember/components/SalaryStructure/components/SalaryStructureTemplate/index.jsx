@@ -11,40 +11,19 @@ import styles from './index.less';
       listTitle = [],
       checkMandatory = {},
       currentStep = {},
-      data: { processStatus = '' } = {},
+      data: { title = {}, processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
       data,
-      tableData = [],
-      salaryPosition = '',
-    },
-    user: { currentUser: { company: { _id = '' } = {} } = {} },
-  }) => ({
-    listTitle,
-    checkMandatory,
-    currentStep,
-    processStatus,
-    _id,
-    data,
-    tableData,
-    salaryPosition,
-  }),
-)
-class SalaryStructureTemplate extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isEditted: false,
-      tableData: [
+      tableData = [
         {
           key: 'basic',
           title: 'Basic',
-          value: 'Rs. 12888',
+          value: ' ',
           order: 'A',
         },
         {
           key: 'hra',
           title: 'HRA',
-          value: '50% of Basic',
+          value: ' ',
           order: 'B',
         },
         {
@@ -68,13 +47,13 @@ class SalaryStructureTemplate extends PureComponent {
         {
           key: 'employeesPF',
           title: "Employee's PF",
-          value: '12 % of Basic',
+          value: ' ',
           order: 'G',
         },
         {
           key: 'employeesESI',
           title: "Employee's ESI",
-          value: '0.75 of Gross',
+          value: ' ',
           order: 'H',
         },
         {
@@ -96,6 +75,26 @@ class SalaryStructureTemplate extends PureComponent {
           order: ' ',
         },
       ],
+    },
+    user: { currentUser: { company: { _id = '' } = {} } = {} },
+  }) => ({
+    listTitle,
+    checkMandatory,
+    currentStep,
+    processStatus,
+    _id,
+    data,
+    tableData,
+    salaryPosition,
+    title,
+  }),
+)
+class SalaryStructureTemplate extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditted: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -110,13 +109,37 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id } = this.props;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+    const {
+      dispatch,
+      _id,
+      title,
+      data: { salaryStructure },
+    } = this.props;
+    const idTitle = title?._id;
+
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
     });
+    if (idTitle !== undefined) {
+      dispatch({
+        type: 'candidateInfo/fetchTableData',
+        payload: { title: idTitle },
+      });
+      dispatch({
+        type: 'candidateInfo/saveOrigin',
+        payload: {
+          salaryStructure: {
+            ...salaryStructure,
+            title: title._id,
+          },
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/setDefaultTable',
+      });
+    }
   };
 
   onClickPrev = () => {
@@ -134,25 +157,38 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       currentStep,
       tableData,
-      data: { _id },
-    } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
+      // salaryPosition,
+      data: {
+        _id,
+        salaryStructure: { title },
       },
-    });
+      data,
+    } = this.props;
+    console.log('data', data);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
-        salaryStructure: tableData,
+        salaryStructure: {
+          title,
+          settings: tableData,
+        },
         candidate: _id,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
   };
 
   onFinish = (values) => {
-    console.log.log('hi', values);
+    console.log('hi', values);
   };
 
   onClickEdit = () => {
@@ -180,9 +216,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, tableData } = this.props;
     // const { filledSalaryStructure } = checkMandatory;
-    const { tableData } = this.state;
     const { target } = e;
     const { name, value } = target;
 
@@ -212,9 +247,11 @@ class SalaryStructureTemplate extends PureComponent {
   handleChangeSelect = (value) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateInfo/saveOrigin',
       payload: {
-        salaryPosition: value,
+        salaryStructure: {
+          salaryPosition: value,
+        },
       },
     });
     dispatch({
@@ -323,7 +360,11 @@ class SalaryStructureTemplate extends PureComponent {
   _renderButtons = () => {
     const { isEditted } = this.state;
     const { processStatus } = this.props;
-    if (processStatus === 'DRAFT' || processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
+    if (
+      processStatus === 'DRAFT' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'SENT-PROVISIONAL-OFFER'
+    ) {
       return (
         <Form.Item className={styles.buttons}>
           {' '}
@@ -418,8 +459,9 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { tableData, salaryPosition } = this.props;
+    const { tableData, title } = this.props;
     const { processStatus, listTitle = [] } = this.props;
+    const idTitle = title?._id;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -444,7 +486,7 @@ class SalaryStructureTemplate extends PureComponent {
                 </Select>
               )} */}
               <Select
-                defaultValue={salaryPosition ?? null}
+                defaultValue={idTitle ?? null}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"

@@ -5,7 +5,6 @@ import TimeoffType from './components/TimeoffType';
 import ManageBalance from './components/ManageBalance';
 import AssignPolicy from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
-import styles from './index.less';
 
 class SetupTimeoff extends Component {
   onChange = () => {};

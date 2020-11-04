@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, history } from 'umi';
+import moment from 'moment';
 import ModalConfirmRemove from '../ModalConfirmRemove';
 import styles from './index.less';
 
@@ -17,34 +18,44 @@ export default class TableEmployees extends PureComponent {
   generateColumns = () => {
     const columns = [
       {
+        title: formatMessage({ id: 'component.directory.table.fullName' }),
+        dataIndex: 'generalInfo',
+        align: 'left',
+        fixed: 'left',
+        width: '12%',
+        render: (generalInfo) =>
+          generalInfo ? (
+            <span className={styles.fullName}>
+              {`${generalInfo.firstName} ${generalInfo.lastName}`}
+            </span>
+          ) : (
+            ''
+          ),
+      },
+      {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         align: 'left',
         width: '10%',
+        className: `${styles.employeeId} `,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.joinedDate' }),
-        dataIndex: 'joinedDate',
+        dataIndex: 'joinDate',
         width: '8%',
         align: 'left',
-        render: () => <span>Aug-7,20</span>,
+        render: (joinDate) =>
+          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
         dataIndex: 'generalInfo',
         width: '15%',
-        align: 'center',
+        align: 'left',
         render: (generalInfo) => (
           <span>{generalInfo && generalInfo.workEmail ? generalInfo.workEmail : ''}</span>
         ),
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.fullName' }),
-        dataIndex: 'generalInfo',
-        align: 'center',
-        render: (generalInfo) =>
-          generalInfo ? <span>{`${generalInfo.firstName} ${generalInfo.lastName}`}</span> : '',
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
@@ -57,7 +68,7 @@ export default class TableEmployees extends PureComponent {
         title: 'Job Title',
         dataIndex: 'title',
         // width: '10%',
-        align: 'center',
+        align: 'left',
         render: (title) => <span>{title ? title.name : ''}</span>,
       },
       {
@@ -90,7 +101,7 @@ export default class TableEmployees extends PureComponent {
         dataIndex: 'employeeType',
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
-        // align: 'left',
+        align: 'center',
         width: '10%',
       },
       {
@@ -136,6 +147,7 @@ export default class TableEmployees extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-alert
     alert('EDIT USER', key);
   };
 

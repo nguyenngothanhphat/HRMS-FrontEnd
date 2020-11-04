@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Button, Tabs } from 'antd';
 import { listMonths, mockData } from './ListData';
 import CalanderTable from '../CalanderTable';

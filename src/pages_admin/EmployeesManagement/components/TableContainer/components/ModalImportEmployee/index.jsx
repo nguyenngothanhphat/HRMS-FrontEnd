@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
+import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
 
@@ -26,6 +27,9 @@ const { Option } = Select;
 class ModalImportEmployee extends Component {
   static getDerivedStateFromProps(props) {
     if ('statusImportEmployees' in props && props.statusImportEmployees) {
+      if (props.company !== '') {
+        return { company: props.company._id };
+      }
       return { company: '' };
     }
     return null;
@@ -35,7 +39,19 @@ class ModalImportEmployee extends Component {
     super(props);
     this.state = {
       employees: [],
-      company: '',
+      company: props.company._id,
+      // objectEmployee: {
+      //   location: 'Location',
+      //   department: 'Department',
+      //   employeeId: 'Employee Id',
+      //   workEmail: 'Work Email',
+      //   personalEmail: 'Personal Email',
+      //   managerWorkEmail: 'Manager Work Email',
+      //   firstName: 'First Name',
+      //   lastName: 'Last Name',
+      //   title: 'Job Title',
+      //   personalNumber: 'Personal Number',
+      // },
     };
     this.formRef = React.createRef();
   }
@@ -52,31 +68,48 @@ class ModalImportEmployee extends Component {
       });
     }
     const { returnEmployeesList } = this.props;
-    if (statusImportEmployees && !_.isEmpty(returnEmployeesList)) {
-      exportToCsv('Result_Import_Employees.csv', this.processData(returnEmployeesList.newList));
+    if (
+      statusImportEmployees &&
+      !_.isEmpty(returnEmployeesList) &&
+      (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
+    ) {
+      const existList = returnEmployeesList.existList.map((item) => {
+        return {
+          ...item,
+          isAdded: false,
+          status: '[FAILED] - Work Email existed!',
+        };
+      });
+      const exportData = [...returnEmployeesList.newList, ...existList];
+      exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
 
   processData = (array) => {
     // Uppercase first letter
-    const capsPopulations = [];
-    array.forEach((obj) => {
-      const entries = Object.entries(obj);
-      const capsEntries = entries.map((entry) => [
-        entry[0][0].toUpperCase() + entry[0].slice(1),
-        entry[1],
-      ]);
-      capsPopulations.push(Object.fromEntries(capsEntries));
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      return {
+        'Employee Id': item.employeeId,
+        'First Name': item.firstName,
+        'Last Name': item.lastName,
+        'Joined Date': item.joinDate,
+        Location: item.location,
+        Department: item.department,
+        'Work Email': item.workEmail,
+        'Personal Email': item.personalEmail,
+        'Manager Work Email': item.managerWorkEmail,
+        Title: item.title,
+        'Personal Number': item.personalNumber,
+        'Is Added': item.isAdded,
+        Status: item.status,
+      };
     });
 
     // Get keys, header csv
     const keys = Object.keys(capsPopulations[0]);
-
     const dataExport = [];
-    // Build header
-    let result = `${keys.join('_')}`;
-    result = result.split('_');
-    dataExport.push(result);
+    dataExport.push(keys);
 
     // Add the rows
     capsPopulations.forEach((obj) => {
@@ -88,8 +121,8 @@ class ModalImportEmployee extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch } = this.props;
-    this.setState({ company: '', employees: [] }, () => handleCancel());
+    const { handleCancel, dispatch, company } = this.props;
+    this.setState({ company: company._id, employees: [] }, () => handleCancel());
     dispatch({
       type: 'employeesManagement/save',
       payload: {
@@ -115,12 +148,27 @@ class ModalImportEmployee extends Component {
   };
 
   handleDataUpload = (data) => {
+    const employees = data.map((item) => {
+      return {
+        employeeId: item['Employee Id'],
+        firstName: item['First Name'],
+        lastName: item['Last Name'],
+        joinDate: moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
+        workEmail: item['Work Email'],
+        location: item.Location,
+        department: item.Department,
+        personalEmail: item['Personal Email'],
+        managerWorkEmail: item['Manager Work Email'],
+        title: item['Job Title'],
+        personalNumber: item['Personal Number'],
+      };
+    });
     data.map((item) => {
       delete item.no;
       return null;
     });
     this.setState({
-      employees: data,
+      employees,
     });
   };
 
@@ -139,8 +187,47 @@ class ModalImportEmployee extends Component {
     });
   };
 
+  renderFormImport = (companyProps) => {
+    const { companyList } = this.props;
+    if (companyProps) {
+      return (
+        <Form
+          ref={this.formRef}
+          initialValues={{
+            company: companyProps._id,
+          }}
+        >
+          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+            <Select disabled>
+              <Option value={companyProps._id}>{companyProps.name}</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      );
+    }
+    return (
+      <Form ref={this.formRef}>
+        <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+          <Select
+            placeholder="Select Company"
+            showArrow
+            showSearch
+            onChange={(value) => this.onChangeSelect(value)}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {companyList.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
+    );
+  };
+
   render() {
-    const { visible = false, companyList, loading } = this.props;
+    const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
     return (
       <div>
@@ -169,23 +256,7 @@ class ModalImportEmployee extends Component {
             </Button>,
           ]}
         >
-          <Form ref={this.formRef}>
-            <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-              <Select
-                placeholder="Select Company"
-                showArrow
-                showSearch
-                onChange={(value) => this.onChangeSelect(value)}
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {companyList.map((item) => (
-                  <Option key={item._id}>{item.name}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Form>
+          {this.renderFormImport(companyProps)}
           <div className={styles.FileUploadForm}>
             <ImportCSV
               disabled={company === ''}

@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 /* eslint-disable require-yield */
-import { stringify } from 'querystring';
+// import { stringify } from 'querystring';
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
@@ -28,7 +28,10 @@ const Model = {
         if (response.statusCode !== 200) throw response;
         setToken(response.data.token);
         const arrayRoles = response.data.user.roles;
-        const formatArrRoles = arrayRoles.map((item) => item._id.toLowerCase());
+        let formatArrRoles = [];
+        arrayRoles.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
+        });
         setAuthority(formatArrRoles);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -58,23 +61,17 @@ const Model = {
     },
 
     *logout(_, { put }) {
-      const { redirect } = getPageQuery(); // Note: There may be security issues, please note
       setToken('');
       setAuthority('');
+      localStorage.removeItem('dataRoles');
+      localStorage.removeItem('Rolesname');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {
           currentUser: {},
         },
       });
-      if (window.location.pathname !== '/login' && !redirect) {
-        history.replace({
-          pathname: '/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
-      }
+      history.replace('/login');
     },
     *loginThirdParty({ payload }, { call, put }) {
       try {

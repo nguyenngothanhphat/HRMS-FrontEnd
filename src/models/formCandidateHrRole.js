@@ -9,15 +9,22 @@ import {
   getTitleListByCompany,
   addCandidate,
   closeCandidate,
-  editSalaryStructure,
   updateByHR,
   getById,
   submitPhase1,
+  getLocationListByCompany,
+  addManagerSignature,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo } from '@/services/formCandidate';
+import {
+  getRookieInfo,
+  sentForApproval,
+  approveFinalOffer,
+  getTemplates,
+  removeTemplate,
+} from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
@@ -33,8 +40,12 @@ const candidateInfo = {
     },
     currentStep: 0,
     statusCodeToValidate: null,
+    isAddNewMember: false,
     tempData: {
-      checkStatus: {},
+      checkStatus: {
+        filledBasicInformation: false,
+        filledJobDetail: false,
+      },
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
       previousExperience: null,
@@ -47,6 +58,11 @@ const candidateInfo = {
       managerList: [],
       joineeEmail: '',
       employer: '',
+      department: null,
+      workLocation: null,
+      title: null,
+      reportingManager: null,
+
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -60,6 +76,7 @@ const candidateInfo = {
       isMarkAsDone: true,
       generateLink: '',
       newArrToAdjust: [],
+      company: '',
       email: '',
       identityProof: {
         aadharCard: true,
@@ -67,14 +84,14 @@ const candidateInfo = {
         passport: false,
         drivingLicense: false,
         voterCard: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       addressProof: {
         rentalAgreement: false,
         electricityBill: false,
         telephoneBill: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       educational: {
@@ -83,7 +100,7 @@ const candidateInfo = {
         graduation: true,
         postGraduate: false,
         phd: false,
-        listSelected: [],
+        checkedList: [],
         isChecked: false,
       },
       technicalCertification: {
@@ -93,10 +110,31 @@ const candidateInfo = {
           paystubs: false,
           form16: false,
           relievingLetter: false,
-          listSelected: [],
+          checkedList: [],
           isChecked: false,
         },
       },
+
+      candidateSignature: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+
+      defaultTemplates: [],
+      customTemplates: [],
     },
     data: {
       fullName: null,
@@ -117,6 +155,9 @@ const candidateInfo = {
       compensationType: null,
       amountIn: null,
       timeOffPolicy: null,
+      salaryStructure: {
+        salaryPosition: '',
+      },
       id: '',
       candidate: '',
       documentChecklistSetting: [
@@ -235,14 +276,34 @@ const candidateInfo = {
           ],
         },
       ],
-      salaryPosition: '',
       listTitle: [],
       tableData: [],
-      candidateSignature: null,
-      hrManagerSignature: null,
-      hrSignature: null,
-      hiringAgreements: null,
-      companyHandbook: null,
+      hrManagerSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hrSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      candidateSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
+      hiringAgreements: true,
+      companyHandbook: true,
       benefits: [],
       comments: null,
       status: '',
@@ -282,9 +343,10 @@ const candidateInfo = {
       }
     },
 
-    *fetchTitleList({ payload: { company = '' } }, { call, put }) {
+    *fetchTitleList({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getTitleList, { company });
+        response = yield call(getTitleList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -294,6 +356,7 @@ const candidateInfo = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchLocationList(_, { call, put }) {
       try {
@@ -309,6 +372,19 @@ const candidateInfo = {
       }
     },
 
+    *fetchLocationListByCompany({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getLocationListByCompany, payload);
+        const { statusCode, data: locationList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { locationList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
@@ -351,48 +427,87 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      // console.log('payload', payload);
+      let response = {};
       try {
-        const response = yield call(updateByHR, payload);
+        response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        // console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
+    },
+
+    *addManagerSignatureEffect({ payload }, { call, put }) {
+      // console.log('payload', payload);
+      let response = {};
+      try {
+        response = yield call(addManagerSignature, payload);
+        const { statusCode, data } = response;
+        // console.log('data', data);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
 
     *fetchCandidateInfo(_, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getRookieInfo);
+        response = yield call(getRookieInfo);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
+        // console.log('abc', data);
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { ...data },
+        });
         history.push(`/employee-onboarding/review/${rookieId}`);
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
+
     *fetchEmployeeById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
         });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            ...data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTitleListByCompany({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTitleListByCompany, payload);
+        response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data);
         yield put({
           type: 'save',
           payload: { listTitle: data },
@@ -400,14 +515,13 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
     *fetchTableData({ payload }, { call, put }) {
       try {
         const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
-        console.log('ye');
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -422,7 +536,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -437,7 +550,6 @@ const candidateInfo = {
         const response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
-        console.log(candidate);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -459,6 +571,108 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+
+    *sentForApprovalEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(sentForApproval, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *approveFinalOfferEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(approveFinalOffer, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchCandidateByRookie({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getById, payload);
+        const { data, statusCode } = response;
+        // console.log('data', data);
+        // console.log('currentStep', data.currentStep);
+        if (statusCode !== 200) throw response;
+        const { _id } = data;
+        yield put({
+          type: 'save',
+          payload: {
+            currentStep: data.currentStep,
+          },
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...data,
+            candidate: _id,
+            _id,
+          },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            ...data,
+          },
+        });
+        yield put({
+          type: 'updateSignature',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *fetchTemplate(_, { call, put }) {
+      try {
+        const response = yield call(getTemplates);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'updateTemplate',
+          payload: data,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *removeTemplateEffect({ payload }, { call, put }) {
+      try {
+        // const { id = '' } = payload;
+        const response = yield call(removeTemplate, payload); // payload: id
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchTemplate',
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    editTemplateEffect({ payload }) {
+      try {
+        const { id = '' } = payload;
+        // http://localhost:8001/template-details/5f97cd35fc92a3a34bdb2185
+        history.push(`/template-details/${id}`);
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
@@ -489,6 +703,129 @@ const candidateInfo = {
         },
       };
     },
+
+    updateSignature(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+      const { hrSignature = {}, hrManagerSignature = {} } = data;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          hrSignature,
+          hrManagerSignature,
+        },
+      };
+    },
+
+    updateTemplate(state, action) {
+      const { tempData } = state;
+      const data = action.payload;
+
+      if (!data) {
+        return state;
+      }
+
+      const defaultTemplates = data.filter((template) => template.default === true);
+      const customTemplates = data.filter((template) => template.default === false);
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          defaultTemplates,
+          customTemplates,
+        },
+      };
+    },
+    setDefaultTable(state) {
+      return {
+        ...state,
+        tableData: [
+          {
+            key: 'basic',
+            title: 'Basic',
+            value: ' ',
+            order: 'A',
+          },
+          {
+            key: 'hra',
+            title: 'HRA',
+            value: ' ',
+            order: 'B',
+          },
+          {
+            title: 'Other allowances',
+            key: 'otherAllowances',
+            value: 'Balance amount',
+            order: 'C',
+          },
+          {
+            key: 'totalEarning',
+            title: 'Total earning (Gross)',
+            order: 'D',
+            value: 'A + B + C',
+          },
+          {
+            key: 'deduction',
+            title: 'Deduction',
+            order: 'E',
+            value: ' ',
+          },
+          {
+            key: 'employeesPF',
+            title: "Employee's PF",
+            value: ' ',
+            order: 'G',
+          },
+          {
+            key: 'employeesESI',
+            title: "Employee's ESI",
+            value: ' ',
+            order: 'H',
+          },
+          {
+            key: 'professionalTax',
+            title: 'Professional Tax',
+            value: 'Rs.200',
+            order: 'I',
+          },
+          {
+            key: 'tds',
+            title: 'TDS',
+            value: 'As per IT rules',
+            order: 'J',
+          },
+          {
+            key: 'netPayment',
+            title: 'Net Payment',
+            value: 'F - (G + H + I + J)',
+            order: ' ',
+          },
+        ],
+      };
+    },
+
+    // removeTemplate(state, action) {
+    //   const { tempData } = state;
+    //   const data = action.payload;
+
+    //   if (!data) {
+    //     return state;
+    //   }
+
+    //   const defaultTemplates = data.filter((template) => template.default === true);
+    //   const customTemplates = data.filter((template) => template.default === false);
+
+    //   return {
+    //     ...state,
+    //     tempData: {
+    //       ...tempData,
+    //       defaultTemplates,
+    //       customTemplates,
+    //     },
+    //   };
+    // },
   },
 };
 

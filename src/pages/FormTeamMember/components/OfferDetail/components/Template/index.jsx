@@ -1,12 +1,31 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { DownloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import DownloadFile from '@/components/DownloadFile';
 
 // import styles from '../index.less';
 import styles from './index.less';
 
 const Template = (props) => {
-  const { type, files } = props;
+  const { type, files, dispatch } = props;
+
+  const editTemplate = (id) => {
+    dispatch({
+      type: 'candidateInfo/editTemplateEffect',
+      payload: {
+        id,
+      },
+    });
+  };
+
+  const removeTemplate = (id) => {
+    dispatch({
+      type: 'candidateInfo/removeTemplateEffect',
+      payload: {
+        id,
+      },
+    });
+  };
 
   return (
     <div className={styles.templateContainer}>
@@ -27,17 +46,21 @@ const Template = (props) => {
       </div>
 
       <div className={styles.defaultContainer}>
-        {files.map((fileName, index) => (
-          <div className={styles.row} key={index}>
-            <span>{fileName}</span>
+        {files.map((file) => {
+          const { title, _id = '123', attachment: { url = '' } = {} } = file;
 
-            <div className={styles.rowIconContainer}>
-              <DownloadOutlined />
-              <EditOutlined />
-              <DeleteOutlined />
+          return (
+            <div className={styles.row} key={_id}>
+              <span>{title}</span>
+
+              <div className={styles.rowIconContainer}>
+                <DownloadFile content={<DownloadOutlined />} url={url} />
+                <EditOutlined onClick={() => editTemplate(_id)} />
+                <DeleteOutlined onClick={() => removeTemplate(_id)} />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Tabs } from 'antd';
+import React, { Fragment, PureComponent } from 'react';
+import { Row, Col, Tabs, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
@@ -7,13 +7,29 @@ import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
 import TimeOffRequests from './components/TimeOffRequests';
 import SetupTimeoff from './components/SetupTimeoff';
+import LeaveBalanceInfo from './components/LeaveBalanceInfo';
+
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 export default class TimeOff extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewInformation: false,
+    };
+  }
+
   buttonOnClick = () => {
     // eslint-disable-next-line no-alert
     alert('Clicked Button');
+  };
+
+  onInformationCLick = () => {
+    const { viewInformation } = this.state;
+    this.setState({
+      viewInformation: !viewInformation,
+    });
   };
 
   _renderLandingPage = () => {
@@ -31,51 +47,67 @@ export default class TimeOff extends PureComponent {
         your manager and supervisor, it will be credited to your total leave balance.
       </p>,
     ];
+    const { viewInformation } = this.state;
     return (
-      <div className={styles.TimeOff}>
-        <Row gutter={[20, 20]}>
-          <Col xs={6}>
-            <Row gutter={[20, 20]}>
-              <Col span={24}>
-                <LeaveInformation />
+      <>
+        <Affix offsetTop={40}>
+          <div className={styles.titlePage}>
+            <p className={styles.titlePage__text}>Time Off</p>
+          </div>
+        </Affix>
+        <div className={styles.TimeOff}>
+          <Row gutter={[20, 20]}>
+            <Col xs={24} md={6}>
+              <Row gutter={[20, 20]}>
+                <Col span={24}>
+                  <LeaveInformation onInformationCLick={this.onInformationCLick} />
+                </Col>
+                <Col span={24}>
+                  <LeaveHistoryAndHoliday />
+                </Col>
+                <Col span={24}>
+                  <QuickLinks />
+                </Col>
+              </Row>
+            </Col>
+            {!viewInformation && (
+              <Col xs={24} md={18}>
+                <Row gutter={[20, 20]}>
+                  <Col xs={24} lg={15}>
+                    <ApplyRequest
+                      title="Apply for Timeoff from Office"
+                      describe={describeText[0]}
+                      buttonText="Request Time Off"
+                      onClick={this.buttonOnClick}
+                      type={1}
+                    />
+                  </Col>
+                  <Col xs={24} lg={9}>
+                    <ApplyRequest
+                      title="Apply for Compoff"
+                      describe={describeText[1]}
+                      onClick={this.buttonOnClick}
+                      buttonText="Request Compoff"
+                      type={2}
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={[20, 20]}>
+                  <Col span={24}>
+                    <TimeOffRequests />
+                  </Col>
+                </Row>
               </Col>
-              <Col span={24}>
-                <LeaveHistoryAndHoliday />
+            )}
+
+            {viewInformation && (
+              <Col xs={24} md={18}>
+                <LeaveBalanceInfo onClose={this.onInformationCLick} />
               </Col>
-              <Col span={24}>
-                <QuickLinks />
-              </Col>
-            </Row>
-          </Col>
-          <Col xs={18}>
-            <Row gutter={[20, 20]}>
-              <Col span={15}>
-                <ApplyRequest
-                  title="Apply for Timeoff from Office"
-                  describe={describeText[0]}
-                  buttonText="Request Time Off"
-                  onClick={this.buttonOnClick}
-                  type={1}
-                />
-              </Col>
-              <Col span={9}>
-                <ApplyRequest
-                  title="Apply for Compoff"
-                  describe={describeText[1]}
-                  onClick={this.buttonOnClick}
-                  buttonText="Request Compoff"
-                  type={2}
-                />
-              </Col>
-            </Row>
-            <Row gutter={[20, 20]}>
-              <Col span={24}>
-                <TimeOffRequests />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </div>
+            )}
+          </Row>
+        </div>
+      </>
     );
   };
 
@@ -86,7 +118,7 @@ export default class TimeOff extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <Tabs defaultActiveKey="setupTimeOff">
+        <Tabs defaultActiveKey="langdingPage">
           <TabPane tab="Landing page" key="langdingPage">
             {this._renderLandingPage()}
           </TabPane>

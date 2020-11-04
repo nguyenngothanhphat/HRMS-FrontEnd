@@ -55,6 +55,7 @@ export default {
     'Are you sure? This hire will not be able to submit any time off requests.',
   'component.previewOffer.title': 'employee agreement',
   'component.previewOffer.hrSignature': 'Signature of the HR',
+  'component.previewOffer.candidateSignature': 'Signature of the Candidate',
   'component.previewOffer.undersigned': 'Undersigned - Ms Riddhima Chaudhary',
   'component.previewOffer.managerSignature': 'Signature of the HR Manager',
   'component.previewOffer.managerUndersigned': 'Undersigned - Ms. Bhumika Vaidya',
@@ -71,6 +72,7 @@ export default {
   'component.previewOffer.hrMail': 'HR Email ID',
   'component.previewOffer.invalidMailErr': 'The input is not valid email!',
   'component.previewOffer.emptyMailErr': 'Please input your email!',
+  'component.previewOffer.sendForApproval': 'Send for approval',
   'component.customField.title': 'custom fields',
   'component.customField.subTitle':
     ' All documents supporting candidate’s employment eligibility will be displayed here',

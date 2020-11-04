@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Empty, Dropdown, Menu } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
-import { formatMessage, Link, Redirect } from 'umi';
+import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
+import { formatMessage, Link, connect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
@@ -14,7 +14,7 @@ import styles from './index.less';
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1, openModal: false, currentRecord: {}, redirectScreen: null };
+    this.state = { pageSelected: 1, openModal: false, currentRecord: {} };
   }
 
   handleActionClick = (tableType) => {
@@ -22,6 +22,22 @@ class OnboardTable extends Component {
     if (tableType === SENT_FINAL_OFFERS || tableType === ACCEPTED_FINAL_OFFERS) {
       this.setState((prevState) => ({ openModal: !prevState.openModal }));
     }
+  };
+
+  handleActionDelete = (id) => {
+    console.log(id);
+    const { dispatch } = this.props;
+
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'onboard/deleteTicketDraft',
+      payload: {
+        id,
+      },
+    });
   };
 
   closeModal = () => {
@@ -47,8 +63,20 @@ class OnboardTable extends Component {
     return <p>{name}</p>;
   };
 
+  fetchData = () => {
+    // const { dispatch } = this.props;
+    // if (!dispatch) {
+    //   return;
+    // }
+    // dispatch({
+    //   type: 'candidateInfo/fetchCandidateInfo',
+    // });
+    console.log('abc');
+  };
+
   renderAction = (id, type, actionText) => {
     const {
+      PROVISIONAL_OFFERS_DRAFTS,
       FINAL_OFFERS_DRAFTS,
       RENEGOTIATE_PROVISIONAL_OFFERS,
       APPROVED_OFFERS,
@@ -59,17 +87,36 @@ class OnboardTable extends Component {
     let actionContent = null;
 
     switch (type) {
+      case PROVISIONAL_OFFERS_DRAFTS: {
+        actionContent = (
+          <>
+            {/* <span>{actionText}</span> */}
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+              <span>Continue</span>
+            </Link>
+
+            <DeleteOutlined
+              className={styles.deleteIcon}
+              onClick={() => this.handleActionDelete(id)}
+            />
+          </>
+        );
+        break;
+      }
+
       case RENEGOTIATE_PROVISIONAL_OFFERS:
       case RENEGOTIATE_FINAL_OFFERS:
         actionContent = (
           <>
             {/* <span>{actionText}</span> */}
-            <span>Schedule 1-on-1</span>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Schedule 1-on-1</span>
 
-            <span className={styles.viewDraft}>
-              View Form
-              {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
-            </span>
+              <span className={styles.viewDraft}>
+                View Form
+                {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
+              </span>
+            </Link>
           </>
         );
         break;
@@ -83,17 +130,19 @@ class OnboardTable extends Component {
 
         actionContent = (
           <>
-            <span>Send for approval</span>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Send for approval</span>
 
-            <span className={styles.viewDraft}>
-              {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-            </span>
+              <span className={styles.viewDraft}>
+                {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+              </span>
 
-            <Dropdown.Button
-              overlay={menu}
-              placement="bottomCenter"
-              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
-            />
+              <Dropdown.Button
+                overlay={menu}
+                placement="bottomCenter"
+                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+              />
+            </Link>
           </>
         );
         break;
@@ -102,8 +151,10 @@ class OnboardTable extends Component {
       case APPROVED_OFFERS:
         actionContent = (
           <>
-            <span>Send to candidate</span>
-            <span className={styles.viewDraft}>View form</span>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Send to candidate</span>
+              <span className={styles.viewDraft}>View form</span>
+            </Link>
           </>
         );
         break;
@@ -117,15 +168,17 @@ class OnboardTable extends Component {
 
         actionContent = (
           <>
-            <Dropdown.Button
-              overlay={menu}
-              placement="bottomCenter"
-              icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
-            >
-              {actionText}
-            </Dropdown.Button>
-            {/* <span onClick={() => this.handleActionClick(type)}>{actionText}</span> */}
-            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Dropdown.Button
+                overlay={menu}
+                placement="bottomCenter"
+                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+              >
+                {actionText}
+              </Dropdown.Button>
+              {/* <span onClick={() => this.handleActionClick(type)}>{actionText}</span> */}
+              {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+            </Link>
           </>
         );
         break;
@@ -134,24 +187,18 @@ class OnboardTable extends Component {
       default:
         actionContent = (
           <>
-            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-            {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+              {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+            </Link>
           </>
         );
         break;
     }
     return (
-      <Link to={`/employee-onboarding/review/${id}`}>
-        <span className={styles.tableActions}>
-          {actionContent}
-          {/* {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-          ) : (
-            <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-          )} */}
-
-          {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
-        </span>
-      </Link>
+      // <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+      <span className={styles.tableActions}>{actionContent}</span>
+      // </Link>
     );
   };
 
@@ -233,8 +280,8 @@ class OnboardTable extends Component {
         width: getColumnWidth('dateJoin', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'No. Of documents verified',
+        // title: 'No. Of documents verified',
+        title: formatMessage({ id: 'component.onboardingOverview.documentVerified' }),
         dataIndex: 'documentVerified',
         key: 'document',
         columnName: DOCUMENT,
@@ -242,8 +289,8 @@ class OnboardTable extends Component {
         align: 'center',
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Resubmits',
+        // title: 'Resubmits',
+        title: formatMessage({ id: 'component.onboardingOverview.resubmit' }),
         dataIndex: 'resubmit',
         key: 'resubmit',
         columnName: RESUBMIT,
@@ -251,24 +298,24 @@ class OnboardTable extends Component {
         align: 'center',
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Expires on',
+        // title: 'Expires on',
+        title: formatMessage({ id: 'component.onboardingOverview.expire' }),
         dataIndex: 'expire',
         key: 'expire',
         columnName: EXPIRE,
         width: getColumnWidth('expire', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Change request',
+        // title: 'Change request',
+        title: formatMessage({ id: 'component.onboardingOverview.changeRequest' }),
         dataIndex: 'changeRequest',
         key: 'changeRequest',
         columnName: CHANGE_REQUEST,
         width: getColumnWidth('changeRequest', type),
       },
       {
-        // title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
-        title: 'Request date',
+        // title: 'Request date',
+        title: formatMessage({ id: 'component.onboardingOverview.requestDate' }),
         dataIndex: 'dateRequest',
         key: 'dateRequest',
         columnName: DATE_REQUEST,
@@ -293,25 +340,6 @@ class OnboardTable extends Component {
           const { rookieId = '' } = currentRecord;
           const id = rookieId.replace('#', '') || '';
           return this.renderAction(id, type, actionText);
-          // return (
-          //   <Link to={`/employee-onboarding/review/${id}`}>
-          //     <span className={styles.tableActions}>
-          //       {type === TABLE_TYPE.FINAL_OFFERS_DRAFTS ? (
-          //         <>
-          //           <span>{actionText}</span>
-
-          //           <span className={styles.viewDraft}>
-          //             {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-          //           </span>
-          //         </>
-          //       ) : (
-          //         <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-          //       )}
-
-          //       <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />
-          //     </span>
-          //   </Link>
-          // );
         },
         columnName: ACTION,
       },
@@ -346,7 +374,7 @@ class OnboardTable extends Component {
     };
 
     const pagination = {
-      position: ['bottomRight'],
+      position: ['bottomLeft'],
       total: list.length,
       showTotal: (total, range) => (
         <span>
@@ -389,9 +417,9 @@ class OnboardTable extends Component {
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
             pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            onRow={(record, rowIndex) => {
+            onRow={(record) => {
               return {
-                onMouseEnter: (event) => {
+                onMouseEnter: () => {
                   this.setState({
                     currentRecord: record,
                   });
@@ -412,4 +440,7 @@ class OnboardTable extends Component {
   }
 }
 
-export default OnboardTable;
+// export default OnboardTable;
+export default connect(({ candidateInfo }) => ({
+  isAddNewMember: candidateInfo.isAddNewMember,
+}))(OnboardTable);

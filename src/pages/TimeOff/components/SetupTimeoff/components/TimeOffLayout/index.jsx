@@ -13,8 +13,8 @@ class TimeOffLayout extends Component {
   componentDidMount() {
     const { listMenu } = this.props;
     this.setState({
-      selectedItemKey: listMenu[1].key,
-      displayComponent: listMenu[1].component,
+      selectedItemKey: listMenu[0].key,
+      displayComponent: listMenu[0].component,
     });
   }
 

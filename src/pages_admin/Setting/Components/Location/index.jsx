@@ -1,11 +1,21 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Input, Table } from 'antd';
+import { Input, Select, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
-@connect(({ employee: { location = [] } = {} }) => ({ location }))
+@connect(
+  ({
+    employee: { location = [] } = {},
+    country: { listCountry = [] } = {},
+    companiesManagement: { companiesList = [] } = {},
+  }) => ({
+    location,
+    listCountry,
+    companiesList,
+  }),
+)
 class Location extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,7 +24,15 @@ class Location extends PureComponent {
       visible: false,
       testReord: {},
       data: [],
-      newValue: '',
+      country: '',
+      name: '',
+      phone: '',
+      headQuarterAddress: '',
+      headQuarterState: '',
+      headQuarterZipCode: '',
+      legalAddress: '',
+      legalState: '',
+      legalZipCode: '',
       getIndex: '',
     };
   }
@@ -22,14 +40,40 @@ class Location extends PureComponent {
   componentDidMount() {
     const { location } = this.props;
     const formatData = location.map((item) => {
-      const { _id: LocationID, name: Country } = item;
-      return { LocationID, Country };
+      const {
+        _id: LocationID,
+        name: Name,
+        country: { name: Country },
+        company: {
+          name: Company,
+          headQuarterAddress: {
+            address: headQuarterAddress,
+            state: headQuarterState,
+            zipCode: headQuarterZipCode,
+          },
+          legalAddress: { address: legalAddress, state: legalState, zipCode: legalZipCode },
+        },
+        phone: Phone,
+      } = item;
+      return {
+        LocationID,
+        Name,
+        Country,
+        Company,
+        Phone,
+        headQuarterAddress,
+        headQuarterState,
+        headQuarterZipCode,
+        legalAddress,
+        legalState,
+        legalZipCode,
+      };
     });
     this.setState({ data: formatData });
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
+  onSelectChange = (selectedRowKeys) => {
+    // console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
     this.setState({ selectedRowKeys });
   };
 
@@ -42,15 +86,15 @@ class Location extends PureComponent {
     });
   };
 
-  handleCancel = (e) => {
-    console.log(e);
+  handleCancel = () => {
+    // console.log(e);
     this.setState({
       visible: false,
     });
   };
 
   handleClickDelete = (text, record, index) => {
-    console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
+    // console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
     this.setState({
       visible: true,
       testReord: record,
@@ -58,9 +102,18 @@ class Location extends PureComponent {
     });
   };
 
-  handleChangeValue = (e) => {
-    const { value } = e.target;
-    this.setState({ newValue: value });
+  handleChangeValue = (e, conditionValues) => {
+    if (conditionValues === 'country') {
+      this.setState({ country: e });
+    }
+    if (conditionValues === 'name') {
+      const { value } = e.target;
+      this.setState({ country: value });
+    }
+    // if (conditionValues === 'address') {
+    //   const { value } = e.target;
+    //   this.setState({ address: value });
+    // }
   };
 
   handleRandomNumberID = () => {
@@ -74,18 +127,35 @@ class Location extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (newValue) => {
+  handleAddNewValue = (country) => {
     const { data } = this.state;
     const addData = {
       LocationID: this.handleRandomNumberID(),
-      Country: newValue,
+      Country: country,
     };
     const newData = [...data, addData];
-    this.setState({ data: newData, newValue: '' });
+    this.setState({ data: newData, country: '' });
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
+    const { Option } = Select;
+    const { listCountry, location } = this.props;
+    const {
+      selectedRowKeys,
+      visible,
+      testReord,
+      data,
+      country,
+      getIndex,
+      name,
+      phone,
+      headQuarterAddress,
+      headQuarterState,
+      headQuarterZipCode,
+      legalAddress,
+      legalState,
+      legalZipCode,
+    } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -99,26 +169,154 @@ class Location extends PureComponent {
       },
       {
         key: 2,
+        title: 'Name',
+        dataIndex: 'Name',
+        align: 'center',
+      },
+      {
+        key: 3,
         title: 'Country',
         dataIndex: 'Country',
         align: 'center',
       },
       {
-        key: 3,
+        key: 4,
+        title: 'Company',
+        dataIndex: 'Company',
+        align: 'center',
+      },
+      {
+        key: 5,
+        title: 'Phone',
+        dataIndex: 'Phone',
+        align: 'center',
+      },
+      {
+        key: 6,
+        title: 'Head Quarter Address',
+        dataIndex: 'headQuarterAddress',
+        align: 'center',
+      },
+      {
+        key: 7,
+        title: 'Head Quarter Country',
+        dataIndex: 'headQuarterCountry',
+        align: 'center',
+      },
+      {
+        key: 8,
+        title: 'Head Quarter State',
+        dataIndex: 'headQuarterState',
+        align: 'center',
+      },
+      {
+        key: 9,
+        title: 'Head Quarter ZipCode',
+        dataIndex: 'headQuarterZipCode',
+        align: 'center',
+      },
+      {
+        key: 10,
+        title: 'Legal Address',
+        dataIndex: 'legalAddress',
+        align: 'center',
+      },
+      {
+        key: 11,
+        title: 'Legal Country',
+        dataIndex: 'legalCountry',
+        align: 'center',
+      },
+      {
+        key: 12,
+        title: 'Legal State',
+        dataIndex: 'legalState',
+        align: 'center',
+      },
+      {
+        key: 13,
+        title: 'Legal ZipCode',
+        dataIndex: 'legalZipCode',
+        align: 'center',
+      },
+      {
+        key: 19,
         title: 'Action',
         dataIndex: 'Action',
         render: (text, record, index) =>
           record.LocationID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue(country)} />
           ),
         align: 'center',
       },
     ];
+    const getListCompany = location.map((item) => {
+      const {
+        company: { _id: id, name: nameCompany },
+      } = item;
+      return { id, nameCompany };
+    });
+    const formatListCountry = listCountry.map((item) => {
+      const { _id: id, name: nameCountry } = item;
+      return { id, nameCountry };
+    });
     const add = {
       LocationID: '',
-      Country: <Input onChange={this.handleChangeValue} value={newValue} />,
+      Name: <Input onChange={(e) => this.handleChangeValue(e, 'name')} value={name} />,
+      Country: (
+        <Select
+          style={{ width: 150 }}
+          onChange={(value) => this.handleChangeValue(value, 'country')}
+        >
+          {formatListCountry.map((item) => (
+            <Option key={item.id} value={item.id}>
+              {item.nameCountry}
+            </Option>
+          ))}
+        </Select>
+      ),
+      Company: (
+        <Select
+          style={{ width: 150 }}
+          onChange={(value) => this.handleChangeValue(value, 'company')}
+        >
+          {getListCompany.map((item) => (
+            <Option key={item.id} value={item.id}>
+              {item.nameCompany}
+            </Option>
+          ))}
+        </Select>
+      ),
+      Phone: <Input onChange={(e) => this.handleChangeValue(e, 'phone')} value={phone} />,
+      headQuarterAddress: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterAddress')}
+          value={headQuarterAddress}
+        />
+      ),
+      headQuarterState: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterState')}
+          value={headQuarterState}
+        />
+      ),
+      headQuarterZipCode: (
+        <Input
+          onChange={(e) => this.handleChangeValue(e, 'headQuarterZipCode')}
+          value={headQuarterZipCode}
+        />
+      ),
+      legalAddress: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalAddress')} value={legalAddress} />
+      ),
+      legalState: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalState')} value={legalState} />
+      ),
+      legalZipCode: (
+        <Input onChange={(e) => this.handleChangeValue(e, 'legalZipCode')} value={legalZipCode} />
+      ),
     };
     const renderAdd = [...data, add];
 
@@ -131,6 +329,7 @@ class Location extends PureComponent {
           size="small"
           pagination={false}
           rowKey="LocationID"
+          scroll={{ x: 2300 }}
         />
 
         <Modal

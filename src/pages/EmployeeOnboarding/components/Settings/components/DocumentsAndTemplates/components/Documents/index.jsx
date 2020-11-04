@@ -1,93 +1,55 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import { Link, formatMessage } from 'umi';
+import { Row, Col, Skeleton } from 'antd';
+import { Link, formatMessage, connect } from 'umi';
 
 import Template from './components/Template';
-import consecteturMorbi from './assets/consecteturMorbi.png';
-import fringillaPulvinar from './assets/fringillaPulvinar.png';
-import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
-import lectusTinciduntEros2 from './assets/lectusTinciduntEros2.png';
-import lectusTinciduntEros3 from './assets/lectusTinciduntEros3.png';
-import recent1 from './assets/recent1.png';
-import recent2 from './assets/recent2.png';
-import recent3 from './assets/recent3.png';
 
 import styles from './index.less';
 
+@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
+  defaultTemplateList,
+  customTemplateList,
+  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
+  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
+}))
 class Documents extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/fetchDefaultTemplateList',
+    });
+    dispatch({
+      type: 'employeeSetting/fetchCustomTemplateList',
+    });
+  };
+
   _renderTemplates = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { consecteturMorbi },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { fringillaPulvinar },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { lectusTinciduntEros },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 4,
-        templateThumbnail: { lectusTinciduntEros2 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 5,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 6,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-      {
-        templateId: 7,
-        templateThumbnail: { lectusTinciduntEros3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
+    const { defaultTemplateList, loadingDefaultTemplateList } = this.props;
+    if (loadingDefaultTemplateList) {
+      return <Skeleton loading={loadingDefaultTemplateList} active />;
+    }
+    return defaultTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
-            <Template template={template} />
-          </Link>
+          {/* <Link to={`/template-details/${template._id}`}> */}
+          <Template template={template} />
+          {/* </Link> */}
         </Col>
       );
     });
   };
 
   _renderRecentDocuments = () => {
-    const templates = [
-      {
-        templateId: 1,
-        templateThumbnail: { recent1 },
-        templateName: 'Consectetur morbi ',
-      },
-      {
-        templateId: 2,
-        templateThumbnail: { recent2 },
-        templateName: 'Fringilla pulvinar ',
-      },
-      {
-        templateId: 3,
-        templateThumbnail: { recent3 },
-        templateName: 'Lectus tincidunt eros ',
-      },
-    ];
-    return templates.map((template) => {
+    const { customTemplateList, loadingCustomTemplateList } = this.props;
+    if (loadingCustomTemplateList) {
+      return <Skeleton loading={loadingCustomTemplateList} active />;
+    }
+    return customTemplateList.map((template) => {
       return (
         <Col span={4} className={template}>
-          <Link to={`/template-details/${template.templateId}`}>
-            <Template template={template} />
-          </Link>
+          {/* <Link to={`/template-details/${template._id}`}> */}
+          <Template loading={loadingCustomTemplateList} template={template} />
+          {/* </Link> */}
         </Col>
       );
     });

@@ -88,7 +88,8 @@
 
     .upload {
       border: 1px solid #d6dce4;
-      padding: 23px 28px 15px 28px;
+      min-width: 212px;
+      padding: 23px 0 15px 0;
       border-style: dashed;
       border-radius: 5px;
       display: flex;
@@ -202,6 +203,8 @@
       :global {
         .ant-btn-primary {
           // display: none;
+          box-shadow: none;
+          text-shadow: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
@@ -234,4 +237,16 @@
       }
     }
   }
+
+  // @media (max-width: 1190px) {
+  //   .alert {
+  //     display: none;
+  //   }
+  // }
+  // @media (max-width: 767px) {
+  //   .alert {
+  //     display: inline-block;
+  //   }
+  // }
+  // 767
 }
