@@ -233,6 +233,8 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
+    // if (employer.length < 0) {
+    // }
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
@@ -265,6 +267,10 @@ class BackgroundCheck extends Component {
       }
     });
   };
+
+  // handleValidation = (e) => {
+  //   console.log('e', e.target.value);
+  // };
 
   handleValueChange = (e) => {
     const { dispatch } = this.props;
@@ -516,6 +522,7 @@ class BackgroundCheck extends Component {
                           onValuesChange={this.onValuesChange}
                           documentChecklistSetting={documentChecklistSetting}
                           processStatus={processStatus}
+                          handleValidation={this.handleValidation}
                         />
                       );
                     })}

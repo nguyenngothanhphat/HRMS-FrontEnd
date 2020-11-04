@@ -15,6 +15,7 @@ class CollapseField extends PureComponent {
       onValuesChange,
       documentChecklistSetting,
       processStatus,
+      handleValidation,
     } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = tempData;
     const { poe } = technicalCertification;
@@ -76,6 +77,7 @@ class CollapseField extends PureComponent {
                 onValuesChange={onValuesChange}
                 documentChecklistSetting={documentChecklistSetting}
                 processStatus={processStatus}
+                handleValidation={handleValidation}
               />
             ) : (
               <></>

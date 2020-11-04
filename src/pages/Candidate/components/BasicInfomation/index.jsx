@@ -57,9 +57,7 @@ class BasicInformation extends PureComponent {
   onFinish = (values) => {
     const { data } = this.state;
     const { dispatch, localStep } = this.props;
-    const { _id, documentChecklistSetting } = data;
-    const { employer } = documentChecklistSetting[3];
-    console.log('data', data, employer);
+    const { _id } = data;
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -73,20 +71,6 @@ class BasicInformation extends PureComponent {
         candidate: _id,
       },
     });
-    dispatch({
-      type: 'candidateProfile/fetchDocumentByCandidate',
-      payload: {
-        candidate: _id,
-      },
-    });
-    if (employer.length > 1) {
-      dispatch({
-        type: 'candidateProfile/fetchEmployer',
-        payload: {
-          candidate: _id,
-        },
-      });
-    }
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
