@@ -50,5 +50,20 @@
     .ant-checkbox-wrapper {
       font-size: 13px;
     }
+
+    // checked
+    .ant-checkbox-inner {
+      border: 2px solid #29971f !important;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner {
+      border: 2px solid #29971f;
+      background-color: white;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner::after {
+      border-color: #29971f;
+    }
+    .ant-checkbox-checked::after {
+      border-color: #29971f;
+    }
   }
 }
