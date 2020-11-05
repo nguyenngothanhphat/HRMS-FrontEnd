@@ -59,15 +59,8 @@ const PreviewOffer = (props) => {
   //   mailForm.resetFields();
   // };
 
-  const resetImg = (type) => {
-    if (type === 'hr') {
-      // setFile('');
-      setHrSignature({});
-    }
-    if (type === 'hrManager') {
-      setHrManagerSignature({});
-      // setFile2('');
-    }
+  const resetImg = () => {
+    setCandidateSignature({});
   };
 
   const saveChanges = () => {
@@ -161,8 +154,7 @@ const PreviewOffer = (props) => {
     if (!dispatch) {
       return;
     }
-    const { id } = signature;
-    const { candidate } = data;
+    const { id } = candidateSignature;
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
@@ -172,55 +164,12 @@ const PreviewOffer = (props) => {
     });
   };
 
-  // const getUserRole = () => {
-  //   const { roles } = currentUser;
-  //   const userRole = roles.find(
-  //     (roleItem) => roleItem._id === ROLE.HRMANAGER || roleItem._id === ROLE.HR,
-  //   );
-  //   if (!userRole) {
-  //     return;
-  //   }
-  //   const { _id } = userRole;
-  //   setRole(_id);
-  // };
-
-  const handleHrSignatureSubmit = () => {
-    const { _id } = data;
-    if (!dispatch || !_id) {
-      return;
-    }
-
-    dispatch({
-      type: 'candidateInfo/updateByHR',
-      payload: {
-        candidate: _id,
-        hrSignature: hrSignatureProp.id,
-        currentStep: 6,
-      },
-    });
-  };
-
-  const handleHrManagerSignatureSubmit = () => {
-    const { _id } = data;
-    if (!dispatch || !_id) {
-      return;
-    }
-
-    dispatch({
-      type: 'candidateInfo/addManagerSignatureEffect',
-      payload: {
-        candidate: _id,
-        hrManagerSignature: hrManagerSignatureProp.id,
-        // currentStep: 6,
-      },
-    });
-  };
-
   const handleFinalSubmit = () => {
     console.log('Final submit');
     if (!dispatch) {
       return;
     }
+    handleCandidateSubmit();
     dispatch({
       type: 'candidateProfile/submitCandidateFinalOffer',
       payload: {
@@ -228,6 +177,10 @@ const PreviewOffer = (props) => {
         candidateFinalSignature: candidateSignature.id,
         options: 1,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        setOpenModal(true);
+      }
     });
     // submitCandidateFinalOffer
   };
@@ -418,15 +371,17 @@ const PreviewOffer = (props) => {
               {formatMessage({ id: 'component.previewOffer.uploadNew' })}
             </button>
 
-            <CancelIcon resetImg={() => resetImg('hr')} />
+            <CancelIcon resetImg={() => resetImg()} />
           </div>
 
           {/* <div className={styles.submitContainer} /> */}
           <Button
             type="primary"
-            disabled={!candidateSignature.url}
+            disabled={!candidateSignature.url && !hrManagerSignature.url}
             className={
-              candidateSignature.url ? `${styles.proceed}` : `${styles.proceed} ${styles.disabled}`
+              candidateSignature.url && hrManagerSignature.url
+                ? `${styles.proceed}`
+                : `${styles.proceed} ${styles.disabled}`
             }
             onClick={() => handleFinalSubmit()}
           >

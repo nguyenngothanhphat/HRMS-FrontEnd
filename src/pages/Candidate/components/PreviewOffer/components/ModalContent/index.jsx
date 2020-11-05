@@ -12,8 +12,8 @@ class ModalContent extends PureComponent {
           <img src={img2} alt="send mail" />
         </div>
         <div className={styles.contentContainer}>
-          <h2 className={styles.header}>Final offer has been sent to candidate</h2>
-          <p className={styles.content}>Final offer has been sent to {candidateEmail}</p>
+          <h2 className={styles.header}>Final offer has been sent to HR</h2>
+          <p className={styles.content}>Final offer has been sent to HR</p>
           <div className={styles.btnContainer}>
             <Button className={styles.btn} onClick={closeModal}>
               OK
