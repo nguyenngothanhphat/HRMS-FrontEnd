@@ -43,8 +43,7 @@ class AddEmployeeForm extends Component {
     this.formRef = React.createRef();
     this.state = {
       isDisabled: true,
-      isDisabledDepartment: true,
-      company: '',
+      // isDisabledDepartment: true,
     };
   }
 
@@ -52,11 +51,11 @@ class AddEmployeeForm extends Component {
     if ('statusAddEmployee' in props && props.statusAddEmployee) {
       if (props.company === '') {
         return {
-          isDisabledDepartment: true,
+          // isDisabledDepartment: true,
           isDisabled: true,
         };
       }
-      return { isDisabledDepartment: true };
+      // return { isDisabledDepartment: true };
     }
     return null;
   }
@@ -99,6 +98,12 @@ class AddEmployeeForm extends Component {
       },
     });
     dispatch({
+      type: 'employeesManagement/fetchDepartmentList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
       type: 'employeesManagement/fetchJobTitleList',
       payload: {
         company: _id,
@@ -107,15 +112,15 @@ class AddEmployeeForm extends Component {
   };
 
   onChangeSelect = (type, value) => {
-    const { dispatch } = this.props;
-    const { company } = this.state;
+    // const { dispatch } = this.props;
+    // const { company } = this.state;
 
     switch (type) {
       case 'company':
         this.fetchData(value);
         this.setState({
           isDisabled: false,
-          company: value,
+          // company: value,
         });
         this.formRef.current.setFieldsValue({
           location: undefined,
@@ -124,21 +129,21 @@ class AddEmployeeForm extends Component {
         });
         break;
       case 'location':
-        this.setState(
-          {
-            isDisabledDepartment: false,
-          },
-          this.formRef.current.setFieldsValue({
-            department: undefined,
-          }),
-        );
-        dispatch({
-          type: 'employeesManagement/fetchDepartmentList',
-          payload: {
-            company,
-            location: value,
-          },
-        });
+        // this.setState(
+        //   {
+        //     isDisabledDepartment: false,
+        //   },
+        //   this.formRef.current.setFieldsValue({
+        //     department: undefined,
+        //   }),
+        // );
+        // dispatch({
+        //   type: 'employeesManagement/fetchDepartmentList',
+        //   payload: {
+        //     company,
+        //     location: value,
+        //   },
+        // });
         break;
       default:
         break;
@@ -169,9 +174,8 @@ class AddEmployeeForm extends Component {
     });
     this.setState(
       {
-        company: '',
         isDisabled,
-        isDisabledDepartment: true,
+        // isDisabledDepartment: true,
       },
       () => handleCancel(),
     );
@@ -225,7 +229,7 @@ class AddEmployeeForm extends Component {
       loadingManager,
       company,
     } = this.props;
-    const { isDisabled, isDisabledDepartment } = this.state;
+    const { isDisabled } = this.state;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -377,7 +381,7 @@ class AddEmployeeForm extends Component {
               showArrow
               showSearch
               loading={loadingDepartment}
-              disabled={isDisabledDepartment || loadingDepartment}
+              disabled={isDisabled || loadingDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
