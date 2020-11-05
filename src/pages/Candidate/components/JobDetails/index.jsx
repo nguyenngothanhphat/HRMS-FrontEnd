@@ -68,7 +68,7 @@ class JobDetails extends PureComponent {
       return [mnth, day, date.getFullYear()].join('/');
     };
 
-    const converted = convert(prefferedDateOfJoining._d);
+    const converted = prefferedDateOfJoining._d.toLocaleDateString();
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
