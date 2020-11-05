@@ -17,11 +17,13 @@ const { TextArea } = Input;
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: { generalData: originGeneralData = {} } = {},
     } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
     generalData,
     compensationData,
     originGeneralData,
     loading: loading.effects['employeeProfile/fetchGeneralInfo'],
+    myEmployeeID,
   }),
 )
 class ViewInformation extends Component {
@@ -81,8 +83,13 @@ class ViewInformation extends Component {
   };
 
   getResponse = (resp) => {
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const {
+      dispatch,
+      generalData: { _id: id = '', employee = '' } = {},
+      myEmployeeID = '',
+    } = this.props;
     const { statusCode, data = [] } = resp;
+    const check = employee === myEmployeeID;
     if (statusCode === 200) {
       const [first] = data;
       this.handleCancel();
@@ -92,6 +99,9 @@ class ViewInformation extends Component {
           id,
           avatar: first.url,
         },
+        dataTempKept: {},
+        key: 'noKey',
+        isUpdateMyAvt: check,
       });
     }
   };
