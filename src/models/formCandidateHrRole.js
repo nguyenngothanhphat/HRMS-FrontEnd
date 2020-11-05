@@ -9,6 +9,8 @@ import {
   getTitleListByCompany,
   addCandidate,
   editSalaryStructure,
+  addSchedule,
+  getCandidateManagerList,
   closeCandidate,
   updateByHR,
   getById,
@@ -115,6 +117,7 @@ const candidateInfo = {
           checkedList: [],
           isChecked: false,
         },
+        addSchedule,
       },
 
       candidateSignature: null,
@@ -278,6 +281,7 @@ const candidateInfo = {
           ],
         },
       ],
+      managerList: [],
       listTitle: [],
       tableData: [],
       hrManagerSignature: {
@@ -442,6 +446,20 @@ const candidateInfo = {
       }
       return response;
     },
+    *addSchedule({ payload }, { call, put }) {
+      console.log('payload', payload);
+      let response;
+      try {
+        response = yield call(addSchedule, payload);
+        const { statusCode, data } = response;
+        console.log('data', response);
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
 
     *addManagerSignatureEffect({ payload }, { call, put }) {
       // console.log('payload', payload);
@@ -482,7 +500,25 @@ const candidateInfo = {
       }
       return response;
     },
-
+    *getCandidateManagerList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getCandidateManagerList, payload);
+        const { data, statusCode } = response;
+        console.log(data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...data,
+            managerList: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {

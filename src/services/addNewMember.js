@@ -46,6 +46,13 @@ export function getManagerList(params) {
   });
 }
 
+export function getCandidateManagerList(params) {
+  return request('/api/candidate/get-candidate-manager', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export function addCandidate(params) {
   return request('/api/candidate/add-new-member', {
     method: 'POST',
@@ -121,6 +128,14 @@ export function editSalaryStructure(params) {
 export function addManagerSignature(params) {
   // console.log(params);
   return request('/api/candidate/add-manager-signature', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function addSchedule(params) {
+  // console.log(params);
+  return request('/api/candidate/schedule', {
     method: 'POST',
     data: params,
   });
