@@ -36,7 +36,6 @@ class CommonLayout extends Component {
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
     // const selectedItemId = listMenu[currentStep]
-    console.log('GET DERIVED STATE', currentStep);
     if (currentStep !== null) {
       if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && currentStep === 7) {
         return {
@@ -60,7 +59,6 @@ class CommonLayout extends Component {
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    console.log('DID MOUNT', processStatus);
     if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER') {
       return {
         selectedItemId: '',

@@ -5,7 +5,7 @@ import img2 from './images/modal_img_2.png';
 
 class ModalContent extends PureComponent {
   render() {
-    const { closeModal, candidateEmail } = this.props;
+    const { closeModal } = this.props;
     return (
       <div className={styles.modalContent}>
         <div className={styles.imgContainer}>

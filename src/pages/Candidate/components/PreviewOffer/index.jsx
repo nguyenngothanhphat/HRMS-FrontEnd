@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
-import { Button, Input, Form } from 'antd';
-import { EditOutlined, SendOutlined } from '@ant-design/icons';
+import { Button, Form } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
-import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
+// import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -15,21 +15,9 @@ import FileContent from './components/FileContent';
 import ModalContent from './components/ModalContent';
 import styles from './index.less';
 
-// const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
-
-const ROLE = {
-  HRMANAGER: 'HR-MANAGER',
-  HR: 'HR',
-};
-
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {}, candidate } = props;
+  const { dispatch, tempData = {}, data = {}, candidate } = props;
 
-  // const {
-  //   // email: mailProp,
-  //   hrSignature: hrSignatureProp,
-  //   hrManagerSignature: hrManagerSignatureProp,
-  // } = tempData;
   const {
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
@@ -40,15 +28,20 @@ const PreviewOffer = (props) => {
 
   // const inputRefs = [];
 
+  // eslint-disable-next-line no-unused-vars
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
+  // eslint-disable-next-line no-unused-vars
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [uploadVisible2, setUploadVisible2] = useState(false);
 
+  // eslint-disable-next-line no-unused-vars
   const [mail, setMail] = useState(candidateEmailProp || '');
+  // eslint-disable-next-line no-unused-vars
   const [mailForm] = Form.useForm();
 
   // const [role, setRole] = useState('');
@@ -119,37 +112,6 @@ const PreviewOffer = (props) => {
     });
   };
 
-  const handleSentForApproval = () => {
-    if (!dispatch) {
-      return;
-    }
-
-    const { id } = hrSignature;
-    const { candidate } = data;
-    // call API
-    dispatch({
-      type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate },
-    });
-  };
-
-  const handleSendFinalOffer = () => {
-    if (!dispatch) {
-      return;
-    }
-    const { id } = hrManagerSignature;
-    const { candidate } = data;
-    // call API
-    dispatch({
-      type: 'candidateInfo/approveFinalOfferEffect',
-      payload: { hrManagerSignature: id, candidate, options: 1 },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        setOpenModal(true);
-      }
-    });
-  };
-
   const handleCandidateSubmit = () => {
     if (!dispatch) {
       return;
@@ -165,7 +127,6 @@ const PreviewOffer = (props) => {
   };
 
   const handleFinalSubmit = () => {
-    console.log('Final submit');
     if (!dispatch) {
       return;
     }
@@ -183,10 +144,6 @@ const PreviewOffer = (props) => {
       }
     });
     // submitCandidateFinalOffer
-  };
-
-  const disableFinalSubmit = () => {
-    return candidateSignature === null && !candidateSignature.url;
   };
 
   useEffect(() => {
@@ -390,20 +347,9 @@ const PreviewOffer = (props) => {
         </div>
 
         {/* Send final offer */}
-        {/* <div style={{ marginBottom: '16px' }}>
-            <SendEmail
-              title="Send final offer to the candidate"
-              formatMessage={formatMessage}
-              handleSendEmail={handleSendFinalOffer}
-              isSentEmail={false}
-              privateEmail={candidateEmailProp}
-            />
-          </div> */}
-
         <ModalUpload
           visible={uploadVisible1}
           getResponse={(response) => {
-            console.log(response);
             loadImage(response);
           }}
           handleCancel={() => {
