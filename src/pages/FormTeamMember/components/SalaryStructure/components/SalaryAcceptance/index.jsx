@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
-import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
+import ScheduleModal from '../ScheduleModal';
 import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
 import ModalContentComponent from '../ModalContentComponent';
