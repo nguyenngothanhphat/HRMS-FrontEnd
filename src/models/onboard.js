@@ -1,4 +1,4 @@
-import { getOnboardingList, deleteDraft } from '@/services/onboard';
+import { getOnboardingList, deleteDraft, inititateBackgroundCheck } from '@/services/onboard';
 import _ from 'lodash';
 import { dialog } from '@/utils/utils';
 
@@ -86,8 +86,8 @@ const PROCESS_STATUS = {
   FINAL_OFFERS_DRAFT: 'FINAL-OFFERS-DRAFT',
 
   SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPTED-PROVISIONAL-OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISIONAL-OFFER',
+  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
+  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
 
   PENDING: 'PENDING-BACKGROUND-CHECK',
   ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
@@ -682,6 +682,34 @@ const onboard = {
         //     processStatus: PROVISIONAL_OFFER_DRAFT,
         //   },
         // });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *inititateBackgroundCheckEffect({ payload }, { call, put }) {
+      try {
+        const { ACCEPTED_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+        const { rookieID = '' } = payload;
+        const req = {
+          rookieID,
+        };
+        const response = yield call(inititateBackgroundCheck, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: ACCEPTED_PROVISIONAL_OFFERS,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: PENDING,
+          },
+        });
       } catch (error) {
         dialog(error);
       }

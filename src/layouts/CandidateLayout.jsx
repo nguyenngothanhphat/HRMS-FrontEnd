@@ -136,7 +136,8 @@ const CandidateLayout = (props) => {
     if (
       processStatus === 'SENT-PROVISIONAL-OFFER' ||
       processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-      processStatus === 'DISCARDED-PROVISONAL-OFFER'
+      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+      processStatus === 'PENDING-BACKGROUND-CHECK'
     ) {
       if (id === 1 || id === 2 || id === 3 || id === 4) {
         valid = true;
@@ -158,7 +159,8 @@ const CandidateLayout = (props) => {
     if (
       processStatus === 'SENT-PROVISIONAL-OFFER' ||
       processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-      processStatus === 'DISCARDED-PROVISONAL-OFFER'
+      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+      processStatus === 'PENDING-BACKGROUND-CHECK'
     ) {
       console.log('Phase 1');
       return steps.slice(0, 4);

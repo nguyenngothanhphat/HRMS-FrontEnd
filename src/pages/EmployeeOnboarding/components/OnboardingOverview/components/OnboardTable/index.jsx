@@ -71,7 +71,20 @@ class OnboardTable extends Component {
     // dispatch({
     //   type: 'candidateInfo/fetchCandidateInfo',
     // });
-    console.log('abc');
+    // console.log('abc');
+  };
+
+  initiateBackgroundCheck = (id) => {
+    const { dispatch } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'onboard/inititateBackgroundCheckEffect',
+      payload: {
+        rookieID: id,
+      },
+    });
   };
 
   renderAction = (id, type, actionText) => {
@@ -82,6 +95,7 @@ class OnboardTable extends Component {
       APPROVED_OFFERS,
       ACCEPTED_FINAL_OFFERS,
       RENEGOTIATE_FINAL_OFFERS,
+      ACCEPTED__PROVISIONAL_OFFERS,
     } = TABLE_TYPE;
 
     let actionContent = null;
@@ -120,6 +134,31 @@ class OnboardTable extends Component {
           </>
         );
         break;
+
+      case ACCEPTED__PROVISIONAL_OFFERS: {
+        actionContent = (
+          <>
+            {/* <Link
+              to={`/employee-onboarding/review/${id}`}
+              onClick={() => {
+                // this.fetchData(id);
+                // this.initiateBackgroundCheck();
+                console.log('CLICK HERE');
+              }}
+            > */}
+            <span
+              onClick={() => {
+                this.initiateBackgroundCheck(id);
+                console.log('CLICK INITIATE');
+              }}
+            >
+              Initiate Background Check
+            </span>
+            {/* </Link> */}
+          </>
+        );
+        break;
+      }
 
       case FINAL_OFFERS_DRAFTS: {
         const menu = (
