@@ -38,6 +38,13 @@ export default class TimeOff extends PureComponent {
     });
   };
 
+  onInformationCLick = () => {
+    const { viewInformation } = this.state;
+    this.setState({
+      viewInformation: !viewInformation,
+    });
+  };
+
   _renderLandingPage = () => {
     const describeText = [
       <p>

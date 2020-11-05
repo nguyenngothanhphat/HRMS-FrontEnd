@@ -42,7 +42,14 @@ class OrganisationChart extends Component {
     return (
       <div
         className={s.chartNode}
-        style={check ? { border: '1px solid rgba(217, 83, 79, 0.8)' } : {}}
+        style={
+          check
+            ? {
+                border: '1px solid rgba(217, 83, 79, 0.8)',
+                backgroundColor: 'rgba(255, 255, 26, 0.7)',
+              }
+            : {}
+        }
       >
         <Avatar src={avatar} size={64} icon={<UserOutlined />} />
         <p className={s.chartNode__textName}>{firstName}</p>
@@ -54,7 +61,7 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { dataOrgChart = {}, loading, myEmployeeId } = this.props;
+    const { dataOrgChart = {}, loading } = this.props;
 
     return (
       <div className={s.container}>
@@ -71,7 +78,7 @@ class OrganisationChart extends Component {
             pan
             zoom
             zoominLimit={1}
-            zoomoutLimit={0.5}
+            zoomoutLimit={0.2}
           />
         )}
       </div>

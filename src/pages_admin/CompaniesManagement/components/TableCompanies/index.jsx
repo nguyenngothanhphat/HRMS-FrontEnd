@@ -14,6 +14,13 @@ class TableCompanies extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -116,7 +123,6 @@ class TableCompanies extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
-    alert('EDIT USER', key);
   };
 
   // pagination
