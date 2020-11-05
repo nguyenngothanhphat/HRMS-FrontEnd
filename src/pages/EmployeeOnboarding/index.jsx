@@ -7,67 +7,52 @@ import Settings from './components/Settings';
 import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
-@connect(({ loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
+@connect(({ loading }) => ({
   loading: loading.effects['login/login'],
-  roles,
 }))
 class EmployeeOnboarding extends PureComponent {
   render() {
-    const { location: { state: { defaultActiveKey = '1' } = {} } = {}, roles } = this.props;
-    const getPermission = roles.map((item) => {
-      const { permissions = [] } = item;
-      return permissions;
-    });
-    const data = getPermission
-      .flat()
-      .filter((values, index, self) => self.indexOf(values) === index);
+    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
     const { TabPane } = Tabs;
 
     return (
       <PageContainer>
-        {data.indexOf('P_ONBOARDING_VIEW') > -1 ? (
-          <div className={styles.containerEmployeeOnboarding}>
-            <div className={styles.tabs}>
-              <Tabs defaultActiveKey={defaultActiveKey}>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
-                  key="1"
-                >
-                  <div className={styles.options}>
-                    <Row gutter={[24, 0]}>
-                      <Col>
-                        <Button className={styles.generate} type="text">
-                          {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button className={styles.view} type="link">
-                          {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
-                          (15)
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
-                  <OnboardingOverview />
-                </TabPane>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
-                  key="2"
-                >
-                  <Settings />
-                </TabPane>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
-                  key="3"
-                >
-                  <CustomFields />
-                </TabPane>
-              </Tabs>
-            </div>
+        <div className={styles.containerEmployeeOnboarding}>
+          <div className={styles.tabs}>
+            <Tabs defaultActiveKey={defaultActiveKey}>
+              <TabPane
+                tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
+                key="1"
+              >
+                <div className={styles.options}>
+                  <Row gutter={[24, 0]}>
+                    <Col>
+                      <Button className={styles.generate} type="text">
+                        {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button className={styles.view} type="link">
+                        {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
+                        (15)
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+                <OnboardingOverview />
+              </TabPane>
+              <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
+                <Settings />
+              </TabPane>
+              <TabPane
+                tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
+                key="3"
+              >
+                <CustomFields />
+              </TabPane>
+            </Tabs>
           </div>
-        ) : (
-          ''
-        )}
+        </div>
       </PageContainer>
     );
   }
