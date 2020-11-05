@@ -26,11 +26,11 @@ export interface BreadcrumbProps {
 // 渲染Breadcrumb 子节点
 // Render the Breadcrumb child node
 const defaultItemRender: AntdBreadcrumbProps['itemRender'] = ({ breadcrumbName, path }) => {
+  console.log('breadcrumbName', breadcrumbName);
+
   const name =
-    breadcrumbName === 'Ticket Id'
-      ? `${breadcrumbName}: ${path.split('/').pop()}`
-      : breadcrumbName;
-  return <Link to={path}>{name}</Link>
+    breadcrumbName === 'Ticket Id' ? `${breadcrumbName}: ${path.split('/').pop()}` : breadcrumbName;
+  return breadcrumbName === 'None' ? null : <Link to={path}>{name}</Link>;
 };
 
 const renderItemLocal = (item: MenuDataItem, props: BreadcrumbProps): string => {
