@@ -63,7 +63,7 @@ const candidateInfo = {
       workLocation: null,
       title: null,
       reportingManager: null,
-
+      valueToFinalOffer: 0,
       // Offer details
       template: 'Template.docx',
       includeOffer: false,
@@ -428,12 +428,12 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      // console.log('payload', payload);
+      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        // console.log('data', data);
+        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {

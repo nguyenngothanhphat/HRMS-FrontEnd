@@ -124,7 +124,10 @@ class SalaryAcceptance extends PureComponent {
         </>
       );
     }
-    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+    if (
+      processStatus === 'SENT-PROVISIONAL-OFFER' ||
+      processStatus === 'PENDING-BACKGROUND-CHECK'
+    ) {
       return (
         <div className={styles.pending}>
           <div className={styles.pendingIcon}>

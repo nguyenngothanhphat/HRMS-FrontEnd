@@ -38,11 +38,56 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     this.checkBottomBar();
-    // const { currentStep } = this.props;
+    const { dispatch, data, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        employeeType: '5f50c2541513a742582206f9',
+      },
+    });
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+    const { candidate = '' } = data;
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: currentStepLocal,
+        },
+      });
+    }
     // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
+    // const {
+    //   data,
+    //   tempData: { fullName, privateEmail, workEmail, previousExperience },
+    // } = this.state;
+    // const { dispatch, currentStep } = this.props;
+    // console.log('current', currentStep);
+    // const { _id } = data;
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     fullName,
+    //     privateEmail,
+    //     workEmail,
+    //     previousExperience,
+    //     candidate: _id,
+    //     currentStep,
+    //   },
+    // });
+    this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
     const {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
@@ -60,7 +105,7 @@ class BasicInformation extends PureComponent {
         currentStep,
       },
     });
-  }
+  };
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
@@ -142,6 +187,7 @@ class BasicInformation extends PureComponent {
 
   _renderForm = () => {
     const { isOpenReminder = {} } = this.state;
+    const { processStatus } = this.props;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -158,6 +204,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
               />
             </Form.Item>
           </Col>
@@ -183,6 +230,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -218,6 +266,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -244,6 +293,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="previousExperience"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={experienceYear}
               />
             </Form.Item>

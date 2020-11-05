@@ -13,3 +13,10 @@ export async function deleteDraft(payload) {
     data: payload, // candidate: id
   });
 }
+
+export async function inititateBackgroundCheck(payload) {
+  return request('/api/candidate/initiate-background-check', {
+    method: 'POST',
+    data: payload, // candidate: id
+  });
+}
