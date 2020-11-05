@@ -1,14 +1,17 @@
 import React from 'react';
 import { Typography, Row, Col, Form, Input } from 'antd';
+import { isUndefined } from 'lodash';
 import style from './index.less';
 
 const InputField = ({
   onValuesChange,
   documentChecklistSetting,
   processStatus,
+  checkValidation,
   // handleValidation,
 }) => {
   // const [validation, setValidation] = useState(false);
+  console.log('asd', isUndefined(checkValidation) || checkValidation === true);
   const { employer } = documentChecklistSetting[3];
   // const onChange = (e) => {
   //   console.log('e', e.target.value);
@@ -28,18 +31,23 @@ const InputField = ({
             onValuesChange={(value) => onValuesChange(value)}
             initialValues={{ employer }}
           >
-            <Form.Item
-              label="Name of the employer*"
-              name="employer"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
-            >
+            <Form.Item label="Name of the employer*" name="employer">
               <Input
-                className={style.input}
+                className={
+                  isUndefined(checkValidation) || checkValidation === true
+                    ? style.input
+                    : style.input1
+                }
                 disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                // onChange={onChange}
-                // onFocus={onFocus}
               />
             </Form.Item>
+            <Typography.Text
+              className={
+                isUndefined(checkValidation) || checkValidation === true ? style.s : style.s1
+              }
+            >
+              Please input employer!
+            </Typography.Text>
           </Form>
         </Col>
         <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colRight}>

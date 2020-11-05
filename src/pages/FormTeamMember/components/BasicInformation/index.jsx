@@ -47,7 +47,6 @@ class BasicInformation extends PureComponent {
     });
     const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '' } = data;
-    console.log(candidate, currentStepLocal);
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
@@ -84,7 +83,6 @@ class BasicInformation extends PureComponent {
   }
 
   handleUnload = () => {
-    // this.handleUpdateByHR();
     const { currentStep } = this.props;
     localStorage.setItem('currentStep', currentStep);
   };
@@ -95,7 +93,6 @@ class BasicInformation extends PureComponent {
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch, currentStep } = this.props;
-    console.log('current', currentStep);
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
