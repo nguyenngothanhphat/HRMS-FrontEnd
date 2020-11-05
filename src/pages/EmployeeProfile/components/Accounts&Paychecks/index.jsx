@@ -1,30 +1,42 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Collapse } from 'antd';
+import { connect } from 'umi';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import PaySlipMonth from './PayslipMonth';
 
+@connect(({ employeeProfile: { tempData: { bankData = {}, taxData = {} } = {} } = {} }) => ({
+  bankData,
+  taxData,
+}))
 class AccountsPaychecks extends PureComponent {
   handleIconCollapse = (isActive) => {
     return isActive ? <MinusOutlined className={styles.minusIcon} /> : <PlusOutlined />;
   };
 
   render() {
+    const { bankData, taxData } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    const dataBankDetails = [
-      { id: 1, name: 'Bank Name', text: 'HDFC Bank, Koramangla' },
-      { id: 2, name: 'Account Number', text: '9988774442927' },
-      { id: 3, name: 'Account Type', text: 'Savings' },
-      { id: 4, name: 'IFSC Code', text: 'HDFC000000' },
-      { id: 5, name: 'MICR Code', text: 'JKNH- 9836483' },
-      { id: 6, name: 'UAN Number', text: '8736456' },
-    ];
-    const dataTaxDetails = [
-      { id: 1, name: 'Income Tax Rule', text: 'New Tax Regime' },
-      { id: 2, name: 'PAN Number', text: '9988774442927' },
-    ];
+    let dataBankDetails = [];
+    bankData.forEach((element) => {
+      dataBankDetails = [
+        { id: 1, name: 'Bank Name', text: element ? element.bankName : '' },
+        { id: 2, name: 'Account Number', text: element ? element.accountNumber : '' },
+        { id: 3, name: 'Account Type', text: element ? element.accountType : '' },
+        { id: 4, name: 'IFSC Code', text: element ? element.ifscCode : '' },
+        { id: 5, name: 'MICR Code', text: element ? element.micrcCode : '' },
+        { id: 6, name: 'UAN Number', text: element ? element.uanNumber : '' },
+      ];
+    });
+    let dataTaxDetails = [];
+    taxData.forEach((element) => {
+      dataTaxDetails = [
+        { id: 1, name: 'Income Tax Rule', text: element ? element.incomeTaxRule : '' },
+        { id: 2, name: 'PAN Number', text: element ? element.panNum : '' },
+      ];
+    });
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>

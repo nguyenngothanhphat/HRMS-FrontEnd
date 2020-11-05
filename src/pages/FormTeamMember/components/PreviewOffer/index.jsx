@@ -52,6 +52,7 @@ const PreviewOffer = (props) => {
   const [role, setRole] = useState('');
 
   const [openModal, setOpenModal] = useState(false);
+  const [openModal2, setOpenModal2] = useState(false);
 
   // const resetForm = () => {
   //   mailForm.resetFields();
@@ -168,6 +169,10 @@ const PreviewOffer = (props) => {
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
       payload: { hrSignature: id, candidate },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        setOpenModal2(true);
+      }
     });
   };
 
@@ -260,6 +265,10 @@ const PreviewOffer = (props) => {
 
   const closeModal = () => {
     setOpenModal(false);
+  };
+
+  const closeModal2 = () => {
+    setOpenModal2(false);
   };
 
   return (
@@ -514,6 +523,21 @@ const PreviewOffer = (props) => {
               closeModal={closeModal}
               tempData={tempData}
               candidateEmail={mail}
+              type="hrManager"
+              // privateEmail={privateEmail}
+            />
+          }
+        />
+
+        <CustomModal
+          open={openModal2}
+          closeModal={closeModal2}
+          content={
+            <ModalContent
+              closeModal={closeModal2}
+              tempData={tempData}
+              candidateEmail={mail}
+              type="hr"
               // privateEmail={privateEmail}
             />
           }

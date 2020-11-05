@@ -220,7 +220,6 @@ const candidateProfile = {
     },
     *sendEmailByCandidate({ payload }, { call }) {
       let response = {};
-      console.log('sendEmail payload', payload);
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;

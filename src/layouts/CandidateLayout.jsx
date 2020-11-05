@@ -132,17 +132,18 @@ const CandidateLayout = (props) => {
     if (!dispatch) {
       return;
     }
-    let valid = false;
-    if (
-      processStatus === 'SENT-PROVISIONAL-OFFER' ||
-      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
-      processStatus === 'PENDING-BACKGROUND-CHECK'
-    ) {
-      if (id === 1 || id === 2 || id === 3 || id === 4) {
-        valid = true;
-      }
-    }
+    const valid = true;
+
+    // if (
+    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
+    //   processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+    //   processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+    //   processStatus === 'PENDING-BACKGROUND-CHECK'
+    // ) {
+    //   if (id === 1 || id === 2 || id === 3 || id === 4) {
+    //     valid = true;
+    //   }
+    // }
 
     console.log(id);
     if (valid) {
