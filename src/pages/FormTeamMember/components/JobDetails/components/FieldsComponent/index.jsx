@@ -24,6 +24,7 @@ class FieldsComponent extends PureComponent {
       loading3,
       data,
       tempData,
+      processStatus,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -44,6 +45,7 @@ class FieldsComponent extends PureComponent {
           loading3={loading3}
           data={data}
           tempData={tempData}
+          processStatus={processStatus}
         />
         <CandidateFieldsComponent
           styles={styles.Input}

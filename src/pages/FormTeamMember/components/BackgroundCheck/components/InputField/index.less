@@ -24,12 +24,33 @@
       color: @color-grey;
     }
     .colLeft {
+      .s {
+        display: none;
+      }
+      .s1 {
+        color: #ff4d4f;
+      }
       .input {
         height: 42px;
         padding: 10px 15px;
         outline: none;
         border-radius: 5px;
         border: solid 1px #d6dce4;
+        &:focus {
+          box-shadow: none;
+        }
+      }
+      :global {
+        .ant-form-item {
+          margin-bottom: 10px;
+        }
+      }
+      .input1 {
+        height: 42px;
+        padding: 10px 15px;
+        outline: none;
+        border-radius: 5px;
+        border: solid 1px #ff4d4f;
         &:focus {
           box-shadow: none;
         }

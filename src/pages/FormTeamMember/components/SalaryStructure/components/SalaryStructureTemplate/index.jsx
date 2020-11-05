@@ -491,6 +491,7 @@ class SalaryStructureTemplate extends PureComponent {
                 placeholder="Please select a choice!"
                 size="large"
                 style={{ width: 280 }}
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
               >
                 {listTitle.map((template) => {
                   return (

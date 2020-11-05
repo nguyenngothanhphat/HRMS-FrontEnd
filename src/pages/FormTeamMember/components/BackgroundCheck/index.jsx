@@ -54,7 +54,7 @@ class BackgroundCheck extends Component {
 
   componentDidMount() {
     const {
-      data,
+      data = {},
       tempData: {
         documentList,
         identityProof,
@@ -66,25 +66,33 @@ class BackgroundCheck extends Component {
     } = this.props;
     // save step
     const { currentStep } = this.props;
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '' } = data;
 
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        valueToFinalOffer: 0,
+      },
+    });
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
-          currentStep,
+          currentStep: currentStepLocal,
         },
       });
     }
 
     if (data.documentChecklistSetting !== documentList) {
-      console.log('1');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
+
+      const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
+      const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
+      const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
+      const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
+      // console.log('documnetList', documentList);
       const listSelectedA = arrA.map((x) => x.alias);
       const listSelectedB = arrB.map((x) => x.alias);
       const listSelectedC = arrC.map((x) => x.alias);
@@ -106,6 +114,11 @@ class BackgroundCheck extends Component {
       if (listSelectedD.length === arrToAdjust[3].data.length) {
         isCheckedD = true;
       }
+      // console.log('listSelectedA', listSelectedA);
+      // console.log('listSelectedB', listSelectedB);
+      // console.log('listSelectedC', listSelectedC);
+      // console.log('listSelectedD', listSelectedD);
+
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
@@ -135,12 +148,61 @@ class BackgroundCheck extends Component {
         },
       });
     }
+    window.addEventListener('unload', this.handleUnload, false);
   }
+
+  componentWillUnmount() {
+    // const { data } = this.state;
+    // const { dispatch, currentStep } = this.props;
+    // console.log('current', currentStep);
+    // const { _id } = data;
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     candidate: _id,
+    //     currentStep,
+    //   },
+    // });
+    this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    // this.handleUpdateByHR();
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
+    const { data } = this.state;
+    const { dispatch, currentStep } = this.props;
+    const { _id } = data;
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        currentStep,
+      },
+    });
+  };
 
   closeModal = () => {
     this.setState({
       openModal: false,
     });
+  };
+
+  changeValueToFinalOffer = (e) => {
+    const { dispatch } = this.props;
+    // console.log('e', e.target.value);
+    if (e.target.value === 1) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          valueToFinalOffer: 1,
+        },
+      });
+    }
   };
 
   handleSendEmail = () => {
@@ -170,37 +232,52 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
-    dispatch({
-      type: 'candidateInfo/submitPhase1Effect',
-      payload: {
-        candidate: _id,
-        fullName,
-        position,
-        employeeType: employeeType._id,
-        department: department._id,
-        title: title._id,
-        workLocation: workLocation._id,
-        reportingManager: reportingManager._id,
-        privateEmail,
-        workEmail,
-        previousExperience,
-        salaryStructure,
-        documentChecklistSetting: newArrToAdjust,
-        action: 'submit',
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        this.setState({
-          openModal: true,
-        });
-        dispatch({
-          type: 'candidateInfo/saveTemp',
-          payload: {
-            isSentEmail: true,
-          },
-        });
-      }
-    });
+    if (employer.length <= 0) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: false,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/submitPhase1Effect',
+        payload: {
+          candidate: _id,
+          fullName,
+          position,
+          employeeType: employeeType._id,
+          department: department._id,
+          title: title._id,
+          workLocation: workLocation._id,
+          reportingManager: reportingManager._id,
+          privateEmail,
+          workEmail,
+          previousExperience,
+          salaryStructure,
+          documentChecklistSetting: newArrToAdjust,
+          action: 'submit',
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          this.setState({
+            openModal: true,
+          });
+          dispatch({
+            type: 'candidateInfo/saveTemp',
+            payload: {
+              isSentEmail: true,
+            },
+          });
+        }
+      });
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: true,
+        },
+      });
+    }
   };
 
   handleValueChange = (e) => {
@@ -410,17 +487,39 @@ class BackgroundCheck extends Component {
         employer,
       },
     });
+    if (employer.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: false,
+        },
+      });
+    }
   };
 
   render() {
     const {
       openModal,
       tempData,
-      tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
+      tempData: {
+        documentList,
+        isSentEmail,
+        isMarkAsDone,
+        generateLink,
+        fullName,
+        valueToFinalOffer,
+        checkValidation,
+      },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
-    console.log('poe', tempData.technicalCertification.poe.checkedList);
-    const { loading } = this.props;
+    const { loading, processStatus } = this.props;
     return (
       <>
         {loading ? (
@@ -439,6 +538,7 @@ class BackgroundCheck extends Component {
                       return (
                         <CollapseFields
                           key={item.id}
+                          checkValidation={checkValidation}
                           item={item && item}
                           handleChange={this.handleChange}
                           handleCheckAll={this.handleCheckAll}
@@ -446,6 +546,8 @@ class BackgroundCheck extends Component {
                           tempData={tempData}
                           onValuesChange={this.onValuesChange}
                           documentChecklistSetting={documentChecklistSetting}
+                          processStatus={processStatus}
+                          handleValidation={this.handleValidation}
                         />
                       );
                     })}
@@ -465,6 +567,9 @@ class BackgroundCheck extends Component {
                   fullName={fullName}
                   handleValueChange={this.handleValueChange}
                   privateEmail={privateEmail}
+                  processStatus={processStatus}
+                  valueToFinalOffer={valueToFinalOffer}
+                  changeValueToFinalOffer={this.changeValueToFinalOffer}
                 />
               </Col>
             </Row>

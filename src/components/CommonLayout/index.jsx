@@ -15,11 +15,13 @@ import s from './index.less';
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
+      tempData: { valueToFinalOffer = 0 } = {},
     } = {},
   }) => ({
     currentStep,
     displayComponent,
     processStatus,
+    valueToFinalOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -32,9 +34,16 @@ class CommonLayout extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { listMenu, currentStep } = props;
+    const { listMenu, currentStep, processStatus = '' } = props;
     // const selectedItemId = listMenu[currentStep]
+    console.log('GET DERIVED STATE', currentStep);
     if (currentStep !== null) {
+      if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && currentStep === 7) {
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
       return {
         selectedItemId: listMenu[currentStep].id,
         displayComponent: listMenu[currentStep].component,
@@ -48,9 +57,16 @@ class CommonLayout extends Component {
   }
 
   componentDidMount() {
-    const { listMenu, currentStep = 1 } = this.props;
+    const { listMenu, currentStep = 1, processStatus = '' } = this.props;
+    console.log('DID MOUNT', processStatus);
+    if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER') {
+      return {
+        selectedItemId: '',
+        displayComponent: <PreviewOffer />,
+      };
+    }
     if (!listMenu[currentStep]) {
-      return;
+      return null;
     }
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
@@ -85,33 +101,49 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus } = this.props;
-    return processStatus === 'DRAFT';
+    const { processStatus, valueToFinalOffer } = this.props;
+    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+  };
+
+  isDisabled = (index) => {
+    if (this.disablePhase2()) {
+      if (index === 4 || index === 5 || index === 6 || index === 7) {
+        return true;
+      }
+      return false;
+    }
+    return false;
   };
 
   render() {
     const { listMenu = [], currentPage = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
-    let menu = listMenu;
-    if (this.disablePhase2()) {
-      menu = listMenu.slice(0, 4);
-    }
-    console.log(menu);
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
           <div className={s.viewLeft__menu}>
-            {menu.map((item) => (
+            {listMenu.map((item, index) => (
               <ItemMenu
                 key={item.id}
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
+                isDisabled={this.isDisabled(index)}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && !this.disablePhase2() && (
-                <Button type="primary" ghost onClick={this._handlePreviewOffer}>
+              {currentPage !== 'settings' && (
+                <Button
+                  type="primary"
+                  className={this.isDisabled(7) ? s.disabled : ''}
+                  ghost
+                  onClick={() => {
+                    if (this.isDisabled(7)) {
+                      return;
+                    }
+                    this._handlePreviewOffer();
+                  }}
+                >
                   Preview offer letter
                 </Button>
               )}

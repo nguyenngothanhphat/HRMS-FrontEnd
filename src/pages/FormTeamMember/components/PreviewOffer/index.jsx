@@ -33,6 +33,7 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
+    processStatus,
   } = data;
 
   // const inputRefs = [];
@@ -210,7 +211,7 @@ const PreviewOffer = (props) => {
       payload: {
         candidate: _id,
         hrSignature: hrSignatureProp.id,
-        currentStep: 6,
+        currentStep: 7,
       },
     });
   };
@@ -233,6 +234,17 @@ const PreviewOffer = (props) => {
 
   useEffect(() => {
     getUserRole();
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate: _id,
+        currentStep: 7,
+      },
+    });
   }, []);
 
   useEffect(() => {
@@ -273,8 +285,8 @@ const PreviewOffer = (props) => {
           {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
           {hrSignature.user ? (
             <p>
-              Undersigned - {hrSignature.user.employee.generalInfo.firstName}{' '}
-              {hrSignature.user.employee.generalInfo.lastName}
+              Undersigned - {hrSignature.user.employee?.generalInfo.firstName}{' '}
+              {hrSignature.user.employee?.generalInfo.lastName}
             </p>
           ) : (
             <p>Undersigned</p>
@@ -315,7 +327,7 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {role === ROLE.HR && (
+        {role === ROLE.HR && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
           <div className={styles.send}>
             <header>
               <div className={styles.icon}>
@@ -386,8 +398,8 @@ const PreviewOffer = (props) => {
               {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
               {hrManagerSignature.user ? (
                 <p>
-                  Undersigned - {hrManagerSignature.user.employee.generalInfo.firstName}{' '}
-                  {hrManagerSignature.user.employee.generalInfo.lastName}
+                  Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
+                  {hrManagerSignature.user.employee?.generalInfo.lastName}
                 </p>
               ) : (
                 <p>Undersigned</p>
@@ -432,32 +444,34 @@ const PreviewOffer = (props) => {
             </div>
 
             {/* Candidate Signature */}
-            <div className={styles.signature}>
-              <header>
-                <div className={styles.icon}>
-                  <div className={styles.bigGlow}>
-                    <div className={styles.smallGlow}>
-                      <EditOutlined />
+            {candidateSignature.url && (
+              <div className={styles.signature}>
+                <header>
+                  <div className={styles.icon}>
+                    <div className={styles.bigGlow}>
+                      <div className={styles.smallGlow}>
+                        <EditOutlined />
+                      </div>
                     </div>
                   </div>
+                  <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
+                </header>
+
+                {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+                <p>Undersigned- {candidateName}</p>
+
+                <div className={styles.upload}>
+                  {candidateSignature !== null && candidateSignature.url ? (
+                    // Default image
+                    <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+                  ) : (
+                    <img className={styles.signatureImg} src={whiteImg} alt="" />
+                  )}
                 </div>
-                <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
-              </header>
 
-              {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-              <p>Undersigned- {candidateName}</p>
-
-              <div className={styles.upload}>
-                {candidateSignature !== null && candidateSignature.url ? (
-                  // Default image
-                  <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-                ) : (
-                  <img className={styles.signatureImg} src={whiteImg} alt="" />
-                )}
+                <div className={styles.submitContainer} />
               </div>
-
-              <div className={styles.submitContainer} />
-            </div>
+            )}
 
             {/* Send final offer */}
             <div style={{ marginBottom: '16px' }}>
