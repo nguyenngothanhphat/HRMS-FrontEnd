@@ -44,10 +44,12 @@ class CommonLayout extends Component {
           displayComponent: <PreviewOffer />,
         };
       }
-      return {
-        selectedItemId: listMenu[currentStep].id,
-        displayComponent: listMenu[currentStep].component,
-      };
+      if (currentStep !== 7) {
+        return {
+          selectedItemId: listMenu[currentStep].id,
+          displayComponent: listMenu[currentStep].component,
+        };
+      }
     }
 
     return {
