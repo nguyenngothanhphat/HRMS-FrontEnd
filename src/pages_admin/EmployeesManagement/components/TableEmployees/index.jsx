@@ -15,6 +15,13 @@ export default class TableEmployees extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {

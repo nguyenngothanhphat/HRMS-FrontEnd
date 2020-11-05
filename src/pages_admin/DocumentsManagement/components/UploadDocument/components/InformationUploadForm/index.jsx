@@ -57,6 +57,9 @@ class InformationUploadForm extends PureComponent {
     dispatch({
       type: 'documentsManagement/clearEmployeeDetail',
     });
+    dispatch({
+      type: 'documentsManagement/fetchCompanyList',
+    });
   };
 
   handleDocumentGroupChange = (value) => {
@@ -121,13 +124,14 @@ class InformationUploadForm extends PureComponent {
       documentsManagement: { employeeDetail: { employee = '' } = {} },
     } = this.props;
     const { secondType } = this.state;
-    const { documentName = '', documentGroup = '' } = fieldsValue;
+    const { documentName = '', documentGroup = '', company = '' } = fieldsValue;
     const documentData = {
       key: documentName,
       employeeGroup: secondType,
       parentEmployeeGroup: documentGroup,
       attachment: attachmentId,
       employee,
+      company,
     };
     dispatch({
       type: 'documentsManagement/uploadDocument',
@@ -349,6 +353,7 @@ class InformationUploadForm extends PureComponent {
     const {
       documentsManagement: {
         employeeDetail: { firstName = '', lastName = '', passportNo = '' } = '',
+        companyList = [],
       },
       loadingUploadDocument,
       loadingAddPassport,
@@ -408,8 +413,11 @@ class InformationUploadForm extends PureComponent {
                 rules={[{ required: true, message: 'Please select company!' }]}
               >
                 <Select onChange={() => {}}>
-                  <Option value="Company A">Company A</Option>
-                  <Option value="Company B">Company B</Option>
+                  {companyList.map((item) => (
+                    <Option key={item._id} value={item._id}>
+                      {item.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
