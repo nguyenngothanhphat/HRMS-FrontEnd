@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import addIcon from '@/assets/addTicket.svg';
+import icon from '@/assets/delete.svg';
 import styles from './index.less';
 
 class RuleFrom extends Component {
@@ -13,23 +15,29 @@ class RuleFrom extends Component {
               <div className={styles.type}>
                 <div className={styles.header}>
                   <div className={styles.flex}>
-                    <div>Type A: Paid Leaves</div>
-                    <div>Add a new paid leave</div>
+                    <div className={styles.title}>Type A: Paid Leaves</div>
+                    <div className={styles.buttonRequest}>
+                      <img src={addIcon} alt="" style={{ margin: '5px' }} />
+                      <span>Add a new paid leave</span>
+                    </div>
                   </div>
                 </div>
                 <div className={styles.strang} />
                 <div className={styles.body}>
                   <div className={styles.flexText}>
-                    <div>Casual Leave (CL)*</div>
+                    <div className={styles.text}>Casual Leave (CL)*</div>
                     <div>Configure</div>
                   </div>
                   <div className={styles.flexText}>
-                    <div> Sick Leave (SL)*</div>
+                    <div className={styles.text}> Sick Leave (SL)*</div>
                     <div>Configure</div>
                   </div>
                   <div className={styles.flexText}>
-                    <div>Compensation leave (Co)</div>
-                    <div>Configure</div>
+                    <div className={styles.text}>Compensation leave (Co)</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                      <img src={icon} alt="" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -38,14 +46,17 @@ class RuleFrom extends Component {
               <div className={styles.type}>
                 <div className={styles.header}>
                   <div className={styles.flex}>
-                    <div>Type A: Paid Leaves</div>
-                    <div>Add a new paid leave</div>
+                    <div className={styles.title}> Type B: Unpaid Leaves</div>
+                    <div className={styles.buttonRequest}>
+                      <img src={addIcon} alt="" style={{ margin: '5px' }} />
+                      <span>Add a new paid leave</span>
+                    </div>
                   </div>
                 </div>
                 <div className={styles.strang} />
                 <div className={styles.body}>
                   <div className={styles.flexText}>
-                    <div>Leave without Pay (LWP)*</div>
+                    <div className={styles.text}>Leave without Pay (LWP)*</div>
                     <div>Configure</div>
                   </div>
                 </div>
@@ -59,22 +70,25 @@ class RuleFrom extends Component {
               <div className={styles.type}>
                 <div className={styles.header}>
                   <div className={styles.flexText}>
-                    <div>Type C: Paid Leaves</div>
-                    <div>Add a new paid leave</div>
+                    <div className={styles.title}>Type C: Paid Leaves</div>
+                    <div className={styles.buttonRequest}>
+                      <img src={addIcon} alt="" style={{ margin: '5px' }} />
+                      <span>Add a new paid leave</span>
+                    </div>
                   </div>
                 </div>
                 <div className={styles.strang} />
                 <div className={styles.body}>
                   <div className={styles.flexText}>
-                    <div>Maternity Leave (ML)*</div>
+                    <div className={styles.text}>Maternity Leave (ML)*</div>
                     <div>Configure</div>
                   </div>
                   <div className={styles.flexText}>
-                    <div>Bereavement Leave (BL)</div>
+                    <div className={styles.text}>Bereavement Leave (BL)</div>
                     <div>Configure</div>
                   </div>
                   <div className={styles.flexText}>
-                    <div> Restricted Holiday (RH)</div>
+                    <div className={styles.text}> Restricted Holiday (RH)</div>
                     <div>Configure</div>
                   </div>
                 </div>
@@ -84,18 +98,21 @@ class RuleFrom extends Component {
               <div className={styles.type}>
                 <div className={styles.header}>
                   <div className={styles.flexText}>
-                    <div>Type D: Unpaid Leaves</div>
-                    <div>Add a new paid leave</div>
+                    <div className={styles.title}>Type D: Unpaid Leaves</div>
+                    <div className={styles.buttonRequest}>
+                      <img src={addIcon} alt="" style={{ margin: '5px' }} />
+                      <span>Add a new paid leave</span>
+                    </div>
                   </div>
                 </div>
                 <div className={styles.strang} />
                 <div className={styles.body}>
                   <div className={styles.flexText}>
-                    <div>Work from Client Place (WCP)*</div>
+                    <div className={styles.text}>Work from Client Place (WCP)*</div>
                     <div>Configure</div>
                   </div>
                   <div className={styles.flexText}>
-                    <div>Work from Home (WFH)</div>
+                    <div className={styles.text}>Work from Home (WFH)</div>
                     <div>Configure</div>
                   </div>
                 </div>
