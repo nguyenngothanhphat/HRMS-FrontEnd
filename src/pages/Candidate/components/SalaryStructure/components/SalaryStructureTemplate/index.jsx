@@ -8,7 +8,7 @@ import styles from './index.less';
     candidateProfile: {
       listTitle = [],
       checkMandatory = {},
-      currentStep,
+      localStep,
       data: { processStatus = '' } = {},
       tempData: { options = 1 },
       tempData,
@@ -18,7 +18,7 @@ import styles from './index.less';
   }) => ({
     listTitle,
     checkMandatory,
-    currentStep,
+    localStep,
     processStatus,
     _id,
     salaryStructure,
@@ -46,20 +46,20 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   onClickPrev = () => {
-    const { dispatch, currentStep } = this.props;
+    const { dispatch, localStep } = this.props;
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };
 
   onClickNext = () => {
-    const { dispatch, options, tempData, currentStep } = this.props;
+    const { dispatch, options, tempData, localStep } = this.props;
 
     dispatch({
-      type: 'candidateProfile/updateByCandidateModel',
+      type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         options,
       },
@@ -73,7 +73,7 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
   };
@@ -272,7 +272,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { salaryStructure, options } = this.props;
+    const { salaryStructure = [], options } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>

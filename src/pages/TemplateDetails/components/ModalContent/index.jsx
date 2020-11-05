@@ -7,13 +7,16 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     employeeSetting: {
-      currentTemplate: { title = '', htmlContent = '' } = {},
+      currentTemplate: { title = '', htmlContent = '', thumbnail = '' } = {},
       newTemplateData: { settings = [], fullname = '', signature = '' },
     },
   }) => ({
+    loadingAddCustomTemplate: loading.effects['employeeSetting/addCustomTemplate'],
     settings,
     fullname,
+    thumbnail,
     signature,
     title,
     htmlContent,
@@ -41,30 +44,41 @@ class ModalContent extends Component {
   }
 
   onNext = () => {
-    const { dispatch, onNext = {}, settings, fullname, signature, title, htmlContent } = this.props;
+    const {
+      dispatch,
+      onNext = {},
+      settings,
+      fullname,
+      signature,
+      title,
+      htmlContent,
+      thumbnail,
+    } = this.props;
+    const newSetting = settings.filter((item) => item !== null && item !== undefined);
+    console.log(newSetting);
     dispatch({
       type: 'employeeSetting/addCustomTemplate',
       payload: {
         title,
         html: htmlContent,
-        settings,
+        settings: newSetting,
         fullname,
         signature,
+        thumbnail,
       },
-    });
-    onNext();
+    }).then(() => onNext());
   };
 
   _renderModal = () => {
     const { modalContent } = this.state;
-    const { content = {} } = this.props;
+    const { content = {}, loadingAddCustomTemplate } = this.props;
     return (
       <>
         <img src={modalContent[content].icon} alt="icon" />
         <div className={styles.ModalContent_title}>{modalContent[content].title}</div>
         <div className={styles.ModalContent_content}>{modalContent[content].content}</div>
         {content === 0 ? (
-          <Button onClick={this.onNext} type="primary">
+          <Button loading={loadingAddCustomTemplate} onClick={this.onNext} type="primary">
             {modalContent[content].button}
           </Button>
         ) : (

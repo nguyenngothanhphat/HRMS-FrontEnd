@@ -19,9 +19,9 @@ const employeeSetting = {
     newTemplate: {},
     newTemplateData: {
       settings: [],
-      fullname: '123',
-      signature: '123',
-      designation: '123',
+      fullname: '',
+      signature: '',
+      designation: '',
     },
   },
   effects: {
@@ -129,11 +129,20 @@ const employeeSetting = {
     },
     saveCurrentTemplate(state, action) {
       const { currentTemplate } = state;
-
       return {
         ...state,
         currentTemplate: {
           ...currentTemplate,
+          ...action.payload,
+        },
+      };
+    },
+    saveEmployeeSetting(state, action) {
+      const { newTemplateData } = state;
+      return {
+        ...state,
+        newTemplateData: {
+          ...newTemplateData,
           ...action.payload,
         },
       };

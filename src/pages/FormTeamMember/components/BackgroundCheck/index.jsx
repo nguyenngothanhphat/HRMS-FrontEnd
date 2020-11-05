@@ -57,7 +57,6 @@ class BackgroundCheck extends Component {
       data,
       tempData: {
         documentList,
-        isSentEmail,
         identityProof,
         addressProof,
         educational,
@@ -65,18 +64,31 @@ class BackgroundCheck extends Component {
       },
       dispatch,
     } = this.props;
-    console.log('abc');
+    // save step
+    const { currentStep } = this.props;
+    const { candidate = '' } = data;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
+
     if (data.documentChecklistSetting !== documentList) {
-      console.log('inside');
+      console.log('1');
       const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
       const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
       const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
       const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.key);
-      const listSelectedB = arrB.map((x) => x.key);
-      const listSelectedC = arrC.map((x) => x.key);
-      const listSelectedD = arrD.map((x) => x.key);
+      const listSelectedA = arrA.map((x) => x.alias);
+      const listSelectedB = arrB.map((x) => x.alias);
+      const listSelectedC = arrC.map((x) => x.alias);
+      const listSelectedD = arrD.map((x) => x.alias);
       let isCheckedA;
       let isCheckedB;
       let isCheckedC;
@@ -94,12 +106,10 @@ class BackgroundCheck extends Component {
       if (listSelectedD.length === arrToAdjust[3].data.length) {
         isCheckedD = true;
       }
-
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
           documentList: data.documentChecklistSetting,
-          isSentEmail,
           identityProof: {
             ...identityProof,
             isChecked: isCheckedA,
@@ -160,7 +170,6 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
-
     dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload: {
@@ -408,8 +417,9 @@ class BackgroundCheck extends Component {
       openModal,
       tempData,
       tempData: { documentList, isSentEmail, isMarkAsDone, generateLink, fullName },
-      data: { privateEmail },
+      data: { privateEmail, documentChecklistSetting },
     } = this.state;
+    console.log('poe', tempData.technicalCertification.poe.checkedList);
     const { loading } = this.props;
     return (
       <>
@@ -435,6 +445,7 @@ class BackgroundCheck extends Component {
                           documentList={documentList}
                           tempData={tempData}
                           onValuesChange={this.onValuesChange}
+                          documentChecklistSetting={documentChecklistSetting}
                         />
                       );
                     })}

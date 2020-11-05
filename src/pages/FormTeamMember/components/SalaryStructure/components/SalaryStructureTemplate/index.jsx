@@ -109,10 +109,14 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id, title } = this.props;
+    const {
+      dispatch,
+      _id,
+      title,
+      data: { salaryStructure },
+    } = this.props;
     const idTitle = title?._id;
-    // const { tableData } = this.state;
-    // const newTableData = [...tableData];
+
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
@@ -121,6 +125,15 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch({
         type: 'candidateInfo/fetchTableData',
         payload: { title: idTitle },
+      });
+      dispatch({
+        type: 'candidateInfo/saveOrigin',
+        payload: {
+          salaryStructure: {
+            ...salaryStructure,
+            title: title._id,
+          },
+        },
       });
     } else {
       dispatch({
@@ -144,27 +157,33 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       currentStep,
       tableData,
-      salaryPosition,
-      data: { _id },
-    } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
+      // salaryPosition,
+      data: {
+        _id,
+        salaryStructure: { title },
       },
-    });
-    console.log('tableData', tableData);
-    console.log('title', salaryPosition);
+      data,
+    } = this.props;
+    console.log('data', data);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
-          title: salaryPosition,
+          title,
           settings: tableData,
         },
         candidate: _id,
-        currentStep,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
   };
 
@@ -341,7 +360,11 @@ class SalaryStructureTemplate extends PureComponent {
   _renderButtons = () => {
     const { isEditted } = this.state;
     const { processStatus } = this.props;
-    if (processStatus === 'DRAFT' || processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
+    if (
+      processStatus === 'DRAFT' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'SENT-PROVISIONAL-OFFER'
+    ) {
       return (
         <Form.Item className={styles.buttons}>
           {' '}

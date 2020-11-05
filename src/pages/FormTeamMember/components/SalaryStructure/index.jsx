@@ -17,14 +17,35 @@ import styles from './index.less';
 
 @connect(
   ({
-    candidateInfo: { data: { processStatus = '' }, salaryStructure = {}, checkMandatory = {} } = {},
+    candidateInfo: {
+      data: { processStatus = '', candidate = '' },
+      salaryStructure = {},
+      checkMandatory = {},
+      currentStep = 0,
+    } = {},
   }) => ({
     processStatus,
     salaryStructure,
     checkMandatory,
+    candidate,
+    currentStep,
   }),
 )
 class SalaryStructure extends PureComponent {
+  componentDidMount() {
+    const { candidate = '', dispatch, currentStep } = this.props;
+
+    if (dispatch && candidate) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep,
+        },
+      });
+    }
+  }
+
   _renderTable = () => {
     return (
       <div className={styles.tableWrapper}>
