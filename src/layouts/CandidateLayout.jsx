@@ -138,7 +138,7 @@ const CandidateLayout = (props) => {
       processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
       processStatus === 'DISCARDED-PROVISONAL-OFFER'
     ) {
-      if (id === 1 || id === 2 || id === 3) {
+      if (id === 1 || id === 2 || id === 3 || id === 4) {
         valid = true;
       }
     }

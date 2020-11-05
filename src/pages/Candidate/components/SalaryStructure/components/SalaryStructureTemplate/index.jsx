@@ -59,7 +59,7 @@ class SalaryStructureTemplate extends PureComponent {
     const { dispatch, options, tempData, localStep } = this.props;
 
     dispatch({
-      type: 'candidateProfile/updatePhaseOneCandidateEffect',
+      type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         options,
       },
