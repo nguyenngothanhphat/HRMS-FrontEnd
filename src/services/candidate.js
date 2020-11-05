@@ -28,6 +28,13 @@ export function updateByCandidate(params) {
   });
 }
 
+export function phaseOneCandidate(payload) {
+  return request('/api/candidate/phase-one-candidate', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export function addAttachmentService(params) {
   return request('/api/candidate/add-attachment-candidate', {
     method: 'POST',

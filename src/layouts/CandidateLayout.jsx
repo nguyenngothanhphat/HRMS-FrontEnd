@@ -89,6 +89,7 @@ const CandidateLayout = (props) => {
     route: { routes } = {},
     ticketId,
     dispatch,
+    processStatus,
   } = props;
 
   const [current, setCurrent] = useState(1);
@@ -131,13 +132,46 @@ const CandidateLayout = (props) => {
     if (!dispatch) {
       return;
     }
-    dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        localStep: id,
-      },
-    });
+    let valid = false;
+    if (
+      processStatus === 'SENT-PROVISIONAL-OFFER' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'DISCARDED-PROVISONAL-OFFER'
+    ) {
+      if (id === 1 || id === 2 || id === 3) {
+        valid = true;
+      }
+    }
+
+    console.log(id);
+    if (valid) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          localStep: id,
+        },
+      });
+    }
   };
+
+  const getSteps = () => {
+    if (
+      processStatus === 'SENT-PROVISIONAL-OFFER' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'DISCARDED-PROVISONAL-OFFER'
+    ) {
+      console.log('Phase 1');
+      return steps.slice(0, 4);
+    }
+    console.log('Phase 2');
+    return steps;
+  };
+
+  const isPhase1 = (stepArr) => {
+    return stepArr.length === 4;
+  };
+
+  const newSteps = getSteps();
 
   return (
     <div className={s.candidate}>
@@ -166,15 +200,22 @@ const CandidateLayout = (props) => {
           <Row gutter={24}>
             <Col md={5}>
               <div className={s.stepContainer}>
-                <Steps current={current - 1} direction="vertical">
-                  {steps.map((item) => {
+                <Steps
+                  current={current - 1}
+                  direction="vertical"
+                  className={isPhase1(newSteps) ? s.phase1Step : ''}
+                >
+                  {newSteps.map((item) => {
                     const { title, id } = item;
                     return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
                   })}
                 </Steps>
-                <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
-                  Preview offer letter
-                </button>
+
+                {!isPhase1(newSteps) && (
+                  <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
+                    Preview offer letter
+                  </button>
+                )}
               </div>
             </Col>
             <Col md={19}>{children}</Col>
@@ -187,9 +228,12 @@ const CandidateLayout = (props) => {
 
 // export default CandidateLayout;
 export default connect(
-  ({ candidateProfile: { localStep, ticketId, checkCandidateMandatory } = {} }) => ({
+  ({
+    candidateProfile: { localStep, ticketId, checkCandidateMandatory, processStatus = '' } = {},
+  }) => ({
     localStep,
     checkCandidateMandatory,
     ticketId,
+    processStatus,
   }),
 )(CandidateLayout);

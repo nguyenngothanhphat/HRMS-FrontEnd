@@ -6,6 +6,7 @@ import {
   getWorkHistory,
   sendEmailByCandidateModel,
   candidateFinalOffer,
+  phaseOneCandidate,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
@@ -181,6 +182,16 @@ const candidateProfile = {
     *updateByCandidateEffect({ payload }, { call }) {
       try {
         const response = yield call(updateByCandidate, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *updatePhaseOneCandidateEffect({ payload }, { call }) {
+      try {
+        const response = yield call(phaseOneCandidate, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
