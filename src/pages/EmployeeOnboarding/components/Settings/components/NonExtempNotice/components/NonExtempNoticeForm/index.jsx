@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { EditFilled } from '@ant-design/icons';
-import { Col, Row, Form, Input, Radio, Button } from 'antd';
+import { Col, Row, Form, Input, Radio, Button, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
 
 import styles from './index.less';
@@ -182,6 +182,11 @@ class NonExtempNoticeForm extends Component {
               </div>
             </div>
             <hr />
+            {loadingFetchListInsurances && (
+              <div className={styles.loading}>
+                <Spin size="large" />
+              </div>
+            )}
             {!loadingFetchListInsurances && listInsurances && this._renderForm()}
           </div>
         </Col>
