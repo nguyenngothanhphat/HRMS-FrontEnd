@@ -5,7 +5,7 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import InputField from '../InputField';
 import styles from './index.less';
 
-const RenderSomething = ({ propsData }) => {
+const RenderNewEmployerDetail = ({ propsData, orderNumber }) => {
   const {
     item = {},
     onValuesChange = () => {},
@@ -17,12 +17,12 @@ const RenderSomething = ({ propsData }) => {
     addressProof,
     educational,
     poe,
-    addNewEmployerDetail,
   } = propsData;
   return (
     <div>
       {item.type === 'D' ? (
         <InputField
+          orderNumber={orderNumber}
           onValuesChange={onValuesChange}
           documentChecklistSetting={documentChecklistSetting}
         />
@@ -67,20 +67,22 @@ class CollapseField extends PureComponent {
     super(props);
     this.state = {
       children: [],
+      orderNumber: 1,
     };
   }
 
   addNewEmployerDetail = (propsData) => {
-    const { children } = this.state;
+    const { children, orderNumber } = this.state;
     const newComponents = [
       ...children,
       <div>
         <hr />
-        <RenderSomething propsData={propsData} />
+        <RenderNewEmployerDetail propsData={propsData} orderNumber={orderNumber + 1} />
       </div>,
     ];
     this.setState({
       children: newComponents,
+      orderNumber: orderNumber + 1,
     });
   };
 
@@ -164,7 +166,7 @@ class CollapseField extends PureComponent {
             }
             extra="[Can submit any of the below other than (*)mandatory]"
           >
-            <RenderSomething propsData={renderProps} />
+            <RenderNewEmployerDetail propsData={renderProps} orderNumber={1} />
             <div>{children.map((child) => child)}</div>
             {item.type === 'D' ? (
               <Space direction="horizontal" onClick={() => this.addNewEmployerDetail(renderProps)}>

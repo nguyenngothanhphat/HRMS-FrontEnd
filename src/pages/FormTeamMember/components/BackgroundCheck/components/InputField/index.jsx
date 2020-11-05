@@ -2,11 +2,11 @@ import React from 'react';
 import { Typography, Row, Col, Form, Input } from 'antd';
 import style from './index.less';
 
-const InputField = ({ onValuesChange, documentChecklistSetting }) => {
+const InputField = ({ orderNumber, onValuesChange, documentChecklistSetting }) => {
   const { employer } = documentChecklistSetting[3];
   return (
     <div className={style.InputField}>
-      <Typography.Text className={style.text}>Employer 1 Details</Typography.Text>
+      <Typography.Text className={style.text}>Employer {orderNumber} Details</Typography.Text>
       <Row gutter={[48, 0]} className={style.form}>
         <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colLeft}>
           <Form
