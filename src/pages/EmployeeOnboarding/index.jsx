@@ -25,7 +25,7 @@ class EmployeeOnboarding extends PureComponent {
 
     return (
       <PageContainer>
-        {!data.indexOf('P_ONBOARDING_VIEW') > -1 ? (
+        {data.indexOf('P_ONBOARDING_VIEW') > -1 ? (
           <div className={styles.containerEmployeeOnboarding}>
             <div className={styles.tabs}>
               <Tabs defaultActiveKey={defaultActiveKey}>
