@@ -449,6 +449,7 @@ class AddEmployeeForm extends Component {
         onCancel={this.handleCancel}
         style={{ top: 50 }}
         destroyOnClose
+        maskClosable={false}
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
             {formatMessage({ id: 'employee.button.cancel' })}
