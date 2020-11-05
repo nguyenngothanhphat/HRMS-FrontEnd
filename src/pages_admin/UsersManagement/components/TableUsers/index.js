@@ -3,6 +3,7 @@ import { Table, Tag } from 'antd';
 import { formatMessage, connect } from 'umi';
 import EditUserIcon from '@/assets/admin_iconedit.svg';
 import DeleteUserIcon from '@/assets/admin_icondelete.svg';
+import moment from 'moment';
 import EditUserModal from '../EditUserModal';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
@@ -25,6 +26,13 @@ class TableUsers extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -40,6 +48,9 @@ class TableUsers extends PureComponent {
           ) : (
             ''
           ),
+        sorter: {
+          compare: (a, b) => a.generalInfo.firstName.localeCompare(b.generalInfo.firstName),
+        },
       },
       {
         title: 'Employee ID',
@@ -50,20 +61,22 @@ class TableUsers extends PureComponent {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
-        // compare: (a, b) =>
-        //   a.employeeId.slice(4, a.employeeId) - b.employeeId.slice(4, b.employeeId),
+        //   compare: (a, b) =>
+        //     a.generalInfo.employeeId.slice(4, a.generalInfo.employeeId) -
+        //     b.generalInfo.employeeId.slice(4, b.generalInfo.employeeId),
         // },
       },
       {
         title: 'Created date',
-        dataIndex: 'joinedDate',
-        width: '8%',
+        dataIndex: 'joinDate',
+        // width: '8%',
         align: 'left',
-        render: () => <span>Created date</span>,
-        // sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
-        // },
+        render: (joinDate) =>
+          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
+        sortDirections: ['ascend', 'descend', 'ascend'],
+        sorter: {
+          compare: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
+        },
       },
       {
         title: 'Email',

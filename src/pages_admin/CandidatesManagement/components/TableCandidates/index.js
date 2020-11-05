@@ -16,6 +16,13 @@ class TableCandidates extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -154,7 +161,7 @@ class TableCandidates extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey="rookieId"
+          rowKey={(record) => record.ticketID}
         />
       </div>
     );
