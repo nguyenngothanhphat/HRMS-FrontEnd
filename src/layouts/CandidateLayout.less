@@ -4,6 +4,7 @@
 @gray: #f6f7f9;
 @black: #161c29;
 @blue: #2c6df9;
+@orange: #ffa100;
 
 .candidate {
   width: 100%;
@@ -127,16 +128,49 @@
     margin-left: auto;
     padding: 28px;
     width: 262px;
-    height: 424px;
+    // height: 424px;
     object-fit: contain;
     border-radius: 5px;
     border: solid 1px #d6dce0;
     background-color: #ffffff;
+
+    .btn {
+      display: block !important;
+      margin: 0 auto;
+      border: 1px solid @orange;
+      padding: 12px 24px;
+      color: @orange;
+      letter-spacing: 0.13px;
+      font-size: 14px;
+      font-weight: 500;
+      background-color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      outline: none;
+      transition: 0.2s ease-in;
+
+      &:hover {
+        background-color: @orange;
+        color: white;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   :global {
+    .ant-result-image {
+      margin: 0 auto;
+    }
+
     .ant-steps {
       height: 400px !important;
+    }
+
+    .ant-steps-item {
+      cursor: pointer;
     }
 
     .ant-steps-item-title {
@@ -187,5 +221,9 @@
         }
       }
     }
+  }
+
+  .phase1Step {
+    height: 275px !important;
   }
 }

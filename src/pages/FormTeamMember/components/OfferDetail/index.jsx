@@ -16,7 +16,7 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, processStatus = '' } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
@@ -48,6 +48,7 @@ const OfferDetail = (props) => {
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
+  // eslint-disable-next-line no-unused-vars
   const [disableAll, setDisableAll] = useState(false);
 
   const checkAllFieldsValid = (allFieldsValues) => {
