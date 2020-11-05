@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Col, Tabs, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import LeaveInformation from './components/LeaveInformation';
@@ -118,7 +118,7 @@ export default class TimeOff extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <Tabs defaultActiveKey="langdingPage">
+        <Tabs defaultActiveKey="setupTimeOff">
           <TabPane tab="Landing page" key="langdingPage">
             {this._renderLandingPage()}
           </TabPane>
