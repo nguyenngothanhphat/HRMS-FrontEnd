@@ -8,6 +8,9 @@ import {
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
+  editSalaryStructure,
+  addSchedule,
+  getCandidateManagerList,
   closeCandidate,
   updateByHR,
   getById,
@@ -114,6 +117,7 @@ const candidateInfo = {
           checkedList: [],
           isChecked: false,
         },
+        addSchedule,
       },
 
       candidateSignature: null,
@@ -149,7 +153,7 @@ const candidateInfo = {
       company: null,
       joineeEmail: '',
       previousExperience: null,
-      processStatus: 'DRAFT',
+      processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
       noticePeriod: null,
       dateOfJoining: null,
       reportingManager: null,
@@ -277,6 +281,7 @@ const candidateInfo = {
           ],
         },
       ],
+      managerList: [],
       listTitle: [],
       tableData: [],
       hrManagerSignature: {
@@ -441,6 +446,20 @@ const candidateInfo = {
       }
       return response;
     },
+    *addSchedule({ payload }, { call, put }) {
+      console.log('payload', payload);
+      let response;
+      try {
+        response = yield call(addSchedule, payload);
+        const { statusCode, data } = response;
+        console.log('data', response);
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
 
     *addManagerSignatureEffect({ payload }, { call, put }) {
       // console.log('payload', payload);
@@ -481,7 +500,25 @@ const candidateInfo = {
       }
       return response;
     },
-
+    *getCandidateManagerList({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getCandidateManagerList, payload);
+        const { data, statusCode } = response;
+        console.log(data);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            ...data,
+            managerList: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {
@@ -548,8 +585,9 @@ const candidateInfo = {
     },
     *editSalaryStructure({ payload }, { call, put }) {
       try {
-        const response = yield call(closeCandidate, payload);
+        const response = yield call(editSalaryStructure, payload);
         const { statusCode } = response;
+        console.log(response);
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
