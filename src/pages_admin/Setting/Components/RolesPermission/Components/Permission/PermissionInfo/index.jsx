@@ -19,7 +19,6 @@ class PermissionInfo extends PureComponent {
 
   componentDidMount() {
     const { dispatch, id } = this.props;
-    console.log(id);
     this.setState({
       currentId: id,
     });
