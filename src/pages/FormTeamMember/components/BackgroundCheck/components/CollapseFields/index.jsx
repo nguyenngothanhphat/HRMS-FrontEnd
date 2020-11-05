@@ -16,6 +16,7 @@ class CollapseField extends PureComponent {
       documentChecklistSetting,
       processStatus,
       handleValidation,
+      checkValidation,
     } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = tempData;
     const { poe } = technicalCertification;
@@ -78,6 +79,7 @@ class CollapseField extends PureComponent {
                 documentChecklistSetting={documentChecklistSetting}
                 processStatus={processStatus}
                 handleValidation={handleValidation}
+                checkValidation={checkValidation}
               />
             ) : (
               <></>
@@ -90,7 +92,7 @@ class CollapseField extends PureComponent {
                   value={data.alias}
                   className={styles.checkboxItem}
                 >
-                  {data.alias}*
+                  {data.alias}
                 </Checkbox>
               ))}
 

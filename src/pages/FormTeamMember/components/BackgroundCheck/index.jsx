@@ -92,7 +92,6 @@ class BackgroundCheck extends Component {
       const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
       const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
       const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
-      console.log('arrToAdjust', arrToAdjust);
       // console.log('documnetList', documentList);
       const listSelectedA = arrA.map((x) => x.alias);
       const listSelectedB = arrB.map((x) => x.alias);
@@ -233,44 +232,53 @@ class BackgroundCheck extends Component {
         newArrToAdjust,
       },
     });
-    // if (employer.length < 0) {
-    // }
-    dispatch({
-      type: 'candidateInfo/submitPhase1Effect',
-      payload: {
-        candidate: _id,
-        fullName,
-        position,
-        employeeType: employeeType._id,
-        department: department._id,
-        title: title._id,
-        workLocation: workLocation._id,
-        reportingManager: reportingManager._id,
-        privateEmail,
-        workEmail,
-        previousExperience,
-        salaryStructure,
-        documentChecklistSetting: newArrToAdjust,
-        action: 'submit',
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        this.setState({
-          openModal: true,
-        });
-        dispatch({
-          type: 'candidateInfo/saveTemp',
-          payload: {
-            isSentEmail: true,
-          },
-        });
-      }
-    });
+    if (employer.length <= 0) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: false,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/submitPhase1Effect',
+        payload: {
+          candidate: _id,
+          fullName,
+          position,
+          employeeType: employeeType._id,
+          department: department._id,
+          title: title._id,
+          workLocation: workLocation._id,
+          reportingManager: reportingManager._id,
+          privateEmail,
+          workEmail,
+          previousExperience,
+          salaryStructure,
+          documentChecklistSetting: newArrToAdjust,
+          action: 'submit',
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          this.setState({
+            openModal: true,
+          });
+          dispatch({
+            type: 'candidateInfo/saveTemp',
+            payload: {
+              isSentEmail: true,
+            },
+          });
+        }
+      });
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: true,
+        },
+      });
+    }
   };
-
-  // handleValidation = (e) => {
-  //   console.log('e', e.target.value);
-  // };
 
   handleValueChange = (e) => {
     const { dispatch } = this.props;
@@ -479,6 +487,21 @@ class BackgroundCheck extends Component {
         employer,
       },
     });
+    if (employer.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: false,
+        },
+      });
+    }
   };
 
   render() {
@@ -492,6 +515,7 @@ class BackgroundCheck extends Component {
         generateLink,
         fullName,
         valueToFinalOffer,
+        checkValidation,
       },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
@@ -514,6 +538,7 @@ class BackgroundCheck extends Component {
                       return (
                         <CollapseFields
                           key={item.id}
+                          checkValidation={checkValidation}
                           item={item && item}
                           handleChange={this.handleChange}
                           handleCheckAll={this.handleCheckAll}
