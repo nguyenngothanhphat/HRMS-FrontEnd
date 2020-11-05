@@ -761,6 +761,7 @@ const employeeProfile = {
     },
     saveOpenEdit(state, action) {
       const { editGeneral } = state;
+      console.log(123);
       return {
         ...state,
         editGeneral: {

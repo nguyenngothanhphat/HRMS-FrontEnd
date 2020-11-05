@@ -99,7 +99,6 @@ class Position extends PureComponent {
   render() {
     const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
     const { loading } = this.props;
-    console.log(data);
     if (loading)
       return (
         <div className={styles.Position}>
