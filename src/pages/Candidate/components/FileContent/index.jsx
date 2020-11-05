@@ -30,8 +30,9 @@ const FileContent = (props) => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  const onLoadSuccess = ({ numPage }) => {
-    setNumPages(numPage);
+  // eslint-disable-next-line no-shadow
+  const onLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
   };
 
   const { url = '' } = props;

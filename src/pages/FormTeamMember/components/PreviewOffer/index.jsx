@@ -33,6 +33,7 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
+    processStatus,
   } = data;
 
   // const inputRefs = [];
@@ -210,7 +211,7 @@ const PreviewOffer = (props) => {
       payload: {
         candidate: _id,
         hrSignature: hrSignatureProp.id,
-        currentStep: 6,
+        currentStep: 7,
       },
     });
   };
@@ -241,7 +242,7 @@ const PreviewOffer = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        currentStep: 0,
+        currentStep: 7,
       },
     });
   }, []);
@@ -284,8 +285,8 @@ const PreviewOffer = (props) => {
           {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
           {hrSignature.user ? (
             <p>
-              Undersigned - {hrSignature.user.employee.generalInfo.firstName}{' '}
-              {hrSignature.user.employee.generalInfo.lastName}
+              Undersigned - {hrSignature.user.employee?.generalInfo.firstName}{' '}
+              {hrSignature.user.employee?.generalInfo.lastName}
             </p>
           ) : (
             <p>Undersigned</p>
@@ -326,7 +327,7 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {role === ROLE.HR && (
+        {role === ROLE.HR && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
           <div className={styles.send}>
             <header>
               <div className={styles.icon}>
@@ -397,8 +398,8 @@ const PreviewOffer = (props) => {
               {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
               {hrManagerSignature.user ? (
                 <p>
-                  Undersigned - {hrManagerSignature.user.employee.generalInfo.firstName}{' '}
-                  {hrManagerSignature.user.employee.generalInfo.lastName}
+                  Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
+                  {hrManagerSignature.user.employee?.generalInfo.lastName}
                 </p>
               ) : (
                 <p>Undersigned</p>
