@@ -7,6 +7,7 @@ import {
   addVisa,
   addPassport,
   getCountryList,
+  getCompanyList,
   getEmployeeByShortId,
   deleteDocument,
   getGeneralInfo,
@@ -28,6 +29,7 @@ const documentsManagement = {
     countryList: [],
     adhaarCardDetail: {},
     generalInfoId: '',
+    companyList: [],
   },
   effects: {
     *fetchListDocuments(_, { call, put }) {
@@ -110,6 +112,17 @@ const documentsManagement = {
       }
     },
 
+    *fetchCompanyList(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyList);
+        const { statusCode, data: companyList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *addVisa({ data }, { call, put }) {
       try {
         const {
@@ -184,6 +197,7 @@ const documentsManagement = {
           parentEmployeeGroup = '',
           attachment = '',
           employee = '',
+          company = '',
         } = data;
 
         const response = yield call(uploadDocument, {
@@ -192,6 +206,7 @@ const documentsManagement = {
           parentEmployeeGroup,
           attachment,
           employee,
+          company,
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;

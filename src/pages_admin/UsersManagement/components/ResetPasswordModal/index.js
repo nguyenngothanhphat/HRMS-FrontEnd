@@ -59,11 +59,8 @@ class ResetPasswordModal extends Component {
           ]}
         >
           <div className={styles.resetPasswordContent}>
-            <p>
-              Are you sure to reset the password of &quot;{employeeId} - {firstName} {lastName}
-              &quot;?
-            </p>
-            <Space direction="horizontal">
+            <p>Not implemented</p>
+            {/* <Space direction="horizontal">
               <Input disabled defaultValue={workEmail} />
               <Input.Password
                 placeholder="input password"
@@ -72,7 +69,7 @@ class ResetPasswordModal extends Component {
                   eyeVisible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
               />
-            </Space>
+            </Space> */}
           </div>
         </Modal>
       </div>
