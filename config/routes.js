@@ -164,6 +164,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/time-off-management',
+            name: 'timeOffManagement',
+            icon: '/assets/images/timeOff.svg',
+            component: '../pages_admin/TimeOffManagement',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/documents/upload-document',
             name: 'uploadDocument',
             hideInMenu: true,
@@ -219,15 +226,7 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: [
-              'employee',
-              'hr-manager',
-              'hr',
-              'admin-csa',
-              'admin-cla',
-              'admin-cda',
-              'leader',
-            ],
+            authority: ['P_ONBOARDING_VIEW'],
           },
           {
             path: '/time-off',

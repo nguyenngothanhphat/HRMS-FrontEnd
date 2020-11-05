@@ -13,6 +13,13 @@ export const getDocumentDetail = (payload) => {
   });
 };
 
+export async function getCompanyList(payload) {
+  return request('/api/company/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // add document
 export const getEmployeeByShortId = async (payload) => {
   return request('/api/employee/get-by-employee-id', {

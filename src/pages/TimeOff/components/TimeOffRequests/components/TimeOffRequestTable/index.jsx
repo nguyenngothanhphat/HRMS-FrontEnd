@@ -117,7 +117,7 @@ export default class TimeOffRequestTable extends PureComponent {
     //   y: 'max-content',
     // };
     const pagination = {
-      position: ['bottomRight'],
+      position: ['bottomLeft'],
       total: data.length,
       showTotal: (total, range) => (
         <span>

@@ -86,7 +86,7 @@ class TableDocuments extends PureComponent {
             className={styles.viewDocumentBtn}
           />
           <DeleteOutlined
-            onClick={() => this.deleteDocument(record)}
+            onClick={(e) => this.deleteDocument(e, record)}
             className={styles.deleteDocumentBtn}
           />
         </div>
@@ -106,7 +106,8 @@ class TableDocuments extends PureComponent {
   }
 
   // delete
-  deleteDocument = (record) => {
+  deleteDocument = (e, record) => {
+    e.stopPropagation();
     this.setState({
       confirmRemoveModalVisible: true,
       documentId: record._id,
@@ -145,7 +146,7 @@ class TableDocuments extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    // console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 

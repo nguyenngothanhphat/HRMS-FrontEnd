@@ -13,8 +13,8 @@ import styles from './index.less';
 class EmployeeOnboarding extends PureComponent {
   render() {
     const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
-
     const { TabPane } = Tabs;
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOnboarding}>

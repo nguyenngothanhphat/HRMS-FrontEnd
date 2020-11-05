@@ -15,6 +15,13 @@ export default class TableEmployees extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
@@ -147,6 +154,7 @@ export default class TableEmployees extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-alert
     alert('EDIT USER', key);
   };
 
