@@ -22,6 +22,8 @@ class NonExtempNoticeForm extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'onboardingSettings/fetchListInsurances',
+    }).then((listInsurances) => {
+      if (listInsurances.length === 0) this.handleEdit(true);
     });
   };
 
@@ -53,13 +55,21 @@ class NonExtempNoticeForm extends Component {
       loadingFetchAddInsurance,
     } = this.props;
 
-    // const {
-    //   selfInsured = '',
-    //   carrierName = '',
-    //   carrierAddress = '',
-    //   phone = '',
-    //   policyNumber = '',
-    // } = Array.from(listInsurances)[0];
+    let data = {};
+    listInsurances.map((value) => {
+      data = value;
+      return null;
+    });
+
+    const {
+      selfInsured = '',
+      carrierName = '',
+      carrierAddress = '',
+      phone = '',
+      policyNumber = '',
+    } = data;
+
+    // console.log('listInsurances', data);
 
     const { isEditing } = this.state;
 
@@ -69,7 +79,7 @@ class NonExtempNoticeForm extends Component {
         wrapperCol={{ span: 24 }}
         onFinish={this.onFinish}
         onFinishFailed={this.onFinishFailed}
-        // initialValues={{ selfInsured, carrierName, carrierAddress, phone, policyNumber }}
+        initialValues={{ selfInsured, carrierName, carrierAddress, phone, policyNumber }}
       >
         <Row gutter={[24, 6]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
@@ -153,10 +163,9 @@ class NonExtempNoticeForm extends Component {
   };
 
   render() {
-    const { onboardingSettings: { listInsurances = [] } = {} } = this.props;
-    // if (listInsurances.length === 0) this.handleEdit(true);
-
+    const { loadingFetchListInsurances = false } = this.props;
     const { isEditing } = this.state;
+    const { onboardingSettings: { listInsurances = [] } = {} } = this.props;
     return (
       <Row>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
@@ -173,7 +182,7 @@ class NonExtempNoticeForm extends Component {
               </div>
             </div>
             <hr />
-            {this._renderForm()}
+            {!loadingFetchListInsurances && listInsurances && this._renderForm()}
           </div>
         </Col>
       </Row>

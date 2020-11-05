@@ -15,8 +15,10 @@ const onboardingSettings = {
         const { statusCode, data: listInsurances = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listInsurances } });
+        return listInsurances;
       } catch (errors) {
         dialog(errors);
+        return null;
       }
     },
 
