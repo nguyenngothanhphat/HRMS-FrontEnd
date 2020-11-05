@@ -80,6 +80,7 @@ export function getLocationListByCompany(params) {
     data: params,
   });
 }
+
 export function getSalaryStructureList() {
   return request('/api/salarystructure/list', {
     method: 'POST',
@@ -110,8 +111,8 @@ export function closeCandidate(params) {
 }
 
 export function editSalaryStructure(params) {
-  // console.log(params);
-  return request('/api/candidate/close-candidate', {
+  console.log(params);
+  return request('/api/candidate/edit-salarystructure', {
     method: 'POST',
     data: params,
   });

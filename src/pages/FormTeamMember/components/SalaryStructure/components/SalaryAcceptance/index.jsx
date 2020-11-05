@@ -2,9 +2,12 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
+import CustomModal from '@/components/CustomModal';
 import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
 import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
+import ModalContentComponent from '../ModalContentComponent';
+
 import SendEmail from '../SendEmail';
 
 import styles from './index.less';
@@ -25,6 +28,7 @@ class SalaryAcceptance extends PureComponent {
 
     this.state = {
       visible: false,
+      openModal: false,
     };
   }
 
@@ -82,8 +86,14 @@ class SalaryAcceptance extends PureComponent {
       type: 'candidateInfo/editSalaryStructure',
       payload: {
         candidate: _id,
-        setting: tableData,
+        settings: tableData,
       },
+    }).then((res) => {
+      if (res?.statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+      }
     });
   };
 
@@ -158,7 +168,9 @@ class SalaryAcceptance extends PureComponent {
             Send the salary structure to the candidate to mark acceptance or
             <br />
             <br />
-            <p className={styles.redText}>Close Candidature</p>
+            <p className={styles.redText} onClick={this.onCloseCandidate}>
+              Close Candidature
+            </p>
           </div>
         </div>
         <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
@@ -179,12 +191,23 @@ class SalaryAcceptance extends PureComponent {
     });
   };
 
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
   render() {
     const { processStatus } = this.props;
-    const { visible } = this.state;
+    const { visible, openModal } = this.state;
 
     return (
       <div className={styles.salaryAcceptance}>
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<ModalContentComponent closeModal={this.closeModal} />}
+        />
         <ScheduleModal
           visible={visible}
           modalContent="Schedule 1-on-1"

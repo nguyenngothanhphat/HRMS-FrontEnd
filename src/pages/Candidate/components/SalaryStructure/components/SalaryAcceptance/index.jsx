@@ -144,7 +144,6 @@ class SalaryAcceptance extends PureComponent {
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        console.log('ye');
         this.setState({
           openModal: true,
         });

@@ -8,6 +8,7 @@ import {
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
+  editSalaryStructure,
   closeCandidate,
   updateByHR,
   getById,
@@ -548,8 +549,9 @@ const candidateInfo = {
     },
     *editSalaryStructure({ payload }, { call, put }) {
       try {
-        const response = yield call(closeCandidate, payload);
+        const response = yield call(editSalaryStructure, payload);
         const { statusCode } = response;
+        console.log(response);
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
