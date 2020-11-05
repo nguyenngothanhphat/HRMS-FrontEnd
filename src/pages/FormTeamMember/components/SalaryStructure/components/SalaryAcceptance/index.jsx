@@ -5,7 +5,7 @@ import { connect, formatMessage } from 'umi';
 import ScheduleModal from '@/pages/OffBoarding/EmployeeOffBoarding/components/RightContent/ScheduleModal';
 import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
-import SendEmail from '../../../BackgroundCheck/components/SendEmail';
+import SendEmail from '../SendEmail';
 
 import styles from './index.less';
 
@@ -65,7 +65,7 @@ class SalaryAcceptance extends PureComponent {
     });
   };
 
-  onEditSalaryStructure = () => {
+  onSendFormAgain = () => {
     const { dispatch, _id, tableData } = this.props;
     dispatch({
       type: 'candidateInfo/editSalaryStructure',
@@ -134,7 +134,7 @@ class SalaryAcceptance extends PureComponent {
             We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
             structure
           </p>
-          <Button type="primary" onClick={this.onEditSalaryStructure}>
+          <Button type="primary" onClick={this.onSendFormAgain}>
             {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
           </Button>
         </div>
