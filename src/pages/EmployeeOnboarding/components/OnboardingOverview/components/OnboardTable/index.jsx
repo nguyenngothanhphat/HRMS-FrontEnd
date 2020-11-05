@@ -138,23 +138,15 @@ class OnboardTable extends Component {
       case ACCEPTED__PROVISIONAL_OFFERS: {
         actionContent = (
           <>
-            {/* <Link
+            <Link
               to={`/employee-onboarding/review/${id}`}
               onClick={() => {
-                // this.fetchData(id);
-                // this.initiateBackgroundCheck();
+                this.initiateBackgroundCheck(id);
                 console.log('CLICK HERE');
               }}
-            > */}
-            <span
-              onClick={() => {
-                this.initiateBackgroundCheck(id);
-                console.log('CLICK INITIATE');
-              }}
             >
-              Initiate Background Check
-            </span>
-            {/* </Link> */}
+              <span>Initiate Background Check</span>
+            </Link>
           </>
         );
         break;
