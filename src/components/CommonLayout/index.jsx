@@ -34,9 +34,16 @@ class CommonLayout extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { listMenu, currentStep } = props;
+    const { listMenu, currentStep, processStatus = '' } = props;
     // const selectedItemId = listMenu[currentStep]
+    console.log('GET DERIVED STATE', currentStep);
     if (currentStep !== null) {
+      if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && currentStep === 7) {
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
       return {
         selectedItemId: listMenu[currentStep].id,
         displayComponent: listMenu[currentStep].component,
@@ -50,9 +57,16 @@ class CommonLayout extends Component {
   }
 
   componentDidMount() {
-    const { listMenu, currentStep = 1 } = this.props;
+    const { listMenu, currentStep = 1, processStatus = '' } = this.props;
+    console.log('DID MOUNT', processStatus);
+    if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER') {
+      return {
+        selectedItemId: '',
+        displayComponent: <PreviewOffer />,
+      };
+    }
     if (!listMenu[currentStep]) {
-      return;
+      return null;
     }
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,

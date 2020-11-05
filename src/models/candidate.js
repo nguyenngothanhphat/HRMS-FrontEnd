@@ -224,7 +224,6 @@ const candidateProfile = {
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;
-        console.log('a', response);
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -237,7 +236,6 @@ const candidateProfile = {
       try {
         response = yield call(candidateFinalOffer, payload);
         const { statusCode } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -247,7 +245,6 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
-      console.log('saved');
       return {
         ...state,
         ...action.payload,

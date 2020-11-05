@@ -228,7 +228,6 @@ class FormTeamMember extends PureComponent {
       candidateInfo: { data: { _id: candidateId = '' } } = {},
     } = this.props;
     const check = !loading1 && candidateId !== '';
-    console.log('check', check);
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},

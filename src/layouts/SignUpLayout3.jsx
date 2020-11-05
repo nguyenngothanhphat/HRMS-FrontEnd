@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from './SignUpLayout1.less';
+// import styles from './SignUpLayout1.less';
 
-const SignUpLayout3 = (props) => {
+const SignUpLayout3 = () => {
   return <div />;
 };
 
