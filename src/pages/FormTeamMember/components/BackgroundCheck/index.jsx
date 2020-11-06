@@ -165,7 +165,7 @@ class BackgroundCheck extends Component {
         ...tempData,
       },
     });
-    this.handleUpdateByHR();
+    // this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
