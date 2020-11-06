@@ -12,3 +12,9 @@ export async function getOffboardingList(payload) {
     data: payload,
   });
 }
+export async function sendRequest(payload) {
+  return request('/api/offboardingrequest/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
