@@ -50,13 +50,15 @@ export default function ThirdStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {fetchedState.listTitleByDepartment.map((item) => {
-            return (
-              <Option key={makeKey()} value={[item.name, item._id]}>
-                {item.name}
-              </Option>
-            );
-          })}
+          {changeData.stepThree.department
+            ? fetchedState.listTitleByDepartment.map((item) => {
+                return (
+                  <Option key={makeKey()} value={[item.name, item._id]}>
+                    {item.name}
+                  </Option>
+                );
+              })
+            : null}
           ]
         </Select>
       </div>
