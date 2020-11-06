@@ -38,7 +38,7 @@ const candidateInfo = {
       filledJobDetail: false,
       filledCustomField: false,
       filledOfferDetail: false,
-      filledSalaryStructure: true,
+      filledSalaryStructure: false,
       salaryStatus: 2,
     },
     currentStep: 0,
