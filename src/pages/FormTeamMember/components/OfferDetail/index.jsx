@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
-import { currencyArr, timeoffArr, fileArr } from './mockData';
+import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';
 
@@ -17,6 +17,7 @@ const { Option } = Select;
 
 const OfferDetail = (props) => {
   const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
@@ -185,6 +186,15 @@ const OfferDetail = (props) => {
     setHandbook((prevState) => !prevState);
   };
 
+  const onClickPrev = () => {
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: previousStep,
+      },
+    });
+  };
+
   const onClickNext = () => {
     if (!dispatch) {
       return;
@@ -283,7 +293,14 @@ const OfferDetail = (props) => {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
+              <Button
+                type="secondary"
+                onClick={onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+
               <Button
                 type="primary"
                 onClick={onClickNext}
@@ -353,11 +370,7 @@ const OfferDetail = (props) => {
                   disabled={disableAll}
                 >
                   {templateList.map((fileItem) => {
-                    const {
-                      title,
-                      _id = '123',
-                      attachment: { url = '', name = '' } = {},
-                    } = fileItem;
+                    const { _id = '123', attachment: { name = '' } = {} } = fileItem;
                     return (
                       <Option value={name} key={_id}>
                         <div className={styles.iconWrapper}>

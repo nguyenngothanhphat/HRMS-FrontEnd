@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import { connect } from 'umi';
 
 import PayrollSettingsHeader from './components/PayrollSettingsHeader';
@@ -55,6 +55,58 @@ class PayrollSetting extends PureComponent {
     );
   };
 
+  onClickPrev = () => {
+    const { currentStep = 0, dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  onClickNext = () => {
+    const { currentStep = 0, dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+  };
+
+  _renderBottomBar = () => {
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status} />
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary}`}
+                // disabled={!allFieldsFilled}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const Note = {
       title: 'Note',
@@ -78,6 +130,7 @@ class PayrollSetting extends PureComponent {
             <PayrollSettingsHeader />
           </div>
           <div>{this._renderForm()}</div>
+          <div>{this._renderBottomBar()}</div>
         </Col>
         <Col xs={24} sm={24} md={24} lg={8} xl={8}>
           <div className={styles.rightWrapper}>
