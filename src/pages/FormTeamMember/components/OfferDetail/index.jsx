@@ -27,17 +27,19 @@ const OfferDetail = (props) => {
     companyHandbook: handbookProp,
     template: templateProp,
     includeOffer: includeOfferProp,
-
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
   } = tempData;
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
+  const [templateList, setTemplateList] = useState(
+    [...defaultTemplatesProp, ...customTemplatesProp] || [],
+  );
   const [form] = Form.useForm();
 
   // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
-  const [file, setFile] = useState(templateProp || '');
+  const [file, setFile] = useState(templateProp || {});
   const [agreement, setAgreement] = useState(agreementProp);
   const [handbook, setHandbook] = useState(handbookProp);
   // const [compensation, setCompensation] = useState(compensationProp);
@@ -61,6 +63,14 @@ const OfferDetail = (props) => {
       }
       return null;
     });
+
+    console.log(displayTemplate);
+    console.log(file.id);
+    if (displayTemplate) {
+      if (file.id === undefined) {
+        valid = false;
+      }
+    }
 
     setAllFieldsFilled(valid);
 
@@ -142,14 +152,26 @@ const OfferDetail = (props) => {
 
   useEffect(() => {
     setDefaultTemplates(defaultTemplatesProp);
+    setTemplateList([...defaultTemplatesProp, ...customTemplatesProp]);
   }, [defaultTemplatesProp]);
 
   useEffect(() => {
     setCustomTemplates(customTemplatesProp);
+    setTemplateList([...defaultTemplatesProp, ...customTemplatesProp]);
   }, [customTemplatesProp]);
 
-  const handleFileChange = (value) => {
-    setFile(value);
+  const handleTemplateChange = (_, option) => {
+    const { value = '', key = '' } = option;
+    setFile({
+      name: value,
+      id: key,
+    });
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        template: value,
+      },
+    });
   };
 
   const handleAgreementChange = () => {
@@ -165,7 +187,19 @@ const OfferDetail = (props) => {
       return;
     }
 
-    const { _id = '' } = data;
+    const { id: templateId = '' } = file;
+
+    const {
+      candidate = '',
+      _id = '',
+      fullName = '',
+      position = '',
+      employeeType: { name: classificationName = '' } = {},
+      workLocation: { name: workLocationName = '' } = {},
+      department: { name: departmentName = '' } = {},
+      title: { name: jobTitle = '' } = {},
+      reportingManager: { generalInfo: { firstName = '', lastName = '' } = {} } = {},
+    } = data;
     const formValues = form.getFieldsValue();
     const { compensation, currency, timeoff } = formValues;
 
@@ -203,6 +237,20 @@ const OfferDetail = (props) => {
         },
       },
     });
+
+    const templateData = {
+      candidateId: candidate,
+      templateId,
+      fullname: fullName,
+      position,
+      classification: classificationName,
+      workLocation: workLocationName,
+      department: departmentName,
+      jobTitle,
+      reportManager: `${firstName} ${lastName}`,
+    };
+
+    console.log(templateData);
   };
 
   const _renderStatus = () => {
@@ -255,6 +303,7 @@ const OfferDetail = (props) => {
         handbook: handbookProp,
         currency: currencyProp,
         timeoff: timeoffProp,
+        // template: templateProp,
       }}
       onValuesChange={handleFormChange}
     >
@@ -282,25 +331,45 @@ const OfferDetail = (props) => {
 
             {displayTemplate && (
               <div className={styles.wrapper1}>
+                {/* <Form.Item name="template"> */}
                 <Select
                   value={
                     <>
-                      <FileIcon type={getFileType(file)} />
-                      {file}
+                      <FileIcon type={getFileType(file.name)} />
+                      {file.name}
                     </>
                   }
                   className={styles.select}
-                  onChange={(value) => handleFileChange(value)}
+                  onChange={(value, option) => handleTemplateChange(value, option)}
+                  // onSelect={(option) => console.log(option)}
                   disabled={disableAll}
                 >
-                  {fileArr.map(({ name }, index) => (
-                    <Option value={name} key={index}>
-                      <div className={styles.iconWrapper}>
-                        <span>{name}</span>
-                      </div>
-                    </Option>
-                  ))}
+                  {templateList.map((fileItem) => {
+                    const {
+                      title,
+                      _id = '123',
+                      attachment: { url = '', name = '' } = {},
+                    } = fileItem;
+                    return (
+                      <Option value={name} key={_id}>
+                        <div className={styles.iconWrapper}>
+                          <span>{name}</span>
+                        </div>
+                      </Option>
+                    );
+                  })}
+                  {/* {fileArr.map((file, index) => {
+                    const { name } = file;
+                    return (
+                      <Option value={name} key={index}>
+                        <div className={styles.iconWrapper}>
+                          <span>{name}</span>
+                        </div>
+                      </Option>
+                    );
+                  })} */}
                 </Select>
+                {/* </Form.Item> */}
 
                 <Alert display type="remind" header="reminder">
                   <p>

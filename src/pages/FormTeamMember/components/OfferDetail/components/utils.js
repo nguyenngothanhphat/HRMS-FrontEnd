@@ -1,4 +1,7 @@
 const getFileType = (str) => {
+  if (!str) {
+    return '';
+  }
   if (str.includes('.docx')) {
     return 'word';
   }

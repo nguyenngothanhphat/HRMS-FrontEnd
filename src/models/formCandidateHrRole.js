@@ -65,7 +65,7 @@ const candidateInfo = {
       reportingManager: null,
       valueToFinalOffer: 0,
       // Offer details
-      template: 'Template.docx',
+      template: '',
       includeOffer: false,
       compensationType: '',
       amountIn: '',
@@ -359,6 +359,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchLocationList(_, { call, put }) {
       try {
         const response = yield call(getLocation);
@@ -386,6 +387,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
@@ -503,6 +505,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
       try {
@@ -518,6 +521,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchTableData({ payload }, { call, put }) {
       try {
         const response = yield call(getTableDataByTitle, payload);
@@ -532,6 +536,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *closeCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(closeCandidate, payload);
@@ -546,6 +551,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *editSalaryStructure({ payload }, { call, put }) {
       try {
         const response = yield call(closeCandidate, payload);
@@ -599,6 +605,7 @@ const candidateInfo = {
       }
       return response;
     },
+    
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
       try {
