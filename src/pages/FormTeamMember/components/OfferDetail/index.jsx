@@ -56,6 +56,9 @@ const OfferDetail = (props) => {
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
     let valid = true;
+    if (displayTemplate && file.id === undefined) {
+      valid = false;
+    }
     keys.map((key) => {
       const value = allFieldsValues[key];
       if (value === null || value === undefined || value.length === 0) {
@@ -64,29 +67,29 @@ const OfferDetail = (props) => {
       return null;
     });
 
-    console.log(displayTemplate);
-    console.log(file.id);
-    if (displayTemplate) {
-      if (file.id === undefined) {
-        valid = false;
-      }
-    }
-
     setAllFieldsFilled(valid);
 
+    return valid;
+  };
+
+  useEffect(() => {
+    const formValues = form.getFieldsValue();
+    checkAllFieldsValid({ ...formValues, agreement, handbook });
+  }, [displayTemplate]);
+
+  useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           checkMandatory: {
             ...checkMandatory,
-            filledOfferDetail: valid,
+            filledOfferDetail: allFieldsFilled,
           },
         },
       });
     }
-    return valid;
-  };
+  }, [allFieldsFilled]);
 
   const handleFormChange = (changedValues, allFieldsValues) => {
     const { includeOffer, compensation, currency, timeoff } = allFieldsValues;
@@ -238,7 +241,7 @@ const OfferDetail = (props) => {
       },
     });
 
-    const templateData = {
+    const offerData = {
       candidateId: candidate,
       templateId,
       fullname: fullName,
@@ -250,7 +253,12 @@ const OfferDetail = (props) => {
       reportManager: `${firstName} ${lastName}`,
     };
 
-    console.log(templateData);
+    if (dispatch) {
+      dispatch({
+        type: 'candidateInfo/createFinalOfferEffect',
+        payload: offerData,
+      });
+    }
   };
 
   const _renderStatus = () => {

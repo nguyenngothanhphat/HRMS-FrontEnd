@@ -32,3 +32,10 @@ export async function removeTemplate(payload) {
     data: payload, // _id
   });
 }
+
+export async function createFinalOffer(payload) {
+  return request('/api/template/offer-letter', {
+    method: 'POST',
+    data: payload, // offer data
+  });
+}
