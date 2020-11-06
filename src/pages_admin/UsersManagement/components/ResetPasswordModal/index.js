@@ -1,7 +1,6 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Input, Space } from 'antd';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Modal, Button } from 'antd';
 import styles from './index.less';
 
 class ResetPasswordModal extends Component {
@@ -30,10 +29,7 @@ class ResetPasswordModal extends Component {
   };
 
   render() {
-    const { visible = false, loading = false, user = {} } = this.props;
-    const {
-      generalInfo: { firstName = '', lastName = '', employeeId = '', workEmail = '' } = {},
-    } = user;
+    const { visible = false, loading = false } = this.props;
     return (
       <div>
         <Modal

@@ -123,7 +123,6 @@ class TableCompanies extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
-    alert('EDIT USER', key);
   };
 
   // pagination

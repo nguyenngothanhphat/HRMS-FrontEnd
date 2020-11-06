@@ -16,15 +16,21 @@ const RenderNewEmployerDetail = ({ propsData, orderNumber }) => {
     handleChange,
     addressProof,
     educational,
+    processStatus,
+    handleValidation,
+    checkValidation,
     poe,
   } = propsData;
   return (
     <div>
       {item.type === 'D' ? (
         <InputField
-          orderNumber={orderNumber}
           onValuesChange={onValuesChange}
+          orderNumber={orderNumber}
           documentChecklistSetting={documentChecklistSetting}
+          processStatus={processStatus}
+          handleValidation={handleValidation}
+          checkValidation={checkValidation}
         />
       ) : (
         <></>
@@ -37,7 +43,7 @@ const RenderNewEmployerDetail = ({ propsData, orderNumber }) => {
             value={data.alias}
             className={styles.checkboxItem}
           >
-            {data.alias}*
+            {data.alias}
           </Checkbox>
         ))}
 
@@ -46,6 +52,7 @@ const RenderNewEmployerDetail = ({ propsData, orderNumber }) => {
           className={styles.checkboxItem}
           options={defaultArr.map((data) => data.alias)}
           onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
+          disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
           value={
             item.type === 'A'
               ? identityProof.checkedList
@@ -94,6 +101,7 @@ class CollapseField extends PureComponent {
       tempData,
       onValuesChange,
       documentChecklistSetting,
+      processStatus,
     } = this.props;
     const { children } = this.state;
     const { identityProof, addressProof, educational, technicalCertification } = tempData;
@@ -149,6 +157,7 @@ class CollapseField extends PureComponent {
                 className={styles.checkbox}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => handleCheckAll(e, defaultArr, item)}
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 checked={
                   item.type === 'A'
                     ? identityProof.isChecked
