@@ -5,20 +5,20 @@ import { getInsuranceList, addInsurance } from '../services/onboardingSettings';
 const onboardingSettings = {
   namespace: 'onboardingSettings',
   state: {
-    listInsurances: [],
-    uploadedInsurance: [],
+    listInsurances: {},
+    uploadedInsurance: {},
   },
   effects: {
     *fetchListInsurances(_, { call, put }) {
       try {
         const response = yield call(getInsuranceList);
-        const { statusCode, data: listInsurances = [] } = response;
+        const { statusCode, data: listInsurances = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listInsurances } });
         return listInsurances;
       } catch (errors) {
-        dialog(errors);
-        return null;
+        // dialog(errors);
+        return {};
       }
     },
 
@@ -39,7 +39,7 @@ const onboardingSettings = {
           phone,
           policyNumber,
         });
-        const { statusCode, message = '', data: uploadedInsurance = [] } = response;
+        const { statusCode, message = '', data: uploadedInsurance = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,

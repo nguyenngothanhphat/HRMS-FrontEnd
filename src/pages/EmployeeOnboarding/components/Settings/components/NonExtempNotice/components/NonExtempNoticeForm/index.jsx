@@ -23,7 +23,14 @@ class NonExtempNoticeForm extends Component {
     dispatch({
       type: 'onboardingSettings/fetchListInsurances',
     }).then((listInsurances) => {
-      if (listInsurances.length === 0) this.handleEdit(true);
+      const {
+        carrierName = '',
+        carrierAddress = '',
+        phone = '',
+        policyNumber = '',
+      } = listInsurances;
+      if (carrierName === '' && carrierAddress === '' && phone === '' && policyNumber === '')
+        this.handleEdit(true);
     });
   };
 
@@ -51,15 +58,9 @@ class NonExtempNoticeForm extends Component {
 
   _renderForm = () => {
     const {
-      onboardingSettings: { listInsurances = [] } = {},
+      onboardingSettings: { listInsurances = {} } = {},
       loadingFetchAddInsurance,
     } = this.props;
-
-    let data = {};
-    listInsurances.map((value) => {
-      data = value;
-      return null;
-    });
 
     const {
       selfInsured = '',
@@ -67,9 +68,7 @@ class NonExtempNoticeForm extends Component {
       carrierAddress = '',
       phone = '',
       policyNumber = '',
-    } = data;
-
-    // console.log('listInsurances', data);
+    } = listInsurances;
 
     const { isEditing } = this.state;
 
@@ -165,7 +164,7 @@ class NonExtempNoticeForm extends Component {
   render() {
     const { loadingFetchListInsurances = false } = this.props;
     const { isEditing } = this.state;
-    const { onboardingSettings: { listInsurances = [] } = {} } = this.props;
+
     return (
       <Row>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
@@ -173,7 +172,7 @@ class NonExtempNoticeForm extends Component {
             <div className={styles.NonExtempNoticeForm_title}>
               <span>{formatMessage({ id: 'component.nonExtempNotice.formTitle' })}</span>
               <div
-                style={isEditing ? { color: '#666' } : { color: '#2c6df9' }}
+                // style={isEditing ? { color: '#666' } : { color: '#2c6df9' }}
                 className={styles.editButton}
                 onClick={() => this.handleEdit(!isEditing)}
               >
@@ -187,7 +186,7 @@ class NonExtempNoticeForm extends Component {
                 <Spin size="large" />
               </div>
             )}
-            {!loadingFetchListInsurances && listInsurances && this._renderForm()}
+            {!loadingFetchListInsurances && this._renderForm()}
           </div>
         </Col>
       </Row>

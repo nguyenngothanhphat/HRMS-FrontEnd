@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function getInsuranceList(payload) {
-  return request('/api/insurance/list', {
+  return request('/api/insurance/fetch-setting', {
     method: 'POST',
     data: payload,
   });
