@@ -51,11 +51,12 @@ class FormLogin extends Component {
 
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-    const checkValidationEmail = messageError === 'User not found' ? 'error' : '';
-    const messageValidationEmail = messageError === 'User not found' ? 'User does not exist' : '';
-    const checkValidationPsw = messageError === 'Invalid password' ? 'error' : '';
+    const checkValidationEmail = messageError === 'User not found' ? 'error' : undefined;
+    const messageValidationEmail =
+      messageError === 'User not found' ? 'User does not exist' : undefined;
+    const checkValidationPsw = messageError === 'Invalid password' ? 'error' : undefined;
     const messageValidationPsw =
-      messageError === 'Invalid password' ? 'Incorrect password. Try again' : '';
+      messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
