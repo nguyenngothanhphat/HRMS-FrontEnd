@@ -4,7 +4,6 @@ import { isUndefined } from 'lodash';
 import style from './index.less';
 
 const InputField = ({
-  orderNumber,
   onValuesChange,
   documentChecklistSetting,
   processStatus,
@@ -22,7 +21,7 @@ const InputField = ({
   // };
   return (
     <div className={style.InputField}>
-      <Typography.Text className={style.text}>Employer {orderNumber} Details</Typography.Text>
+      <Typography.Text className={style.text}>Employer Details</Typography.Text>
       <Row gutter={[48, 0]} className={style.form}>
         <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colLeft}>
           <Form
