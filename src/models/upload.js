@@ -23,7 +23,6 @@ export default {
       try {
         response = yield call(uploadFile, payload);
         const { statusCode, data } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         if (!isUploadAvatar) {
           notification.success({

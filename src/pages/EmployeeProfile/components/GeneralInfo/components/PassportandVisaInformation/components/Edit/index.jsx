@@ -41,11 +41,22 @@ class Edit extends Component {
       dropdown: false,
       isLt5M: true,
       getContent: true,
+      isDate: true,
+      isCheckDateVisa: true,
     };
   }
 
   handleDropdown = (open) => {
     this.setState({ dropdown: open });
+  };
+
+  validateDate = (getPassportData) => {
+    if (getPassportData === {}) return;
+    if (getPassportData.passportIssuedOn > getPassportData.passportValidTill) {
+      this.setState({ isDate: false });
+    } else {
+      this.setState({ isDate: true });
+    }
   };
 
   handleChange = (name, value) => {
@@ -55,6 +66,7 @@ class Edit extends Component {
       ...passportData,
       ...newItem,
     };
+    this.validateDate(getPassportData);
     const isModified = JSON.stringify(getPassportData) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -348,9 +360,14 @@ class Edit extends Component {
     }
   };
 
+  getcheckArrayVisa = (getCheck) => {
+    const isCheckVisa = (currentValue) => currentValue === true;
+    const getIsCheckVisa = getCheck.every(isCheckVisa);
+    this.setState({ isCheckDateVisa: getIsCheckVisa });
+  };
+
   render() {
-    const { isLt5M, getContent } = this.state;
-    console.log(getContent);
+    const { isLt5M, getContent, isDate, isCheckDateVisa } = this.state;
     const { Option } = Select;
     const {
       passportData = {},
@@ -413,8 +430,8 @@ class Edit extends Component {
               name="passportNumber"
               rules={[
                 {
-                  pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                  pattern: /^[+]*[\d]{0,12}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
             >
@@ -508,10 +525,22 @@ class Edit extends Component {
               onChange={(dates) => {
                 this.handleChange('passportValidTill', dates);
               }}
-              className={styles.dateForm}
+              className={isDate === false ? styles.dateFormValidate : styles.dateForm}
             />
+            {isDate === false ? (
+              <span className={styles.isDate}>
+                {formatMessage({
+                  id: 'pages.employeeProfile.validateDate',
+                })}
+              </span>
+            ) : (
+              ''
+            )}
           </Form.Item>
-          <VisaGeneral setConfirmContent={this.getConfirmContent} />
+          <VisaGeneral
+            setConfirmContent={this.getConfirmContent}
+            checkArrayVisa={this.getcheckArrayVisa}
+          />
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
@@ -520,7 +549,12 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={isLt5M === false || getContent === false}
+              disabled={
+                isLt5M === false ||
+                getContent === false ||
+                isDate === false ||
+                isCheckDateVisa === false
+              }
             >
               Save
             </Button>

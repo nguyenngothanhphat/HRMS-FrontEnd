@@ -8,6 +8,7 @@ const getFileType = (str) => {
   if (str.includes('.xlsx')) {
     return 'excel';
   }
+  return '';
 };
 
 const checkValidField = (value) => {

@@ -14,6 +14,9 @@ class CollapseField extends PureComponent {
       tempData,
       onValuesChange,
       documentChecklistSetting,
+      processStatus,
+      handleValidation,
+      checkValidation,
     } = this.props;
     const { identityProof, addressProof, educational, technicalCertification } = tempData;
     const { poe } = technicalCertification;
@@ -52,6 +55,7 @@ class CollapseField extends PureComponent {
                 className={styles.checkbox}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => handleCheckAll(e, defaultArr, item)}
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 checked={
                   item.type === 'A'
                     ? identityProof.isChecked
@@ -73,6 +77,9 @@ class CollapseField extends PureComponent {
               <InputField
                 onValuesChange={onValuesChange}
                 documentChecklistSetting={documentChecklistSetting}
+                processStatus={processStatus}
+                handleValidation={handleValidation}
+                checkValidation={checkValidation}
               />
             ) : (
               <></>
@@ -85,7 +92,7 @@ class CollapseField extends PureComponent {
                   value={data.alias}
                   className={styles.checkboxItem}
                 >
-                  {data.alias}*
+                  {data.alias}
                 </Checkbox>
               ))}
 
@@ -94,6 +101,7 @@ class CollapseField extends PureComponent {
                 className={styles.checkboxItem}
                 options={defaultArr.map((data) => data.alias)}
                 onChange={(checkedList) => handleChange(checkedList, defaultArr, item)}
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 value={
                   item.type === 'A'
                     ? identityProof.checkedList

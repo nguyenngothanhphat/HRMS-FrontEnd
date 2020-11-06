@@ -61,7 +61,7 @@ const index = ({ email, handleSendEmail, onValuesChangeEmail, isSentEmail, handl
               onValuesChange={onValuesChangeEmail}
             >
               <Form.Item name="email" label="Terralogic HR Email ID" className={style.marginBottom}>
-                <Input />
+                <Input disabled="true" />
               </Form.Item>
               <Form.Item>
                 <Button htmlType="submit">Send Email</Button>
