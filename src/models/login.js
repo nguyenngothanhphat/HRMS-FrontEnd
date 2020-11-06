@@ -5,7 +5,7 @@ import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { setToken } from '@/utils/token';
-import { getPageQuery, dialog } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
