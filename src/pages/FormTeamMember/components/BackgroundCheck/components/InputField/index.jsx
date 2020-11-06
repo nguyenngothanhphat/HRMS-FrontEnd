@@ -14,6 +14,7 @@ const InputField = ({
 }) => {
   // const [validation, setValidation] = useState(false);
   const { employer } = documentChecklistSetting[3];
+  console.log('documentCheck', documentChecklistSetting[3]);
   const employer1 = tempData.employer;
   console.log('processStatus', processStatus === 'DRAFT', employer1);
   // const onChange = (e) => {
@@ -71,7 +72,7 @@ const InputField = ({
                 wrapperCol={24}
                 layout="vertical"
                 onValuesChange={(value) => onValuesChange(value)}
-                initialValues={{ employer1 }}
+                initialValues={{ employer: employer1 }}
               >
                 <Form.Item label="Name of the employer*" name="employer">
                   <Input

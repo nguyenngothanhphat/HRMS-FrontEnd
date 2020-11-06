@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography } from 'antd';
+import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
@@ -175,6 +175,58 @@ class Benefit extends PureComponent {
     }
   };
 
+  // _renderStatus = () => {
+  //   // const { checkMandatory } = this.props;
+  //   // const { filledBackgroundCheck } = checkMandatory;
+  //   return !filledBackgroundCheck ? (
+  //     <div className={styles.normalText}>
+  //       <div className={styles.redText}>*</div>
+  //       {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+  //     </div>
+  //   ) : (
+  //     <div className={styles.greenText}>
+  //       * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+  //     </div>
+  //   );
+  // };
+
+  _renderBottomBar = () => {
+    // const { checkMandatory } = this.props;
+    // const { filledJobDetail } = checkMandatory;
+
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                // className={`${styles.bottomBar__button__primary} ${
+                //   !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                // }`}
+                className={styles.bottomBar__buton__primary}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const headerText = formatMessage({ id: 'component.Benefits.subHeader' });
     const globalEmployeesCheckbox = {
@@ -306,7 +358,9 @@ class Benefit extends PureComponent {
                 benefits={benefits}
               />
             </div>
+            {/* {this._renderBottomBar()} */}
           </Col>
+
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
             <div className={styles.rightWrapper}>
               <Row>
