@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { reloadAuthorized } from './Authorized'; // use localStorage to store the authority info, which might be sent from server in actual project.
 
 export function getAuthority(str) {
@@ -19,6 +20,7 @@ export function getAuthority(str) {
   } // preview.pro.ant.design only do not use in your production.
   // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
+  // eslint-disable-next-line no-undef
   if (!authority && ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
     return ['admin'];
   }
@@ -26,8 +28,8 @@ export function getAuthority(str) {
   return authority;
 }
 export function setAuthority(authority) {
+  // console.log('authority', authority);
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // auto reload
-
   reloadAuthorized();
 }

@@ -7,6 +7,7 @@ import {
   addVisa,
   addPassport,
   getCountryList,
+  getCompanyList,
   getEmployeeByShortId,
   deleteDocument,
   getGeneralInfo,
@@ -28,6 +29,7 @@ const documentsManagement = {
     countryList: [],
     adhaarCardDetail: {},
     generalInfoId: '',
+    companyList: [],
   },
   effects: {
     *fetchListDocuments(_, { call, put }) {
@@ -63,6 +65,14 @@ const documentsManagement = {
     //   }
     // },
 
+    *clearDocumentDetail(_, { put }) {
+      try {
+        yield put({ type: 'save', payload: { listDocumentDetail: [] } });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+
     *clearEmployeeDetail(_, { put }) {
       try {
         yield put({ type: 'save', payload: { employeeDetail: [] } });
@@ -97,6 +107,17 @@ const documentsManagement = {
           type: 'save',
           payload: { countryList },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchCompanyList(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyList);
+        const { statusCode, data: companyList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyList } });
       } catch (errors) {
         dialog(errors);
       }
@@ -176,6 +197,7 @@ const documentsManagement = {
           parentEmployeeGroup = '',
           attachment = '',
           employee = '',
+          company = '',
         } = data;
 
         const response = yield call(uploadDocument, {
@@ -184,6 +206,7 @@ const documentsManagement = {
           parentEmployeeGroup,
           attachment,
           employee,
+          company,
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;
@@ -223,10 +246,7 @@ const documentsManagement = {
       }
     },
 
-    *updateGeneralInfo(
-      { payload: { id = '', document = '', adhaarCardNumber = '' } },
-      { call, put },
-    ) {
+    *updateGeneralInfo({ payload: { id = '', document = '', adhaarCardNumber = '' } }, { call }) {
       try {
         const response = yield call(updateGeneralInfo, { id, document, adhaarCardNumber });
         const { statusCode } = response;

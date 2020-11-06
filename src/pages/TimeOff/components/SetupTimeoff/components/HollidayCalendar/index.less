@@ -1,0 +1,56 @@
+.root {
+  .setUpWrap {
+    background: #ffffff;
+    border: 1px solid #d6dce0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    padding: 27px 31px;
+    margin-bottom: 20px;
+    .title {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 21px;
+      color: #464646;
+      padding-bottom: 20px;
+    }
+    .description {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 15px;
+      color: #464646;
+      padding-bottom: 20px;
+    }
+    :global {
+      .ant-btn-primary {
+        background-color: #ffa100;
+        border-color: #ffa100;
+      }
+    }
+  }
+  .tableWrap {
+    display: grid;
+    .leftTitle {
+      font-style: normal;
+      font-weight: 900;
+      font-size: 30px;
+      line-height: 35px;
+      color: #464646;
+      padding-right: 54px;
+    }
+    :global {
+      .ant-tabs-tab-btn {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        color: #464646;
+        opacity: 1;
+      }
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+        color: #2c6df9;
+      }
+    }
+  }
+}

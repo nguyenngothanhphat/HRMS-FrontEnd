@@ -2,9 +2,10 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Select } from 'antd';
+import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
+import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -42,9 +43,7 @@ class AddEmployeeForm extends Component {
     this.formRef = React.createRef();
     this.state = {
       isDisabled: true,
-      isDisabledDepartment: true,
-      company: '',
-      location: '',
+      // isDisabledDepartment: true,
     };
   }
 
@@ -52,11 +51,11 @@ class AddEmployeeForm extends Component {
     if ('statusAddEmployee' in props && props.statusAddEmployee) {
       if (props.company === '') {
         return {
-          isDisabledDepartment: true,
+          // isDisabledDepartment: true,
           isDisabled: true,
         };
       }
-      return { isDisabledDepartment: true };
+      // return { isDisabledDepartment: true };
     }
     return null;
   }
@@ -71,15 +70,9 @@ class AddEmployeeForm extends Component {
     }
   }
 
-  componentDidUpdate(prevState) {
-    const { location } = this.state;
+  componentDidUpdate() {
     const { dispatch, statusAddEmployee = false } = this.props;
-    if (statusAddEmployee && location !== '' && location !== prevState.location) {
-      this.formRef.current.setFieldsValue({
-        department: undefined,
-      });
-    }
-    if (statusAddEmployee === true) {
+    if (statusAddEmployee) {
       this.formRef.current.resetFields();
       dispatch({
         type: 'employeesManagement/save',
@@ -98,12 +91,18 @@ class AddEmployeeForm extends Component {
         company: _id,
       },
     });
-    // dispatch({
-    //   type: 'employeesManagement/fetchLocationList',
-    //   payload: {
-    //     company: _id,
-    //   },
-    // });
+    dispatch({
+      type: 'employeesManagement/fetchLocationList',
+      payload: {
+        company: _id,
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchDepartmentList',
+      payload: {
+        company: _id,
+      },
+    });
     dispatch({
       type: 'employeesManagement/fetchJobTitleList',
       payload: {
@@ -113,15 +112,15 @@ class AddEmployeeForm extends Component {
   };
 
   onChangeSelect = (type, value) => {
-    const { dispatch } = this.props;
-    const { company } = this.state;
+    // const { dispatch } = this.props;
+    // const { company } = this.state;
 
     switch (type) {
       case 'company':
         this.fetchData(value);
         this.setState({
           isDisabled: false,
-          company: value,
+          // company: value,
         });
         this.formRef.current.setFieldsValue({
           location: undefined,
@@ -130,17 +129,21 @@ class AddEmployeeForm extends Component {
         });
         break;
       case 'location':
-        this.setState({
-          location: value,
-          isDisabledDepartment: false,
-        });
-        dispatch({
-          type: 'employeesManagement/fetchDepartmentList',
-          payload: {
-            company,
-            location: value,
-          },
-        });
+        // this.setState(
+        //   {
+        //     isDisabledDepartment: false,
+        //   },
+        //   this.formRef.current.setFieldsValue({
+        //     department: undefined,
+        //   }),
+        // );
+        // dispatch({
+        //   type: 'employeesManagement/fetchDepartmentList',
+        //   payload: {
+        //     company,
+        //     location: value,
+        //   },
+        // });
         break;
       default:
         break;
@@ -171,10 +174,8 @@ class AddEmployeeForm extends Component {
     });
     this.setState(
       {
-        location: '',
-        company: '',
         isDisabled,
-        isDisabledDepartment: true,
+        // isDisabledDepartment: true,
       },
       () => handleCancel(),
     );
@@ -184,9 +185,13 @@ class AddEmployeeForm extends Component {
 
   handleSubmitEmployee = (values) => {
     const { dispatch } = this.props;
+    const payload = {
+      ...values,
+      joinDate: moment(values.joinDate).format('YYYY-MM-DD'),
+    };
     dispatch({
       type: 'employeesManagement/addEmployee',
-      payload: values,
+      payload,
     });
   };
 
@@ -224,7 +229,7 @@ class AddEmployeeForm extends Component {
       loadingManager,
       company,
     } = this.props;
-    const { isDisabled, isDisabledDepartment } = this.state;
+    const { isDisabled } = this.state;
     return (
       <div className={styles.addEmployee__form}>
         <Form
@@ -241,6 +246,19 @@ class AddEmployeeForm extends Component {
           {...formLayout}
         >
           <Form.Item
+            label={formatMessage({ id: 'addEmployee.employeeID' })}
+            name="employeeId"
+            rules={[
+              { required: true },
+              {
+                pattern: /^[a-zA-Z0-9\s_.-]*$/,
+                message: 'Employee ID is not a validate ID!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             label={formatMessage({ id: 'addEmployee.name' })}
             name="firstName"
             rules={[
@@ -252,6 +270,13 @@ class AddEmployeeForm extends Component {
             ]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
+            name="joinDate"
+            rules={[{ required: true }]}
+          >
+            <DatePicker style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
@@ -338,9 +363,9 @@ class AddEmployeeForm extends Component {
               }
             >
               {locationList.map((item) => {
-                const { headQuarterAddress = {}, _id = '' } = item;
-                if (!_.isEmpty(headQuarterAddress)) {
-                  return <Option key={_id}>{headQuarterAddress.address}</Option>;
+                const { name = '', _id = '' } = item;
+                if (!_.isEmpty(name)) {
+                  return <Option key={_id}>{name}</Option>;
                 }
                 return null;
               })}
@@ -356,7 +381,7 @@ class AddEmployeeForm extends Component {
               showArrow
               showSearch
               loading={loadingDepartment}
-              disabled={isDisabledDepartment || loadingDepartment}
+              disabled={isDisabled || loadingDepartment}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -424,6 +449,7 @@ class AddEmployeeForm extends Component {
         onCancel={this.handleCancel}
         style={{ top: 50 }}
         destroyOnClose
+        maskClosable={false}
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
             {formatMessage({ id: 'employee.button.cancel' })}

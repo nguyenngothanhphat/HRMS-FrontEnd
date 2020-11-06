@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
+import { isUndefined } from 'lodash';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import StepsComponent from '../StepsComponent';
@@ -21,9 +22,9 @@ const Note = {
   ),
 };
 
-@connect(({ candidateProfile: { data, currentStep, tempData } = {}, loading }) => ({
+@connect(({ candidateProfile: { data, localStep, tempData } = {}, loading }) => ({
   data,
-  currentStep,
+  localStep,
   tempData,
   loading: loading.effects['upload/uploadFile'],
 }))
@@ -177,6 +178,8 @@ class EligibilityDocs extends PureComponent {
 
   onValuesChange = (val) => {
     const { dispatch } = this.props;
+    console.log('valwork', val.workDuration);
+    console.log('val1', val);
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
@@ -223,7 +226,14 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      data: { attachments, documentListToRender, validateFileSize, generatedBy, employerName },
+      data: {
+        attachments,
+        documentListToRender,
+        validateFileSize,
+        generatedBy,
+        employerName,
+        workDuration,
+      },
     } = this.props;
     const { openModal, isSentEmail } = this.state;
     const { user } = generatedBy;
@@ -261,7 +271,9 @@ class EligibilityDocs extends PureComponent {
             documentListToRender[0].data[1].attachment &&
             documentListToRender[2].data[0].attachment &&
             documentListToRender[2].data[1].attachment &&
-            documentListToRender[2].data[2].attachment ? (
+            documentListToRender[2].data[2].attachment &&
+            workDuration !== 0 &&
+            !isUndefined(workDuration) ? (
               <SendEmail
                 handleSendEmail={this.handleSendEmail}
                 email={email}

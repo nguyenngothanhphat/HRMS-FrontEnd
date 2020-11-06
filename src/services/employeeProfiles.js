@@ -203,3 +203,17 @@ export async function removeCertification(payload) {
     data: payload,
   });
 }
+
+export async function getBank(payload) {
+  return request('/api/bankacc/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTax(payload) {
+  return request('/api/tax/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}

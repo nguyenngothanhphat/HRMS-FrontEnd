@@ -20,10 +20,16 @@ class SettingTab extends PureComponent {
       type: 'employee/fetchDepartment',
     });
     dispatch({
+      type: 'country/fetchListCountry',
+    });
+    dispatch({
       type: 'employee/fetchLocation',
     });
     dispatch({
       type: 'adminSetting/fetchListTitle',
+    });
+    dispatch({
+      type: 'companiesManagement/fetchCompaniesList',
     });
   }
 

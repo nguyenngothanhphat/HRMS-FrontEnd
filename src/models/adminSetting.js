@@ -6,6 +6,7 @@ import {
   getListPermissionOfRole,
   updateRoleWithPermission,
   getPermissionByIdRole,
+  addPosition,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -41,15 +42,18 @@ const adminSetting = {
       }
     },
     *fetchListTitle(_, { call, put }) {
+      let resp = [];
       try {
         const response = yield call(getListTitle);
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
+        resp = listTitle;
         yield put({ type: 'saveOrigin', payload: { listTitle } });
         yield put({ type: 'saveTemp', payload: { listTitle } });
       } catch (errors) {
         dialog(errors);
       }
+      return resp;
     },
     *fetchListPermissionOfRole({ payload: { idRoles = '' } }, { call, put }) {
       try {
@@ -83,6 +87,19 @@ const adminSetting = {
         notification.success({
           message,
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addPosition({ payload: { name = '' } }, { call, put }) {
+      try {
+        const response = yield call(addPosition, { name });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchListTitle' });
       } catch (errors) {
         dialog(errors);
       }

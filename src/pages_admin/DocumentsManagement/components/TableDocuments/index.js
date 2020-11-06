@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 import moment from 'moment';
-import ViewDocument from '@/components/ViewDocument';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -27,19 +26,19 @@ class TableDocuments extends PureComponent {
       title: 'Document Type',
       dataIndex: 'employeeGroup',
       align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      },
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
+      // },
     },
     {
       title: 'Document Name',
       dataIndex: 'key',
       align: 'center',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.key.localeCompare(b.key),
-      },
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => a.key.localeCompare(b.key),
+      // },
     },
     {
       title: 'Uploaded By',
@@ -87,7 +86,7 @@ class TableDocuments extends PureComponent {
             className={styles.viewDocumentBtn}
           />
           <DeleteOutlined
-            onClick={() => this.deleteDocument(record)}
+            onClick={(e) => this.deleteDocument(e, record)}
             className={styles.deleteDocumentBtn}
           />
         </div>
@@ -103,13 +102,12 @@ class TableDocuments extends PureComponent {
       confirmRemoveModalVisible: false,
       documentId: '',
       documentName: '',
-      isViewingDocument: false,
-      selectedDocumentId: null,
     };
   }
 
   // delete
-  deleteDocument = (record) => {
+  deleteDocument = (e, record) => {
+    e.stopPropagation();
     this.setState({
       confirmRemoveModalVisible: true,
       documentId: record._id,
@@ -127,22 +125,7 @@ class TableDocuments extends PureComponent {
 
   // view document
   viewDocument = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'documentsManagement/fetchDocumentDetail',
-      payload: record._id,
-    });
-    this.setState({
-      isViewingDocument: true,
-      selectedDocumentId: record._id,
-    });
-  };
-
-  closeDocument = () => {
-    this.setState({
-      isViewingDocument: false,
-      selectedDocumentId: null,
-    });
+    history.push(`/view-document/${record._id}`);
   };
 
   // pagination
@@ -163,7 +146,7 @@ class TableDocuments extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    // console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
@@ -175,8 +158,6 @@ class TableDocuments extends PureComponent {
       documentId,
       documentName,
       confirmRemoveModalVisible,
-      isViewingDocument,
-      selectedDocumentId,
     } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -207,38 +188,34 @@ class TableDocuments extends PureComponent {
       onChange: this.onSelectChange,
     };
 
-    const {
-      documentsManagement: { listDocumentDetail = [] },
-    } = this.props;
-
     // console.log('listDocumentDetail', listDocumentDetail);
     return (
-      <div>
-        {isViewingDocument && selectedDocumentId && listDocumentDetail ? (
-          <ViewDocument data={listDocumentDetail} onBackClick={this.closeDocument} />
-        ) : (
-          <div className={styles.tableDocuments}>
-            {documentId !== '' && (
-              <ConfirmRemoveModal
-                visible={confirmRemoveModalVisible}
-                titleModal="Remove Document Confirm"
-                handleCancel={this.closeConfirmRemoveModal}
-                id={documentId}
-                name={documentName}
-              />
-            )}
-            <Table
-              size="small"
-              loading={loading}
-              rowSelection={rowSelection}
-              pagination={{ ...pagination, total: data.length }}
-              columns={this.columns}
-              dataSource={data}
-              scroll={scroll}
-              rowKey="_id"
-            />
-          </div>
+      <div className={styles.tableDocuments}>
+        {documentId !== '' && (
+          <ConfirmRemoveModal
+            visible={confirmRemoveModalVisible}
+            titleModal="Remove Document Confirm"
+            handleCancel={this.closeConfirmRemoveModal}
+            id={documentId}
+            name={documentName}
+          />
         )}
+        <Table
+          size="small"
+          loading={loading}
+          onRow={(record) => {
+            return {
+              onClick: () => this.viewDocument(record),
+              // click row
+            };
+          }}
+          rowSelection={rowSelection}
+          pagination={{ ...pagination, total: data.length }}
+          columns={this.columns}
+          dataSource={data}
+          scroll={scroll}
+          rowKey="_id"
+        />
       </div>
     );
   }

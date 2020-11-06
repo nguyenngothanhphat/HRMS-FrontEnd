@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
@@ -15,12 +16,32 @@ class TableCandidates extends PureComponent {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
+  }
+
   generateColumns = () => {
     const columns = [
       {
-        title: 'Rookie ID',
-        dataIndex: 'rookieId',
+        title: 'Rookie Name',
+        dataIndex: 'fullName',
         align: 'left',
+        fixed: 'left',
+        width: '15%',
+        render: (fullName) => <span className={styles.fullName}>{fullName}</span>,
+        // sortDirections: ['ascend', 'descend', 'ascend'],
+        // sorter: {
+        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
+        // },
+      },
+      {
+        title: 'Rookie ID',
+        dataIndex: 'ticketID',
+        align: 'left',
+        className: `${styles.rookieId}`,
         width: '10%',
         // defaultSortOrder: 'ascend',
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -28,20 +49,14 @@ class TableCandidates extends PureComponent {
         //   compare: (a, b) => a.userId - b.userId,
         // },
       },
-      {
-        title: 'Rookie Name',
-        dataIndex: 'rookieName',
-        align: 'left',
-        width: '20%',
-        // sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
-        // },
-      },
+
       {
         title: 'Joined date',
-        dataIndex: 'joinedDate',
+        dataIndex: 'updatedAt',
         align: 'left',
+        render: (updatedAt) => (
+          <span>{updatedAt ? moment(updatedAt).locale('en').format('MMM Do, YYYY') : ''}</span>
+        ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => new Date(a.joinedDate) - new Date(b.joinedDate),
@@ -59,7 +74,13 @@ class TableCandidates extends PureComponent {
       },
       {
         title: 'Location',
-        dataIndex: 'location',
+        dataIndex: 'workLocation',
+        align: 'left',
+        render: (workLocation) => <span>{workLocation ? workLocation.name : ''}</span>,
+      },
+      {
+        title: 'Status',
+        dataIndex: 'processStatus',
         align: 'left',
       },
       {
@@ -140,7 +161,7 @@ class TableCandidates extends PureComponent {
           columns={this.generateColumns()}
           dataSource={data}
           scroll={scroll}
-          rowKey="rookieId"
+          rowKey={(record) => record.ticketID}
         />
       </div>
     );

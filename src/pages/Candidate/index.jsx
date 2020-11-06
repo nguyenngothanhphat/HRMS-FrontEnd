@@ -7,6 +7,7 @@ import OfferDetails from './components/OfferDetails';
 import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
+import PreviewOffer from './components/PreviewOffer';
 
 const _renderScreen = (screenNumber) => {
   switch (screenNumber) {
@@ -22,19 +23,19 @@ const _renderScreen = (screenNumber) => {
       return <OfferDetails />;
     case 6:
       return <Benefits />;
+    case 7:
+      return <PreviewOffer />;
     default:
-      return <BasicInfomation />;
+      return null;
   }
 };
 
 const Candidate = (props) => {
-  const { dispatch, currentStep, candidate } = props;
-  const [screen, setScreen] = useState(currentStep);
-  console.log(candidate);
+  const { dispatch, localStep, candidate } = props;
+  const [screen, setScreen] = useState(localStep);
   useEffect(() => {
-    setScreen(currentStep);
-  }, [currentStep]);
-
+    setScreen(localStep);
+  }, [localStep]);
   useEffect(() => {
     if (!dispatch) {
       return;
@@ -44,6 +45,25 @@ const Candidate = (props) => {
       payload: {
         candidate,
       },
+    }).then(({ data, statusCode }) => {
+      if (statusCode === 200) {
+        const { _id, documentChecklistSetting } = data;
+        const { employer } = documentChecklistSetting[3];
+        dispatch({
+          type: 'candidateProfile/fetchDocumentByCandidate',
+          payload: {
+            candidate: _id,
+          },
+        });
+        if (employer.length > 1) {
+          dispatch({
+            type: 'candidateProfile/fetchEmployer',
+            payload: {
+              candidate: _id,
+            },
+          });
+        }
+      }
     });
   }, []);
 
@@ -52,8 +72,11 @@ const Candidate = (props) => {
 
 // export default Candidate;
 export default connect(
-  ({ candidateProfile: { currentStep, data, tempData } = {}, login: { candidate } }) => ({
-    currentStep,
+  ({
+    candidateProfile: { localStep, data, tempData } = {},
+    user: { currentUser: { candidate = '' } = {} } = {},
+  }) => ({
+    localStep,
     data,
     tempData,
     candidate,

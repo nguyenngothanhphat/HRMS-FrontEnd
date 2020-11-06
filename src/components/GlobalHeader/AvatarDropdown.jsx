@@ -19,6 +19,7 @@ class AvatarDropdown extends React.Component {
   onMenuClick = (event) => {
     const { key } = event;
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
+    const { currentUser } = this.props;
     if (key === LOGOUT) {
       const { dispatch } = this.props;
       if (dispatch) {
@@ -31,8 +32,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (key === VIEWPROFILE) {
-      // eslint-disable-next-line no-alert
-      alert('View Profile');
+      history.push(`/employees/employee-profile/${currentUser.employee._id}`);
 
       return;
     }
@@ -57,8 +57,8 @@ class AvatarDropdown extends React.Component {
     const { currentUser = {}, menu = false } = this.props;
     const {
       name = '',
-      generalInfo: { avatar = '' } = {},
-      compensation: { tittle: { name: title = '' } = {} } = {},
+      generalInfo: { avatar = '', employeeId = '' } = {},
+      title = {},
     } = currentUser;
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
     const menuHeaderDropdown = (
@@ -91,11 +91,9 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
           <div className={styles.viewProfileInfo}>
-            <span>{name}</span>
-            <br />
-            <span>{title}</span>
-            <br />
-            <span>PIS-2400</span>
+            <p>{name}</p>
+            <p>{title.name}</p>
+            <p>{employeeId}</p>
           </div>
           <UpOutlined className={styles.menuItemIcon} />
         </div>

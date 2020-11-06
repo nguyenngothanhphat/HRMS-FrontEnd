@@ -8,8 +8,8 @@
     height: 300px;
   }
   .chartNode {
-    width: 150px;
-    height: 210px;
+    width: 140px;
+    height: 190px;
     border-radius: 10px;
     border: solid 1px rgba(112, 112, 112, 0.4);
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
@@ -39,11 +39,17 @@
       letter-spacing: normal;
     }
   }
+
   .chartContainer {
     border: none;
     height: auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .myChart {
       background-image: none;
+      transform: matrix(0.479603, 0, 0, 0.479603, -19, -213);
       // & > ul > li > ul li::before {
       //   border-top-color: #215a88;
       // }
@@ -68,6 +74,9 @@
       height: 65px;
       padding: 2px;
       border: 1px solid #215a88;
+    }
+    .myChart .oc-node .horizontalEdge {
+      display: none;
     }
   }
 }

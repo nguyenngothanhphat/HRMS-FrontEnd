@@ -28,26 +28,32 @@ const noMatch = (
 
 const steps = [
   {
+    id: 1,
     title: 'Basic Infomation',
     content: 'First-content',
   },
   {
+    id: 2,
     title: 'Job Details',
     content: 'Second-content',
   },
   {
+    id: 3,
     title: 'Salary Structure',
     content: 'Third-content',
   },
   {
-    title: 'Eligibility documents',
+    id: 4,
+    title: 'Background Check',
     content: 'Fourth-content',
   },
   {
+    id: 5,
     title: 'Offer Details',
     content: 'Fifth-content',
   },
   {
+    id: 6,
     title: 'Benefits',
     content: 'Last-content',
   },
@@ -76,55 +82,99 @@ const getLineWidth = (value) => {
 const CandidateLayout = (props) => {
   const {
     children,
-    currentStep,
+    localStep,
     location = {
       pathname: '/',
     },
     route: { routes } = {},
+    ticketId,
+    dispatch,
+    processStatus,
   } = props;
 
   const [current, setCurrent] = useState(1);
 
   useEffect(() => {
-    setCurrent(currentStep);
-  }, [currentStep]);
+    setCurrent(localStep);
+  }, [localStep]);
 
-  // const nextScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current + 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState + 1);
-  //   setCurrentPage((prevState) => prevState + 1);
-  //   console.log(currentPage);
-  // };
-
-  // const prevScreen = () => {
-  //   if (!dispatch || current === 7) {
-  //     return;
-  //   }
-
-  //   dispatch({
-  //     type: 'candidateProfile/save',
-  //     payload: {
-  //       currentStep: current - 1,
-  //     },
-  //   });
-
-  //   setCurrent((prevState) => prevState - 1);
-  //   setCurrentPage((prevState) => prevState - 1);
-  // };
+  // useEffect(() => {
+  //   console.log('candidate layout');
+  // }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
+
+  const handleCancel = () => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'login/logout',
+    });
+  };
+
+  const renderPreviewOffer = () => {
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: 7,
+      },
+    });
+  };
+
+  const handleStepClick = (id) => {
+    if (!dispatch) {
+      return;
+    }
+    const valid = true;
+
+    // if (
+    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
+    //   processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+    //   processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+    //   processStatus === 'PENDING-BACKGROUND-CHECK'
+    // ) {
+    //   if (id === 1 || id === 2 || id === 3 || id === 4) {
+    //     valid = true;
+    //   }
+    // }
+
+    console.log(id);
+    if (valid) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          localStep: id,
+        },
+      });
+    }
+  };
+
+  const getSteps = () => {
+    if (
+      processStatus === 'SENT-PROVISIONAL-OFFER' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+      processStatus === 'PENDING-BACKGROUND-CHECK'
+    ) {
+      console.log('Phase 1');
+      return steps.slice(0, 4);
+    }
+    console.log('Phase 2');
+    return steps;
+  };
+
+  const isPhase1 = (stepArr) => {
+    return stepArr.length === 4;
+  };
+
+  const newSteps = getSteps();
 
   return (
     <div className={s.candidate}>
@@ -141,9 +191,9 @@ const CandidateLayout = (props) => {
         </div>
 
         <div className={s.headerRight}>
-          <span className={s.id}>Rookie ID : 213222434</span>
+          <span className={s.id}>Rookie ID : {ticketId}</span>
 
-          <Button type="link" block>
+          <Button type="link" block onClick={handleCancel}>
             Cancel
           </Button>
         </div>
@@ -153,29 +203,25 @@ const CandidateLayout = (props) => {
           <Row gutter={24}>
             <Col md={5}>
               <div className={s.stepContainer}>
-                <Steps current={current - 1} direction="vertical">
-                  {steps.map((item) => (
-                    <Step key={item.title} title={item.title} />
-                  ))}
+                <Steps
+                  current={current - 1}
+                  direction="vertical"
+                  className={isPhase1(newSteps) ? s.phase1Step : ''}
+                >
+                  {newSteps.map((item) => {
+                    const { title, id } = item;
+                    return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
+                  })}
                 </Steps>
-              </div>
 
-              {/* <button style={{ marginTop: '20px' }} onClick={() => nextScreen()}>
-              Next
-            </button> */}
+                {!isPhase1(newSteps) && (
+                  <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
+                    Preview offer letter
+                  </button>
+                )}
+              </div>
             </Col>
-            <Col md={19}>
-              {children}
-              {/* <Row gutter={[24, 0]}>
-                <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-                  <BottomBar
-                    onClickPrev={prevScreen}
-                    onClickNext={nextScreen}
-                    currentPage={currentPage}
-                  />
-                </Col>
-              </Row> */}
-            </Col>
+            <Col md={19}>{children}</Col>
           </Row>
         </Content>
       </Authorized>
@@ -184,7 +230,13 @@ const CandidateLayout = (props) => {
 };
 
 // export default CandidateLayout;
-export default connect(({ candidateProfile: { currentStep, checkCandidateMandatory } = {} }) => ({
-  currentStep,
-  checkCandidateMandatory,
-}))(CandidateLayout);
+export default connect(
+  ({
+    candidateProfile: { localStep, ticketId, checkCandidateMandatory, processStatus = '' } = {},
+  }) => ({
+    localStep,
+    checkCandidateMandatory,
+    ticketId,
+    processStatus,
+  }),
+)(CandidateLayout);

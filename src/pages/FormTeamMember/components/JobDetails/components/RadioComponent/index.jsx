@@ -6,7 +6,15 @@ import styles from './index.less';
 
 class RadioComponent extends PureComponent {
   render() {
-    const { Tab, handleRadio, employeeTypeList, employeeType, position, data: test } = this.props;
+    const {
+      Tab,
+      handleRadio,
+      employeeTypeList,
+      employeeType,
+      position,
+      data: test,
+      processStatus,
+    } = this.props;
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
@@ -17,6 +25,7 @@ class RadioComponent extends PureComponent {
               defaultValue={position !== 'EMPLOYEE' ? test.position : position}
               onChange={(e) => handleRadio(e)}
               name={Tab.positionTab.name}
+              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
             >
               <Row gutter={[24, 0]}>
                 {Tab.positionTab.arr.map((data) => (
@@ -33,14 +42,10 @@ class RadioComponent extends PureComponent {
             </Typography.Title>
             <Radio.Group
               className={styles.paddingRadio}
-              defaultValue={
-                (test.employeeType !== null || test.employeeType !== undefined) &&
-                isObject(test.employeeType)
-                  ? test.employeeType._id
-                  : employeeType
-              }
+              defaultValue={isObject(employeeType) ? employeeType._id : employeeType}
               onChange={(e) => handleRadio(e)}
               name={Tab.classificationTab.name}
+              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
             >
               <Row gutter={[24, 0]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>

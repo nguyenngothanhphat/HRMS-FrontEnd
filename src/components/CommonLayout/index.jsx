@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Button } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
@@ -9,11 +9,22 @@ import BasicInformation from '../../pages/FormTeamMember/components/BasicInforma
 
 import s from './index.less';
 
-@connect(({ candidateInfo: { currentStep = 0, displayComponent = {} } = {} }) => ({
-  currentStep,
-  displayComponent,
-}))
-class CommonLayout extends PureComponent {
+@connect(
+  ({
+    candidateInfo: {
+      currentStep = 0,
+      displayComponent = {},
+      data: { processStatus = '' } = {},
+      tempData: { valueToFinalOffer = 0 } = {},
+    } = {},
+  }) => ({
+    currentStep,
+    displayComponent,
+    processStatus,
+    valueToFinalOffer,
+  }),
+)
+class CommonLayout extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,13 +34,21 @@ class CommonLayout extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    const { listMenu, currentStep } = props;
+    const { listMenu, currentStep, processStatus = '' } = props;
     // const selectedItemId = listMenu[currentStep]
     if (currentStep !== null) {
-      return {
-        selectedItemId: listMenu[currentStep].id,
-        displayComponent: listMenu[currentStep].component,
-      };
+      if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && currentStep === 7) {
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
+      if (currentStep !== 7) {
+        return {
+          selectedItemId: listMenu[currentStep].id,
+          displayComponent: listMenu[currentStep].component,
+        };
+      }
     }
 
     return {
@@ -39,9 +58,15 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu, currentStep = 1 } = this.props;
+    const { listMenu, currentStep = 1, processStatus = '' } = this.props;
+    if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER') {
+      return {
+        selectedItemId: '',
+        displayComponent: <PreviewOffer />,
+      };
+    }
     if (!listMenu[currentStep]) {
-      return;
+      return null;
     }
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
@@ -75,6 +100,21 @@ class CommonLayout extends PureComponent {
     });
   };
 
+  disablePhase2 = () => {
+    const { processStatus, valueToFinalOffer } = this.props;
+    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+  };
+
+  isDisabled = (index) => {
+    if (this.disablePhase2()) {
+      if (index === 4 || index === 5 || index === 6 || index === 7) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+
   render() {
     const { listMenu = [], currentPage = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
@@ -82,17 +122,28 @@ class CommonLayout extends PureComponent {
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
           <div className={s.viewLeft__menu}>
-            {listMenu.map((item) => (
+            {listMenu.map((item, index) => (
               <ItemMenu
                 key={item.id}
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
+                isDisabled={this.isDisabled(index)}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
               {currentPage !== 'settings' && (
-                <Button type="primary" ghost onClick={this._handlePreviewOffer}>
+                <Button
+                  type="primary"
+                  className={this.isDisabled(7) ? s.disabled : ''}
+                  ghost
+                  onClick={() => {
+                    if (this.isDisabled(7)) {
+                      return;
+                    }
+                    this._handlePreviewOffer();
+                  }}
+                >
                   Preview offer letter
                 </Button>
               )}

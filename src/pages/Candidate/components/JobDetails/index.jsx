@@ -7,11 +7,11 @@ import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateProfile: { data, jobDetails, checkMandatory, currentStep } = {} }) => ({
+@connect(({ candidateProfile: { data, jobDetails, checkMandatory, localStep } = {} }) => ({
   jobDetails,
   checkMandatory,
   data,
-  currentStep,
+  localStep,
 }))
 class JobDetails extends PureComponent {
   constructor(props) {
@@ -23,7 +23,7 @@ class JobDetails extends PureComponent {
     if ('jobDetails' in props) {
       return {
         jobDetails: props.jobDetails,
-        currentStep: props.currentStep,
+        localStep: props.localStep,
       };
     }
     return null;
@@ -58,7 +58,7 @@ class JobDetails extends PureComponent {
       dispatch,
       data: { _id },
       data,
-      currentStep,
+      localStep,
     } = this.props;
 
     const convert = (str) => {
@@ -68,11 +68,10 @@ class JobDetails extends PureComponent {
       return [mnth, day, date.getFullYear()].join('/');
     };
 
-    const converted = convert(prefferedDateOfJoining._d);
+    const converted = prefferedDateOfJoining._d.toLocaleDateString();
     dispatch({
-      type: 'candidateProfile/updateByCandidateModel',
+      type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        ...data,
         noticePeriod: candidatesNoticePeriod,
         dateOfJoining: converted,
         candidate: _id,
@@ -81,7 +80,7 @@ class JobDetails extends PureComponent {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
         data: {
           ...data,
           noticePeriod: candidatesNoticePeriod,
@@ -92,12 +91,12 @@ class JobDetails extends PureComponent {
   };
 
   onClickPrev = () => {
-    const { currentStep } = this.state;
+    const { localStep } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };

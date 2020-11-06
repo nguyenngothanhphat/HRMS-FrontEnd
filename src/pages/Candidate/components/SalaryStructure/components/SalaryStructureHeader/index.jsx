@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi';
+// import { formatMessage } from 'umi';
 
 import styles from './index.less';
 

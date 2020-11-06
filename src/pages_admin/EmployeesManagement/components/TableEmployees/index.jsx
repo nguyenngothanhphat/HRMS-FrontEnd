@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, history } from 'umi';
+import moment from 'moment';
 import ModalConfirmRemove from '../ModalConfirmRemove';
 import styles from './index.less';
 
@@ -12,6 +13,13 @@ export default class TableEmployees extends PureComponent {
       selectedRowKeys: [],
       visible: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (prevProps.data !== data) {
+      this.setFirstPage();
+    }
   }
 
   generateColumns = () => {
@@ -41,10 +49,11 @@ export default class TableEmployees extends PureComponent {
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.joinedDate' }),
-        dataIndex: 'joinedDate',
+        dataIndex: 'joinDate',
         width: '8%',
         align: 'left',
-        render: () => <span>Aug-7,20</span>,
+        render: (joinDate) =>
+          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),
@@ -145,6 +154,7 @@ export default class TableEmployees extends PureComponent {
 
   editUser = (key, e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-alert
     alert('EDIT USER', key);
   };
 

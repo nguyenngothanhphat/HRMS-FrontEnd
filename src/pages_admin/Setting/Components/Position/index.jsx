@@ -1,11 +1,12 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Input, Table } from 'antd';
+import { Input, Spin, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
-@connect(({ adminSetting: { tempData: { listTitle = [] } = {} } = {} }) => ({
+@connect(({ loading, adminSetting: { tempData: { listTitle = [] } = {} } = {} }) => ({
+  loading: loading.effects['adminSetting/fetchListTitle'],
   listTitle,
 }))
 class Position extends PureComponent {
@@ -31,6 +32,24 @@ class Position extends PureComponent {
       };
     });
     this.setState({ data: formatData });
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { listTitle } = props;
+    const { data } = state;
+    if (listTitle.length === data.length) {
+      return {
+        data,
+      };
+    }
+    const formatData = listTitle.map((item) => {
+      const { _id: PositionID, name: PositionName } = item;
+      return {
+        PositionID,
+        PositionName,
+      };
+    });
+    return { data: formatData };
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -68,29 +87,24 @@ class Position extends PureComponent {
     this.setState({ newValue: value });
   };
 
-  handleRandomNumberID = () => {
-    const min = 1;
-    const max = 100;
-    const randomNumber = min + Math.trunc(Math.random() * (max - min));
-    if (randomNumber === min + Math.trunc(Math.random() * (max - min))) {
-      const randomAgainst = min + Math.trunc(Math.random() * (max - min));
-      return randomAgainst;
-    }
-    return randomNumber;
-  };
-
   handleAddNewValue = (newValue) => {
-    const { data } = this.state;
-    const addData = {
-      PositionID: this.handleRandomNumberID(),
-      PositionName: newValue,
-    };
-    const newData = [...data, addData];
-    this.setState({ data: newData, newValue: '' });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/addPosition',
+      payload: { name: newValue },
+    });
+    this.setState({ newValue: '' });
   };
 
   render() {
     const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
+    const { loading } = this.props;
+    if (loading)
+      return (
+        <div className={styles.Position}>
+          <Spin loading={loading} active size="large" />
+        </div>
+      );
 
     const rowSelection = {
       selectedRowKeys,

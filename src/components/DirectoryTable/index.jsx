@@ -146,13 +146,17 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = (_id) => {
-    history.push(`/directory/employee-profile/${_id}`);
+  handleProfileEmployee = (row) => {
+    const { _id = '', location: { name = '' } = {} } = row;
+    history.push({
+      pathname: `/directory/employee-profile/${_id}`,
+      state: { location: name },
+    });
   };
 
   render() {
     const { sortedName = {}, pageSelected } = this.state;
-    const { list = [], loading } = this.props;
+    const { list = [], loading, checkRoleEmployee } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -177,8 +181,11 @@ class DirectoryTable extends Component {
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
+            if (checkRoleEmployee) {
+              return null;
+            }
             return {
-              onClick: () => this.handleProfileEmployee(record._id), // click row
+              onClick: () => this.handleProfileEmployee(record), // click row
             };
           }}
           dataSource={list}

@@ -1,3 +1,4 @@
+/* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
@@ -35,66 +36,101 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(prevState, prevProps) {
-    const {
-      dispatch,
-      data,
-      tempData,
-      checkMandatory,
-      tempData: { checkStatus },
-    } = this.props;
-    const emailRegExp = RegExp(
-      /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-    );
-    if (prevProps.data.fullName !== data.fullName && data.fullName !== null) {
-      if (
-        data.fullName !== null &&
-        data.workEmail !== null &&
-        data.privateEmail !== null &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail)
-      ) {
-        checkStatus.filledBasicInformation = true;
-      } else {
-        checkStatus.filledBasicInformation = false;
-      }
+  componentDidMount() {
+    this.checkBottomBar();
+    const { dispatch, data, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        employeeType: '5f50c2541513a742582206f9',
+      },
+    });
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+    const { candidate = '' } = data;
+    if (dispatch && candidate) {
       dispatch({
-        type: 'candidateInfo/save',
+        type: 'candidateInfo/updateByHR',
         payload: {
-          tempData: {
-            ...tempData,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledBasicInformation: checkStatus.filledBasicInformation,
-          },
+          candidate,
+          currentStep: currentStepLocal,
         },
       });
     }
+    // console.log('basicInfo currentStep', currentStep);
   }
+
+  componentWillUnmount() {
+    // const {
+    //   data,
+    //   tempData: { fullName, privateEmail, workEmail, previousExperience },
+    // } = this.state;
+    // const { dispatch, currentStep } = this.props;
+    // console.log('current', currentStep);
+    // const { _id } = data;
+    // dispatch({
+    //   type: 'candidateInfo/updateByHR',
+    //   payload: {
+    //     fullName,
+    //     privateEmail,
+    //     workEmail,
+    //     previousExperience,
+    //     candidate: _id,
+    //     currentStep,
+    //   },
+    // });
+    this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
+    const {
+      data,
+      tempData: { fullName, privateEmail, workEmail, previousExperience },
+    } = this.state;
+    const { dispatch, currentStep } = this.props;
+    const { _id } = data;
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        fullName,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        candidate: _id,
+        currentStep,
+      },
+    });
+  };
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
-    const { dispatch } = this.props;
+    const { tempData } = this.props;
+    tempData[name] = value;
+    this.checkBottomBar();
+  };
+
+  checkBottomBar = () => {
+    const {
+      tempData: { fullName, privateEmail, workEmail, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
-
-    const { tempData, checkMandatory, data } = this.state;
-    tempData[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '', checkStatus = {} } = tempData;
     if (
-      (fullName !== '' &&
-        workEmail !== '' &&
-        privateEmail !== '' &&
-        emailRegExp.test(privateEmail) &&
-        emailRegExp.test(workEmail)) ||
-      (data.fullName !== '' &&
-        data.workEmail !== '' &&
-        data.privateEmail !== '' &&
-        emailRegExp.test(data.privateEmail) &&
-        emailRegExp.test(data.workEmail))
+      fullName !== null &&
+      workEmail !== null &&
+      privateEmail !== null &&
+      workEmail !== privateEmail &&
+      emailRegExp.test(privateEmail) &&
+      emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
@@ -103,10 +139,6 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        tempData: {
-          ...tempData,
-        },
-
         checkMandatory: {
           ...checkMandatory,
           filledBasicInformation: checkStatus.filledBasicInformation,
@@ -117,24 +149,8 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const {
-      dispatch,
-      currentStep,
-      // tempData: {
-      //   documentList,
-      //   identityProof,
-      //   addressProof,
-      //   educational,
-      //   technicalCertification: { poe },
-      // },
-    } = this.props;
+    const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -143,68 +159,18 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
-        currentStep,
+        currentStep: currentStep + 1,
       },
+    }).then(({ data: data1, statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: data1.currentStep,
+          },
+        });
+      }
     });
-    // if (
-    //   data.documentChecklistSetting !== undefined ||
-    //   (data.documentList && data.documentChecklistSetting !== documentList)
-    // ) {
-    //   const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-    //   const arrA = arrToAdjust[0].data.filter((x) => x.value === true);
-    //   const arrB = arrToAdjust[1].data.filter((x) => x.value === true);
-    //   const arrC = arrToAdjust[2].data.filter((x) => x.value === true);
-    //   const arrD = arrToAdjust[3].data.filter((x) => x.value === true);
-    //   const listSelectedA = arrA.map((x) => x.key);
-    //   const listSelectedB = arrB.map((x) => x.key);
-    //   const listSelectedC = arrC.map((x) => x.key);
-    //   const listSelectedD = arrD.map((x) => x.key);
-    //   let isCheckedA;
-    //   let isCheckedB;
-    //   let isCheckedC;
-    //   let isCheckedD;
-
-    //   if (listSelectedA.length === arrToAdjust[0].data.length) {
-    //     isCheckedA = true;
-    //   }
-    //   if (listSelectedB.length === arrToAdjust[1].data.length) {
-    //     isCheckedB = true;
-    //   }
-    //   if (listSelectedC.length === arrToAdjust[2].data.length) {
-    //     isCheckedC = true;
-    //   }
-    //   if (listSelectedD.length === arrToAdjust[3].data.length) {
-    //     isCheckedD = true;
-    //   }
-    //   dispatch({
-    //     type: 'candidateInfo/saveTemp',
-    //     payload: {
-    //       documentList: data.documentChecklistSetting,
-    //       identityProof: {
-    //         ...identityProof,
-    //         isChecked: isCheckedA,
-    //         checkedList: listSelectedA,
-    //       },
-    //       addressProof: {
-    //         ...addressProof,
-    //         checkedList: listSelectedB,
-    //         isChecked: isCheckedB,
-    //       },
-    //       educational: {
-    //         ...educational,
-    //         checkedList: listSelectedC,
-    //         isChecked: isCheckedC,
-    //       },
-    //       technicalCertification: {
-    //         poe: {
-    //           ...poe,
-    //           checkedList: listSelectedD,
-    //           isChecked: isCheckedD,
-    //         },
-    //       },
-    //     },
-    //   });
-    // }
   };
 
   onClickClose = () => {
@@ -221,6 +187,7 @@ class BasicInformation extends PureComponent {
 
   _renderForm = () => {
     const { isOpenReminder = {} } = this.state;
+    const { processStatus } = this.props;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -237,6 +204,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
               />
             </Form.Item>
           </Col>
@@ -262,6 +230,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -283,12 +252,21 @@ class BasicInformation extends PureComponent {
                   type: 'email',
                   message: 'Email invalid!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue('privateEmail') !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Two emails cannot be the same!'));
+                  },
+                }),
               ]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -315,6 +293,7 @@ class BasicInformation extends PureComponent {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="previousExperience"
+                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
                 // defaultValue={experienceYear}
               />
             </Form.Item>
@@ -374,7 +353,6 @@ class BasicInformation extends PureComponent {
     const { data = {} } = this.state;
     const { fullName, privateEmail, workEmail, previousExperience } = data;
     const { loading1 } = this.props;
-    console.log('render', fullName);
     const Note = {
       title: 'Note',
       data: (

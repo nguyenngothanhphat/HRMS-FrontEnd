@@ -23,7 +23,7 @@ const Note = {
 };
 
 const Benefits = (props) => {
-  const { checkCandidateMandatory, currentStep, dispatch } = props;
+  const { checkCandidateMandatory, localStep, dispatch } = props;
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
@@ -72,6 +72,7 @@ const Benefits = (props) => {
     return list.map((item, index) => {
       const { name, url } = item;
       return (
+        // eslint-disable-next-line react/no-array-index-key
         <div key={`${index} + a`} className={s.file} onClick={() => handleClick(url)}>
           <span className={s.fileName}>{name}</span>
           <img src={FileIcon} alt="file icon" />
@@ -100,7 +101,7 @@ const Benefits = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep + 1,
+        localStep: localStep + 1,
       },
     });
   };
@@ -112,7 +113,7 @@ const Benefits = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        currentStep: currentStep - 1,
+        localStep: localStep - 1,
       },
     });
   };
@@ -219,8 +220,8 @@ const Benefits = (props) => {
 };
 
 export default connect(
-  ({ candidateProfile: { currentStep = 5, checkCandidateMandatory = {} } = {} }) => ({
+  ({ candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {} }) => ({
     checkCandidateMandatory,
-    currentStep,
+    localStep,
   }),
 )(Benefits);

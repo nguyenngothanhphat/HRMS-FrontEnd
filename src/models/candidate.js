@@ -5,13 +5,17 @@ import {
   addAttachmentService,
   getWorkHistory,
   sendEmailByCandidateModel,
+  candidateFinalOffer,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
   state: {
-    currentStep: 1,
+    candidate: '',
+    ticketId: '',
+    // currentStep: 1,
+    localStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -126,11 +130,11 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data.salaryStructure);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -140,22 +144,30 @@ const candidateProfile = {
           },
         });
         yield put({
+          type: 'saveTemp',
+          payload: {
+            candidateSignature: data.candidateSignature,
+          },
+        });
+        yield put({
           type: 'save',
           payload: {
             ...data,
-            salaryStructure: data.salaryStructure,
+            candidate: data._id,
+            ticketId: data.ticketID,
+            salaryStructure: data.salaryStructure.settings,
           },
         });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchDocumentByCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -166,7 +178,7 @@ const candidateProfile = {
       }
     },
 
-    *updateByCandidateModel({ payload }, { call }) {
+    *updateByCandidateEffect({ payload }, { call }) {
       try {
         const response = yield call(updateByCandidate, payload);
         const { statusCode } = response;
@@ -181,7 +193,6 @@ const candidateProfile = {
       try {
         response = yield call(addAttachmentService, payload);
         const { data, statusCode } = response;
-        console.log('abc', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -212,7 +223,18 @@ const candidateProfile = {
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;
-        console.log('a', response);
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *submitCandidateFinalOffer({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(candidateFinalOffer, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -222,7 +244,6 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
-      console.log('saved');
       return {
         ...state,
         ...action.payload,
