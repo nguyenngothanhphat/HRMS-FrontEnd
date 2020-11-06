@@ -17,11 +17,12 @@ const index = ({
   handleSendFormAgain = () => {},
   fullName = '',
   handleValueChange = () => {},
+  valueToFinalOffer,
+  changeValueToFinalOffer = () => {},
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
   const [initialGenerateLink] = useState('abc.xyz.com');
-  console.log('initial', privateEmail);
   const handleEmailClick = () => {
     setIsEnable(true);
   };
@@ -70,6 +71,15 @@ const index = ({
           <Button type="link" onClick={handleSendFormAgain} className={style.buttonSend}>
             <Typography.Text className={style.buttonText}>Send form again</Typography.Text>
           </Button>
+          <Radio.Group
+            className={style.s}
+            onChange={changeValueToFinalOffer}
+            value={valueToFinalOffer}
+          >
+            <Radio value={1}>
+              <Typography.Text>Process to release a final offer</Typography.Text>
+            </Radio>
+          </Radio.Group>
         </div>
       ) : (
         <>
@@ -108,12 +118,21 @@ const index = ({
               <Typography.Text className={style.change} onClick={handleClick}>
                 {formatMessage({ id: 'component.eligibilityDocs.change' })}
               </Typography.Text>
-              <Form.Item>
+              <Form.Item className={style.margin}>
                 <Button htmlType="submit">
                   {formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}
                 </Button>
               </Form.Item>
             </Form>
+            <Radio.Group
+              className={style.s}
+              onChange={changeValueToFinalOffer}
+              value={valueToFinalOffer}
+            >
+              <Radio value={1}>
+                <Typography.Text>Process to release a final offer</Typography.Text>
+              </Radio>
+            </Radio.Group>
           </div>
           <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
             <Form
@@ -167,11 +186,20 @@ const index = ({
                     <Typography.Text>Landonorris@gmail.com</Typography.Text>
                   </Col>
                 </Row>
-                <Form.Item>
+                <Form.Item className={style.s1}>
                   <Button htmlType="submit">
                     {formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}
                   </Button>
                 </Form.Item>
+                <Radio.Group
+                  className={style.s}
+                  onChange={changeValueToFinalOffer}
+                  value={valueToFinalOffer}
+                >
+                  <Radio value={1}>
+                    <Typography.Text>Process to release a final offer</Typography.Text>
+                  </Radio>
+                </Radio.Group>
               </div>
             </Form>
           </div>

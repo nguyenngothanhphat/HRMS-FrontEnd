@@ -146,8 +146,12 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = (_id) => {
-    history.push(`/directory/employee-profile/${_id}`);
+  handleProfileEmployee = (row) => {
+    const { _id = '', location: { name = '' } = {} } = row;
+    history.push({
+      pathname: `/directory/employee-profile/${_id}`,
+      state: { location: name },
+    });
   };
 
   render() {
@@ -181,7 +185,7 @@ class DirectoryTable extends Component {
               return null;
             }
             return {
-              onClick: () => this.handleProfileEmployee(record._id), // click row
+              onClick: () => this.handleProfileEmployee(record), // click row
             };
           }}
           dataSource={list}

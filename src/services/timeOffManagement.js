@@ -21,7 +21,7 @@ const mockData = [
   },
 ];
 
-const getListTimeOff = async (payload) => {
+const getListTimeOff = async () => {
   // return request('/api/document/list', {
   //   method: 'POST',
   // });

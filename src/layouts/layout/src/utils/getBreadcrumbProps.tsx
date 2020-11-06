@@ -27,10 +27,8 @@ export interface BreadcrumbProps {
 // Render the Breadcrumb child node
 const defaultItemRender: AntdBreadcrumbProps['itemRender'] = ({ breadcrumbName, path }) => {
   const name =
-    breadcrumbName === 'Ticket Id'
-      ? `${breadcrumbName}: ${path.split('/').pop()}`
-      : breadcrumbName;
-  return <Link to={path}>{name}</Link>
+    breadcrumbName === 'Ticket Id' ? `${breadcrumbName}: ${path.split('/').pop()}` : breadcrumbName;
+  return breadcrumbName === 'None' ? null : <Link to={path}>{name}</Link>;
 };
 
 const renderItemLocal = (item: MenuDataItem, props: BreadcrumbProps): string => {

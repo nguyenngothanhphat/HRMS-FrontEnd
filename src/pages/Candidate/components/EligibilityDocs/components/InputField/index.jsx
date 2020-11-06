@@ -23,7 +23,7 @@ const InputField = ({ onValuesChange, employerName }) => {
             onValuesChange={onValuesChange}
             initialValues={{ workDuration }}
           >
-            <Form.Item label="Work Duration (In year, months, days)" name="workDuration">
+            <Form.Item label="Work Duration (In year, months, days)*" name="workDuration">
               <Input className={style.inputDate} />
             </Form.Item>
           </Form>

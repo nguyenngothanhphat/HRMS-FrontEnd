@@ -1,6 +1,7 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Col, Tabs, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
+import { history } from 'umi';
 import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
@@ -22,7 +23,19 @@ export default class TimeOff extends PureComponent {
 
   buttonOnClick = () => {
     // eslint-disable-next-line no-alert
-    alert('Clicked Button');
+    history.push(`/time-off/compoff-request`);
+  };
+
+  buttonOnClickLeave = () => {
+    // eslint-disable-next-line no-alert
+    history.push(`/time-off/leave-request`);
+  };
+
+  onInformationCLick = () => {
+    const { viewInformation } = this.state;
+    this.setState({
+      viewInformation: !viewInformation,
+    });
   };
 
   onInformationCLick = () => {
@@ -78,7 +91,7 @@ export default class TimeOff extends PureComponent {
                       title="Apply for Timeoff from Office"
                       describe={describeText[0]}
                       buttonText="Request Time Off"
-                      onClick={this.buttonOnClick}
+                      onClick={this.buttonOnClickLeave}
                       type={1}
                     />
                   </Col>

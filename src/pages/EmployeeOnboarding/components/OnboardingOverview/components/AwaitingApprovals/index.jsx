@@ -3,8 +3,6 @@ import { Tabs } from 'antd';
 import { connect } from 'umi';
 
 import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
-import PendingApprovals from './components/PendingApprovals/index';
-import RejectFinalOffers from './components/RejectFinalOffers/index';
 import SentForApprovals from './components/SentForApprovals/index';
 
 import styles from './index.less';
@@ -15,8 +13,6 @@ class AwaitingApprovals extends PureComponent {
   render() {
     const { awaitingApprovals = {} } = this.props;
     const {
-      approvedFinalOffers = [],
-      pendingApprovals = [],
       sentForApprovals = [],
       approvedOffers = [],
       // rejectFinalOffer = [],

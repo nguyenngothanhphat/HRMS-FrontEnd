@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Button, Affix } from 'antd';
+import { Button, Affix, Spin } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import { connect } from 'umi';
 import BasicInformation from './components/BasicInformation';
@@ -19,7 +19,6 @@ import Payroll from './components/Payroll';
   candidateInfo,
   user,
   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
-  loading2: loading.effects['candidateInfo/fetchCandidateInfo'],
 }))
 class FormTeamMember extends PureComponent {
   componentDidMount() {
@@ -225,10 +224,12 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId = '' } = {} },
       candidateInfo,
-      loading1,
+      loading1 = false,
+      candidateInfo: { data: { _id: candidateId = '' } } = {},
     } = this.props;
+    const check = !loading1 && candidateId !== '';
     const {
-      tempData: { locationList, employeeTypeList, documentList } = {},
+      tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
     } = candidateInfo;
     const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
@@ -237,7 +238,7 @@ class FormTeamMember extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: (
+        component: !check ? null : (
           <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
         ),
       },
@@ -279,19 +280,21 @@ class FormTeamMember extends PureComponent {
         id: 5,
         name: 'Offer Details',
         key: 'offerDetails',
-        component: <OfferDetail processStatus={processStatus} />,
+        component: (
+          <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
+        ),
       },
       {
         id: 6,
         name: 'Payroll Settings',
         key: 'payrollSettings',
-        component: <Payroll processStatus={processStatus} />,
+        component: <Payroll processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
       {
         id: 7,
         name: 'Benefits',
         key: 'benefits',
-        component: <Benefit processStatus={processStatus} />,
+        component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
       // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       // {
@@ -325,7 +328,6 @@ class FormTeamMember extends PureComponent {
       }) || [];
 
     return (
-      // {loading1 && loading 2 ? }
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
           <Affix offsetTop={40}>
@@ -341,7 +343,7 @@ class FormTeamMember extends PureComponent {
               )}
             </div>
           </Affix>
-          <CommonLayout listMenu={formatListMenu} />
+          {loading1 ? <Spin /> : <CommonLayout listMenu={formatListMenu} />}
         </div>
       </PageContainer>
     );

@@ -5,6 +5,7 @@ import {
   addAttachmentService,
   getWorkHistory,
   sendEmailByCandidateModel,
+  candidateFinalOffer,
 } from '@/services/candidate';
 import { dialog } from '@/utils/utils';
 
@@ -14,7 +15,7 @@ const candidateProfile = {
     candidate: '',
     ticketId: '',
     // currentStep: 1,
-    localStep: 5,
+    localStep: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: true,
@@ -129,11 +130,11 @@ const candidateProfile = {
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getById, payload);
+        response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -160,13 +161,13 @@ const candidateProfile = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *fetchDocumentByCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -192,7 +193,6 @@ const candidateProfile = {
       try {
         response = yield call(addAttachmentService, payload);
         const { data, statusCode } = response;
-        console.log('abc', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -223,7 +223,18 @@ const candidateProfile = {
       try {
         response = yield call(sendEmailByCandidateModel, payload);
         const { statusCode } = response;
-        console.log('a', response);
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *submitCandidateFinalOffer({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(candidateFinalOffer, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
@@ -233,7 +244,6 @@ const candidateProfile = {
   },
   reducers: {
     save(state, action) {
-      console.log('saved');
       return {
         ...state,
         ...action.payload,

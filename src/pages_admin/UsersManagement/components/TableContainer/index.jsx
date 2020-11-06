@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react';
-import { NavLink, connect, formatMessage } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
-import addUser from '@/assets/admin_iconadduser.svg';
 import TableUsers from '../TableUsers';
-import importUsers from '../../../../../public/assets/images/import.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -158,19 +156,6 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/#" className={styles.buttonAdd}>
-          <img src={importUsers} alt="import-user" />
-          <span className={styles.NameNewProfile}>
-            {formatMessage({ id: 'pages_admin.users.userTable.importUsers' })}
-          </span>
-        </NavLink>
-
-        <NavLink to="/#" className={styles.buttonAdd}>
-          <img src={addUser} alt="import-user" />
-          <p className={styles.NameNewProfile}>
-            {formatMessage({ id: 'pages_admin.users.userTable.addUser' })}
-          </p>
-        </NavLink>
         <div className={styles.filterSider} onClick={this.handleToggle}>
           <div
             className={`${styles.filterButton} ${

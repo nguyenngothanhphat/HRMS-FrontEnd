@@ -66,7 +66,6 @@ class PermissionInfo extends PureComponent {
 
   render() {
     const { listRowKeys } = this.state;
-    console.log(listRowKeys);
     const { listPermission, loading, loadingTable } = this.props;
     const formatDataPermission = listPermission.map((item) => {
       const { _id: PermissionID, name: PermissionName } = item;

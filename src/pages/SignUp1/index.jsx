@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { formatMessage, connect } from 'umi';
 import { Form, Input, Button } from 'antd';
@@ -40,7 +40,7 @@ const SignUp1 = (props) => {
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed :', errorInfo);
+    // console.log('Failed :', errorInfo);
   };
 
   return (

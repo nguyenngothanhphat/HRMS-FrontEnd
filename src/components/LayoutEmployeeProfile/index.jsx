@@ -62,7 +62,7 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], employeeLocation = '' } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -85,9 +85,7 @@ class CommonLayout extends PureComponent {
         <Row className={s.viewRight} gutter={[24, 0]}>
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
-            {/* <Affix offsetTop={115}> */}
-            <ViewInformation />
-            {/* </Affix> */}
+            <ViewInformation employeeLocation={employeeLocation} />
           </Col>
         </Row>
       </div>
