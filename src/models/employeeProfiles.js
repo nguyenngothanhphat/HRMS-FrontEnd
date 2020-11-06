@@ -34,6 +34,7 @@ import {
   getEmailsListByCompany,
   getBank,
   getTax,
+  getTitleByDepartment,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -53,6 +54,7 @@ const employeeProfile = {
     idCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
+    listTitleByDepartment: [],
     locations: [],
     employeeTypes: [],
     departments: [],
@@ -281,9 +283,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchDepartments(_, { call, put }) {
+    *fetchDepartments({ payload }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList);
+        const response = yield call(getDepartmentList, payload);
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const departments = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -733,6 +735,19 @@ const employeeProfile = {
         yield put({
           type: 'saveTemp',
           payload: { taxData },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchTitleByDepartment({ payload }, { call, put }) {
+      try {
+        const res = yield call(getTitleByDepartment, payload);
+        const { statusCode, data } = res;
+        if (statusCode !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: { listTitleByDepartment: data },
         });
       } catch (errors) {
         dialog(errors);
