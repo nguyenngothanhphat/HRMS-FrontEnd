@@ -17,11 +17,13 @@ const { TextArea } = Input;
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: { generalData: originGeneralData = {} } = {},
     } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
     generalData,
     compensationData,
     originGeneralData,
     loading: loading.effects['employeeProfile/fetchGeneralInfo'],
+    myEmployeeID,
   }),
 )
 class ViewInformation extends Component {
@@ -81,8 +83,13 @@ class ViewInformation extends Component {
   };
 
   getResponse = (resp) => {
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const {
+      dispatch,
+      generalData: { _id: id = '', employee = '' } = {},
+      myEmployeeID = '',
+    } = this.props;
     const { statusCode, data = [] } = resp;
+    const check = employee === myEmployeeID;
     if (statusCode === 200) {
       const [first] = data;
       this.handleCancel();
@@ -92,6 +99,9 @@ class ViewInformation extends Component {
           id,
           avatar: first.url,
         },
+        dataTempKept: {},
+        key: 'noKey',
+        isUpdateMyAvt: check,
       });
     }
   };
@@ -153,8 +163,9 @@ class ViewInformation extends Component {
       compensationData,
       loading,
       originGeneralData: { bioInfo = '' } = {},
+      employeeLocation = '',
     } = this.props;
-    const { firstName = '', avatar = '', skills = [], createdAt = '' } = generalData;
+    const { firstName = '', avatar = '', skills = [], createdAt = '', linkedIn = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
@@ -165,13 +176,13 @@ class ViewInformation extends Component {
         <Item key="1" onClick={this.handleEditBio}>
           <div className={s.itemDropdownMenu}>Edit bio</div>
         </Item>
-        <Item key="2" onClick={() => alert(2)}>
+        <Item key="2">
           <div className={s.itemDropdownMenu}>Put on Leave (PWP)</div>
         </Item>
-        <Item key="3" onClick={() => alert(3)}>
+        <Item key="3">
           <div className={s.itemDropdownMenu}>Raise Termination</div>
         </Item>
-        <Item key="4" onClick={() => alert(4)}>
+        <Item key="4">
           <div className={s.itemDropdownMenu}>Request Details</div>
         </Item>
       </Menu>
@@ -218,11 +229,26 @@ class ViewInformation extends Component {
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>Bengaluru, India</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{employeeLocation}</p>
           </div>
           <div>
-            <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
-            <img src="/assets/images/iconMail.svg" alt="img-arrow" style={{ marginLeft: '5px' }} />
+            <a
+              href={linkedIn || 'https://www.linkedin.com/company/terralogic/'}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="/assets/images/iconLinkedin.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+            </a>
+
+            <img
+              src="/assets/images/iconMail.svg"
+              alt="img-arrow"
+              style={{ marginLeft: '5px', cursor: 'pointer' }}
+            />
           </div>
         </div>
         <div className={s.viewBtnAction}>

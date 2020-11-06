@@ -32,6 +32,8 @@ import {
   getAdhaardCard,
   removeCertification,
   getEmailsListByCompany,
+  getBank,
+  getTax,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -63,6 +65,8 @@ const employeeProfile = {
       visaData: [],
       employmentData: {},
       changeHistories: [],
+      bankData: {},
+      taxData: {},
     },
     tempData: {
       generalData: {},
@@ -70,6 +74,8 @@ const employeeProfile = {
       passportData: {},
       visaData: [],
       document: {},
+      bankData: {},
+      taxData: {},
     },
     listPRReport: [],
     saveDocuments: [],
@@ -395,7 +401,10 @@ const employeeProfile = {
       }
     },
 
-    *updateGeneralInfo({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updateGeneralInfo(
+      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
+      { put, call, select },
+    ) {
       try {
         const response = yield call(updateGeneralInfo, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
@@ -445,6 +454,11 @@ const employeeProfile = {
               type: 'saveOpenEdit',
               payload: { openContactDetails: false },
             });
+        }
+        if (isUpdateMyAvt) {
+          yield put({
+            type: 'user/fetchCurrent',
+          });
         }
       } catch (errors) {
         dialog(errors);
@@ -685,6 +699,40 @@ const employeeProfile = {
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchBank({ payload: { employee = '' } }, { call, put }) {
+      try {
+        const response = yield call(getBank, { employee });
+        const { statusCode, data: bankData = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { bankData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { bankData },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchTax({ payload: { employee = '' } }, { call, put }) {
+      try {
+        const response = yield call(getTax, { employee });
+        const { statusCode, data: taxData = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { taxData },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: { taxData },
         });
       } catch (errors) {
         dialog(errors);
