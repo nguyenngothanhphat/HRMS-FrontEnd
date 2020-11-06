@@ -12,6 +12,7 @@ const Model = {
   state: {
     status: undefined,
     candidate: '',
+    messageError: '',
   },
   effects: {
     *login({ payload }, { call, put }) {
@@ -21,11 +22,9 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-        yield put({
-          type: 'saveCandidateId',
-          payload: response,
-        });
+
         if (response.statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
         const arrayRoles = response.data.user.roles;
         let formatArrRoles = [];
@@ -35,11 +34,20 @@ const Model = {
         setAuthority(formatArrRoles);
         if (formatArrRoles.indexOf('candidate') > -1) {
           history.replace('/candidate');
+          yield put({
+            type: 'saveCandidateId',
+            payload: response,
+          });
           return;
         }
         history.replace('/');
       } catch (errors) {
-        dialog(errors);
+        const { data = [] } = errors;
+        if (data.length > 0) {
+          const [firstError] = data;
+          const { defaultMessage: messageError = '' } = firstError;
+          yield put({ type: 'save', payload: { messageError } });
+        }
       }
     },
 
@@ -91,6 +99,12 @@ const Model = {
     },
     saveCandidateId(state, { payload }) {
       return { ...state, candidate: payload.data.user.candidate };
+    },
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
   },
 };
