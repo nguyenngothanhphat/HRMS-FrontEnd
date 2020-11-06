@@ -143,7 +143,7 @@ const OfferDetail = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate,
-        currentStep,
+        // currentStep,
       },
     });
   }, [data.candidate]);
@@ -267,6 +267,19 @@ const OfferDetail = (props) => {
       dispatch({
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
+      }).then((res) => {
+        const { data: { _id: templateID = '' } = {}, statusCode } = res;
+        if (statusCode !== 200) {
+          return;
+        }
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: nextStep,
+            offerTemplate: templateID,
+          },
+        });
       });
     }
   };

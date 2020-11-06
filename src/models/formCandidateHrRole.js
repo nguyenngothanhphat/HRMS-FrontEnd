@@ -734,11 +734,13 @@ const candidateInfo = {
     },
 
     *createFinalOfferEffect({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(createFinalOffer, payload); // payload: offer data ...
+        response = yield call(createFinalOffer, payload); // payload: offer data ...
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
+
         yield put({
           type: 'updateOfferLetter',
           payload: {
@@ -746,9 +748,20 @@ const candidateInfo = {
             url,
           },
         });
+
+        // yield call({
+        //   type: 'updateByHR',
+        //   payload: {
+        //     offerLetter: {
+        //       name,
+        //       url,
+        //     },
+        //   },
+        // });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
   },
 
