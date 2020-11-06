@@ -18,10 +18,27 @@ const propsUpload = {
   showUploadList: false,
 };
 
-@connect(({ loading, upload: { urlImage = '' } }) => ({
-  loadingUploadFile: loading.effects['employeeSetting/uploadFile'],
-  urlImage,
-}))
+@connect(
+  ({
+    loading,
+    upload: { urlImage = '' },
+    employeeSetting: {
+      isAbleToSubmit = false,
+      currentTemplate: { title = '', htmlContent = '', thumbnail = '' } = {},
+      newTemplateData: { settings = [], fullname = '', signature = '' },
+    },
+  }) => ({
+    loadingUploadFile: loading.effects['employeeSetting/uploadFile'],
+    urlImage,
+    isAbleToSubmit,
+    settings,
+    fullname,
+    thumbnail,
+    signature,
+    title,
+    htmlContent,
+  }),
+)
 class YourInformation extends PureComponent {
   constructor(props) {
     super(props);
@@ -47,6 +64,9 @@ class YourInformation extends PureComponent {
   //   }
   //   return e && e.fileList;
   // };
+  componentDidMount() {
+    this.checkSubmit();
+  }
 
   getBase64 = (img, callback) => {
     const reader = new FileReader();
@@ -172,11 +192,33 @@ class YourInformation extends PureComponent {
     this.handleUploadToServer();
   };
 
+  checkSubmit = () => {
+    const { dispatch, settings, fullname, title } = this.props;
+    const newSetting = settings.filter((item) => item !== null && item !== undefined);
+    const check = newSetting.map((data) => data.value !== '').every((data) => data === true);
+    if (check === true && title !== '' && fullname !== '') {
+      dispatch({
+        type: 'employeeSetting/save',
+        payload: {
+          isAbleToSubmit: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'employeeSetting/save',
+        payload: {
+          isAbleToSubmit: false,
+        },
+      });
+    }
+  };
+
   handleChangeInput = (e) => {
     const { dispatch } = this.props;
     const { target } = e;
     const { value } = target;
 
+    this.checkSubmit();
     dispatch({
       type: 'employeeSetting/saveTemplate',
       payload: {
@@ -186,7 +228,7 @@ class YourInformation extends PureComponent {
   };
 
   render() {
-    const { loadingUploadFile } = this.props;
+    const { loadingUploadFile, isAbleToSubmit } = this.props;
     const { imageUrl, crop } = this.state;
     const width = '231' || 'auto';
 
@@ -264,11 +306,7 @@ class YourInformation extends PureComponent {
                       onChange={this.onCropChange}
                     />
                   ) : (
-                    <Dragger
-                      {...propsUpload}
-                      onChange={this.onChange}
-                      beforeUpload={this.beforeUpload}
-                    >
+                    <Dragger onChange={this.onChange} beforeUpload={this.beforeUpload}>
                       <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                       </p>
@@ -280,7 +318,15 @@ class YourInformation extends PureComponent {
             </Col>
           </Row>
         </Form>
-        <Button onClick={this.onNext} type="primary" loading={loadingUploadFile}>
+        <Button
+          className={`${styles.YourInformation__button__primary} ${
+            !isAbleToSubmit ? styles.YourInformation__button__disabled : ''
+          }`}
+          disabled={!isAbleToSubmit}
+          onClick={this.onNext}
+          type="primary"
+          loading={loadingUploadFile}
+        >
           {formatMessage({ id: 'component.editForm.next' })}
         </Button>
       </div>

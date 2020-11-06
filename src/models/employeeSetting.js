@@ -12,6 +12,7 @@ import {
 const employeeSetting = {
   namespace: 'employeeSetting',
   state: {
+    isAbleToSubmit: false,
     defaultTemplateList: [],
     customTemplateList: [],
     currentTemplate: {},
@@ -94,6 +95,7 @@ const employeeSetting = {
         });
       } catch (errors) {
         dialog(errors);
+        alert(errors);
       }
       return response;
     },
