@@ -19,7 +19,7 @@ import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 import {
-  getRookieInfo,
+  addTeamMember,
   sentForApproval,
   approveFinalOffer,
   getTemplates,
@@ -462,7 +462,7 @@ const candidateInfo = {
     *fetchCandidateInfo(_, { call, put }) {
       let response = {};
       try {
-        response = yield call(getRookieInfo);
+        response = yield call(addTeamMember);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -477,7 +477,11 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: { ...data },
         });
-        history.push(`/employee-onboarding/review/${rookieId}`);
+        // history.push(`/employee-onboarding/review/${rookieId}`);
+        history.push({
+          pathname: `/employee-onboarding/review/${rookieId}`,
+          state: { isAddNew: true },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -605,7 +609,7 @@ const candidateInfo = {
       }
       return response;
     },
-    
+
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
       try {

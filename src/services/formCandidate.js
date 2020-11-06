@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function getRookieInfo() {
+export async function addTeamMember() {
   return request('/api/candidate/add-new-member', {
     method: 'POST',
   });
