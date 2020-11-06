@@ -14,7 +14,7 @@ class PerformanceHistory extends PureComponent {
         <div className={styles.performanceHistory_syncEPASS}>
           <Button className={styles.performanceHistory_syncEPASS_btn} block>
             <img className={styles.iconSync} src="/assets/images/iconSync.svg" alt="iconSync" />
-            <u>{formatMessage({ id: 'pages.employeeProfile.performanceTab.syncWithEPASS' })}</u>
+            <u>{formatMessage({ id: 'pages.employeeProfile.performanceTab.syncWithEPAS' })}</u>
           </Button>
         </div>
         <PerformanceReview />

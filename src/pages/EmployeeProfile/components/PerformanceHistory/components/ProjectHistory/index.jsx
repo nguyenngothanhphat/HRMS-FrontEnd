@@ -11,10 +11,10 @@ class ProjectHistory extends PureComponent {
     const menu = (
       <Menu onClick={this.onClickItemFilter}>
         <Menu.Item key="1">
-          <span>Lest than 1 months</span>
+          <span>Lest than 1 month</span>
         </Menu.Item>
         <Menu.Item key="2">
-          <span>1 Months</span>
+          <span>1 Month</span>
         </Menu.Item>
         <Menu.Item key="3">
           <span>2 Months</span>
