@@ -139,6 +139,10 @@ const candidateInfo = {
 
       defaultTemplates: [],
       customTemplates: [],
+      offerLetter: {
+        name: '',
+        url: '',
+      },
     },
     data: {
       fullName: null,
@@ -696,6 +700,14 @@ const candidateInfo = {
         const response = yield call(createFinalOffer, payload); // payload: offer data ...
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
+        yield put({
+          type: 'updateOfferLetter',
+          payload: {
+            name,
+            url,
+          },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -852,6 +864,18 @@ const candidateInfo = {
     //     },
     //   };
     // },
+
+    updateOfferLetter(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          offerLetter: action.payload,
+        },
+      };
+    },
   },
 };
 
