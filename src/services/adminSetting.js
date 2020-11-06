@@ -31,3 +31,10 @@ export async function getPermissionByIdRole(payload) {
     data: payload,
   });
 }
+
+export async function addPosition(payload) {
+  return request('/api/title/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
