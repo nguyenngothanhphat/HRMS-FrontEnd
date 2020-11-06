@@ -64,7 +64,7 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        align: 'center',
+        align: 'left',
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
