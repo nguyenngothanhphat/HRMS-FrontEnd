@@ -5,7 +5,7 @@ import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { setToken } from '@/utils/token';
-import { getPageQuery, dialog } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
@@ -33,28 +33,11 @@ const Model = {
           formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
         });
         setAuthority(formatArrRoles);
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-
         if (formatArrRoles.indexOf('candidate') > -1) {
           history.replace('/candidate');
           return;
         }
-
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
-        }
-        history.replace(redirect || '/');
+        history.replace('/');
       } catch (errors) {
         dialog(errors);
       }
@@ -86,24 +69,16 @@ const Model = {
         });
         setToken(response.data.token);
         const arrayRoles = response.data.user.roles;
-        const formatArrRoles = arrayRoles.map((item) => item._id.toLowerCase());
+        let formatArrRoles = [];
+        arrayRoles.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
+        });
         setAuthority(formatArrRoles);
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
+        if (formatArrRoles.indexOf('candidate') > -1) {
+          history.replace('/candidate');
+          return;
         }
-        history.replace(redirect || '/');
+        history.replace('/');
       } catch (errors) {
         dialog(errors);
       }
