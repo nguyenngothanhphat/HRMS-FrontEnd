@@ -316,6 +316,7 @@ const candidateInfo = {
       updatedAt: '',
     },
   },
+
   effects: {
     *fetchDocumentList(_, { call, put }) {
       try {
