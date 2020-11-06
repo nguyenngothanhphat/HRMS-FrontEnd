@@ -227,6 +227,11 @@ class Edit extends PureComponent {
     this.setState({ isLt5M });
   };
 
+  disabledDate = (current) => {
+    // Can not select days after today and today
+    return current && current > moment().endOf('day');
+  };
+
   render() {
     const { isLt5M } = this.state;
     const { generalData, loading, handleCancel = () => {} } = this.props;
@@ -286,7 +291,11 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item label="Date of Birth" name="DOB">
-            <DatePicker format={dateFormat} className={styles.dateForm} />
+            <DatePicker
+              format={dateFormat}
+              className={styles.dateForm}
+              disabledDate={this.disabledDate}
+            />
           </Form.Item>
           <Form.Item label="Legal Gender" name="legalGender">
             <Radio.Group>
@@ -314,10 +323,6 @@ class Edit extends PureComponent {
             label="Work Number"
             name="workNumber"
             rules={[
-              // {
-              //   pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
-              //   message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              // },
               {
                 pattern: /^[+]*[\d]{0,10}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
@@ -333,7 +338,7 @@ class Edit extends PureComponent {
               rules={[
                 {
                   pattern: /^[+]*[\d]{0,12}$/,
-                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
             >
@@ -391,7 +396,7 @@ class Edit extends PureComponent {
             rules={[
               {
                 pattern: /^[+]*[\d]{0,12}$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+                message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
               },
             ]}
           >
