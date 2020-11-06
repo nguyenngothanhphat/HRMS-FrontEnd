@@ -1,23 +1,21 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Table } from 'antd';
+import { Input, Spin, Table } from 'antd';
 import { connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import styles from './index.less';
 
-@connect(({ employee: { department = [] } = {} }) => ({ department }))
-class Department extends PureComponent {
+@connect(({ loading, adminSetting: { tempData: { department = [] } = {} } = {} }) => ({
+  loading: loading.effects['adminSetting/fetchDepartment'],
+  department,
+}))
+class Department extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedRowKeys: [],
       visible: false,
       testReord: {},
-      // data: [
-      //   { DepartmentID: 20, Deparmentname: 'IT' },
-      //   { DepartmentID: 22, Deparmentname: 'HR' },
-      //   { DepartmentID: 24, Deparmentname: 'Accounting' },
-      // ],
       data2: [],
       newValue: '',
       getIndex: '',
@@ -31,6 +29,21 @@ class Department extends PureComponent {
       return { DepartmentID, Deparmentname };
     });
     this.setState({ data2: formatData });
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { department } = props;
+    const { data2 } = state;
+    if (department.length === data2.length) {
+      return {
+        data2,
+      };
+    }
+    const formatData = department.map((item) => {
+      const { _id: DepartmentID, name: Deparmentname } = item;
+      return { DepartmentID, Deparmentname };
+    });
+    return { data2: formatData };
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -68,29 +81,25 @@ class Department extends PureComponent {
     this.setState({ newValue: value });
   };
 
-  handleRandomNumberID = () => {
-    const min = 1;
-    const max = 100;
-    const randomNumber = min + Math.trunc(Math.random() * (max - min));
-    if (randomNumber === min + Math.trunc(Math.random() * (max - min))) {
-      const randomAgainst = min + Math.trunc(Math.random() * (max - min));
-      return randomAgainst;
-    }
-    return randomNumber;
-  };
-
-  handleAddNewValue = (newValue, data2) => {
+  handleAddNewValue = (newValue) => {
+    const { dispatch } = this.props;
     if (newValue === '') return;
-    const addData = {
-      DepartmentID: this.handleRandomNumberID(),
-      Deparmentname: newValue,
-    };
-    const newData = [...data2, addData];
-    this.setState({ data2: newData, newValue: '' });
+    dispatch({
+      type: 'adminSetting/addDepartment',
+      payload: { name: newValue },
+    });
+    this.setState({ newValue: '' });
   };
 
   render() {
     const { selectedRowKeys, visible, testReord, data2, newValue, getIndex } = this.state;
+    const { loading } = this.props;
+    if (loading)
+      return (
+        <div className={styles.Department}>
+          <Spin loading={loading} active size="large" />
+        </div>
+      );
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -116,7 +125,7 @@ class Department extends PureComponent {
           record.DepartmentID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue, data2)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
           ),
         align: 'center',
       },
