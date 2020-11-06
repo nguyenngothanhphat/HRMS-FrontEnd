@@ -35,6 +35,7 @@ const candidateInfo = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
+      filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: true,
       salaryStatus: 2,
@@ -47,6 +48,7 @@ const candidateInfo = {
       checkStatus: {
         filledBasicInformation: false,
         filledJobDetail: false,
+        filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -502,6 +504,7 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: {
             ...data,
+            valueToFinalOffer: 0,
           },
         });
       } catch (error) {
@@ -637,6 +640,7 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: {
             ...data,
+            valueToFinalOffer: 0,
           },
         });
         yield put({
