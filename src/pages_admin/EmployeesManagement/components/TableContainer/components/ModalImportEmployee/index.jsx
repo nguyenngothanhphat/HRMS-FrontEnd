@@ -238,6 +238,7 @@ class ModalImportEmployee extends Component {
           title={this.renderHeaderModal()}
           onCancel={this.handleCancel}
           destroyOnClose
+          maskClosable={false}
           footer={[
             <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
               Cancel

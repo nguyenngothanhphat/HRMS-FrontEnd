@@ -40,6 +40,7 @@ class VisaGeneral extends Component {
       dropdownType: false,
       listItem: [{}],
       checkValidate: [{}],
+      formCheck: [],
     };
     // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
@@ -87,12 +88,33 @@ class VisaGeneral extends Component {
     });
   };
 
+  validateDate = (newList, index) => {
+    const { formCheck } = this.state;
+    const { checkArrayVisa } = this.props;
+    if (newList === []) return;
+    const item = newList[index];
+    if (item.visaIssuedOn > item.visaValidTill) {
+      const getCheck = [...formCheck];
+      const setValidate = false;
+      getCheck.splice(index, 1, setValidate);
+      checkArrayVisa(getCheck);
+      this.setState({ formCheck: getCheck });
+    } else {
+      const getCheck = [...formCheck];
+      const setValidate = true;
+      getCheck.splice(index, 1, setValidate);
+      checkArrayVisa(getCheck);
+      this.setState({ formCheck: getCheck });
+    }
+  };
+
   handleFieldChange = (index, nameField, fieldValue) => {
     const { dispatch, visaDataOrigin, visaData } = this.props;
     const item = visaData[index];
     const newItem = { ...item, [nameField]: fieldValue };
     const newList = [...visaData];
     newList.splice(index, 1, newItem);
+    this.validateDate(newList, index);
     const isModified = JSON.stringify(newList) !== JSON.stringify(visaDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -152,7 +174,14 @@ class VisaGeneral extends Component {
 
   render() {
     const { Option } = Select;
-    const { dropdownCountry, dropdownType, dropdownEntry, listItem, checkValidate } = this.state;
+    const {
+      dropdownCountry,
+      dropdownType,
+      dropdownEntry,
+      listItem,
+      checkValidate,
+      formCheck,
+    } = this.state;
     const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
@@ -176,9 +205,9 @@ class VisaGeneral extends Component {
                       name={`visaNumber${index}`}
                       rules={[
                         {
-                          pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                          pattern: /^[+]*[\d]{0,12}$/,
                           message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
+                            id: 'pages.employeeProfile.validateNumber',
                           }),
                         },
                       ]}
@@ -337,15 +366,14 @@ class VisaGeneral extends Component {
                       name={`visaNumber${index + 1}`}
                       rules={[
                         {
-                          pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                          pattern: /^[+]*[\d]{0,12}$/,
                           message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
+                            id: 'pages.employeeProfile.validateNumber',
                           }),
                         },
                       ]}
                     >
                       <Input
-                        // defaultValue={item.visaNumber}
                         className={this.handleSetClass(
                           index,
                           checkValidate,
@@ -407,7 +435,6 @@ class VisaGeneral extends Component {
                     initialValue={item.visaType}
                   >
                     <Select
-                      // defaultValue={item.visaType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
@@ -431,7 +458,6 @@ class VisaGeneral extends Component {
                     initialValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
                   >
                     <Select
-                      // defaultValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) =>
                         this.handleDropdown('visaIssuedCountry', open)
@@ -462,7 +488,6 @@ class VisaGeneral extends Component {
                     initialValue={item.visaEntryType}
                   >
                     <Select
-                      // defaultValue={item.visaEntryType}
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaEntryType', open)}
                       onChange={(value) => {
@@ -486,7 +511,6 @@ class VisaGeneral extends Component {
                     initialValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
                   >
                     <DatePicker
-                      // defaultValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaIssuedOn', dates);
@@ -500,13 +524,23 @@ class VisaGeneral extends Component {
                     initialValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
                   >
                     <DatePicker
-                      // defaultValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
                       format={dateFormat}
                       onChange={(dates) => {
                         this.handleFieldChange(index, 'visaValidTill', dates);
                       }}
-                      className={styles.dateForm}
+                      className={
+                        formCheck[index] === false ? styles.dateFormValidate : styles.dateForm
+                      }
                     />
+                    {formCheck[index] === false ? (
+                      <span className={styles.isDate}>
+                        {formatMessage({
+                          id: 'pages.employeeProfile.validateDate',
+                        })}
+                      </span>
+                    ) : (
+                      ''
+                    )}
                   </Form.Item>
                 </Fragment>
               );

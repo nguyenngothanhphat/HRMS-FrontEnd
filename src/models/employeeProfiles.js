@@ -401,7 +401,10 @@ const employeeProfile = {
       }
     },
 
-    *updateGeneralInfo({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+    *updateGeneralInfo(
+      { payload = {}, dataTempKept = {}, key = '', isUpdateMyAvt = false },
+      { put, call, select },
+    ) {
       try {
         const response = yield call(updateGeneralInfo, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
@@ -451,6 +454,11 @@ const employeeProfile = {
               type: 'saveOpenEdit',
               payload: { openContactDetails: false },
             });
+        }
+        if (isUpdateMyAvt) {
+          yield put({
+            type: 'user/fetchCurrent',
+          });
         }
       } catch (errors) {
         dialog(errors);

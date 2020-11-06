@@ -112,15 +112,35 @@ const BasicLayout = (props) => {
 
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => [
-          {
-            path: '/',
-            breadcrumbName: formatMessage({
-              id: 'menu.home',
-            }),
-          },
-          ...routers,
-        ]}
+        breadcrumbRender={(routers = []) => {
+          let listPath = [
+            {
+              path: '/',
+              breadcrumbName: formatMessage({
+                id: 'menu.dashboard',
+              }),
+            },
+            ...routers,
+          ];
+          if (routers.length > 0) {
+            const [firstPath] = routers;
+            const { breadcrumbName = '' } = firstPath;
+            if (breadcrumbName === 'Dashboard')
+              listPath = [
+                {
+                  path: '/',
+                  breadcrumbName: formatMessage({
+                    id: 'menu.dashboard',
+                  }),
+                },
+                {
+                  path: '/',
+                  breadcrumbName: 'None',
+                },
+              ];
+          }
+          return listPath;
+        }}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
