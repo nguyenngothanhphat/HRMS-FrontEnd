@@ -26,11 +26,15 @@ class RuleFrom extends Component {
                 <div className={styles.body}>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Casual Leave (CL)*</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                    </div>
                   </div>
                   <div className={styles.flexText}>
                     <div className={styles.text}> Sick Leave (SL)*</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                    </div>
                   </div>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Compensation leave (Co)</div>
@@ -57,7 +61,9 @@ class RuleFrom extends Component {
                 <div className={styles.body}>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Leave without Pay (LWP)*</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -81,15 +87,23 @@ class RuleFrom extends Component {
                 <div className={styles.body}>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Maternity Leave (ML)*</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                    </div>
                   </div>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Bereavement Leave (BL)</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                      <img src={icon} alt="" />
+                    </div>
                   </div>
                   <div className={styles.flexText}>
                     <div className={styles.text}> Restricted Holiday (RH)</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                      <img src={icon} alt="" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -109,11 +123,16 @@ class RuleFrom extends Component {
                 <div className={styles.body}>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Work from Client Place (WCP)*</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                    </div>
                   </div>
                   <div className={styles.flexText}>
                     <div className={styles.text}>Work from Home (WFH)</div>
-                    <div>Configure</div>
+                    <div className={styles.Configure}>
+                      <span> Configure</span>
+                      <img src={icon} alt="" />
+                    </div>
                   </div>
                 </div>
               </div>
