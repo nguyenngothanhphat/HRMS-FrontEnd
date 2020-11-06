@@ -187,8 +187,47 @@ class ModalImportEmployee extends Component {
     });
   };
 
+  renderFormImport = (companyProps) => {
+    const { companyList } = this.props;
+    if (companyProps) {
+      return (
+        <Form
+          ref={this.formRef}
+          initialValues={{
+            company: companyProps._id,
+          }}
+        >
+          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+            <Select disabled>
+              <Option value={companyProps._id}>{companyProps.name}</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      );
+    }
+    return (
+      <Form ref={this.formRef}>
+        <Form.Item label="Company" name="company" rules={[{ required: true }]}>
+          <Select
+            placeholder="Select Company"
+            showArrow
+            showSearch
+            onChange={(value) => this.onChangeSelect(value)}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {companyList.map((item) => (
+              <Option key={item._id}>{item.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
+    );
+  };
+
   render() {
-    const { visible = false, companyList, loading, company: companyProps } = this.props;
+    const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
     return (
       <div>
@@ -217,29 +256,7 @@ class ModalImportEmployee extends Component {
             </Button>,
           ]}
         >
-          <Form ref={this.formRef}>
-            <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-              {companyProps ? (
-                <Select defaultValue={companyProps._id} disabled>
-                  <Option value={companyProps._id}>{companyProps.name}</Option>
-                </Select>
-              ) : (
-                <Select
-                  placeholder="Select Company"
-                  showArrow
-                  showSearch
-                  onChange={(value) => this.onChangeSelect(value)}
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {companyList.map((item) => (
-                    <Option key={item._id}>{item.name}</Option>
-                  ))}
-                </Select>
-              )}
-            </Form.Item>
-          </Form>
+          {this.renderFormImport(companyProps)}
           <div className={styles.FileUploadForm}>
             <ImportCSV
               disabled={company === ''}

@@ -60,7 +60,11 @@ class Template extends PureComponent {
     return (
       <div className={styles.Template}>
         <Link to={`/template-details/${template._id}`}>
-          <img className={styles.thumbnail} src={lectusTinciduntEros} alt="thumbnails" />
+          {template.thumbnail === '' ? (
+            <img className={styles.thumbnail} src={lectusTinciduntEros} alt="thumbnails" />
+          ) : (
+            <img className={styles.thumbnail} src={template.thumbnail} alt="thumbnails" />
+          )}
         </Link>
         <div className={styles.template_info}>
           <Link to={`/template-details/${template._id}`}>

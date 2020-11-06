@@ -235,13 +235,14 @@ class FormTeamMember extends PureComponent {
       candidateInfo,
       loading1 = false,
       candidateInfo: { data: { _id: candidateId = '' } } = {},
+      location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
     const check = !loading1 && candidateId !== '';
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
     } = candidateInfo;
-    const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
+    const title = isAddNew ? 'Add team member' : `Review team member [${reId}]`;
     const listMenu = [
       {
         id: 1,
