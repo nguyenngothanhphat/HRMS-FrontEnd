@@ -134,26 +134,26 @@ class SalaryAcceptance extends PureComponent {
         </>
       );
     }
-    if (
-      processStatus === 'SENT-PROVISIONAL-OFFER' ||
-      processStatus === 'PENDING-BACKGROUND-CHECK'
-    ) {
-      return (
-        <div className={styles.pending}>
-          <div className={styles.pendingIcon}>
-            <img src={pendingIcon} alt="icon" />
-          </div>
-          <p>
-            We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
-            structure
-          </p>
-          <Button type="primary" onClick={this.onSendFormAgain}>
-            {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
-          </Button>
+    // if (
+    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
+    //   processStatus === 'PENDING-BACKGROUND-CHECK'
+    // ) {
+    return (
+      <div className={styles.pending}>
+        <div className={styles.pendingIcon}>
+          <img src={pendingIcon} alt="icon" />
         </div>
-      );
-    }
-    return null;
+        <p>
+          We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
+          structure
+        </p>
+        <Button type="primary" onClick={this.onSendFormAgain}>
+          {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
+        </Button>
+      </div>
+    );
+    // }
+    // return null;
   };
 
   _renderNegotiationForm = () => {
