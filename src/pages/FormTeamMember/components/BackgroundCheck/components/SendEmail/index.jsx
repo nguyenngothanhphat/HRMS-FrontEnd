@@ -19,6 +19,7 @@ const index = ({
   handleValueChange = () => {},
   valueToFinalOffer,
   changeValueToFinalOffer = () => {},
+  checkValidation,
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
@@ -119,7 +120,13 @@ const index = ({
                 {formatMessage({ id: 'component.eligibilityDocs.change' })}
               </Typography.Text>
               <Form.Item className={style.margin}>
-                <Button htmlType="submit">
+                <Button
+                  htmlType="submit"
+                  disabled={checkValidation === false || checkValidation === undefined}
+                  {...((checkValidation === false || checkValidation === undefined) && {
+                    className: style.s,
+                  })}
+                >
                   {formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}
                 </Button>
               </Form.Item>
