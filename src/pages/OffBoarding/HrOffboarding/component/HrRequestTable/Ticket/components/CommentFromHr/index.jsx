@@ -11,6 +11,13 @@ class CommentsFromHR extends PureComponent {
   }
 
   render() {
+    const date = new Date();
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const hours = date.getHours();
+    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
+    const today = `${yyyy}.${mm}.${dd}`;
     return (
       <div className={styles.reasonPutOnHold}>
         <Row gutter={[0, 20]} justify="space-between">
@@ -19,9 +26,11 @@ class CommentsFromHR extends PureComponent {
             <Row>
               <div className={styles.reasonPutOnHold__dateTime}>
                 <span>
-                  <span className={styles.subText}>Lasted updated by Sandeep Metta </span>| 22.05.20
+                  <span className={styles.subText}>Lasted updated by Sandeep Metta </span>| {today}
                   &nbsp; | &nbsp;
-                  <span>12PM</span>
+                  <span>
+                    {hours} {amOrPm}
+                  </span>
                 </span>
               </div>
             </Row>
