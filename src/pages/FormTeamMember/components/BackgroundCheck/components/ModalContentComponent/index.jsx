@@ -3,15 +3,15 @@ import { Button } from 'antd';
 import styles from './index.less';
 import img1 from './images/modal_img_1.png';
 
-const CONTENT_LIST = [
-  {
-    header: 'The form has been successfully been shared',
-    body: 'The copy of the form has also been mailed to you and the HR manager',
-    image: img1,
-    button: 'Ok',
-    buttonType: 'markAsDone',
-  },
-];
+// const CONTENT_LIST = [
+//   {
+//     header: 'The form has been successfully been shared',
+//     body: 'The copy of the form has also been mailed to you and the HR manager',
+//     image: img1,
+//     button: 'Ok',
+//     buttonType: 'markAsDone',
+//   },
+// ];
 
 class ModalContentComponent extends PureComponent {
   constructor(props) {
@@ -28,22 +28,16 @@ class ModalContentComponent extends PureComponent {
   }
 
   componentDidMount() {
-    const { isSentEmail, isMarkAsDone, privateEmail } = this.props;
-    if (isSentEmail) {
-      this.setState({
-        content: {
-          header: `The form has been successfully sent to ${privateEmail} `,
-          body: 'The copy of the form has also been mailed to you and the HR manager',
-          image: img1,
-          button: 'Ok',
-          buttonType: 'sendEmail',
-        },
-      });
-    } else if (isMarkAsDone) {
-      this.setState({
-        content: CONTENT_LIST[0],
-      });
-    }
+    const { privateEmail } = this.props;
+    this.setState({
+      content: {
+        header: `The form has been successfully sent to ${privateEmail} `,
+        body: 'The copy of the form has also been mailed to you and the HR manager',
+        image: img1,
+        button: 'Ok',
+        buttonType: 'sendEmail',
+      },
+    });
   }
 
   render() {
