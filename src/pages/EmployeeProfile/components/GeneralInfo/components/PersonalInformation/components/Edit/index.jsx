@@ -206,8 +206,8 @@ class Edit extends PureComponent {
             name="linkedIn"
             rules={[
               {
-                type: 'email',
-                message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+                type: 'url',
+                message: formatMessage({ id: 'pages.employeeProfile.validatelinkedIn' }),
               },
             ]}
           >

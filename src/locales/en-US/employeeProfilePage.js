@@ -4,7 +4,7 @@ export default {
   'pages.employeeProfile.validateNumber': 'Just only number & maxinum 12 number, please!',
   'pages.employeeProfile.validateDate': ' Day Valid Till must greater than day Issue On, please!',
   'pages.employeeProfile.validateName': 'Just only word not number, please!',
-  'pages.employeeProfile.validateEmail': 'invalid email',
+  'pages.employeeProfile.validatelinkedIn': 'This field must be a valid url.',
   'pages.employeeProfile.employmentAndCompensationTab': 'Employment & Compensation',
   'pages.employeeProfile.performanceHistoryTab': 'Performance History',
   'pages.employeeProfile.accountsAndPaychecksTab': 'Accounts and Paychecks',
