@@ -78,7 +78,7 @@ class BasicInformation extends PureComponent {
     //     currentStep,
     //   },
     // });
-    this.handleUpdateByHR();
+    // this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 

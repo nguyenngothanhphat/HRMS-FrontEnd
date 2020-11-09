@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function getRookieInfo() {
+export async function addTeamMember() {
   return request('/api/candidate/add-new-member', {
     method: 'POST',
   });
@@ -30,5 +30,12 @@ export async function removeTemplate(payload) {
   return request('/api/template/remove', {
     method: 'POST',
     data: payload, // _id
+  });
+}
+
+export async function createFinalOffer(payload) {
+  return request('/api/template/offer-letter', {
+    method: 'POST',
+    data: payload, // offer data
   });
 }

@@ -54,7 +54,7 @@ class JobDetails extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.handleUpdateByHR();
+    // this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 

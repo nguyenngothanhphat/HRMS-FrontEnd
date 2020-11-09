@@ -28,6 +28,7 @@ const PreviewOffer = (props) => {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
+    offerLetter: offerLetterProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
@@ -53,6 +54,8 @@ const PreviewOffer = (props) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
+
+  const [offerLetter, setOfferLetter] = useState(offerLetterProp || {});
 
   // const resetForm = () => {
   //   mailForm.resetFields();
@@ -271,10 +274,19 @@ const PreviewOffer = (props) => {
     setOpenModal2(false);
   };
 
+  useEffect(() => {
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        offerLetter,
+      },
+    });
+  }, [offerLetter]);
+
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
-        <FileContent url="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff" />
+        <FileContent url={offerLetter.url} />
       </div>
 
       <div className={styles.right}>
