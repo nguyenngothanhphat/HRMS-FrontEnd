@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Select } from 'antd';
 import styles from './styles.less';
 
@@ -8,8 +8,6 @@ export default function ThirdStep(props) {
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
-
-  useEffect(() => {}, [fetchedState]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
