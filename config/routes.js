@@ -303,7 +303,7 @@ const routes = [
             path: '/hr-offboarding',
             name: 'employeeOffBoarding',
             icon: 'file-image',
-            component: './OffBoarding/HrOffBoarding',
+            component: './OffBoarding/HrOffboarding',
             authority: ['hr', 'hr-manager'],
           },
           {
