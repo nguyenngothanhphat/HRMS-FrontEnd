@@ -13,7 +13,7 @@ import styles from './index.less';
 class CompanyDetail extends Component {
   componentDidMount() {
     const {
-      match: { params: { reId: companyID = '' } = {} },
+      match: { params: { reId: id = '' } = {} },
       dispatch,
     } = this.props;
     dispatch({
@@ -21,7 +21,7 @@ class CompanyDetail extends Component {
     });
     dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
-      payload: { companyID },
+      payload: { id },
     });
   }
 

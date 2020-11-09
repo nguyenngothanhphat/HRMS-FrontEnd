@@ -42,7 +42,10 @@ class ViewInformation extends PureComponent {
   };
 
   render() {
-    const { loading } = this.props;
+    const {
+      loading,
+      companyDetails: { logoUrl = '', name = '' },
+    } = this.props;
     const avatar = '';
     const { visible } = this.state;
     if (loading)
@@ -58,13 +61,7 @@ class ViewInformation extends PureComponent {
           alt="img-cover"
           className={styles.infoCompany__imgCover}
         />
-        <Avatar
-          src={
-            avatar || 'https://www.terralogic.com/wp-content/themes/terralogic/img/brand-logo.svg'
-          }
-          size={96}
-          className={styles.infoCompany__imgAvt}
-        />
+        <Avatar src={avatar || { logoUrl }} size={96} className={styles.infoCompany__imgAvt} />
         <img
           src="/assets/images/iconUploadImage.svg"
           onClick={this.openModalUpload}
@@ -72,7 +69,7 @@ class ViewInformation extends PureComponent {
           className={styles.infoCompany__imgAvt__upload}
         />
         <div className={styles.infoCompany__textNameAndTitle}>
-          <p className={styles.infoCompany__textNameAndTitle__name}>Terralogic</p>
+          <p className={styles.infoCompany__textNameAndTitle__name}>{name}</p>
         </div>
         <div className={styles.infoCompany__viewBottom}>
           <Divider />

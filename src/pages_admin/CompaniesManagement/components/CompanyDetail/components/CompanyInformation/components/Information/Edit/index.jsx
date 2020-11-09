@@ -31,6 +31,20 @@ class Edit extends PureComponent {
     });
   };
 
+  handleUpdate = (changedValues) => {
+    console.log('changedValues', changedValues);
+    const { dispatch, companyDetails, companyDetailsOrigin } = this.props;
+    const companyDetailsChange = {
+      ...companyDetails,
+      ...changedValues,
+    };
+    console.log('companyDetailsChange', companyDetailsChange);
+    // dispatch({
+    //   type: 'companiesManagement/updateCompany',
+    //   payload: changedValues,
+    // });
+  };
+
   render() {
     const { companyDetails } = this.props;
     const { name = '', dba = '', ein = '', employeeNumber = '', website = '' } = companyDetails;
@@ -58,6 +72,7 @@ class Edit extends PureComponent {
             website,
           }}
           onValuesChange={this.handleChangeValues}
+          onFinish={this.handleUpdate}
         >
           <Form.Item
             label={formatMessage({ id: 'pages_admin.companies.table.companyName' })}

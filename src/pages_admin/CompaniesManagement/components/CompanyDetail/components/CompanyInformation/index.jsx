@@ -5,7 +5,14 @@ import Information from './components/Information';
 import HeadquaterAddress from './components/HeadquaterAddress';
 import LegalAddress from './components/LegalAddress';
 
-@connect(() => ({}))
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
 class CompanyInformation extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,11 +20,14 @@ class CompanyInformation extends PureComponent {
   }
 
   render() {
+    const {
+      companyDetailsOrigin: { headQuarterAddress = {}, legalAddress = {} },
+    } = this.props;
     return (
       <div>
         <Information />
-        <HeadquaterAddress />
-        <LegalAddress />
+        <HeadquaterAddress headQuarterAddress={headQuarterAddress} />
+        <LegalAddress legalAddress={legalAddress} />
       </div>
     );
   }

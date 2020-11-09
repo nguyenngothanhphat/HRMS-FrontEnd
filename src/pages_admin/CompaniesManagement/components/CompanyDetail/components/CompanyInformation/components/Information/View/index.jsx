@@ -24,6 +24,14 @@ class View extends PureComponent {
         value: information.employeeNumber,
       },
       {
+        label: 'Phone',
+        value: information.phone,
+      },
+      {
+        label: 'Contact Email',
+        value: information.contactEmail,
+      },
+      {
         label: formatMessage({ id: 'pages_admin.company.website' }),
         value: information.website,
       },

@@ -7,9 +7,19 @@ import s from './index.less';
 
 const { confirm } = Modal;
 
-@connect(({ companiesManagement: { isModified } = {} }) => ({
-  isModified,
-}))
+@connect(
+  ({
+    companiesManagement: {
+      isModified,
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({
+    isModified,
+    companyDetailsOrigin,
+    companyDetails,
+  }),
+)
 class LayoutCompanyDetail extends PureComponent {
   constructor(props) {
     super(props);
@@ -62,7 +72,7 @@ class LayoutCompanyDetail extends PureComponent {
   onCancel = () => {};
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], companyDetailsOrigin } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -85,7 +95,7 @@ class LayoutCompanyDetail extends PureComponent {
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
             {/* <Affix offsetTop={115}> */}
-            <ViewInformation />
+            <ViewInformation companyDetails={companyDetailsOrigin} />
             {/* </Affix> */}
           </Col>
         </Row>

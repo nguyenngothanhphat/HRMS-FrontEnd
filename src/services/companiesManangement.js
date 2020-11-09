@@ -52,9 +52,16 @@ export async function getCompaniesList(payload) {
   });
 }
 
-export const getCompanyDetails = async () => {
-  return {
-    statusCode: 200,
-    data: companyDetails,
-  };
-};
+export async function getCompanyDetails(payload) {
+  return request('/api/company/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateCompany(payload) {
+  return request('/api/company/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

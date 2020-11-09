@@ -25,18 +25,20 @@ class LegalAddress extends PureComponent {
 
   render() {
     const { isOpenEditDetail } = this.state;
-    const location = {
-      name: 'Japan Company2',
-      address: '66 Le Thi Ho, Go Vap',
-      country: 'Japan',
-      state: 'HoChiMinh',
-      zipCode: '700000',
-      isheadQuarter: true,
-    };
+    const {
+      legalAddress = {
+        name: '',
+        address: '',
+        country: '',
+        state: '',
+        zipCode: '',
+        isheadQuarter: true,
+      },
+    } = this.props;
     const renderContentCompanyDetail = isOpenEditDetail ? (
       <Edit handleCancelEdit={this.handleCancelEdit} />
     ) : (
-      <View location={location} />
+      <View location={legalAddress} />
     );
 
     return (
