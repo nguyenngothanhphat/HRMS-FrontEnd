@@ -113,10 +113,21 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       _id,
       title,
+      checkMandatory,
       data: { salaryStructure },
     } = this.props;
     const idTitle = title?._id;
+    const check = idTitle !== undefined;
 
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: check,
+        },
+      },
+    });
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
@@ -252,8 +263,10 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'candidateInfo/saveOrigin',
       payload: {
-        salaryStructure: {
-          salaryPosition: value,
+        data: {
+          title: {
+            _id: value,
+          },
         },
       },
     });
@@ -499,7 +512,7 @@ class SalaryStructureTemplate extends PureComponent {
                 </Select>
               )} */}
               <Select
-                defaultValue={idTitle ?? null}
+                defaultValue={idTitle ?? undefined}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"
