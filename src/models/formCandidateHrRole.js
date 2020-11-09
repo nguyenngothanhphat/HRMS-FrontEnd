@@ -259,11 +259,12 @@ const candidateInfo = {
         {
           type: 'D',
           name: 'Technical Certifications',
+          employer: 'Kyle Pham',
           data: [
             {
               key: 'offerLetter',
               alias: 'Offer letter',
-              value: false,
+              value: true,
             },
             {
               key: 'appraisalLetter',
@@ -273,17 +274,49 @@ const candidateInfo = {
             {
               key: 'paysTubs',
               alias: 'Paystubs',
-              value: false,
+              value: true,
             },
             {
               key: 'form16',
               alias: 'Form 16',
-              value: false,
+              value: true,
             },
             {
               key: 'relievingLetter',
               alias: 'Relieving Letter',
-              value: false,
+              value: true,
+            },
+          ],
+        },
+        {
+          type: 'D',
+          name: 'Technical Certifications',
+          employer: 'Kyle Hung',
+          data: [
+            {
+              key: 'offerLetter',
+              alias: 'Offer letter',
+              value: true,
+            },
+            {
+              key: 'appraisalLetter',
+              alias: 'Appraisal letter',
+              value: true,
+            },
+            {
+              key: 'paysTubs',
+              alias: 'Paystubs',
+              value: true,
+            },
+            {
+              key: 'form16',
+              alias: 'Form 16',
+              value: true,
+            },
+            {
+              key: 'relievingLetter',
+              alias: 'Relieving Letter',
+              value: true,
             },
           ],
         },
@@ -617,6 +650,7 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
+      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);

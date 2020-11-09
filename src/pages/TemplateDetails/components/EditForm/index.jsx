@@ -53,7 +53,7 @@ class EditForm extends Component {
             tab={formatMessage({ id: 'component.editForm.employmentDetails' })}
             key="1"
           >
-            <EmploymentDetails onNext={this.onSwitchTabs} settings={settings} />
+            <EmploymentDetails onNext={this.onSwitchTabs} settingsList={settings} />
           </TabPane>
           <TabPane
             className={styles.tabs}

@@ -25,7 +25,7 @@ const InputField = ({
   // };
   return (
     <div className={style.InputField}>
-      <Typography.Text className={style.text}>Employer 1 Details</Typography.Text>
+      <Typography.Text className={style.text}>Employer Details</Typography.Text>
       <Row gutter={[48, 0]} className={style.form}>
         {processStatus === 'SENT-PROVISIONAL-OFFER' ? (
           <>
