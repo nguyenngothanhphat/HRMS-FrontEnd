@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import { history } from 'umi';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
@@ -16,30 +17,6 @@ class TableEmployee extends PureComponent {
   };
 
   render() {
-    // const data = [
-    //   {
-    //     ticketId: <span className={t.tableText}>16003134</span>,
-    //     requestOn: <span className={t.tableText}>22.08.2020</span>,
-    //     lwd: '',
-    //     lwdchange: '',
-    //     assigned: (
-    //       <p>
-    //         <span>
-    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
-    //         </span>
-    //         <span>
-    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
-    //         </span>
-    //       </p>
-    //     ),
-    //     reasionOfLeaving: <span className={t.tableText}>I have decide to quit….</span>,
-    //     action: (
-    //       <span className={t.tableText} style={{ color: 'blue', textDecoration: 'underline' }}>
-    //         View Request
-    //       </span>
-    //     ),
-    //   },
-    // ];
     const { data = [] } = this.props;
     const pagination = {
       position: ['bottomLeft'],
@@ -63,6 +40,9 @@ class TableEmployee extends PureComponent {
       {
         title: <span className={t.title}>Requested on</span>,
         dataIndex: 'createdAt',
+        render: (createdAt) => {
+          return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={t.title}>LWD</span>,
