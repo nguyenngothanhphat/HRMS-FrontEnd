@@ -22,11 +22,12 @@ import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 import {
-  getRookieInfo,
+  addTeamMember,
   sentForApproval,
   approveFinalOffer,
   getTemplates,
   removeTemplate,
+  createFinalOffer,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -37,6 +38,7 @@ const candidateInfo = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
+      filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
       salaryStatus: 2,
@@ -49,6 +51,7 @@ const candidateInfo = {
       checkStatus: {
         filledBasicInformation: false,
         filledJobDetail: false,
+        filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
       employeeType: '5f50c2541513a742582206f9',
@@ -68,7 +71,7 @@ const candidateInfo = {
       reportingManager: null,
       valueToFinalOffer: 0,
       // Offer details
-      template: 'Template.docx',
+      template: '',
       includeOffer: false,
       compensationType: '',
       amountIn: '',
@@ -140,6 +143,10 @@ const candidateInfo = {
 
       defaultTemplates: [],
       customTemplates: [],
+      offerLetter: {
+        name: '',
+        url: '',
+      },
     },
     data: {
       fullName: null,
@@ -252,11 +259,12 @@ const candidateInfo = {
         {
           type: 'D',
           name: 'Technical Certifications',
+          employer: 'Kyle Pham',
           data: [
             {
               key: 'offerLetter',
               alias: 'Offer letter',
-              value: false,
+              value: true,
             },
             {
               key: 'appraisalLetter',
@@ -266,17 +274,49 @@ const candidateInfo = {
             {
               key: 'paysTubs',
               alias: 'Paystubs',
-              value: false,
+              value: true,
             },
             {
               key: 'form16',
               alias: 'Form 16',
-              value: false,
+              value: true,
             },
             {
               key: 'relievingLetter',
               alias: 'Relieving Letter',
-              value: false,
+              value: true,
+            },
+          ],
+        },
+        {
+          type: 'D',
+          name: 'Technical Certifications',
+          employer: 'Kyle Hung',
+          data: [
+            {
+              key: 'offerLetter',
+              alias: 'Offer letter',
+              value: true,
+            },
+            {
+              key: 'appraisalLetter',
+              alias: 'Appraisal letter',
+              value: true,
+            },
+            {
+              key: 'paysTubs',
+              alias: 'Paystubs',
+              value: true,
+            },
+            {
+              key: 'form16',
+              alias: 'Form 16',
+              value: true,
+            },
+            {
+              key: 'relievingLetter',
+              alias: 'Relieving Letter',
+              value: true,
             },
           ],
         },
@@ -320,6 +360,7 @@ const candidateInfo = {
       updatedAt: '',
     },
   },
+
   effects: {
     *fetchDocumentList(_, { call, put }) {
       try {
@@ -364,6 +405,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchLocationList(_, { call, put }) {
       try {
         const response = yield call(getLocation);
@@ -391,6 +433,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
@@ -433,12 +476,10 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -479,7 +520,7 @@ const candidateInfo = {
     *fetchCandidateInfo(_, { call, put }) {
       let response = {};
       try {
-        response = yield call(getRookieInfo);
+        response = yield call(addTeamMember);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -494,7 +535,11 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: { ...data },
         });
-        history.push(`/employee-onboarding/review/${rookieId}`);
+        // history.push(`/employee-onboarding/review/${rookieId}`);
+        history.push({
+          pathname: `/employee-onboarding/review/${rookieId}`,
+          state: { isAddNew: true },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -533,6 +578,7 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: {
             ...data,
+            valueToFinalOffer: 0,
           },
         });
       } catch (error) {
@@ -540,6 +586,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
       try {
@@ -555,6 +602,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchTableData({ payload }, { call, put }) {
       try {
         const response = yield call(getTableDataByTitle, payload);
@@ -569,6 +617,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *closeCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(closeCandidate, payload);
@@ -583,6 +632,7 @@ const candidateInfo = {
         dialog(errors);
       }
     },
+
     *editSalaryStructure({ payload }, { call, put }) {
       try {
         const response = yield call(editSalaryStructure, payload);
@@ -600,6 +650,7 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
+      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);
@@ -637,6 +688,7 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
       try {
@@ -664,6 +716,7 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: {
             ...data,
+            valueToFinalOffer: 0,
           },
         });
         yield put({
@@ -712,6 +765,37 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    *createFinalOfferEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(createFinalOffer, payload); // payload: offer data ...
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
+
+        yield put({
+          type: 'updateOfferLetter',
+          payload: {
+            name,
+            url,
+          },
+        });
+
+        // yield call({
+        //   type: 'updateByHR',
+        //   payload: {
+        //     offerLetter: {
+        //       name,
+        //       url,
+        //     },
+        //   },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
 
@@ -865,6 +949,18 @@ const candidateInfo = {
     //     },
     //   };
     // },
+
+    updateOfferLetter(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          offerLetter: action.payload,
+        },
+      };
+    },
   },
 };
 

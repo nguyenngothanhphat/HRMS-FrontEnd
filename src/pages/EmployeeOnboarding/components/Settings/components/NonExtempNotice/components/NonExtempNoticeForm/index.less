@@ -7,6 +7,12 @@
   box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
   background-color: #ffffff;
   padding: 39px 35px;
+  .loading {
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    padding-top: 30px;
+  }
   :global {
     .ant-btn-primary {
       box-shadow: none;
@@ -88,7 +94,18 @@
     line-height: 1.14;
     text-align: left;
     color: #161c29;
-    margin-bottom: 32px;
+    margin-bottom: 17px;
+    display: flex;
+    justify-content: space-between;
+    .editButton {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      color: #2c6df9;
+      p {
+        margin-left: 10px;
+      }
+    }
   }
   hr {
     position: absolute;

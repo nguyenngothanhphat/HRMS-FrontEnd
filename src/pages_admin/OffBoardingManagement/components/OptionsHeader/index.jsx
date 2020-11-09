@@ -56,7 +56,7 @@ export default class OptionsHeader extends PureComponent {
                         <Checkbox value="Approved">Approved</Checkbox>
                       </Col>
                       <Col span={12}>
-                        <Checkbox value="New">New</Checkbox>
+                        <Checkbox value="Cancel">Cancel</Checkbox>
                       </Col>
                       <Col span={12}>
                         <Checkbox value="Rejected">Rejected</Checkbox>

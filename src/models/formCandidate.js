@@ -19,7 +19,7 @@ import {
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
-import { getRookieInfo } from '@/services/formCandidate';
+import { addTeamMember } from '@/services/formCandidate';
 
 const info = {
   namespace: 'info',
