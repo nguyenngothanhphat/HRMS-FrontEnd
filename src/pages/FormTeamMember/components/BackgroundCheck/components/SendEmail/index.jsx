@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
-import { Typography, Space, Radio, Input, Form, Button, Row, Col, message } from 'antd';
+import { Typography, Space, Radio, Input, Form, Button, Row, Col, message, Spin } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import send from './Assets/group-11.svg';
 import sent from './Assets/sent.svg';
@@ -20,6 +21,7 @@ const index = ({
   valueToFinalOffer,
   changeValueToFinalOffer = () => {},
   checkValidation,
+  loading4,
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
@@ -121,6 +123,7 @@ const index = ({
               </Typography.Text>
               <Form.Item className={style.margin}>
                 <Button
+                  loading={loading4}
                   htmlType="submit"
                   disabled={checkValidation === false || checkValidation === undefined}
                   {...((checkValidation === false || checkValidation === undefined) && {

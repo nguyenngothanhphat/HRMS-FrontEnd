@@ -28,13 +28,16 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep } }) => ({
-  tempData,
-  data,
-  tableData,
-  currentStep,
-  checkMandatory,
-}))
+@connect(
+  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
+    tempData,
+    data,
+    tableData,
+    currentStep,
+    checkMandatory,
+    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+  }),
+)
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -182,25 +185,24 @@ class BackgroundCheck extends Component {
         },
       });
     }
-    // this.handleUpdateByHR();
+    this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
   handleUnload = () => {
-    // this.handleUpdateByHR();
+    this.handleUpdateByHR();
     const { currentStep } = this.props;
     localStorage.setItem('currentStep', currentStep);
   };
 
   handleUpdateByHR = () => {
     const { data } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        currentStep,
       },
     });
   };
@@ -658,7 +660,7 @@ class BackgroundCheck extends Component {
       },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
-    const { loading, processStatus } = this.props;
+    const { loading, processStatus, loading4 } = this.props;
     return (
       <>
         {loading ? (
@@ -696,6 +698,7 @@ class BackgroundCheck extends Component {
               <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
                 <NoteComponent note={note} />
                 <SendEmail
+                  loading4={loading4}
                   title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
                   formatMessage={formatMessage}
                   handleSendEmail={this.handleSendEmail}
