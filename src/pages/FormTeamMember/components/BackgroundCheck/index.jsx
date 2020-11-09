@@ -118,6 +118,7 @@ class BackgroundCheck extends Component {
         type: 'candidateInfo/saveTemp',
         payload: {
           documentList: processStatus === 'DRAFT' ? documentList : data.documentChecklistSetting,
+          isSentEmail: processStatus !== 'DRAFT',
           identityProof: {
             ...identityProof,
             isChecked: isCheckedA,
@@ -149,7 +150,8 @@ class BackgroundCheck extends Component {
 
   componentWillUnmount() {
     // const { data } = this.state;
-    const { dispatch, tempData } = this.props;
+    const { dispatch, tempData, processStatus } = this.props;
+    console.log('pro', processStatus);
     // console.log('current', currentStep);
     // const { _id } = data;
     // dispatch({
@@ -159,14 +161,27 @@ class BackgroundCheck extends Component {
     //     currentStep,
     //   },
     // });
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        ...tempData,
-        employer: '',
-        checkValidation: undefined,
-      },
-    });
+    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          employer: '',
+          checkValidation: undefined,
+          isSentEmail: true,
+        },
+      });
+    } else if (processStatus === 'DRAFT') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          employer: '',
+          checkValidation: undefined,
+          isSentEmail: false,
+        },
+      });
+    }
     // this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
