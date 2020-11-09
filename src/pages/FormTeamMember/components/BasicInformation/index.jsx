@@ -92,7 +92,7 @@ class BasicInformation extends PureComponent {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -102,7 +102,6 @@ class BasicInformation extends PureComponent {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep,
       },
     });
   };

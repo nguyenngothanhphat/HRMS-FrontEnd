@@ -23,6 +23,7 @@ class EmployeeProfile extends Component {
 
   componentDidMount() {
     const {
+      employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
     } = this.props;
@@ -75,7 +76,10 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchLocations' });
     dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
-    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({
+      type: 'employeeProfile/fetchDepartments',
+      payload: { company: employeeProfile.originData.compensationData.company },
+    });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
   }

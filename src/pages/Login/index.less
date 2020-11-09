@@ -9,12 +9,12 @@
     margin-bottom: 25px;
     font-size: 16px;
   }
-  .InputEmail {
-    :global {
-      .ant-form-item {
-        margin-bottom: 1rem;
-      }
-    }
+  .inputEmail {
+    // :global {
+    //   .ant-form-item {
+    //     margin-bottom: 1rem;
+    //   }
+    // }
   }
   .inputPassword {
     :global {
@@ -108,10 +108,13 @@
       border-radius: 4.5px;
       height: 31px;
       color: #000;
-      border: solid 1px #d6dce4;
     }
     .ant-form-item {
       margin-bottom: 0;
+    }
+    .ant-form-item-explain,
+    .ant-form-item-extra {
+      min-height: 0;
     }
   }
 

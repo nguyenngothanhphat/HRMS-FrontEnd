@@ -26,6 +26,7 @@ class ModalContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isAbleToSubmit: false,
       modalContent: [
         {
           icon: offerIcon,
@@ -43,6 +44,27 @@ class ModalContent extends Component {
     };
   }
 
+  checkSubmit = () => {
+    const { dispatch, settings, fullname, signature, title } = this.props;
+    const newSetting = settings.filter((item) => item !== null && item !== undefined);
+    const check = newSetting.map((data) => data.value !== '').every((data) => data === true);
+    if (check === true && title !== '' && fullname !== '' && signature !== '') {
+      dispatch({
+        type: 'employeeSetting/save',
+        payload: {
+          isAbleToSubmit: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'employeeSetting/save',
+        payload: {
+          isAbleToSubmit: false,
+        },
+      });
+    }
+  };
+
   onNext = () => {
     const {
       dispatch,
@@ -55,7 +77,7 @@ class ModalContent extends Component {
       thumbnail,
     } = this.props;
     const newSetting = settings.filter((item) => item !== null && item !== undefined);
-    console.log(newSetting);
+
     dispatch({
       type: 'employeeSetting/addCustomTemplate',
       payload: {
@@ -66,7 +88,9 @@ class ModalContent extends Component {
         signature,
         thumbnail,
       },
-    }).then(() => onNext());
+    }).then(() => {
+      onNext();
+    });
   };
 
   _renderModal = () => {

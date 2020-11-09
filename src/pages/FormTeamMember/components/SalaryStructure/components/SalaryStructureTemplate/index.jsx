@@ -17,13 +17,13 @@ import styles from './index.less';
         {
           key: 'basic',
           title: 'Basic',
-          value: ' ',
+          value: '',
           order: 'A',
         },
         {
           key: 'hra',
           title: 'HRA',
-          value: ' ',
+          value: '',
           order: 'B',
         },
         {
@@ -47,13 +47,13 @@ import styles from './index.less';
         {
           key: 'employeesPF',
           title: "Employee's PF",
-          value: ' ',
+          value: '',
           order: 'G',
         },
         {
           key: 'employeesESI',
           title: "Employee's ESI",
-          value: ' ',
+          value: '',
           order: 'H',
         },
         {
@@ -113,10 +113,21 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       _id,
       title,
+      checkMandatory,
       data: { salaryStructure },
     } = this.props;
     const idTitle = title?._id;
+    const check = idTitle !== undefined;
 
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: check,
+        },
+      },
+    });
     dispatch({
       type: 'candidateInfo/fetchTitleListByCompany',
       payload: { company: _id },
@@ -245,18 +256,33 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch } = this.props;
+    const { dispatch, checkMandatory, tableData } = this.props;
+    const tempTableData = [...tableData];
+
+    const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
     dispatch({
       type: 'candidateInfo/saveOrigin',
       payload: {
-        salaryStructure: {
-          salaryPosition: value,
+        data: {
+          title: {
+            _id: value,
+          },
         },
       },
     });
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
+    });
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tableData: tempTableData,
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: check,
+        },
+      },
     });
   };
 
@@ -408,7 +434,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderBottomBar = () => {
     const { checkMandatory, processStatus } = this.props;
-    const { filledSalaryStructure } = checkMandatory;
+    const { filledSalaryStructure = false } = checkMandatory;
 
     return (
       <div className={styles.bottomBar}>
@@ -486,7 +512,7 @@ class SalaryStructureTemplate extends PureComponent {
                 </Select>
               )} */}
               <Select
-                defaultValue={idTitle ?? null}
+                defaultValue={idTitle ?? undefined}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"

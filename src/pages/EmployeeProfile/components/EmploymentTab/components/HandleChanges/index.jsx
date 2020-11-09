@@ -25,13 +25,13 @@ class HandleChanges extends PureComponent {
         newLocation: '',
         stepOne: 'Now',
         stepTwo: {
-          title: '',
           wLocation: '',
           employment: '',
           compensation: '',
           salary: '',
         },
         stepThree: {
+          title: '',
           department: '',
           reportTo: '',
         },
@@ -51,6 +51,12 @@ class HandleChanges extends PureComponent {
       if (current > 0) {
         nextTab('STOP');
         dialog({ message: 'Please enter a date' });
+      }
+    }
+    if (changeData.stepThree.department && !changeData.stepThree.title) {
+      if (current > 2) {
+        nextTab('TITLE_REQUIRED');
+        dialog({ message: 'Please choose a job title corresponds with the selected department' });
       }
     }
   }
@@ -118,12 +124,13 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
+    const { dispatch, employeeProfile } = this.props;
     switch (type) {
       case 'title':
         this.setState({
           changeData: {
             ...changeData,
-            stepTwo: { ...changeData.stepTwo, title: value[1] },
+            stepThree: { ...changeData.stepThree, title: value[1] },
             newTitle: value[0],
           },
         });
@@ -154,7 +161,18 @@ class HandleChanges extends PureComponent {
         break;
       case 'department':
         this.setState({
-          changeData: { ...changeData, stepThree: { ...changeData.stepThree, department: value } },
+          changeData: {
+            ...changeData,
+            stepThree: { ...changeData.stepThree, department: value, title: '' },
+            newTitle: '',
+          },
+        });
+        dispatch({
+          type: 'employeeProfile/fetchTitleByDepartment',
+          payload: {
+            company: employeeProfile.originData.compensationData.company,
+            department: value,
+          },
         });
         break;
       case 'reportTo':
