@@ -6,6 +6,7 @@ import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
+import EditCurrentInfo from './components/EditCurrentInfo';
 import styles from './index.less';
 
 const steps = [
@@ -29,6 +30,7 @@ class EmploymentTab extends Component {
     const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
+      isEdit: false,
       submitted: false,
       current: 0,
       currentData: {
@@ -45,6 +47,13 @@ class EmploymentTab extends Component {
     this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
     this.setState({ submitted: false });
+  };
+
+  handleEditCurrentInfo = () => {
+    const { isEdit } = this.state;
+    this.setState({
+      isEdit: !isEdit,
+    });
   };
 
   handleSubmit = async (data) => {
@@ -98,14 +107,38 @@ class EmploymentTab extends Component {
   };
 
   render() {
-    const { isChanging, current, currentData } = this.state;
+    const { isChanging, current, currentData, isEdit } = this.state;
     const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title}>
             <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
-
+            {isEdit ? (
+              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
+                <img alt="" src={path} />
+                <div>Cancel & Return</div>
+              </div>
+            ) : (
+              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
+                <img alt="" src={edit} />
+                <div>Edit</div>
+              </div>
+            )}
+          </div>
+          {isEdit ? (
+            <EditCurrentInfo />
+          ) : (
+            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
+          )}
+        </div>
+        <div className={styles.employmentTab}>
+          <div className={styles.employmentTab_title} align="middle">
+            <div>
+              {isChanging
+                ? `Employment & Compensation - ${steps[current].title}`
+                : 'Change History'}
+            </div>
             {isChanging ? (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={path} />
@@ -114,7 +147,7 @@ class EmploymentTab extends Component {
             ) : (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={edit} />
-                <div>Edit</div>
+                <div>Make changes</div>
               </div>
             )}
           </div>
@@ -127,7 +160,7 @@ class EmploymentTab extends Component {
               current={current}
             />
           ) : (
-            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
+            <ChangeHistoryTable />
           )}
           {isChanging ? (
             <div className={styles.footer}>
@@ -142,13 +175,6 @@ class EmploymentTab extends Component {
               </div>
             </div>
           ) : null}
-        </div>
-        <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title} align="middle">
-            <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon} />
-          </div>
-          <ChangeHistoryTable />
         </div>
       </div>
     );
