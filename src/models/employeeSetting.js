@@ -89,10 +89,17 @@ const employeeSetting = {
             message: 'Upload Image Successfully',
           });
         }
-        yield put({
-          type: 'saveTemplate',
-          payload: { signature: data[0].id },
-        });
+        if (data.length > 0) {
+          yield put({
+            type: 'saveTemplate',
+            payload: { signature: data[0].id },
+          });
+        } else {
+          yield put({
+            type: 'saveTemplate',
+            payload: { signature: '' },
+          });
+        }
       } catch (errors) {
         dialog(errors);
         alert(errors);

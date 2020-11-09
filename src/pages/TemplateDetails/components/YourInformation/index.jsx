@@ -193,6 +193,7 @@ class YourInformation extends PureComponent {
   };
 
   checkSubmit = () => {
+    // const { croppedImage } = this.state;
     const { dispatch, settings, fullname, title } = this.props;
     const newSetting = settings.filter((item) => item !== null && item !== undefined);
     const check = newSetting.map((data) => data.value !== '').every((data) => data === true);
