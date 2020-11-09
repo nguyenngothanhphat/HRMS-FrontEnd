@@ -372,12 +372,17 @@ class DirectoryComponent extends PureComponent {
     const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
     const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
     const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+    const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
+    const showLocationInActive =
+      'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
 
     const groupPermissions = this.generatePermissions(roles);
 
     const findIndexActive = groupPermissions.indexOf(tabActive);
     const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
     const findIndexInActive = groupPermissions.indexOf(tabInActive);
+    const findIndexShowLocationActive = groupPermissions.indexOf(showLocationActive);
+    const findIndexShowLocationInActive = groupPermissions.indexOf(showLocationInActive);
 
     return (
       <>
@@ -386,6 +391,7 @@ class DirectoryComponent extends PureComponent {
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
             loadingListActive,
+            findIndexShowLocationActive,
           )}
         {findIndexMyTeam !== -1 &&
           !checkRoleEmployee &&
@@ -412,14 +418,16 @@ class DirectoryComponent extends PureComponent {
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,
             loadingListInActive,
+            findIndexShowLocationInActive,
           )}
       </>
     );
   };
 
-  renderTab = (tabName, key, loading) => {
+  renderTab = (tabName, key, loading, indexShowLocation) => {
     const { checkRoleEmployee } = this.props;
     const {
+      tabId,
       collapsed,
       changeTab,
       tabList: { myTeam },
@@ -441,6 +449,8 @@ class DirectoryComponent extends PureComponent {
               onHandleChange={this.handleChange}
               FormBox={this.handleFormBox}
               changeTab={changeTab}
+              tabName={tabId}
+              checkLocation={indexShowLocation}
             />
           )}
         </Layout>
