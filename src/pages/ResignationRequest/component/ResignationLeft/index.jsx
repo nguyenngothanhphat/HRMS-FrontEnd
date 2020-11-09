@@ -37,6 +37,13 @@ class ResignationLeft extends Component {
   };
 
   render() {
+    const date = new Date();
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const hours = date.getHours();
+    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
+    const today = `${yyyy}.${mm}.${dd}`;
     return (
       <div className={styles.resignationLeft}>
         <div className={styles.title_Box}>
@@ -56,7 +63,7 @@ class ResignationLeft extends Component {
             <div className={styles.center}>
               <p className={styles.textBox}> Reason for leaving us?</p>
               <p className={styles.textTime}>
-                <span style={{ color: 'black' }}>22.05.20 </span>| 12PM
+                <span style={{ color: 'black' }}> {today} </span>| {hours} {amOrPm}
               </p>
             </div>
             <Form.Item

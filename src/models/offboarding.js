@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import { getOffboardingList, sendRequest } from '../services/offboarding';
 
 const offboarding = {
@@ -6,11 +7,12 @@ const offboarding = {
   state: {
     list: [],
     request: [],
+    myRequest: {},
   },
   effects: {
-    *fetchList(_, { call, put }) {
+    *fetchList({ payload }, { call, put }) {
       try {
-        const response = yield call(getOffboardingList);
+        const response = yield call(getOffboardingList, payload);
         const { statusCode, data: list = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { list } });
@@ -24,6 +26,17 @@ const offboarding = {
         const { statusCode, data: request = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { request } });
+        notification.success({ message: `Submit Request successfully!` });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchMyRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffboardingList, payload);
+        const { statusCode, data: myRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { myRequest } });
       } catch (errors) {
         dialog(errors);
       }

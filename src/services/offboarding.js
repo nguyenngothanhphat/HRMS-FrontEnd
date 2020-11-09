@@ -7,7 +7,7 @@ export async function getOffboardingHRList(payload) {
   });
 }
 export async function getOffboardingList(payload) {
-  return request('/api/offboardingrequest/list', {
+  return request('/api/offboardingrequest/get-by-id', {
     method: 'POST',
     data: payload,
   });

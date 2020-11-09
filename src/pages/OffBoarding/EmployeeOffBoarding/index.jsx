@@ -16,17 +16,31 @@ class EmployeeOffBoading extends Component {
     this.state = {};
   }
 
-  render() {
-    const { list } = this.props;
-
-    console.log(`${list}145645646456464564`);
-    const data = [
-      {
-        ticketId: 16003134,
-        requestOn: '22.08.2020',
-        reasionOfLeaving: 'The reason why I have decide to quit….',
+  componentDidMount() {
+    const { dispatch } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'offboarding/fetchList',
+      payload: {
+        id: '5fa5092a53f4cf5c9ab0fbd1',
       },
-    ];
+    });
+  }
+
+  render() {
+    const { list = {} } = this.props;
+    const data = [list];
+
+    // console.log(JSON.stringify(list));
+    // const data = [
+    //   {
+    //     ticketId: 16003134,
+    //     requestOn: '22.08.2020',
+    //     reasionOfLeaving: 'The reason why I have decide to quit….',
+    //   },
+    // ];
 
     return (
       <PageContainer>

@@ -11,8 +11,8 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/employee-offboarding/request/112454');
+  push = (data) => {
+    history.push(`/employee-offboarding/request/${data}`);
   };
 
   render() {
@@ -41,7 +41,6 @@ class TableEmployee extends PureComponent {
     //   },
     // ];
     const { data = [] } = this.props;
-
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -63,7 +62,7 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Requested on</span>,
-        dataIndex: 'requestOn',
+        dataIndex: 'createdAt',
       },
       {
         title: <span className={t.title}>LWD</span>,
@@ -91,14 +90,14 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,
-        dataIndex: 'reasionOfLeaving',
+        dataIndex: 'reasonForLeaving',
       },
       {
         title: <span className={t.title}>Action</span>,
         dataIndex: 'action',
         render: () => (
           <div className={t.rowAction}>
-            <span onClick={this.push}>View Request</span>
+            <span onClick={() => this.push(data.map((x) => x._id))}>View Request</span>
           </div>
         ),
       },
