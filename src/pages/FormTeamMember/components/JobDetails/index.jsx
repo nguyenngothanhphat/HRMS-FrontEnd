@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty, isObject } from 'lodash';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -33,20 +33,38 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, candidate, currentStep } = this.props;
+    const {
+      dispatch,
+      data: { candidate },
+      currentStep,
+    } = this.props;
     this.checkBottomBar();
-    if (dispatch && candidate) {
+    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+    console.log(candidate, currentStepLocal);
+    if (candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
-          currentStep,
+          currentStep: currentStepLocal,
         },
       });
     }
+    window.addEventListener('unload', this.handleUnload, false);
   }
 
   componentWillUnmount() {
+    // this.handleUpdateByHR();
+    window.removeEventListener('unload', this.handleUnload, false);
+  }
+
+  handleUnload = () => {
+    // this.handleUpdateByHR();
+    const { currentStep } = this.props;
+    localStorage.setItem('currentStep', currentStep);
+  };
+
+  handleUpdateByHR = () => {
     const {
       dispatch,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
@@ -58,14 +76,14 @@ class JobDetails extends PureComponent {
         workLocation: workLocation ? workLocation._id : '',
         department: department ? department._id : '',
         title: title ? title._id : '',
-        reportingManager: reportingManager.length > 0 ? reportingManager._id : '',
-        employeeType,
+        reportingManager: !isEmpty(reportingManager) ? reportingManager._id : '',
+        employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
         currentStep,
       },
     });
-  }
+  };
 
   checkBottomBar = () => {
     const {
@@ -217,7 +235,7 @@ class JobDetails extends PureComponent {
       type: 'candidateInfo/updateByHR',
       payload: {
         position,
-        employeeType,
+        employeeType: employeeType._id,
         workLocation: workLocation._id,
         department: department._id,
         title: title._id,
@@ -410,7 +428,8 @@ class JobDetails extends PureComponent {
       },
       data,
     } = this.state;
-    const { loading1, loading2, loading3, loading, loading4 } = this.props;
+    const { loading1, loading2, loading3, loading, loading4, processStatus } = this.props;
+    console.log('reportingManager', isEmpty(reportingManager));
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -432,8 +451,10 @@ class JobDetails extends PureComponent {
                     employeeType={employeeType}
                     position={position}
                     data={data}
+                    processStatus={processStatus}
                   />
                   <FieldsComponent
+                    processStatus={processStatus}
                     dropdownField={dropdownField}
                     candidateField={candidateField}
                     departmentList={departmentList}

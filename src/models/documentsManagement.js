@@ -246,10 +246,7 @@ const documentsManagement = {
       }
     },
 
-    *updateGeneralInfo(
-      { payload: { id = '', document = '', adhaarCardNumber = '' } },
-      { call, put },
-    ) {
+    *updateGeneralInfo({ payload: { id = '', document = '', adhaarCardNumber = '' } }, { call }) {
       try {
         const response = yield call(updateGeneralInfo, { id, document, adhaarCardNumber });
         const { statusCode } = response;

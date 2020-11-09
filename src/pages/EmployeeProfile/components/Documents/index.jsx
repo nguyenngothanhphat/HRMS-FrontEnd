@@ -31,6 +31,14 @@ class Documents extends Component {
     });
   };
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'employeeProfile/clearSaveDocuments',
+    });
+  };
+
   onBackClick = () => {
     this.setState({
       isViewingDocument: false,

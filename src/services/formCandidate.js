@@ -1,13 +1,12 @@
 import request from '@/utils/request';
 
-export async function getRookieInfo(params) {
+export async function addTeamMember() {
   return request('/api/candidate/add-new-member', {
     method: 'POST',
   });
 }
 
 export async function sentForApproval(payload) {
-  console.log(payload);
   return request('/api/candidate/sent-for-approval', {
     method: 'POST',
     data: payload,
@@ -15,7 +14,6 @@ export async function sentForApproval(payload) {
 }
 
 export async function approveFinalOffer(payload) {
-  console.log(payload);
   return request('/api/candidate/approve-final-offer', {
     method: 'POST',
     data: payload,
@@ -32,5 +30,12 @@ export async function removeTemplate(payload) {
   return request('/api/template/remove', {
     method: 'POST',
     data: payload, // _id
+  });
+}
+
+export async function createFinalOffer(payload) {
+  return request('/api/template/offer-letter', {
+    method: 'POST',
+    data: payload, // offer data
   });
 }

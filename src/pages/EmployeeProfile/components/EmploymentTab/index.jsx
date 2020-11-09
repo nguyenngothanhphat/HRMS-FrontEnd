@@ -112,7 +112,7 @@ class EmploymentTab extends Component {
             ) : (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={edit} />
-                <div>Make changes</div>
+                <div>Edit</div>
               </div>
             )}
           </div>

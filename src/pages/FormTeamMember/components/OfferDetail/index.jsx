@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
-import { currencyArr, timeoffArr, fileArr } from './mockData';
+import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';
 
@@ -16,7 +16,8 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, processStatus = '' } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
@@ -27,17 +28,19 @@ const OfferDetail = (props) => {
     companyHandbook: handbookProp,
     template: templateProp,
     includeOffer: includeOfferProp,
-
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
   } = tempData;
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
+  const [templateList, setTemplateList] = useState(
+    [...defaultTemplatesProp, ...customTemplatesProp] || [],
+  );
   const [form] = Form.useForm();
 
   // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
-  const [file, setFile] = useState(templateProp || '');
+  const [file, setFile] = useState(templateProp || {});
   const [agreement, setAgreement] = useState(agreementProp);
   const [handbook, setHandbook] = useState(handbookProp);
   // const [compensation, setCompensation] = useState(compensationProp);
@@ -48,11 +51,15 @@ const OfferDetail = (props) => {
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
+  // eslint-disable-next-line no-unused-vars
   const [disableAll, setDisableAll] = useState(false);
 
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
     let valid = true;
+    if (displayTemplate && file.id === undefined) {
+      valid = false;
+    }
     keys.map((key) => {
       const value = allFieldsValues[key];
       if (value === null || value === undefined || value.length === 0) {
@@ -63,19 +70,27 @@ const OfferDetail = (props) => {
 
     setAllFieldsFilled(valid);
 
+    return valid;
+  };
+
+  useEffect(() => {
+    const formValues = form.getFieldsValue();
+    checkAllFieldsValid({ ...formValues, agreement, handbook });
+  }, [displayTemplate]);
+
+  useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           checkMandatory: {
             ...checkMandatory,
-            filledOfferDetail: valid,
+            filledOfferDetail: allFieldsFilled,
           },
         },
       });
     }
-    return valid;
-  };
+  }, [allFieldsFilled]);
 
   const handleFormChange = (changedValues, allFieldsValues) => {
     const { includeOffer, compensation, currency, timeoff } = allFieldsValues;
@@ -128,7 +143,7 @@ const OfferDetail = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate,
-        currentStep,
+        // currentStep,
       },
     });
   }, [data.candidate]);
@@ -141,14 +156,26 @@ const OfferDetail = (props) => {
 
   useEffect(() => {
     setDefaultTemplates(defaultTemplatesProp);
+    setTemplateList([...defaultTemplatesProp, ...customTemplatesProp]);
   }, [defaultTemplatesProp]);
 
   useEffect(() => {
     setCustomTemplates(customTemplatesProp);
+    setTemplateList([...defaultTemplatesProp, ...customTemplatesProp]);
   }, [customTemplatesProp]);
 
-  const handleFileChange = (value) => {
-    setFile(value);
+  const handleTemplateChange = (_, option) => {
+    const { value = '', key = '' } = option;
+    setFile({
+      name: value,
+      id: key,
+    });
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        template: value,
+      },
+    });
   };
 
   const handleAgreementChange = () => {
@@ -159,12 +186,33 @@ const OfferDetail = (props) => {
     setHandbook((prevState) => !prevState);
   };
 
+  const onClickPrev = () => {
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: previousStep,
+      },
+    });
+  };
+
   const onClickNext = () => {
     if (!dispatch) {
       return;
     }
 
-    const { _id = '' } = data;
+    const { id: templateId = '' } = file;
+
+    const {
+      candidate = '',
+      _id = '',
+      fullName = '',
+      position = '',
+      employeeType: { name: classificationName = '' } = {},
+      workLocation: { name: workLocationName = '' } = {},
+      department: { name: departmentName = '' } = {},
+      title: { name: jobTitle = '' } = {},
+      reportingManager: { generalInfo: { firstName = '', lastName = '' } = {} } = {},
+    } = data;
     const formValues = form.getFieldsValue();
     const { compensation, currency, timeoff } = formValues;
 
@@ -202,6 +250,38 @@ const OfferDetail = (props) => {
         },
       },
     });
+
+    const offerData = {
+      candidateId: candidate,
+      templateId,
+      fullname: fullName,
+      position,
+      classification: classificationName,
+      workLocation: workLocationName,
+      department: departmentName,
+      jobTitle,
+      reportManager: `${firstName} ${lastName}`,
+    };
+
+    if (dispatch) {
+      dispatch({
+        type: 'candidateInfo/createFinalOfferEffect',
+        payload: offerData,
+      }).then((res) => {
+        const { data: { _id: templateID = '' } = {}, statusCode } = res;
+        if (statusCode !== 200) {
+          return;
+        }
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: nextStep,
+            offerTemplate: templateID,
+          },
+        });
+      });
+    }
   };
 
   const _renderStatus = () => {
@@ -226,7 +306,14 @@ const OfferDetail = (props) => {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
+              <Button
+                type="secondary"
+                onClick={onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+
               <Button
                 type="primary"
                 onClick={onClickNext}
@@ -254,6 +341,7 @@ const OfferDetail = (props) => {
         handbook: handbookProp,
         currency: currencyProp,
         timeoff: timeoffProp,
+        // template: templateProp,
       }}
       onValuesChange={handleFormChange}
     >
@@ -281,25 +369,41 @@ const OfferDetail = (props) => {
 
             {displayTemplate && (
               <div className={styles.wrapper1}>
+                {/* <Form.Item name="template"> */}
                 <Select
                   value={
                     <>
-                      <FileIcon type={getFileType(file)} />
-                      {file}
+                      <FileIcon type={getFileType(file.name)} />
+                      {file.name}
                     </>
                   }
                   className={styles.select}
-                  onChange={(value) => handleFileChange(value)}
+                  onChange={(value, option) => handleTemplateChange(value, option)}
+                  // onSelect={(option) => console.log(option)}
                   disabled={disableAll}
                 >
-                  {fileArr.map(({ name }, index) => (
-                    <Option value={name} key={index}>
-                      <div className={styles.iconWrapper}>
-                        <span>{name}</span>
-                      </div>
-                    </Option>
-                  ))}
+                  {templateList.map((fileItem) => {
+                    const { _id = '123', attachment: { name = '' } = {} } = fileItem;
+                    return (
+                      <Option value={name} key={_id}>
+                        <div className={styles.iconWrapper}>
+                          <span>{name}</span>
+                        </div>
+                      </Option>
+                    );
+                  })}
+                  {/* {fileArr.map((file, index) => {
+                    const { name } = file;
+                    return (
+                      <Option value={name} key={index}>
+                        <div className={styles.iconWrapper}>
+                          <span>{name}</span>
+                        </div>
+                      </Option>
+                    );
+                  })} */}
                 </Select>
+                {/* </Form.Item> */}
 
                 <Alert display type="remind" header="reminder">
                   <p>

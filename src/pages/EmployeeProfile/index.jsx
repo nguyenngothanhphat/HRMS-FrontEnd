@@ -22,8 +22,8 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount() {
-    // fetch employee by id
     const {
+      employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
     } = this.props;
@@ -76,7 +76,10 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchLocations' });
     dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
-    dispatch({ type: 'employeeProfile/fetchDepartments' });
+    dispatch({
+      type: 'employeeProfile/fetchDepartments',
+      payload: { company: employeeProfile.originData.compensationData.company },
+    });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
   }
@@ -105,6 +108,7 @@ class EmployeeProfile extends Component {
       { id: 7, name: 'Time & Scheduling', component: <Test /> },
       { id: 8, name: 'Benefit Plans', component: <BenefitTab /> },
     ];
+    const { location: { state: { location = '' } = {} } = {} } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
@@ -113,7 +117,7 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          <LayoutEmployeeProfile listMenu={listMenu} />
+          <LayoutEmployeeProfile listMenu={listMenu} employeeLocation={location} />
         </div>
       </PageContainer>
     );
