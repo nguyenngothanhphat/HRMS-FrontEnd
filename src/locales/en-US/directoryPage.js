@@ -1,7 +1,7 @@
 export default {
   'pages.directory.viewActivityLog': 'View activity logs',
   'pages.directory.directoryTab': 'Directory',
-  'pages.directory.organisationChartTab': 'Organisation Chart',
+  'pages.directory.organisationChartTab': 'Organization Chart',
   'pages.directory.directory.activeEmployeesTab': 'Active Employees',
   'pages.directory.directory.myTeamTab': 'My Team',
   'pages.directory.directory.viewProfile': 'View Profile',

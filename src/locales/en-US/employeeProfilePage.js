@@ -51,7 +51,7 @@ export default {
   'pages.employeeProfile.BenefitTab.components.kyc.adhaar': 'Adhaar Number',
   'pages.employeeProfile.BenefitTab.components.kyc.paytm': 'Paytm Number',
 
-  'pages.employeeProfile.performanceTab.syncWithEPASS': 'Click here to Sync With EPAS',
+  'pages.employeeProfile.performanceTab.syncWithEPAS': 'Click here to Sync With EPAS',
   'pages.employeeProfile.performanceHistory.performanceReview': 'Performance Reviews',
   'pages.employeeProfile.performanceHistory.performanceReview.date': 'Date',
   'pages.employeeProfile.performanceHistory.performanceReview.reportingTo': 'Reporting To',
@@ -59,8 +59,8 @@ export default {
     'Collaboration & TeamWork',
   'pages.employeeProfile.performanceHistory.performanceReview.problemSolving': 'Problem Solving',
   'pages.employeeProfile.performanceHistory.performanceReview.decisionMaking': 'Decision Making',
-  'pages.employeeProfile.performanceHistory.performanceReview.organising':
-    'Organising and Planning',
+  'pages.employeeProfile.performanceHistory.performanceReview.organizing':
+    'Organizing and Planning',
   'pages.employeeProfile.performanceHistory.projectHistory': 'Project History',
   'pages.employeeProfile.performanceHistory.projectHistory.projectName': 'Project Name',
   'pages.employeeProfile.performanceHistory.projectHistory.team': 'Team',
