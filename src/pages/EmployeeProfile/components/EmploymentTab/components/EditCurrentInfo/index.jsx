@@ -29,6 +29,9 @@ class EditCurrentInfo extends PureComponent {
           <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
             Location
           </Form.Item>
+          <Form.Item label="Joining Date" name="Title" rules={[{ required: true }]}>
+            Joining Date
+          </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.department' })}
             name="department"
@@ -52,6 +55,21 @@ class EditCurrentInfo extends PureComponent {
           <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
             Title
           </Form.Item>
+          <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
+            Title
+          </Form.Item>
+          <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
+            Title
+          </Form.Item>
+          <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
+            Title
+          </Form.Item>
+          <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
+            Title
+          </Form.Item>
+          <Form.Item label="Title" name="Title" rules={[{ required: true }]}>
+            Title
+          </Form.Item>
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter}>Cancel</div>
             <Button type="primary" htmlType="submit" className={styles.buttonFooter}>
@@ -59,7 +77,6 @@ class EditCurrentInfo extends PureComponent {
             </Button>
           </div>
         </Form>
-        {/* Custom Col Here */}
       </Row>
     );
   }
