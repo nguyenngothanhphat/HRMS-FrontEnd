@@ -24,9 +24,10 @@ export async function getListSkill() {
     method: 'POST',
   });
 }
-export async function getDepartmentList() {
+export async function getDepartmentList(payload) {
   return request('/api/department/list', {
     method: 'POST',
+    data: payload,
   });
 }
 export async function getEmployeeTypeList() {
@@ -213,6 +214,13 @@ export async function getBank(payload) {
 
 export async function getTax(payload) {
   return request('/api/tax/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTitleByDepartment(payload) {
+  return request('/api/title/list', {
     method: 'POST',
     data: payload,
   });

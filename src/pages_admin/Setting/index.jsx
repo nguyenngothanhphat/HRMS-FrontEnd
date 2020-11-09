@@ -17,7 +17,7 @@ class SettingTab extends PureComponent {
       type: 'adminSetting/fetchListRoles',
     });
     dispatch({
-      type: 'employee/fetchDepartment',
+      type: 'adminSetting/fetchDepartment',
     });
     dispatch({
       type: 'country/fetchListCountry',

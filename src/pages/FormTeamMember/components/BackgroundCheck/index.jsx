@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
-import { Row, Col, Typography, Spin } from 'antd';
+import { Row, Col, Typography, Spin, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
-import { map } from 'lodash';
+import { map, isEmpty } from 'lodash';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -28,11 +28,12 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, data, tableData, currentStep } }) => ({
+@connect(({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep } }) => ({
   tempData,
   data,
   tableData,
   currentStep,
+  checkMandatory,
 }))
 class BackgroundCheck extends Component {
   constructor(props) {
@@ -67,14 +68,8 @@ class BackgroundCheck extends Component {
     // save step
     const { currentStep } = this.props;
     const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    const { candidate = '' } = data;
+    const { candidate = '', processStatus } = data;
 
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        valueToFinalOffer: 0,
-      },
-    });
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
@@ -84,15 +79,19 @@ class BackgroundCheck extends Component {
         },
       });
     }
-
     if (data.documentChecklistSetting !== documentList) {
-      const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-
+      const arrToAdjust =
+        processStatus === 'DRAFT' && !isEmpty(documentList)
+          ? JSON.parse(JSON.stringify(documentList))
+          : JSON.parse(JSON.stringify(data.documentChecklistSetting));
+      console.log('arr', arrToAdjust);
+      console.log('process', processStatus);
+      console.log('documentList', documentList);
+      console.log('data', data.documentChecklistSetting);
       const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
       const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
       const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
       const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
-      // console.log('documnetList', documentList);
       const listSelectedA = arrA.map((x) => x.alias);
       const listSelectedB = arrB.map((x) => x.alias);
       const listSelectedC = arrC.map((x) => x.alias);
@@ -114,15 +113,11 @@ class BackgroundCheck extends Component {
       if (listSelectedD.length === arrToAdjust[3].data.length) {
         isCheckedD = true;
       }
-      // console.log('listSelectedA', listSelectedA);
-      // console.log('listSelectedB', listSelectedB);
-      // console.log('listSelectedC', listSelectedC);
-      // console.log('listSelectedD', listSelectedD);
 
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
-          documentList: data.documentChecklistSetting,
+          documentList: processStatus === 'DRAFT' ? documentList : data.documentChecklistSetting,
           identityProof: {
             ...identityProof,
             isChecked: isCheckedA,
@@ -149,11 +144,12 @@ class BackgroundCheck extends Component {
       });
     }
     window.addEventListener('unload', this.handleUnload, false);
+    this.checkBottomBar();
   }
 
   componentWillUnmount() {
     // const { data } = this.state;
-    // const { dispatch, currentStep } = this.props;
+    const { dispatch, tempData } = this.props;
     // console.log('current', currentStep);
     // const { _id } = data;
     // dispatch({
@@ -163,7 +159,13 @@ class BackgroundCheck extends Component {
     //     currentStep,
     //   },
     // });
-    this.handleUpdateByHR();
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        ...tempData,
+      },
+    });
+    // this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -193,13 +195,34 @@ class BackgroundCheck extends Component {
   };
 
   changeValueToFinalOffer = (e) => {
-    const { dispatch } = this.props;
+    const { dispatch, tempData, checkMandatory } = this.props;
     // console.log('e', e.target.value);
     if (e.target.value === 1) {
       dispatch({
-        type: 'candidateInfo/saveTemp',
+        type: 'candidateInfo/save',
         payload: {
-          valueToFinalOffer: 1,
+          tempData: {
+            ...tempData,
+            valueToFinalOffer: 1,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledBackgroundCheck: true,
+          },
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            valueToFinalOffer: 0,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledBackgroundCheck: false,
+          },
         },
       });
     }
@@ -504,6 +527,104 @@ class BackgroundCheck extends Component {
     }
   };
 
+  checkBottomBar = () => {
+    const {
+      tempData: { valueToFinalOffer, checkStatus },
+      checkMandatory,
+      dispatch,
+    } = this.props;
+    if (valueToFinalOffer === 1) {
+      checkStatus.filledBackgroundCheck = true;
+      console.log('a');
+    } else {
+      checkStatus.filledBackgroundCheck = false;
+      console.log('b');
+    }
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        checkMandatory: {
+          ...checkMandatory,
+          filledBackgroundCheck: checkStatus.filledBackgroundCheck,
+        },
+      },
+    });
+  };
+
+  _renderStatus = () => {
+    const { checkMandatory } = this.props;
+    const { filledBackgroundCheck } = checkMandatory;
+    return !filledBackgroundCheck ? (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    ) : (
+      <div className={styles.greenText}>
+        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
+      </div>
+    );
+  };
+
+  onClickPrev = () => {
+    const { currentStep } = this.props;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  _renderBottomBar = () => {
+    const { checkMandatory } = this.props;
+    const { filledBackgroundCheck } = checkMandatory;
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              {' '}
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledBackgroundCheck}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
+  onClickNext = () => {
+    const { currentStep } = this.props;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+        valueToFinalOffer: 1,
+      },
+    });
+  };
+
   render() {
     const {
       openModal,
@@ -551,6 +672,7 @@ class BackgroundCheck extends Component {
                         />
                       );
                     })}
+                  {this._renderBottomBar()}
                 </div>
               </Col>
               <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
@@ -570,6 +692,7 @@ class BackgroundCheck extends Component {
                   processStatus={processStatus}
                   valueToFinalOffer={valueToFinalOffer}
                   changeValueToFinalOffer={this.changeValueToFinalOffer}
+                  checkValidation={checkValidation}
                 />
               </Col>
             </Row>
