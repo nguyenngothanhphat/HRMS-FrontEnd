@@ -43,7 +43,7 @@ class AddEmployeeForm extends Component {
     this.formRef = React.createRef();
     this.state = {
       isDisabled: true,
-      // isDisabledDepartment: true,
+      isDisabledTitle: true,
     };
   }
 
@@ -51,11 +51,11 @@ class AddEmployeeForm extends Component {
     if ('statusAddEmployee' in props && props.statusAddEmployee) {
       if (props.company === '') {
         return {
-          // isDisabledDepartment: true,
+          isDisabledTitle: true,
           isDisabled: true,
         };
       }
-      // return { isDisabledDepartment: true };
+      return { isDisabledTitle: true };
     }
     return null;
   }
@@ -103,24 +103,18 @@ class AddEmployeeForm extends Component {
         company: _id,
       },
     });
-    dispatch({
-      type: 'employeesManagement/fetchJobTitleList',
-      payload: {
-        company: _id,
-      },
-    });
   };
 
   onChangeSelect = (type, value) => {
-    // const { dispatch } = this.props;
-    // const { company } = this.state;
+    const { dispatch } = this.props;
+    const { company } = this.state;
 
     switch (type) {
       case 'company':
         this.fetchData(value);
         this.setState({
           isDisabled: false,
-          // company: value,
+          company: value,
         });
         this.formRef.current.setFieldsValue({
           location: undefined,
@@ -128,22 +122,22 @@ class AddEmployeeForm extends Component {
           manager: undefined,
         });
         break;
-      case 'location':
-        // this.setState(
-        //   {
-        //     isDisabledDepartment: false,
-        //   },
-        //   this.formRef.current.setFieldsValue({
-        //     department: undefined,
-        //   }),
-        // );
-        // dispatch({
-        //   type: 'employeesManagement/fetchDepartmentList',
-        //   payload: {
-        //     company,
-        //     location: value,
-        //   },
-        // });
+      case 'department':
+        this.setState(
+          {
+            isDisabledTitle: false,
+          },
+          this.formRef.current.setFieldsValue({
+            title: undefined,
+          }),
+        );
+        dispatch({
+          type: 'employeesManagement/fetchJobTitleList',
+          payload: {
+            company,
+            department: value,
+          },
+        });
         break;
       default:
         break;
@@ -175,7 +169,7 @@ class AddEmployeeForm extends Component {
     this.setState(
       {
         isDisabled,
-        // isDisabledDepartment: true,
+        isDisabledTitle: true,
       },
       () => handleCancel(),
     );
@@ -229,9 +223,9 @@ class AddEmployeeForm extends Component {
       loadingManager,
       company,
     } = this.props;
-    const { isDisabled } = this.state;
+    const { isDisabled, isDisabledTitle } = this.state;
     return (
-      <div className={styles.addEmployee__form}>
+      <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
           name="formAddEmployee"
           requiredMark={false}
@@ -251,7 +245,7 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^[a-zA-Z0-9\s_.-]*$/,
+                pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
                 message: 'Employee ID is not a validate ID!',
               },
             ]}
@@ -264,7 +258,7 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^[a-zA-Z ]*$/,
+                pattern: /^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$/,
                 message: 'Name is not a validate name!',
               },
             ]}
@@ -276,7 +270,10 @@ class AddEmployeeForm extends Component {
             name="joinDate"
             rules={[{ required: true }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+            />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
@@ -302,6 +299,7 @@ class AddEmployeeForm extends Component {
               allowClear
               showArrow
               style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               placeholder="Select Roles"
             >
               {rolesList.map((item) => (
@@ -335,6 +333,7 @@ class AddEmployeeForm extends Component {
                 placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
                 showArrow
                 showSearch
+                getPopupContainer={() => document.getElementById('addEmployee__form')}
                 onChange={(value) => this.onChangeSelect('company', value)}
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -357,7 +356,7 @@ class AddEmployeeForm extends Component {
               showSearch
               disabled={isDisabled || loadingLocation}
               loading={loadingLocation}
-              onChange={(value) => this.onChangeSelect('location', value)}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -382,6 +381,8 @@ class AddEmployeeForm extends Component {
               showSearch
               loading={loadingDepartment}
               disabled={isDisabled || loadingDepartment}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              onChange={(value) => this.onChangeSelect('department', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -400,8 +401,9 @@ class AddEmployeeForm extends Component {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
-              disabled={isDisabled || loadingTitle}
+              disabled={isDisabledTitle || loadingTitle}
               loading={loadingTitle}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -423,6 +425,7 @@ class AddEmployeeForm extends Component {
               showSearch
               disabled={isDisabled || loadingManager}
               loading={loadingManager}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
