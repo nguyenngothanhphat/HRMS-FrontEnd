@@ -89,6 +89,7 @@ class Position extends PureComponent {
 
   handleAddNewValue = (newValue) => {
     const { dispatch } = this.props;
+    if (newValue === '') return;
     dispatch({
       type: 'adminSetting/addPosition',
       payload: { name: newValue },
