@@ -248,7 +248,7 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: ['P_ONBOARDING_VIEW'],
+            authority: ['hr'],
           },
           {
             path: '/employee-onboarding/CreateFieldSection',
