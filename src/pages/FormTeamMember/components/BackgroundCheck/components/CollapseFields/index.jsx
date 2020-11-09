@@ -80,6 +80,7 @@ class CollapseField extends PureComponent {
                 processStatus={processStatus}
                 handleValidation={handleValidation}
                 checkValidation={checkValidation}
+                tempData={tempData}
               />
             ) : (
               <></>

@@ -22,7 +22,7 @@ export default class OptionsHeader extends PureComponent {
               <Col xs={5}>
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
-                  <Select onChange={() => {}}>
+                  <Select placeholder="Select an user" onChange={() => {}}>
                     <Option value="User A">User A</Option>
                     <Option value="User B">User B</Option>
                   </Select>
@@ -76,12 +76,12 @@ export default class OptionsHeader extends PureComponent {
                   gutter={['20', '20']}
                 >
                   <Col>
-                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
-                  </Col>
-                  <Col>
                     <Button className={styles.submitBtn} htmlType="submit">
                       Get data
                     </Button>
+                  </Col>
+                  <Col>
+                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
                   </Col>
                 </Row>
               </Col>

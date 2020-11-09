@@ -45,9 +45,9 @@ const CollapseRow = (props) => {
       <div onClick={handleUploadClick} className={styles.uploadButton}>
         <img src={UploadIcon} alt="upload" />
       </div>
-      <Dropdown overlay={menu}>
+      {/* <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
-      </Dropdown>
+      </Dropdown> */}
     </div>
   );
 
@@ -101,27 +101,31 @@ const CollapseRow = (props) => {
         header={headerWithArrowIcon(open, row.kind)}
         extra={statusAndButtons()}
       >
-        {row.files.map((file) => (
-          <Row key={file.id} className={styles.eachRow}>
-            <Col span={8} className={styles.fileName}>
-              <div onClick={() => onFileClick(file.id)}>
-                {identifyImageOrPdf(file.source) === 1 ? (
-                  <img src={PDFIcon} alt="file" className={styles.fileIcon} />
-                ) : (
-                  <img src={ImageIcon} alt="img" className={styles.fileIcon} />
-                )}
-                <span>{file.fileName}</span>
-              </div>
-            </Col>
-            <Col span={7}>{file.generatedBy}</Col>
-            <Col span={7}>{file.date}</Col>
-            <Col span={2}>
-              <div className={styles.downloadFile}>
-                <DownloadFile content={renderDownloadIcon()} url={file.source} />
-              </div>
-            </Col>
-          </Row>
-        ))}
+        {row.files.map((file) => {
+          const { fileName = '' } = file;
+          if (fileName === '') return null;
+          return (
+            <Row key={file.id} className={styles.eachRow}>
+              <Col span={8} className={styles.fileName}>
+                <div onClick={() => onFileClick(file.id)}>
+                  {identifyImageOrPdf(file.source) === 1 ? (
+                    <img src={PDFIcon} alt="file" className={styles.fileIcon} />
+                  ) : (
+                    <img src={ImageIcon} alt="img" className={styles.fileIcon} />
+                  )}
+                  <span>{file.fileName}</span>
+                </div>
+              </Col>
+              <Col span={7}>{file.generatedBy}</Col>
+              <Col span={7}>{file.date}</Col>
+              <Col span={2}>
+                <div className={styles.downloadFile}>
+                  <DownloadFile content={renderDownloadIcon()} url={file.source} />
+                </div>
+              </Col>
+            </Row>
+          );
+        })}
       </Panel>
     </Collapse>
   );

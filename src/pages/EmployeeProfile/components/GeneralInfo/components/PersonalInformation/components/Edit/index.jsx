@@ -143,7 +143,7 @@ class Edit extends PureComponent {
             name="personalNumber"
             rules={[
               {
-                pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                pattern: /^[+]*[\d]{0,10}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
               },
             ]}
@@ -163,7 +163,26 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item label="Blood Group" name="Blood">
-            <Input className={styles.inputForm} />
+            <Select
+              className={styles.selectForm}
+              onDropdownVisibleChange={this.handleDropdown}
+              suffixIcon={
+                dropdown ? (
+                  <UpOutlined className={styles.arrowUP} />
+                ) : (
+                  <DownOutlined className={styles.arrowDown} />
+                )
+              }
+            >
+              <Option value="O-">O-</Option>
+              <Option value="O+">O+</Option>
+              <Option value="A-">A-</Option>
+              <Option value="A+">A+</Option>
+              <Option value="B+">B+</Option>
+              <Option value="B-">B-</Option>
+              <Option value="AB+">AB+</Option>
+              <Option value="AB-">AB-</Option>
+            </Select>
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select

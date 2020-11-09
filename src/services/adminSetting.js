@@ -31,3 +31,23 @@ export async function getPermissionByIdRole(payload) {
     data: payload,
   });
 }
+
+export async function DepartmentFilter() {
+  return request('/api/department/list', {
+    method: 'POST',
+  });
+}
+
+export async function addPosition(payload) {
+  return request('/api/title/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addDepartment(payload) {
+  return request('/api/department/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

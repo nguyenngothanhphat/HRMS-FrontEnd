@@ -3,9 +3,12 @@ import { notification } from 'antd';
 import {
   getListRoles,
   getListTitle,
+  DepartmentFilter,
   getListPermissionOfRole,
   updateRoleWithPermission,
   getPermissionByIdRole,
+  addPosition,
+  addDepartment,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -16,11 +19,13 @@ const adminSetting = {
       listTitle: [],
       listRoles: [],
       listPermission: [],
+      department: [],
     },
     tempData: {
       listTitle: [],
       formatData: [],
       listPermission: [],
+      department: [],
     },
   },
   effects: {
@@ -41,12 +46,26 @@ const adminSetting = {
       }
     },
     *fetchListTitle(_, { call, put }) {
+      let resp = [];
       try {
         const response = yield call(getListTitle);
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
+        resp = listTitle;
         yield put({ type: 'saveOrigin', payload: { listTitle } });
         yield put({ type: 'saveTemp', payload: { listTitle } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+    *fetchDepartment(_, { call, put }) {
+      try {
+        const response = yield call(DepartmentFilter);
+        const { statusCode, data: department = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { department } });
+        yield put({ type: 'saveTemp', payload: { department } });
       } catch (errors) {
         dialog(errors);
       }
@@ -83,6 +102,32 @@ const adminSetting = {
         notification.success({
           message,
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addPosition({ payload: { name = '' } }, { call, put }) {
+      try {
+        const response = yield call(addPosition, { name });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchListTitle' });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addDepartment({ payload: { name = '' } }, { call, put }) {
+      try {
+        const response = yield call(addDepartment, { name });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchDepartment' });
       } catch (errors) {
         dialog(errors);
       }

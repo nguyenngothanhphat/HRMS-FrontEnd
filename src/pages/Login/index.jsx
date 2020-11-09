@@ -5,9 +5,10 @@ import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, login: { messageError = '' } = {} }) => ({
   loading: loading.effects['login/login'],
   loadingLoginThirdParty: loading.effects['login/loginThirdParty'],
+  messageError,
 }))
 class FormLogin extends Component {
   onFinish = (values) => {
@@ -49,7 +50,13 @@ class FormLogin extends Component {
   };
 
   render() {
-    const { loadingLoginThirdParty } = this.props;
+    const { loadingLoginThirdParty, messageError = '' } = this.props;
+    const checkValidationEmail = messageError === 'User not found' ? 'error' : undefined;
+    const messageValidationEmail =
+      messageError === 'User not found' ? 'User does not exist' : undefined;
+    const checkValidationPsw = messageError === 'Invalid password' ? 'error' : undefined;
+    const messageValidationPsw =
+      messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
@@ -68,6 +75,8 @@ class FormLogin extends Component {
           <Form.Item
             label={formatMessage({ id: 'pages.login.emailLabel' })}
             name="email"
+            validateStatus={checkValidationEmail}
+            help={messageValidationEmail}
             rules={[
               {
                 required: true,
@@ -79,11 +88,13 @@ class FormLogin extends Component {
               },
             ]}
           >
-            <Input className={styles.InputEmail} />
+            <Input className={styles.inputEmail} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages.login.passwordLabel' })}
             name="password"
+            validateStatus={checkValidationPsw}
+            help={messageValidationPsw}
             rules={[
               {
                 required: true,

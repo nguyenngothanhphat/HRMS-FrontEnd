@@ -118,6 +118,7 @@ class HandleChanges extends PureComponent {
 
   onChange = (value, type) => {
     const { changeData } = this.state;
+    const { dispatch, employeeProfile } = this.props;
     switch (type) {
       case 'title':
         this.setState({
@@ -154,7 +155,19 @@ class HandleChanges extends PureComponent {
         break;
       case 'department':
         this.setState({
-          changeData: { ...changeData, stepThree: { ...changeData.stepThree, department: value } },
+          changeData: {
+            ...changeData,
+            stepThree: { ...changeData.stepThree, department: value },
+            stepTwo: { ...changeData.stepTwo, title: '' },
+            newTitle: '',
+          },
+        });
+        dispatch({
+          type: 'employeeProfile/fetchTitleByDepartment',
+          payload: {
+            company: employeeProfile.originData.compensationData.company,
+            department: value,
+          },
         });
         break;
       case 'reportTo':
