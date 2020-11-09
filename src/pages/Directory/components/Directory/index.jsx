@@ -141,7 +141,7 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  initDataTable = () => {
+  renderHrGloBal = () => {
     const { dispatch, currentUser } = this.props;
     const { company } = currentUser;
     dispatch({
@@ -170,6 +170,50 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  renderHrTeam = () => {
+    const { dispatch, currentUser } = this.props;
+    const { company, location } = currentUser;
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeInActive',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchRolesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
+    });
+  };
+
+  initDataTable = () => {
+    const { currentUser } = this.props;
+    const { roles } = currentUser;
+    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    if (filterRoles.length > 0) {
+      console.log(1234);
+      return this.renderHrGloBal();
+    }
+    console.log(3456);
+    return this.renderHrTeam();
+  };
+
   generatePermissions = (roles) => {
     let groupPermissions = [];
 
@@ -185,7 +229,7 @@ class DirectoryComponent extends PureComponent {
     return permissionsUnique;
   };
 
-  getDataTable = (params, tabId) => {
+  ChangeTabHrGloBal = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
@@ -217,6 +261,50 @@ class DirectoryComponent extends PureComponent {
         payload,
       });
     }
+  };
+
+  ChangeTabHrTeam = (params, tabId) => {
+    const {
+      tabList: { active, myTeam, inActive },
+    } = this.state;
+    const { dispatch, currentUser } = this.props;
+    const { company, location } = currentUser;
+    const { name, department, employeeType } = params;
+    const payload = {
+      company: company._id,
+      name,
+      department,
+      location: [location._id],
+      employeeType,
+    };
+    if (tabId === active) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload,
+      });
+    }
+    if (tabId === myTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload,
+      });
+    }
+    if (tabId === inActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload,
+      });
+    }
+  };
+
+  getDataTable = (params, tabId) => {
+    const { currentUser } = this.props;
+    const { roles } = currentUser;
+    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    if (filterRoles.length > 0) {
+      return this.ChangeTabHrGloBal(params, tabId);
+    }
+    return this.ChangeTabHrTeam(params, tabId);
   };
 
   renderListEmployee = (tabId) => {
