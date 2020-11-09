@@ -55,7 +55,7 @@ class SettingTab extends PureComponent {
         name: formatMessage({ id: 'pages_admin.setting.Location' }),
         component: <Location />,
       },
-      { id: 5, name: formatMessage({ id: 'pages_admin.setting.Emailtemplates' }), component: '' },
+      // { id: 5, name: formatMessage({ id: 'pages_admin.setting.Emailtemplates' }), component: '' },
     ];
     return (
       <PageContainer>
