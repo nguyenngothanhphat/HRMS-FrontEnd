@@ -171,6 +171,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/offboarding-management',
+            name: 'offBoardingManagement',
+            icon: '/assets/images/timeOff.svg',
+            component: '../pages_admin/OffBoardingManagement',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/documents/upload-document',
             name: 'uploadDocument',
             hideInMenu: true,
