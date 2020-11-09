@@ -476,6 +476,7 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
+      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);

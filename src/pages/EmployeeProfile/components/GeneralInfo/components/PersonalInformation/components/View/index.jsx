@@ -49,6 +49,8 @@ class View extends PureComponent {
               {item.value}
             </Col>
             {item.label === 'Personal Number' || item.label === 'Personal Email' ? (
+              ''
+            ) : (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
@@ -66,8 +68,6 @@ class View extends PureComponent {
                   </Radio.Group>
                 </div>
               </Col>
-            ) : (
-              ''
             )}
           </Fragment>
         ))}

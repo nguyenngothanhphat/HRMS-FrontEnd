@@ -141,7 +141,7 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  initDataTable = () => {
+  renderHrGloBal = () => {
     const { dispatch, currentUser } = this.props;
     const { company } = currentUser;
     dispatch({
@@ -170,6 +170,50 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  renderHrTeam = () => {
+    const { dispatch, currentUser } = this.props;
+    const { company, location } = currentUser;
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeInActive',
+      payload: {
+        company: company._id,
+        location: [location._id],
+      },
+    });
+    dispatch({
+      type: 'employeesManagement/fetchRolesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
+    });
+  };
+
+  initDataTable = () => {
+    const { currentUser } = this.props;
+    const { roles } = currentUser;
+    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    if (filterRoles.length > 0) {
+      console.log(1234);
+      return this.renderHrGloBal();
+    }
+    console.log(3456);
+    return this.renderHrTeam();
+  };
+
   generatePermissions = (roles) => {
     let groupPermissions = [];
 
@@ -185,7 +229,7 @@ class DirectoryComponent extends PureComponent {
     return permissionsUnique;
   };
 
-  getDataTable = (params, tabId) => {
+  ChangeTabHrGloBal = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
@@ -217,6 +261,50 @@ class DirectoryComponent extends PureComponent {
         payload,
       });
     }
+  };
+
+  ChangeTabHrTeam = (params, tabId) => {
+    const {
+      tabList: { active, myTeam, inActive },
+    } = this.state;
+    const { dispatch, currentUser } = this.props;
+    const { company, location } = currentUser;
+    const { name, department, employeeType } = params;
+    const payload = {
+      company: company._id,
+      name,
+      department,
+      location: [location._id],
+      employeeType,
+    };
+    if (tabId === active) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload,
+      });
+    }
+    if (tabId === myTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload,
+      });
+    }
+    if (tabId === inActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload,
+      });
+    }
+  };
+
+  getDataTable = (params, tabId) => {
+    const { currentUser } = this.props;
+    const { roles } = currentUser;
+    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    if (filterRoles.length > 0) {
+      return this.ChangeTabHrGloBal(params, tabId);
+    }
+    return this.ChangeTabHrTeam(params, tabId);
   };
 
   renderListEmployee = (tabId) => {
@@ -372,12 +460,17 @@ class DirectoryComponent extends PureComponent {
     const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
     const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
     const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+    const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
+    const showLocationInActive =
+      'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
 
     const groupPermissions = this.generatePermissions(roles);
 
     const findIndexActive = groupPermissions.indexOf(tabActive);
     const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
     const findIndexInActive = groupPermissions.indexOf(tabInActive);
+    const findIndexShowLocationActive = groupPermissions.indexOf(showLocationActive);
+    const findIndexShowLocationInActive = groupPermissions.indexOf(showLocationInActive);
 
     return (
       <>
@@ -386,6 +479,7 @@ class DirectoryComponent extends PureComponent {
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
             loadingListActive,
+            findIndexShowLocationActive,
           )}
         {findIndexMyTeam !== -1 &&
           !checkRoleEmployee &&
@@ -412,14 +506,16 @@ class DirectoryComponent extends PureComponent {
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,
             loadingListInActive,
+            findIndexShowLocationInActive,
           )}
       </>
     );
   };
 
-  renderTab = (tabName, key, loading) => {
+  renderTab = (tabName, key, loading, indexShowLocation) => {
     const { checkRoleEmployee } = this.props;
     const {
+      tabId,
       collapsed,
       changeTab,
       tabList: { myTeam },
@@ -441,6 +537,8 @@ class DirectoryComponent extends PureComponent {
               onHandleChange={this.handleChange}
               FormBox={this.handleFormBox}
               changeTab={changeTab}
+              tabName={tabId}
+              checkLocation={indexShowLocation}
             />
           )}
         </Layout>
