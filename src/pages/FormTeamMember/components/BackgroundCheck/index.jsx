@@ -163,6 +163,8 @@ class BackgroundCheck extends Component {
       type: 'candidateInfo/saveTemp',
       payload: {
         ...tempData,
+        employer: '',
+        checkValidation: undefined,
       },
     });
     // this.handleUpdateByHR();
@@ -231,13 +233,13 @@ class BackgroundCheck extends Component {
   handleSendEmail = () => {
     const { dispatch } = this.props;
     const {
-      tempData: { documentList, employer },
+      tempData: { documentList, employer, employeeType },
+      data,
       data: {
         department,
         workLocation,
         reportingManager,
         title,
-        employeeType,
         _id,
         fullName,
         position,
@@ -248,6 +250,7 @@ class BackgroundCheck extends Component {
       },
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    console.log('data', data);
     newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -269,7 +272,7 @@ class BackgroundCheck extends Component {
           candidate: _id,
           fullName,
           position,
-          employeeType: employeeType._id,
+          employeeType,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
