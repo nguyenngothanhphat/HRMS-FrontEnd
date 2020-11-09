@@ -30,7 +30,7 @@ class TableCandidates extends PureComponent {
         dataIndex: 'fullName',
         align: 'left',
         fixed: 'left',
-        width: '15%',
+        width: '12%',
         render: (fullName) => <span className={styles.fullName}>{fullName}</span>,
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
@@ -43,11 +43,14 @@ class TableCandidates extends PureComponent {
         align: 'left',
         className: `${styles.rookieId}`,
         width: '10%',
-        // defaultSortOrder: 'ascend',
-        // sortDirections: ['ascend', 'descend', 'ascend'],
-        // sorter: {
-        //   compare: (a, b) => a.userId - b.userId,
-        // },
+      },
+
+      {
+        title: 'Private email',
+        dataIndex: 'privateEmail',
+        align: 'left',
+        render: (privateEmail) => <span>{privateEmail || ''}</span>,
+        width: '20%',
       },
 
       {
@@ -66,7 +69,7 @@ class TableCandidates extends PureComponent {
         title: 'Position',
         dataIndex: 'position',
         align: 'left',
-        width: '17%',
+        width: '12%',
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => a.email.localeCompare(b.email),
