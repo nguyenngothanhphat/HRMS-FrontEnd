@@ -224,8 +224,9 @@ const documentsManagement = {
         const response = yield call(deleteDocument, {
           id,
         });
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
+        notification.success({ message });
       } catch (errors) {
         dialog(errors);
       }
