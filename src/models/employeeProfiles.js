@@ -38,6 +38,18 @@ import {
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
+const documentCategories = [
+  { employeeGroup: 'Agreement', parentEmployeeGroup: ' Qualifications/Certification' },
+  { employeeGroup: 'Agreement', parentEmployeeGroup: 'PR Reports' },
+  { employeeGroup: 'Employee Handbook', parentEmployeeGroup: 'Handbooks & Agreements' },
+  { employeeGroup: 'Agreements', parentEmployeeGroup: 'Handbooks & Agreements' },
+  { employeeGroup: 'Identity', parentEmployeeGroup: 'Indentification Documents' },
+  { employeeGroup: 'Consent Forms', parentEmployeeGroup: 'Hiring Documents' },
+  { employeeGroup: 'Tax Documents', parentEmployeeGroup: 'Hiring Documents' },
+  { employeeGroup: 'Employment Eligibility', parentEmployeeGroup: 'Hiring Documents' },
+  { employeeGroup: 'Offer Letter', parentEmployeeGroup: 'Hiring Documents' },
+];
+
 const employeeProfile = {
   namespace: 'employeeProfile',
   state: {
@@ -80,7 +92,7 @@ const employeeProfile = {
       taxData: {},
     },
     listPRReport: [],
-    saveDocuments: [],
+    saveDocuments: documentCategories,
     newDocument: {},
     documentDetail: {},
     groupViewingDocuments: [],
@@ -528,6 +540,17 @@ const employeeProfile = {
         const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
+          type: 'saveDocuments',
+          payload: { saveDocuments },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *clearSaveDocuments(_, { put }) {
+      try {
+        const saveDocuments = documentCategories;
+        yield put({
           type: 'save',
           payload: { saveDocuments },
         });
@@ -535,6 +558,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+
     *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
       try {
         const response = yield call(getDocumentById, {
@@ -770,6 +794,15 @@ const employeeProfile = {
           ...originData,
           ...action.payload,
         },
+      };
+    },
+    saveDocuments(state, action) {
+      const { saveDocuments } = state;
+      const { saveDocuments: saveFetchDocs = {} } = action.payload;
+      const result = saveDocuments.concat(saveFetchDocs).flat();
+      return {
+        ...state,
+        saveDocuments: result,
       };
     },
     saveTemp(state, action) {
