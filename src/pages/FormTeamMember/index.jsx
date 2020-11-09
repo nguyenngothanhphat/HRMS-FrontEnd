@@ -38,6 +38,15 @@ class FormTeamMember extends PureComponent {
         payload: {
           rookieID: reId,
         },
+      }).then(({ data: { currentStep } }) => {
+        if (currentStep >= 4) {
+          dispatch({
+            type: 'candidateInfo/saveTemp',
+            payload: {
+              valueToFinalOffer: 1,
+            },
+          });
+        }
       });
       if (company._id.length > 0) {
         dispatch({
@@ -226,13 +235,14 @@ class FormTeamMember extends PureComponent {
       candidateInfo,
       loading1 = false,
       candidateInfo: { data: { _id: candidateId = '' } } = {},
+      location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
     const check = !loading1 && candidateId !== '';
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
     } = candidateInfo;
-    const title = action === 'add' ? 'Add a team member' : `Review team member [${reId}]`;
+    const title = isAddNew ? 'Add team member' : `Review team member [${reId}]`;
     const listMenu = [
       {
         id: 1,

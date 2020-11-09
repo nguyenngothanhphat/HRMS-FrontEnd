@@ -171,6 +171,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/offboarding-management',
+            name: 'offBoardingManagement',
+            icon: '/assets/images/timeOff.svg',
+            component: '../pages_admin/OffBoardingManagement',
+            authority: ['admin-sa'],
+          },
+          {
             path: '/documents/upload-document',
             name: 'uploadDocument',
             hideInMenu: true,
@@ -202,14 +209,14 @@ const routes = [
             path: '/time-off/Compoff-request',
             name: 'Request for Compoff',
             hideInMenu: true,
-            component: './TimeOff/components/compoffRequest',
+            component: './TimeOff/components/CompoffRequest',
             // authority: ['employee'],
           },
           {
             path: '/time-off/Leave-request',
             name: 'Apply for timeoff',
             hideInMenu: true,
-            component: './TimeOff/components/leaveRequest',
+            component: './TimeOff/components/LeaveRequest',
             // authority: ['employee'],
           },
           {

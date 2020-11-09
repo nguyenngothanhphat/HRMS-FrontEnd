@@ -12,6 +12,7 @@ import {
 const employeeSetting = {
   namespace: 'employeeSetting',
   state: {
+    isAbleToSubmit: false,
     defaultTemplateList: [],
     customTemplateList: [],
     currentTemplate: {},
@@ -88,12 +89,20 @@ const employeeSetting = {
             message: 'Upload Image Successfully',
           });
         }
-        yield put({
-          type: 'saveTemplate',
-          payload: { signature: data[0].id },
-        });
+        if (data.length > 0) {
+          yield put({
+            type: 'saveTemplate',
+            payload: { signature: data[0].id },
+          });
+        } else {
+          yield put({
+            type: 'saveTemplate',
+            payload: { signature: '' },
+          });
+        }
       } catch (errors) {
         dialog(errors);
+        alert(errors);
       }
       return response;
     },
