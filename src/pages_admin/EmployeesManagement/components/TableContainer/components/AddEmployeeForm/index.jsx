@@ -225,7 +225,7 @@ class AddEmployeeForm extends Component {
     } = this.props;
     const { isDisabled, isDisabledTitle } = this.state;
     return (
-      <div className={styles.addEmployee__form}>
+      <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
           name="formAddEmployee"
           requiredMark={false}
@@ -245,7 +245,7 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^[a-zA-Z0-9\s_.-]*$/,
+                pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
                 message: 'Employee ID is not a validate ID!',
               },
             ]}
@@ -258,7 +258,7 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^[a-zA-Z ]*$/,
+                pattern: /^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$/,
                 message: 'Name is not a validate name!',
               },
             ]}
@@ -270,7 +270,10 @@ class AddEmployeeForm extends Component {
             name="joinDate"
             rules={[{ required: true }]}
           >
-            <DatePicker style={{ width: '100%' }} />
+            <DatePicker
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+            />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
@@ -296,6 +299,7 @@ class AddEmployeeForm extends Component {
               allowClear
               showArrow
               style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               placeholder="Select Roles"
             >
               {rolesList.map((item) => (
@@ -329,6 +333,7 @@ class AddEmployeeForm extends Component {
                 placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
                 showArrow
                 showSearch
+                getPopupContainer={() => document.getElementById('addEmployee__form')}
                 onChange={(value) => this.onChangeSelect('company', value)}
                 filterOption={(input, option) =>
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -351,6 +356,7 @@ class AddEmployeeForm extends Component {
               showSearch
               disabled={isDisabled || loadingLocation}
               loading={loadingLocation}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -375,6 +381,7 @@ class AddEmployeeForm extends Component {
               showSearch
               loading={loadingDepartment}
               disabled={isDisabled || loadingDepartment}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               onChange={(value) => this.onChangeSelect('department', value)}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -396,6 +403,7 @@ class AddEmployeeForm extends Component {
               showSearch
               disabled={isDisabledTitle || loadingTitle}
               loading={loadingTitle}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -417,6 +425,7 @@ class AddEmployeeForm extends Component {
               showSearch
               disabled={isDisabled || loadingManager}
               loading={loadingManager}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
