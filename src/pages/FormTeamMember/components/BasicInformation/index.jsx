@@ -153,7 +153,7 @@ class BasicInformation extends PureComponent {
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/updateByHR',
+      type: 'candidateInfo/submitBasicInfo',
       payload: {
         fullName: values.fullName,
         privateEmail: values.privateEmail,
