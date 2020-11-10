@@ -269,7 +269,6 @@ class BackgroundCheck extends Component {
       },
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
-    console.log('data', data);
     newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -346,8 +345,69 @@ class BackgroundCheck extends Component {
         isMarkAsDone: true,
       },
     });
+    // Modify
+    const {
+      tempData: { documentList, employer, employeeType },
+      data,
+      data: {
+        department,
+        workLocation,
+        reportingManager,
+        title,
+        _id,
+        fullName,
+        position,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+      },
+    } = this.state;
+    const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    newArrToAdjust[3].employer = employer;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        newArrToAdjust,
+      },
+    });
+
     this.setState({
       openModal: true,
+    });
+
+    dispatch({
+      type: 'candidateInfo/submitPhase1Effect',
+      payload: {
+        candidate: _id,
+        fullName,
+        position,
+        employeeType,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 2,
+        generatedLink: window.location.href,
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            isMarkAsDone: true,
+          },
+        });
+      }
     });
   };
 
