@@ -225,3 +225,17 @@ export async function getTitleByDepartment(payload) {
     data: payload,
   });
 }
+
+export async function getLocationsByCompany(payload) {
+  return request('/api/location/get-by-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateEmployment(payload) {
+  return request('/api/employee/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

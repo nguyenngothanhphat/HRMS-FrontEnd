@@ -42,6 +42,41 @@ class EmploymentTab extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    const {
+      employeeProfile: { isUpdateEmployment = false },
+    } = props;
+
+    if (isUpdateEmployment) {
+      console.log('xxxx');
+      return {
+        isEdit: false,
+      };
+    }
+    return null;
+  }
+
+  componentDidMount() {
+    const { employeeProfile, dispatch } = this.props;
+    const { department, company } = employeeProfile.originData.employmentData;
+    const payload = {
+      company: company._id,
+      department: department._id,
+    };
+
+    dispatch({
+      type: 'employeeProfile/fetchTitleByDepartment',
+      payload,
+    });
+
+    dispatch({
+      type: 'employeeProfile/fetchLocationsByCompany',
+      payload: {
+        company: company._id,
+      },
+    });
+  }
+
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
     this.setState({ current: 0 });
@@ -113,12 +148,9 @@ class EmploymentTab extends Component {
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title}>
-            <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
+            <div>Employment & Compensation</div>
             {isEdit ? (
-              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
-                <img alt="" src={path} />
-                <div>Cancel & Return</div>
-              </div>
+              <div style={{ display: 'flex' }} />
             ) : (
               <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
                 <img alt="" src={edit} />
@@ -127,7 +159,7 @@ class EmploymentTab extends Component {
             )}
           </div>
           {isEdit ? (
-            <EditCurrentInfo />
+            <EditCurrentInfo handleCancel={this.handleEditCurrentInfo} />
           ) : (
             <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
           )}
