@@ -1,8 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
+import OnboardingEmpty from './components/OnboardingEmpty';
 
-class OnboardingOverview extends PureComponent {
+@connect(({ onboard: { menu = {} } = {} }) => ({
+  menu,
+}))
+class OnboardingOverview extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     if (!dispatch) {
@@ -15,23 +19,14 @@ class OnboardingOverview extends PureComponent {
   }
 
   render() {
-    const { menu = {} } = this.props;
-    const { onboardingOverviewTab = {} } = menu;
-    const { listMenu = [] } = onboardingOverviewTab;
-
+    const { menu: { onboardingOverviewTab: { listMenu = [] } = {} } = {} } = this.props;
+    const checkEmpty = listMenu.map((item) => item.quantity).reduce((a, b) => a + b, 0);
     return (
-      <div>
-        <OnboardingLayout listMenu={listMenu} />
-      </div>
+      <Fragment>
+        {checkEmpty === 0 ? <OnboardingEmpty /> : <OnboardingLayout listMenu={listMenu} />}
+      </Fragment>
     );
   }
 }
 
-// export default OnboardingOverview;
-export default connect((state) => {
-  const { onboard = {} } = state;
-  const { menu = {} } = onboard;
-  return {
-    menu,
-  };
-})(OnboardingOverview);
+export default OnboardingOverview;
