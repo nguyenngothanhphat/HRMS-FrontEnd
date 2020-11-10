@@ -60,116 +60,99 @@ class BackgroundCheck extends Component {
     const {
       data = {},
       tempData: {
-        documentList,
         identityProof,
         addressProof,
         educational,
         technicalCertification: { poe },
       },
+      tempData,
       dispatch,
     } = this.props;
-    // save step
     const { currentStep } = this.props;
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '', processStatus } = data;
-
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
-          currentStep: currentStepLocal,
+          currentStep,
         },
       });
     }
-    if (data.documentChecklistSetting !== documentList) {
-      const arrToAdjust =
-        processStatus === 'DRAFT' && !isEmpty(documentList)
-          ? JSON.parse(JSON.stringify(documentList))
-          : JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      console.log('arr', arrToAdjust);
-      console.log('process', processStatus);
-      console.log('documentList', documentList);
-      console.log('data', data.documentChecklistSetting);
-      const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.alias);
-      const listSelectedB = arrB.map((x) => x.alias);
-      const listSelectedC = arrC.map((x) => x.alias);
-      const listSelectedD = arrD.map((x) => x.alias);
-      let isCheckedA;
-      let isCheckedB;
-      let isCheckedC;
-      let isCheckedD;
+    const arrToAdjust =
+      processStatus === 'DRAFT '
+        ? JSON.parse(JSON.stringify(tempData.documentChecklistSetting))
+        : JSON.parse(JSON.stringify(data.documentChecklistSetting));
+    const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
+    const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
+    const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
+    const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
+    const listSelectedA = arrA.map((x) => x.alias);
+    const listSelectedB = arrB.map((x) => x.alias);
+    const listSelectedC = arrC.map((x) => x.alias);
+    const listSelectedD = arrD.map((x) => x.alias);
+    let isCheckedA;
+    let isCheckedB;
+    let isCheckedC;
+    let isCheckedD;
 
-      if (listSelectedA.length === arrToAdjust[0].data.length) {
-        isCheckedA = true;
-      }
-      if (listSelectedB.length === arrToAdjust[1].data.length) {
-        isCheckedB = true;
-      }
-      if (listSelectedC.length === arrToAdjust[2].data.length) {
-        isCheckedC = true;
-      }
-      if (listSelectedD.length === arrToAdjust[3].data.length) {
-        isCheckedD = true;
-      }
+    if (listSelectedA.length === arrToAdjust[0].data.length) {
+      isCheckedA = true;
+    }
+    if (listSelectedB.length === arrToAdjust[1].data.length) {
+      isCheckedB = true;
+    }
+    if (listSelectedC.length === arrToAdjust[2].data.length) {
+      isCheckedC = true;
+    }
+    if (listSelectedD.length === arrToAdjust[3].data.length) {
+      isCheckedD = true;
+    }
 
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          documentList: processStatus === 'DRAFT' ? documentList : data.documentChecklistSetting,
-          isSentEmail: processStatus !== 'DRAFT',
-          identityProof: {
-            ...identityProof,
-            isChecked: isCheckedA,
-            checkedList: listSelectedA,
-          },
-          addressProof: {
-            ...addressProof,
-            checkedList: listSelectedB,
-            isChecked: isCheckedB,
-          },
-          educational: {
-            ...educational,
-            checkedList: listSelectedC,
-            isChecked: isCheckedC,
-          },
-          technicalCertification: {
-            poe: {
-              ...poe,
-              checkedList: listSelectedD,
-              isChecked: isCheckedD,
-            },
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentList:
+          processStatus === 'DRAFT'
+            ? tempData.documentChecklistSetting
+            : data.documentChecklistSetting,
+        isSentEmail: processStatus !== 'DRAFT',
+        identityProof: {
+          ...identityProof,
+          isChecked: isCheckedA,
+          checkedList: listSelectedA,
+        },
+        addressProof: {
+          ...addressProof,
+          checkedList: listSelectedB,
+          isChecked: isCheckedB,
+        },
+        educational: {
+          ...educational,
+          checkedList: listSelectedC,
+          isChecked: isCheckedC,
+        },
+        technicalCertification: {
+          poe: {
+            ...poe,
+            checkedList: listSelectedD,
+            isChecked: isCheckedD,
           },
         },
-      });
-    }
-    window.addEventListener('unload', this.handleUnload, false);
+      },
+    });
+
+    // window.addEventListener('unload', this.handleUnload, false);
     this.checkBottomBar();
   }
 
   componentWillUnmount() {
-    // const { data } = this.state;
     const { dispatch, tempData, processStatus } = this.props;
-    console.log('pro', processStatus);
-    // console.log('current', currentStep);
-    // const { _id } = data;
-    // dispatch({
-    //   type: 'candidateInfo/updateByHR',
-    //   payload: {
-    //     candidate: _id,
-    //     currentStep,
-    //   },
-    // });
     if (processStatus === 'SENT-PROVISIONAL-OFFER') {
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
           ...tempData,
-          employer: '',
           checkValidation: undefined,
           isSentEmail: true,
         },
@@ -179,30 +162,39 @@ class BackgroundCheck extends Component {
         type: 'candidateInfo/saveTemp',
         payload: {
           ...tempData,
-          employer: '',
           checkValidation: undefined,
           isSentEmail: false,
         },
       });
     }
     this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
+    // console.log('1');
+    // window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    this.handleUpdateByHR();
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   this.handleUpdateByHR();
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
-    const { data } = this.state;
-    const { dispatch } = this.props;
+    console.log('current unmount');
+    const { data } = this.props;
+    const {
+      dispatch,
+      tempData: { documentList, employer },
+    } = this.props;
     const { _id } = data;
+    if (employer.length > 0 && employer !== undefined) {
+      documentList[3].employer = employer;
+    }
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
+        documentChecklistSetting: documentList,
+        currentStep: 3,
       },
     });
   };
@@ -555,10 +547,8 @@ class BackgroundCheck extends Component {
     } = this.props;
     if (valueToFinalOffer === 1) {
       checkStatus.filledBackgroundCheck = true;
-      console.log('a');
     } else {
       checkStatus.filledBackgroundCheck = false;
-      console.log('b');
     }
     dispatch({
       type: 'candidateInfo/save',
@@ -608,7 +598,6 @@ class BackgroundCheck extends Component {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
               <Button
                 type="secondary"
                 onClick={this.onClickPrev}
