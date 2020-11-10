@@ -409,7 +409,7 @@ const routes = [
             ],
           },
           {
-            path: '/employee-onboarding/:action(add)',
+            path: '/employee-onboarding/:action(add)/:reId',
             name: 'addTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',

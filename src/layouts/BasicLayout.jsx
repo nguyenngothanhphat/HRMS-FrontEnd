@@ -117,7 +117,7 @@ const BasicLayout = (props) => {
             {
               path: '/',
               breadcrumbName: formatMessage({
-                id: 'menu.dashboard',
+                id: 'menu.home',
               }),
             },
             ...routers,
@@ -130,7 +130,7 @@ const BasicLayout = (props) => {
                 {
                   path: '/',
                   breadcrumbName: formatMessage({
-                    id: 'menu.dashboard',
+                    id: 'menu.home',
                   }),
                 },
                 {

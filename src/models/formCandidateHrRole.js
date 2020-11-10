@@ -538,7 +538,7 @@ const candidateInfo = {
         });
         // history.push(`/employee-onboarding/review/${rookieId}`);
         history.push({
-          pathname: `/employee-onboarding/review/${rookieId}`,
+          pathname: `/employee-onboarding/add/${rookieId}`,
           state: { isAddNew: true },
         });
       } catch (error) {
