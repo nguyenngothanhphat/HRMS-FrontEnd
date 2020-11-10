@@ -28,10 +28,12 @@ const PreviewOffer = (props) => {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
-    offerLetter: offerLetterProp,
+    // offerLetter:  offerLetterProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
+    // offerLetter: { attachment: { url: offerLetterProp = '' } = {} } = {},
+    offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
     processStatus,
@@ -40,7 +42,11 @@ const PreviewOffer = (props) => {
   // const inputRefs = [];
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
+  const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
+  const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(
+    hrManagerSignatureProp || '',
+  );
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
@@ -55,7 +61,7 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
-  const [offerLetter, setOfferLetter] = useState(offerLetterProp || {});
+  const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachement.url || '');
 
   // const resetForm = () => {
   //   mailForm.resetFields();
@@ -221,6 +227,10 @@ const PreviewOffer = (props) => {
         hrSignature: hrSignatureProp.id,
         currentStep: 7,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        setHrSignatureSubmit(true);
+      }
     });
   };
 
@@ -237,6 +247,10 @@ const PreviewOffer = (props) => {
         hrManagerSignature: hrManagerSignatureProp.id,
         // currentStep: 6,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        setHrManagerSignatureSubmit(true);
+      }
     });
   };
 
@@ -286,7 +300,7 @@ const PreviewOffer = (props) => {
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
-        <FileContent url={offerLetter.url} />
+        <FileContent url={offerLetter} />
       </div>
 
       <div className={styles.right}>
@@ -343,7 +357,7 @@ const PreviewOffer = (props) => {
             </Button>
 
             <span className={styles.submitMessage}>
-              {hrSignature.url ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+              {hrSignatureSubmit ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
             </span>
           </div>
         </div>
@@ -457,7 +471,7 @@ const PreviewOffer = (props) => {
                 </Button>
 
                 <span className={styles.submitMessage}>
-                  {hrManagerSignature.url
+                  {hrManagerSignatureSubmit
                     ? formatMessage({ id: 'component.previewOffer.submitted' })
                     : ''}
                 </span>
