@@ -8,7 +8,7 @@ import styles from './index.less';
 
 const Screen2 = (props) => {
   const [form] = Form.useForm();
-  const { headQuarterAddress, listCountry, name: companyName, locations, dispatch } = props;
+  const { headQuarterAddress, listCountry, locations, dispatch } = props;
   const [currentIndex, setCurrentIndex] = useState(locations.length);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Screen2 = (props) => {
           locations: [
             ...locations,
             {
-              name: companyName,
+              name: '',
               address: '',
               country: '',
               state: '',

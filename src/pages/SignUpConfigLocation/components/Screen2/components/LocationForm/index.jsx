@@ -11,13 +11,6 @@ const LocationForm = (props) => {
   const { locations = [], listCountry, dispatch, locationItem, removeLocation } = props;
 
   const [country, setCountry] = useState('');
-  // const [state, setState] = useState('');
-  // const [initialLocation, setInitialLocation] = useState({
-  //   address: '',
-  //   country: '',
-  //   state: '',
-  //   zipCode: '',
-  // });
 
   const [form] = Form.useForm();
 
@@ -35,10 +28,16 @@ const LocationForm = (props) => {
 
   const saveToStore = () => {
     const formValues = form.getFieldsValue();
-    const { address = '', zipCode = '', country: countryValue = '', state = '' } = formValues;
+    const {
+      name = '',
+      address = '',
+      zipCode = '',
+      country: countryValue = '',
+      state = '',
+    } = formValues;
 
     const data = {
-      name: '',
+      name,
       address,
       country: countryValue,
       state,
@@ -111,6 +110,20 @@ const LocationForm = (props) => {
     <Form form={form} onValuesChange={() => saveToStore()} initialValues={locationItem}>
       <div className={styles.card}>
         <h2 className={styles.header}>Work location</h2>
+
+        <Form.Item
+          name="name"
+          label="Name"
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: 'Please input name location!',
+            },
+          ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
 
         <Form.Item
           name="address"
