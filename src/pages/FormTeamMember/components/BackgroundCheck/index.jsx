@@ -302,6 +302,7 @@ class BackgroundCheck extends Component {
           salaryStructure,
           documentChecklistSetting: newArrToAdjust,
           action: 'submit',
+          options: 1,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {

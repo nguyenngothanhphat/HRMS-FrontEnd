@@ -118,7 +118,6 @@ export function closeCandidate(params) {
 }
 
 export function editSalaryStructure(params) {
-  console.log(params);
   return request('/api/candidate/edit-salarystructure', {
     method: 'POST',
     data: params,
