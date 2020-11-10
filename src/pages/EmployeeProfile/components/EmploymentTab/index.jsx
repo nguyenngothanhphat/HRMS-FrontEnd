@@ -48,7 +48,6 @@ class EmploymentTab extends Component {
     } = props;
 
     if (isUpdateEmployment) {
-      console.log('xxxx');
       return {
         isEdit: false,
       };
