@@ -45,14 +45,15 @@ class BasicInformation extends PureComponent {
         employeeType: '5f50c2541513a742582206f9',
       },
     });
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+    console.log('currentStep', currentStep);
+    // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '' } = data;
     if (dispatch && candidate) {
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
-          currentStep: currentStepLocal,
+          currentStep,
         },
       });
     }
@@ -60,6 +61,8 @@ class BasicInformation extends PureComponent {
   }
 
   componentWillUnmount() {
+    const { currentStep } = this.props;
+    console.log('current', currentStep);
     // const {
     //   data,
     //   tempData: { fullName, privateEmail, workEmail, previousExperience },
@@ -78,14 +81,14 @@ class BasicInformation extends PureComponent {
     //     currentStep,
     //   },
     // });
+    // window.removeEventListener('unload', this.handleUnload, false);
     this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
     const {
@@ -102,6 +105,7 @@ class BasicInformation extends PureComponent {
         workEmail,
         previousExperience,
         candidate: _id,
+        currentStep: 0,
       },
     });
   };
