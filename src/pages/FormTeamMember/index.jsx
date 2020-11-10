@@ -38,7 +38,12 @@ class FormTeamMember extends PureComponent {
         payload: {
           rookieID: reId,
         },
-      }).then(({ data: { currentStep = 0 } }) => {
+      }).then(({ data }) => {
+        if (!data) {
+          return;
+        }
+        const { currentStep = 0 } = data;
+
         if (currentStep >= 4) {
           dispatch({
             type: 'candidateInfo/saveTemp',

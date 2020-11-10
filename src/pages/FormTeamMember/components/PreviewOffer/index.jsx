@@ -28,10 +28,11 @@ const PreviewOffer = (props) => {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
-    offerLetter: offerLetterProp,
+    // offerLetter:  offerLetterProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
+    offerLetter: { attachment: { url: offerLetterProp = '' } = {} },
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
     processStatus,
@@ -55,7 +56,7 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
-  const [offerLetter, setOfferLetter] = useState(offerLetterProp || {});
+  const [offerLetter, setOfferLetter] = useState(offerLetterProp || '');
 
   // const resetForm = () => {
   //   mailForm.resetFields();
@@ -286,7 +287,7 @@ const PreviewOffer = (props) => {
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
-        <FileContent url={offerLetter.url} />
+        <FileContent url={offerLetter} />
       </div>
 
       <div className={styles.right}>

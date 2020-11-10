@@ -22,16 +22,18 @@ class Benefit extends PureComponent {
 
   componentDidMount() {
     const { data = {}, dispatch, currentStep } = this.props;
-    const { candidate = '' } = data;
+    const { candidate = '', processStatus = '' } = data;
 
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep,
-        },
-      });
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep,
+          },
+        });
+      }
     }
   }
 

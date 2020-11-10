@@ -45,16 +45,19 @@ class BasicInformation extends Component {
         employeeType: '5f50c2541513a742582206f9',
       },
     });
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    const { candidate = '' } = data;
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep: currentStepLocal,
-        },
-      });
+    const { processStatus = '' } = data;
+    if (processStatus !== 'DRAFT') {
+      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      const { candidate = '' } = data;
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     // console.log('basicInfo currentStep', currentStep);
   }

@@ -70,14 +70,16 @@ class BackgroundCheck extends Component {
     const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '', processStatus } = data;
 
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep: currentStepLocal,
-        },
-      });
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     if (data.documentChecklistSetting !== documentList) {
       const arrToAdjust =
