@@ -5,6 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  submitBasicInfo,
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
@@ -481,6 +482,20 @@ const candidateInfo = {
       try {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *submitBasicInfo({ payload }, { call, put }) {
+      console.log('pl', payload);
+      let response = {};
+      try {
+        response = yield call(submitBasicInfo, payload);
+        const { statusCode, data } = response;
+        console.log(statusCode);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
