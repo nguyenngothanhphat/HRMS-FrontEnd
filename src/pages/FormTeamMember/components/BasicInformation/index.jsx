@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import BasicInformationHeader from './components/BasicInformationHeader';
@@ -16,7 +16,7 @@ import styles from './index.less';
   currentStep,
   tempData,
 }))
-class BasicInformation extends PureComponent {
+class BasicInformation extends Component {
   constructor(props) {
     super(props);
 
@@ -45,17 +45,19 @@ class BasicInformation extends PureComponent {
         employeeType: '5f50c2541513a742582206f9',
       },
     });
-    console.log('currentStep', currentStep);
-    // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    const { candidate = '' } = data;
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep,
-        },
-      });
+    const { processStatus = '' } = data;
+    if (processStatus !== 'DRAFT') {
+      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      const { candidate = '' } = data;
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     // console.log('basicInfo currentStep', currentStep);
   }

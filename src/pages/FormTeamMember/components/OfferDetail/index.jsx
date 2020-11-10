@@ -135,6 +135,10 @@ const OfferDetail = (props) => {
   }, []);
 
   useEffect(() => {
+    const { processStatus = '' } = data;
+    if (processStatus !== 'DRAFT') {
+      return;
+    }
     const { candidate } = data;
     if (!dispatch || !candidate) {
       return;
@@ -143,7 +147,7 @@ const OfferDetail = (props) => {
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate,
-        // currentStep,
+        currentStep,
       },
     });
   }, [data.candidate]);

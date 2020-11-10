@@ -35,20 +35,23 @@ class JobDetails extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      data: { candidate },
+      data: { candidate, processStatus },
       currentStep,
     } = this.props;
     this.checkBottomBar();
-    // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    // console.log(candidate, currentStepLocal);
-    if (candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep,
-        },
-      });
+
+    if (processStatus === 'DRAFT') {
+      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      console.log(candidate, currentStepLocal);
+      if (candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     // window.addEventListener('unload', this.handleUnload, false);
   }

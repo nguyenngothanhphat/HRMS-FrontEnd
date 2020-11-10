@@ -193,7 +193,8 @@ const index = ({
                     <CheckOutlined />
                   </Col>
                   <Col span={22}>
-                    <Typography.Text>Landonorris@gmail.com</Typography.Text>
+                    {/* <Typography.Text>Landonorris@gmail.com</Typography.Text> */}
+                    <Typography.Text>{privateEmail}</Typography.Text>
                   </Col>
                 </Row>
                 <Form.Item className={style.s1}>
