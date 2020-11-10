@@ -22,6 +22,7 @@ class LastWorkingDay extends PureComponent {
 
   handleRemoveToServer = () => {
     const { handleRemoveToServer } = this.props;
+    this.handleCandelSchedule();
     this.setState({}, () => handleRemoveToServer());
   };
 
@@ -33,7 +34,13 @@ class LastWorkingDay extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { handleRemoveToServer } = this.props;
+    const date = new Date();
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const hours = date.getHours();
+    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
+    const today = `${yyyy}.${mm}.${dd}`;
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
@@ -44,7 +51,10 @@ class LastWorkingDay extends PureComponent {
                 <img src={Editicon} alt="" className={styles.icon} />
                 <span style={{ fontWeight: 'normal' }}> Edit</span>
               </span>
-              22.05.20 |<span style={{ fontWeight: 'normal' }}> 12PM</span>
+              {today} |
+              <span style={{ fontWeight: 'normal' }}>
+                {hours} {amOrPm}
+              </span>
             </span>
           </div>
         </div>
@@ -73,7 +83,7 @@ class LastWorkingDay extends PureComponent {
         </div>
         <ModalNoticeSuccess
           visible={visible}
-          handleRemoveToServer={handleRemoveToServer}
+          handleRemoveToServer={this.handleRemoveToServer}
           handleCancel={this.handleCandelSchedule}
           modalContent="Your acceptance of the request has been recorded and all parties will be notified"
         />
