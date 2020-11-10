@@ -60,3 +60,10 @@ export async function updateGeneralInfo(payload) {
     data: payload,
   });
 }
+
+export async function resetPasswordByEmail(payload) {
+  return request('/api/password/recover', {
+    method: 'POST',
+    data: payload,
+  });
+}
