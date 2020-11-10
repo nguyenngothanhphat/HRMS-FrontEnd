@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import BasicInformationHeader from './components/BasicInformationHeader';
@@ -16,7 +16,7 @@ import styles from './index.less';
   currentStep,
   tempData,
 }))
-class BasicInformation extends PureComponent {
+class BasicInformation extends Component {
   constructor(props) {
     super(props);
 
