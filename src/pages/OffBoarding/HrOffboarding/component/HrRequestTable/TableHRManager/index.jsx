@@ -13,7 +13,7 @@ class HrTable extends PureComponent {
   }
 
   push = () => {
-    history.push('/employee-offboarding/HrRequest/1854545');
+    history.push('/hr-offboarding/HrRequest/1854545');
   };
 
   render() {

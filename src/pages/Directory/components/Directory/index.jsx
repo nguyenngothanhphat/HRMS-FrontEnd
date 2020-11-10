@@ -207,10 +207,8 @@ class DirectoryComponent extends PureComponent {
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
     if (filterRoles.length > 0) {
-      console.log(1234);
       return this.renderHrGloBal();
     }
-    console.log(3456);
     return this.renderHrTeam();
   };
 
