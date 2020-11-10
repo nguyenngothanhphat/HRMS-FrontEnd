@@ -55,7 +55,7 @@ const Candidate = (props) => {
             candidate: _id,
           },
         });
-        if (employer.length > 1) {
+        if (employer !== undefined && employer.length > 0) {
           dispatch({
             type: 'candidateProfile/fetchEmployer',
             payload: {
