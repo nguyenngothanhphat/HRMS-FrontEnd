@@ -127,9 +127,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchJobTitleList({ payload: { company = '' } }, { call, put }) {
+    *fetchJobTitleList({ payload: { company = '', department = '' } }, { call, put }) {
       try {
-        const response = yield call(getJobTitleList, { company });
+        const response = yield call(getJobTitleList, { company, department });
         const { statusCode, data: jobTitleList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { jobTitleList } });

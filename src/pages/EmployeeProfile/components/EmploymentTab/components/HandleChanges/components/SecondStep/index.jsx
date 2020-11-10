@@ -13,29 +13,7 @@ export default function SecondStep(props) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div className={styles.headings}>What do you wish to change?</div>
-      <div className={styles.select}>
-        <div>Title</div>
-        <Select
-          defaultValue={changeData.newTitle || null}
-          showSearch
-          placeholder="Select a title"
-          optionFilterProp="children"
-          onChange={(value) => onChange(value, 'title')}
-          onSearch={onSearch}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-        >
-          {fetchedState.listTitle.map((item) => {
-            return (
-              <Option key={makeKey()} value={[item.name, item._id]}>
-                {item.name}
-              </Option>
-            );
-          })}
-          ]
-        </Select>
-      </div>
+
       <div className={styles.select}>
         <div>Work Location</div>
         <Select

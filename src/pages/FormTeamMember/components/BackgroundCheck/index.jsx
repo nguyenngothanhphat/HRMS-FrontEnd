@@ -28,13 +28,16 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep } }) => ({
-  tempData,
-  data,
-  tableData,
-  currentStep,
-  checkMandatory,
-}))
+@connect(
+  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
+    tempData,
+    data,
+    tableData,
+    currentStep,
+    checkMandatory,
+    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+  }),
+)
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -120,6 +123,7 @@ class BackgroundCheck extends Component {
         type: 'candidateInfo/saveTemp',
         payload: {
           documentList: processStatus === 'DRAFT' ? documentList : data.documentChecklistSetting,
+          isSentEmail: processStatus !== 'DRAFT',
           identityProof: {
             ...identityProof,
             isChecked: isCheckedA,
@@ -151,7 +155,8 @@ class BackgroundCheck extends Component {
 
   componentWillUnmount() {
     // const { data } = this.state;
-    const { dispatch, tempData } = this.props;
+    const { dispatch, tempData, processStatus } = this.props;
+    console.log('pro', processStatus);
     // console.log('current', currentStep);
     // const { _id } = data;
     // dispatch({
@@ -161,31 +166,45 @@ class BackgroundCheck extends Component {
     //     currentStep,
     //   },
     // });
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        ...tempData,
-      },
-    });
-    // this.handleUpdateByHR();
+    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          employer: '',
+          checkValidation: undefined,
+          isSentEmail: true,
+        },
+      });
+    } else if (processStatus === 'DRAFT') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          employer: '',
+          checkValidation: undefined,
+          isSentEmail: false,
+        },
+      });
+    }
+    this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
   handleUnload = () => {
-    // this.handleUpdateByHR();
+    this.handleUpdateByHR();
     const { currentStep } = this.props;
     localStorage.setItem('currentStep', currentStep);
   };
 
   handleUpdateByHR = () => {
     const { data } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        currentStep,
       },
     });
   };
@@ -233,13 +252,13 @@ class BackgroundCheck extends Component {
   handleSendEmail = () => {
     const { dispatch } = this.props;
     const {
-      tempData: { documentList, employer },
+      tempData: { documentList, employer, employeeType },
+      data,
       data: {
         department,
         workLocation,
         reportingManager,
         title,
-        employeeType,
         _id,
         fullName,
         position,
@@ -250,6 +269,7 @@ class BackgroundCheck extends Component {
       },
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    console.log('data', data);
     newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -271,7 +291,7 @@ class BackgroundCheck extends Component {
           candidate: _id,
           fullName,
           position,
-          employeeType: employeeType._id,
+          employeeType,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
@@ -642,7 +662,7 @@ class BackgroundCheck extends Component {
       },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
-    const { loading, processStatus } = this.props;
+    const { loading, processStatus, loading4 } = this.props;
     return (
       <>
         {loading ? (
@@ -681,6 +701,7 @@ class BackgroundCheck extends Component {
                 <NoteComponent note={note} />
                 {processStatus === 'DRAFT' && (
                   <SendEmail
+                    loading4={loading4}
                     title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
                     formatMessage={formatMessage}
                     handleSendEmail={this.handleSendEmail}

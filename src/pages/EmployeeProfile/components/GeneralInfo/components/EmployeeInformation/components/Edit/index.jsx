@@ -317,7 +317,7 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} />
+            <Input className={styles.inputForm} disabled />
           </Form.Item>
           <Form.Item
             label="Work Number"

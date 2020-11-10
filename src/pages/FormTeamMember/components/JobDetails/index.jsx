@@ -57,7 +57,7 @@ class JobDetails extends PureComponent {
   }
 
   componentWillUnmount() {
-    // this.handleUpdateByHR();
+    this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -71,7 +71,6 @@ class JobDetails extends PureComponent {
     const {
       dispatch,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
-      currentStep,
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -83,7 +82,6 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep,
       },
     });
   };

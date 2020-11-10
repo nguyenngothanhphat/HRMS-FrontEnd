@@ -1,0 +1,69 @@
+.OptionsHeader {
+  border-bottom: solid 1px #d6dce0;
+  .container {
+    padding: 20px 24px 0 24px;
+    .itemLabel {
+      padding-bottom: 10px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .buttons {
+      .submitBtn {
+        background-color: #ffa100;
+        border: none;
+        border-radius: 35px;
+        span {
+          color: white;
+          font-weight: bold;
+        }
+      }
+
+      .downloadCSVBtn {
+        background-color: white;
+        border-radius: 35px;
+        span {
+          color: #ffa100;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  :global {
+    .ant-form-item {
+      display: flex;
+      flex-direction: column;
+      padding-top: 10px;
+      margin-bottom: 0;
+    }
+    .ant-picker {
+      width: 100%;
+    }
+    .ant-col {
+      width: 100%;
+      justify-content: flex-start;
+      padding-bottom: 0 !important;
+    }
+    .ant-form-item-label {
+      text-align: left;
+    }
+    .ant-checkbox-wrapper {
+      font-size: 13px;
+    }
+
+    // checked
+    .ant-checkbox-inner {
+      border: 2px solid #29971f !important;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner {
+      border: 2px solid #29971f;
+      background-color: white;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner::after {
+      border-color: #29971f;
+    }
+    .ant-checkbox-checked::after {
+      border-color: #29971f;
+    }
+  }
+}

@@ -80,7 +80,7 @@ class PerformanceReview extends PureComponent {
       {
         id: 6,
         label: formatMessage({
-          id: 'pages.employeeProfile.performanceHistory.performanceReview.organising',
+          id: 'pages.employeeProfile.performanceHistory.performanceReview.organizing',
         }),
         value: {
           level: 2,

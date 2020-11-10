@@ -163,7 +163,26 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item label="Blood Group" name="Blood">
-            <Input className={styles.inputForm} />
+            <Select
+              className={styles.selectForm}
+              onDropdownVisibleChange={this.handleDropdown}
+              suffixIcon={
+                dropdown ? (
+                  <UpOutlined className={styles.arrowUP} />
+                ) : (
+                  <DownOutlined className={styles.arrowDown} />
+                )
+              }
+            >
+              <Option value="O-">O-</Option>
+              <Option value="O+">O+</Option>
+              <Option value="A-">A-</Option>
+              <Option value="A+">A+</Option>
+              <Option value="B+">B+</Option>
+              <Option value="B-">B-</Option>
+              <Option value="AB+">AB+</Option>
+              <Option value="AB-">AB-</Option>
+            </Select>
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
@@ -187,8 +206,8 @@ class Edit extends PureComponent {
             name="linkedIn"
             rules={[
               {
-                type: 'email',
-                message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+                type: 'url',
+                message: formatMessage({ id: 'pages.employeeProfile.validatelinkedIn' }),
               },
             ]}
           >

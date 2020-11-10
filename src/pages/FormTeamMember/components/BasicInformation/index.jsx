@@ -81,7 +81,7 @@ class BasicInformation extends Component {
     //     currentStep,
     //   },
     // });
-    // this.handleUpdateByHR();
+    this.handleUpdateByHR();
     window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -95,7 +95,7 @@ class BasicInformation extends Component {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -105,7 +105,6 @@ class BasicInformation extends Component {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep,
       },
     });
   };
