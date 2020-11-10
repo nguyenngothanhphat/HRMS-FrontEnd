@@ -70,14 +70,17 @@ class BackgroundCheck extends Component {
     } = this.props;
     const { currentStep } = this.props;
     const { candidate = '', processStatus } = data;
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep,
-        },
-      });
+
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     const arrToAdjust =
       processStatus === 'DRAFT '
@@ -259,7 +262,6 @@ class BackgroundCheck extends Component {
       },
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
-    console.log('data', data);
     newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -292,6 +294,7 @@ class BackgroundCheck extends Component {
           salaryStructure,
           documentChecklistSetting: newArrToAdjust,
           action: 'submit',
+          options: 1,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -335,8 +338,69 @@ class BackgroundCheck extends Component {
         isMarkAsDone: true,
       },
     });
+    // Modify
+    const {
+      tempData: { documentList, employer, employeeType },
+      data,
+      data: {
+        department,
+        workLocation,
+        reportingManager,
+        title,
+        _id,
+        fullName,
+        position,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+      },
+    } = this.state;
+    const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    newArrToAdjust[3].employer = employer;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        newArrToAdjust,
+      },
+    });
+
     this.setState({
       openModal: true,
+    });
+
+    dispatch({
+      type: 'candidateInfo/submitPhase1Effect',
+      payload: {
+        candidate: _id,
+        fullName,
+        position,
+        employeeType,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 2,
+        generatedLink: window.location.href,
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            isMarkAsDone: true,
+          },
+        });
+      }
     });
   };
 
@@ -686,24 +750,26 @@ class BackgroundCheck extends Component {
               </Col>
               <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
                 <NoteComponent note={note} />
-                <SendEmail
-                  loading4={loading4}
-                  title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
-                  formatMessage={formatMessage}
-                  handleSendEmail={this.handleSendEmail}
-                  handleChangeEmail={this.handleChangeEmail}
-                  handleSendFormAgain={this.handleSendFormAgain}
-                  isSentEmail={isSentEmail}
-                  generateLink={generateLink}
-                  handleMarkAsDone={this.handleMarkAsDone}
-                  fullName={fullName}
-                  handleValueChange={this.handleValueChange}
-                  privateEmail={privateEmail}
-                  processStatus={processStatus}
-                  valueToFinalOffer={valueToFinalOffer}
-                  changeValueToFinalOffer={this.changeValueToFinalOffer}
-                  checkValidation={checkValidation}
-                />
+                {processStatus === 'DRAFT' && (
+                  <SendEmail
+                    loading4={loading4}
+                    title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
+                    formatMessage={formatMessage}
+                    handleSendEmail={this.handleSendEmail}
+                    handleChangeEmail={this.handleChangeEmail}
+                    handleSendFormAgain={this.handleSendFormAgain}
+                    isSentEmail={isSentEmail}
+                    generateLink={generateLink}
+                    handleMarkAsDone={this.handleMarkAsDone}
+                    fullName={fullName}
+                    handleValueChange={this.handleValueChange}
+                    privateEmail={privateEmail}
+                    processStatus={processStatus}
+                    valueToFinalOffer={valueToFinalOffer}
+                    changeValueToFinalOffer={this.changeValueToFinalOffer}
+                    checkValidation={checkValidation}
+                  />
+                )}
               </Col>
             </Row>
             <CustomModal

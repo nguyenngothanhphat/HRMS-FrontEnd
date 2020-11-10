@@ -5,6 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  submitBasicInfo,
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
@@ -348,6 +349,8 @@ const candidateInfo = {
         id: '',
         _id: '',
       },
+      // offerTemplate: {},
+      offerLetter: {},
       hiringAgreements: true,
       companyHandbook: true,
       benefits: [],
@@ -485,7 +488,22 @@ const candidateInfo = {
       }
       return response;
     },
-    *addSchedule({ payload }, { call }) {
+    *submitBasicInfo({ payload }, { call, put }) {
+      console.log('pl', payload);
+      let response = {};
+      try {
+        response = yield call(submitBasicInfo, payload);
+        const { statusCode, data } = response;
+        console.log(statusCode);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addSchedule({ payload }, { call, put }) {
+      console.log('payload', payload);
       let response;
       try {
         response = yield call(addSchedule, payload);
@@ -555,12 +573,14 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+
         yield put({
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
@@ -683,6 +703,7 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
+        console.log(response);
         // console.log('data', data);
         // console.log('currentStep', data.currentStep);
         if (statusCode !== 200) throw response;
@@ -701,11 +722,22 @@ const candidateInfo = {
             _id,
           },
         });
+        console.log('Save here');
+        yield put({
+          type: 'save',
+          payload: {
+            data: {
+              ...data,
+              offerLetter: data.offerLetter,
+            },
+          },
+        });
         yield put({
           type: 'saveTemp',
           payload: {
             ...data,
             valueToFinalOffer: 0,
+            offerLetter: data.offerLetter,
           },
         });
         yield put({

@@ -292,7 +292,10 @@ class TableUsers extends PureComponent {
     };
 
     const {
-      usersManagement: { employeeDetail = [] },
+      usersManagement: {
+        employeeDetail = [],
+        employeeDetail: { generalInfo: { workEmail = '' } = {} } = {},
+      },
     } = this.props;
 
     return (
@@ -312,14 +315,12 @@ class TableUsers extends PureComponent {
             handleCancel={this.closeConfirmRemoveModal}
           />
         )}
-        {!loadingUserProfile && selectedUserId && resetPasswordModalVisible && (
-          <ResetPasswordModal
-            user={employeeDetail}
-            titleModal="Reset Password"
-            visible={resetPasswordModalVisible}
-            handleCancel={this.closeResetPasswordModal}
-          />
-        )}
+        <ResetPasswordModal
+          workEmail={workEmail}
+          titleModal="Reset Password"
+          visible={resetPasswordModalVisible}
+          handleCancel={this.closeResetPasswordModal}
+        />
         <Table
           size="small"
           loading={loading}
