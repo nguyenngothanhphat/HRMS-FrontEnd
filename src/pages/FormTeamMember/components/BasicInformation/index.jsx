@@ -124,6 +124,7 @@ class BasicInformation extends PureComponent {
       checkMandatory,
       dispatch,
     } = this.props;
+    const notSpace = RegExp(/[^\s-]/);
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
@@ -132,6 +133,7 @@ class BasicInformation extends PureComponent {
       workEmail !== null &&
       privateEmail !== null &&
       workEmail !== privateEmail &&
+      notSpace.test(fullName) &&
       emailRegExp.test(privateEmail) &&
       emailRegExp.test(workEmail)
     ) {
@@ -201,7 +203,13 @@ class BasicInformation extends PureComponent {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
+              rules={[
+                { required: true, message: `'Please input your full name!'` },
+                {
+                  pattern: /[^\s-]/,
+                  message: 'Fullname is invalid!',
+                },
+              ]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
@@ -287,7 +295,7 @@ class BasicInformation extends PureComponent {
               name="previousExperience"
               rules={[
                 {
-                  pattern: /^[0-9]*$/,
+                  pattern: /^[0-9](\.[0-9]+)?$/,
                   message: 'Year of experience invalid!',
                 },
               ]}
