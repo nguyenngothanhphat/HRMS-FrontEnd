@@ -153,7 +153,7 @@ class EditCurrentInfo extends PureComponent {
               ]
             </Select>
           </Form.Item>
-          <Form.Item label="Compensation Type" name="compensationType" rules={[{ required: true }]}>
+          <Form.Item label="Compensation Type" name="compensationType">
             <Select
               showSearch
               placeholder="Select an compensation type"
@@ -177,7 +177,6 @@ class EditCurrentInfo extends PureComponent {
             label="Current Annual CTC"
             name="currentAnnualCTC"
             rules={[
-              { required: true },
               {
                 pattern: /^[0-9]*$/,
                 message: 'Current Annual CTC is not correct',
@@ -191,10 +190,9 @@ class EditCurrentInfo extends PureComponent {
               formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
               placeholder="Enter an amount"
-              // onChange={(value) => onChange(value, 'salary')}
             />
           </Form.Item>
-          <Form.Item label="Manager" name="manager" rules={[{ required: true }]}>
+          <Form.Item label="Manager" name="manager">
             <Select
               disabled
               showSearch

@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
@@ -17,8 +18,9 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
+  currentUser,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -33,6 +35,10 @@ class EmploymentTab extends Component {
       isEdit: false,
       submitted: false,
       current: 0,
+      roles: {
+        employee: 'EMPLOYEE',
+      },
+      checkRoleEmployee: false,
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
@@ -56,7 +62,15 @@ class EmploymentTab extends Component {
   }
 
   componentDidMount() {
-    const { employeeProfile, dispatch } = this.props;
+    const {
+      employeeProfile,
+      currentUser: { roles = [] },
+      dispatch,
+    } = this.props;
+    const checkRoleEmployee = this.checkRoleEmployee(roles);
+    this.setState({
+      checkRoleEmployee,
+    });
     const { department, company } = employeeProfile.originData.employmentData;
     const payload = {
       company: company._id,
@@ -75,6 +89,16 @@ class EmploymentTab extends Component {
       },
     });
   }
+
+  checkRoleEmployee = (roles) => {
+    let flag = false;
+    const { roles: rolesConst } = this.state;
+    const checkRole = (obj) => obj._id === rolesConst.employee;
+    if (roles.length === 1 && roles.some(checkRole)) {
+      flag = true;
+    }
+    return flag;
+  };
 
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
@@ -141,14 +165,16 @@ class EmploymentTab extends Component {
   };
 
   render() {
-    const { isChanging, current, currentData, isEdit } = this.state;
+    const { isChanging, current, currentData, isEdit, checkRoleEmployee } = this.state;
     const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title}>
             <div>Employment & Compensation</div>
-            {isEdit ? (
+            {checkRoleEmployee ? (
+              <div style={{ display: 'flex' }} />
+            ) : isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
               <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
