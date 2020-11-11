@@ -434,7 +434,7 @@ class Edit extends Component {
               name="passportNumber"
               rules={[
                 {
-                  pattern: /^[a-zA-Z]*[\d]{0,10}$/,
+                  pattern: /^[a-zA-Z0-9]{0,12}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validatePassPortNumber' }),
                 },
               ]}
