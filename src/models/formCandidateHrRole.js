@@ -452,11 +452,9 @@ const candidateInfo = {
     },
 
     *fetchManagerList({ payload = {} }, { call, put }) {
-      // console.log(payload);
       try {
         const response = yield call(getManagerList, payload);
         const { statusCode, data } = response;
-        // console.log('data resp', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
@@ -479,7 +477,6 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
@@ -492,12 +489,10 @@ const candidateInfo = {
       return response;
     },
     *submitBasicInfo({ payload }, { call, put }) {
-      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(submitBasicInfo, payload);
         const { statusCode, data } = response;
-        console.log(statusCode);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -506,12 +501,10 @@ const candidateInfo = {
       return response;
     },
     *addSchedule({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response;
       try {
         response = yield call(addSchedule, payload);
-        const { statusCode, data } = response;
-        console.log('data', response);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -521,12 +514,10 @@ const candidateInfo = {
     },
 
     *addManagerSignatureEffect({ payload }, { call, put }) {
-      // console.log('payload', payload);
       let response = {};
       try {
         response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
-        // console.log('data', data);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -543,7 +534,6 @@ const candidateInfo = {
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        // console.log('abc', data);
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
         yield put({
           type: 'updateSignature',
@@ -553,9 +543,8 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: { ...data },
         });
-        // history.push(`/employee-onboarding/review/${rookieId}`);
         history.push({
-          pathname: `/employee-onboarding/review/${rookieId}`,
+          pathname: `/employee-onboarding/add/${rookieId}`,
           state: { isAddNew: true },
         });
       } catch (error) {
@@ -568,7 +557,6 @@ const candidateInfo = {
       try {
         response = yield call(getCandidateManagerList, payload);
         const { data, statusCode } = response;
-        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -657,7 +645,6 @@ const candidateInfo = {
       try {
         const response = yield call(editSalaryStructure, payload);
         const { statusCode } = response;
-        console.log(response);
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
@@ -670,7 +657,6 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);
@@ -714,7 +700,6 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log(response);
         // console.log('data', data);
         // console.log('currentStep', data.currentStep);
         if (statusCode !== 200) throw response;
@@ -733,7 +718,6 @@ const candidateInfo = {
             _id,
           },
         });
-        console.log('Save here');
         yield put({
           type: 'save',
           payload: {
