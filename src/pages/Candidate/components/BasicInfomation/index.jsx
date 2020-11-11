@@ -204,7 +204,7 @@ class BasicInformation extends PureComponent {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, previousExperience } = data;
+    const { workEmail, fullName, privateEmail, previousExperience } = data;
     const { loading } = this.props;
     const Note = {
       title: 'Note',
@@ -229,7 +229,9 @@ class BasicInformation extends PureComponent {
             <Form
               wrapperCol={{ span: 24 }}
               name="basic"
-              initialValues={fullName.length > 1 && { fullName, privateEmail, previousExperience }}
+              initialValues={
+                fullName.length > 1 && { workEmail, fullName, privateEmail, previousExperience }
+              }
               onFocus={this.onFocus}
               onValuesChange={this.handleChange}
               onFinish={this.onFinish}
