@@ -67,6 +67,13 @@ export function updateByHR(params) {
   });
 }
 
+export function submitBasicInfo(params) {
+  return request('/api/candidate/basic-info', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export function getById(params) {
   return request('/api/candidate/get-by-id', {
     method: 'POST',

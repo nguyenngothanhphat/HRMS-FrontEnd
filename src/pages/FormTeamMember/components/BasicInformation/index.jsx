@@ -63,6 +63,8 @@ class BasicInformation extends Component {
   }
 
   componentWillUnmount() {
+    const { currentStep } = this.props;
+    console.log('current', currentStep);
     // const {
     //   data,
     //   tempData: { fullName, privateEmail, workEmail, previousExperience },
@@ -81,14 +83,14 @@ class BasicInformation extends Component {
     //     currentStep,
     //   },
     // });
+    // window.removeEventListener('unload', this.handleUnload, false);
     this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
     const {
@@ -105,6 +107,7 @@ class BasicInformation extends Component {
         workEmail,
         previousExperience,
         candidate: _id,
+        currentStep: 0,
       },
     });
   };
@@ -123,6 +126,7 @@ class BasicInformation extends Component {
       checkMandatory,
       dispatch,
     } = this.props;
+    const notSpace = RegExp(/[^\s-]/);
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
@@ -131,6 +135,7 @@ class BasicInformation extends Component {
       workEmail !== null &&
       privateEmail !== null &&
       workEmail !== privateEmail &&
+      notSpace.test(fullName) &&
       emailRegExp.test(privateEmail) &&
       emailRegExp.test(workEmail)
     ) {
@@ -154,7 +159,7 @@ class BasicInformation extends Component {
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/updateByHR',
+      type: 'candidateInfo/submitBasicInfo',
       payload: {
         fullName: values.fullName,
         privateEmail: values.privateEmail,
@@ -200,7 +205,13 @@ class BasicInformation extends Component {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
+              rules={[
+                { required: true, message: `'Please input your full name!'` },
+                {
+                  pattern: /[^\s-]/,
+                  message: 'Fullname is invalid!',
+                },
+              ]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
@@ -226,6 +237,14 @@ class BasicInformation extends Component {
                   type: 'email',
                   message: 'Email invalid!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (!value || getFieldValue('workEmail') !== value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Two emails cannot be the same!'));
+                  },
+                }),
               ]}
             >
               <Input
@@ -286,7 +305,7 @@ class BasicInformation extends Component {
               name="previousExperience"
               rules={[
                 {
-                  pattern: /^[0-9]*$/,
+                  pattern: /^[0-9](\.[0-9]+)?$/,
                   message: 'Year of experience invalid!',
                 },
               ]}

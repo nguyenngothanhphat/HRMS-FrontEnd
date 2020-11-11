@@ -53,19 +53,19 @@ class JobDetails extends PureComponent {
         });
       }
     }
-    window.addEventListener('unload', this.handleUnload, false);
+    // window.addEventListener('unload', this.handleUnload, false);
   }
 
   componentWillUnmount() {
     this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
+    // window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    // this.handleUpdateByHR();
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   // this.handleUpdateByHR();
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
     const {
@@ -82,6 +82,7 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
+        currentStep: 1,
       },
     });
   };

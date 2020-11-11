@@ -1,12 +1,18 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ usersManagement }) => ({
+  usersManagement,
+}))
 class ResetPasswordModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
   }
 
   handleCancel = () => {
@@ -24,12 +30,26 @@ class ResetPasswordModal extends Component {
   };
 
   handleRemoveToServer = () => {
-    // eslint-disable-next-line no-console
-    console.log('handleRemoveToServer');
+    const { workEmail = '', dispatch, handleCancel = () => {} } = this.props;
+    dispatch({
+      type: 'usersManagement/resetPasswordByEmail',
+      email: workEmail,
+    }).then(() => {
+      this.setState({
+        loading: true,
+      });
+      setTimeout(() => {
+        handleCancel();
+      }, 1300);
+      this.setState({
+        loading: false,
+      });
+    });
   };
 
   render() {
-    const { visible = false, loading = false } = this.props;
+    const { visible = false } = this.props;
+    const { loading } = this.state;
     return (
       <div>
         <Modal
@@ -50,12 +70,12 @@ class ResetPasswordModal extends Component {
               className={styles.btnSubmit}
               onClick={this.handleRemoveToServer}
             >
-              Confirm
+              Reset
             </Button>,
           ]}
         >
           <div className={styles.resetPasswordContent}>
-            <p>Not implemented</p>
+            <p>Are you sure to reset password of this user?</p>
             {/* <Space direction="horizontal">
               <Input disabled defaultValue={workEmail} />
               <Input.Password

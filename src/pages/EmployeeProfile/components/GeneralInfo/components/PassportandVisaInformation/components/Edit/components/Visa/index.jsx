@@ -90,10 +90,23 @@ class VisaGeneral extends Component {
 
   validateDate = (newList, index) => {
     const { formCheck } = this.state;
-    const { checkArrayVisa } = this.props;
+    const { checkArrayVisa, visaData } = this.props;
     if (newList === []) return;
+    const itemVisa = visaData[index];
     const item = newList[index];
-    if (item.visaIssuedOn > item.visaValidTill) {
+
+    const formatDateVisaIssueOn = itemVisa
+      ? itemVisa.visaIssuedOn && moment(itemVisa.visaIssuedOn)
+      : '';
+    const DateVisaIssueOn = item.visaIssuedOn && moment(item.visaIssuedOn);
+    const formatDateVisaValidTill = itemVisa
+      ? itemVisa.visaValidTill && moment(itemVisa.visaValidTill)
+      : '';
+    const DateVisaValidTill = item.visaValidTill && moment(item.visaValidTill);
+    const IssuedOn = DateVisaIssueOn || formatDateVisaIssueOn;
+    const ValidTill = DateVisaValidTill || formatDateVisaValidTill;
+
+    if (IssuedOn > ValidTill) {
       const getCheck = [...formCheck];
       const setValidate = false;
       getCheck.splice(index, 1, setValidate);
@@ -521,6 +534,14 @@ class VisaGeneral extends Component {
                   <Form.Item
                     label="Valid Till"
                     name={`visaValidTill${index + 1}`}
+                    validateStatus={formCheck[index] === false ? 'error' : 'success'}
+                    help={
+                      formCheck[index] === false
+                        ? formatMessage({
+                            id: 'pages.employeeProfile.validateDate',
+                          })
+                        : ''
+                    }
                     initialValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
                   >
                     <DatePicker
@@ -532,15 +553,6 @@ class VisaGeneral extends Component {
                         formCheck[index] === false ? styles.dateFormValidate : styles.dateForm
                       }
                     />
-                    {formCheck[index] === false ? (
-                      <span className={styles.isDate}>
-                        {formatMessage({
-                          id: 'pages.employeeProfile.validateDate',
-                        })}
-                      </span>
-                    ) : (
-                      ''
-                    )}
                   </Form.Item>
                 </Fragment>
               );

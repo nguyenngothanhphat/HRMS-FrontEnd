@@ -5,6 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  submitBasicInfo,
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
@@ -489,7 +490,19 @@ const candidateInfo = {
       }
       return response;
     },
-    *addSchedule({ payload }, { call }) {
+    *submitBasicInfo({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(submitBasicInfo, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addSchedule({ payload }, { call, put }) {
       let response;
       try {
         response = yield call(addSchedule, payload);
