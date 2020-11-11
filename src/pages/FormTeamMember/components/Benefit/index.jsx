@@ -175,6 +175,17 @@ class Benefit extends PureComponent {
           },
         },
       });
+    } else if (title === 'paytmWallet') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedPaytmWallet: e.target.checked ? arr.map((data) => data.value) : [],
+            paytmWallet: e.target.checked,
+          },
+        },
+      });
     }
   };
 
@@ -331,6 +342,7 @@ class Benefit extends PureComponent {
       checkBox: [
         {
           value: formatMessage({ id: 'component.Benefits.paytm' }),
+          title: 'paytmWallet',
           subCheckBox: [
             {
               key: 1,
