@@ -26,13 +26,6 @@ class EditCurrentInfo extends PureComponent {
       type: 'employeeProfile/fetchTitleByDepartment',
       payload,
     });
-
-    dispatch({
-      type: 'employeeProfile/fetchLocationsByCompany',
-      payload: {
-        company: company._id,
-      },
-    });
   }
 
   componentWillUnmount() {
