@@ -112,12 +112,12 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
         <Menu.Divider />
         <Menu.ItemGroup>
-          <span className={styles.sessionLogin}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
-          </span>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
+          <span className={styles.sessionLogin}>
+            {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
+          </span>
         </Menu.ItemGroup>
       </Menu>
     );

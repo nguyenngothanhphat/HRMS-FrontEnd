@@ -228,7 +228,7 @@ class AddEmployeeForm extends Component {
       <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
           name="formAddEmployee"
-          requiredMark={false}
+          // requiredMark={false}
           colon={false}
           labelAlign="left"
           layout="horizontal"

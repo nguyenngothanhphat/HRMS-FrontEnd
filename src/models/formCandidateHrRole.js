@@ -5,6 +5,7 @@ import {
   getLocation,
   getEmployeeTypeList,
   getManagerList,
+  submitBasicInfo,
   getTableDataByTitle,
   getTitleListByCompany,
   addCandidate,
@@ -348,6 +349,8 @@ const candidateInfo = {
         id: '',
         _id: '',
       },
+      // offerTemplate: {},
+      offerLetter: {},
       hiringAgreements: true,
       companyHandbook: true,
       benefits: [],
@@ -476,7 +479,6 @@ const candidateInfo = {
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(updateByHR, payload);
@@ -488,13 +490,23 @@ const candidateInfo = {
       }
       return response;
     },
+    *submitBasicInfo({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(submitBasicInfo, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *addSchedule({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response;
       try {
         response = yield call(addSchedule, payload);
-        const { statusCode, data } = response;
-        console.log('data', response);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -551,7 +563,6 @@ const candidateInfo = {
       try {
         response = yield call(getCandidateManagerList, payload);
         const { data, statusCode } = response;
-        console.log(data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
@@ -565,12 +576,14 @@ const candidateInfo = {
       }
       return response;
     },
+
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+
         yield put({
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
@@ -638,7 +651,6 @@ const candidateInfo = {
       try {
         const response = yield call(editSalaryStructure, payload);
         const { statusCode } = response;
-        console.log(response);
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
@@ -651,7 +663,6 @@ const candidateInfo = {
     },
 
     *submitPhase1Effect({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response = {};
       try {
         response = yield call(submitPhase1, payload);
@@ -714,10 +725,20 @@ const candidateInfo = {
           },
         });
         yield put({
+          type: 'save',
+          payload: {
+            data: {
+              ...data,
+              offerLetter: data.offerLetter,
+            },
+          },
+        });
+        yield put({
           type: 'saveTemp',
           payload: {
             ...data,
             valueToFinalOffer: 0,
+            offerLetter: data.offerLetter,
           },
         });
         yield put({

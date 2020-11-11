@@ -35,34 +35,37 @@ class JobDetails extends PureComponent {
   componentDidMount() {
     const {
       dispatch,
-      data: { candidate },
+      data: { candidate, processStatus },
       currentStep,
     } = this.props;
     this.checkBottomBar();
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    console.log(candidate, currentStepLocal);
-    if (candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep: currentStepLocal,
-        },
-      });
+
+    if (processStatus === 'DRAFT') {
+      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      console.log(candidate, currentStepLocal);
+      if (candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
-    window.addEventListener('unload', this.handleUnload, false);
+    // window.addEventListener('unload', this.handleUnload, false);
   }
 
   componentWillUnmount() {
     this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
+    // window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    // this.handleUpdateByHR();
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   // this.handleUpdateByHR();
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
     const {
@@ -79,6 +82,7 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
+        currentStep: 1,
       },
     });
   };
