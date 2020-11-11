@@ -10,6 +10,14 @@
   padding-bottom: 0;
   overflow: hidden;
   margin-top: 1rem;
+  :global {
+    .ant-radio-wrapper:last-child {
+      margin-bottom: 32px;
+    }
+    .ant-radio-group {
+      display: contents;
+    }
+  }
   .s {
     margin-bottom: 20px;
     :global {
@@ -57,6 +65,7 @@
   }
   .body {
     margin-top: 32px;
+    margin-left: 20px;
     // padding-right: 100px;
     .radioContainer {
       width: 100%;

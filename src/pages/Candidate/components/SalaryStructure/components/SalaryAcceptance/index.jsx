@@ -10,6 +10,7 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     candidateProfile: {
       tempData: { options = 1 },
       generatedBy: { user: { email = '' } = {} } = {},
@@ -19,6 +20,7 @@ import styles from './index.less';
     processStatus,
     options,
     email,
+    loadingSendEmail: loading.effects['candidateProfile/sendEmailByCandidate'],
   }),
 )
 class SalaryAcceptance extends PureComponent {
@@ -152,7 +154,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderSubmitForm = () => {
-    const { email } = this.props;
+    const { email, loadingSendEmail } = this.props;
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
         <div className={styles.title}>
@@ -160,7 +162,7 @@ class SalaryAcceptance extends PureComponent {
           {formatMessage({ id: 'component.salaryAcceptance.submitForm' })}
         </div>
         <Input value={email} className={styles.formInput} name="email" disabled />
-        <Button type="primary" onClick={this.submitForm}>
+        <Button loading={loadingSendEmail} type="primary" onClick={this.submitForm}>
           {formatMessage({ id: 'component.salaryAcceptance.sendEmail' })}
         </Button>
       </div>

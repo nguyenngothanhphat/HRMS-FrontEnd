@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Form, Input, Button } from 'antd';
+import { notification, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
@@ -14,12 +14,14 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     candidateInfo: { tableData = [], data: { _id = '', fullName = '', processStatus = '' } } = {},
   }) => ({
     processStatus,
     _id,
     fullName,
     tableData,
+    loadingCloseCandidate: loading.effects['candidateInfo/closeCandidate'],
   }),
 )
 class SalaryAcceptance extends PureComponent {
@@ -66,6 +68,12 @@ class SalaryAcceptance extends PureComponent {
       payload: {
         candidate: _id,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Candidate closed!',
+        });
+      }
     });
   };
 
@@ -98,7 +106,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { processStatus, fullName } = this.props;
+    const { processStatus, fullName, loadingCloseCandidate } = this.props;
     console.log(processStatus);
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
@@ -128,7 +136,7 @@ class SalaryAcceptance extends PureComponent {
             note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
             accept={false}
           />
-          <Button type="primary" onClick={this.onCloseCandidate}>
+          <Button loading={loadingCloseCandidate} type="primary" onClick={this.onCloseCandidate}>
             {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
           </Button>
         </>
