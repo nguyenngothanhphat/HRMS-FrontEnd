@@ -627,8 +627,9 @@ const candidateInfo = {
     },
 
     *closeCandidate({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(closeCandidate, payload);
+        response = yield call(closeCandidate, payload);
         const { statusCode } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
@@ -639,6 +640,7 @@ const candidateInfo = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *editSalaryStructure({ payload }, { call, put }) {
