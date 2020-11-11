@@ -64,7 +64,7 @@ const PreviewOffer = (props) => {
   const [openModal2, setOpenModal2] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
-  const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachement.url || '');
+  const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachment.url || '');
 
   // const resetForm = () => {
   //   mailForm.resetFields();
