@@ -64,6 +64,7 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        width: '10%',
         align: 'left',
       },
       {
@@ -71,6 +72,7 @@ class DirectoryTable extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => <span>{title ? title.name : ''}</span>,
+        width: '10%',
         align: 'left',
       },
       {
@@ -82,6 +84,7 @@ class DirectoryTable extends Component {
             {department ? department.name : ''}
           </span>
         ),
+        width: '16%',
         align: 'left',
       },
       {
@@ -89,6 +92,7 @@ class DirectoryTable extends Component {
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
+        width: '8%',
         align: 'left',
       },
       {

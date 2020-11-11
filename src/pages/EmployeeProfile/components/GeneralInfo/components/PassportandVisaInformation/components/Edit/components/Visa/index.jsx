@@ -95,9 +95,13 @@ class VisaGeneral extends Component {
     const itemVisa = visaData[index];
     const item = newList[index];
 
-    const formatDateVisaIssueOn = itemVisa.visaIssuedOn && moment(itemVisa.visaIssuedOn);
+    const formatDateVisaIssueOn = itemVisa
+      ? itemVisa.visaIssuedOn && moment(itemVisa.visaIssuedOn)
+      : '';
     const DateVisaIssueOn = item.visaIssuedOn && moment(item.visaIssuedOn);
-    const formatDateVisaValidTill = itemVisa.visaValidTill && moment(itemVisa.visaValidTill);
+    const formatDateVisaValidTill = itemVisa
+      ? itemVisa.visaValidTill && moment(itemVisa.visaValidTill)
+      : '';
     const DateVisaValidTill = item.visaValidTill && moment(item.visaValidTill);
     const IssuedOn = DateVisaIssueOn || formatDateVisaIssueOn;
     const ValidTill = DateVisaValidTill || formatDateVisaValidTill;
