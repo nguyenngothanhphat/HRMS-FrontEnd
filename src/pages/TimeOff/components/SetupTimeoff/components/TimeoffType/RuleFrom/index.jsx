@@ -95,7 +95,7 @@ class RuleFrom extends Component {
         ],
       },
       {
-        type: 'Type B: Unpaid Leaves',
+        type: 'Type D: Unpaid Leaves',
         button: 'Add a new paid leave',
         children: [
           {

@@ -131,7 +131,7 @@ export default class TimeOff extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <Tabs defaultActiveKey="setupTimeOff">
+        <Tabs defaultActiveKey="langdingPage">
           <TabPane tab="Landing page" key="langdingPage">
             {this._renderLandingPage()}
           </TabPane>
