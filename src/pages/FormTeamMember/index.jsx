@@ -11,6 +11,7 @@ import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
 import BackgroundCheck from './components/BackgroundCheck';
+import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
@@ -232,6 +233,11 @@ class FormTeamMember extends PureComponent {
         updatedAt: '',
       },
     });
+
+    dispatch({
+      type: 'candidateInfo/updateBackgroundRecheck',
+      payload: [],
+    });
   }
 
   render() {
@@ -253,7 +259,7 @@ class FormTeamMember extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: (
+        component: !check ? null : (
           <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
         ),
       },
@@ -282,14 +288,17 @@ class FormTeamMember extends PureComponent {
         name: 'Background Check',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: (
-          <BackgroundCheck
-            documentList={documentList}
-            loading={loading1}
-            reId={reId}
-            processStatus={processStatus}
-          />
-        ),
+        component:
+          processStatus === 'SENT-PROVISIONAL-OFFER' ? (
+            <BackgroundRecheck />
+          ) : (
+            <BackgroundCheck
+              documentList={documentList}
+              loading={loading1}
+              reId={reId}
+              processStatus={processStatus}
+            />
+          ),
       },
       {
         id: 5,
