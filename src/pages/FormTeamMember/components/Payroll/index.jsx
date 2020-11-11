@@ -86,22 +86,26 @@ class PayrollSetting extends PureComponent {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-
-              <Button
-                type="primary"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary}`}
-                // disabled={!allFieldsFilled}
-              >
-                Next
-              </Button>
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Button
+                    type="secondary"
+                    onClick={this.onClickPrev}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Previous
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    onClick={this.onClickNext}
+                    className={`${styles.bottomBar__button__primary}`}
+                  >
+                    Next
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>
