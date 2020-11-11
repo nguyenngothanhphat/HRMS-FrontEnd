@@ -1,13 +1,13 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect } from 'umi';
 import { Form, Modal, Button, DatePicker, Select } from 'antd';
 import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ candidateInfo: { data: { managerList = [], candidate = '' } = {} } = {} }) => ({
-  candidate,
+@connect(({ candidateInfo: { data: { managerList = [], _id = '' } = {} } = {} }) => ({
+  _id,
   managerList,
 }))
 class ScheduleModal extends Component {
@@ -17,11 +17,11 @@ class ScheduleModal extends Component {
   }
 
   componentDidMount = () => {
-    const { dispatch, candidate } = this.props;
+    const { dispatch, _id } = this.props;
     dispatch({
       type: 'candidateInfo/getCandidateManagerList',
       payload: {
-        candidate,
+        candidate: _id,
       },
     });
   };
@@ -48,7 +48,7 @@ class ScheduleModal extends Component {
         schedule: {
           meetingOn: meetingOn._d.toLocaleDateString(),
           meetingAt,
-          meetingWith: meetingWith,
+          meetingWith,
         },
       },
     }).then(({ statusCode }) => {
@@ -58,6 +58,7 @@ class ScheduleModal extends Component {
       }
     });
   };
+
   render() {
     const { visible = false, loading, modalContent, managerList } = this.props;
     return (
@@ -97,9 +98,9 @@ class ScheduleModal extends Component {
                   <Select className={styles.datePicker} placeHolder="Select one">
                     {managerList.map((manager) => {
                       return (
-                        <Option
-                          value={manager._id}
-                        >{`${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`}</Option>
+                        <Option value={manager._id}>
+                          {`${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`}
+                        </Option>
                       );
                     })}
                   </Select>
