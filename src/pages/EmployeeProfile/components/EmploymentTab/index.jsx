@@ -64,20 +64,11 @@ class EmploymentTab extends Component {
 
   componentDidMount() {
     const {
-      employeeProfile,
       currentUser: { roles = [] },
-      dispatch,
     } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles);
     this.setState({
       checkRoleEmployee,
-    });
-    const { company } = employeeProfile.originData.employmentData;
-    dispatch({
-      type: 'employeeProfile/fetchLocationsByCompany',
-      payload: {
-        company: company._id,
-      },
     });
   }
 
