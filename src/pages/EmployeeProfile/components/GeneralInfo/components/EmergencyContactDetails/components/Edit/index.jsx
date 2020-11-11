@@ -100,7 +100,7 @@ class Edit extends Component {
             name="emergencyContact"
             rules={[
               {
-                pattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\\./0-9]*$/g,
+                pattern: /^[+]*[\d]{0,10}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
               },
             ]}
