@@ -446,36 +446,30 @@ class SalaryStructureTemplate extends PureComponent {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
-              {/* <Button
-                type="primary"
-            salaryTemplate    htmlType="submit"
-                // onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledBasicInformation}
-              >
-                Next
-              </Button> */}
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledSalaryStructure}
-              >
-                Next
-              </Button>
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Button
+                    type="secondary"
+                    onClick={this.onClickPrev}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Previous
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    onClick={this.onClickNext}
+                    className={`${styles.bottomBar__button__primary} ${
+                      !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
+                    }`}
+                    disabled={!filledSalaryStructure}
+                  >
+                    Next
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>
