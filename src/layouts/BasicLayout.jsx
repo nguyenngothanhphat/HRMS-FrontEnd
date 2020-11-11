@@ -95,8 +95,11 @@ const BasicLayout = (props) => {
   };
   const { formatMessage } = useIntl();
 
+  const { pathname } = window.location;
+  const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
+
   return (
-    <div className={styles.root}>
+    <div className={`${styles.root} ${classNameBreadCrumb}`}>
       <ProLayout
         logo={logo}
         headerHeight={76}
@@ -132,10 +135,6 @@ const BasicLayout = (props) => {
                   breadcrumbName: formatMessage({
                     id: 'menu.home',
                   }),
-                },
-                {
-                  path: '/',
-                  breadcrumbName: 'None',
                 },
               ];
           }

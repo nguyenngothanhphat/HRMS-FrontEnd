@@ -37,7 +37,7 @@ const defaultItemRender: AntdBreadcrumbProps['itemRender'] = ({ breadcrumbName, 
     default:
       name = breadcrumbName;
   }
-  return breadcrumbName === 'None' ? null : <Link to={path}>{name}</Link>;
+  return <Link to={path}>{name}</Link>;
 };
 
 const renderItemLocal = (item: MenuDataItem, props: BreadcrumbProps): string => {
@@ -175,12 +175,8 @@ export const getBreadcrumbProps = (props: BreadcrumbProps): BreadcrumbListReturn
   const routesArray = genBreadcrumbProps(props);
   const itemRender = propsItemRender || defaultItemRender;
   let routes = routesArray;
-  // if routes.length =1, don't show it
   if (breadcrumbRender) {
     routes = breadcrumbRender(routes) || [];
-  }
-  if (routes && routes.length < 2) {
-    routes = undefined;
   }
   return {
     separator: '|',
