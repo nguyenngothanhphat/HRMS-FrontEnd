@@ -32,7 +32,7 @@ class FormTeamMember extends PureComponent {
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
     // console.log(candidateInfo.currentStep);
-    if (action === 'review') {
+    if (action === 'review' || action === 'add') {
       dispatch({
         type: 'candidateInfo/fetchCandidateByRookie',
         payload: {
@@ -358,7 +358,13 @@ class FormTeamMember extends PureComponent {
               )}
             </div>
           </Affix>
-          {!check ? <Spin /> : <CommonLayout listMenu={formatListMenu} />}
+          {!check ? (
+            <div className={styles.viewLoading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <CommonLayout listMenu={formatListMenu} />
+          )}
         </div>
       </PageContainer>
     );

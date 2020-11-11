@@ -96,7 +96,6 @@ class OnboardingLayout extends PureComponent {
           <Button className={styles.addMember} type="primary" onClick={this.handleAddBtn}>
             <div className={styles.icon}>
               <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
-
               <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
             </div>
           </Button>
