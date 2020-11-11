@@ -10,6 +10,7 @@ class WorkShedule extends Component {
       value2: 'am',
     };
   }
+
   onChange1 = (e) => {
     this.setState({
       value1: e.target.value,

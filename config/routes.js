@@ -213,6 +213,13 @@ const routes = [
             component: './TimeOff/components/CompoffRequest',
             // authority: ['employee'],
           },
+          // {
+          //   path: '/time-off/policy',
+          //   name: 'Config casual leave policy',
+          //   hideInMenu: true,
+          //   component: './TimeOff/components/Setuptimeoff/components/TimeoffType/Confiqure',
+          //   // authority: ['employee'],
+          // },
           {
             path: '/time-off/Leave-request',
             name: 'Apply for timeoff',
