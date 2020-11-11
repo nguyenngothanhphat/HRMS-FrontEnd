@@ -32,17 +32,18 @@ class Edit extends PureComponent {
   };
 
   handleUpdate = (changedValues) => {
-    console.log('changedValues', changedValues);
-    const { dispatch, companyDetails, companyDetailsOrigin } = this.props;
-    const companyDetailsChange = {
-      ...companyDetails,
+    const { dispatch, companyDetailsOrigin } = this.props;
+    const payload = {
+      ...companyDetailsOrigin,
+      id: companyDetailsOrigin._id,
       ...changedValues,
     };
-    console.log('companyDetailsChange', companyDetailsChange);
-    // dispatch({
-    //   type: 'companiesManagement/updateCompany',
-    //   payload: changedValues,
-    // });
+    delete payload._id;
+    console.log('companyDetailsChange', payload);
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+    });
   };
 
   render() {

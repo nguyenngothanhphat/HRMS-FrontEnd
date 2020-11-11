@@ -76,7 +76,7 @@ const companiesManagement = {
         });
         yield put({
           type: 'fetchCompanyDetails',
-          payload: { id: idCurrentCompany },
+          payload: { id: payload.id },
           dataTempKept,
         });
         // if (isUpdateAvatar) {
