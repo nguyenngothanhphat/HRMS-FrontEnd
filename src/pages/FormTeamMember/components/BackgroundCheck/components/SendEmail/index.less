@@ -10,6 +10,14 @@
   padding-bottom: 0;
   overflow: hidden;
   margin-top: 1rem;
+  :global {
+    .ant-radio-wrapper {
+      margin-bottom: 32px;
+    }
+    .ant-radio-group {
+      display: contents;
+    }
+  }
   .s {
     margin-bottom: 20px;
     :global {
@@ -57,6 +65,7 @@
   }
   .body {
     margin-top: 32px;
+    margin-left: 20px;
     // padding-right: 100px;
     .radioContainer {
       width: 100%;
@@ -257,6 +266,7 @@
         }
       }
       .title {
+        margin-top: 32px;
         font-weight: 700;
         display: block;
         font-size: 14px;

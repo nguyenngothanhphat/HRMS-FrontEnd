@@ -330,6 +330,7 @@ class BackgroundCheck extends Component {
   };
 
   handleMarkAsDone = (user) => {
+    console.log('marked');
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/saveTemp',

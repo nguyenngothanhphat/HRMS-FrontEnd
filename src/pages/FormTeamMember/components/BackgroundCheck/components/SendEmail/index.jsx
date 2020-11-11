@@ -86,134 +86,141 @@ const index = ({
         </div>
       ) : (
         <>
-          <div className={style.body}>
-            <Radio.Group defaultValue={1} className={style.radioContainer}>
-              <Radio value={1} className={style.radioItem} onChange={handleEmailClick}>
-                {formatMessage({ id: 'component.eligibilityDocs.viaEmail' })}
-                <p className={style.radioHelper}>
-                  {formatMessage({ id: 'component.eligibilityDocs.emailSubtitle' })}
-                </p>
-              </Radio>
-              <br />
-              <Radio value={2} className={style.radioItem} onChange={handleLinkClick}>
-                {formatMessage({ id: 'component.eligibilityDocs.generateLink' })}
-                <p className={style.radioHelper}>
-                  {formatMessage({ id: 'component.eligibilityDocs.linkSubtitle' })}
-                </p>
-              </Radio>
-            </Radio.Group>
-          </div>
-          <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
-            <div className={style.line} />
-            <Form
-              onFinish={handleSendEmail}
-              layout="vertical"
-              className={style.emailForm}
-              initialValues={{ email: privateEmail }}
-              onValuesChange={handleValueChange}
-            >
-              <Form.Item
-                name="email"
-                label={formatMessage({ id: 'component.eligibilityDocs.emailLabel' })}
-              >
-                <Input disabled={isInputEnable} />
-              </Form.Item>
-              <Typography.Text className={style.change} onClick={handleClick}>
-                {formatMessage({ id: 'component.eligibilityDocs.change' })}
-              </Typography.Text>
-              <Form.Item className={style.margin}>
-                <Button
-                  loading={loading4}
-                  htmlType="submit"
-                  disabled={checkValidation === false || checkValidation === undefined}
-                  {...((checkValidation === false || checkValidation === undefined) && {
-                    className: style.s,
-                  })}
-                >
-                  {formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}
-                </Button>
-              </Form.Item>
-            </Form>
-            <Radio.Group
-              className={style.s}
-              onChange={changeValueToFinalOffer}
-              value={valueToFinalOffer}
-            >
-              <Radio value={1}>
-                <Typography.Text>Process to release a final offer</Typography.Text>
-              </Radio>
-            </Radio.Group>
-          </div>
-          <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
-            <Form
-              className={style.linkForm}
-              initialValues={{ generateLink: generateLink || initialGenerateLink }}
-              onFinish={(values) => handleMarkAsDone(values)}
-            >
-              <div className={style.wrapperInput}>
-                <Form.Item name="generateLink">
-                  <Input />
-                </Form.Item>
-                <Form.Item className={style.generateButton}>
-                  <Button onClick={handleGenerate} className={style.generateButtonItem}>
-                    <img src={copy} alt="copy item" className={style.copy} />
-                  </Button>
-                </Form.Item>
-              </div>
-              <div className={style.textBottom}>
-                <Typography.Text className={style.title}>
-                  {formatMessage({ id: 'component.eligibilityDocs.restrictedAccess' })}
-                </Typography.Text>
-                <Typography.Paragraph className={style.helper}>
-                  {formatMessage({ id: 'component.eligibilityDocs.restrictedHelper' })}
-                </Typography.Paragraph>
-                <Row gutter={[4, 0]}>
-                  <Col span={2}>
-                    <CheckOutlined />
-                  </Col>
-                  <Col span={18}>
-                    <Typography.Text>HR@terralogic.com</Typography.Text>
-                  </Col>
-                  <Col span={4}>
-                    <Typography.Text>
-                      {formatMessage({ id: 'component.eligibilityDocs.owner' })}
-                    </Typography.Text>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={2}>
-                    <CheckOutlined />
-                  </Col>
-                  <Col span={22}>
-                    <Typography.Text>HRmanager@terralogic.com</Typography.Text>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={2}>
-                    <CheckOutlined />
-                  </Col>
-                  <Col span={22}>
-                    {/* <Typography.Text>Landonorris@gmail.com</Typography.Text> */}
-                    <Typography.Text>{privateEmail}</Typography.Text>
-                  </Col>
-                </Row>
-                <Form.Item className={style.s1}>
-                  <Button htmlType="submit">
-                    {formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}
-                  </Button>
-                </Form.Item>
-                <Radio.Group
-                  className={style.s}
-                  onChange={changeValueToFinalOffer}
-                  value={valueToFinalOffer}
-                >
-                  <Radio value={1}>
-                    <Typography.Text>Process to release a final offer</Typography.Text>
+          <Radio.Group
+            className={style.s}
+            onChange={changeValueToFinalOffer}
+            value={valueToFinalOffer}
+          >
+            <Radio value={2}>
+              <Typography.Text>Processsdadasd to release a final offer</Typography.Text>
+            </Radio>
+            <div className={style.body}>
+              <Form no-style>
+                <Radio.Group defaultValue={1} className={style.radioContainer}>
+                  {/* Email */}
+                  <Radio value={1} className={style.radioItem} onChange={handleEmailClick}>
+                    {formatMessage({ id: 'component.eligibilityDocs.viaEmail' })}
+                    <p className={style.radioHelper}>
+                      {formatMessage({ id: 'component.eligibilityDocs.emailSubtitle' })}
+                    </p>
                   </Radio>
+                  <div className={isEnable ? `${style.email} ${style.open}` : style.email}>
+                    <Form
+                      onFinish={handleSendEmail}
+                      layout="vertical"
+                      className={style.emailForm}
+                      initialValues={{ email: privateEmail }}
+                      onValuesChange={handleValueChange}
+                    >
+                      <Form.Item
+                        name="email"
+                        label={formatMessage({ id: 'component.eligibilityDocs.emailLabel' })}
+                      >
+                        <Input disabled={isInputEnable} />
+                      </Form.Item>
+                      <Typography.Text className={style.change} onClick={handleClick}>
+                        {formatMessage({ id: 'component.eligibilityDocs.change' })}
+                      </Typography.Text>
+                      <Form.Item className={style.margin}>
+                        <Button
+                          loading={loading4}
+                          htmlType="submit"
+                          disabled={checkValidation === false || checkValidation === undefined}
+                          {...((checkValidation === false || checkValidation === undefined) && {
+                            className: style.s,
+                          })}
+                        >
+                          {formatMessage({ id: 'component.eligibilityDocs.sendEmail' })}
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </div>
+                  <div className={style.line} />
+                  {/* Link */}
+                  <Radio value={2} className={style.radioItem} onChange={handleLinkClick}>
+                    {formatMessage({ id: 'component.eligibilityDocs.generateLink' })}
+                    <p className={style.radioHelper}>
+                      {formatMessage({ id: 'component.eligibilityDocs.linkSubtitle' })}
+                    </p>
+                  </Radio>
+                  <div className={isEnable === false ? `${style.link} ${style.open}` : style.link}>
+                    <Form
+                      no-style
+                      className={style.linkForm}
+                      initialValues={{ generateLink: generateLink || initialGenerateLink }}
+                      onFinish={(values) => handleMarkAsDone(values)}
+                    >
+                      <div className={style.wrapperInput}>
+                        <Form.Item name="generateLink">
+                          <Input />
+                        </Form.Item>
+                        <Form.Item className={style.generateButton}>
+                          <Button onClick={handleGenerate} className={style.generateButtonItem}>
+                            <img src={copy} alt="copy item" className={style.copy} />
+                          </Button>
+                        </Form.Item>
+                      </div>
+                      <div className={style.textBottom}>
+                        <Typography.Text className={style.title}>
+                          {formatMessage({ id: 'component.eligibilityDocs.restrictedAccess' })}
+                        </Typography.Text>
+                        <Typography.Paragraph className={style.helper}>
+                          {formatMessage({ id: 'component.eligibilityDocs.restrictedHelper' })}
+                        </Typography.Paragraph>
+                        <Row gutter={[4, 0]}>
+                          <Col span={2}>
+                            <CheckOutlined />
+                          </Col>
+                          <Col span={18}>
+                            <Typography.Text>HR@terralogic.com</Typography.Text>
+                          </Col>
+                          <Col span={4}>
+                            <Typography.Text>
+                              {formatMessage({ id: 'component.eligibilityDocs.owner' })}
+                            </Typography.Text>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col span={2}>
+                            <CheckOutlined />
+                          </Col>
+                          <Col span={22}>
+                            <Typography.Text>HRmanager@terralogic.com</Typography.Text>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col span={2}>
+                            <CheckOutlined />
+                          </Col>
+                          <Col span={22}>
+                            {/* <Typography.Text>Landonorris@gmail.com</Typography.Text> */}
+                            <Typography.Text>{privateEmail}</Typography.Text>
+                          </Col>
+                        </Row>
+                        <Form.Item className={style.s1}>
+                          <Button htmlType="submit">
+                            {formatMessage({ id: 'component.eligibilityDocs.markAsDone' })}
+                          </Button>
+                        </Form.Item>
+                        {/* Process to release a final offer */}
+                      </div>
+                    </Form>
+                  </div>
                 </Radio.Group>
-              </div>
-            </Form>
-          </div>
+              </Form>
+            </div>
+          </Radio.Group>
+          <div className={style.line} />
+
+          <Radio.Group
+            className={style.s}
+            onChange={changeValueToFinalOffer}
+            value={valueToFinalOffer}
+          >
+            <Radio value={1}>
+              <Typography.Text>Processsdadasd to release a final offer</Typography.Text>
+            </Radio>
+          </Radio.Group>
         </>
       )}
     </div>
