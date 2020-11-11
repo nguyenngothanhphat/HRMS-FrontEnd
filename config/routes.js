@@ -204,7 +204,7 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/directory.svg',
             component: './Directory',
-            // authority: ['admin-sa', 'employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
+            authority: ['employee', 'hr', 'admin-csa', 'admin-cla', 'leader'],
           },
           {
             path: '/time-off/Compoff-request',

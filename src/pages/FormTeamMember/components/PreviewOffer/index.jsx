@@ -10,7 +10,7 @@ import whiteImg from './components/images/whiteImg.png';
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
-import SendEmail from '../BackgroundCheck/components/SendEmail';
+import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
 import styles from './index.less';
 
@@ -19,6 +19,7 @@ import styles from './index.less';
 const ROLE = {
   HRMANAGER: 'HR-MANAGER',
   HR: 'HR',
+  HRGLOBAL: 'HR-GLOBAL',
 };
 
 const PreviewOffer = (props) => {
@@ -42,6 +43,7 @@ const PreviewOffer = (props) => {
   // const inputRefs = [];
 
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
+
   const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
   const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(
@@ -61,6 +63,7 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
+  // eslint-disable-next-line no-unused-vars
   const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachment.url || '');
 
   // const resetForm = () => {
@@ -205,7 +208,10 @@ const PreviewOffer = (props) => {
   const getUserRole = () => {
     const { roles } = currentUser;
     const userRole = roles.find(
-      (roleItem) => roleItem._id === ROLE.HRMANAGER || roleItem._id === ROLE.HR,
+      (roleItem) =>
+        roleItem._id === ROLE.HRMANAGER ||
+        roleItem._id === ROLE.HR ||
+        roleItem._id === ROLE.HRGLOBAL,
     );
     if (!userRole) {
       return;
@@ -330,21 +336,31 @@ const PreviewOffer = (props) => {
           <div className={styles.upload}>
             {!hrSignature.url ? (
               // Default image
-              <img className={styles.signatureImg} src={whiteImg} alt="" />
+              <>
+                <img className={styles.signatureImg} src={whiteImg} alt="" />
+                <button
+                  type="submit"
+                  onClick={() => {
+                    setUploadVisible1(true);
+                  }}
+                >
+                  {formatMessage({ id: 'component.previewOffer.upload' })}
+                </button>
+              </>
             ) : (
-              <img className={styles.signatureImg} src={hrSignature.url} alt="" />
+              <>
+                <img className={styles.signatureImg} src={hrSignature.url} alt="" />
+                <button
+                  type="submit"
+                  onClick={() => {
+                    setUploadVisible1(true);
+                  }}
+                >
+                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                </button>
+                <CancelIcon resetImg={() => resetImg('hr')} />
+              </>
             )}
-
-            <button
-              type="submit"
-              onClick={() => {
-                setUploadVisible1(true);
-              }}
-            >
-              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-            </button>
-
-            <CancelIcon resetImg={() => resetImg('hr')} />
           </div>
 
           <div className={styles.submitContainer}>
