@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin, Avatar, Input } from 'antd';
+import { Divider, Tag, Menu, Dropdown, Button, Spin, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
-import { UserOutlined } from '@ant-design/icons';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
 const { Item } = Menu;
@@ -200,7 +199,11 @@ class ViewInformation extends Component {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <Avatar icon={<UserOutlined />} src={avatar} size={96} className={s.infoEmployee__imgAvt} />
+        <img
+          src={avatar || 'https://iupac.org/wp-content/uploads/2018/05/default-avatar.png'}
+          alt="img-avt"
+          className={s.infoEmployee__imgAvt}
+        />
         <img
           src="/assets/images/iconUploadImage.svg"
           onClick={this.openModalUpload}
