@@ -111,7 +111,7 @@ class AvatarDropdown extends React.Component {
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
         </Menu.Item>
         <Menu.Divider />
-        <Menu.ItemGroup>
+        <Menu.ItemGroup className={styles.groupMenuItem}>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>

@@ -49,8 +49,9 @@
   }
 
   .menuItemLogout {
+    position: relative;
     margin: 0;
-    margin-bottom: 10px;
+    margin-bottom: 50px;
     padding: 0;
     color: red;
   }
@@ -96,11 +97,15 @@
     opacity: 0.75;
   }
 
-  .sessionLogin {
-    padding: 0;
-    margin-left: 25px;
-    color: #c2c2c2;
-    font-size: 14px;
+  .groupMenuItem {
+    position: relative;
+    .sessionLogin {
+      position: absolute;
+      bottom: -30px;
+      left: 62px;
+      color: #c2c2c2;
+      font-size: 14px;
+    }
   }
 }
 
