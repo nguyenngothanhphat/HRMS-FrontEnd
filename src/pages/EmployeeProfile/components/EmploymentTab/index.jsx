@@ -58,35 +58,17 @@ class EmploymentTab extends Component {
         isEdit: false,
       };
     }
+
     return null;
   }
 
   componentDidMount() {
     const {
-      employeeProfile,
       currentUser: { roles = [] },
-      dispatch,
     } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles);
     this.setState({
       checkRoleEmployee,
-    });
-    const { department, company } = employeeProfile.originData.employmentData;
-    const payload = {
-      company: company._id,
-      department: department._id,
-    };
-
-    dispatch({
-      type: 'employeeProfile/fetchTitleByDepartment',
-      payload,
-    });
-
-    dispatch({
-      type: 'employeeProfile/fetchLocationsByCompany',
-      payload: {
-        company: company._id,
-      },
     });
   }
 

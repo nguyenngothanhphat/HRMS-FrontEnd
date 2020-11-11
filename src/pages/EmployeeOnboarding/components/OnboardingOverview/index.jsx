@@ -1,8 +1,15 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'umi';
+import { Spin } from 'antd';
 import OnboardingLayout from '@/components/OnboardingLayout';
+import OnboardingEmpty from './components/OnboardingEmpty';
+import styles from './index.less';
 
-class OnboardingOverview extends PureComponent {
+@connect(({ onboard: { menu = {} } = {}, loading }) => ({
+  menu,
+  loading: loading.effects['onboard/fetchOnboardList'],
+}))
+class OnboardingOverview extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     if (!dispatch) {
@@ -15,23 +22,19 @@ class OnboardingOverview extends PureComponent {
   }
 
   render() {
-    const { menu = {} } = this.props;
-    const { onboardingOverviewTab = {} } = menu;
-    const { listMenu = [] } = onboardingOverviewTab;
-
-    return (
-      <div>
-        <OnboardingLayout listMenu={listMenu} />
-      </div>
-    );
+    const {
+      menu: { onboardingOverviewTab: { listMenu = [] } = {} } = {},
+      loading = true,
+    } = this.props;
+    const checkEmpty = !loading && listMenu.map((item) => item.quantity).reduce((a, b) => a + b, 0);
+    if (!checkEmpty)
+      return (
+        <div className={styles.loading}>
+          <Spin size="large" />
+        </div>
+      );
+    return checkEmpty === 0 ? <OnboardingEmpty /> : <OnboardingLayout listMenu={listMenu} />;
   }
 }
 
-// export default OnboardingOverview;
-export default connect((state) => {
-  const { onboard = {} } = state;
-  const { menu = {} } = onboard;
-  return {
-    menu,
-  };
-})(OnboardingOverview);
+export default OnboardingOverview;
