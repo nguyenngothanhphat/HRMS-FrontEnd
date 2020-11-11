@@ -16,7 +16,7 @@ const { Option } = Select;
 class EditCurrentInfo extends PureComponent {
   componentDidMount() {
     const { employeeProfile, dispatch } = this.props;
-    const { department, company } = employeeProfile.originData.employmentData;
+    const { department = '', company = '' } = employeeProfile.originData.employmentData;
     const payload = {
       company: company._id,
       department: department._id,
@@ -121,7 +121,7 @@ class EditCurrentInfo extends PureComponent {
           }}
           onFinish={(values) => this.handleSave(values, _id)}
         >
-          <Form.Item label="Title" name="title" rules={[{ required: true }]}>
+          <Form.Item label="Title" name="title">
             <Select
               placeholder="Title"
               showArrow
@@ -138,15 +138,10 @@ class EditCurrentInfo extends PureComponent {
           <Form.Item
             label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
             name="joinDate"
-            rules={[{ required: true }]}
           >
             <DatePicker format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item
-            label={formatMessage({ id: 'addEmployee.location' })}
-            name="location"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
@@ -160,7 +155,7 @@ class EditCurrentInfo extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Employment Type" name="employeeType" rules={[{ required: true }]}>
+          <Form.Item label="Employment Type" name="employeeType">
             <Select
               showSearch
               placeholder="Select an employment type"
