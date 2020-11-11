@@ -83,9 +83,10 @@ class EditCurrentInfo extends PureComponent {
             joinDate: moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
-            manager: manager.generalInfo.firstName
-              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
-              : '',
+            manager:
+              manager && manager.generalInfo && manager.generalInfo.firstName
+                ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+                : '',
             compensationType,
             currentAnnualCTC,
             // timeOffPolicy,
