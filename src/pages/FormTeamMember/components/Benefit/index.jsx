@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
+import PreviewOffer from '@/pages/FormTeamMember/components/PreviewOffer/index';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
@@ -22,16 +23,18 @@ class Benefit extends PureComponent {
 
   componentDidMount() {
     const { data = {}, dispatch, currentStep } = this.props;
-    const { candidate = '' } = data;
+    const { candidate = '', processStatus = '' } = data;
 
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep,
-        },
-      });
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep,
+          },
+        });
+      }
     }
   }
 
@@ -190,6 +193,27 @@ class Benefit extends PureComponent {
   //   );
   // };
 
+  onClickNext = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: null,
+        displayComponent: <PreviewOffer />,
+      },
+    });
+  };
+
+  onClickPrev = () => {
+    const { dispatch, currentStep } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
   _renderBottomBar = () => {
     // const { checkMandatory } = this.props;
     // const { filledJobDetail } = checkMandatory;
@@ -198,7 +222,7 @@ class Benefit extends PureComponent {
       <div className={styles.bottomBar}>
         <Row align="middle">
           <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
@@ -216,7 +240,7 @@ class Benefit extends PureComponent {
                 // className={`${styles.bottomBar__button__primary} ${
                 //   !filledJobDetail ? styles.bottomBar__button__disabled : ''
                 // }`}
-                className={styles.bottomBar__buton__primary}
+                className={styles.bottomBar__button__primary}
               >
                 Next
               </Button>
@@ -358,7 +382,7 @@ class Benefit extends PureComponent {
                 benefits={benefits}
               />
             </div>
-            {/* {this._renderBottomBar()} */}
+            <div className={styles.bars}>{this._renderBottomBar()}</div>
           </Col>
 
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>

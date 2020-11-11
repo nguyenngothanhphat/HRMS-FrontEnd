@@ -38,7 +38,12 @@ class FormTeamMember extends PureComponent {
         payload: {
           rookieID: reId,
         },
-      }).then(({ data: { currentStep } }) => {
+      }).then(({ data }) => {
+        if (!data) {
+          return;
+        }
+        const { currentStep = 0 } = data;
+
         if (currentStep >= 4) {
           dispatch({
             type: 'candidateInfo/saveTemp',
@@ -248,7 +253,7 @@ class FormTeamMember extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: !check ? null : (
+        component: (
           <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
         ),
       },
@@ -353,7 +358,7 @@ class FormTeamMember extends PureComponent {
               )}
             </div>
           </Affix>
-          {loading1 ? <Spin /> : <CommonLayout listMenu={formatListMenu} />}
+          {!check ? <Spin /> : <CommonLayout listMenu={formatListMenu} />}
         </div>
       </PageContainer>
     );

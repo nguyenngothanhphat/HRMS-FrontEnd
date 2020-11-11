@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import { history } from 'umi';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
@@ -11,37 +12,12 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/employee-offboarding/request/112454');
+  push = (data) => {
+    history.push(`/employee-offboarding/request/${data}`);
   };
 
   render() {
-    // const data = [
-    //   {
-    //     ticketId: <span className={t.tableText}>16003134</span>,
-    //     requestOn: <span className={t.tableText}>22.08.2020</span>,
-    //     lwd: '',
-    //     lwdchange: '',
-    //     assigned: (
-    //       <p>
-    //         <span>
-    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
-    //         </span>
-    //         <span>
-    //           <img src={persion} style={{ marginTop: '10px' }} alt="" />
-    //         </span>
-    //       </p>
-    //     ),
-    //     reasionOfLeaving: <span className={t.tableText}>I have decide to quit….</span>,
-    //     action: (
-    //       <span className={t.tableText} style={{ color: 'blue', textDecoration: 'underline' }}>
-    //         View Request
-    //       </span>
-    //     ),
-    //   },
-    // ];
     const { data = [] } = this.props;
-
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -63,7 +39,10 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Requested on</span>,
-        dataIndex: 'requestOn',
+        dataIndex: 'createdAt',
+        render: (createdAt) => {
+          return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={t.title}>LWD</span>,
@@ -91,14 +70,14 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,
-        dataIndex: 'reasionOfLeaving',
+        dataIndex: 'reasonForLeaving',
       },
       {
         title: <span className={t.title}>Action</span>,
         dataIndex: 'action',
         render: () => (
           <div className={t.rowAction}>
-            <span onClick={this.push}>View Request</span>
+            <span onClick={() => this.push(data.map((x) => x._id))}>View Request</span>
           </div>
         ),
       },

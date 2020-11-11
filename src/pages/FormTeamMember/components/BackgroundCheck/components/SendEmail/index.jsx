@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { Typography, Space, Radio, Input, Form, Button, Row, Col, message } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
@@ -20,6 +21,7 @@ const index = ({
   valueToFinalOffer,
   changeValueToFinalOffer = () => {},
   checkValidation,
+  loading4,
 }) => {
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
@@ -121,6 +123,7 @@ const index = ({
               </Typography.Text>
               <Form.Item className={style.margin}>
                 <Button
+                  loading={loading4}
                   htmlType="submit"
                   disabled={checkValidation === false || checkValidation === undefined}
                   {...((checkValidation === false || checkValidation === undefined) && {
@@ -190,7 +193,8 @@ const index = ({
                     <CheckOutlined />
                   </Col>
                   <Col span={22}>
-                    <Typography.Text>Landonorris@gmail.com</Typography.Text>
+                    {/* <Typography.Text>Landonorris@gmail.com</Typography.Text> */}
+                    <Typography.Text>{privateEmail}</Typography.Text>
                   </Col>
                 </Row>
                 <Form.Item className={style.s1}>

@@ -67,6 +67,24 @@ class TableFilter extends PureComponent {
     }, 5);
   };
 
+  handleCheckShowLocation = (formatDataLocation, locationState, all) => {
+    const { tabName, checkLocation } = this.props;
+    if (
+      (tabName === 'active' && checkLocation > -1) ||
+      (tabName === 'inActive' && checkLocation > -1)
+    ) {
+      return (
+        <CheckBoxForms
+          key={locationState}
+          name={locationState}
+          all={all}
+          data={formatDataLocation}
+        />
+      );
+    }
+    return '';
+  };
+
   render() {
     const { Sider } = Layout;
     const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
@@ -148,16 +166,9 @@ class TableFilter extends PureComponent {
                 data={filteredArr(formatDataDepartment)}
               />
             )}
-            {reset || changeTab ? (
-              ''
-            ) : (
-              <CheckBoxForms
-                key={locationState}
-                name={locationState}
-                all={all}
-                data={formatDataLocation}
-              />
-            )}
+            {reset || changeTab
+              ? ''
+              : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
           </div>
         </Sider>
       </div>

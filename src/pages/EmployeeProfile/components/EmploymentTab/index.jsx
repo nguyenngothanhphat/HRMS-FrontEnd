@@ -87,6 +87,8 @@ class EmploymentTab extends Component {
       this.setState({ submitted: true });
       this.setState({ current: 0 });
       this.setState({ isChanging: false });
+    } else if (msg === 'TITLE_REQUIRED') {
+      this.setState({ current: 2 });
     } else this.setState({ current: current + 1 });
   };
 

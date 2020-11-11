@@ -25,7 +25,6 @@ class OnboardTable extends Component {
   };
 
   handleActionDelete = (id) => {
-    console.log(id);
     const { dispatch } = this.props;
 
     if (!dispatch) {
@@ -142,7 +141,6 @@ class OnboardTable extends Component {
               to={`/employee-onboarding/review/${id}`}
               onClick={() => {
                 this.initiateBackgroundCheck(id);
-                console.log('CLICK HERE');
               }}
             >
               <span>Initiate Background Check</span>
@@ -447,7 +445,8 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            pagination={{ ...pagination, total: list.length }}
             onRow={(record) => {
               return {
                 onMouseEnter: () => {

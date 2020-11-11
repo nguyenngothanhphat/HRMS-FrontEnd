@@ -52,7 +52,18 @@ class Edit extends Component {
 
   validateDate = (getPassportData) => {
     if (getPassportData === {}) return;
-    if (getPassportData.passportIssuedOn > getPassportData.passportValidTill) {
+    const { passportDataOrigin } = this.props;
+    const formatDatePassportIssueOn =
+      passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
+    const DatePassportIssueOn =
+      getPassportData.passportIssuedOn && moment(getPassportData.passportIssuedOn);
+    const formatDatePassportValidTill =
+      passportDataOrigin.passportValidTill && moment(passportDataOrigin.passportValidTill);
+    const DatePassportValidTill =
+      getPassportData.passportValidTill && moment(getPassportData.passportValidTill);
+    const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
+    const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
+    if (IssuedOn > ValidTill) {
       this.setState({ isDate: false });
     } else {
       this.setState({ isDate: true });
@@ -369,13 +380,7 @@ class Edit extends Component {
   render() {
     const { isLt5M, getContent, isDate, isCheckDateVisa } = this.state;
     const { Option } = Select;
-    const {
-      passportData = {},
-      handleCancel = () => {},
-      countryList,
-      visaData = [{}],
-      loading,
-    } = this.props;
+    const { passportData = {}, handleCancel = () => {}, countryList, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -420,7 +425,6 @@ class Edit extends Component {
             passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
             passportIssuedOn: formatDatePassportIssueOn,
             passportValidTill: formatDatePassportValidTill,
-            visaData,
           }}
           onFinish={this.handleSave}
         >
@@ -519,7 +523,18 @@ class Edit extends Component {
               className={styles.dateForm}
             />
           </Form.Item>
-          <Form.Item label="Valid Till" name="passportValidTill">
+          <Form.Item
+            label="Valid Till"
+            name="passportValidTill"
+            validateStatus={isDate === false ? 'error' : 'success'}
+            help={
+              isDate === false
+                ? formatMessage({
+                    id: 'pages.employeeProfile.validateDate',
+                  })
+                : ''
+            }
+          >
             <DatePicker
               format={dateFormat}
               onChange={(dates) => {
@@ -527,16 +542,17 @@ class Edit extends Component {
               }}
               className={isDate === false ? styles.dateFormValidate : styles.dateForm}
             />
-            {isDate === false ? (
-              <span className={styles.isDate}>
-                {formatMessage({
-                  id: 'pages.employeeProfile.validateDate',
-                })}
-              </span>
-            ) : (
-              ''
-            )}
           </Form.Item>
+
+          {/* {isDate === false ? (
+            <span className={styles.isDate}>
+              {formatMessage({
+                id: 'pages.employeeProfile.validateDate',
+              })}
+            </span>
+          ) : (
+            ''
+          )} */}
           <VisaGeneral
             setConfirmContent={this.getConfirmContent}
             checkArrayVisa={this.getcheckArrayVisa}

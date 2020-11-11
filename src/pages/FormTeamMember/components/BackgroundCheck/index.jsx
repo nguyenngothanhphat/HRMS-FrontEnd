@@ -28,13 +28,16 @@ const note = {
   ),
 };
 
-@connect(({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep } }) => ({
-  tempData,
-  data,
-  tableData,
-  currentStep,
-  checkMandatory,
-}))
+@connect(
+  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
+    tempData,
+    data,
+    tableData,
+    currentStep,
+    checkMandatory,
+    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+  }),
+)
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -57,135 +60,144 @@ class BackgroundCheck extends Component {
     const {
       data = {},
       tempData: {
-        documentList,
         identityProof,
         addressProof,
         educational,
         technicalCertification: { poe },
       },
+      tempData,
       dispatch,
     } = this.props;
-    // save step
     const { currentStep } = this.props;
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
     const { candidate = '', processStatus } = data;
 
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep: currentStepLocal,
-        },
-      });
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
-    if (data.documentChecklistSetting !== documentList) {
-      const arrToAdjust =
-        processStatus === 'DRAFT' && !isEmpty(documentList)
-          ? JSON.parse(JSON.stringify(documentList))
-          : JSON.parse(JSON.stringify(data.documentChecklistSetting));
-      console.log('arr', arrToAdjust);
-      console.log('process', processStatus);
-      console.log('documentList', documentList);
-      console.log('data', data.documentChecklistSetting);
-      const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
-      const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
-      const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
-      const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
-      const listSelectedA = arrA.map((x) => x.alias);
-      const listSelectedB = arrB.map((x) => x.alias);
-      const listSelectedC = arrC.map((x) => x.alias);
-      const listSelectedD = arrD.map((x) => x.alias);
-      let isCheckedA;
-      let isCheckedB;
-      let isCheckedC;
-      let isCheckedD;
+    const arrToAdjust =
+      processStatus === 'DRAFT '
+        ? JSON.parse(JSON.stringify(tempData.documentChecklistSetting))
+        : JSON.parse(JSON.stringify(data.documentChecklistSetting));
+    const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
+    const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
+    const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
+    const arrD = arrToAdjust.length > 0 && arrToAdjust[3].data.filter((x) => x.value === true);
+    const listSelectedA = arrA.map((x) => x.alias);
+    const listSelectedB = arrB.map((x) => x.alias);
+    const listSelectedC = arrC.map((x) => x.alias);
+    const listSelectedD = arrD.map((x) => x.alias);
+    let isCheckedA;
+    let isCheckedB;
+    let isCheckedC;
+    let isCheckedD;
 
-      if (listSelectedA.length === arrToAdjust[0].data.length) {
-        isCheckedA = true;
-      }
-      if (listSelectedB.length === arrToAdjust[1].data.length) {
-        isCheckedB = true;
-      }
-      if (listSelectedC.length === arrToAdjust[2].data.length) {
-        isCheckedC = true;
-      }
-      if (listSelectedD.length === arrToAdjust[3].data.length) {
-        isCheckedD = true;
-      }
+    if (listSelectedA.length === arrToAdjust[0].data.length) {
+      isCheckedA = true;
+    }
+    if (listSelectedB.length === arrToAdjust[1].data.length) {
+      isCheckedB = true;
+    }
+    if (listSelectedC.length === arrToAdjust[2].data.length) {
+      isCheckedC = true;
+    }
+    if (listSelectedD.length === arrToAdjust[3].data.length) {
+      isCheckedD = true;
+    }
 
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          documentList: processStatus === 'DRAFT' ? documentList : data.documentChecklistSetting,
-          identityProof: {
-            ...identityProof,
-            isChecked: isCheckedA,
-            checkedList: listSelectedA,
-          },
-          addressProof: {
-            ...addressProof,
-            checkedList: listSelectedB,
-            isChecked: isCheckedB,
-          },
-          educational: {
-            ...educational,
-            checkedList: listSelectedC,
-            isChecked: isCheckedC,
-          },
-          technicalCertification: {
-            poe: {
-              ...poe,
-              checkedList: listSelectedD,
-              isChecked: isCheckedD,
-            },
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentList:
+          processStatus === 'DRAFT'
+            ? tempData.documentChecklistSetting
+            : data.documentChecklistSetting,
+        isSentEmail: processStatus !== 'DRAFT',
+        identityProof: {
+          ...identityProof,
+          isChecked: isCheckedA,
+          checkedList: listSelectedA,
+        },
+        addressProof: {
+          ...addressProof,
+          checkedList: listSelectedB,
+          isChecked: isCheckedB,
+        },
+        educational: {
+          ...educational,
+          checkedList: listSelectedC,
+          isChecked: isCheckedC,
+        },
+        technicalCertification: {
+          poe: {
+            ...poe,
+            checkedList: listSelectedD,
+            isChecked: isCheckedD,
           },
         },
-      });
-    }
-    window.addEventListener('unload', this.handleUnload, false);
+      },
+    });
+
+    // window.addEventListener('unload', this.handleUnload, false);
     this.checkBottomBar();
   }
 
   componentWillUnmount() {
-    // const { data } = this.state;
-    const { dispatch, tempData } = this.props;
-    // console.log('current', currentStep);
-    // const { _id } = data;
-    // dispatch({
-    //   type: 'candidateInfo/updateByHR',
-    //   payload: {
-    //     candidate: _id,
-    //     currentStep,
-    //   },
-    // });
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        ...tempData,
-        employer: '',
-        checkValidation: undefined,
-      },
-    });
-    // this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
+    const { dispatch, tempData, processStatus } = this.props;
+    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          checkValidation: undefined,
+          isSentEmail: true,
+        },
+      });
+    } else if (processStatus === 'DRAFT') {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          ...tempData,
+          checkValidation: undefined,
+          isSentEmail: false,
+        },
+      });
+    }
+    this.handleUpdateByHR();
+    // console.log('1');
+    // window.removeEventListener('unload', this.handleUnload, false);
   }
 
-  handleUnload = () => {
-    // this.handleUpdateByHR();
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   this.handleUpdateByHR();
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
-    const { data } = this.state;
-    const { dispatch, currentStep } = this.props;
+    console.log('current unmount');
+    const { data } = this.props;
+    const {
+      dispatch,
+      tempData: { documentList, employer },
+    } = this.props;
     const { _id } = data;
+    if (employer.length > 0 && employer !== undefined) {
+      documentList[3].employer = employer;
+    }
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         candidate: _id,
-        currentStep,
+        documentChecklistSetting: documentList,
+        currentStep: 3,
       },
     });
   };
@@ -250,7 +262,6 @@ class BackgroundCheck extends Component {
       },
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
-    console.log('data', data);
     newArrToAdjust[3].employer = employer;
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -283,6 +294,7 @@ class BackgroundCheck extends Component {
           salaryStructure,
           documentChecklistSetting: newArrToAdjust,
           action: 'submit',
+          options: 1,
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -326,8 +338,69 @@ class BackgroundCheck extends Component {
         isMarkAsDone: true,
       },
     });
+    // Modify
+    const {
+      tempData: { documentList, employer, employeeType },
+      data,
+      data: {
+        department,
+        workLocation,
+        reportingManager,
+        title,
+        _id,
+        fullName,
+        position,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+      },
+    } = this.state;
+    const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
+    newArrToAdjust[3].employer = employer;
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        newArrToAdjust,
+      },
+    });
+
     this.setState({
       openModal: true,
+    });
+
+    dispatch({
+      type: 'candidateInfo/submitPhase1Effect',
+      payload: {
+        candidate: _id,
+        fullName,
+        position,
+        employeeType,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 2,
+        generatedLink: window.location.href,
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            isMarkAsDone: true,
+          },
+        });
+      }
     });
   };
 
@@ -538,10 +611,8 @@ class BackgroundCheck extends Component {
     } = this.props;
     if (valueToFinalOffer === 1) {
       checkStatus.filledBackgroundCheck = true;
-      console.log('a');
     } else {
       checkStatus.filledBackgroundCheck = false;
-      console.log('b');
     }
     dispatch({
       type: 'candidateInfo/save',
@@ -591,7 +662,6 @@ class BackgroundCheck extends Component {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
               <Button
                 type="secondary"
                 onClick={this.onClickPrev}
@@ -643,7 +713,7 @@ class BackgroundCheck extends Component {
       },
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
-    const { loading, processStatus } = this.props;
+    const { loading, processStatus, loading4 } = this.props;
     return (
       <>
         {loading ? (
@@ -680,23 +750,26 @@ class BackgroundCheck extends Component {
               </Col>
               <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
                 <NoteComponent note={note} />
-                <SendEmail
-                  title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
-                  formatMessage={formatMessage}
-                  handleSendEmail={this.handleSendEmail}
-                  handleChangeEmail={this.handleChangeEmail}
-                  handleSendFormAgain={this.handleSendFormAgain}
-                  isSentEmail={isSentEmail}
-                  generateLink={generateLink}
-                  handleMarkAsDone={this.handleMarkAsDone}
-                  fullName={fullName}
-                  handleValueChange={this.handleValueChange}
-                  privateEmail={privateEmail}
-                  processStatus={processStatus}
-                  valueToFinalOffer={valueToFinalOffer}
-                  changeValueToFinalOffer={this.changeValueToFinalOffer}
-                  checkValidation={checkValidation}
-                />
+                {processStatus === 'DRAFT' && (
+                  <SendEmail
+                    loading4={loading4}
+                    title={formatMessage({ id: 'component.eligibilityDocs.sentForm' })}
+                    formatMessage={formatMessage}
+                    handleSendEmail={this.handleSendEmail}
+                    handleChangeEmail={this.handleChangeEmail}
+                    handleSendFormAgain={this.handleSendFormAgain}
+                    isSentEmail={isSentEmail}
+                    generateLink={generateLink}
+                    handleMarkAsDone={this.handleMarkAsDone}
+                    fullName={fullName}
+                    handleValueChange={this.handleValueChange}
+                    privateEmail={privateEmail}
+                    processStatus={processStatus}
+                    valueToFinalOffer={valueToFinalOffer}
+                    changeValueToFinalOffer={this.changeValueToFinalOffer}
+                    checkValidation={checkValidation}
+                  />
+                )}
               </Col>
             </Row>
             <CustomModal

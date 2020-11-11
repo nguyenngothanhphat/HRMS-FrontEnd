@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Row, Col, Tooltip, Radio } from 'antd';
-import Icon, { LockFilled, UserOutlined } from '@ant-design/icons';
+import { Row, Col, Tooltip } from 'antd';
+import Icon from '@ant-design/icons';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
@@ -48,7 +48,7 @@ class View extends PureComponent {
             >
               {item.value}
             </Col>
-            {item.label === 'Personal Number' || item.label === 'Personal Email' ? (
+            {/* {item.label === 'Personal Number' || item.label === 'Personal Email' ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
@@ -68,7 +68,7 @@ class View extends PureComponent {
               </Col>
             ) : (
               ''
-            )}
+            )} */}
           </Fragment>
         ))}
         {/* Custom Col Here */}

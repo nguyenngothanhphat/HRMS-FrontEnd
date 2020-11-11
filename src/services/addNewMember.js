@@ -67,6 +67,13 @@ export function updateByHR(params) {
   });
 }
 
+export function submitBasicInfo(params) {
+  return request('/api/candidate/basic-info', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export function getById(params) {
   return request('/api/candidate/get-by-id', {
     method: 'POST',
@@ -118,7 +125,6 @@ export function closeCandidate(params) {
 }
 
 export function editSalaryStructure(params) {
-  console.log(params);
   return request('/api/candidate/edit-salarystructure', {
     method: 'POST',
     data: params,

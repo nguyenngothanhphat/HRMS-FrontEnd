@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import BasicInformationHeader from './components/BasicInformationHeader';
@@ -16,7 +16,7 @@ import styles from './index.less';
   currentStep,
   tempData,
 }))
-class BasicInformation extends PureComponent {
+class BasicInformation extends Component {
   constructor(props) {
     super(props);
 
@@ -45,21 +45,26 @@ class BasicInformation extends PureComponent {
         employeeType: '5f50c2541513a742582206f9',
       },
     });
-    const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-    const { candidate = '' } = data;
-    if (dispatch && candidate) {
-      dispatch({
-        type: 'candidateInfo/updateByHR',
-        payload: {
-          candidate,
-          currentStep: currentStepLocal,
-        },
-      });
+    const { processStatus = '' } = data;
+    if (processStatus !== 'DRAFT') {
+      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      const { candidate = '' } = data;
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: currentStepLocal,
+          },
+        });
+      }
     }
     // console.log('basicInfo currentStep', currentStep);
   }
 
   componentWillUnmount() {
+    const { currentStep } = this.props;
+    console.log('current', currentStep);
     // const {
     //   data,
     //   tempData: { fullName, privateEmail, workEmail, previousExperience },
@@ -78,21 +83,21 @@ class BasicInformation extends PureComponent {
     //     currentStep,
     //   },
     // });
-    // this.handleUpdateByHR();
-    window.removeEventListener('unload', this.handleUnload, false);
+    // window.removeEventListener('unload', this.handleUnload, false);
+    this.handleUpdateByHR();
   }
 
-  handleUnload = () => {
-    const { currentStep } = this.props;
-    localStorage.setItem('currentStep', currentStep);
-  };
+  // handleUnload = () => {
+  //   const { currentStep } = this.props;
+  //   localStorage.setItem('currentStep', currentStep);
+  // };
 
   handleUpdateByHR = () => {
     const {
       data,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
-    const { dispatch, currentStep } = this.props;
+    const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -102,7 +107,7 @@ class BasicInformation extends PureComponent {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep,
+        currentStep: 0,
       },
     });
   };
@@ -121,6 +126,7 @@ class BasicInformation extends PureComponent {
       checkMandatory,
       dispatch,
     } = this.props;
+    const notSpace = RegExp(/[^\s-]/);
     const emailRegExp = RegExp(
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
@@ -129,6 +135,7 @@ class BasicInformation extends PureComponent {
       workEmail !== null &&
       privateEmail !== null &&
       workEmail !== privateEmail &&
+      notSpace.test(fullName) &&
       emailRegExp.test(privateEmail) &&
       emailRegExp.test(workEmail)
     ) {
@@ -152,7 +159,7 @@ class BasicInformation extends PureComponent {
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
     dispatch({
-      type: 'candidateInfo/updateByHR',
+      type: 'candidateInfo/submitBasicInfo',
       payload: {
         fullName: values.fullName,
         privateEmail: values.privateEmail,
@@ -198,7 +205,13 @@ class BasicInformation extends PureComponent {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.fullName' })}
               name="fullName"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
+              rules={[
+                { required: true, message: `'Please input your full name!'` },
+                {
+                  pattern: /[^\s-]/,
+                  message: 'Fullname is invalid!',
+                },
+              ]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
@@ -284,7 +297,7 @@ class BasicInformation extends PureComponent {
               name="previousExperience"
               rules={[
                 {
-                  pattern: /^[0-9]*$/,
+                  pattern: /^[0-9](\.[0-9]+)?$/,
                   message: 'Year of experience invalid!',
                 },
               ]}
