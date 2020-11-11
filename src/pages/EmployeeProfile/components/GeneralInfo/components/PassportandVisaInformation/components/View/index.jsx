@@ -63,9 +63,11 @@ class View extends PureComponent {
                 onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
                 className={styles.urlData}
               >
-                {item.document.attachment.name}
+                {item.document.attachment ? item.document.attachment.name : ''}
               </p>
-              <ConformIcondata data={item.document.attachment.name} />
+              <ConformIcondata
+                data={item.document.attachment ? item.document.attachment.name : ''}
+              />
             </div>
           ) : (
             <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
