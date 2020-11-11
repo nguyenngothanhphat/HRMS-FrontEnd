@@ -10,7 +10,7 @@ import whiteImg from './components/images/whiteImg.png';
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
-import SendEmail from '../BackgroundCheck/components/SendEmail';
+import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
 import styles from './index.less';
 
