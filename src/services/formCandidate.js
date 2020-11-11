@@ -41,7 +41,7 @@ export async function createFinalOffer(payload) {
 }
 
 export async function checkDocument(payload) {
-  return request('/api/template/document-check', {
+  return request('/api/candidate/document-check', {
     method: 'POST',
     data: payload, // {candidate: id, document: id, candidateDocumentStatus: 1}
   });
