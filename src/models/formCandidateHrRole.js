@@ -489,12 +489,10 @@ const candidateInfo = {
       return response;
     },
     *submitBasicInfo({ payload }, { call, put }) {
-      console.log('pl', payload);
       let response = {};
       try {
         response = yield call(submitBasicInfo, payload);
         const { statusCode, data } = response;
-        console.log(statusCode);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
@@ -503,7 +501,6 @@ const candidateInfo = {
       return response;
     },
     *addSchedule({ payload }, { call, put }) {
-      console.log('payload', payload);
       let response;
       try {
         response = yield call(addSchedule, payload);
@@ -703,7 +700,6 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
-        console.log(response);
         // console.log('data', data);
         // console.log('currentStep', data.currentStep);
         if (statusCode !== 200) throw response;
@@ -722,7 +718,6 @@ const candidateInfo = {
             _id,
           },
         });
-        console.log('Save here');
         yield put({
           type: 'save',
           payload: {
