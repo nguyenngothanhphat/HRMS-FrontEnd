@@ -170,6 +170,8 @@ const OfferDetail = (props) => {
 
   const handleTemplateChange = (_, option) => {
     const { value = '', key = '' } = option;
+    console.log(option);
+
     setFile({
       name: value,
       id: key,
@@ -237,6 +239,7 @@ const OfferDetail = (props) => {
         companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
+        offerLetter: templateId,
       },
     });
 
@@ -272,7 +275,7 @@ const OfferDetail = (props) => {
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
       }).then((res) => {
-        const { data: { _id: templateID = '' } = {}, statusCode } = res;
+        const { statusCode } = res;
         if (statusCode !== 200) {
           return;
         }
@@ -281,7 +284,7 @@ const OfferDetail = (props) => {
           payload: {
             candidate,
             currentStep: nextStep,
-            offerTemplate: templateID,
+            // offerTemplate: templateId,
           },
         });
       });

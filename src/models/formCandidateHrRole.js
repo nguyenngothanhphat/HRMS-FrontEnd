@@ -18,6 +18,7 @@ import {
   submitPhase1,
   getLocationListByCompany,
   addManagerSignature,
+  getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
@@ -29,6 +30,7 @@ import {
   getTemplates,
   removeTemplate,
   createFinalOffer,
+  checkDocument,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -71,6 +73,10 @@ const candidateInfo = {
       title: null,
       reportingManager: null,
       valueToFinalOffer: 0,
+      // Background Recheck
+      backgroundRecheck: {
+        documentList: [],
+      },
       // Offer details
       template: '',
       includeOffer: false,
@@ -322,6 +328,8 @@ const candidateInfo = {
           ],
         },
       ],
+      documentsByCandidate: [],
+      documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
       tableData: [],
@@ -724,6 +732,7 @@ const candidateInfo = {
             data: {
               ...data,
               offerLetter: data.offerLetter,
+              candidate: data._id,
             },
           },
         });
@@ -733,12 +742,21 @@ const candidateInfo = {
             ...data,
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
+            candidate: data._id,
           },
         });
         yield put({
           type: 'updateSignature',
           payload: data,
         });
+        if (_id) {
+          yield put({
+            type: 'fetchDocumentByCandidateID',
+            payload: {
+              candidate: _id,
+            },
+          });
+        }
       } catch (error) {
         dialog(error);
       }
@@ -807,6 +825,44 @@ const candidateInfo = {
         //       url,
         //     },
         //   },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *fetchDocumentByCandidateID({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDocumentByCandidate, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { documentsByCandidate: data },
+        });
+        // yield put({
+        //   type: 'saveTemp',
+        //   payload: {
+        //     ...data,
+        //   },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *checkDocumentEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(checkDocument, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'saveOrigin',
+        //   payload: { documentsByCandidate: data },
         // });
       } catch (error) {
         dialog(error);
@@ -942,6 +998,22 @@ const candidateInfo = {
             order: ' ',
           },
         ],
+      };
+    },
+
+    updateBackgroundRecheck(state, action) {
+      const { tempData } = state;
+      const { payload = [] } = action;
+      const { backgroundRecheck = {} } = tempData;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          backgroundRecheck: {
+            ...backgroundRecheck,
+            documentList: payload,
+          },
+        },
       };
     },
 

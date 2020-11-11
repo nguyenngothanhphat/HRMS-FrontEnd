@@ -81,10 +81,17 @@ export function getById(params) {
   });
 }
 
-export function submitPhase1(params) {
-  return request('/api/candidate/phase-one-hr', {
+export function getDocumentByCandidate(params) {
+  return request('/api/document/get-by-candidate', {
     method: 'POST',
     data: params,
+  });
+}
+
+export function submitPhase1(payload) {
+  return request('/api/candidate/phase-one-hr', {
+    method: 'POST',
+    data: payload,
   });
 }
 
