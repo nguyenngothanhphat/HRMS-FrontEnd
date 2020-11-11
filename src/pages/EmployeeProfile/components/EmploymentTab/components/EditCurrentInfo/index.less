@@ -1,0 +1,102 @@
+.editCurrentInfo {
+  &__form {
+    // padding: 24px;
+    position: relative;
+  }
+  :global {
+    .ant-form-item:first-child {
+      margin-top: 24px;
+    }
+    .ant-form-item {
+      width: 100%;
+      padding: 0 24px;
+    }
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+  }
+  .spaceFooter {
+    padding: 24px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: solid 1px #d6dce0;
+  }
+  .btnSubmit {
+    font-size: 14px;
+    width: 95px;
+    height: 40px;
+    font-weight: 600;
+    border-radius: 25px;
+    color: #fff;
+    background-color: #ffa100;
+    border: none;
+  }
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+  .btnCancel {
+    display: inline-block;
+    color: #ffa100;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 40px;
+    cursor: pointer;
+    &:active {
+      opacity: 0.5;
+    }
+  }
+  .viewImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    &__img {
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__text {
+      font-weight: 600;
+      font-size: 16px;
+      color: #161c29;
+      margin: 0;
+    }
+    &__upload {
+      cursor: pointer;
+      &:active {
+        transform: translateY(-1px);
+      }
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+      &__text {
+        color: #2c6df9;
+        font-size: 14px;
+        margin-left: 16px;
+      }
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    border: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #e0e4e9;
+    border-radius: 5px;
+  }
+}
