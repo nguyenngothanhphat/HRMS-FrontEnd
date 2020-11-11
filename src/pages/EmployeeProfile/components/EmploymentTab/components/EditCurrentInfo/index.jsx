@@ -14,12 +14,35 @@ const { Option } = Select;
   loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
 }))
 class EditCurrentInfo extends PureComponent {
+  componentDidMount() {
+    const { employeeProfile, dispatch } = this.props;
+    const { department, company } = employeeProfile.originData.employmentData;
+    const payload = {
+      company: company._id,
+      department: department._id,
+    };
+
+    dispatch({
+      type: 'employeeProfile/fetchTitleByDepartment',
+      payload,
+    });
+
+    dispatch({
+      type: 'employeeProfile/fetchLocationsByCompany',
+      payload: {
+        company: company._id,
+      },
+    });
+  }
+
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
       payload: {
         isUpdateEmployment: false,
+        listTitleByDepartment: [],
+        listLocationsByCompany: [],
       },
     });
   }
@@ -83,10 +106,7 @@ class EditCurrentInfo extends PureComponent {
             joinDate: moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
-            manager:
-              manager && manager.generalInfo && manager.generalInfo.firstName
-                ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
-                : '',
+            manager: (manager && manager._id) || null,
             compensationType,
             currentAnnualCTC,
             // timeOffPolicy,
@@ -98,6 +118,7 @@ class EditCurrentInfo extends PureComponent {
               placeholder="Title"
               showArrow
               showSearch
+              disabled={loadingTitleList}
               loading={loadingTitleList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -124,6 +145,7 @@ class EditCurrentInfo extends PureComponent {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
+              disabled={loadingLocationsList}
               loading={loadingLocationsList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -197,7 +219,6 @@ class EditCurrentInfo extends PureComponent {
             <Select
               disabled
               showSearch
-              placeholder="Select a manager"
               optionFilterProp="children"
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
