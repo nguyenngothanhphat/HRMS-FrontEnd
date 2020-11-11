@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Form, Select, Button, DatePicker, InputNumber } from 'antd';
+import { Form, Select, Button, DatePicker, InputNumber, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
@@ -25,6 +25,13 @@ class EditCurrentInfo extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
       payload,
+    });
+
+    dispatch({
+      type: 'employeeProfile/fetchLocationsByCompany',
+      payload: {
+        company: company._id,
+      },
     });
   }
 
@@ -85,6 +92,14 @@ class EditCurrentInfo extends PureComponent {
 
     const dateFormat = 'Do MMMM YYYY';
 
+    if (loadingLocationsList || loadingTitleList) {
+      return (
+        <div className={styles.editCurrentInfo}>
+          <Skeleton active />
+        </div>
+      );
+    }
+
     return (
       <div className={styles.editCurrentInfo}>
         <Form
@@ -96,7 +111,7 @@ class EditCurrentInfo extends PureComponent {
           {...formLayout}
           initialValues={{
             title: title._id,
-            joinDate: moment(joinDate).locale('en'),
+            joinDate: joinDate && moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
             manager: (manager && manager._id) || null,
@@ -111,8 +126,6 @@ class EditCurrentInfo extends PureComponent {
               placeholder="Title"
               showArrow
               showSearch
-              disabled={loadingTitleList}
-              loading={loadingTitleList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -138,8 +151,6 @@ class EditCurrentInfo extends PureComponent {
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
-              disabled={loadingLocationsList}
-              loading={loadingLocationsList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
