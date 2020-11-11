@@ -35,6 +35,8 @@ import {
   getBank,
   getTax,
   getTitleByDepartment,
+  getLocationsByCompany,
+  updateEmployment,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -67,11 +69,13 @@ const employeeProfile = {
     listSkill: [],
     listTitle: [],
     listTitleByDepartment: [],
+    listLocationsByCompany: [],
     locations: [],
     employeeTypes: [],
     departments: [],
     compensationTypes: [],
     employees: [],
+    jobTitleList: [],
     originData: {
       generalData: {},
       compensationData: {},
@@ -98,6 +102,7 @@ const employeeProfile = {
     groupViewingDocuments: [],
     AdhaarCard: {},
     emailsList: [],
+    isUpdateEmployment: false,
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -776,6 +781,36 @@ const employeeProfile = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchLocationsByCompany({ payload }, { call, put }) {
+      try {
+        const res = yield call(getLocationsByCompany, payload);
+        const { statusCode, data } = res;
+        if (statusCode !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: { listLocationsByCompany: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateEmployment({ payload = {} }, { call, put }) {
+      let isUpdateEmployment = false;
+      try {
+        const response = yield call(updateEmployment, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        const employment = yield call(getEmploymentInfo, { id: payload.id });
+        yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
+        isUpdateEmployment = true;
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { isUpdateEmployment } });
     },
   },
 
