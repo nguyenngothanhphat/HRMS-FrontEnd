@@ -58,6 +58,7 @@ class EmploymentTab extends Component {
         isEdit: false,
       };
     }
+
     return null;
   }
 
@@ -71,17 +72,7 @@ class EmploymentTab extends Component {
     this.setState({
       checkRoleEmployee,
     });
-    const { department, company } = employeeProfile.originData.employmentData;
-    const payload = {
-      company: company._id,
-      department: department._id,
-    };
-
-    dispatch({
-      type: 'employeeProfile/fetchTitleByDepartment',
-      payload,
-    });
-
+    const { company } = employeeProfile.originData.employmentData;
     dispatch({
       type: 'employeeProfile/fetchLocationsByCompany',
       payload: {
