@@ -44,9 +44,27 @@ class Edit extends PureComponent {
     return listState;
   };
 
+  handleUpdateLocation = (values, location) => {
+    const {
+      dispatch,
+      companiesManagement: { idCurrentCompany = '' },
+    } = this.props;
+
+    const payload = {
+      ...values,
+      company: idCurrentCompany,
+      id: location.id,
+    };
+    dispatch({
+      type: 'companiesManagement/updateLocation',
+      payload,
+    });
+    console.log('payload', payload);
+  };
+
   render() {
     const { handleCancelEdit = () => {} } = this.props;
-    const { listCountry = [], companiesManagement } = this.props;
+    const { listCountry = [], companiesManagement, location } = this.props;
     const {
       headQuarterAddress: {
         // address: addressHead = '',
@@ -55,6 +73,7 @@ class Edit extends PureComponent {
         // zipCode: zipCodeHead = '',
       } = {},
     } = companiesManagement;
+    const { name, address = '', country = '', state = '', zipCode = '' } = location;
     const listStateHead = this.findListState(countryHead) || [];
     const formLayout = {
       labelCol: { span: 6 },
@@ -69,18 +88,21 @@ class Edit extends PureComponent {
             {...formLayout}
             colon={false}
             ref={this.formRef}
-            initialValues={
-              {
-                // address: addressHead,
-                // country: countryHead,
-                // state: stateHead,
-                // zipCode: zipCodeHead,
-              }
-            }
+            initialValues={{
+              name,
+              address,
+              country: country._id,
+              state,
+              zipCode,
+            }}
             onValuesChange={this.handleFormHeadquarter}
+            onFinish={(values) => this.handleUpdateLocation(values, location)}
           >
             <>
-              <Form.Item label="Address*" name="address">
+              <Form.Item label="Name" name="name">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Address" name="address">
                 <Input />
               </Form.Item>
               <Form.Item label="Country" name="country">

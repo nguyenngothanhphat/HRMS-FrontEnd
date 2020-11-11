@@ -45,7 +45,7 @@ class View extends PureComponent {
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.country' }),
-        value: location.country,
+        value: location.country?.name,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.state' }),
@@ -71,7 +71,7 @@ class View extends PureComponent {
           )}
         </div>
         {isOpenEditWorkLocation ? (
-          <Edit handleCancelEdit={this.handleCancelEdit} />
+          <Edit location={location} handleCancelEdit={this.handleCancelEdit} />
         ) : (
           <Row gutter={[0, 16]} className={styles.view_workLocation_content}>
             {locationData.map((item) => (

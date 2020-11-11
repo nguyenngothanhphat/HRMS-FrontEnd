@@ -32,17 +32,22 @@ class Edit extends PureComponent {
   };
 
   handleUpdate = (changedValues) => {
-    const { dispatch, companyDetailsOrigin } = this.props;
+    const { dispatch, companyDetailsOrigin, handleCancelEdit = () => {} } = this.props;
     const payload = {
       ...companyDetailsOrigin,
       id: companyDetailsOrigin._id,
       ...changedValues,
     };
     delete payload._id;
-    console.log('companyDetailsChange', payload);
+
     dispatch({
       type: 'companiesManagement/updateCompany',
       payload,
+    }).then((resp) => {
+      const { statusCode } = resp;
+      if (statusCode === 200) {
+        handleCancelEdit();
+      }
     });
   };
 

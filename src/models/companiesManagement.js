@@ -3,6 +3,9 @@ import {
   getCompaniesList,
   getCompanyDetails,
   updateCompany,
+  getLocationsList,
+  addLocation,
+  updateLocation,
 } from '@/services/companiesManangement';
 import { notification } from 'antd';
 
@@ -14,12 +17,14 @@ const companiesManagement = {
     companiesList: [],
     locations: [],
     locationsOfDetail: [],
+    locationsList: [],
     originData: {
       companyDetails: {},
     },
     tempData: {
       companyDetails: {},
     },
+    idCurrentCompany: '',
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
@@ -65,8 +70,21 @@ const companiesManagement = {
       }
     },
 
-    *updateCompany({ payload = {}, dataTempKept = {} }, { put, call, select }) {
+    *fetchLocationsList({ payload: { company = '' } }, { call, put }) {
       try {
+        const response = yield call(getLocationsList, { company });
+        const { statusCode, data: locationsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationsList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *updateCompany({ payload = {}, dataTempKept = {} }, { put, call, select }) {
+      let resp = '';
+      try {
+        console.log('payload', payload);
         const response = yield call(updateCompany, payload);
         const { idCurrentCompany } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -79,11 +97,54 @@ const companiesManagement = {
           payload: { id: payload.id },
           dataTempKept,
         });
+        yield put({
+          type: 'save',
+          payload: { idCurrentCompany },
+        });
         // if (isUpdateAvatar) {
         //   yield put({
         //     type: 'user/fetchCurrent',
         //   });
         // }
+        resp = response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+
+    *addLocation({ payload = {} }, { call, put }) {
+      let resp = '';
+      try {
+        const response = yield call(addLocation, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchLocationsList',
+          payload: { company: payload.company },
+        });
+        resp = response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+
+    *updateLocation({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateLocation, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchLocationsList',
+          payload: { company: payload.company },
+        });
       } catch (errors) {
         dialog(errors);
       }

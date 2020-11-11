@@ -1,11 +1,18 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Divider, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
 import styles from '../../index.less';
 
-@connect(() => ({}))
-class ViewInformation extends PureComponent {
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
+class ViewInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,17 +33,20 @@ class ViewInformation extends PureComponent {
   };
 
   getResponse = (resp) => {
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const { dispatch, companyDetailsOrigin } = this.props;
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       const [first] = data;
       this.handleCancel();
+      const payload = {
+        ...companyDetailsOrigin,
+        id: companyDetailsOrigin._id,
+        logoUrl: first.url,
+      };
+      delete payload._id;
       dispatch({
-        type: 'employeeProfile/updateGeneralInfo',
-        payload: {
-          id,
-          avatar: first.url,
-        },
+        type: 'companiesManangement/updateCompany',
+        payload,
       });
     }
   };
@@ -79,11 +89,11 @@ class ViewInformation extends PureComponent {
           </div>
         </div>
         <ModalUpload
-          titleModal="Profile Picture Update"
+          titleModal="Update Avatar Company"
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"
-          // getResponse={this.getResponse}
+          getResponse={this.getResponse}
         />
       </div>
     );

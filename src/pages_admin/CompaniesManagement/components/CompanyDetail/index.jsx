@@ -23,6 +23,10 @@ class CompanyDetail extends Component {
       type: 'companiesManagement/fetchCompanyDetails',
       payload: { id },
     });
+    dispatch({
+      type: 'companiesManagement/fetchLocationsList',
+      payload: { company: id },
+    });
   }
 
   render() {

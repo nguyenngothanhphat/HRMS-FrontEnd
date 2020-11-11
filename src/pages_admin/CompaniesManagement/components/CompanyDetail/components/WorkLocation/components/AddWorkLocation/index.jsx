@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
@@ -18,7 +19,7 @@ class AddWorkLocationForm extends PureComponent {
     this.formRefLegal = React.createRef();
   }
 
-  onChangeCountryHeadquarter = () => {
+  onChangeCountry = () => {
     const { dispatch } = this.props;
     this.formRef.current.setFieldsValue({
       state: undefined,
@@ -29,7 +30,7 @@ class AddWorkLocationForm extends PureComponent {
     });
   };
 
-  handleFormHeadquarter = (changedValues) => {
+  handleFormAddLocation = (changedValues) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/saveHeadQuarterAddress',
@@ -46,8 +47,35 @@ class AddWorkLocationForm extends PureComponent {
 
   handleCancelAdd = () => {};
 
+  handleAddLocation = (values) => {
+    const { handleCancelAdd = () => {} } = this.props;
+
+    const {
+      companiesManagement: { idCurrentCompany = '' },
+      dispatch,
+    } = this.props;
+
+    if (idCurrentCompany) {
+      const payload = {
+        ...values,
+        company: idCurrentCompany,
+      };
+      dispatch({
+        type: 'companiesManagement/addLocation',
+        payload,
+      }).then((resp) => {
+        if (resp) {
+          const { statusCode } = resp;
+          if (statusCode === 200) {
+            handleCancelAdd();
+          }
+        }
+      });
+    }
+  };
+
   render() {
-    const { handleCancelAdd = () => {}, formIndex } = this.props;
+    const { handleCancelAdd = () => {} } = this.props;
     const { listCountry = [], companiesManagement } = this.props;
     const {
       headQuarterAddress: {
@@ -82,25 +110,48 @@ class AddWorkLocationForm extends PureComponent {
                 // zipCode: zipCodeHead,
               }
             }
-            onValuesChange={this.handleFormHeadquarter}
+            onValuesChange={this.handleFormAddLocation}
+            onFinish={this.handleAddLocation}
           >
             <>
-              <Form.Item label="Name" name="name">
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Address*" name="address">
+              <Form.Item
+                label="Address*"
+                name="address"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item
+                label="Country"
+                name="country"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Select Country"
                   showArrow
                   showSearch
-                  onChange={this.onChangeCountryHeadquarter}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  onChange={this.onChangeCountry}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listCountry.map((item) => (
@@ -108,16 +159,22 @@ class AddWorkLocationForm extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="State" name="state">
+              <Form.Item
+                label="State"
+                name="state"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  // disabled={!countryHead}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  disabled={!countryHead}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listStateHead.map((item) => (
@@ -125,7 +182,15 @@ class AddWorkLocationForm extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Zip Code" name="zipCode">
+              <Form.Item
+                label="Zip Code"
+                name="zipCode"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </>
@@ -133,7 +198,7 @@ class AddWorkLocationForm extends PureComponent {
               <Button
                 type="text"
                 className={styles.edit_btn_cancel}
-                onClick={() => handleCancelAdd(formIndex)}
+                onClick={() => handleCancelAdd()}
               >
                 Cancel
               </Button>
