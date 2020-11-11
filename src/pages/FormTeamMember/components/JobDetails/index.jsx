@@ -41,14 +41,14 @@ class JobDetails extends PureComponent {
     this.checkBottomBar();
 
     if (processStatus === 'DRAFT') {
-      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-      console.log(candidate, currentStepLocal);
+      // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      // console.log(candidate, currentStepLocal);
       if (candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 1,
           },
         });
       }

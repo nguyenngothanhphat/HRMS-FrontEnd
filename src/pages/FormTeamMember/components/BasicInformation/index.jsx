@@ -38,7 +38,7 @@ class BasicInformation extends Component {
 
   componentDidMount() {
     this.checkBottomBar();
-    const { dispatch, data, currentStep } = this.props;
+    const { dispatch, data } = this.props;
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
@@ -47,14 +47,14 @@ class BasicInformation extends Component {
     });
     const { processStatus = '' } = data;
     if (processStatus !== 'DRAFT') {
-      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
       const { candidate = '' } = data;
       if (dispatch && candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 0,
           },
         });
       }
