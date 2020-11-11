@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
@@ -6,6 +7,7 @@ import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
 import HandleChanges from './components/HandleChanges';
 import ChangeHistoryTable from './components/ChangeHistoryTable';
+import EditCurrentInfo from './components/EditCurrentInfo';
 import styles from './index.less';
 
 const steps = [
@@ -16,8 +18,9 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
+  currentUser,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -29,8 +32,13 @@ class EmploymentTab extends Component {
     const { currentAnnualCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
+      isEdit: false,
       submitted: false,
       current: 0,
+      roles: {
+        employee: 'EMPLOYEE',
+      },
+      checkRoleEmployee: false,
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
@@ -40,11 +48,70 @@ class EmploymentTab extends Component {
     };
   }
 
+  static getDerivedStateFromProps(props) {
+    const {
+      employeeProfile: { isUpdateEmployment = false },
+    } = props;
+
+    if (isUpdateEmployment) {
+      return {
+        isEdit: false,
+      };
+    }
+    return null;
+  }
+
+  componentDidMount() {
+    const {
+      employeeProfile,
+      currentUser: { roles = [] },
+      dispatch,
+    } = this.props;
+    const checkRoleEmployee = this.checkRoleEmployee(roles);
+    this.setState({
+      checkRoleEmployee,
+    });
+    const { department, company } = employeeProfile.originData.employmentData;
+    const payload = {
+      company: company._id,
+      department: department._id,
+    };
+
+    dispatch({
+      type: 'employeeProfile/fetchTitleByDepartment',
+      payload,
+    });
+
+    dispatch({
+      type: 'employeeProfile/fetchLocationsByCompany',
+      payload: {
+        company: company._id,
+      },
+    });
+  }
+
+  checkRoleEmployee = (roles) => {
+    let flag = false;
+    const { roles: rolesConst } = this.state;
+    const checkRole = (obj) => obj._id === rolesConst.employee;
+    if (roles.length === 1 && roles.some(checkRole)) {
+      flag = true;
+    }
+    return flag;
+  };
+
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
     this.setState({ current: 0 });
     this.setState({ isChanging: !isChanging });
     this.setState({ submitted: false });
+  };
+
+  handleEditCurrentInfo = () => {
+    const { isEdit } = this.state;
+    this.setState({
+      isEdit: !isEdit,
+    });
   };
 
   handleSubmit = async (data) => {
@@ -98,14 +165,37 @@ class EmploymentTab extends Component {
   };
 
   render() {
-    const { isChanging, current, currentData } = this.state;
+    const { isChanging, current, currentData, isEdit, checkRoleEmployee } = this.state;
     const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title}>
-            <div>Employment & Compensation {isChanging ? `- ${steps[current].title}` : null}</div>
-
+            <div>Employment & Compensation</div>
+            {checkRoleEmployee ? (
+              <div style={{ display: 'flex' }} />
+            ) : isEdit ? (
+              <div style={{ display: 'flex' }} />
+            ) : (
+              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
+                <img alt="" src={edit} />
+                <div>Edit</div>
+              </div>
+            )}
+          </div>
+          {isEdit ? (
+            <EditCurrentInfo handleCancel={this.handleEditCurrentInfo} />
+          ) : (
+            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
+          )}
+        </div>
+        <div className={styles.employmentTab}>
+          <div className={styles.employmentTab_title} align="middle">
+            <div>
+              {isChanging
+                ? `Employment & Compensation - ${steps[current].title}`
+                : 'Change History'}
+            </div>
             {isChanging ? (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={path} />
@@ -114,7 +204,7 @@ class EmploymentTab extends Component {
             ) : (
               <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
                 <img alt="" src={edit} />
-                <div>Edit</div>
+                <div>Make changes</div>
               </div>
             )}
           </div>
@@ -127,7 +217,7 @@ class EmploymentTab extends Component {
               current={current}
             />
           ) : (
-            <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
+            <ChangeHistoryTable />
           )}
           {isChanging ? (
             <div className={styles.footer}>
@@ -142,13 +232,6 @@ class EmploymentTab extends Component {
               </div>
             </div>
           ) : null}
-        </div>
-        <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title} align="middle">
-            <div>Change History</div>
-            <div className={styles.employmentTab_changeIcon} />
-          </div>
-          <ChangeHistoryTable />
         </div>
       </div>
     );
