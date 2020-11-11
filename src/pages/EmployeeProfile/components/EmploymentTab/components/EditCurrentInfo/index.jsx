@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
-import { Form, Select, Button, DatePicker, InputNumber } from 'antd';
+import { Form, Select, Button, DatePicker, InputNumber, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
@@ -14,12 +14,35 @@ const { Option } = Select;
   loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
 }))
 class EditCurrentInfo extends PureComponent {
+  componentDidMount() {
+    const { employeeProfile, dispatch } = this.props;
+    const { department = '', company = '' } = employeeProfile.originData.employmentData;
+    const payload = {
+      company: company._id,
+      department: department._id,
+    };
+
+    dispatch({
+      type: 'employeeProfile/fetchTitleByDepartment',
+      payload,
+    });
+
+    dispatch({
+      type: 'employeeProfile/fetchLocationsByCompany',
+      payload: {
+        company: company._id,
+      },
+    });
+  }
+
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/save',
       payload: {
         isUpdateEmployment: false,
+        listTitleByDepartment: [],
+        listLocationsByCompany: [],
       },
     });
   }
@@ -69,6 +92,14 @@ class EditCurrentInfo extends PureComponent {
 
     const dateFormat = 'Do MMMM YYYY';
 
+    if (loadingLocationsList || loadingTitleList) {
+      return (
+        <div className={styles.editCurrentInfo}>
+          <Skeleton active />
+        </div>
+      );
+    }
+
     return (
       <div className={styles.editCurrentInfo}>
         <Form
@@ -80,24 +111,21 @@ class EditCurrentInfo extends PureComponent {
           {...formLayout}
           initialValues={{
             title: title._id,
-            joinDate: moment(joinDate).locale('en'),
+            joinDate: joinDate && moment(joinDate).locale('en'),
             location: location._id,
             employeeType: employeeType._id,
-            manager: manager.generalInfo.firstName
-              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
-              : '',
+            manager: (manager && manager._id) || null,
             compensationType,
             currentAnnualCTC,
             // timeOffPolicy,
           }}
           onFinish={(values) => this.handleSave(values, _id)}
         >
-          <Form.Item label="Title" name="title" rules={[{ required: true }]}>
+          <Form.Item label="Title" name="title">
             <Select
               placeholder="Title"
               showArrow
               showSearch
-              loading={loadingTitleList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -110,20 +138,14 @@ class EditCurrentInfo extends PureComponent {
           <Form.Item
             label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
             name="joinDate"
-            rules={[{ required: true }]}
           >
             <DatePicker format={dateFormat} style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item
-            label={formatMessage({ id: 'addEmployee.location' })}
-            name="location"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label={formatMessage({ id: 'addEmployee.location' })} name="location">
             <Select
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
-              loading={loadingLocationsList}
               filterOption={(input, option) =>
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -133,7 +155,7 @@ class EditCurrentInfo extends PureComponent {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Employment Type" name="employeeType" rules={[{ required: true }]}>
+          <Form.Item label="Employment Type" name="employeeType">
             <Select
               showSearch
               placeholder="Select an employment type"
@@ -196,7 +218,6 @@ class EditCurrentInfo extends PureComponent {
             <Select
               disabled
               showSearch
-              placeholder="Select a manager"
               optionFilterProp="children"
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
