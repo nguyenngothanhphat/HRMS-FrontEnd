@@ -18,9 +18,8 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
+@connect(({ employeeProfile }) => ({
   employeeProfile,
-  currentUser,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -35,10 +34,6 @@ class EmploymentTab extends Component {
       isEdit: false,
       submitted: false,
       current: 0,
-      roles: {
-        employee: 'EMPLOYEE',
-      },
-      checkRoleEmployee: false,
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
@@ -60,16 +55,6 @@ class EmploymentTab extends Component {
     }
 
     return null;
-  }
-
-  componentDidMount() {
-    const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const checkRoleEmployee = this.checkRoleEmployee(roles);
-    this.setState({
-      checkRoleEmployee,
-    });
   }
 
   checkRoleEmployee = (roles) => {
@@ -147,16 +132,14 @@ class EmploymentTab extends Component {
   };
 
   render() {
-    const { isChanging, current, currentData, isEdit, checkRoleEmployee } = this.state;
+    const { isChanging, current, currentData, isEdit } = this.state;
     const { dispatch } = this.props;
     return (
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab_title}>
             <div>Employment & Compensation</div>
-            {checkRoleEmployee ? (
-              <div style={{ display: 'flex' }} />
-            ) : isEdit ? (
+            {isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
               <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
