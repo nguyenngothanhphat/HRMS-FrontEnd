@@ -21,6 +21,7 @@ class CollapseField extends PureComponent {
       onValuesChange,
       employerName,
       checkLength,
+      processStatus,
     } = this.props;
     return (
       <div className={styles.CollapseField}>

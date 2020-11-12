@@ -10,6 +10,29 @@ import BasicInformation from '../../pages/FormTeamMember/components/BasicInforma
 
 import s from './index.less';
 
+const PROCESS_STATUS = {
+  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
+  FINAL_OFFERS_DRAFT: 'FINAL-OFFERS-DRAFT',
+
+  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
+  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
+  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
+
+  PENDING: 'PENDING-BACKGROUND-CHECK',
+  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
+  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
+
+  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
+  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
+
+  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
+  ACCEPTED_FINAL_OFFERS: 'ACCEPT-FINAL-OFFER',
+  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
+
+  PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
+  FINAL_OFFERS: 'FINAL-OFFERS',
+};
+
 @connect(
   ({
     loading,
@@ -17,7 +40,10 @@ import s from './index.less';
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
-      tempData: { valueToFinalOffer = 0 } = {},
+      tempData: {
+        valueToFinalOffer = 0,
+        backgroundRecheck: { allDocumentVerified = false } = {},
+      } = {},
     } = {},
   }) => ({
     loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
@@ -25,6 +51,7 @@ import s from './index.less';
     displayComponent,
     processStatus,
     valueToFinalOffer,
+    allDocumentVerified,
   }),
 )
 class CommonLayout extends Component {
@@ -35,6 +62,10 @@ class CommonLayout extends Component {
       displayComponent: '',
     };
   }
+
+  // componentDidUpdate(prevProp) {
+  //   console.log('ReRender');
+  // }
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
@@ -109,13 +140,64 @@ class CommonLayout extends Component {
   };
 
   isDisabled = (index) => {
-    if (this.disablePhase2()) {
-      if (index === 4 || index === 5 || index === 6 || index === 7) {
+    const {
+      PROVISIONAL_OFFER_DRAFT,
+      FINAL_OFFERS_DRAFT,
+
+      SENT_PROVISIONAL_OFFERS,
+      ACCEPTED_PROVISIONAL_OFFERS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+
+      PENDING,
+      ELIGIBLE_CANDIDATES,
+      INELIGIBLE_CANDIDATES,
+
+      SENT_FOR_APPROVAL,
+      APPROVED_OFFERS,
+
+      SENT_FINAL_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+
+      PROVISIONAL_OFFERS,
+      FINAL_OFFERS,
+    } = PROCESS_STATUS;
+
+    const { allDocumentVerified, processStatus } = this.props;
+    console.log(allDocumentVerified);
+
+    switch (processStatus) {
+      case PROVISIONAL_OFFER_DRAFT:
+      case SENT_PROVISIONAL_OFFERS: {
+        if (index === 0 || index === 1 || index === 2 || index === 3) {
+          return false;
+        }
         return true;
       }
-      return false;
+
+      case PENDING: {
+        if (allDocumentVerified) {
+          return false;
+        }
+
+        if (index === 0 || index === 1 || index === 2 || index === 3) {
+          return false;
+        }
+
+        return true;
+      }
+
+      default:
+        return false;
     }
-    return false;
+
+    // if (this.disablePhase2()) {
+    //   if (index === 4 || index === 5 || index === 6 || index === 7) {
+    //     return true;
+    //   }
+    //   return false;
+    // }
+    // return false;
   };
 
   render() {

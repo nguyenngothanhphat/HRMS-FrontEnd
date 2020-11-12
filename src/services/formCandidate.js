@@ -46,3 +46,10 @@ export async function checkDocument(payload) {
     data: payload, // {candidate: id, document: id, candidateDocumentStatus: 1}
   });
 }
+
+export async function sendDocumentStatus(payload) {
+  return request('/api/candidate/background-check', {
+    method: 'POST',
+    data: payload, // {candidate: id, options: 1, comments: ''}
+  });
+}

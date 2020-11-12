@@ -13,6 +13,7 @@ import SalaryStructure from './components/SalaryStructure';
 import BackgroundCheck from './components/BackgroundCheck';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
+import PROCESS_STATUS from './components/utils';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 
@@ -289,7 +290,7 @@ class FormTeamMember extends PureComponent {
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component:
-          processStatus === 'SENT-PROVISIONAL-OFFER' ? (
+          processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ? (
             <BackgroundRecheck />
           ) : (
             <BackgroundCheck
