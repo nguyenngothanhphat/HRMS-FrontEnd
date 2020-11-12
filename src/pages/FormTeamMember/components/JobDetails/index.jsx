@@ -70,6 +70,7 @@ class JobDetails extends PureComponent {
   handleUpdateByHR = () => {
     const {
       dispatch,
+      currentStep,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
     } = this.props;
     dispatch({
@@ -82,7 +83,7 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep: 1,
+        currentStep,
       },
     });
   };

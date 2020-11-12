@@ -68,7 +68,6 @@ class BackgroundCheck extends Component {
       tempData,
       dispatch,
     } = this.props;
-    const { currentStep } = this.props;
     const { candidate = '', processStatus } = data;
 
     if (processStatus === 'DRAFT') {
@@ -77,7 +76,7 @@ class BackgroundCheck extends Component {
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 3,
           },
         });
       }
@@ -183,7 +182,7 @@ class BackgroundCheck extends Component {
 
   handleUpdateByHR = () => {
     console.log('current unmount');
-    const { data } = this.props;
+    const { data, currentStep } = this.props;
     const {
       dispatch,
       tempData: { documentList, employer },
@@ -197,7 +196,7 @@ class BackgroundCheck extends Component {
       payload: {
         candidate: _id,
         documentChecklistSetting: documentList,
-        currentStep: 3,
+        currentStep,
       },
     });
   };

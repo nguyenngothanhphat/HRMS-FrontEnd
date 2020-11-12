@@ -37,19 +37,16 @@ class BasicInformation extends Component {
   }
 
   componentDidMount() {
+    const {
+      dispatch,
+      data: { candidate, processStatus },
+    } = this.props;
     this.checkBottomBar();
-    const { dispatch, data } = this.props;
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        employeeType: '5f50c2541513a742582206f9',
-      },
-    });
-    const { processStatus = '' } = data;
-    if (processStatus !== 'DRAFT') {
+
+    if (processStatus === 'DRAFT') {
       // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-      const { candidate = '' } = data;
-      if (dispatch && candidate) {
+      // console.log(candidate, currentStepLocal);
+      if (candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
