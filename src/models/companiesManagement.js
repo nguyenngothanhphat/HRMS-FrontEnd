@@ -25,6 +25,7 @@ const companiesManagement = {
       companyDetails: {},
     },
     idCurrentCompany: '',
+    isOpenEditWorkLocation: false,
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
@@ -84,7 +85,6 @@ const companiesManagement = {
     *updateCompany({ payload = {}, dataTempKept = {} }, { put, call, select }) {
       let resp = '';
       try {
-        console.log('payload', payload);
         const response = yield call(updateCompany, payload);
         const { idCurrentCompany } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
@@ -101,11 +101,6 @@ const companiesManagement = {
           type: 'save',
           payload: { idCurrentCompany },
         });
-        // if (isUpdateAvatar) {
-        //   yield put({
-        //     type: 'user/fetchCurrent',
-        //   });
-        // }
         resp = response;
       } catch (errors) {
         dialog(errors);
@@ -134,6 +129,7 @@ const companiesManagement = {
     },
 
     *updateLocation({ payload = {} }, { call, put }) {
+      let resp = '';
       try {
         const response = yield call(updateLocation, payload);
         const { statusCode, message } = response;
@@ -145,9 +141,11 @@ const companiesManagement = {
           type: 'fetchLocationsList',
           payload: { company: payload.company },
         });
+        resp = response;
       } catch (errors) {
         dialog(errors);
       }
+      return resp;
     },
   },
   reducers: {

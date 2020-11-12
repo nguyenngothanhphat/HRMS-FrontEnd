@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
@@ -6,11 +7,14 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {} }) => ({
-  listState,
-  listCountry,
-  companiesManagement,
-}))
+@connect(
+  ({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {}, loading }) => ({
+    listState,
+    listCountry,
+    companiesManagement,
+    loadingUpdate: loading.effects['companiesManagement/updateLocation'],
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
@@ -48,6 +52,7 @@ class Edit extends PureComponent {
     const {
       dispatch,
       companiesManagement: { idCurrentCompany = '' },
+      handleCancelEdit = () => {},
     } = this.props;
 
     const payload = {
@@ -58,13 +63,23 @@ class Edit extends PureComponent {
     dispatch({
       type: 'companiesManagement/updateLocation',
       payload,
+    }).then((resp) => {
+      const { statusCode } = resp;
+      if (statusCode === 200) {
+        handleCancelEdit();
+      }
     });
-    console.log('payload', payload);
   };
 
   render() {
-    const { handleCancelEdit = () => {} } = this.props;
-    const { listCountry = [], companiesManagement, location } = this.props;
+    const {
+      listCountry = [],
+      companiesManagement,
+      location,
+      handleCancelEdit = () => {},
+      loadingUpdate,
+    } = this.props;
+    const { name, address = '', country = '', state = '', zipCode = '' } = location;
     const {
       headQuarterAddress: {
         // address: addressHead = '',
@@ -73,7 +88,6 @@ class Edit extends PureComponent {
         // zipCode: zipCodeHead = '',
       } = {},
     } = companiesManagement;
-    const { name, address = '', country = '', state = '', zipCode = '' } = location;
     const listStateHead = this.findListState(countryHead) || [];
     const formLayout = {
       labelCol: { span: 6 },
@@ -83,7 +97,7 @@ class Edit extends PureComponent {
       <div className={styles.edit}>
         <div className={styles.edit_form}>
           <Form
-            name="formHeadQuarter"
+            name="formEditLocation"
             requiredMark={false}
             {...formLayout}
             colon={false}
@@ -99,7 +113,19 @@ class Edit extends PureComponent {
             onFinish={(values) => this.handleUpdateLocation(values, location)}
           >
             <>
-              <Form.Item label="Name" name="name">
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                  },
+                  {
+                    pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
+                    message: 'Name is not a validate name!',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
               <Form.Item label="Address" name="address">
@@ -111,10 +137,8 @@ class Edit extends PureComponent {
                   showArrow
                   showSearch
                   onChange={this.onChangeCountryHeadquarter}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listCountry.map((item) => (
@@ -127,11 +151,9 @@ class Edit extends PureComponent {
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  // disabled={!countryHead}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  disabled={!countryHead}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listStateHead.map((item) => (
@@ -139,7 +161,16 @@ class Edit extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Zip Code" name="zipCode">
+              <Form.Item
+                label="Zip Code"
+                name="zipCode"
+                rules={[
+                  {
+                    pattern: /^[0-9]*$/,
+                    message: 'Zip Code is not a valid number',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </>
@@ -147,7 +178,12 @@ class Edit extends PureComponent {
               <Button type="text" className={styles.edit_btn_cancel} onClick={handleCancelEdit}>
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" className={styles.edit_btn_save}>
+              <Button
+                loading={loadingUpdate}
+                type="primary"
+                htmlType="submit"
+                className={styles.edit_btn_save}
+              >
                 Save
               </Button>
             </div>

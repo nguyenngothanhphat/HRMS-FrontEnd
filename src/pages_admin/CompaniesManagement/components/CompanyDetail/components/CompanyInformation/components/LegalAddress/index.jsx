@@ -36,7 +36,7 @@ class LegalAddress extends PureComponent {
       },
     } = this.props;
     const renderContentCompanyDetail = isOpenEditDetail ? (
-      <Edit handleCancelEdit={this.handleCancelEdit} />
+      <Edit location={legalAddress} handleCancelEdit={this.handleCancelEdit} />
     ) : (
       <View location={legalAddress} />
     );

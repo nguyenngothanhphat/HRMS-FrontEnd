@@ -38,20 +38,20 @@ class LayoutCompanyDetail extends PureComponent {
   }
 
   handleCLickItemMenu = (item) => {
-    const { isModified } = this.props;
-    if (isModified) {
-      this.showConfirm();
-    } else {
-      this.setState({
-        selectedItemId: item.id,
-        displayComponent: item.component,
-      });
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }
+    // const { isModified } = this.props;
+    // if (isModified) {
+    //   this.showConfirm();
+    // } else {
+    this.setState({
+      selectedItemId: item.id,
+      displayComponent: item.component,
+    });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    // }
   };
 
   showConfirm = () => {

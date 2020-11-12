@@ -7,11 +7,14 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {} }) => ({
-  listState,
-  listCountry,
-  companiesManagement,
-}))
+@connect(
+  ({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {}, loading }) => ({
+    listState,
+    listCountry,
+    companiesManagement,
+    loadingAddLocation: loading.effects['companiesManagement/addLocation'],
+  }),
+)
 class AddWorkLocationForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -75,8 +78,12 @@ class AddWorkLocationForm extends PureComponent {
   };
 
   render() {
-    const { handleCancelAdd = () => {} } = this.props;
-    const { listCountry = [], companiesManagement } = this.props;
+    const {
+      listCountry = [],
+      companiesManagement,
+      loadingAddLocation,
+      handleCancelAdd = () => {},
+    } = this.props;
     const {
       headQuarterAddress: {
         // address: addressHead = '',
@@ -97,19 +104,10 @@ class AddWorkLocationForm extends PureComponent {
         </div>
         <div className={styles.edit_form}>
           <Form
-            name="formHeadQuarter"
-            requiredMark={false}
+            name="formAddWorkLocation"
             {...formLayout}
             colon={false}
             ref={this.formRef}
-            initialValues={
-              {
-                // address: addressHead,
-                // country: countryHead,
-                // state: stateHead,
-                // zipCode: zipCodeHead,
-              }
-            }
             onValuesChange={this.handleFormAddLocation}
             onFinish={this.handleAddLocation}
           >
@@ -121,12 +119,16 @@ class AddWorkLocationForm extends PureComponent {
                   {
                     required: true,
                   },
+                  {
+                    pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
+                    message: 'Name is not a validate name!',
+                  },
                 ]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
-                label="Address*"
+                label="Address"
                 name="address"
                 rules={[
                   {
@@ -187,7 +189,8 @@ class AddWorkLocationForm extends PureComponent {
                 name="zipCode"
                 rules={[
                   {
-                    required: true,
+                    pattern: /^[0-9]*$/,
+                    message: 'Zip Code is not a valid number',
                   },
                 ]}
               >
@@ -202,7 +205,12 @@ class AddWorkLocationForm extends PureComponent {
               >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" className={styles.edit_btn_save}>
+              <Button
+                loading={loadingAddLocation}
+                type="primary"
+                htmlType="submit"
+                className={styles.edit_btn_save}
+              >
                 Save
               </Button>
             </div>

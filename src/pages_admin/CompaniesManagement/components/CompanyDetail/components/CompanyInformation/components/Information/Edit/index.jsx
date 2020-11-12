@@ -10,7 +10,12 @@ import styles from './index.less';
       originData: { companyDetails: companyDetailsOrigin = {} },
       tempData: { companyDetails = {} },
     } = {},
-  }) => ({ companyDetailsOrigin, companyDetails }),
+    loading,
+  }) => ({
+    companyDetailsOrigin,
+    companyDetails,
+    loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
 )
 class Edit extends PureComponent {
   handleChangeValues = (changedValues) => {
@@ -21,6 +26,7 @@ class Edit extends PureComponent {
     };
     const isModified =
       JSON.stringify(companyDetailsChange) !== JSON.stringify(companyDetailsOrigin);
+    console.log('isModified', isModified);
     dispatch({
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: companyDetailsChange },
@@ -52,8 +58,16 @@ class Edit extends PureComponent {
   };
 
   render() {
-    const { companyDetails } = this.props;
-    const { name = '', dba = '', ein = '', employeeNumber = '', website = '' } = companyDetails;
+    const { companyDetails, loadingUpdate } = this.props;
+    const {
+      name = '',
+      dba = '',
+      ein = '',
+      employeeNumber = '',
+      website = '',
+      phone = '',
+      contactEmail = '',
+    } = companyDetails;
 
     const formItemLayout = {
       labelCol: {
@@ -75,6 +89,8 @@ class Edit extends PureComponent {
             dba,
             ein,
             employeeNumber,
+            phone,
+            contactEmail,
             website,
           }}
           onValuesChange={this.handleChangeValues}
@@ -89,6 +105,10 @@ class Edit extends PureComponent {
                 required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+              },
+              {
+                pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
+                message: 'Company name is not a validate name!',
               },
             ]}
           >
@@ -136,6 +156,31 @@ class Edit extends PureComponent {
             <Input className={styles.inputForm} />
           </Form.Item>
           <Form.Item
+            label={formatMessage({ id: 'pages_admin.company.phone' })}
+            name="phone"
+            {...formItemLayout}
+            rules={[
+              {
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'pages_admin.company.contactEmail' })}
+            name="contactEmail"
+            {...formItemLayout}
+            rules={[
+              {
+                type: 'email',
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} />
+          </Form.Item>
+          <Form.Item
             label={formatMessage({ id: 'pages_admin.company.website' })}
             name="website"
             {...formItemLayout}
@@ -161,7 +206,7 @@ class Edit extends PureComponent {
               type="primary"
               htmlType="submit"
               className={styles.edit_btn_save}
-              // loading={loading}
+              loading={loadingUpdate}
             >
               Save
             </Button>

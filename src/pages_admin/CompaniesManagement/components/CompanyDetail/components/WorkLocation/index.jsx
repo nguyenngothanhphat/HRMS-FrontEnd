@@ -24,6 +24,16 @@ class WorkLocation extends PureComponent {
     };
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: {
+        isOpenEditWorkLocation: false,
+      },
+    });
+  }
+
   addWorkLocation = () => {
     const { openFormAddLocation } = this.state;
     this.setState({

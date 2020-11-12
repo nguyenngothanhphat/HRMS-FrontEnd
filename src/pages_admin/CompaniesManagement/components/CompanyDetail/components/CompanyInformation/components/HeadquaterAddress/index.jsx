@@ -35,8 +35,9 @@ class HeadquaterAddress extends PureComponent {
         isheadQuarter: true,
       },
     } = this.props;
+
     const renderContentCompanyDetail = isOpenEditDetail ? (
-      <Edit handleCancelEdit={this.handleCancelEdit} />
+      <Edit location={headQuarterAddress} handleCancelEdit={this.handleCancelEdit} />
     ) : (
       <View location={headQuarterAddress} />
     );

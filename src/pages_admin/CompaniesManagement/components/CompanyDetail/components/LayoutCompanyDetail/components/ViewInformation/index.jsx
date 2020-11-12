@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Divider, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
+import noLogo from '@/assets/no-photo-available-icon.png';
 import styles from '../../index.less';
 
 @connect(
@@ -45,7 +46,7 @@ class ViewInformation extends Component {
       };
       delete payload._id;
       dispatch({
-        type: 'companiesManangement/updateCompany',
+        type: 'companiesManagement/updateCompany',
         payload,
       });
     }
@@ -56,7 +57,6 @@ class ViewInformation extends Component {
       loading,
       companyDetails: { logoUrl = '', name = '' },
     } = this.props;
-    const avatar = '';
     const { visible } = this.state;
     if (loading)
       return (
@@ -71,7 +71,7 @@ class ViewInformation extends Component {
           alt="img-cover"
           className={styles.infoCompany__imgCover}
         />
-        <Avatar src={avatar || { logoUrl }} size={96} className={styles.infoCompany__imgAvt} />
+        <Avatar src={logoUrl || noLogo} size={96} className={styles.infoCompany__imgAvt} />
         <img
           src="/assets/images/iconUploadImage.svg"
           onClick={this.openModalUpload}
@@ -89,7 +89,7 @@ class ViewInformation extends Component {
           </div>
         </div>
         <ModalUpload
-          titleModal="Update Avatar Company"
+          titleModal="Update logo company"
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"

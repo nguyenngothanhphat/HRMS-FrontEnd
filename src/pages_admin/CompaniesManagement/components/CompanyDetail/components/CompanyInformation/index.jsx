@@ -21,7 +21,7 @@ class CompanyInformation extends PureComponent {
 
   render() {
     const { companyDetailsOrigin } = this.props;
-    const { headQuarterAddress = {}, legalAddress = {} } = this.props;
+    const { headQuarterAddress = {}, legalAddress = {} } = companyDetailsOrigin;
     return (
       <div>
         <Information information={companyDetailsOrigin} />

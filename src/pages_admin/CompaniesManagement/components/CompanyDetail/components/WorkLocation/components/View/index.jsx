@@ -1,9 +1,12 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Row, Col } from 'antd';
-import { formatMessage } from 'umi';
+import { Row, Col, Modal } from 'antd';
+import { formatMessage, connect } from 'umi';
 import Edit from '../Edit';
 import styles from './index.less';
 
+const { confirm } = Modal;
+
+@connect(({ companiesManagement }) => ({ companiesManagement }))
 class View extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,28 +16,54 @@ class View extends PureComponent {
   }
 
   handleEdit = () => {
-    this.setState({
-      isOpenEditWorkLocation: true,
-    });
+    const {
+      dispatch,
+      companiesManagement: { isOpenEditWorkLocation = false },
+    } = this.props;
+    if (isOpenEditWorkLocation) {
+      this.showConfirm();
+    } else {
+      this.setState({
+        isOpenEditWorkLocation: true,
+      });
+      dispatch({
+        type: 'companiesManagement/save',
+        payload: {
+          isOpenEditWorkLocation: true,
+        },
+      });
+    }
   };
 
   handleCancelEdit = () => {
+    const { dispatch } = this.props;
     this.setState({
       isOpenEditWorkLocation: false,
     });
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: {
+        isOpenEditWorkLocation: false,
+      },
+    });
   };
 
-  // renderContentCompanyDetail = (location, isOpenEditWorkLocation) => {
-  //   return (
-  //     <>
-  //       {isOpenEditWorkLocation ? (
-  //         <Edit handleCancelEdit={this.handleCancelEdit} />
-  //       ) : (
-  //         <View location={location} />
-  //       )}
-  //     </>
-  //   );
-  // };
+  showConfirm = () => {
+    const _this = this;
+    confirm({
+      title: 'Please save form before proceeding !',
+      onOk() {
+        _this.saveChanges();
+      },
+      onCancel() {
+        _this.onCancel();
+      },
+    });
+  };
+
+  saveChanges = () => {};
+
+  onCancel = () => {};
 
   render() {
     const { location } = this.props;
@@ -57,6 +86,7 @@ class View extends PureComponent {
       },
     ];
     const { isOpenEditWorkLocation } = this.state;
+
     return (
       <div className={styles.view_workLocation}>
         <div className={styles.spaceTitle}>
@@ -64,14 +94,14 @@ class View extends PureComponent {
           {isOpenEditWorkLocation ? (
             ''
           ) : (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
+            <div className={styles.flexEdit} onClick={() => this.handleEdit()}>
               <img src="/assets/images/edit.svg" alt="Icon Edit" />
               <p className={styles.Edit}>Edit</p>
             </div>
           )}
         </div>
         {isOpenEditWorkLocation ? (
-          <Edit location={location} handleCancelEdit={this.handleCancelEdit} />
+          <Edit location={location} handleCancelEdit={() => this.handleCancelEdit()} />
         ) : (
           <Row gutter={[0, 16]} className={styles.view_workLocation_content}>
             {locationData.map((item) => (
