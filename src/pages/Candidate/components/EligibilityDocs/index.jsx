@@ -178,8 +178,6 @@ class EligibilityDocs extends PureComponent {
 
   onValuesChange = (val) => {
     const { dispatch } = this.props;
-    console.log('valwork', val.workDuration);
-    console.log('val1', val);
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {

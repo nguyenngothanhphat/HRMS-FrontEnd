@@ -10,6 +10,20 @@ import InputField from '../InputField';
 import styles from './index.less';
 
 class CollapseField extends PureComponent {
+  // uploadText = (status) => {
+  //   if(status === 'VERIFIED') {
+  //     return 'Uploaded';
+  //   }
+  //   return 'Reupload'
+  // }
+
+  getActionContent = (status) => {
+    if (status === 'INELIGIBLE') {
+      return 'Choose file';
+    }
+    return 'Resubmit';
+  };
+
   render() {
     const {
       item = {},
@@ -17,12 +31,14 @@ class CollapseField extends PureComponent {
       index,
       handleFile,
       docList,
-      handleCanCelIcon,
+      handleCanCelIcon: handleCancelIcon,
       onValuesChange,
       employerName,
       checkLength,
       processStatus,
     } = this.props;
+
+    const { data, type } = item;
     return (
       <div className={styles.CollapseField}>
         {item.data.length > 0 || item.type === 'D' ? (
@@ -53,16 +69,19 @@ class CollapseField extends PureComponent {
               )}
               <Space direction="vertical" className={styles.Space}>
                 <div className={styles.Upload}>
-                  {item.data.map((name, id) => (
+                  {item.data.map((file, id) => (
                     <div key={id}>
-                      {!name.attachment && name.isValidated ? (
+                      {!file.attachment && file.isValidated ? (
                         <Row className={styles.checkboxItem}>
                           <Col span={18}>
-                            <Typography.Text>{name.displayName}</Typography.Text>
+                            <Typography.Text>{file.displayName}</Typography.Text>
                           </Col>
                           <Col span={5} className={styles.Padding}>
+                            {file.candidateDocumentStatus !== 'VERIFIED' && (
+                              <Typography.Text>{file.attachment?.name}</Typography.Text>
+                            )}
                             <UploadImage
-                              content="Choose file"
+                              content={this.getActionContent(file.candidateDocumentStatus)}
                               getResponse={(res) => handleFile(res, index, id, docList)}
                               loading={loading}
                               hideValidation
@@ -72,37 +91,42 @@ class CollapseField extends PureComponent {
                             />
                           </Col>
                         </Row>
-                      ) : name.attachment ? (
+                      ) : file.attachment ? (
                         <Row className={styles.checkboxItem}>
                           <Col span={14}>
-                            <Typography.Text>{name.displayName}</Typography.Text>
+                            <Typography.Text>{file.displayName}</Typography.Text>
                           </Col>
                           <Col span={5} className={styles.textAlign}>
                             <a
-                              href={name.attachment.url}
+                              href={file.attachment.url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={styles.viewUpLoadDataURL}
                             >
-                              {checkLength(name.attachment.name)}
+                              {checkLength(file.attachment.name)}
                             </a>
                           </Col>
-                          <Col span={3} className={styles.textAlign}>
-                            <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                          </Col>
-                          <Col span={2} className={styles.textAlignCenter}>
-                            <img
-                              src={cancelIcon}
-                              alt=""
-                              onClick={() => handleCanCelIcon(index, id, docList)}
-                              className={styles.viewUpLoadDataIconCancel}
-                            />
-                          </Col>
+                          {file.candidateDocumentStatus !== 'VERIFIED' && (
+                            <>
+                              <Col span={3} className={styles.textAlign}>
+                                <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                              </Col>
+                              <Col span={2} className={styles.textAlignCenter}>
+                                <img
+                                  src={cancelIcon}
+                                  alt=""
+                                  onClick={() => handleCancelIcon(index, id, docList)}
+                                  className={styles.viewUpLoadDataIconCancel}
+                                />
+                              </Col>
+                            </>
+                          )}
                         </Row>
-                      ) : name.isValidated === false ? (
+                      ) : // <div />
+                      file.isValidated === false ? (
                         <Row className={styles.checkboxItemError}>
                           <Col span={8}>
-                            <Typography.Text>{name.displayName}</Typography.Text>
+                            <Typography.Text>{file.displayName}</Typography.Text>
                           </Col>
                           <Col span={11} className={styles.textLeft}>
                             <Typography.Text>File must be under 5Mb</Typography.Text>
@@ -114,7 +138,7 @@ class CollapseField extends PureComponent {
                             <img
                               src={undo}
                               alt=""
-                              onClick={() => handleCanCelIcon(index, id, docList)}
+                              onClick={() => handleCancelIcon(index, id, docList)}
                               className={styles.viewUpLoadDataIconCancel}
                             />
                           </Col>
