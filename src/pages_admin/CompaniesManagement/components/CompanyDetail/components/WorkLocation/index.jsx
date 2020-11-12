@@ -1,97 +1,58 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import View from './components/View';
 import AddWorkLocationForm from './components/AddWorkLocation';
 import styles from './index.less';
 
-@connect(({ // signup: { headQuarterAddress = {}, company: { name = '' } = {} } = {},
-  country: { listCountry = [] } = {}, companiesManagement: { locationsOfDetail = [] } }) => ({
-  // name,
-  // headQuarterAddress,
-  locationsOfDetail,
-  listCountry,
-}))
+@connect(
+  ({
+    country: { listCountry = [] } = {},
+    companiesManagement: { locationsOfDetail = [], locationsList = [], idCurrentCompany = '' },
+  }) => ({
+    locationsOfDetail,
+    listCountry,
+    locationsList,
+    idCurrentCompany,
+  }),
+)
 class WorkLocation extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: props.locationsOfDetail.length,
+      openFormAddLocation: false,
     };
   }
 
-  componentDidMount() {
-    const { locationsOfDetail } = this.props;
-    if (locationsOfDetail.length > 0) {
-      this.setState({
-        currentIndex: locationsOfDetail[locationsOfDetail.length - 1].index + 1,
-      });
-    }
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: {
+        isOpenEditWorkLocation: false,
+      },
+    });
   }
 
   addWorkLocation = () => {
-    const { dispatch, locationsOfDetail } = this.props;
-
-    const { currentIndex } = this.state;
-    if (dispatch) {
-      dispatch({
-        type: 'companiesManagement/save',
-        payload: {
-          locationsOfDetail: [
-            ...locationsOfDetail,
-            {
-              name: 'companyName',
-              address: '',
-              country: '',
-              state: '',
-              zipCode: '',
-              isheadQuarter: false,
-              index: currentIndex,
-            },
-          ],
-        },
-      });
-    }
+    const { openFormAddLocation } = this.state;
     this.setState({
-      currentIndex: currentIndex + 1,
+      openFormAddLocation: !openFormAddLocation,
     });
   };
 
-  handleCancelAdd = (index) => {
-    const { locationsOfDetail, dispatch } = this.props;
-    let newLocations = locationsOfDetail;
-    newLocations = newLocations.filter((location) => location.index !== index);
-    if (dispatch) {
-      dispatch({
-        type: 'companiesManagement/save',
-        payload: {
-          locationsOfDetail: newLocations,
-        },
-      });
-    }
+  handleCancelAdd = () => {
+    const { openFormAddLocation } = this.state;
+
+    this.setState({
+      openFormAddLocation: !openFormAddLocation,
+    });
   };
 
   render() {
-    const locationsList = [
-      {
-        name: 'Japan Office',
-        address: '2-45 Minamisendanishimachi, Naka, Hiroshima, Hiroshima',
-        country: 'Japan',
-        state: 'Tokyo',
-        zipCode: '900000',
-        isheadQuarter: true,
-      },
-      {
-        name: 'HoChiMinh Office',
-        address: '66 Le Thi Ho, Go Vap',
-        country: 'Viet Nam',
-        state: 'HoChiMinh',
-        zipCode: '700000',
-        isheadQuarter: false,
-      },
-    ];
-
-    const { dispatch, locationsOfDetail, listCountry } = this.props;
+    const { locationsList = [] } = this.props;
+    const { openFormAddLocation } = this.state;
 
     return (
       <>
@@ -104,25 +65,15 @@ class WorkLocation extends PureComponent {
             </div>
           );
         })}
-        {locationsOfDetail.map((location, index) => {
-          const formIndex = location.index;
-          return (
-            <div key={`${index + 1}`} className={styles.workLocation}>
-              <AddWorkLocationForm
-                key={location.index}
-                dispatch={dispatch}
-                formIndex={formIndex}
-                locations={locationsOfDetail}
-                locationItem={location}
-                listCountry={listCountry}
-                handleCancelAdd={this.handleCancelAdd}
-              />
-            </div>
-          );
-        })}
-        <Button className={styles.btn_addLocation} type="link" onClick={this.addWorkLocation}>
-          + Add work location
-        </Button>
+        {openFormAddLocation ? (
+          <div className={styles.workLocation}>
+            <AddWorkLocationForm handleCancelAdd={this.handleCancelAdd} />
+          </div>
+        ) : (
+          <Button className={styles.btn_addLocation} type="link" onClick={this.addWorkLocation}>
+            <PlusOutlined /> Add work location
+          </Button>
+        )}
       </>
     );
   }

@@ -13,7 +13,7 @@ class View extends PureComponent {
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.country' }),
-        value: location.country,
+        value: location.country?.name,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.state' }),
