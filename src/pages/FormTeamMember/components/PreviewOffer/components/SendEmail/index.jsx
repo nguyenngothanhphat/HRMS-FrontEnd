@@ -4,7 +4,14 @@ import send from './Assets/group-11.svg';
 import sent from './Assets/modal_img_1.png';
 import style from './index.less';
 
-const index = ({ email, handleSendEmail, onValuesChangeEmail, isSentEmail, handleSubmitAgain }) => {
+const index = ({
+  email,
+  handleSendEmail,
+  onValuesChangeEmail,
+  isSentEmail,
+  handleSubmitAgain,
+  privateEmail = '',
+}) => {
   return (
     <div className={style.SendEmail}>
       <div className={isSentEmail ? style.header1 : style.header}>
@@ -59,7 +66,7 @@ const index = ({ email, handleSendEmail, onValuesChangeEmail, isSentEmail, handl
               onFinish={handleSendEmail}
               layout="vertical"
               className={style.emailForm}
-              initialValues={{ email }}
+              initialValues={{ email: privateEmail }}
               onValuesChange={onValuesChangeEmail}
             >
               <Form.Item name="email" label="Candidate Email ID" className={style.marginBottom}>

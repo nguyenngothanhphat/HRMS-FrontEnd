@@ -60,6 +60,7 @@ export default {
   'component.previewOffer.managerSignature': 'Signature of the HR Manager',
   'component.previewOffer.managerUndersigned': 'Undersigned - Ms. Bhumika Vaidya',
   'component.previewOffer.uploadNew': 'Upload new',
+  'component.previewOffer.upload': 'Upload',
   'component.previewOffer.submit': 'Submit',
   'component.previewOffer.submitted': 'Signature submitted',
   'component.previewOffer.send': 'Send for approval',

@@ -5,6 +5,9 @@ import styles from './styles.less';
 export default function ThirdStep(props) {
   const { Option } = Select;
   const { onChange, onSearch, changeData, fetchedState } = props;
+  const { stepThree: { department = '' } = {} } = changeData;
+  const getdepartment = department || '';
+  const getFilter = fetchedState.employees.filter((item) => item.department._id === getdepartment);
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
   };
@@ -73,13 +76,15 @@ export default function ThirdStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {fetchedState.employees.map((item) => {
-            return (
-              <Option key={makeKey()} value={item._id}>
-                {item.generalInfo.firstName || item.generalInfo.legalName || null}
-              </Option>
-            );
-          })}
+          {getFilter
+            ? getFilter.map((item) => {
+                return (
+                  <Option key={makeKey()} value={item._id}>
+                    {item.generalInfo.firstName || item.generalInfo.legalName || null}
+                  </Option>
+                );
+              })
+            : ''}
           ]
         </Select>
       </div>
