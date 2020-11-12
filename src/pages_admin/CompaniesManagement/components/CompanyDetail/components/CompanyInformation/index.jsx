@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import { Card, Row, Col } from 'antd';
+import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import Information from './components/Information';
 import HeadquaterAddress from './components/HeadquaterAddress';
@@ -11,7 +11,12 @@ import LegalAddress from './components/LegalAddress';
       originData: { companyDetails: companyDetailsOrigin = {} },
       tempData: { companyDetails = {} },
     } = {},
-  }) => ({ companyDetailsOrigin, companyDetails }),
+    loading,
+  }) => ({
+    companyDetailsOrigin,
+    companyDetails,
+    loadingDetails: loading.effects['companiesManagement/fetchCompanyDetails'],
+  }),
 )
 class CompanyInformation extends PureComponent {
   constructor(props) {
@@ -20,8 +25,15 @@ class CompanyInformation extends PureComponent {
   }
 
   render() {
-    const { companyDetailsOrigin } = this.props;
+    const { companyDetailsOrigin, loadingDetails } = this.props;
     const { headQuarterAddress = {}, legalAddress = {} } = companyDetailsOrigin;
+    if (loadingDetails) {
+      return (
+        <div>
+          <Skeleton active />
+        </div>
+      );
+    }
     return (
       <div>
         <Information information={companyDetailsOrigin} />
