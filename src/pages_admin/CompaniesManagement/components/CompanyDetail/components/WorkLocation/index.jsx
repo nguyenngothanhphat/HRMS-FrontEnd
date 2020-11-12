@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import View from './components/View';
 import AddWorkLocationForm from './components/AddWorkLocation';
@@ -70,7 +71,7 @@ class WorkLocation extends PureComponent {
           </div>
         ) : (
           <Button className={styles.btn_addLocation} type="link" onClick={this.addWorkLocation}>
-            + Add work location
+            <PlusOutlined /> Add work location
           </Button>
         )}
       </>
