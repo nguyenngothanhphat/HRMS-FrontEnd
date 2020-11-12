@@ -444,33 +444,25 @@ class SalaryStructureTemplate extends PureComponent {
               {processStatus === 'DRAFT' ? this._renderStatus() : null}
             </div>
           </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              <Row gutter={12}>
-                <Col span={12}>
-                  <Button
-                    type="secondary"
-                    onClick={this.onClickPrev}
-                    className={styles.bottomBar__button__secondary}
-                  >
-                    Previous
-                  </Button>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    onClick={this.onClickNext}
-                    className={`${styles.bottomBar__button__primary} ${
-                      !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
-                    }`}
-                    disabled={!filledSalaryStructure}
-                  >
-                    Next
-                  </Button>
-                </Col>
-              </Row>
-            </div>
+          <Col className={styles.bottomBar__button} span={8}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={this.onClickNext}
+              className={`${styles.bottomBar__button__primary} ${
+                !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
+              }`}
+              disabled={!filledSalaryStructure}
+            >
+              Next
+            </Button>
           </Col>
         </Row>
       </div>
