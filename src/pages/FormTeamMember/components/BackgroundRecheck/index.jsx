@@ -112,7 +112,7 @@ class BackgroundRecheck extends Component {
     const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
     const { _id = '', candidateDocumentStatus = '' } = doc;
     console.log(candidateDocumentStatus);
-    let newCandidateDocumentStatus = 1;
+    let newCandidateDocumentStatus = 0;
     switch (candidateDocumentStatus) {
       case 'VERIFIED': {
         newCandidateDocumentStatus = 1;
@@ -127,7 +127,6 @@ class BackgroundRecheck extends Component {
         break;
       }
       default: {
-        newCandidateDocumentStatus = 4;
         break;
       }
     }

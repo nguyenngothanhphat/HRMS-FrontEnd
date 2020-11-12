@@ -10,6 +10,7 @@ import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
+import PROCESS_STATUS from '../utils';
 import styles from './styles.less';
 
 const note = {
@@ -179,6 +180,24 @@ class BackgroundCheck extends Component {
   //   const { currentStep } = this.props;
   //   localStorage.setItem('currentStep', currentStep);
   // };
+
+  disableEdit = () => {
+    const {
+      data: { processStatus = '' },
+    } = this.props;
+    console.log(processStatus);
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (
+      processStatus === PROVISIONAL_OFFER_DRAFT ||
+      processStatus === FINAL_OFFERS_DRAFT ||
+      processStatus === SENT_PROVISIONAL_OFFERS
+    ) {
+      console.log('false');
+      return false;
+    }
+    console.log('true');
+    return true;
+  };
 
   handleUpdateByHR = () => {
     console.log('current unmount');

@@ -7,6 +7,7 @@ import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
@@ -66,6 +67,20 @@ class JobDetails extends PureComponent {
   //   const { currentStep } = this.props;
   //   localStorage.setItem('currentStep', currentStep);
   // };
+
+  disableEdit = () => {
+    const {
+      data: { processStatus = '' },
+    } = this.props;
+    console.log(processStatus);
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
+      console.log('false');
+      return false;
+    }
+    console.log('true');
+    return true;
+  };
 
   handleUpdateByHR = () => {
     const {
@@ -461,6 +476,7 @@ class JobDetails extends PureComponent {
                     position={position}
                     data={data}
                     processStatus={processStatus}
+                    disabled={this.disableEdit()}
                   />
                   <FieldsComponent
                     processStatus={processStatus}
@@ -482,6 +498,7 @@ class JobDetails extends PureComponent {
                     loading3={loading3}
                     data={data}
                     tempData={tempData}
+                    disabled={this.disableEdit()}
                   />
                   {this._renderBottomBar()}
                 </div>

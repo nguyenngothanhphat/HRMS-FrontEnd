@@ -158,8 +158,7 @@ class CommonLayout extends Component {
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:
       case SENT_PROVISIONAL_OFFERS:
-      case PENDING:
-      case ELIGIBLE_CANDIDATES: {
+      case PENDING: {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
