@@ -233,11 +233,13 @@ class EligibilityDocs extends PureComponent {
         generatedBy,
         employerName,
         workDuration,
+        processStatus,
       },
     } = this.props;
     const { openModal, isSentEmail } = this.state;
     const { user } = generatedBy;
     const { email } = user;
+    // console.log(processStatus);
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -259,6 +261,7 @@ class EligibilityDocs extends PureComponent {
                       validateFileSize={validateFileSize}
                       employerName={employerName}
                       checkLength={this.checkLength}
+                      processStatus={processStatus}
                     />
                   );
                 })}
