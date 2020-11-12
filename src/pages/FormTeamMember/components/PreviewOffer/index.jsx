@@ -63,8 +63,24 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
+  const getOfferLetterProp = () => {
+    if (offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url) {
+      return offerLetterProp.attachment.url;
+    }
+    return '';
+  };
+
   // eslint-disable-next-line no-unused-vars
-  const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachment.url || '');
+  const [offerLetter, setOfferLetter] = useState(
+    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
+      ? offerLetterProp.attachment.url
+      : '',
+  );
+
+  // useEffect(() => {
+  //   console.log(offerLetterProp);
+  //   console.log(offerLetter);
+  // }, [offerLetter]);
 
   // const resetForm = () => {
   //   mailForm.resetFields();

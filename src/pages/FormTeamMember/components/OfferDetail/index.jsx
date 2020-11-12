@@ -239,7 +239,7 @@ const OfferDetail = (props) => {
         companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
-        offerLetter: templateId,
+        // offerLetter: templateId,
       },
     });
 
@@ -260,7 +260,7 @@ const OfferDetail = (props) => {
 
     const offerData = {
       candidateId: candidate,
-      offerLetter: templateId,
+      templateId,
       fullname: fullName,
       position,
       classification: classificationName,
@@ -275,7 +275,7 @@ const OfferDetail = (props) => {
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
       }).then((res) => {
-        const { statusCode } = res;
+        const { statusCode, data: { _id: templateID = '' } = {} } = res;
         if (statusCode !== 200) {
           return;
         }
@@ -284,6 +284,7 @@ const OfferDetail = (props) => {
           payload: {
             candidate,
             currentStep: nextStep,
+            offerLetter: templateID,
             // offerTemplate: templateId,
           },
         });
