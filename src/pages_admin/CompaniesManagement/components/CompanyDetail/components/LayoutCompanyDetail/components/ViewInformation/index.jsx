@@ -55,7 +55,7 @@ class ViewInformation extends Component {
   render() {
     const {
       loading,
-      companyDetails: { logoUrl = '', name = '' },
+      companyDetailsOrigin: { logoUrl = '', name = '' },
     } = this.props;
     const { visible } = this.state;
     if (loading)

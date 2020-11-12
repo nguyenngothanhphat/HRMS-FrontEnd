@@ -133,9 +133,8 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                required: true,
-                // pattern: /^[a-zA-Z ]*$/,
-                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                pattern: /^[1-9]\d?-\d{7}$/,
+                message: 'EIN is not a validate EIN. Ex: 01-0901446',
               },
             ]}
           >
@@ -147,8 +146,7 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^\d+$/,
-                message: 'Employee number is not validate number!',
+                type: 'number',
               },
             ]}
           >
