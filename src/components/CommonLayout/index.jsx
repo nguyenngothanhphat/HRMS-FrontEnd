@@ -40,7 +40,10 @@ const PROCESS_STATUS = {
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
-      tempData: { valueToFinalOffer = 0 } = {},
+      tempData: {
+        valueToFinalOffer = 0,
+        backgroundRecheck: { allDocumentVerified = false } = {},
+      } = {},
     } = {},
   }) => ({
     loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
@@ -48,6 +51,7 @@ const PROCESS_STATUS = {
     displayComponent,
     processStatus,
     valueToFinalOffer,
+    allDocumentVerified,
   }),
 )
 class CommonLayout extends Component {
@@ -58,6 +62,10 @@ class CommonLayout extends Component {
       displayComponent: '',
     };
   }
+
+  // componentDidUpdate(prevProp) {
+  //   console.log('ReRender');
+  // }
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
@@ -154,14 +162,28 @@ class CommonLayout extends Component {
       PROVISIONAL_OFFERS,
       FINAL_OFFERS,
     } = PROCESS_STATUS;
-    const { processStatus } = this.props;
+
+    const { allDocumentVerified, processStatus } = this.props;
+    console.log(allDocumentVerified);
+
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:
-      case SENT_PROVISIONAL_OFFERS:
-      case PENDING: {
+      case SENT_PROVISIONAL_OFFERS: {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
+        return true;
+      }
+
+      case PENDING: {
+        if (allDocumentVerified) {
+          return false;
+        }
+
+        if (index === 0 || index === 1 || index === 2 || index === 3) {
+          return false;
+        }
+
         return true;
       }
 

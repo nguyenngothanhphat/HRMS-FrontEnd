@@ -31,6 +31,7 @@ import {
   removeTemplate,
   createFinalOffer,
   checkDocument,
+  sendDocumentStatus,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -76,6 +77,7 @@ const candidateInfo = {
       // Background Recheck
       backgroundRecheck: {
         documentList: [],
+        allDocumentVerified: false,
       },
       // Offer details
       template: '',
@@ -860,12 +862,20 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(checkDocument, payload);
-        const { data, statusCode } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'saveOrigin',
-        //   payload: { documentsByCandidate: data },
-        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *sendDocumentStatusEffect({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(sendDocumentStatus, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }
@@ -1014,6 +1024,22 @@ const candidateInfo = {
           backgroundRecheck: {
             ...backgroundRecheck,
             documentList: payload,
+          },
+        },
+      };
+    },
+
+    updateAllDocumentVerified(state, action) {
+      const { tempData } = state;
+      const { payload = false } = action;
+      const { backgroundRecheck = {} } = tempData;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          backgroundRecheck: {
+            ...backgroundRecheck,
+            allDocumentVerified: payload,
           },
         },
       };
