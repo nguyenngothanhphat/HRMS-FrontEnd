@@ -104,6 +104,7 @@ class BasicInformation extends Component {
   handleUpdateByHR = () => {
     const {
       data,
+      currentStep,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch } = this.props;
@@ -116,7 +117,7 @@ class BasicInformation extends Component {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep: 0,
+        currentStep,
       },
     });
   };

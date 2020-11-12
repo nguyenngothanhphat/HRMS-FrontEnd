@@ -200,7 +200,6 @@ class BackgroundCheck extends Component {
   };
 
   handleUpdateByHR = () => {
-    console.log('current unmount');
     const { data, currentStep } = this.props;
     const {
       dispatch,
@@ -348,7 +347,6 @@ class BackgroundCheck extends Component {
   };
 
   handleMarkAsDone = (user) => {
-    console.log('marked');
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/saveTemp',

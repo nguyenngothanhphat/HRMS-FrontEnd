@@ -104,7 +104,7 @@ class EmployeeProfile extends Component {
       },
       { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
       { id: 5, name: 'Documents', component: <Documents /> },
-      { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
+      // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
       { id: 7, name: 'Time & Scheduling', component: <Test /> },
       { id: 8, name: 'Benefit Plans', component: <BenefitTab /> },
     ];
