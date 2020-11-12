@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
 import React, { Component } from 'react';
 import { Row, Col, Button } from 'antd';
@@ -11,6 +12,7 @@ import s from './index.less';
 
 @connect(
   ({
+    loading,
     candidateInfo: {
       currentStep = 0,
       displayComponent = {},
@@ -18,6 +20,7 @@ import s from './index.less';
       tempData: { valueToFinalOffer = 0 } = {},
     } = {},
   }) => ({
+    loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
     currentStep,
     displayComponent,
     processStatus,

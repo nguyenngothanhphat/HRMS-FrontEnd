@@ -40,7 +40,7 @@ class SalaryStructure extends PureComponent {
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep,
+            currentStep: 2,
           },
         });
       }
