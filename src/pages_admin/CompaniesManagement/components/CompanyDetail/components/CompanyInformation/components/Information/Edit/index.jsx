@@ -26,7 +26,6 @@ class Edit extends PureComponent {
     };
     const isModified =
       JSON.stringify(companyDetailsChange) !== JSON.stringify(companyDetailsOrigin);
-    console.log('isModified', isModified);
     dispatch({
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: companyDetailsChange },

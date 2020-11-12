@@ -37,6 +37,8 @@ class View extends PureComponent {
       },
     ];
 
+    // const blank = '_blank';
+
     return (
       <div className={styles.view}>
         <Row gutter={[0, 16]} className={styles.root}>
@@ -45,9 +47,15 @@ class View extends PureComponent {
               <Col span={6} className={styles.textLabel}>
                 {item.label}
               </Col>
-              <Col span={18} className={styles.textValue}>
-                {item.value}
-              </Col>
+              {item.label === 'Website' ? (
+                <Col span={18} className={styles.textValue}>
+                  <a className={styles.textValue__website}>{item.value}</a>
+                </Col>
+              ) : (
+                <Col span={18} className={styles.textValue}>
+                  {item.value}
+                </Col>
+              )}
             </Fragment>
           ))}
           {/* Custom Col Here */}

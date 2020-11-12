@@ -20,24 +20,24 @@ class AddWorkLocationForm extends PureComponent {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
+
+    this.state = {
+      listStateHead: [],
+    };
   }
 
-  onChangeCountry = () => {
-    const { dispatch } = this.props;
+  componentDidMount() {
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  }
+
+  onChangeCountry = async (country) => {
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { state: '' },
-    });
-  };
-
-  handleFormAddLocation = (changedValues) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { ...changedValues },
+    const listStateHead = this.findListState(country);
+    this.setState({
+      listStateHead,
     });
   };
 
@@ -78,21 +78,8 @@ class AddWorkLocationForm extends PureComponent {
   };
 
   render() {
-    const {
-      listCountry = [],
-      companiesManagement,
-      loadingAddLocation,
-      handleCancelAdd = () => {},
-    } = this.props;
-    const {
-      headQuarterAddress: {
-        // address: addressHead = '',
-        country: countryHead = '',
-        // state: stateHead = '',
-        // zipCode: zipCodeHead = '',
-      } = {},
-    } = companiesManagement;
-    const listStateHead = this.findListState(countryHead) || [];
+    const { listCountry = [], loadingAddLocation, handleCancelAdd = () => {} } = this.props;
+    const { listStateHead = [] } = this.state;
     const formLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 12 },
@@ -174,7 +161,7 @@ class AddWorkLocationForm extends PureComponent {
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  disabled={!countryHead}
+                  disabled={listStateHead.length === 0}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }

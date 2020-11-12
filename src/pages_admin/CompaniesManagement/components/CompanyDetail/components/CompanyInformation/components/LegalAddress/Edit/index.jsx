@@ -20,24 +20,31 @@ class Edit extends PureComponent {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
+    this.state = {
+      listStateHead: [],
+    };
   }
 
-  onChangeCountryLegalAddress = () => {
-    const { dispatch } = this.props;
+  componentDidMount() {
+    const { location } = this.props;
+    const { country = '' } = location;
+    if (country) {
+      const listStateHead = this.findListState(country._id);
+      this.setState({
+        listStateHead,
+      });
+    }
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  }
+
+  onChangeCountry = async (country) => {
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    dispatch({
-      type: 'companiesManagement/saveLegalAddress',
-      payload: { state: '' },
-    });
-  };
-
-  handleFormLegalAddress = (changedValues) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/saveLegalAddress',
-      payload: { ...changedValues },
+    const listStateHead = this.findListState(country);
+    this.setState({
+      listStateHead,
     });
   };
 
@@ -73,17 +80,9 @@ class Edit extends PureComponent {
   };
 
   render() {
-    const {
-      listCountry = [],
-      companiesManagement,
-      location,
-      loadingUpdate,
-      handleCancelEdit = () => {},
-    } = this.props;
-    const { legalAddress: { country: countryLegal = '' } = {} } = companiesManagement;
+    const { listCountry = [], location, loadingUpdate, handleCancelEdit = () => {} } = this.props;
+    const { listStateHead = [] } = this.state;
     const { name, address = '', country = '', state = '', zipCode = '' } = location;
-
-    const listStateHead = this.findListState(countryLegal) || [];
 
     const formLayout = {
       labelCol: { span: 6 },
@@ -105,7 +104,6 @@ class Edit extends PureComponent {
               state,
               zipCode,
             }}
-            onValuesChange={this.handleFormLegalAddress}
             onFinish={this.handleUpdate}
           >
             <>
@@ -117,7 +115,7 @@ class Edit extends PureComponent {
                   placeholder="Select Country"
                   showArrow
                   showSearch
-                  onChange={this.onChangeCountryLegalAddress}
+                  onChange={this.onChangeCountry}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
@@ -132,7 +130,7 @@ class Edit extends PureComponent {
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  disabled={!countryLegal}
+                  disabled={!listStateHead}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }

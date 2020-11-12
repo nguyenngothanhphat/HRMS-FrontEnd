@@ -20,24 +20,31 @@ class Edit extends PureComponent {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
+    this.state = {
+      listStateHead: [],
+    };
   }
 
-  onChangeCountryHeadquarter = () => {
-    const { dispatch } = this.props;
+  componentDidMount() {
+    const { location } = this.props;
+    const { country = '' } = location;
+    if (country) {
+      const listStateHead = this.findListState(country._id);
+      this.setState({
+        listStateHead,
+      });
+    }
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  }
+
+  onChangeCountry = async (country) => {
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { state: '' },
-    });
-  };
-
-  handleFormHeadquaterAddress = (changedValues) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { ...changedValues },
+    const listStateHead = this.findListState(country);
+    this.setState({
+      listStateHead,
     });
   };
 
@@ -73,17 +80,10 @@ class Edit extends PureComponent {
   };
 
   render() {
-    const {
-      listCountry = [],
-      companiesManagement,
-      location,
-      handleCancelEdit = () => {},
-      loadingUpdate,
-    } = this.props;
+    const { listCountry = [], location, handleCancelEdit = () => {}, loadingUpdate } = this.props;
     const { name, address = '', country = '', state = '', zipCode = '' } = location;
 
-    const { headQuarterAddress: { country: countryHead = '' } = {} } = companiesManagement;
-    const listStateHead = this.findListState(countryHead) || [];
+    const { listStateHead = [] } = this.state;
 
     const formLayout = {
       labelCol: { span: 6 },
@@ -93,7 +93,7 @@ class Edit extends PureComponent {
       <div className={styles.edit}>
         <div className={styles.edit_form}>
           <Form
-            name="formLegalAddress"
+            name="formHeadquarterAddress"
             colon={false}
             ref={this.formRef}
             initialValues={{
@@ -103,7 +103,6 @@ class Edit extends PureComponent {
               state,
               zipCode,
             }}
-            onValuesChange={this.handleFormHeadquaterAddress}
             onFinish={this.handleUpdate}
             {...formLayout}
           >
@@ -121,7 +120,7 @@ class Edit extends PureComponent {
                 placeholder="Select Country"
                 showArrow
                 showSearch
-                onChange={this.onChangeCountryHeadquarter}
+                onChange={this.onChangeCountry}
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
@@ -139,7 +138,6 @@ class Edit extends PureComponent {
                 placeholder="Select State"
                 showArrow
                 showSearch
-                disabled={!countryHead}
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
