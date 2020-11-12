@@ -4,6 +4,7 @@ import { formatMessage, connect } from 'umi';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
+import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({
@@ -503,7 +504,7 @@ class SalaryStructureTemplate extends PureComponent {
                 placeholder="Please select a choice!"
                 size="large"
                 style={{ width: 280 }}
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
               >
                 {listTitle.map((template) => {
                   return (

@@ -2,11 +2,13 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Typography, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
+import CustomModal from '@/components/CustomModal';
 import NoteComponent from '../NoteComponent';
 import Feedback from './components/Feedback';
 import CollapseField from './components/CollapseField';
 import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
+import CloseCandidateModal from './components/CloseCandidateModal';
 
 @connect(
   ({
@@ -33,13 +35,14 @@ class BackgroundRecheck extends Component {
     const {
       tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
     } = this.props;
-    console.log(' doc list prop', docsListProp);
     this.state = {
       docsList: docsListProp,
       feedbackStatus: '',
       resubmitDocs: [],
       ineligibleDocs: [],
       verifiedDocs: [],
+      openModal: false,
+      modalTitle: '',
     };
   }
 
@@ -47,7 +50,6 @@ class BackgroundRecheck extends Component {
     // const { dispatch } = this.props;
     // const { docsList = [] } = this.state;
     const { tempData: { backgroundRecheck: { documentList = [] } = {} } = {} } = this.props;
-    console.log(documentList);
     // this.processDocumentData();
     if (documentList.length === 0) {
       this.processDocumentData();
@@ -88,7 +90,6 @@ class BackgroundRecheck extends Component {
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
     ];
 
-    console.log('setState documentsCandidateList');
     this.setState({
       docsList: documentsCandidateList,
     });
@@ -111,8 +112,7 @@ class BackgroundRecheck extends Component {
     const { candidate = '', dispatch } = this.props;
     const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
     const { _id = '', candidateDocumentStatus = '' } = doc;
-    console.log(candidateDocumentStatus);
-    let newCandidateDocumentStatus = 1;
+    let newCandidateDocumentStatus = 0;
     switch (candidateDocumentStatus) {
       case 'VERIFIED': {
         newCandidateDocumentStatus = 1;
@@ -127,7 +127,6 @@ class BackgroundRecheck extends Component {
         break;
       }
       default: {
-        newCandidateDocumentStatus = 4;
         break;
       }
     }
@@ -144,7 +143,49 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  handleSendEmail = () => {};
+  handleSendEmail = async () => {
+    const { dispatch, candidate } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    const res = await dispatch({
+      type: 'candidateInfo/sendDocumentStatusEffect',
+      payload: {
+        candidate,
+        options: 2,
+      },
+    });
+
+    const { statusCode } = res;
+    if (statusCode !== 200) {
+      return;
+    }
+    this.setState({
+      modalTitle: 'Sent re-submit mail to candidate',
+      openModal: true,
+    });
+  };
+
+  closeCandidate = async () => {
+    const { dispatch, candidate } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    const res = await dispatch({
+      type: 'candidateInfo/closeCandidate',
+      payload: {
+        candidate,
+      },
+    });
+    const { statusCode } = res;
+    if (statusCode !== 200) {
+      return;
+    }
+    this.setState({
+      modalTitle: 'Closed candidate',
+      openModal: true,
+    });
+  };
 
   handleCheckDocument = (event, indexGroupDoc, document) => {
     const { documentsByCandidateRD, dispatch } = this.props;
@@ -242,8 +283,14 @@ class BackgroundRecheck extends Component {
     });
   };
 
+  closeModal = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
+
   render() {
-    const { docsList, feedbackStatus } = this.state;
+    const { docsList, feedbackStatus, openModal, modalTitle } = this.state;
     const { privateEmail } = this.props;
     const Note = {
       title: formatMessage({ id: 'component.noteComponent.title' }),
@@ -283,8 +330,8 @@ class BackgroundRecheck extends Component {
                   formatMessage={formatMessage}
                   handleSendEmail={this.handleSendEmail}
                   isSentEmail={false}
-                  // privateEmail={privateEmail}
-                  email={privateEmail}
+                  privateEmail={privateEmail}
+                  // email={privateEmail}
                 />
               </Row>
             )}
@@ -296,12 +343,20 @@ class BackgroundRecheck extends Component {
                 <div className={styles.closeWrapper}>
                   <h3>Acceptance of background check by HR</h3>
                   <p>The background check has been rejected by HR</p>
-                  <button className={styles.close}>close candidature</button>
+                  <button className={styles.close} onClick={this.closeCandidate}>
+                    close candidature
+                  </button>
                 </div>
               </Row>
             )}
           </Col>
         </Row>
+
+        <CustomModal
+          open={openModal}
+          closeModal={this.closeModal}
+          content={<CloseCandidateModal closeModal={this.closeModal} title={modalTitle} />}
+        />
       </div>
     );
   }

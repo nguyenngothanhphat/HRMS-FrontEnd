@@ -1,9 +1,32 @@
 import React, { Component } from 'react';
 import { Radio } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
 class Feedback extends Component {
+  componentDidUpdate() {
+    const { feedbackStatus } = this.props;
+    const valid = this.initDefaultValue(feedbackStatus);
+
+    const { dispatch } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    if (valid === 1) {
+      dispatch({
+        type: 'candidateInfo/updateAllDocumentVerified',
+        payload: true,
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/updateAllDocumentVerified',
+        payload: false,
+      });
+    }
+  }
+
   initDefaultValue = (feedbackStatus) => {
+    // console.log(feedbackStatus);
     switch (feedbackStatus) {
       case 'VERIFIED': {
         return 1;
@@ -26,13 +49,13 @@ class Feedback extends Component {
       display: 'flex',
     };
     const { feedbackStatus } = this.props;
-    console.log('feedbackStatus', feedbackStatus);
+    console.log(feedbackStatus);
     return (
       <div className={styles.feedback}>
         <Radio.Group
           value={this.initDefaultValue(feedbackStatus)}
           className={styles.feedback__radio}
-          defaultValue=""
+          defaultValue={this.initDefaultValue(feedbackStatus)}
           onChange={this.onChange}
         >
           <Radio style={radioStyle} value={1}>
@@ -53,4 +76,4 @@ class Feedback extends Component {
   }
 }
 
-export default Feedback;
+export default connect()(Feedback);
