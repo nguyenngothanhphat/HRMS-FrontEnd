@@ -60,11 +60,11 @@ class Information extends PureComponent {
 
   render() {
     const { isOpenEditDetail } = this.state;
-    const { companyDetails } = this.props;
+    const { companyDetailsOrigin = {} } = this.props;
     const renderContentCompanyDetail = isOpenEditDetail ? (
       <Edit handleCancelEdit={this.handleCancelEdit} />
     ) : (
-      <View information={companyDetails} />
+      <View information={companyDetailsOrigin} />
     );
 
     return (
