@@ -7,10 +7,10 @@ export function getCandidate(payload) {
   });
 }
 
-export function getDocumentByCandidate(params) {
+export function getDocumentByCandidate(payload) {
   return request('/api/document/get-by-candidate', {
     method: 'POST',
-    data: params,
+    data: payload,
   });
 }
 
