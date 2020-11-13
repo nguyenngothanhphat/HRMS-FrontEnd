@@ -1,99 +1,82 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Input, Form, Button } from 'antd';
+import moment from 'moment';
 import { connect } from 'umi';
-
 import icon from '@/assets/offboarding-schedule.svg';
 import styles from './index.less';
 
-const { TextArea } = Input;
-@connect()
-class ResignationLeft extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const resigationLeft = (props) => {
+  const [form] = Form.useForm();
+  const { TextArea } = Input;
+  const date = moment().format('DD.MM.YY | h:mm A');
 
-  onFinish = async (values) => {
-    const { dispatch } = this.props;
-    const { reasonForLeaving } = values;
-
+  const CustomField = ({ getFieldValue, ...props }) => {
+    console.log(getFieldValue('field2'));
+    return <TextArea className={styles.boxReason} {...props} />;
+  };
+  const submitForm = (type) => {
+    const { dispatch } = props;
+    const data = form.getFieldValue('field2');
     if (dispatch) {
-      await dispatch({
+      dispatch({
         type: 'offboarding/sendRequest',
         payload: {
-          reasonForLeaving,
+          reasonForLeaving: data,
           action: 'submit',
           name: 'new request',
           approvalFlow: '5fa5062e53f4cf5c9ab0fbba',
+          // isDraft: type === "draft"? true : ""
         },
       });
     }
   };
-
-  submitForm = (values) => {
-    // const { username } = values;
-
-    console.log(values);
-  };
-
-  render() {
-    const date = new Date();
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    const hours = date.getHours();
-    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
-    const today = `${yyyy}.${mm}.${dd}`;
-    return (
-      <div className={styles.resignationLeft}>
-        <div className={styles.title_Box}>
-          <div>
-            <img src={icon} alt="iconCheck" className={styles.icon} />
-          </div>
-          <span className={styles.title_Text}>
-            A last working date (LWD) will generated after your request is approved by your manager
-            and the HR.
-            <p>
-              The Last Working Day (LWD) will be generated as per our Standard Offboarding Policy.
-            </p>
-          </span>
+  return (
+    <div className={styles.resignationLeft}>
+      <div className={styles.title_Box}>
+        <div>
+          <img src={icon} alt="iconCheck" className={styles.icon} />
         </div>
-        <Form onFinish={this.onFinish}>
-          <div className={styles.titleBody}>
-            <div className={styles.center}>
-              <p className={styles.textBox}> Reason for leaving us?</p>
-              <p className={styles.textTime}>
-                <span style={{ color: 'black' }}> {today} </span>| {hours} {amOrPm}
-              </p>
-            </div>
-            <Form.Item
-              name="reasonForLeaving"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <TextArea className={styles.boxReason} />
-            </Form.Item>
+        <span className={styles.title_Text}>
+          A last working date (LWD) will generated after your request is approved by your manager
+          and the HR.
+          <p>
+            The Last Working Day (LWD) will be generated as per our Standard Offboarding Policy.
+          </p>
+        </span>
+      </div>
+      <Form form={form}>
+        <div className={styles.titleBody}>
+          <div className={styles.center}>
+            <p className={styles.textBox}> Reason for leaving us?</p>
+            <p className={styles.textTime}>
+              <span style={{ color: 'black' }}> {date}</span>
+            </p>
           </div>
+          <Form.Item name="field2">
+            <CustomField getFieldValue={form.getFieldValue} />
+          </Form.Item>
+        </div>
+        <Form.Item>
           <div className={styles.subbmitForm}>
             <div className={styles.subbmiText}>
               By default notifications will be sent to HR, your manager and recursively loop to your
               department head.
             </div>
-            <Form.Item>
-              <Button className={styles.buttonDraft} onClick={() => this.onFinish('fdfdfdf')}>
-                Save to draft
-              </Button>
-              <Button className={styles.buttonSubmit} htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
+            <Button className={styles.buttonDraft} onClick={() => submitForm('draft')}>
+              Save to draft
+            </Button>
+            <Button
+              className={styles.buttonSubmit}
+              htmlType="submit"
+              onClick={() => submitForm('submit')}
+            >
+              Submit
+            </Button>
           </div>
-        </Form>
-      </div>
-    );
-  }
-}
-export default ResignationLeft;
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
+export default connect()(resigationLeft);
