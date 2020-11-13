@@ -23,6 +23,7 @@ class View extends PureComponent {
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
     const contentEmail =
       'The email will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
+    const blank = '_blank';
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         {dummyData.map((item) => (
@@ -46,7 +47,13 @@ class View extends PureComponent {
               span={16}
               className={item.label === 'Linkedin' ? styles.Linkedin : styles.textValue}
             >
-              {item.value}
+              {item.label === 'Linkedin' ? (
+                <a href={item.value} target={blank}>
+                  {item.value}
+                </a>
+              ) : (
+                item.value
+              )}
             </Col>
             {/* {item.label === 'Personal Number' || item.label === 'Personal Email' ? (
               <Col span={2}>

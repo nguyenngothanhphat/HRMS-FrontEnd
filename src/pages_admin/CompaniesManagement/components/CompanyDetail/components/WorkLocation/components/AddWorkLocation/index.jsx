@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
@@ -6,34 +7,37 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {} }) => ({
-  listState,
-  listCountry,
-  companiesManagement,
-}))
+@connect(
+  ({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {}, loading }) => ({
+    listState,
+    listCountry,
+    companiesManagement,
+    loadingAddLocation: loading.effects['companiesManagement/addLocation'],
+  }),
+)
 class AddWorkLocationForm extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
+
+    this.state = {
+      listStateHead: [],
+    };
   }
 
-  onChangeCountryHeadquarter = () => {
-    const { dispatch } = this.props;
+  componentDidMount() {
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  }
+
+  onChangeCountry = async (country) => {
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { state: '' },
-    });
-  };
-
-  handleFormHeadquarter = (changedValues) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/saveHeadQuarterAddress',
-      payload: { ...changedValues },
+    const listStateHead = this.findListState(country);
+    this.setState({
+      listStateHead,
     });
   };
 
@@ -46,18 +50,36 @@ class AddWorkLocationForm extends PureComponent {
 
   handleCancelAdd = () => {};
 
-  render() {
-    const { handleCancelAdd = () => {}, formIndex } = this.props;
-    const { listCountry = [], companiesManagement } = this.props;
+  handleAddLocation = (values) => {
+    const { handleCancelAdd = () => {} } = this.props;
+
     const {
-      headQuarterAddress: {
-        // address: addressHead = '',
-        country: countryHead = '',
-        // state: stateHead = '',
-        // zipCode: zipCodeHead = '',
-      } = {},
-    } = companiesManagement;
-    const listStateHead = this.findListState(countryHead) || [];
+      companiesManagement: { idCurrentCompany = '' },
+      dispatch,
+    } = this.props;
+
+    if (idCurrentCompany) {
+      const payload = {
+        ...values,
+        company: idCurrentCompany,
+      };
+      dispatch({
+        type: 'companiesManagement/addLocation',
+        payload,
+      }).then((resp) => {
+        if (resp) {
+          const { statusCode } = resp;
+          if (statusCode === 200) {
+            handleCancelAdd();
+          }
+        }
+      });
+    }
+  };
+
+  render() {
+    const { listCountry = [], loadingAddLocation, handleCancelAdd = () => {} } = this.props;
+    const { listStateHead = [] } = this.state;
     const formLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 12 },
@@ -69,38 +91,56 @@ class AddWorkLocationForm extends PureComponent {
         </div>
         <div className={styles.edit_form}>
           <Form
-            name="formHeadQuarter"
-            requiredMark={false}
+            name="formAddWorkLocation"
             {...formLayout}
             colon={false}
             ref={this.formRef}
-            initialValues={
-              {
-                // address: addressHead,
-                // country: countryHead,
-                // state: stateHead,
-                // zipCode: zipCodeHead,
-              }
-            }
-            onValuesChange={this.handleFormHeadquarter}
+            onValuesChange={this.handleFormAddLocation}
+            onFinish={this.handleAddLocation}
           >
             <>
-              <Form.Item label="Name" name="name">
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                  },
+                  {
+                    pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
+                    message: 'Name is not a validate name!',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Address*" name="address">
+              <Form.Item
+                label="Address"
+                name="address"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item
+                label="Country"
+                name="country"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Select Country"
                   showArrow
                   showSearch
-                  onChange={this.onChangeCountryHeadquarter}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  onChange={this.onChangeCountry}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listCountry.map((item) => (
@@ -108,16 +148,22 @@ class AddWorkLocationForm extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="State" name="state">
+              <Form.Item
+                label="State"
+                name="state"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  // disabled={!countryHead}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  disabled={listStateHead.length === 0}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listStateHead.map((item) => (
@@ -125,7 +171,16 @@ class AddWorkLocationForm extends PureComponent {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Zip Code" name="zipCode">
+              <Form.Item
+                label="Zip Code"
+                name="zipCode"
+                rules={[
+                  {
+                    pattern: /^[0-9]*$/,
+                    message: 'Zip Code is not a valid number',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </>
@@ -133,11 +188,16 @@ class AddWorkLocationForm extends PureComponent {
               <Button
                 type="text"
                 className={styles.edit_btn_cancel}
-                onClick={() => handleCancelAdd(formIndex)}
+                onClick={() => handleCancelAdd()}
               >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" className={styles.edit_btn_save}>
+              <Button
+                loading={loadingAddLocation}
+                type="primary"
+                htmlType="submit"
+                className={styles.edit_btn_save}
+              >
                 Save
               </Button>
             </div>

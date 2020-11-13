@@ -35,18 +35,19 @@ class Information extends PureComponent {
       name = '',
       dba = '',
       ein = '',
-      employeeNumber = '',
+      // employeeNumber = '',
       website = '',
     } = companyDetailsOrigin;
     const reverseFields = {
       name,
       dba,
       ein,
-      employeeNumber,
+      // employeeNumber,
       website,
     };
     const payload = { ...companyDetails, ...reverseFields };
     const isModified = JSON.stringify(payload) !== JSON.stringify(companyDetailsOrigin);
+
     dispatch({
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: payload },
@@ -59,11 +60,11 @@ class Information extends PureComponent {
 
   render() {
     const { isOpenEditDetail } = this.state;
-    const { companyDetails } = this.props;
+    const { companyDetailsOrigin = {} } = this.props;
     const renderContentCompanyDetail = isOpenEditDetail ? (
       <Edit handleCancelEdit={this.handleCancelEdit} />
     ) : (
-      <View information={companyDetails} />
+      <View information={companyDetailsOrigin} />
     );
 
     return (

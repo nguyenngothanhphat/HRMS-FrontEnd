@@ -18,6 +18,8 @@ export default {
   'pages_admin.company.licensePayment': `License & Payment`,
   'pages_admin.company.employeeNumber': 'Employee Number',
   'pages_admin.company.website': 'Website',
+  'pages_admin.company.phone': 'Phone',
+  'pages_admin.company.contactEmail': 'Contact Email',
   'pages_admin.company.dba': 'Doing Business As (DBA)',
   'pages_admin.company.license': 'License',
   'pages_admin.company.paymentInfo': 'Payment Info',
