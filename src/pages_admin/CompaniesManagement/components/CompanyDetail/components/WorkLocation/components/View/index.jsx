@@ -56,6 +56,7 @@ class View extends PureComponent {
     const _this = this;
     confirm({
       title: 'Please save form or cancel before proceeding !',
+      centered: true,
       cancelButtonProps: { style: { display: 'none' } },
       className: styles.view__confirm,
       onOk() {
