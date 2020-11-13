@@ -87,6 +87,7 @@ class JobDetails extends PureComponent {
       dispatch,
       currentStep,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
+      data: { processStatus = '' } = {},
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -98,9 +99,19 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep,
+        // currentStep,
       },
     });
+    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate: _id,
+          currentStep,
+        },
+      });
+    }
   };
 
   checkBottomBar = () => {

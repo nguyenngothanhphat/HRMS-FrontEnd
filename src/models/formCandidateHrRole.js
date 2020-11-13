@@ -510,7 +510,7 @@ const candidateInfo = {
       }
       return response;
     },
-    *addSchedule({ payload }, { call, put }) {
+    *addSchedule({ payload }, { call }) {
       let response;
       try {
         response = yield call(addSchedule, payload);
@@ -730,12 +730,20 @@ const candidateInfo = {
             _id,
           },
         });
+        const {
+          offerLetter: { attachment: { url = '', name = '' } = {} } = {
+            attachment: { url: '', name: '' },
+          },
+        } = data;
         yield put({
           type: 'save',
           payload: {
             data: {
               ...data,
-              offerLetter: data.offerLetter,
+              offerLetter: {
+                url,
+                name,
+              },
               candidate: data._id,
             },
           },
@@ -812,7 +820,7 @@ const candidateInfo = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
-
+        console.log(response);
         yield put({
           type: 'updateOfferLetter',
           payload: {
@@ -858,7 +866,7 @@ const candidateInfo = {
       return response;
     },
 
-    *checkDocumentEffect({ payload }, { call, put }) {
+    *checkDocumentEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(checkDocument, payload);
@@ -870,7 +878,7 @@ const candidateInfo = {
       return response;
     },
 
-    *sendDocumentStatusEffect({ payload }, { call, put }) {
+    *sendDocumentStatusEffect({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(sendDocumentStatus, payload);

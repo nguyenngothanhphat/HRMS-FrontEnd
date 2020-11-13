@@ -19,7 +19,7 @@ class CollapseField extends PureComponent {
 
   getActionContent = (status) => {
     console.log(status);
-    if (status === 'INELIGIBLE') {
+    if (status === 'INELIGIBLE' || status === 'PENDING') {
       return 'Choose file';
     }
     return 'Resubmit';
