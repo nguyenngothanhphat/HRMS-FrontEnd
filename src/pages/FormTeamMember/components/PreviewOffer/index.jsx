@@ -180,9 +180,9 @@ const PreviewOffer = (props) => {
     const { valueToFinalOffer = 1 } = tempData;
     let option = 1;
     if (valueToFinalOffer === 1) {
-      option = 1;
-    } else {
       option = 2;
+    } else {
+      option = 1;
     }
     // call API
     dispatch({
@@ -556,6 +556,10 @@ const PreviewOffer = (props) => {
           visible={uploadVisible1}
           getResponse={(response) => {
             loadImage('hr', response);
+            const { statusCode } = response;
+            if (statusCode === 200) {
+              setUploadVisible1(false);
+            }
           }}
           handleCancel={() => {
             setUploadVisible1(false);
@@ -566,6 +570,10 @@ const PreviewOffer = (props) => {
           visible={uploadVisible2}
           getResponse={(response) => {
             loadImage('hrManager', response);
+            const { statusCode } = response;
+            if (statusCode === 200) {
+              setUploadVisible2(false);
+            }
           }}
           handleCancel={() => {
             setUploadVisible2(false);

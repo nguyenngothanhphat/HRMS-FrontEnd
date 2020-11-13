@@ -181,7 +181,11 @@ class CommonLayout extends Component {
       FINAL_OFFERS,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus } = this.props;
+    const { allDocumentVerified, processStatus, valueToFinalOffer } = this.props;
+
+    if (valueToFinalOffer === 1) {
+      return false;
+    }
 
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:
