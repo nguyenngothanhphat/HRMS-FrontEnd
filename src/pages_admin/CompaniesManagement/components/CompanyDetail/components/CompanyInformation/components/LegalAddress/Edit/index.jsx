@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
@@ -6,34 +7,44 @@ import styles from '../../../../WorkLocation/components/Edit/index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, companiesManagement = {} }) => ({
-  listState,
-  listCountry,
-  companiesManagement,
-}))
+@connect(
+  ({ loading, country: { listState = [], listCountry = [] } = {}, companiesManagement = {} }) => ({
+    listState,
+    listCountry,
+    companiesManagement,
+    loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
+)
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
     this.formRefLegal = React.createRef();
+    this.state = {
+      listStateHead: [],
+    };
   }
 
-  onChangeCountryLegalAddress = () => {
-    const { dispatch } = this.props;
+  componentDidMount() {
+    const { location } = this.props;
+    const { country = '' } = location;
+    if (country) {
+      const listStateHead = this.findListState(country._id);
+      this.setState({
+        listStateHead,
+      });
+    }
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  }
+
+  onChangeCountry = async (country) => {
     this.formRef.current.setFieldsValue({
       state: undefined,
     });
-    dispatch({
-      type: 'companiesManagement/saveLegalAddress',
-      payload: { state: '' },
-    });
-  };
-
-  handleFormLegalAddress = (changedValues) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'companiesManagement/saveLegalAddress',
-      payload: { ...changedValues },
+    const listStateHead = this.findListState(country);
+    this.setState({
+      listStateHead,
     });
   };
 
@@ -44,20 +55,34 @@ class Edit extends PureComponent {
     return listState;
   };
 
-  render() {
-    const { handleCancelEdit = () => {} } = this.props;
-    const { listCountry = [], companiesManagement } = this.props;
+  handleUpdate = (changedValues) => {
+    const { dispatch, companiesManagement, handleCancelEdit = () => {} } = this.props;
     const {
-      legalAddress: {
-        address: addressLegal = '',
-        country: countryLegal = '',
-        state: stateLegal = '',
-        zipCode: zipCodeLegal = '',
-      } = {},
+      originData: { companyDetails = {} },
     } = companiesManagement;
-    const listStateHead = this.findListState(countryLegal) || [];
+    const payload = {
+      ...companyDetails,
+      id: companyDetails._id,
+      legalAddress: {
+        ...changedValues,
+      },
+    };
+    delete payload._id;
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+    }).then((resp) => {
+      const { statusCode } = resp;
+      if (statusCode === 200) {
+        handleCancelEdit();
+      }
+    });
+  };
 
-    const checkDisableBtnNext = !addressLegal || !countryLegal || !stateLegal || !zipCodeLegal;
+  render() {
+    const { listCountry = [], location, loadingUpdate, handleCancelEdit = () => {} } = this.props;
+    const { listStateHead = [] } = this.state;
+    const { name, address = '', country = '', state = '', zipCode = '' } = location;
 
     const formLayout = {
       labelCol: { span: 6 },
@@ -73,12 +98,13 @@ class Edit extends PureComponent {
             colon={false}
             ref={this.formRef}
             initialValues={{
-              address: addressLegal,
-              country: countryLegal,
-              state: stateLegal,
-              zipCode: zipCodeLegal,
+              name,
+              address,
+              country: country._id,
+              state,
+              zipCode,
             }}
-            onValuesChange={this.handleFormLegalAddress}
+            onFinish={this.handleUpdate}
           >
             <>
               <Form.Item label="Address*" name="address">
@@ -89,11 +115,9 @@ class Edit extends PureComponent {
                   placeholder="Select Country"
                   showArrow
                   showSearch
-                  onChange={this.onChangeCountryLegalAddress}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  onChange={this.onChangeCountry}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listCountry.map((item) => (
@@ -106,11 +130,9 @@ class Edit extends PureComponent {
                   placeholder="Select State"
                   showArrow
                   showSearch
-                  disabled={!countryLegal}
-                  filterOption={
-                    (input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    // eslint-disable-next-line react/jsx-curly-newline
+                  disabled={!listStateHead}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
                   {listStateHead.map((item) => (
@@ -127,9 +149,9 @@ class Edit extends PureComponent {
                 Cancel
               </Button>
               <Button
+                loading={loadingUpdate}
                 type="primary"
                 htmlType="submit"
-                disabled={checkDisableBtnNext}
                 className={styles.edit_btn_save}
               >
                 Save

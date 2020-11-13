@@ -7,6 +7,7 @@ import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
+import PROCESS_STATUS from '../utils';
 
 import styles from './index.less';
 
@@ -37,24 +38,21 @@ class BasicInformation extends Component {
   }
 
   componentDidMount() {
+    const {
+      dispatch,
+      data: { candidate, processStatus },
+    } = this.props;
     this.checkBottomBar();
-    const { dispatch, data, currentStep } = this.props;
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        employeeType: '5f50c2541513a742582206f9',
-      },
-    });
-    const { processStatus = '' } = data;
-    if (processStatus !== 'DRAFT') {
-      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-      const { candidate = '' } = data;
-      if (dispatch && candidate) {
+
+    if (processStatus === 'DRAFT') {
+      // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      // console.log(candidate, currentStepLocal);
+      if (candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 0,
           },
         });
       }
@@ -87,6 +85,17 @@ class BasicInformation extends Component {
     this.handleUpdateByHR();
   }
 
+  disableEdit = () => {
+    const {
+      data: { processStatus = '' },
+    } = this.props;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
+      return false;
+    }
+    return true;
+  };
+
   // handleUnload = () => {
   //   const { currentStep } = this.props;
   //   localStorage.setItem('currentStep', currentStep);
@@ -95,6 +104,7 @@ class BasicInformation extends Component {
   handleUpdateByHR = () => {
     const {
       data,
+      currentStep,
       tempData: { fullName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch } = this.props;
@@ -107,7 +117,7 @@ class BasicInformation extends Component {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep: 0,
+        currentStep,
       },
     });
   };
@@ -195,6 +205,8 @@ class BasicInformation extends Component {
   _renderForm = () => {
     const { isOpenReminder = {} } = this.state;
     const { processStatus } = this.props;
+    console.log(processStatus);
+    console.log(this.disableEdit());
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -217,7 +229,7 @@ class BasicInformation extends Component {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="fullName"
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={this.disableEdit()}
               />
             </Form.Item>
           </Col>
@@ -251,7 +263,7 @@ class BasicInformation extends Component {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="privateEmail"
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={this.disableEdit()}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -287,7 +299,7 @@ class BasicInformation extends Component {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="workEmail"
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={this.disableEdit()}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -314,7 +326,7 @@ class BasicInformation extends Component {
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
                 name="previousExperience"
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={this.disableEdit()}
                 // defaultValue={experienceYear}
               />
             </Form.Item>

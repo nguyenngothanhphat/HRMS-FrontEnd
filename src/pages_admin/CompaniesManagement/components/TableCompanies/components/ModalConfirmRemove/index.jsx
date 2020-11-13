@@ -24,7 +24,7 @@ class ModalConfirmRemove extends Component {
   };
 
   handleRemoveToServer = () => {
-    console.log('handleRemoveToServer');
+    // console.log('handleRemoveToServer');
   };
 
   render() {

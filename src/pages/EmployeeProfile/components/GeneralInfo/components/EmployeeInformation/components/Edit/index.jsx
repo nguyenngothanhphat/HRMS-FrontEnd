@@ -69,6 +69,7 @@ class Edit extends PureComponent {
       urlFile,
       legalGender,
       legalName,
+      firstName: legalName,
       DOB,
       employeeId,
       workEmail,
@@ -86,6 +87,7 @@ class Edit extends PureComponent {
       'urlFile',
       'legalGender',
       'legalName',
+      'firstName',
       'DOB',
       'employeeId',
       'workEmail',
@@ -283,7 +285,7 @@ class Edit extends PureComponent {
             name="legalName"
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
+                pattern: /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}

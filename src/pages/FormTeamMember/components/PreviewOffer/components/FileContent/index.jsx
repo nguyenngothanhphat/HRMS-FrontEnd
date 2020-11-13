@@ -30,8 +30,8 @@ const FileContent = (props) => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-  const onLoadSuccess = ({ numPage }) => {
-    setNumPages(numPage);
+  const onLoadSuccess = ({ numPages: totalPage }) => {
+    setNumPages(totalPage);
   };
 
   const { url = '' } = props;

@@ -21,6 +21,7 @@ class CollapseField extends PureComponent {
       onValuesChange,
       employerName,
       checkLength,
+      processStatus,
     } = this.props;
     return (
       <div className={styles.CollapseField}>
@@ -124,7 +125,7 @@ class CollapseField extends PureComponent {
                     </div>
                   ))}
                 </div>
-                {item.type === 'D' ? (
+                {/* {item.type === 'D' ? (
                   <Space direction="horizontal">
                     <PlusOutlined className={styles.plusIcon} />
                     <Typography.Text className={styles.addMore}>
@@ -133,7 +134,7 @@ class CollapseField extends PureComponent {
                   </Space>
                 ) : (
                   <></>
-                )}
+                )} */}
               </Space>
             </Collapse.Panel>
           </Collapse>

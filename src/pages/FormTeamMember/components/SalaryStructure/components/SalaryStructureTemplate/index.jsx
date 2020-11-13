@@ -4,6 +4,7 @@ import { formatMessage, connect } from 'umi';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
+import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({
@@ -444,39 +445,25 @@ class SalaryStructureTemplate extends PureComponent {
               {processStatus === 'DRAFT' ? this._renderStatus() : null}
             </div>
           </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              {' '}
-              {/* <Button
-                type="primary"
-            salaryTemplate    htmlType="submit"
-                // onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledBasicInformation}
-              >
-                Next
-              </Button> */}
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledSalaryStructure}
-              >
-                Next
-              </Button>
-            </div>
+          <Col className={styles.bottomBar__button} span={8}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={this.onClickNext}
+              className={`${styles.bottomBar__button__primary} ${
+                !filledSalaryStructure ? styles.bottomBar__button__disabled : ''
+              }`}
+              disabled={!filledSalaryStructure}
+            >
+              Next
+            </Button>
           </Col>
         </Row>
       </div>
@@ -517,7 +504,7 @@ class SalaryStructureTemplate extends PureComponent {
                 placeholder="Please select a choice!"
                 size="large"
                 style={{ width: 280 }}
-                disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
               >
                 {listTitle.map((template) => {
                   return (

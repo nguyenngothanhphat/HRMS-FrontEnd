@@ -1,11 +1,23 @@
 import React, { PureComponent } from 'react';
-// import { Card, Row, Col } from 'antd';
+import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import Information from './components/Information';
 import HeadquaterAddress from './components/HeadquaterAddress';
 import LegalAddress from './components/LegalAddress';
 
-@connect(() => ({}))
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+    loading,
+  }) => ({
+    companyDetailsOrigin,
+    companyDetails,
+    loadingDetails: loading.effects['companiesManagement/fetchCompanyDetails'],
+  }),
+)
 class CompanyInformation extends PureComponent {
   constructor(props) {
     super(props);
@@ -13,11 +25,20 @@ class CompanyInformation extends PureComponent {
   }
 
   render() {
+    const { companyDetailsOrigin, loadingDetails } = this.props;
+    const { headQuarterAddress = {}, legalAddress = {} } = companyDetailsOrigin;
+    if (loadingDetails) {
+      return (
+        <div>
+          <Skeleton active />
+        </div>
+      );
+    }
     return (
       <div>
-        <Information />
-        <HeadquaterAddress />
-        <LegalAddress />
+        <Information information={companyDetailsOrigin} />
+        <HeadquaterAddress headQuarterAddress={headQuarterAddress} />
+        <LegalAddress legalAddress={legalAddress} />
       </div>
     );
   }

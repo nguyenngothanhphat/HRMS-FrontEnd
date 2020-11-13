@@ -10,6 +10,7 @@ import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
+import PROCESS_STATUS from '../utils';
 import styles from './styles.less';
 
 const note = {
@@ -68,7 +69,6 @@ class BackgroundCheck extends Component {
       tempData,
       dispatch,
     } = this.props;
-    const { currentStep } = this.props;
     const { candidate = '', processStatus } = data;
 
     if (processStatus === 'DRAFT') {
@@ -77,7 +77,7 @@ class BackgroundCheck extends Component {
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 3,
           },
         });
       }
@@ -181,9 +181,26 @@ class BackgroundCheck extends Component {
   //   localStorage.setItem('currentStep', currentStep);
   // };
 
+  disableEdit = () => {
+    const {
+      data: { processStatus = '' },
+    } = this.props;
+    console.log(processStatus);
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (
+      processStatus === PROVISIONAL_OFFER_DRAFT ||
+      processStatus === FINAL_OFFERS_DRAFT ||
+      processStatus === SENT_PROVISIONAL_OFFERS
+    ) {
+      console.log('false');
+      return false;
+    }
+    console.log('true');
+    return true;
+  };
+
   handleUpdateByHR = () => {
-    console.log('current unmount');
-    const { data } = this.props;
+    const { data, currentStep } = this.props;
     const {
       dispatch,
       tempData: { documentList, employer },
@@ -197,7 +214,7 @@ class BackgroundCheck extends Component {
       payload: {
         candidate: _id,
         documentChecklistSetting: documentList,
-        currentStep: 3,
+        currentStep,
       },
     });
   };
@@ -662,23 +679,29 @@ class BackgroundCheck extends Component {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledBackgroundCheck}
-              >
-                Next
-              </Button>
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Button
+                    type="secondary"
+                    onClick={this.onClickPrev}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Previous
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    onClick={this.onClickNext}
+                    className={`${styles.bottomBar__button__primary} ${
+                      !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
+                    }`}
+                    disabled={!filledBackgroundCheck}
+                  >
+                    Next
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>

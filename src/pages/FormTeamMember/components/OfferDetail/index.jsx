@@ -170,6 +170,8 @@ const OfferDetail = (props) => {
 
   const handleTemplateChange = (_, option) => {
     const { value = '', key = '' } = option;
+    console.log(option);
+
     setFile({
       name: value,
       id: key,
@@ -237,6 +239,7 @@ const OfferDetail = (props) => {
         companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
+        // offerLetter: templateId,
       },
     });
 
@@ -272,7 +275,7 @@ const OfferDetail = (props) => {
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
       }).then((res) => {
-        const { data: { _id: templateID = '' } = {}, statusCode } = res;
+        const { statusCode, data: { _id: templateID = '' } = {} } = res;
         if (statusCode !== 200) {
           return;
         }
@@ -281,7 +284,8 @@ const OfferDetail = (props) => {
           payload: {
             candidate,
             currentStep: nextStep,
-            offerTemplate: templateID,
+            offerLetter: templateID,
+            // offerTemplate: templateId,
           },
         });
       });
@@ -310,24 +314,29 @@ const OfferDetail = (props) => {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              <Button
-                type="secondary"
-                onClick={onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-
-              <Button
-                type="primary"
-                onClick={onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !allFieldsFilled ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!allFieldsFilled}
-              >
-                Proceed
-              </Button>
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Button
+                    type="secondary"
+                    onClick={onClickPrev}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Previous
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    onClick={onClickNext}
+                    className={`${styles.bottomBar__button__primary} ${
+                      !allFieldsFilled ? styles.bottomBar__button__disabled : ''
+                    }`}
+                    disabled={!allFieldsFilled}
+                  >
+                    Proceed
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>

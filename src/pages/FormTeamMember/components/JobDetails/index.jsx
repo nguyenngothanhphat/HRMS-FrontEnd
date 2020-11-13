@@ -7,6 +7,7 @@ import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
@@ -41,14 +42,14 @@ class JobDetails extends PureComponent {
     this.checkBottomBar();
 
     if (processStatus === 'DRAFT') {
-      const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-      console.log(candidate, currentStepLocal);
+      // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
+      // console.log(candidate, currentStepLocal);
       if (candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
             candidate,
-            currentStep: currentStepLocal,
+            currentStep: 1,
           },
         });
       }
@@ -67,9 +68,24 @@ class JobDetails extends PureComponent {
   //   localStorage.setItem('currentStep', currentStep);
   // };
 
+  disableEdit = () => {
+    const {
+      data: { processStatus = '' },
+    } = this.props;
+    console.log(processStatus);
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
+      console.log('false');
+      return false;
+    }
+    console.log('true');
+    return true;
+  };
+
   handleUpdateByHR = () => {
     const {
       dispatch,
+      currentStep,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
     } = this.props;
     dispatch({
@@ -82,7 +98,7 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep: 1,
+        currentStep,
       },
     });
   };
@@ -296,23 +312,29 @@ class JobDetails extends PureComponent {
           <Col span={8}>
             <div className={styles.bottomBar__button}>
               {' '}
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledJobDetail}
-              >
-                Next
-              </Button>
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Button
+                    type="secondary"
+                    onClick={this.onClickPrev}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Previous
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    onClick={this.onClickNext}
+                    className={`${styles.bottomBar__button__primary} ${
+                      !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                    }`}
+                    disabled={!filledJobDetail}
+                  >
+                    Next
+                  </Button>
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>
@@ -454,6 +476,7 @@ class JobDetails extends PureComponent {
                     position={position}
                     data={data}
                     processStatus={processStatus}
+                    disabled={this.disableEdit()}
                   />
                   <FieldsComponent
                     processStatus={processStatus}
@@ -475,6 +498,7 @@ class JobDetails extends PureComponent {
                     loading3={loading3}
                     data={data}
                     tempData={tempData}
+                    disabled={this.disableEdit()}
                   />
                   {this._renderBottomBar()}
                 </div>

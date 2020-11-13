@@ -39,3 +39,17 @@ export async function createFinalOffer(payload) {
     data: payload, // offer data
   });
 }
+
+export async function checkDocument(payload) {
+  return request('/api/candidate/document-check', {
+    method: 'POST',
+    data: payload, // {candidate: id, document: id, candidateDocumentStatus: 1}
+  });
+}
+
+export async function sendDocumentStatus(payload) {
+  return request('/api/candidate/background-check', {
+    method: 'POST',
+    data: payload, // {candidate: id, options: 1, comments: ''}
+  });
+}
