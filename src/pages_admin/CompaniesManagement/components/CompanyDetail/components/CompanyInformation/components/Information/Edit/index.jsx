@@ -133,6 +133,9 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
+                required: true,
+              },
+              {
                 pattern: /^[1-9]\d?-\d{7}$/,
                 message: 'EIN is not a validate EIN. Ex: 01-0901446',
               },
