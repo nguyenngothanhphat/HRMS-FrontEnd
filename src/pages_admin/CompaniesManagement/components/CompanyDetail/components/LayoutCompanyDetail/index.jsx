@@ -7,9 +7,19 @@ import s from './index.less';
 
 const { confirm } = Modal;
 
-@connect(({ companiesManagement: { isModified } = {} }) => ({
-  isModified,
-}))
+@connect(
+  ({
+    companiesManagement: {
+      isModified,
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({
+    isModified,
+    companyDetailsOrigin,
+    companyDetails,
+  }),
+)
 class LayoutCompanyDetail extends PureComponent {
   constructor(props) {
     super(props);
@@ -28,20 +38,20 @@ class LayoutCompanyDetail extends PureComponent {
   }
 
   handleCLickItemMenu = (item) => {
-    const { isModified } = this.props;
-    if (isModified) {
-      this.showConfirm();
-    } else {
-      this.setState({
-        selectedItemId: item.id,
-        displayComponent: item.component,
-      });
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }
+    // const { isModified } = this.props;
+    // if (isModified) {
+    //   this.showConfirm();
+    // } else {
+    this.setState({
+      selectedItemId: item.id,
+      displayComponent: item.component,
+    });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    // }
   };
 
   showConfirm = () => {
@@ -62,11 +72,11 @@ class LayoutCompanyDetail extends PureComponent {
   onCancel = () => {};
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], companyDetailsOrigin } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
-      <div className={s.root}>
+      <div className={s.layoutCompanyDetail}>
         <Affix offsetTop={105}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
@@ -85,7 +95,7 @@ class LayoutCompanyDetail extends PureComponent {
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
             {/* <Affix offsetTop={115}> */}
-            <ViewInformation />
+            <ViewInformation companyDetails={companyDetailsOrigin} />
             {/* </Affix> */}
           </Col>
         </Row>

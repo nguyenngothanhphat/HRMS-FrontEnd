@@ -295,6 +295,7 @@ class AddEmployeeForm extends Component {
             rules={[{ required: true }]}
           >
             <Select
+              autoComplete="dontshow"
               mode="multiple"
               allowClear
               showArrow
@@ -330,6 +331,7 @@ class AddEmployeeForm extends Component {
               rules={[{ required: true }]}
             >
               <Select
+                autoComplete="dontshow"
                 placeholder={formatMessage({ id: 'addEmployee.placeholder.company' })}
                 showArrow
                 showSearch
@@ -351,6 +353,7 @@ class AddEmployeeForm extends Component {
             rules={[{ required: true }]}
           >
             <Select
+              autoComplete="dontshow"
               placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
               showArrow
               showSearch
@@ -376,6 +379,7 @@ class AddEmployeeForm extends Component {
             rules={[{ required: true }]}
           >
             <Select
+              autoComplete="dontshow"
               placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
               showArrow
               showSearch
@@ -398,6 +402,7 @@ class AddEmployeeForm extends Component {
             rules={[{ required: true }]}
           >
             <Select
+              autoComplete="dontshow"
               placeholder={formatMessage({ id: 'addEmployee.placeholder.jobTitle' })}
               showArrow
               showSearch
@@ -420,6 +425,7 @@ class AddEmployeeForm extends Component {
             rules={[{ required: true }]}
           >
             <Select
+              autoComplete="dontshow"
               placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch

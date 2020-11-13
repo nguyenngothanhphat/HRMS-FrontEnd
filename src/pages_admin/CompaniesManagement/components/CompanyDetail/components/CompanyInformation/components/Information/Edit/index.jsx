@@ -10,7 +10,12 @@ import styles from './index.less';
       originData: { companyDetails: companyDetailsOrigin = {} },
       tempData: { companyDetails = {} },
     } = {},
-  }) => ({ companyDetailsOrigin, companyDetails }),
+    loading,
+  }) => ({
+    companyDetailsOrigin,
+    companyDetails,
+    loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
 )
 class Edit extends PureComponent {
   handleChangeValues = (changedValues) => {
@@ -31,9 +36,37 @@ class Edit extends PureComponent {
     });
   };
 
+  handleUpdate = (changedValues) => {
+    const { dispatch, companyDetailsOrigin, handleCancelEdit = () => {} } = this.props;
+    const payload = {
+      ...companyDetailsOrigin,
+      id: companyDetailsOrigin._id,
+      ...changedValues,
+    };
+    delete payload._id;
+
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+    }).then((resp) => {
+      const { statusCode } = resp;
+      if (statusCode === 200) {
+        handleCancelEdit();
+      }
+    });
+  };
+
   render() {
-    const { companyDetails } = this.props;
-    const { name = '', dba = '', ein = '', employeeNumber = '', website = '' } = companyDetails;
+    const { companyDetails, loadingUpdate } = this.props;
+    const {
+      name = '',
+      dba = '',
+      ein = '',
+      employeeNumber = '',
+      website = '',
+      phone = '',
+      contactEmail = '',
+    } = companyDetails;
 
     const formItemLayout = {
       labelCol: {
@@ -55,9 +88,12 @@ class Edit extends PureComponent {
             dba,
             ein,
             employeeNumber,
+            phone,
+            contactEmail,
             website,
           }}
           onValuesChange={this.handleChangeValues}
+          onFinish={this.handleUpdate}
         >
           <Form.Item
             label={formatMessage({ id: 'pages_admin.companies.table.companyName' })}
@@ -68,6 +104,10 @@ class Edit extends PureComponent {
                 required: true,
                 // pattern: /^[a-zA-Z ]*$/,
                 // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+              },
+              {
+                pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
+                message: 'Company name is not a validate name!',
               },
             ]}
           >
@@ -94,8 +134,10 @@ class Edit extends PureComponent {
             rules={[
               {
                 required: true,
-                // pattern: /^[a-zA-Z ]*$/,
-                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+              },
+              {
+                pattern: /^[0-9]\d?-\d{7}$/,
+                message: 'EIN is not a validate EIN. Ex: 01-0901446',
               },
             ]}
           >
@@ -107,8 +149,32 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^\d+$/,
-                message: 'Employee number is not validate number!',
+                type: 'number',
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'pages_admin.company.phone' })}
+            name="phone"
+            {...formItemLayout}
+            rules={[
+              {
+                // pattern: /^[a-zA-Z ]*$/,
+                // message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+              },
+            ]}
+          >
+            <Input className={styles.inputForm} />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'pages_admin.company.contactEmail' })}
+            name="contactEmail"
+            {...formItemLayout}
+            rules={[
+              {
+                type: 'email',
               },
             ]}
           >
@@ -140,7 +206,7 @@ class Edit extends PureComponent {
               type="primary"
               htmlType="submit"
               className={styles.edit_btn_save}
-              // loading={loading}
+              loading={loadingUpdate}
             >
               Save
             </Button>

@@ -24,10 +24,20 @@ class View extends PureComponent {
         value: information.employeeNumber,
       },
       {
+        label: 'Phone',
+        value: information.phone,
+      },
+      {
+        label: 'Contact Email',
+        value: information.contactEmail,
+      },
+      {
         label: formatMessage({ id: 'pages_admin.company.website' }),
         value: information.website,
       },
     ];
+
+    // const blank = '_blank';
 
     return (
       <div className={styles.view}>
@@ -37,9 +47,15 @@ class View extends PureComponent {
               <Col span={6} className={styles.textLabel}>
                 {item.label}
               </Col>
-              <Col span={18} className={styles.textValue}>
-                {item.value}
-              </Col>
+              {item.label === 'Website' ? (
+                <Col span={18} className={styles.textValue}>
+                  <a className={styles.textValue__website}>{item.value}</a>
+                </Col>
+              ) : (
+                <Col span={18} className={styles.textValue}>
+                  {item.value}
+                </Col>
+              )}
             </Fragment>
           ))}
           {/* Custom Col Here */}

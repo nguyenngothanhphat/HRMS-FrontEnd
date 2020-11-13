@@ -1,4 +1,4 @@
-.root {
+.layoutCompanyDetail {
   display: flex;
   flex-direction: row;
   background-color: #f6f7f9;
@@ -34,17 +34,17 @@
           position: relative;
         }
         &__imgAvt {
-          border: solid 1.5px #d6dce0;
+          border: solid 1px #d6dce0;
           background-color: #ffffff;
           position: absolute;
-          width: 100%;
           left: 0;
           right: 0;
           top: 54px;
           margin: auto;
-          img {
-            object-fit: contain;
-          }
+          width: 96px;
+          height: 96px;
+          border-radius: 50%;
+          object-fit: cover;
           &__upload {
             position: absolute;
             cursor: pointer;
@@ -78,7 +78,7 @@
           }
         }
         &__viewBottom {
-          padding: 16px;
+          padding: 7.5px 16px;
           &__row {
             display: flex;
             flex-direction: row;

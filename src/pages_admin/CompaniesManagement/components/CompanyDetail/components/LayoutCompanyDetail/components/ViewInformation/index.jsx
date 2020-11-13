@@ -1,11 +1,19 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Divider, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
+import noLogo from '@/assets/no-photo-available-icon.png';
 import styles from '../../index.less';
 
-@connect(() => ({}))
-class ViewInformation extends PureComponent {
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: companyDetailsOrigin = {} },
+      tempData: { companyDetails = {} },
+    } = {},
+  }) => ({ companyDetailsOrigin, companyDetails }),
+)
+class ViewInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,24 +34,29 @@ class ViewInformation extends PureComponent {
   };
 
   getResponse = (resp) => {
-    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    const { dispatch, companyDetailsOrigin } = this.props;
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       const [first] = data;
       this.handleCancel();
+      const payload = {
+        ...companyDetailsOrigin,
+        id: companyDetailsOrigin._id,
+        logoUrl: first.url,
+      };
+      delete payload._id;
       dispatch({
-        type: 'employeeProfile/updateGeneralInfo',
-        payload: {
-          id,
-          avatar: first.url,
-        },
+        type: 'companiesManagement/updateCompany',
+        payload,
       });
     }
   };
 
   render() {
-    const { loading } = this.props;
-    const avatar = '';
+    const {
+      loading,
+      companyDetailsOrigin: { logoUrl = '', name = '' },
+    } = this.props;
     const { visible } = this.state;
     if (loading)
       return (
@@ -58,13 +71,7 @@ class ViewInformation extends PureComponent {
           alt="img-cover"
           className={styles.infoCompany__imgCover}
         />
-        <Avatar
-          src={
-            avatar || 'https://www.terralogic.com/wp-content/themes/terralogic/img/brand-logo.svg'
-          }
-          size={96}
-          className={styles.infoCompany__imgAvt}
-        />
+        <Avatar src={logoUrl || noLogo} size={96} className={styles.infoCompany__imgAvt} />
         <img
           src="/assets/images/iconUploadImage.svg"
           onClick={this.openModalUpload}
@@ -72,7 +79,7 @@ class ViewInformation extends PureComponent {
           className={styles.infoCompany__imgAvt__upload}
         />
         <div className={styles.infoCompany__textNameAndTitle}>
-          <p className={styles.infoCompany__textNameAndTitle__name}>Terralogic</p>
+          <p className={styles.infoCompany__textNameAndTitle__name}>{name}</p>
         </div>
         <div className={styles.infoCompany__viewBottom}>
           <Divider />
@@ -82,11 +89,11 @@ class ViewInformation extends PureComponent {
           </div>
         </div>
         <ModalUpload
-          titleModal="Profile Picture Update"
+          titleModal="Update Logo Company"
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"
-          // getResponse={this.getResponse}
+          getResponse={this.getResponse}
         />
       </div>
     );
