@@ -11,7 +11,7 @@ class Edit extends PureComponent {
   render() {
     const companyDetail = {
       name: 'Nguyen Van A',
-      email: 'Terralogic@terralogic.com',
+      email: 'terralogic@terralogic.com',
       phoneNumber: '0123456789',
     };
     const { name, email, phoneNumber } = companyDetail;
@@ -55,8 +55,7 @@ class Edit extends PureComponent {
             {...formItemLayout}
             rules={[
               {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                type: 'email',
               },
             ]}
           >
@@ -66,12 +65,12 @@ class Edit extends PureComponent {
             label={formatMessage({ id: 'pages_admin.owner.phone' })}
             name="phoneNumber"
             {...formItemLayout}
-            rules={[
-              {
-                pattern: /^[a-zA-Z ]*$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-              },
-            ]}
+            // rules={[
+            //   {
+            //     pattern: /^[+]*[\d]{0,10}$/,
+            //     message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+            //   },
+            // ]}
           >
             <Input className={styles.inputForm} />
           </Form.Item>

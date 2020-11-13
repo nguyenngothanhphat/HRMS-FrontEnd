@@ -14,7 +14,9 @@ class RadioComponent extends PureComponent {
       position,
       data: test,
       processStatus,
+      disabled,
     } = this.props;
+    console.log(disabled);
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
@@ -25,12 +27,15 @@ class RadioComponent extends PureComponent {
               defaultValue={position !== 'EMPLOYEE' ? test.position : position}
               onChange={(e) => handleRadio(e)}
               name={Tab.positionTab.name}
-              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
             >
               <Row gutter={[24, 0]}>
                 {Tab.positionTab.arr.map((data) => (
                   <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                    <Radio className={styles.paddingRightRadio} value={data.value}>
+                    <Radio
+                      className={styles.paddingRightRadio}
+                      value={data.value}
+                      disabled={disabled}
+                    >
                       <Typography.Text>{data.position}</Typography.Text>
                     </Radio>
                   </Col>
@@ -45,12 +50,11 @@ class RadioComponent extends PureComponent {
               defaultValue={isObject(employeeType) ? employeeType._id : employeeType}
               onChange={(e) => handleRadio(e)}
               name={Tab.classificationTab.name}
-              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
             >
               <Row gutter={[24, 0]}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                   {employeeTypeList.map((data) => (
-                    <Radio className={styles.Radio} value={data._id}>
+                    <Radio className={styles.Radio} value={data._id} disabled={disabled}>
                       <Typography.Text>{data.name}</Typography.Text>
                     </Radio>
                   ))}

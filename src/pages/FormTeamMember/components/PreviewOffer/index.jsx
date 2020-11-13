@@ -64,11 +64,11 @@ const PreviewOffer = (props) => {
   const [openModal2, setOpenModal2] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
-  const [offerLetter, setOfferLetter] = useState(offerLetterProp?.attachment.url || '');
-
-  // const resetForm = () => {
-  //   mailForm.resetFields();
-  // };
+  const [offerLetter, setOfferLetter] = useState(
+    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
+      ? offerLetterProp.attachment.url
+      : '',
+  );
 
   const resetImg = (type) => {
     if (type === 'hr') {
@@ -495,7 +495,7 @@ const PreviewOffer = (props) => {
             </div>
 
             {/* Candidate Signature */}
-            {candidateSignature.url && (
+            {candidateSignature && candidateSignature.url && (
               <div className={styles.signature}>
                 <header>
                   <div className={styles.icon}>
