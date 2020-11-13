@@ -246,10 +246,11 @@ class FormTeamMember extends PureComponent {
       match: { params: { action = '', reId = '' } = {} },
       candidateInfo,
       loading1 = false,
-      candidateInfo: { data: { _id: candidateId = '' } } = {},
+      candidateInfo: { data: { _id: candidateId = '', documentsByCandidate = [] } } = {},
       location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
     const check = !loading1 && candidateId !== '';
+    const checkDocument = !loading1 && documentsByCandidate.length > 0;
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
@@ -291,7 +292,9 @@ class FormTeamMember extends PureComponent {
         // key: 'eligibilityDocuments',
         component:
           processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ? (
-            <BackgroundRecheck />
+            !checkDocument ? null : (
+              <BackgroundRecheck />
+            )
           ) : (
             <BackgroundCheck
               documentList={documentList}

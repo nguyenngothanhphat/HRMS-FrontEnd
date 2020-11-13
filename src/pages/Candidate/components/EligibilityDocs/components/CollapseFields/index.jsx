@@ -109,7 +109,7 @@ class CollapseField extends PureComponent {
                           </Col>
                           {file.candidateDocumentStatus !== 'VERIFIED' && (
                             <>
-                              <Col span={3} className={styles.textAlign}>
+                              <Col span={4} className={styles.textAlign}>
                                 {/* <p className={styles.viewUpLoadDataText}>Uploaded</p> */}
                                 <UploadImage
                                   content={this.getActionContent(file.candidateDocumentStatus)}
@@ -121,7 +121,7 @@ class CollapseField extends PureComponent {
                                   getIndexFailed={this.getIndexFailed}
                                 />
                               </Col>
-                              <Col span={2} className={styles.textAlignCenter}>
+                              <Col span={1} className={styles.textAlignCenter}>
                                 <img
                                   src={cancelIcon}
                                   alt=""

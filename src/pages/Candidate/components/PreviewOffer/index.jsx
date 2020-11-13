@@ -351,6 +351,10 @@ const PreviewOffer = (props) => {
           visible={uploadVisible1}
           getResponse={(response) => {
             loadImage(response);
+            const { statusCode } = response;
+            if (statusCode === 200) {
+              setUploadVisible1(false);
+            }
           }}
           handleCancel={() => {
             setUploadVisible1(false);

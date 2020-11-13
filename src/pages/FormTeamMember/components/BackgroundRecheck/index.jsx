@@ -47,18 +47,15 @@ class BackgroundRecheck extends Component {
   }
 
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // const { docsList = [] } = this.state;
     const { tempData: { backgroundRecheck: { documentList = [] } = {} } = {} } = this.props;
-    // this.processDocumentData();
     if (documentList.length === 0) {
       this.processDocumentData();
     }
   }
 
   processDocumentData = () => {
-    // console.log('RUN');
     const { documentsByCandidate, dispatch } = this.props;
+    console.log('RUN', documentsByCandidate);
     const groupA = [];
     const groupB = [];
     const groupC = [];
@@ -108,7 +105,6 @@ class BackgroundRecheck extends Component {
   };
 
   sendDocumentStatus = (doc) => {
-    // console.log(doc);
     const { candidate = '', dispatch } = this.props;
     const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
     const { _id = '', candidateDocumentStatus = '' } = doc;
@@ -130,9 +126,6 @@ class BackgroundRecheck extends Component {
         break;
       }
     }
-    // verifiedDocs.forEach((doc) => {
-    // });
-    // console.log(doc);
     dispatch({
       type: 'candidateInfo/checkDocumentEffect',
       payload: {
@@ -189,7 +182,6 @@ class BackgroundRecheck extends Component {
 
   handleCheckDocument = (event, indexGroupDoc, document) => {
     const { documentsByCandidateRD, dispatch } = this.props;
-    // console.log(document);
     const candidateDocumentStatus = event.target.value;
     const docsByCandidateRDCheck = documentsByCandidateRD;
     const checkedDocument = {
