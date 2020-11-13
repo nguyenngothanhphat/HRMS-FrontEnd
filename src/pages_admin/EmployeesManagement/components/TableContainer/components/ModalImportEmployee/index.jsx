@@ -176,13 +176,11 @@ class ModalImportEmployee extends Component {
       employees,
     };
 
-    console.log('payload', payload);
-
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeesManagement/importEmployees',
-    //   payload,
-    // });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/importEmployees',
+      payload,
+    });
   };
 
   renderFormImport = (companyProps) => {
