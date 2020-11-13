@@ -6,6 +6,7 @@ import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
+import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -69,9 +70,10 @@ class CommonLayout extends Component {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
+    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
     if (currentStep !== null) {
-      if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && currentStep === 7) {
+      if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
@@ -93,7 +95,23 @@ class CommonLayout extends Component {
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    if (processStatus === 'PENDING-APPROVAL-FINAL-OFFER') {
+    const {
+      SENT_FOR_APPROVAL,
+      PENDING,
+      ELIGIBLE_CANDIDATES,
+      INELIGIBLE_CANDIDATES,
+    } = PROCESS_STATUS;
+    if (
+      processStatus === PENDING ||
+      processStatus === ELIGIBLE_CANDIDATES ||
+      processStatus === INELIGIBLE_CANDIDATES
+    ) {
+      return {
+        selectedItemId: '',
+        displayComponent: <BackgroundRecheck />,
+      };
+    }
+    if (processStatus === SENT_FOR_APPROVAL) {
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -164,7 +182,6 @@ class CommonLayout extends Component {
     } = PROCESS_STATUS;
 
     const { allDocumentVerified, processStatus } = this.props;
-    console.log(allDocumentVerified);
 
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:

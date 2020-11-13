@@ -12,6 +12,7 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
+import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
@@ -29,12 +30,11 @@ const PreviewOffer = (props) => {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
-    // offerLetter:  offerLetterProp,
+    offerLetter: offerLetterProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
-    // offerLetter: { attachment: { url: offerLetterProp = '' } = {} } = {},
-    offerLetter: offerLetterProp,
+    // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
     processStatus,
@@ -266,6 +266,7 @@ const PreviewOffer = (props) => {
     if (!dispatch || !_id) {
       return;
     }
+
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -286,6 +287,13 @@ const PreviewOffer = (props) => {
     setCandidateSignature(candidateSignatureProp);
   }, [candidateSignatureProp]);
 
+  // Fetch new offer when redux update
+  useEffect(() => {
+    if (offerLetterProp && offerLetterProp.url) {
+      setOfferLetter(offerLetterProp.url);
+    }
+  }, [offerLetterProp]);
+
   const closeModal = () => {
     setOpenModal(false);
   };
@@ -294,14 +302,14 @@ const PreviewOffer = (props) => {
     setOpenModal2(false);
   };
 
-  useEffect(() => {
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        offerLetter,
-      },
-    });
-  }, [offerLetter]);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'candidateInfo/saveTemp',
+  //     payload: {
+  //       offerLetter,
+  //     },
+  //   });
+  // }, [offerLetterProp]);
 
   return (
     <div className={styles.previewContainer}>

@@ -170,7 +170,6 @@ const OfferDetail = (props) => {
 
   const handleTemplateChange = (_, option) => {
     const { value = '', key = '' } = option;
-    console.log(option);
 
     setFile({
       name: value,

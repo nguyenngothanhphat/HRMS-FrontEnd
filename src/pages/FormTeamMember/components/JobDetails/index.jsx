@@ -87,6 +87,7 @@ class JobDetails extends PureComponent {
       dispatch,
       currentStep,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
+      data: { processStatus = '' } = {},
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -98,9 +99,19 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep,
+        // currentStep,
       },
     });
+    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate: _id,
+          currentStep,
+        },
+      });
+    }
   };
 
   checkBottomBar = () => {
@@ -309,33 +320,24 @@ class JobDetails extends PureComponent {
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              {' '}
-              <Row gutter={12}>
-                <Col span={12}>
-                  <Button
-                    type="secondary"
-                    onClick={this.onClickPrev}
-                    className={styles.bottomBar__button__secondary}
-                  >
-                    Previous
-                  </Button>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    onClick={this.onClickNext}
-                    className={`${styles.bottomBar__button__primary} ${
-                      !filledJobDetail ? styles.bottomBar__button__disabled : ''
-                    }`}
-                    disabled={!filledJobDetail}
-                  >
-                    Next
-                  </Button>
-                </Col>
-              </Row>
-            </div>
+          <Col className={styles.bottomBar__button} span={8}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+            <Button
+              type="primary"
+              onClick={this.onClickNext}
+              className={`${styles.bottomBar__button__primary} ${
+                !filledJobDetail ? styles.bottomBar__button__disabled : ''
+              }`}
+              disabled={!filledJobDetail}
+            >
+              Next
+            </Button>
           </Col>
         </Row>
       </div>
