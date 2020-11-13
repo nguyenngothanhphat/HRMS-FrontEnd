@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
 import { formatMessage } from 'umi';
-import styles from './index.less';
+import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
 // @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
 //   isOpenEditDetail,

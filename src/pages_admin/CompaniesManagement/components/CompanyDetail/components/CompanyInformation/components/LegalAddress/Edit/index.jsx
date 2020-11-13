@@ -3,7 +3,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Button, Form, Input, Select } from 'antd';
 import { connect } from 'umi';
-import styles from '../../../../WorkLocation/components/Edit/index.less';
+import styles from '../../Information/Edit/index.less';
 
 const { Option } = Select;
 
