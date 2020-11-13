@@ -115,14 +115,14 @@ class CollapseField extends PureComponent {
                     : []
                 }
               />
-              {item.type === 'D' ? (
+              {/* {item.type === 'D' ? (
                 <Space direction="horizontal">
                   <PlusOutlined className={styles.plusIcon} />
                   <Typography.Text className={styles.addMore}>Add Employer Details</Typography.Text>
                 </Space>
               ) : (
                 <></>
-              )}
+              )} */}
             </Space>
           </Collapse.Panel>
         </Collapse>
