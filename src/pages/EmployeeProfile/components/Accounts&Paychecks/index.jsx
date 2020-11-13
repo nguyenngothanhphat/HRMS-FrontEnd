@@ -30,6 +30,7 @@ class AccountsPaychecks extends PureComponent {
         { id: 6, name: 'UAN Number', text: element ? element.uanNumber : '' },
       ];
     });
+    console.log(bankData);
     let dataTaxDetails = [];
     taxData.forEach((element) => {
       dataTaxDetails = [
@@ -49,20 +50,22 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataBankDetails.map((item, index) => {
-                return (
-                  <div key={`bank ${index + 1}`}>
-                    <Col key={`bank ${index + 1}`} span={24} className={styles.flexbox}>
-                      <Col span={8}>
-                        <p className={styles.Name}>{item.name}</p>
-                      </Col>
-                      <Col span={8}>
-                        <p className={styles.Text}>{item.text}</p>
-                      </Col>
-                    </Col>
-                  </div>
-                );
-              })}
+              {dataBankDetails.length > 0
+                ? dataBankDetails.map((item, index) => {
+                    return (
+                      <div key={`bank ${index + 1}`}>
+                        <Col key={`bank ${index + 1}`} span={24} className={styles.flexbox}>
+                          <Col span={8}>
+                            <p className={styles.Name}>{item.name}</p>
+                          </Col>
+                          <Col span={8}>
+                            <p className={styles.Text}>{item.text}</p>
+                          </Col>
+                        </Col>
+                      </div>
+                    );
+                  })
+                : 'No data'}
             </div>
           </Col>
         </Row>
@@ -77,18 +80,20 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataTaxDetails.map((item, index) => {
-                return (
-                  <Col key={`Tax ${index + 1}`} span={24} className={styles.flexbox}>
-                    <Col span={8}>
-                      <p className={styles.Name}>{item.name}</p>
-                    </Col>
-                    <Col span={8}>
-                      <p className={styles.Text}>{item.text}</p>
-                    </Col>
-                  </Col>
-                );
-              })}
+              {dataTaxDetails.length > 0
+                ? dataTaxDetails.map((item, index) => {
+                    return (
+                      <Col key={`Tax ${index + 1}`} span={24} className={styles.flexbox}>
+                        <Col span={8}>
+                          <p className={styles.Name}>{item.name}</p>
+                        </Col>
+                        <Col span={8}>
+                          <p className={styles.Text}>{item.text}</p>
+                        </Col>
+                      </Col>
+                    );
+                  })
+                : 'No data'}
             </div>
           </Col>
         </Row>
