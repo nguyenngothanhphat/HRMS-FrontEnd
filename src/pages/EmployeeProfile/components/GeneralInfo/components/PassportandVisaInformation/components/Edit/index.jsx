@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import ModalReviewImage from '@/components/ModalReviewImage';
 import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -43,6 +44,8 @@ class Edit extends Component {
       getContent: true,
       isDate: true,
       isCheckDateVisa: true,
+      visible: false,
+      linkImage: '',
     };
   }
 
@@ -92,7 +95,7 @@ class Edit extends Component {
   handleGetUpLoad = (resp) => {
     const { data = [] } = resp;
     const [first] = data;
-    const value = { id: first.id, url: first.url };
+    const value = { id: first ? first.id : '', url: first ? first.url : '' };
     this.handleChange('urlFile', value);
   };
 
@@ -377,8 +380,22 @@ class Edit extends Component {
     this.setState({ isCheckDateVisa: getIsCheckVisa });
   };
 
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
+
   render() {
-    const { isLt5M, getContent, isDate, isCheckDateVisa } = this.state;
+    const { isLt5M, getContent, isDate, isCheckDateVisa, visible, linkImage } = this.state;
     const { Option } = Select;
     const { passportData = {}, handleCancel = () => {}, countryList, loading } = this.props;
     const formatCountryList = countryList.map((item) => {
@@ -458,14 +475,12 @@ class Edit extends Component {
               </div>
             ) : (
               <div className={styles.viewUpLoadData}>
-                <a
-                  href={urlFile.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <p
+                  onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                   className={styles.viewUpLoadDataURL}
                 >
                   fileName
-                </a>
+                </p>
                 <p className={styles.viewUpLoadDataText}>Uploaded</p>
                 <img
                   src={cancelIcon}
@@ -478,14 +493,12 @@ class Edit extends Component {
           </div>
           {urlFile !== '' ? (
             <Form.Item label="Uploaded file:" className={styles.labelUpload}>
-              <a
-                href={urlFile.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <p
+                onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                 className={styles.urlUpload}
               >
                 {nameDataURL}
-              </a>
+              </p>
             </Form.Item>
           ) : (
             ''
@@ -544,15 +557,6 @@ class Edit extends Component {
             />
           </Form.Item>
 
-          {/* {isDate === false ? (
-            <span className={styles.isDate}>
-              {formatMessage({
-                id: 'pages.employeeProfile.validateDate',
-              })}
-            </span>
-          ) : (
-            ''
-          )} */}
           <VisaGeneral
             setConfirmContent={this.getConfirmContent}
             checkArrayVisa={this.getcheckArrayVisa}
@@ -575,6 +579,7 @@ class Edit extends Component {
               Save
             </Button>
           </div>
+          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
         </Form>
       </Row>
     );

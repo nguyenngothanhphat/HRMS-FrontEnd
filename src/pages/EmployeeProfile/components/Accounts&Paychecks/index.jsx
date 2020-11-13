@@ -19,25 +19,19 @@ class AccountsPaychecks extends PureComponent {
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
-    let dataBankDetails = [];
-    bankData.forEach((element) => {
-      dataBankDetails = [
-        { id: 1, name: 'Bank Name', text: element ? element.bankName : '' },
-        { id: 2, name: 'Account Number', text: element ? element.accountNumber : '' },
-        { id: 3, name: 'Account Type', text: element ? element.accountType : '' },
-        { id: 4, name: 'IFSC Code', text: element ? element.ifscCode : '' },
-        { id: 5, name: 'MICR Code', text: element ? element.micrcCode : '' },
-        { id: 6, name: 'UAN Number', text: element ? element.uanNumber : '' },
-      ];
-    });
-    console.log(bankData);
-    let dataTaxDetails = [];
-    taxData.forEach((element) => {
-      dataTaxDetails = [
-        { id: 1, name: 'Income Tax Rule', text: element ? element.incomeTaxRule : '' },
-        { id: 2, name: 'PAN Number', text: element ? element.panNum : '' },
-      ];
-    });
+    const dataBankDetails = [
+      { id: 1, name: 'Bank Name', text: bankData[0] ? bankData[0].bankName : ' ' },
+      { id: 2, name: 'Account Number', text: bankData[0] ? bankData[0].accountNumber : ' ' },
+      { id: 3, name: 'Account Type', text: bankData[0] ? bankData[0].accountType : '' },
+      { id: 4, name: 'IFSC Code', text: bankData[0] ? bankData[0].ifscCode : '' },
+      { id: 5, name: 'MICR Code', text: bankData[0] ? bankData[0].micrcCode : '' },
+      { id: 6, name: 'UAN Number', text: bankData[0] ? bankData[0].uanNumber : '' },
+    ];
+
+    const dataTaxDetails = [
+      { id: 1, name: 'Income Tax Rule', text: taxData[0] ? taxData[0].incomeTaxRule : '' },
+      { id: 2, name: 'PAN Number', text: taxData[0] ? taxData[0].panNum : '' },
+    ];
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>
@@ -50,22 +44,20 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataBankDetails.length > 0
-                ? dataBankDetails.map((item, index) => {
-                    return (
-                      <div key={`bank ${index + 1}`}>
-                        <Col key={`bank ${index + 1}`} span={24} className={styles.flexbox}>
-                          <Col span={8}>
-                            <p className={styles.Name}>{item.name}</p>
-                          </Col>
-                          <Col span={8}>
-                            <p className={styles.Text}>{item.text}</p>
-                          </Col>
-                        </Col>
-                      </div>
-                    );
-                  })
-                : 'No data'}
+              {dataBankDetails.map((item, index) => {
+                return (
+                  <div key={`bank ${index + 1}`}>
+                    <Col key={`bank ${index + 1}`} span={24} className={styles.flexbox}>
+                      <Col span={8}>
+                        <p className={styles.Name}>{item.name}</p>
+                      </Col>
+                      <Col span={8}>
+                        <p className={styles.Text}>{item.text}</p>
+                      </Col>
+                    </Col>
+                  </div>
+                );
+              })}
             </div>
           </Col>
         </Row>
@@ -80,20 +72,18 @@ class AccountsPaychecks extends PureComponent {
           </Col>
           <Col span={24}>
             <div className={styles.spaceDetails}>
-              {dataTaxDetails.length > 0
-                ? dataTaxDetails.map((item, index) => {
-                    return (
-                      <Col key={`Tax ${index + 1}`} span={24} className={styles.flexbox}>
-                        <Col span={8}>
-                          <p className={styles.Name}>{item.name}</p>
-                        </Col>
-                        <Col span={8}>
-                          <p className={styles.Text}>{item.text}</p>
-                        </Col>
-                      </Col>
-                    );
-                  })
-                : 'No data'}
+              {dataTaxDetails.map((item, index) => {
+                return (
+                  <Col key={`Tax ${index + 1}`} span={24} className={styles.flexbox}>
+                    <Col span={8}>
+                      <p className={styles.Name}>{item.name}</p>
+                    </Col>
+                    <Col span={8}>
+                      <p className={styles.Text}>{item.text}</p>
+                    </Col>
+                  </Col>
+                );
+              })}
             </div>
           </Col>
         </Row>

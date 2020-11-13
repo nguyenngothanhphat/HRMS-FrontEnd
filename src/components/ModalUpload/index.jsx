@@ -188,9 +188,9 @@ class ModalUpload extends Component {
         onCancel={this.handleCancel}
         destroyOnClose
         footer={[
-          <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
-            Cancel
-          </div>,
+          // <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
+          //   Cancel
+          // </div>,
           <Button
             key="submit"
             type="primary"
