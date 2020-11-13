@@ -37,6 +37,10 @@ class LayoutCompanyDetail extends PureComponent {
     });
   }
 
+  componentWillUnmount() {
+    Modal.destroyAll();
+  }
+
   handleCLickItemMenu = (item) => {
     // const { isModified } = this.props;
     // if (isModified) {
@@ -58,6 +62,7 @@ class LayoutCompanyDetail extends PureComponent {
     const _this = this;
     confirm({
       title: 'Please save form before proceeding !',
+      getContainer: document.getElementById('root__edit'),
       onOk() {
         _this.saveChanges();
       },
@@ -76,7 +81,7 @@ class LayoutCompanyDetail extends PureComponent {
     const { displayComponent, selectedItemId } = this.state;
 
     return (
-      <div className={s.root}>
+      <div className={s.root} id="root__edit">
         <Affix offsetTop={105}>
           <div className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
