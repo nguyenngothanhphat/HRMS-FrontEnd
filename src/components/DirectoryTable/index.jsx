@@ -182,6 +182,7 @@ class DirectoryTable extends Component {
     return (
       <div className={styles.directoryTable}>
         <Table
+          className={!checkRoleEmployee ? `${styles.directoryTable__employee}` : ''}
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
