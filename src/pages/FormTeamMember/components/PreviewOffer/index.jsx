@@ -177,17 +177,17 @@ const PreviewOffer = (props) => {
 
     const { id } = hrSignature;
     const { candidate } = data;
-    const { valueToFinalOffer = 1 } = tempData;
-    let option = 1;
-    if (valueToFinalOffer === 1) {
-      option = 2;
-    } else {
-      option = 1;
-    }
+    const { valueToFinalOffer = 0 } = tempData;
+    // let option = 1;
+    // if (valueToFinalOffer === 1) {
+    //   option = 2;
+    // } else {
+    //   option = 1;
+    // }
     // call API
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate, options: option },
+      payload: { hrSignature: id, candidate, options: valueToFinalOffer },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal2(true);
@@ -447,7 +447,7 @@ const PreviewOffer = (props) => {
           </div>
         )}
         {/* HR Manager signature */}
-        {role === ROLE.HRMANAGER && (
+        {role === ROLE.HRMANAGER && processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && (
           <>
             <div className={styles.signature}>
               <header>
