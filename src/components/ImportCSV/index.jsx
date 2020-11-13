@@ -39,17 +39,18 @@ class ImportCSV extends Component {
           .then((csvRows) => {
             const toJson = [];
             csvRows.map((aCsvRow, i) => {
-              if (i !== 0) {
-                const builtObject = {};
-                Object.keys(aCsvRow).map((aKey) => {
-                  const valueToAddInBuiltObject = aCsvRow[aKey];
-                  const keyToAddInBuiltObject = csvRows[0][aKey];
-                  // let formatKey = keyToAddInBuiltObject.replace(/\s/g, '');
-                  // formatKey = formatKey.charAt(0).toLowerCase() + formatKey.slice(1);
-                  builtObject[keyToAddInBuiltObject] = valueToAddInBuiltObject;
-                  return null;
-                });
-                toJson.push(builtObject);
+              const isEmpty = Object.values(aCsvRow).every((x) => x === null || x === '');
+              if (!isEmpty) {
+                if (i !== 0) {
+                  const builtObject = {};
+                  Object.keys(aCsvRow).map((aKey) => {
+                    const valueToAddInBuiltObject = aCsvRow[aKey];
+                    const keyToAddInBuiltObject = csvRows[0][aKey];
+                    builtObject[keyToAddInBuiltObject] = valueToAddInBuiltObject;
+                    return null;
+                  });
+                  toJson.push(builtObject);
+                }
               }
               return null;
             });
