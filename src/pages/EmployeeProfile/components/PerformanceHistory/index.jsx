@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import { formatMessage } from 'umi';
@@ -12,10 +13,16 @@ class PerformanceHistory extends PureComponent {
     return (
       <div className={styles.performanceHistory}>
         <div className={styles.performanceHistory_syncEPASS}>
-          <Button className={styles.performanceHistory_syncEPASS_btn} block>
-            <img className={styles.iconSync} src="/assets/images/iconSync.svg" alt="iconSync" />
-            <u>{formatMessage({ id: 'pages.employeeProfile.performanceTab.syncWithEPAS' })}</u>
-          </Button>
+          <a href="http://epas.terralogic.com/E-PAS/#/login" target="_blank">
+            <Button
+              onclick="window.open('http://epas.terralogic.com/E-PAS/#/login')"
+              className={styles.performanceHistory_syncEPASS_btn}
+              block
+            >
+              <img className={styles.iconSync} src="/assets/images/iconSync.svg" alt="iconSync" />
+              <u>{formatMessage({ id: 'pages.employeeProfile.performanceTab.syncWithEPAS' })}</u>
+            </Button>
+          </a>
         </div>
         <PerformanceReview />
         <CareerGraph />

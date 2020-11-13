@@ -153,7 +153,7 @@ class ModalImportEmployee extends Component {
         employeeId: item['Employee Id'],
         firstName: item['First Name'],
         lastName: item['Last Name'],
-        joinDate: moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
+        joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
         department: item.Department,
@@ -162,10 +162,6 @@ class ModalImportEmployee extends Component {
         title: item['Job Title'],
         personalNumber: item['Personal Number'],
       };
-    });
-    data.map((item) => {
-      delete item.no;
-      return null;
     });
     this.setState({
       employees,
