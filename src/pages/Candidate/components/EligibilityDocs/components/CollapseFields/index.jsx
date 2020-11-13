@@ -18,6 +18,7 @@ class CollapseField extends PureComponent {
   // }
 
   getActionContent = (status) => {
+    console.log(status);
     if (status === 'INELIGIBLE') {
       return 'Choose file';
     }
@@ -109,7 +110,16 @@ class CollapseField extends PureComponent {
                           {file.candidateDocumentStatus !== 'VERIFIED' && (
                             <>
                               <Col span={3} className={styles.textAlign}>
-                                <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                                {/* <p className={styles.viewUpLoadDataText}>Uploaded</p> */}
+                                <UploadImage
+                                  content={this.getActionContent(file.candidateDocumentStatus)}
+                                  getResponse={(res) => handleFile(res, index, id, docList)}
+                                  loading={loading}
+                                  hideValidation
+                                  typeIndex={index}
+                                  nestedIndex={id}
+                                  getIndexFailed={this.getIndexFailed}
+                                />
                               </Col>
                               <Col span={2} className={styles.textAlignCenter}>
                                 <img
