@@ -34,6 +34,8 @@ import {
   getEmailsListByCompany,
   getBank,
   getTax,
+  getAddTax,
+  updateTax,
   getTitleByDepartment,
   getLocationsByCompany,
   updateEmployment,
@@ -62,6 +64,8 @@ const employeeProfile = {
       openPassportandVisa: false,
       openPersonnalInfor: false,
       openAcademic: false,
+      openTax: false,
+      openBank: false,
     },
     paySlip: [],
     countryList: [],
@@ -769,6 +773,55 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *addTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(getAddTax, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchTax',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openTax') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openTax: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateTax({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(updateTax, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchTax',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openTax') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openTax: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *fetchTitleByDepartment({ payload }, { call, put }) {
       try {
         const res = yield call(getTitleByDepartment, payload);

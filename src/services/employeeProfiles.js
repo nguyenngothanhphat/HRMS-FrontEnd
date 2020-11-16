@@ -219,6 +219,20 @@ export async function getTax(payload) {
   });
 }
 
+export async function getAddTax(payload) {
+  return request('/api/tax/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateTax(payload) {
+  return request('/api/tax/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getTitleByDepartment(payload) {
   return request('/api/title/list', {
     method: 'POST',
