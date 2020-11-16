@@ -515,7 +515,7 @@ const PreviewOffer = (props) => {
                 </header>
 
                 {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                <p>Undersigned- {candidateName}</p>
+                <p>Undersigned - {candidateName}</p>
 
                 <div className={styles.upload}>
                   {candidateSignature !== null && candidateSignature.url ? (
