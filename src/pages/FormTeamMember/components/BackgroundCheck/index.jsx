@@ -70,8 +70,9 @@ class BackgroundCheck extends Component {
       dispatch,
     } = this.props;
     const { candidate = '', processStatus } = data;
+    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
 
-    if (processStatus === 'DRAFT') {
+    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
       if (dispatch && candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
@@ -195,7 +196,6 @@ class BackgroundCheck extends Component {
       console.log('false');
       return false;
     }
-    console.log('true');
     return true;
   };
 
@@ -677,32 +677,25 @@ class BackgroundCheck extends Component {
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
-          <Col span={8}>
-            <div className={styles.bottomBar__button}>
-              <Row gutter={12}>
-                <Col span={12}>
-                  <Button
-                    type="secondary"
-                    onClick={this.onClickPrev}
-                    className={styles.bottomBar__button__secondary}
-                  >
-                    Previous
-                  </Button>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    onClick={this.onClickNext}
-                    className={`${styles.bottomBar__button__primary} ${
-                      !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
-                    }`}
-                    disabled={!filledBackgroundCheck}
-                  >
-                    Next
-                  </Button>
-                </Col>
-              </Row>
-            </div>
+          <Col className={styles.bottomBar__button} span={8}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+
+            <Button
+              type="primary"
+              onClick={this.onClickNext}
+              className={`${styles.bottomBar__button__primary} ${
+                !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
+              }`}
+              disabled={!filledBackgroundCheck}
+            >
+              Next
+            </Button>
           </Col>
         </Row>
       </div>

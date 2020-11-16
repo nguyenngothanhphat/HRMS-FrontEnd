@@ -1,16 +1,17 @@
 import React, { Fragment, Component } from 'react';
-import { Col, DatePicker, Form, Input, Select } from 'antd';
+import { Col, DatePicker, Form, Input, Select, Spin } from 'antd';
 import { DownOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
-import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import ModalReviewImage from '@/components/ModalReviewImage';
+import UploadImage from '../../../UploadImage';
 import styles from '../../index.less';
 
 @connect(
   ({
     loading,
-    upload: { urlImage = '', visa0URL = '', visa1URL = '' },
+    upload: { urlImage = '', visa0URL = '', visa1URL = '', loadingVisaTest = [] },
     employeeProfile: {
       idCurrentEmployee,
       countryList,
@@ -29,6 +30,7 @@ import styles from '../../index.less';
     visa1URL,
     urlImage,
     idCurrentEmployee,
+    loadingVisaTest,
   }),
 )
 class VisaGeneral extends Component {
@@ -41,9 +43,25 @@ class VisaGeneral extends Component {
       listItem: [{}],
       checkValidate: [{}],
       formCheck: [],
+      visible: false,
+      linkImage: '',
     };
     // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
+
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
 
   handleAddBtn = () => {
     const { visaData, dispatch } = this.props;
@@ -194,8 +212,10 @@ class VisaGeneral extends Component {
       listItem,
       checkValidate,
       formCheck,
+      visible,
+      linkImage,
     } = this.state;
-    const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
+    const { countryList, visa0URL, visa1URL, visaData, loading, loadingVisaTest } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -241,24 +261,39 @@ class VisaGeneral extends Component {
                     </Form.Item>
                     {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
                       <div className={styles.textUpload}>
-                        <UploadImage
+                        {loadingVisaTest[index] === false ||
+                        loadingVisaTest[index] === undefined ? (
+                          <UploadImage
+                            content={this.handleShowContent(index, checkValidate)}
+                            setSizeImageMatch={(isLt5M) =>
+                              this.handleGetSetSizeImage(index, isLt5M)
+                            }
+                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                            loading={loading}
+                            name="visa"
+                            index={index}
+                          />
+                        ) : (
+                          <Spin loading={loadingVisaTest[index]} active="true" />
+                        )}
+                        {/* <UploadImage
                           content={this.handleShowContent(index, checkValidate)}
                           name={`visa${index}`}
                           setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                           loading={loading}
-                        />
+                        /> */}
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
-                        <a
-                          href={index === 0 ? visa0URL : visa1URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <p
+                          onClick={() =>
+                            this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)
+                          }
                           className={styles.viewUpLoadDataURL}
                         >
                           fileName
-                        </a>
+                        </p>
                         <p className={styles.viewUpLoadDataText}>Uploaded</p>
                         <img
                           src={cancelIcon}
@@ -271,14 +306,14 @@ class VisaGeneral extends Component {
                   </div>
                   {(visa0URL !== '' && index === 0) || (visa1URL !== '' && index === 1) ? (
                     <Form.Item label="Visa:" className={styles.labelUpload}>
-                      <a
-                        href={index === 0 ? visa0URL : visa1URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <p
+                        onClick={() =>
+                          this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)
+                        }
                         className={styles.urlUpload}
                       >
                         {this.handleNameDataUpload(index)}
-                      </a>
+                      </p>
                     </Form.Item>
                   ) : (
                     ''
@@ -399,25 +434,35 @@ class VisaGeneral extends Component {
                         }}
                       />
                     </Form.Item>
+
                     {!item.urlFile ? (
                       <div className={styles.textUpload}>
-                        <UploadImage
-                          content={this.handleShowContent(index, checkValidate)}
-                          setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
-                          loading={loading}
-                        />
+                        {loadingVisaTest[index] === false ||
+                        loadingVisaTest[index] === undefined ? (
+                          <UploadImage
+                            content={this.handleShowContent(index, checkValidate)}
+                            setSizeImageMatch={(isLt5M) =>
+                              this.handleGetSetSizeImage(index, isLt5M)
+                            }
+                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                            loading={loading}
+                            name="visa"
+                            index={index}
+                          />
+                        ) : (
+                          <Spin loading={loadingVisaTest[index]} active="true" />
+                        )}
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
-                        <a
-                          href={item.urlFile.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <p
+                          onClick={() =>
+                            this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')
+                          }
                           className={styles.viewUpLoadDataURL}
                         >
                           fileName
-                        </a>
+                        </p>
                         <p className={styles.viewUpLoadDataText}>Uploaded</p>
                         <img
                           src={cancelIcon}
@@ -430,14 +475,14 @@ class VisaGeneral extends Component {
                   </div>
                   {item.urlFile ? (
                     <Form.Item label="Visa:" className={styles.labelUpload}>
-                      <a
-                        href={item.urlFile.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <p
+                        onClick={() =>
+                          this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')
+                        }
                         className={styles.urlUpload}
                       >
                         {this.handleNameDataUpload(item.urlFile.url)}
-                      </a>
+                      </p>
                     </Form.Item>
                   ) : (
                     ''
@@ -554,6 +599,11 @@ class VisaGeneral extends Component {
                       }
                     />
                   </Form.Item>
+                  <ModalReviewImage
+                    visible={visible}
+                    handleCancel={this.handleCancel}
+                    link={linkImage}
+                  />
                 </Fragment>
               );
             })}

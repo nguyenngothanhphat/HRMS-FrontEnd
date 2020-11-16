@@ -15,6 +15,10 @@ class View extends PureComponent {
     };
   }
 
+  componentWillUnmount() {
+    Modal.destroyAll();
+  }
+
   handleEdit = () => {
     const {
       dispatch,
@@ -51,19 +55,17 @@ class View extends PureComponent {
   showConfirm = () => {
     const _this = this;
     confirm({
-      title: 'Please save form before proceeding !',
+      title: 'Please save form or cancel before proceeding !',
+      centered: true,
+      cancelButtonProps: { style: { display: 'none' } },
+      className: styles.view__confirm,
       onOk() {
         _this.saveChanges();
-      },
-      onCancel() {
-        _this.onCancel();
       },
     });
   };
 
   saveChanges = () => {};
-
-  onCancel = () => {};
 
   render() {
     const { location } = this.props;

@@ -16,7 +16,6 @@ class RadioComponent extends PureComponent {
       processStatus,
       disabled,
     } = this.props;
-    console.log(disabled);
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
@@ -45,6 +44,7 @@ class RadioComponent extends PureComponent {
             <Typography.Title level={5} className={styles.paddingBotTitle}>
               {Tab.classificationTab.title}
             </Typography.Title>
+
             <Radio.Group
               className={styles.paddingRadio}
               defaultValue={isObject(employeeType) ? employeeType._id : employeeType}

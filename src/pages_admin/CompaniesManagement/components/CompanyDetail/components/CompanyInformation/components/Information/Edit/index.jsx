@@ -136,7 +136,7 @@ class Edit extends PureComponent {
                 required: true,
               },
               {
-                pattern: /^[1-9]\d?-\d{7}$/,
+                pattern: /^[0-9]\d?-\d{7}$/,
                 message: 'EIN is not a validate EIN. Ex: 01-0901446',
               },
             ]}
