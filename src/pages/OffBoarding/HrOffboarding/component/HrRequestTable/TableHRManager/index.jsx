@@ -84,6 +84,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Action</span>,
         dataIndex: 'Action',
+        align: 'left',
         render: () => (
           <div className={styles.rowAction}>
             <span onClick={this.push}>View Request</span>
@@ -105,10 +106,6 @@ class HrTable extends PureComponent {
           }}
           columns={columns}
           dataSource={data}
-          // pagination={{
-          //   ...pagination,
-          //   total: data.length,
-          // }}
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}

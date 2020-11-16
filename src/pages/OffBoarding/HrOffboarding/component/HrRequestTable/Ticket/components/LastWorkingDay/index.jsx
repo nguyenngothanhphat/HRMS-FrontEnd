@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { DatePicker, Row, Col, Button } from 'antd';
 import Editicon from '@/assets/editIcon.svg';
+import moment from 'moment';
 import warningNoteIcon from '@/assets/warning-icon.svg';
 import ModalNoticeSuccess from '../ModalNoticeSuccess';
 import styles from './index.less';
@@ -34,13 +35,8 @@ class LastWorkingDay extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const date = new Date();
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    const hours = date.getHours();
-    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
-    const today = `${yyyy}.${mm}.${dd}`;
+    const date = moment().format('DD.MM.YY | h:mm A');
+
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
@@ -48,13 +44,10 @@ class LastWorkingDay extends PureComponent {
           <div>
             <span className={styles.subText}>
               <span style={{ marginRight: '30px' }}>
-                <img src={Editicon} alt="" className={styles.icon} />
+                <img src={Editicon} alt="" className={styles.icon} style={{ cursor: 'pointer' }} />
                 <span style={{ fontWeight: 'normal' }}> Edit</span>
               </span>
-              {today} |
-              <span style={{ fontWeight: 'normal' }}>
-                {hours} {amOrPm}
-              </span>
+              {date}
             </span>
           </div>
         </div>

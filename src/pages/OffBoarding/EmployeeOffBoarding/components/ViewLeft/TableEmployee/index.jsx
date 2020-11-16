@@ -75,6 +75,7 @@ class TableEmployee extends PureComponent {
       {
         title: <span className={t.title}>Action</span>,
         dataIndex: 'action',
+
         render: () => (
           <div className={t.rowAction}>
             <span onClick={() => this.push(data.map((x) => x._id))}>View Request</span>
@@ -84,7 +85,7 @@ class TableEmployee extends PureComponent {
     ];
 
     return (
-      <div className={t.styles}>
+      <div className={t.employeeTable}>
         <Table
           locale={{
             emptyText: (
