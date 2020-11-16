@@ -1,8 +1,9 @@
 export default {
   'pages.employeeProfile.generalInfoTab': 'General Info',
   'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 10 number, please!',
-  'pages.employeeProfile.validateNumber': 'Just only number & maxinum 12 number, please!',
-  'pages.employeeProfile.validatePassPortNumber': 'Just maxinum 12 characters!',
+  'pages.employeeProfile.validateNumber':
+    'Just only number & this field must be 12 number, please!',
+  'pages.employeeProfile.validatePassPortNumber': 'This field limit 12 character!',
   'pages.employeeProfile.validateDate': ' Day Valid Till must greater than day Issue On, please!',
   'pages.employeeProfile.validateName': 'Just only word not number, please!',
   'pages.employeeProfile.validateEmail': 'This field must be a valid email.',

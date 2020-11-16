@@ -357,7 +357,7 @@ class Edit extends PureComponent {
               name="adhaarCardNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{0,12}$/,
+                  pattern: /^[+]*[\d]{12,12}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -413,7 +413,7 @@ class Edit extends PureComponent {
             name="uanNumber"
             rules={[
               {
-                pattern: /^[+]*[\d]{0,12}$/,
+                pattern: /^[+]*[\d]{12,12}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
               },
             ]}
