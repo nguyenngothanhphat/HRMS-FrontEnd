@@ -8,7 +8,7 @@ import styles from './index.less';
 const datatable = [
   {
     id: 1,
-    name: 'send Request',
+    name: 'Send Request',
   },
   {
     id: 2,

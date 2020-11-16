@@ -12,6 +12,7 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
+// import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
@@ -29,12 +30,11 @@ const PreviewOffer = (props) => {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
-    // offerLetter:  offerLetterProp,
+    offerLetter: offerLetterProp,
   } = tempData;
   const {
     candidateSignature: candidateSignatureProp = {},
-    // offerLetter: { attachment: { url: offerLetterProp = '' } = {} } = {},
-    offerLetter: offerLetterProp,
+    // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
     processStatus,
@@ -58,7 +58,7 @@ const PreviewOffer = (props) => {
   const [mail, setMail] = useState(candidateEmailProp || '');
   const [mailForm] = Form.useForm();
 
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState([]);
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
@@ -177,10 +177,17 @@ const PreviewOffer = (props) => {
 
     const { id } = hrSignature;
     const { candidate } = data;
+    const { valueToFinalOffer = 0 } = tempData;
+    // let option = 1;
+    // if (valueToFinalOffer === 1) {
+    //   option = 2;
+    // } else {
+    //   option = 1;
+    // }
     // call API
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate },
+      payload: { hrSignature: id, candidate, options: valueToFinalOffer },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal2(true);
@@ -207,17 +214,8 @@ const PreviewOffer = (props) => {
 
   const getUserRole = () => {
     const { roles } = currentUser;
-    const userRole = roles.find(
-      (roleItem) =>
-        roleItem._id === ROLE.HRMANAGER ||
-        roleItem._id === ROLE.HR ||
-        roleItem._id === ROLE.HRGLOBAL,
-    );
-    if (!userRole) {
-      return;
-    }
-    const { _id } = userRole;
-    setRole(_id);
+    const arrRole = roles.map((itemRole) => itemRole._id);
+    setRole(arrRole);
   };
 
   const handleHrSignatureSubmit = () => {
@@ -266,6 +264,7 @@ const PreviewOffer = (props) => {
     if (!dispatch || !_id) {
       return;
     }
+
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
@@ -286,6 +285,13 @@ const PreviewOffer = (props) => {
     setCandidateSignature(candidateSignatureProp);
   }, [candidateSignatureProp]);
 
+  // Fetch new offer when redux update
+  useEffect(() => {
+    if (offerLetterProp && offerLetterProp.url) {
+      setOfferLetter(offerLetterProp.url);
+    }
+  }, [offerLetterProp]);
+
   const closeModal = () => {
     setOpenModal(false);
   };
@@ -294,14 +300,14 @@ const PreviewOffer = (props) => {
     setOpenModal2(false);
   };
 
-  useEffect(() => {
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        offerLetter,
-      },
-    });
-  }, [offerLetter]);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'candidateInfo/saveTemp',
+  //     payload: {
+  //       offerLetter,
+  //     },
+  //   });
+  // }, [offerLetterProp]);
 
   return (
     <div className={styles.previewContainer}>
@@ -378,7 +384,7 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {role === ROLE.HR && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
+        {role.indexOf(ROLE.HR) > -1 && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
           <div className={styles.send}>
             <header>
               <div className={styles.icon}>
@@ -432,7 +438,7 @@ const PreviewOffer = (props) => {
           </div>
         )}
         {/* HR Manager signature */}
-        {role === ROLE.HRMANAGER && (
+        {role.indexOf(ROLE.HRMANAGER) > -1 && processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && (
           <>
             <div className={styles.signature}>
               <header>
@@ -509,7 +515,7 @@ const PreviewOffer = (props) => {
                 </header>
 
                 {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                <p>Undersigned- {candidateName}</p>
+                <p>Undersigned - {candidateName}</p>
 
                 <div className={styles.upload}>
                   {candidateSignature !== null && candidateSignature.url ? (
@@ -541,6 +547,10 @@ const PreviewOffer = (props) => {
           visible={uploadVisible1}
           getResponse={(response) => {
             loadImage('hr', response);
+            const { statusCode } = response;
+            if (statusCode === 200) {
+              setUploadVisible1(false);
+            }
           }}
           handleCancel={() => {
             setUploadVisible1(false);
@@ -551,6 +561,10 @@ const PreviewOffer = (props) => {
           visible={uploadVisible2}
           getResponse={(response) => {
             loadImage('hrManager', response);
+            const { statusCode } = response;
+            if (statusCode === 200) {
+              setUploadVisible2(false);
+            }
           }}
           handleCancel={() => {
             setUploadVisible2(false);

@@ -18,10 +18,10 @@ class ManageBalance extends Component {
               <div className={styles.switchFrom}>
                 <div className={styles.title}>Switch</div>
                 <Row className={styles.flexFrom}>
-                  <Col span={14} className={styles.subTitle}>
+                  <Col span={13} className={styles.subTitle}>
                     Keep current employee timeoff balances, but move them to new policies
                   </Col>
-                  <Col span={10}>
+                  <Col span={11}>
                     <img src={icon} alt="" style={{ padding: '5px' }} />
                     <span>Download spreadsheet</span>
                   </Col>

@@ -89,7 +89,7 @@ class ViewInformation extends Component {
           </div>
         </div>
         <ModalUpload
-          titleModal="Update logo company"
+          titleModal="Update Logo Company"
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"

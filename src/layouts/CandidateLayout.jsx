@@ -89,7 +89,7 @@ const CandidateLayout = (props) => {
     route: { routes } = {},
     ticketId,
     dispatch,
-    processStatus,
+    processStatus = '',
   } = props;
 
   const [current, setCurrent] = useState(1);
@@ -176,6 +176,8 @@ const CandidateLayout = (props) => {
 
   const newSteps = getSteps();
 
+  console.log(processStatus);
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -202,24 +204,26 @@ const CandidateLayout = (props) => {
         <Content className={s.main}>
           <Row gutter={24}>
             <Col md={5}>
-              <div className={s.stepContainer}>
-                <Steps
-                  current={current - 1}
-                  direction="vertical"
-                  className={isPhase1(newSteps) ? s.phase1Step : ''}
-                >
-                  {newSteps.map((item) => {
-                    const { title, id } = item;
-                    return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
-                  })}
-                </Steps>
+              {processStatus !== '' && (
+                <div className={s.stepContainer}>
+                  <Steps
+                    current={current - 1}
+                    direction="vertical"
+                    className={isPhase1(newSteps) ? s.phase1Step : ''}
+                  >
+                    {newSteps.map((item) => {
+                      const { title, id } = item;
+                      return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
+                    })}
+                  </Steps>
 
-                {!isPhase1(newSteps) && (
-                  <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
-                    Preview offer letter
-                  </button>
-                )}
-              </div>
+                  {!isPhase1(newSteps) && (
+                    <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
+                      Preview offer letter
+                    </button>
+                  )}
+                </div>
+              )}
             </Col>
             <Col md={19}>{children}</Col>
           </Row>

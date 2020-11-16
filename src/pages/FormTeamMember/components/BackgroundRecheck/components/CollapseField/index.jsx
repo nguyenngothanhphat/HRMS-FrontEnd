@@ -17,6 +17,9 @@ class CollapseField extends Component {
 
   openViewDocument = (displayName, attachment) => {
     const { url } = attachment;
+    if (!attachment) {
+      return;
+    }
     this.setState({
       visible: true,
       url,

@@ -42,8 +42,6 @@ class JobDetails extends PureComponent {
     this.checkBottomBar();
 
     if (processStatus === 'DRAFT') {
-      // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
-      // console.log(candidate, currentStepLocal);
       if (candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
@@ -72,13 +70,10 @@ class JobDetails extends PureComponent {
     const {
       data: { processStatus = '' },
     } = this.props;
-    console.log(processStatus);
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
     if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
-      console.log('false');
       return false;
     }
-    console.log('true');
     return true;
   };
 
@@ -87,6 +82,7 @@ class JobDetails extends PureComponent {
       dispatch,
       currentStep,
       tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
+      data: { processStatus = '' } = {},
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -98,9 +94,19 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
-        currentStep,
+        // currentStep,
       },
     });
+    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate: _id,
+          currentStep,
+        },
+      });
+    }
   };
 
   checkBottomBar = () => {
@@ -444,7 +450,6 @@ class JobDetails extends PureComponent {
       data,
     } = this.state;
     const { loading1, loading2, loading3, loading, loading4, processStatus } = this.props;
-    console.log('reportingManager', isEmpty(reportingManager));
     return (
       <>
         <Row gutter={[24, 0]}>

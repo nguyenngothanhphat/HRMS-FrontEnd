@@ -90,7 +90,7 @@ export default function SecondStep(props) {
           style={{ width: 300 }}
           min={0}
           formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+          parser={(value) => value.replace(/\D/g, '')}
           placeholder="Enter an amount"
           onChange={(value) => onChange(value, 'salary')}
         />
