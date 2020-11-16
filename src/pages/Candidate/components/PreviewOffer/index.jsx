@@ -24,6 +24,7 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
+    offerLetter: offerLetterProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -34,6 +35,11 @@ const PreviewOffer = (props) => {
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
+  const [offerLetter, setOfferLetter] = useState(
+    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
+      ? offerLetterProp.attachment.url
+      : '',
+  );
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -181,7 +187,7 @@ const PreviewOffer = (props) => {
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
-        <FileContent url="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff" />
+        <FileContent url={offerLetter} />
       </div>
 
       <div className={styles.right}>
