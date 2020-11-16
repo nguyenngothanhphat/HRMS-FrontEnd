@@ -29,13 +29,13 @@ class GlobalEmployeeSearch extends Component {
   };
 
   handleAfterClose = () => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeesManagement/save',
-    //   payload: {
-    //     activeEmployeesList: []
-    //   }
-    // })
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/save',
+      payload: {
+        searchEmployeesList: [],
+      },
+    });
   };
 
   checkRoleEmployee = (roles) => {
