@@ -73,7 +73,7 @@ class TableEmployees extends Component {
             : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
         fixed: 'left',
-        width: '10%',
+        width: '14%',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
