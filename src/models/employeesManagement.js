@@ -17,6 +17,7 @@ const employeesManagement = {
   state: {
     activeEmployeesList: [],
     inActiveEmployeesList: [],
+    searchEmployeesList: [],
     rolesList: [],
     companyList: [],
     locationList: [],
@@ -83,6 +84,35 @@ const employeesManagement = {
         const { statusCode, data: inActiveEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { inActiveEmployeesList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchSearchEmployeesList(
+      {
+        payload: {
+          status = 'ACTIVE',
+          department = [],
+          location = [],
+          company = [],
+          employeeType = [],
+          name = '',
+        } = {},
+      },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getEmployeesList, {
+          status,
+          name,
+          department,
+          location,
+          company,
+          employeeType,
+        });
+        const { statusCode, data: searchEmployeesList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { searchEmployeesList } });
       } catch (errors) {
         dialog(errors);
       }
