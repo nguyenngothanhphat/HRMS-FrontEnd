@@ -296,6 +296,12 @@ const routes = [
             component: './ResignationRequest',
           },
           {
+            path: '/hr-offboarding/resignation-request',
+            name: 'ResignationRequest',
+            hideInMenu: true,
+            component: './ResignationRequest',
+          },
+          {
             path: '/employee-offboarding/request/:id',
             name: 'request',
             component: './OffBoarding/EmployeeOffBoarding/Request',

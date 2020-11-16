@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Space, Checkbox } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -11,13 +12,8 @@ class CommentsFromHR extends PureComponent {
   }
 
   render() {
-    const date = new Date();
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    const hours = date.getHours();
-    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
-    const today = `${yyyy}.${mm}.${dd}`;
+    const date = moment().format('DD.MM.YY | h:mm A');
+
     return (
       <div className={styles.reasonPutOnHold}>
         <Row gutter={[0, 20]} justify="space-between">
@@ -26,11 +22,7 @@ class CommentsFromHR extends PureComponent {
             <Row>
               <div className={styles.reasonPutOnHold__dateTime}>
                 <span>
-                  <span className={styles.subText}>Lasted updated by Sandeep Metta </span>| {today}
-                  &nbsp; | &nbsp;
-                  <span>
-                    {hours} {amOrPm}
-                  </span>
+                  <span className={styles.subText}>Lasted updated by Sandeep Metta </span>| {date}
                 </span>
               </div>
             </Row>
