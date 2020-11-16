@@ -1,17 +1,17 @@
 import React, { Fragment, Component } from 'react';
-import { Col, DatePicker, Form, Input, Select } from 'antd';
+import { Col, DatePicker, Form, Input, Select, Spin } from 'antd';
 import { DownOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import UploadImage from '@/components/UploadImage';
 import ModalReviewImage from '@/components/ModalReviewImage';
+import UploadImage from '../../../UploadImage';
 import styles from '../../index.less';
 
 @connect(
   ({
     loading,
-    upload: { urlImage = '', visa0URL = '', visa1URL = '' },
+    upload: { urlImage = '', visa0URL = '', visa1URL = '', loadingVisaTest = [] },
     employeeProfile: {
       idCurrentEmployee,
       countryList,
@@ -30,6 +30,7 @@ import styles from '../../index.less';
     visa1URL,
     urlImage,
     idCurrentEmployee,
+    loadingVisaTest,
   }),
 )
 class VisaGeneral extends Component {
@@ -214,7 +215,7 @@ class VisaGeneral extends Component {
       visible,
       linkImage,
     } = this.state;
-    const { countryList, visa0URL, visa1URL, visaData, loading } = this.props;
+    const { countryList, visa0URL, visa1URL, visaData, loading, loadingVisaTest } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -260,13 +261,28 @@ class VisaGeneral extends Component {
                     </Form.Item>
                     {(visa0URL === '' && index === 0) || (visa1URL === '' && index === 1) ? (
                       <div className={styles.textUpload}>
-                        <UploadImage
+                        {loadingVisaTest[index] === false ||
+                        loadingVisaTest[index] === undefined ? (
+                          <UploadImage
+                            content={this.handleShowContent(index, checkValidate)}
+                            setSizeImageMatch={(isLt5M) =>
+                              this.handleGetSetSizeImage(index, isLt5M)
+                            }
+                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                            loading={loading}
+                            name="visa"
+                            index={index}
+                          />
+                        ) : (
+                          <Spin loading={loadingVisaTest[index]} active="true" />
+                        )}
+                        {/* <UploadImage
                           content={this.handleShowContent(index, checkValidate)}
                           name={`visa${index}`}
                           setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                           loading={loading}
-                        />
+                        /> */}
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
@@ -421,12 +437,21 @@ class VisaGeneral extends Component {
 
                     {!item.urlFile ? (
                       <div className={styles.textUpload}>
-                        <UploadImage
-                          content={this.handleShowContent(index, checkValidate)}
-                          setSizeImageMatch={(isLt5M) => this.handleGetSetSizeImage(index, isLt5M)}
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp, item.document)}
-                          loading={loading}
-                        />
+                        {loadingVisaTest[index] === false ||
+                        loadingVisaTest[index] === undefined ? (
+                          <UploadImage
+                            content={this.handleShowContent(index, checkValidate)}
+                            setSizeImageMatch={(isLt5M) =>
+                              this.handleGetSetSizeImage(index, isLt5M)
+                            }
+                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                            loading={loading}
+                            name="visa"
+                            index={index}
+                          />
+                        ) : (
+                          <Spin loading={loadingVisaTest[index]} active="true" />
+                        )}
                       </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>

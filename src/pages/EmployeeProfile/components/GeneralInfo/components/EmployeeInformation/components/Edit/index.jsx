@@ -4,6 +4,7 @@ import { connect, formatMessage } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import ModalReviewImage from '@/components/ModalReviewImage';
 import styles from './index.less';
 
 @connect(
@@ -18,6 +19,7 @@ import styles from './index.less';
     upload: { employeeInformationURL = '' },
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    loadingAdhaarCard: loading.effects['upload/uploadFile'],
     generalDataOrigin,
     generalData,
     employeeInformationURL,
@@ -30,6 +32,8 @@ class Edit extends PureComponent {
     super(props);
     this.state = {
       isLt5M: true,
+      visible: false,
+      linkImage: '',
     };
   }
 
@@ -234,9 +238,23 @@ class Edit extends PureComponent {
     return current && current > moment().endOf('day');
   };
 
+  handleOpenModalReview = (linkImage) => {
+    this.setState({
+      visible: true,
+      linkImage,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+      linkImage: '',
+    });
+  };
+
   render() {
-    const { isLt5M } = this.state;
-    const { generalData, loading, handleCancel = () => {} } = this.props;
+    const { isLt5M, visible, linkImage } = this.state;
+    const { generalData, loading, handleCancel = () => {}, loadingAdhaarCard } = this.props;
     const {
       urlFile = '',
       legalName = '',
@@ -339,7 +357,7 @@ class Edit extends PureComponent {
               name="adhaarCardNumber"
               rules={[
                 {
-                  pattern: /^[+]*[\d]{0,12}$/,
+                  pattern: /^[+]*[\d]{12,12}$/,
                   message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
                 },
               ]}
@@ -354,18 +372,18 @@ class Edit extends PureComponent {
                     name="adhaarCard"
                     setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
                     getResponse={(resp) => this.handleGetUpLoad(resp)}
+                    loading={loadingAdhaarCard}
                   />
                 </div>
               ) : (
                 <div className={styles.viewUpLoadData}>
-                  <a
-                    href={urlFile ? urlFile.url : ''}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <p
+                    onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                     className={styles.viewUpLoadDataURL}
                   >
                     fileName
-                  </a>
+                  </p>
+
                   <p className={styles.viewUpLoadDataText}>Uploaded</p>
                   <img
                     src={cancelIcon}
@@ -380,14 +398,12 @@ class Edit extends PureComponent {
 
           {urlFile !== '' ? (
             <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
-              <a
-                href={urlFile ? urlFile.url : ''}
-                target="_blank"
-                rel="noopener noreferrer"
+              <p
+                onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                 className={styles.urlUpload}
               >
                 {splitURL}
-              </a>
+              </p>
             </Form.Item>
           ) : (
             ''
@@ -397,7 +413,7 @@ class Edit extends PureComponent {
             name="uanNumber"
             rules={[
               {
-                pattern: /^[+]*[\d]{0,12}$/,
+                pattern: /^[+]*[\d]{12,12}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
               },
             ]}
@@ -418,6 +434,7 @@ class Edit extends PureComponent {
               Save
             </Button>
           </div>
+          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
         </Form>
         {/* Custom Col Here */}
       </Row>

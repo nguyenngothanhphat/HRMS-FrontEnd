@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-import { Row, Input, Form, DatePicker, Select, Button } from 'antd';
+import { Row, Input, Form, DatePicker, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
-import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import UploadImage from '../UploadImage';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
 
 @connect(
   ({
     loading,
-    upload: { passPortURL = '', visa0IDURL = '', visa1IDURL = '', passPortIDURL = '' },
+    upload: {
+      passPortURL = '',
+      visa0IDURL = '',
+      visa1IDURL = '',
+      passPortIDURL = '',
+      loadingPassPort = false,
+    },
     employeeProfile: {
       countryList,
       idCurrentEmployee,
@@ -33,6 +39,7 @@ import styles from './index.less';
     passPortIDURL,
     document,
     idCurrentEmployee,
+    loadingPassPort,
   }),
 )
 class Edit extends Component {
@@ -397,7 +404,13 @@ class Edit extends Component {
   render() {
     const { isLt5M, getContent, isDate, isCheckDateVisa, visible, linkImage } = this.state;
     const { Option } = Select;
-    const { passportData = {}, handleCancel = () => {}, countryList, loading } = this.props;
+    const {
+      passportData = {},
+      handleCancel = () => {},
+      countryList,
+      loading,
+      loadingPassPort,
+    } = this.props;
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -466,12 +479,17 @@ class Edit extends Component {
             </Form.Item>
             {!urlFile ? (
               <div className={styles.textUpload}>
-                <UploadImage
-                  content={isLt5M ? 'Choose file' : `Retry`}
-                  setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
-                  getResponse={(resp) => this.handleGetUpLoad(resp)}
-                  loading={loading}
-                />
+                {loadingPassPort === false ? (
+                  <UploadImage
+                    content={isLt5M ? 'Choose file' : `Retry`}
+                    setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
+                    getResponse={(resp) => this.handleGetUpLoad(resp)}
+                    loading={loading}
+                    name="passport"
+                  />
+                ) : (
+                  <Spin loading={loadingPassPort} active="true" />
+                )}
               </div>
             ) : (
               <div className={styles.viewUpLoadData}>
