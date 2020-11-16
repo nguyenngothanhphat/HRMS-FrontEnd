@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row } from 'antd';
 // import { PageContainer } from '@/layouts/layout/src';
 // import Icon from '@ant-design/icons';
-// import { Link } from 'umi';
-// import addIcon from '@/assets/addTicket.svg';
+import { Link } from 'umi';
+import addIcon from '@/assets/addTicket.svg';
 import TabContent from './tabContent';
 import styles from './index.less';
 
@@ -27,17 +27,23 @@ class HRrequestTable extends Component {
       },
     ];
 
-    // const resignationRequest = (
-    //   <div className={styles.buttonRequest}>
-    //     <img src={addIcon} alt="" style={{ margin: '5px' }} />
-    //     <span>Initiate Resignation Request</span>
-    //   </div>
-    // );
+    const resignationRequest = (
+      <div style={{ padding: '17px' }}>
+        <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
+        <Link to="/hr-offboarding/resignation-request">
+          <span className={styles.buttonRequest}>Initiate Resignation Request</span>
+        </Link>
+      </div>
+    );
 
     return (
-      <Row className={styles.content} gutter={[40, 0]}>
+      <Row className={styles.hrContent} gutter={[40, 0]}>
         <Col span={24}>
-          <Tabs defaultActiveKey="1" className={styles.tabComponent}>
+          <Tabs
+            defaultActiveKey="1"
+            className={styles.tabComponent}
+            tabBarExtraContent={resignationRequest}
+          >
             {data.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <div className={styles.tableTab}>
