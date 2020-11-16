@@ -100,18 +100,27 @@ class CommonLayout extends Component {
       PENDING,
       ELIGIBLE_CANDIDATES,
       INELIGIBLE_CANDIDATES,
+      DRAFT,
     } = PROCESS_STATUS;
     if (
       processStatus === PENDING ||
       processStatus === ELIGIBLE_CANDIDATES ||
       processStatus === INELIGIBLE_CANDIDATES
     ) {
+      // console.log('HERE 1');
       return {
         selectedItemId: '',
         displayComponent: <BackgroundRecheck />,
       };
     }
+    // if (processStatus === DRAFT) {
+    //   return {
+    //     selectedItemId: '',
+    //     displayComponent: <BasicInformation />,
+    //   };
+    // }
     if (processStatus === SENT_FOR_APPROVAL) {
+      // console.log('HERE 2');
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -120,6 +129,7 @@ class CommonLayout extends Component {
     if (!listMenu[currentStep]) {
       return null;
     }
+    // console.log('HERE 3');
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,

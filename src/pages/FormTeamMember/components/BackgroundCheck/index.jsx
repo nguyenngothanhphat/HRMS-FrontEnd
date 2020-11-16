@@ -70,8 +70,9 @@ class BackgroundCheck extends Component {
       dispatch,
     } = this.props;
     const { candidate = '', processStatus } = data;
+    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
 
-    if (processStatus === 'DRAFT') {
+    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
       if (dispatch && candidate) {
         dispatch({
           type: 'candidateInfo/updateByHR',
@@ -195,7 +196,6 @@ class BackgroundCheck extends Component {
       console.log('false');
       return false;
     }
-    console.log('true');
     return true;
   };
 
