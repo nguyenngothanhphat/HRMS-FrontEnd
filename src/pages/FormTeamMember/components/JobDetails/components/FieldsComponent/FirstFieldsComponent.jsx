@@ -25,10 +25,8 @@ class FirstFieldsComponent extends PureComponent {
       loading1,
       loading2,
       loading3,
-      processStatus,
       disabled,
     } = this.props;
-    console.log(disabled);
     return (
       <>
         <div>
