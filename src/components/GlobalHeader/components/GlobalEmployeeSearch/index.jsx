@@ -4,7 +4,10 @@ import { connect } from 'umi';
 import styles from './index.less';
 import TableEmployees from '../TableEmployees';
 
-@connect(({ user: { currentUser = {} } }) => ({ currentUser }))
+@connect(({ user: { currentUser = {} }, loading }) => ({
+  currentUser,
+  loadingProfile: loading.effects['employeeProfile/fetchGeneralInfo'],
+}))
 class GlobalEmployeeSearch extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +52,7 @@ class GlobalEmployeeSearch extends Component {
       employeesList = [],
       loading = false,
       currentUser: { roles = [] },
+      handleCancel = () => {},
     } = this.props;
     return (
       <Modal
@@ -68,6 +72,7 @@ class GlobalEmployeeSearch extends Component {
           list={employeesList}
           loading={loading}
           checkRoleEmployee={this.checkRoleEmployee(roles)}
+          handleCancel={handleCancel}
         />
       </Modal>
     );

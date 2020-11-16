@@ -166,11 +166,13 @@ class TableEmployees extends Component {
   };
 
   handleProfileEmployee = (row) => {
+    const { handleCancel = () => {} } = this.props;
     const { _id = '', location: { name = '' } = {} } = row;
     history.push({
       pathname: `/employees/employee-profile/${_id}`,
       state: { location: name },
     });
+    handleCancel();
   };
 
   render() {
