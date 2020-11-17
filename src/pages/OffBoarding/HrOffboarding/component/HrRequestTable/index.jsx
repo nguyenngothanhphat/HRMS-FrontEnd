@@ -5,6 +5,7 @@ import { Col, Tabs, Row } from 'antd';
 import { Link } from 'umi';
 import addIcon from '@/assets/addTicket.svg';
 import TabContent from './tabContent';
+// import MyRequest from '../../../EmployeeOffBoarding/';
 import styles from './index.less';
 
 class HRrequestTable extends Component {
@@ -15,17 +16,6 @@ class HRrequestTable extends Component {
 
   render() {
     const { TabPane } = Tabs;
-
-    const data = [
-      {
-        id: 1,
-        name: 'Team request',
-      },
-      {
-        id: 2,
-        name: 'My request',
-      },
-    ];
 
     const resignationRequest = (
       <div style={{ padding: '17px' }}>
@@ -44,13 +34,21 @@ class HRrequestTable extends Component {
             className={styles.tabComponent}
             tabBarExtraContent={resignationRequest}
           >
-            {data.map((tab) => (
+            {/* {data.map((tab) => (
               <TabPane tab={tab.name} key={tab.id}>
                 <div className={styles.tableTab}>
                   <TabContent />
                 </div>
               </TabPane>
-            ))}
+            ))} */}
+            <TabPane tab="'Team request" key="1">
+              <div className={styles.tableTab}>
+                <TabContent />
+              </div>
+            </TabPane>
+            <TabPane tab="My Request" key="2">
+              tab2
+            </TabPane>
           </Tabs>
         </Col>
       </Row>
