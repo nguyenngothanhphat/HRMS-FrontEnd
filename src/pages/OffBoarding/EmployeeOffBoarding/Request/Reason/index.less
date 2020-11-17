@@ -10,6 +10,7 @@
     background-color: #fff;
     padding: 29px 40px 0px;
     height: 261px;
+    border-radius: 5px;
   }
 
   .textTime {
@@ -38,8 +39,16 @@
     border: 1px solid #d6dce0;
     height: 141px;
     box-sizing: border-box;
-    color: #464646 !important;
+    resize: none;
+
     padding: 13px 40px 20px;
+    &:focus {
+      box-shadow: none;
+    }
+    &:disabled {
+      color: #464646 !important;
+      background-color: #fff;
+    }
   }
 
   .center {

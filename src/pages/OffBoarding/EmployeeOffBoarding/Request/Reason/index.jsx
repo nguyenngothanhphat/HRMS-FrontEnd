@@ -41,8 +41,7 @@ export default class Step1 extends Component {
               <span style={{ color: 'black' }}> {today} </span>| {hours} {amOrPm}
             </p>
           </div>
-          {/* <Input className={styles.boxReason} /> */}
-          <TextArea className={styles.boxReason} value={data} />
+          <TextArea className={styles.boxReason} value={data} disabled />
         </div>
         <div className={styles.requestHRForm}>
           <p className={styles.textBox}> Reporting Manger’s comment</p>
