@@ -12,7 +12,7 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
-import PROCESS_STATUS from '../utils';
+// import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
@@ -58,7 +58,7 @@ const PreviewOffer = (props) => {
   const [mail, setMail] = useState(candidateEmailProp || '');
   const [mailForm] = Form.useForm();
 
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState([]);
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
@@ -214,17 +214,8 @@ const PreviewOffer = (props) => {
 
   const getUserRole = () => {
     const { roles } = currentUser;
-    const userRole = roles.find(
-      (roleItem) =>
-        roleItem._id === ROLE.HRMANAGER ||
-        roleItem._id === ROLE.HR ||
-        roleItem._id === ROLE.HRGLOBAL,
-    );
-    if (!userRole) {
-      return;
-    }
-    const { _id } = userRole;
-    setRole(_id);
+    const arrRole = roles.map((itemRole) => itemRole._id);
+    setRole(arrRole);
   };
 
   const handleHrSignatureSubmit = () => {
@@ -393,7 +384,7 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {role === ROLE.HR && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
+        {role.indexOf(ROLE.HR) > -1 && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
           <div className={styles.send}>
             <header>
               <div className={styles.icon}>
@@ -447,7 +438,7 @@ const PreviewOffer = (props) => {
           </div>
         )}
         {/* HR Manager signature */}
-        {role === ROLE.HRMANAGER && processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && (
+        {role.indexOf(ROLE.HRMANAGER) > -1 && processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && (
           <>
             <div className={styles.signature}>
               <header>
@@ -524,7 +515,7 @@ const PreviewOffer = (props) => {
                 </header>
 
                 {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                <p>Undersigned- {candidateName}</p>
+                <p>Undersigned - {candidateName}</p>
 
                 <div className={styles.upload}>
                   {candidateSignature !== null && candidateSignature.url ? (

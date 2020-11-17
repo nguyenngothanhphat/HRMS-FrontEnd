@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { EyeFilled, GooglePlusOutlined } from '@ant-design/icons';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage } from 'umi';
@@ -11,8 +11,8 @@ import styles from './index.less';
   messageError,
 }))
 class FormLogin extends Component {
-  onFinish = (values) => {
-    const payload = { email: values.email, password: values.password };
+  onFinish = ({ email, password }) => {
+    const payload = { email, password };
     this.handleSubmit(payload);
   };
 
@@ -109,11 +109,11 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
+          {/* <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>

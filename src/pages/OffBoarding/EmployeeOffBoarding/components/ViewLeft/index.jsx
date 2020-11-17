@@ -3,24 +3,43 @@ import { Button, Tabs } from 'antd';
 import { Link } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
 import TabContent from './tabContent';
+import TabDrafts from './TableEmployee';
 import styles from './index.less';
-
-const datatable = [
-  {
-    id: 1,
-    name: 'Send Request',
-  },
-  {
-    id: 2,
-    name: 'Drafts',
-  },
-];
 
 export default class ViewLeft extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      tabId: 1,
+    };
   }
+
+  componentDidMount() {
+    this.initDataTable('1');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { tabId } = this.state;
+
+    if (prevState.tabId !== tabId) {
+      this.initDataTable(tabId);
+    }
+  }
+
+  initDataTable = (tabId) => {
+    if (tabId === '1') {
+      console.log('tab1');
+    }
+    if (tabId === '2') {
+      console.log('tab2');
+    }
+  };
+
+  callback = (key) => {
+    this.setState({
+      tabId: key,
+    });
+  };
 
   render() {
     const { TabPane } = Tabs;
@@ -48,12 +67,15 @@ export default class ViewLeft extends Component {
           <Link to="/employee-offboarding/resignation-request"> Set a resgination request </Link>
         </Button>
         <div>
-          <Tabs defaultActiveKey="1" className={styles.tabComponent}>
-            {datatable.map((tab) => (
-              <TabPane tab={tab.name} key={tab.id}>
-                <TabContent data={data} />
-              </TabPane>
-            ))}
+          <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
+            <TabPane tab="Send Request" key="1">
+              <TabContent data={data} />
+            </TabPane>
+            <TabPane tab="Drafts" key="2">
+              <div className={styles.marrinTop}>
+                <TabDrafts data={data} />
+              </div>
+            </TabPane>
           </Tabs>
         </div>
       </div>
