@@ -23,7 +23,7 @@ class ResignationRequest extends Component {
       match: { params: { id: code = '' } = {} },
     } = this.props;
     dispatch({
-      type: 'offboarding/fetchMyRequest',
+      type: 'offboarding/fetchRequestById',
       payload: {
         id: code,
       },

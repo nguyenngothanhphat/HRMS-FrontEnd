@@ -31,3 +31,10 @@ export async function getList1On1(payload) {
     data: payload,
   });
 }
+
+export async function getRequestById(payload) {
+  return request('/api/offboardingrequest/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

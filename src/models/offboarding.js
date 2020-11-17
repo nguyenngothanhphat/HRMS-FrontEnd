@@ -5,6 +5,7 @@ import {
   sendRequest,
   getList1On1,
   getapprovalflowList,
+  getRequestById,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -38,10 +39,10 @@ const offboarding = {
         dialog(errors);
       }
     },
-    *fetchMyRequest({ payload }, { call, put }) {
+    *fetchRequestById({ payload }, { call, put }) {
       try {
-        const response = yield call(getOffboardingList, payload);
-        const { statusCode, data: myRequest = [] } = response;
+        const response = yield call(getRequestById, payload);
+        const { statusCode, data: myRequest = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { myRequest } });
       } catch (errors) {
