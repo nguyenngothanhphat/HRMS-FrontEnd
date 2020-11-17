@@ -30,11 +30,7 @@ export default class Reason extends PureComponent {
               {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
             </p>
           </div>
-          <TextArea className={styles.boxReason} value={reason} />
-        </div>
-        <div className={styles.requestHRForm}>
-          <p className={styles.textBox}> Reporting Manger’s comment</p>
-          <TextArea className={styles.boxHRReason} />
+          <TextArea className={styles.boxReason} value={reason} disabled />
         </div>
       </div>
     );

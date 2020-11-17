@@ -4,6 +4,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
+import ListComment from './ListComment';
 import styles from './index.less';
 
 @connect(({ offboarding: { myRequest = {} } = {} }) => ({
@@ -33,7 +34,28 @@ class ResignationRequest extends Component {
 
   render() {
     const { myRequest = {} } = this.props;
-
+    const dummyList1v1 = [
+      {
+        title: 'Reporting Manger’s comment',
+        content:
+          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
+      },
+      {
+        title: 'Reporting Manger’s comment',
+        content:
+          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
+      },
+      {
+        title: 'Reporting Manger’s comment',
+        content:
+          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
+      },
+      {
+        title: 'Reporting Manger’s comment',
+        content:
+          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
+      },
+    ];
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -53,9 +75,15 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason data={myRequest} />
+              <ListComment data={dummyList1v1} />
             </Col>
             <Col span={8}>
               <WorkFlow />
+              <div className={styles.list1on1}>
+                {dummyList1v1.map((item) => {
+                  return <div>Request a 1-on-1 with [PSI: 001] Anil Reddy</div>;
+                })}
+              </div>
             </Col>
           </Row>
         </div>
