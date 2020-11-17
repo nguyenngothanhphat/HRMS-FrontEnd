@@ -74,11 +74,10 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Action</span>,
-        dataIndex: 'action',
-
-        render: () => (
+        dataIndex: '_id',
+        render: (_id) => (
           <div className={t.rowAction}>
-            <span onClick={() => this.push(data.map((x) => x._id))}>View Request</span>
+            <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
       },
