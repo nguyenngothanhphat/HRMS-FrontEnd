@@ -94,7 +94,8 @@ class ViewDocument extends PureComponent {
     const { viewDocument: { documentDetail = {} } = {}, location = '' } = this.props;
     const { state = '' } = location;
     const { renderBackButton } = state;
-    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
+    const { key = '', employeeGroup = '', attachment = {} } = documentDetail;
+    const url = attachment !== null ? attachment.url : '';
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -114,7 +115,7 @@ class ViewDocument extends PureComponent {
         <Row className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <Col xs={16} className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(url) === 0 ? (
+            {url && identifyImageOrPdf(url) === 0 ? (
               <div className={styles.imageFrame}>
                 <img alt="preview" src={url} />
               </div>
