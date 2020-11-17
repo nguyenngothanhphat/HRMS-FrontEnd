@@ -57,7 +57,9 @@ const GlobalHeaderRight = (props) => {
         placeholder="Search"
         visible={visible}
         onSearch={(value) => {
-          handleSearch(value);
+          if (value) {
+            handleSearch(value);
+          }
         }}
       />
       <div className={`${styles.action} ${styles.calendar}`}>
