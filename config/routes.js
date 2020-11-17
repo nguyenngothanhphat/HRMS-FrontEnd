@@ -303,7 +303,7 @@ const routes = [
           },
           {
             path: '/employee-offboarding/request/:id',
-            name: 'request',
+            name: 'Request',
             component: './OffBoarding/EmployeeOffBoarding/Request',
             hideInMenu: true,
             authority: [

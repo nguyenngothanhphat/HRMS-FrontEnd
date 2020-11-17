@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
-import Step1 from './step1';
-import Step2 from './step2';
+import Reason from './Reason';
+import WorkFlow from './WorkFlow';
 // import Step3 from './step3';
 // import ResignationLeft from './component/ResignationLeft';
 // import Resignation from './component/ResignationRight';
@@ -55,11 +55,10 @@ class ResignationRequest extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
-              <Step1 data={myRequest.reasonForLeaving} />
+              <Reason data={myRequest.reasonForLeaving} />
             </Col>
             <Col span={8}>
-              <Step2 />
-              {/* <Step3 /> */}
+              <WorkFlow />
             </Col>
           </Row>
         </div>
