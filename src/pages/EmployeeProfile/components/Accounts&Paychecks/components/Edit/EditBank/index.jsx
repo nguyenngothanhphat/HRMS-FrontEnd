@@ -7,69 +7,119 @@ import styles from './index.less';
   ({
     loading,
     employeeProfile: {
+      idCurrentEmployee = '',
       originData: { bankData: bankDataOrigin = [] } = {},
       tempData: { bankData = [] } = {},
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
+    idCurrentEmployee,
     bankDataOrigin,
     bankData,
   }),
 )
 class EditBank extends Component {
-  //   handleChange = (changedValues) => {
-  //     const { dispatch, generalData, generalDataOrigin } = this.props;
-  //     const generalInfo = {
-  //       ...generalData,
-  //       ...changedValues,
-  //     };
-  //     const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
-  //     dispatch({
-  //       type: 'employeeProfile/saveTemp',
-  //       payload: { generalData: generalInfo },
-  //     });
-  //     dispatch({
-  //       type: 'employeeProfile/save',
-  //       payload: { isModified },
-  //     });
-  //   };
+  handleChange = (changedValues) => {
+    const { dispatch, bankData, bankDataOrigin } = this.props;
+    const bankInfo = {
+      ...bankData[0],
+      ...changedValues,
+    };
+    const newList = [...bankData];
+    newList.splice(0, 1, bankInfo);
+    const isModified = JSON.stringify(newList) !== JSON.stringify(bankDataOrigin);
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { bankData: newList },
+    });
+    dispatch({
+      type: 'employeeProfile/save',
+      payload: { isModified },
+    });
+  };
 
-  //   processDataChanges = () => {
-  //     const { generalData: generalDataTemp } = this.props;
-  //     const {
-  //       emergencyContact = '',
-  //       emergencyPersonName = '',
-  //       emergencyRelation = '',
-  //       _id: id = '',
-  //     } = generalDataTemp;
-  //     const payloadChanges = {
-  //       id,
-  //       emergencyContact,
-  //       emergencyPersonName,
-  //       emergencyRelation,
-  //     };
-  //     return payloadChanges;
-  //   };
+  processDataChangesHaveId = () => {
+    const { bankData: bankDataTemp } = this.props;
+    const {
+      bankName = '',
+      accountNumber = '',
+      accountType = '',
+      ifscCode = '',
+      micrcCode = '',
+      uanNumber = '',
+      _id: id = '',
+    } = bankDataTemp[0];
+    const payloadChanges = {
+      id,
+      bankName,
+      accountNumber,
+      accountType,
+      ifscCode,
+      micrcCode,
+      uanNumber,
+    };
+    return payloadChanges;
+  };
 
-  //   processDataKept = () => {
-  //     const { generalData } = this.props;
-  //     const newObj = { ...generalData };
-  //     const listKey = ['emergencyContact', 'emergencyPersonName', 'emergencyRelation'];
-  //     listKey.forEach((item) => delete newObj[item]);
-  //     return newObj;
-  //   };
+  processDataChangesNoId = () => {
+    const { bankData: bankDataTemp, idCurrentEmployee } = this.props;
+    const {
+      bankName = '',
+      accountNumber = '',
+      accountType = '',
+      ifscCode = '',
+      micrcCode = '',
+      uanNumber = '',
+    } = bankDataTemp[0];
+    const payloadChanges = {
+      employee: idCurrentEmployee,
+      bankName,
+      accountNumber,
+      accountType,
+      ifscCode,
+      micrcCode,
+      uanNumber,
+    };
+    return payloadChanges;
+  };
 
-  //   handleSave = () => {
-  //     const { dispatch } = this.props;
-  //     const payload = this.processDataChanges() || {};
-  //     const dataTempKept = this.processDataKept() || {};
-  //     dispatch({
-  //       type: 'employeeProfile/updateGeneralInfo',
-  //       payload,
-  //       dataTempKept,
-  //       key: 'openContactDetails',
-  //     });
-  //   };
+  processDataKept = () => {
+    const { bankData } = this.props;
+    const newObj = { ...bankData[0] };
+    const listKey = [
+      'bankName',
+      'accountNumber',
+      'accountType',
+      'ifscCode',
+      'micrcCode',
+      'uanNumber',
+    ];
+    listKey.forEach((item) => delete newObj[item]);
+    return newObj;
+  };
+
+  handleSave = () => {
+    const { dispatch, bankData } = this.props;
+    const dataTempKept = this.processDataKept() || {};
+    const idBank = bankData[0] ? bankData[0]._id : '';
+    if (idBank) {
+      const payload = this.processDataChangesHaveId() || {};
+      dispatch({
+        type: 'employeeProfile/updateBank',
+        payload,
+        dataTempKept,
+        key: 'openBank',
+      });
+    } else {
+      const payload = this.processDataChangesNoId() || {};
+      dispatch({
+        type: 'employeeProfile/addBank',
+        payload,
+        dataTempKept,
+        key: 'openBank',
+      });
+    }
+  };
 
   render() {
     const formItemLayout = {

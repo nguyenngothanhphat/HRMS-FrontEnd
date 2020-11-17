@@ -19,6 +19,7 @@ import styles from './index.less';
     } = {},
   }) => ({
     loadingTax: loading.effects['employeeProfile/fetchTax'],
+    loadingBank: loading.effects['employeeProfile/fetchBank'],
     openTax,
     openBank,
     bankDataOrigin,
@@ -28,20 +29,17 @@ import styles from './index.less';
   }),
 )
 class AccountsPaychecks extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      openEditBank: false,
-    };
-  }
-
   handleIconCollapse = (isActive) => {
     return isActive ? <MinusOutlined className={styles.minusIcon} /> : <PlusOutlined />;
   };
 
   handleEdit = (name) => {
     if (name === 'bank') {
-      this.setState({ openEditBank: true });
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'employeeProfile/saveOpenEdit',
+        payload: { openBank: true },
+      });
     }
     if (name === 'tax') {
       const { dispatch } = this.props;
@@ -54,7 +52,31 @@ class AccountsPaychecks extends PureComponent {
 
   handleCancel = (name) => {
     if (name === 'bank') {
-      this.setState({ openEditBank: false });
+      const { bankDataOrigin, bankData, dispatch } = this.props;
+      const reverseFields = {
+        bankName: bankDataOrigin[0] ? bankDataOrigin[0].bankName : '',
+        accountNumber: bankDataOrigin[0] ? bankDataOrigin[0].accountNumber : '',
+        accountType: bankDataOrigin[0] ? bankDataOrigin[0].accountType : '',
+        ifscCode: bankDataOrigin[0] ? bankDataOrigin[0].ifscCode : '',
+        micrcCode: bankDataOrigin[0] ? bankDataOrigin[0].micrcCode : '',
+        uanNumber: bankDataOrigin[0] ? bankDataOrigin[0].uanNumber : '',
+      };
+      const bankList = [...bankData];
+      const payload = { ...bankList[0], ...reverseFields };
+      bankList.splice(0, 1, payload);
+      const isModified = JSON.stringify(bankList) !== JSON.stringify(bankDataOrigin);
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { bankData: bankList },
+      });
+      dispatch({
+        type: 'employeeProfile/save',
+        payload: { isModified },
+      });
+      dispatch({
+        type: 'employeeProfile/saveOpenEdit',
+        payload: { openBank: false },
+      });
     }
     if (name === 'tax') {
       const { taxDataOrigin, taxData, dispatch } = this.props;
@@ -82,12 +104,12 @@ class AccountsPaychecks extends PureComponent {
   };
 
   render() {
-    const { openEditBank } = this.state;
-    const { openTax, loadingTax } = this.props;
+    const { openTax, loadingTax, openBank, loadingBank } = this.props;
     const { Panel } = Collapse;
     const getyear = new Date();
     const year = getyear.getFullYear();
     const renderTax = openTax ? <EditTax handleCancel={this.handleCancel} /> : <ViewTax />;
+    const renderBank = openBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank />;
     return (
       <div className={styles.AccountPaychecks}>
         <Row className={styles.TableBankDetails}>
@@ -107,7 +129,13 @@ class AccountsPaychecks extends PureComponent {
             </div>
           </Col>
           <Col span={24}>
-            {openEditBank ? <EditBank handleCancel={this.handleCancel} /> : <ViewBank />}
+            {loadingBank ? (
+              <div className={styles.viewLoading}>
+                <Skeleton loading={loadingBank} active />
+              </div>
+            ) : (
+              renderBank
+            )}
           </Col>
         </Row>
 

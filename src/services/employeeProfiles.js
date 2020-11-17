@@ -212,6 +212,20 @@ export async function getBank(payload) {
   });
 }
 
+export async function getAddBank(payload) {
+  return request('/api/bankacc/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateBank(payload) {
+  return request('/api/bankacc/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getTax(payload) {
   return request('/api/tax/get-by-employee', {
     method: 'POST',

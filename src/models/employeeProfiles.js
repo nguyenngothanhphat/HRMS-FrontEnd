@@ -33,6 +33,8 @@ import {
   removeCertification,
   getEmailsListByCompany,
   getBank,
+  getAddBank,
+  updateBank,
   getTax,
   getAddTax,
   updateTax,
@@ -756,11 +758,71 @@ const employeeProfile = {
         dialog(errors);
       }
     },
+    *addBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(getAddBank, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchBank',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openBank') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openBank: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateBank({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
+      try {
+        const response = yield call(updateBank, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchBank',
+          payload: { employee: idCurrentEmployee },
+          dataTempKept,
+        });
+        if (key === 'openBank') {
+          yield put({
+            type: 'saveOpenEdit',
+            payload: { openBank: false },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchTax({ payload: { employee = '' } }, { call, put }) {
       try {
         const response = yield call(getTax, { employee });
         const { statusCode, data: taxData = {} } = response;
         if (statusCode !== 200) throw response;
+        // const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
+        // let taxDataTemp = { ...taxData[0] };
+        // if (!checkDataTempKept) {
+        //   taxDataTemp = { ...taxDataTemp, ...dataTempKept };
+        //   delete taxDataTemp.updatedAt;
+        //   delete taxDataTemp.updatedAt;
+        //   const isModified = JSON.stringify(taxDataTemp) !== JSON.stringify(taxData[0]);
+        //   yield put({
+        //     type: 'save',
+        //     payload: { isModified },
+        //   });
+        // }
         yield put({
           type: 'saveOrigin',
           payload: { taxData },
