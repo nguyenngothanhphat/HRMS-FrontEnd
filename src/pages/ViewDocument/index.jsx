@@ -86,18 +86,24 @@ class ViewDocument extends PureComponent {
   );
 
   goBack = () => {
-    history.go(-2);
+    history.push('/documents');
   };
 
   render() {
     const { numPages } = this.state;
-    const { viewDocument: { documentDetail = {} } = {} } = this.props;
+    const { viewDocument: { documentDetail = {} } = {}, location = '' } = this.props;
+    const { state = '' } = location;
+    const { renderBackButton } = state;
     const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
           <div className={styles.backAndTitle}>
-            <ArrowLeftOutlined onClick={this.goBack} className={styles.backButton} />
+            {renderBackButton ? (
+              <ArrowLeftOutlined onClick={this.goBack} className={styles.backButton} />
+            ) : (
+              ''
+            )}
             <span className={styles.title}>View Document</span>
           </div>
           <div className={styles.downloadButtonArea}>
