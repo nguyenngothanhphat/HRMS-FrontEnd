@@ -14,7 +14,6 @@ const ResigationLeft = (props) => {
     const { dispatch, approvalflow = [] } = props;
     const fiterActive = approvalflow.find((item) => item.status === 'ACTIVE') || {};
     const data = form.getFieldValue('field2');
-    console.log(fiterActive._id);
     if (dispatch) {
       dispatch({
         type: 'offboarding/sendRequest',
