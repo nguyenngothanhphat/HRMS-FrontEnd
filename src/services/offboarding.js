@@ -7,7 +7,13 @@ export async function getOffboardingHRList(payload) {
   });
 }
 export async function getOffboardingList(payload) {
-  return request('/api/offboardingrequest/get-by-id', {
+  return request('/api/offboardingrequest/list-my-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getapprovalflowList(payload) {
+  return request('/api/approvalflow/list', {
     method: 'POST',
     data: payload,
   });

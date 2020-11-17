@@ -1,22 +1,28 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getOffboardingList, sendRequest, getList1On1 } from '../services/offboarding';
+import {
+  getOffboardingList,
+  sendRequest,
+  getList1On1,
+  getapprovalflowList,
+} from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
-    list: [],
+    listOffboarding: [],
     request: [],
     myRequest: {},
     list1On1: [],
+    approvalflow: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
       try {
         const response = yield call(getOffboardingList, payload);
-        const { statusCode, data: list = [] } = response;
+        const { statusCode, data: listOffboarding = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { list } });
+        yield put({ type: 'save', payload: { listOffboarding } });
       } catch (errors) {
         dialog(errors);
       }
@@ -48,6 +54,16 @@ const offboarding = {
         const { statusCode, data: list1On1 = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { list1On1 } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchApprovalFlowList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getapprovalflowList, payload);
+        const { statusCode, data: approvalflow = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { approvalflow } });
       } catch (errors) {
         dialog(errors);
       }
