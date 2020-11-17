@@ -50,7 +50,7 @@ class TableEmployees extends Component {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        width: '10%',
+        width: '8%',
         fixed: 'left',
         align: 'left',
       },
@@ -72,8 +72,7 @@ class TableEmployees extends Component {
               )
             : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        fixed: 'left',
-        width: '14%',
+        width: '16%',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -81,7 +80,6 @@ class TableEmployees extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => <span>{title ? title.name : ''}</span>,
-        width: '10%',
         align: 'left',
       },
       {
@@ -93,7 +91,6 @@ class TableEmployees extends Component {
             {department ? department.name : ''}
           </span>
         ),
-        width: '16%',
         align: 'left',
       },
       {
@@ -108,7 +105,6 @@ class TableEmployees extends Component {
           </span>
         ),
         align: 'left',
-        width: '15%',
       },
       {
         title: 'Email',
@@ -116,12 +112,12 @@ class TableEmployees extends Component {
         key: 'email',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
         align: 'left',
+        width: '18%',
       },
       {
         title: 'Contact Number',
         key: 'contactNumber',
         render: (location) => <span>{location ? location.name : ''}</span>,
-        width: '10%',
         align: 'left',
       },
       {
@@ -129,7 +125,6 @@ class TableEmployees extends Component {
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
-        width: '8%',
         align: 'left',
       },
     ];
@@ -202,6 +197,10 @@ class TableEmployees extends Component {
         ...employee,
       };
     });
+    const scroll = {
+      x: '100vw',
+      y: 'max-content',
+    };
     return (
       <div className={styles.tableEmployees}>
         <Table
@@ -232,7 +231,7 @@ class TableEmployees extends Component {
               />
             ),
           }}
-          scroll={{ x: 'max-content', y: 'max-content' }}
+          scroll={scroll}
         />
       </div>
     );
