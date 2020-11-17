@@ -145,6 +145,12 @@ class EligibilityDocs extends PureComponent {
     } = this.props;
     const { user } = generatedBy;
     const { email } = user;
+
+    this.setState({
+      openModal: true,
+      isSentEmail: true,
+    });
+
     dispatch({
       type: 'candidateProfile/sendEmailByCandidate',
       payload: {
@@ -204,8 +210,12 @@ class EligibilityDocs extends PureComponent {
   };
 
   closeModal = () => {
+    const { dispatch } = this.props;
     this.setState({
       openModal: false,
+    });
+    dispatch({
+      type: 'candidateProfile/refreshPage',
     });
   };
 

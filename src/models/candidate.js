@@ -7,6 +7,7 @@ import {
   sendEmailByCandidateModel,
   candidateFinalOffer,
 } from '@/services/candidate';
+import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 const candidateProfile = {
@@ -240,6 +241,15 @@ const candidateProfile = {
         dialog(error);
       }
       return response;
+    },
+
+    *refreshPage(_) {
+      try {
+        history.push('/candidate');
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
   reducers: {
