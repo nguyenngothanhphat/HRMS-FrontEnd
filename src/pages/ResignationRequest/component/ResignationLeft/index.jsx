@@ -5,27 +5,23 @@ import { connect } from 'umi';
 import icon from '@/assets/offboarding-schedule.svg';
 import styles from './index.less';
 
-const resigationLeft = (props) => {
+const ResigationLeft = (props) => {
   const [form] = Form.useForm();
   const { TextArea } = Input;
   const date = moment().format('DD.MM.YY | h:mm A');
 
-  const CustomField = ({ getFieldValue, ...props }) => {
-    console.log(getFieldValue('field2'));
-    return <TextArea className={styles.boxReason} {...props} />;
-  };
   const submitForm = (type) => {
-    const { dispatch } = props;
+    const { dispatch, approvalflow = [] } = props;
+    const fiterActive = approvalflow.find((item) => item.status === 'ACTIVE') || {};
     const data = form.getFieldValue('field2');
+    console.log(fiterActive._id);
     if (dispatch) {
       dispatch({
         type: 'offboarding/sendRequest',
         payload: {
           reasonForLeaving: data,
-          action: 'submit',
-          name: 'new request',
-          approvalFlow: '5fa5062e53f4cf5c9ab0fbba',
-          // isDraft: type === "draft"? true : ""
+          action: type,
+          approvalFlow: fiterActive._id,
         },
       });
     }
@@ -53,7 +49,7 @@ const resigationLeft = (props) => {
             </p>
           </div>
           <Form.Item name="field2">
-            <CustomField getFieldValue={form.getFieldValue} />
+            <TextArea className={styles.boxReason} />
           </Form.Item>
         </div>
         <Form.Item>
@@ -79,4 +75,6 @@ const resigationLeft = (props) => {
   );
 };
 
-export default connect()(resigationLeft);
+export default connect(({ offboarding: { approvalflow = [] } = {} }) => ({
+  approvalflow,
+}))(ResigationLeft);

@@ -24,7 +24,7 @@ export class Step3 extends Component {
     }
   };
 
-  renderNode = (item) => {
+  renderNode = (item, index, arr) => {
     return (
       <Fragment key={item.id}>
         <div className={styles.minWidth}>
@@ -35,7 +35,7 @@ export class Step3 extends Component {
           </div>
           <div>{item.text}</div>
         </div>
-        {item && item.length <= 3 ? {} : <div className={styles.borderStyles} />}
+        {index !== arr.length - 1 && <div className={styles.borderStyles} />}
       </Fragment>
     );
   };
@@ -50,17 +50,27 @@ export class Step3 extends Component {
         text: 'Request Sent',
       },
       {
+        id: 1,
+        success: true,
+        body: '',
+        status: 'done',
+        text: 'Manager Approval',
+      },
+
+      {
         id: 2,
         body: '',
         status: 'Success',
-        text: 'Manager Approval',
+        text: 'HR Approval',
       },
     ];
 
     return (
       <div className={styles.root}>
         <p className={styles.title}>Termination Workflow</p>
-        <div className={styles.flex}>{arr1.map((item) => this.renderNode(item))}</div>
+        <div className={styles.flex}>
+          {arr1.map((item, index) => this.renderNode(item, index, arr1))}
+        </div>
       </div>
     );
   }
