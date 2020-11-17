@@ -1,6 +1,6 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getOffboardingList, sendRequest } from '../services/offboarding';
+import { getOffboardingList, sendRequest, getList1On1 } from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
@@ -8,6 +8,7 @@ const offboarding = {
     list: [],
     request: [],
     myRequest: {},
+    list1On1: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -37,6 +38,16 @@ const offboarding = {
         const { statusCode, data: myRequest = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { myRequest } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getList1On1({ payload }, { call, put }) {
+      try {
+        const response = yield call(getList1On1, payload);
+        const { statusCode, data: list1On1 = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { list1On1 } });
       } catch (errors) {
         dialog(errors);
       }

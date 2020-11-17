@@ -7,8 +7,9 @@ import WorkFlow from './WorkFlow';
 import ListComment from './ListComment';
 import styles from './index.less';
 
-@connect(({ offboarding: { myRequest = {} } = {} }) => ({
+@connect(({ offboarding: { myRequest = {}, list1On1 = [] } = {} }) => ({
   myRequest,
+  list1On1,
 }))
 class ResignationRequest extends Component {
   constructor(props) {
@@ -21,41 +22,22 @@ class ResignationRequest extends Component {
       dispatch,
       match: { params: { id: code = '' } = {} },
     } = this.props;
-    if (!dispatch) {
-      return;
-    }
     dispatch({
       type: 'offboarding/fetchMyRequest',
       payload: {
         id: code,
       },
     });
+    dispatch({
+      type: 'offboarding/getList1On1',
+      payload: {
+        offBoardingRequest: code,
+      },
+    });
   }
 
   render() {
-    const { myRequest = {} } = this.props;
-    const dummyList1v1 = [
-      {
-        title: 'Reporting Manger’s comment',
-        content:
-          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
-      },
-      {
-        title: 'Reporting Manger’s comment',
-        content:
-          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
-      },
-      {
-        title: 'Reporting Manger’s comment',
-        content:
-          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
-      },
-      {
-        title: 'Reporting Manger’s comment',
-        content:
-          'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end.',
-      },
-    ];
+    const { myRequest = {}, list1On1 = [] } = this.props;
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -75,12 +57,12 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason data={myRequest} />
-              <ListComment data={dummyList1v1} />
+              <ListComment data={list1On1} />
             </Col>
             <Col span={8}>
               <WorkFlow />
               <div className={styles.list1on1}>
-                {dummyList1v1.map((item) => {
+                {list1On1.map(() => {
                   return <div>Request a 1-on-1 with [PSI: 001] Anil Reddy</div>;
                 })}
               </div>

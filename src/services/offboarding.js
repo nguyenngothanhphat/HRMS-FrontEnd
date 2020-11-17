@@ -18,3 +18,10 @@ export async function sendRequest(payload) {
     data: payload,
   });
 }
+
+export async function getList1On1(payload) {
+  return request('/api/offboardingrequest/get-1-on-1-by-off-boarding-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
