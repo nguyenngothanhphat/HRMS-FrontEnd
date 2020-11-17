@@ -33,6 +33,13 @@ class TableUsers extends PureComponent {
     }
   }
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/ClearFilter',
+    });
+  };
+
   generateColumns = () => {
     const columns = [
       {

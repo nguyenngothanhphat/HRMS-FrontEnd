@@ -23,6 +23,13 @@ class TableCandidates extends PureComponent {
     }
   }
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidatesManagement/ClearFilter',
+    });
+  };
+
   generateColumns = () => {
     const columns = [
       {
