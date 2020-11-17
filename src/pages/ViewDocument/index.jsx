@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
@@ -84,6 +85,10 @@ class ViewDocument extends PureComponent {
     </div>
   );
 
+  goBack = () => {
+    history.go(-2);
+  };
+
   render() {
     const { numPages } = this.state;
     const { viewDocument: { documentDetail = {} } = {} } = this.props;
@@ -91,7 +96,10 @@ class ViewDocument extends PureComponent {
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
-          <span>View Document</span>
+          <div className={styles.backAndTitle}>
+            <ArrowLeftOutlined onClick={this.goBack} className={styles.backButton} />
+            <span className={styles.title}>View Document</span>
+          </div>
           <div className={styles.downloadButtonArea}>
             <DownloadFile content={this.renderDownloadIcon()} url={url} />
           </div>
