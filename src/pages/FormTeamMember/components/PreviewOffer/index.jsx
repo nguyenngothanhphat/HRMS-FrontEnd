@@ -32,9 +32,9 @@ const PreviewOffer = (props) => {
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
     offerLetter: offerLetterProp,
+    candidateSignature: candidateSignatureProp,
   } = tempData;
   const {
-    candidateSignature: candidateSignatureProp = {},
     // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',

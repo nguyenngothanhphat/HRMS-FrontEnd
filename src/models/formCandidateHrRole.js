@@ -132,7 +132,14 @@ const candidateInfo = {
         addSchedule,
       },
 
-      candidateSignature: null,
+      candidateSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -492,6 +499,7 @@ const candidateInfo = {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        console.log('Save 1', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -504,6 +512,7 @@ const candidateInfo = {
         response = yield call(submitBasicInfo, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        console.log('Save 2', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -529,6 +538,7 @@ const candidateInfo = {
         response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+        console.log('Save 3', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -588,6 +598,7 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
 
+        console.log('Save 4', data);
         yield put({
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
@@ -722,6 +733,7 @@ const candidateInfo = {
             currentStep: data.currentStep,
           },
         });
+        console.log('Save 5', data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -755,6 +767,7 @@ const candidateInfo = {
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,
+            candidateSignature: data.candidateSignature || {},
           },
         });
         yield put({
@@ -850,6 +863,7 @@ const candidateInfo = {
         response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        console.log('Save 6', data);
         yield put({
           type: 'saveOrigin',
           payload: { documentsByCandidate: data },
