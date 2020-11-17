@@ -1,25 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Input } from 'antd';
 import icon from '@/assets/offboarding-schedule.svg';
+import moment from 'moment';
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-export default class Step1 extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
+export default class Reason extends PureComponent {
   render() {
-    const { data } = this.props;
-    const date = new Date();
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yyyy = date.getFullYear();
-    const hours = date.getHours();
-    const amOrPm = date.getHours() < 12 ? 'AM' : 'PM';
-    const today = `${yyyy}.${mm}.${dd}`;
+    const { data: { reasonForLeaving: reason = '', requestDate = '' } = {} } = this.props;
     return (
       <div className={styles.stepContain}>
         <div className={styles.title_Box}>
@@ -38,11 +27,10 @@ export default class Step1 extends Component {
           <div className={styles.center}>
             <p className={styles.textBox}> Reason for leaving us?</p>
             <p className={styles.textTime}>
-              <span style={{ color: 'black' }}> {today} </span>| {hours} {amOrPm}
+              {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
             </p>
           </div>
-          {/* <Input className={styles.boxReason} /> */}
-          <TextArea className={styles.boxReason} value={data} />
+          <TextArea className={styles.boxReason} value={reason} />
         </div>
         <div className={styles.requestHRForm}>
           <p className={styles.textBox}> Reporting Manger’s comment</p>

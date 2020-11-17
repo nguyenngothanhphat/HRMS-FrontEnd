@@ -4,9 +4,6 @@ import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
-// import Step3 from './step3';
-// import ResignationLeft from './component/ResignationLeft';
-// import Resignation from './component/ResignationRight';
 import styles from './index.less';
 
 @connect(({ offboarding: { myRequest = {} } = {} }) => ({
@@ -55,7 +52,7 @@ class ResignationRequest extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
-              <Reason data={myRequest.reasonForLeaving} />
+              <Reason data={myRequest} />
             </Col>
             <Col span={8}>
               <WorkFlow />
