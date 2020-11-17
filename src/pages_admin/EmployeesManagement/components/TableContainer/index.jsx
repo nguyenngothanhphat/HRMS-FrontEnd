@@ -105,10 +105,7 @@ class TableContainer extends PureComponent {
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/save',
-      payload: {
-        filter: [],
-      },
+      type: 'employeesManagement/ClearFilter',
     });
   }
 

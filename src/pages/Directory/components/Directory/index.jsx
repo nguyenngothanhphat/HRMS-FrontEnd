@@ -110,10 +110,7 @@ class DirectoryComponent extends PureComponent {
     };
     const { dispatch } = this.props;
     dispatch({
-      type: 'employee/save',
-      payload: {
-        filter: [],
-      },
+      type: 'employee/ClearFilter',
     });
   }
 
