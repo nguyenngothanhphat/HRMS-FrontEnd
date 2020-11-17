@@ -57,15 +57,17 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason data={myRequest} />
-              <ListComment data={list1On1} />
+              {list1On1.length > 0 && <ListComment data={list1On1} />}
             </Col>
             <Col span={8}>
               <WorkFlow />
-              <div className={styles.list1on1}>
-                {list1On1.map(() => {
-                  return <div>Request a 1-on-1 with [PSI: 001] Anil Reddy</div>;
-                })}
-              </div>
+              {list1On1.length > 0 && (
+                <div className={styles.list1on1}>
+                  {list1On1.map(() => {
+                    return <div>Request a 1-on-1 with [PSI: 001] Anil Reddy</div>;
+                  })}
+                </div>
+              )}
             </Col>
           </Row>
         </div>
