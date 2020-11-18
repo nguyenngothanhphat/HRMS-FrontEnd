@@ -321,10 +321,6 @@ const PreviewOffer = (props) => {
 
   const isHr = role.indexOf(ROLE.HR) > -1;
   const isHrManager = role.indexOf(ROLE.HRMANAGER) > -1;
-  console.log('status: ', processStatus);
-  console.log('offer acceped', isOfferAccepted());
-  console.log('is HR', isHr);
-  console.log('is HRManger', isHrManager);
 
   return (
     <div className={styles.previewContainer}>

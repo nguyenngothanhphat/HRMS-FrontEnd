@@ -499,7 +499,6 @@ const candidateInfo = {
         response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        console.log('Save 1', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -512,7 +511,6 @@ const candidateInfo = {
         response = yield call(submitBasicInfo, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        console.log('Save 2', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -538,7 +536,6 @@ const candidateInfo = {
         response = yield call(addManagerSignature, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        console.log('Save 3', data);
         yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
@@ -598,7 +595,6 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
 
-        console.log('Save 4', data);
         yield put({
           type: 'saveOrigin',
           payload: { ...data, candidate: data._id, _id: data._id },
@@ -733,7 +729,6 @@ const candidateInfo = {
             currentStep: data.currentStep,
           },
         });
-        console.log('Save 5', data);
         yield put({
           type: 'saveOrigin',
           payload: {
@@ -863,7 +858,6 @@ const candidateInfo = {
         response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log('Save 6', data);
         yield put({
           type: 'saveOrigin',
           payload: { documentsByCandidate: data },
@@ -902,6 +896,19 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+
+    *redirectToCandidateList({ payload }) {
+      try {
+        const { rookieId = '' } = payload;
+        history.push({
+          pathname: `/employee-onboarding/review/${rookieId}`,
+          state: { isAddNew: true },
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
