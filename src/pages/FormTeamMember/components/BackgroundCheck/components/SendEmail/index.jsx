@@ -7,7 +7,7 @@ import sent from './Assets/sent.svg';
 import style from './index.less';
 import copy from './Assets/copy-office.svg';
 
-const index = ({
+const SendEmail = ({
   title,
   formatMessage = () => {},
   handleSendEmail = () => {},
@@ -31,6 +31,7 @@ const index = ({
   };
 
   const handleLinkClick = () => {
+    message.success('Link generated');
     setIsEnable(false);
   };
 
@@ -39,7 +40,8 @@ const index = ({
   };
 
   const handleGenerate = () => {
-    message.success('Generated link sucessfully');
+    message.success('Copied');
+    navigator.clipboard.writeText(initialGenerateLink);
   };
 
   const renderBody = () => {
@@ -99,6 +101,7 @@ const index = ({
                 className={style.linkForm}
                 initialValues={{ generateLink: generateLink || initialGenerateLink }}
                 onFinish={(values) => handleMarkAsDone(values)}
+                onChange={(e) => console.log(e)}
               >
                 <div className={style.wrapperInput}>
                   <Form.Item name="generateLink">
@@ -246,4 +249,4 @@ const index = ({
   );
 };
 
-export default index;
+export default SendEmail;

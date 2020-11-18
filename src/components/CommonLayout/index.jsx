@@ -70,16 +70,35 @@ class CommonLayout extends Component {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
-    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
+    const {
+      SENT_FOR_APPROVAL,
+      PENDING,
+      ELIGIBLE_CANDIDATES,
+      INELIGIBLE_CANDIDATES,
+    } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
     if (currentStep !== null) {
+      if (
+        (processStatus === PENDING ||
+          processStatus === ELIGIBLE_CANDIDATES ||
+          processStatus === INELIGIBLE_CANDIDATES) &&
+        currentStep === 3
+      ) {
+        console.log('HERE 1');
+        return {
+          selectedItemId: listMenu[3].id,
+          displayComponent: <BackgroundRecheck />,
+        };
+      }
       if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
+        console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
       if (currentStep !== 7) {
+        console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
           displayComponent: listMenu[currentStep].component,
@@ -87,6 +106,7 @@ class CommonLayout extends Component {
       }
     }
 
+    console.log('HERE 4');
     return {
       selectedItemId: '',
       displayComponent: <PreviewOffer />,
@@ -102,16 +122,22 @@ class CommonLayout extends Component {
       INELIGIBLE_CANDIDATES,
       DRAFT,
     } = PROCESS_STATUS;
+    console.log(processStatus);
     if (
       processStatus === PENDING ||
       processStatus === ELIGIBLE_CANDIDATES ||
       processStatus === INELIGIBLE_CANDIDATES
     ) {
-      // console.log('HERE 1');
-      return {
-        selectedItemId: '',
+      console.log('HERE 5');
+      console.log(listMenu[3].id);
+      this.setState({
+        selectedItemId: listMenu[3].id,
         displayComponent: <BackgroundRecheck />,
-      };
+      });
+      // return {
+      //   selectedItemId: listMenu[3].id,
+      //   displayComponent: <BackgroundRecheck />,
+      // };
     }
     // if (processStatus === DRAFT) {
     //   return {
@@ -120,7 +146,7 @@ class CommonLayout extends Component {
     //   };
     // }
     if (processStatus === SENT_FOR_APPROVAL) {
-      // console.log('HERE 2');
+      console.log('HERE 6');
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -129,7 +155,7 @@ class CommonLayout extends Component {
     if (!listMenu[currentStep]) {
       return null;
     }
-    // console.log('HERE 3');
+    console.log('HERE 7');
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
@@ -269,17 +295,6 @@ class CommonLayout extends Component {
         </div>
         <div className={s.viewRight} style={currentPage === 'settings' ? { padding: '0' } : {}}>
           {displayComponent}
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              {/* {currentPage !== 'settings' && (
-                <BottomBar
-                  onClickPrev={this.handlePrev}
-                  onClickNext={this.handleNext}
-                  currentPage={selectedItemId}
-                />
-              )} */}
-            </Col>
-          </Row>
         </div>
       </div>
     );

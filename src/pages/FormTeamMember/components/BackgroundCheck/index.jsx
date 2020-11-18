@@ -220,8 +220,16 @@ class BackgroundCheck extends Component {
   };
 
   closeModal = () => {
+    const { data = {}, dispatch } = this.props;
+    const { ticketID = '' } = data;
     this.setState({
       openModal: false,
+    });
+    dispatch({
+      type: 'candidateInfo/redirectToCandidateList',
+      payload: {
+        rookieId: ticketID,
+      },
     });
   };
 
