@@ -50,7 +50,6 @@ const PreviewOffer = (props) => {
   const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
-  console.log(candidateSignature);
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   const [uploadVisible2, setUploadVisible2] = useState(false);
@@ -282,7 +281,6 @@ const PreviewOffer = (props) => {
   useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
 
   useEffect(() => {
-    console.log(candidateSignatureProp);
     setCandidateSignature(candidateSignatureProp);
   }, [candidateSignatureProp]);
 
@@ -321,6 +319,18 @@ const PreviewOffer = (props) => {
 
   const isHr = role.indexOf(ROLE.HR) > -1;
   const isHrManager = role.indexOf(ROLE.HRMANAGER) > -1;
+
+  const renderCandidateSignature = () => {
+    return candidateSignature && candidateSignature.url;
+  };
+
+  const renderHRManagerSignature = () => {
+    return (
+      isHrManager &&
+      (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
+        processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS)
+    );
+  };
 
   return (
     <div className={styles.previewContainer}>
@@ -463,10 +473,74 @@ const PreviewOffer = (props) => {
           )}
 
         {/* HR Manager signature */}
-        {isHrManager &&
-          (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
-            processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS) && (
-            <>
+        {renderHRManagerSignature() && (
+          <>
+            <div className={styles.signature}>
+              <header>
+                <div className={styles.icon}>
+                  <div className={styles.bigGlow}>
+                    <div className={styles.smallGlow}>
+                      <EditOutlined />
+                    </div>
+                  </div>
+                </div>
+                <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
+              </header>
+              {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
+              {hrManagerSignature.user ? (
+                <p>
+                  Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
+                  {hrManagerSignature.user.employee?.generalInfo.lastName}
+                </p>
+              ) : (
+                <p>Undersigned</p>
+              )}
+              <div className={styles.upload}>
+                {!hrManagerSignature.url ? (
+                  // Default image
+                  <img className={styles.signatureImg} src={whiteImg} alt="" />
+                ) : (
+                  <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
+                )}
+
+                {!isOfferAccepted() && (
+                  <>
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        setUploadVisible2(true);
+                      }}
+                    >
+                      {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                    </button>
+
+                    <CancelIcon resetImg={() => resetImg('hrManager')} />
+                  </>
+                )}
+              </div>
+
+              <div className={styles.submitContainer}>
+                <Button
+                  type="primary"
+                  disabled={!hrManagerSignature.url && isOfferAccepted()}
+                  onClick={handleHrManagerSignatureSubmit}
+                  className={`${
+                    hrManagerSignature.url && !isOfferAccepted() ? styles.active : styles.disable
+                  }`}
+                >
+                  {formatMessage({ id: 'component.previewOffer.submit' })}
+                </Button>
+
+                <span className={styles.submitMessage}>
+                  {hrManagerSignatureSubmit
+                    ? formatMessage({ id: 'component.previewOffer.submitted' })
+                    : ''}
+                </span>
+              </div>
+            </div>
+
+            {/* Candidate Signature */}
+            {renderCandidateSignature() && (
               <div className={styles.signature}>
                 <header>
                   <div className={styles.icon}>
@@ -476,106 +550,40 @@ const PreviewOffer = (props) => {
                       </div>
                     </div>
                   </div>
-                  <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
+                  <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
                 </header>
-                {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
-                {hrManagerSignature.user ? (
-                  <p>
-                    Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
-                    {hrManagerSignature.user.employee?.generalInfo.lastName}
-                  </p>
-                ) : (
-                  <p>Undersigned</p>
-                )}
+
+                {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+                <p>Undersigned - {candidateName}</p>
+
                 <div className={styles.upload}>
-                  {!hrManagerSignature.url ? (
+                  {candidateSignature !== null && candidateSignature.url ? (
                     // Default image
-                    <img className={styles.signatureImg} src={whiteImg} alt="" />
+                    <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
                   ) : (
-                    <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
-                  )}
-
-                  {!isOfferAccepted() && (
-                    <>
-                      <button
-                        type="submit"
-                        onClick={() => {
-                          setUploadVisible2(true);
-                        }}
-                      >
-                        {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                      </button>
-
-                      <CancelIcon resetImg={() => resetImg('hrManager')} />
-                    </>
+                    <img className={styles.signatureImg} src={whiteImg} alt="" />
                   )}
                 </div>
 
-                <div className={styles.submitContainer}>
-                  <Button
-                    type="primary"
-                    disabled={!hrManagerSignature.url && isOfferAccepted()}
-                    onClick={handleHrManagerSignatureSubmit}
-                    className={`${
-                      hrManagerSignature.url && !isOfferAccepted() ? styles.active : styles.disable
-                    }`}
-                  >
-                    {formatMessage({ id: 'component.previewOffer.submit' })}
-                  </Button>
-
-                  <span className={styles.submitMessage}>
-                    {hrManagerSignatureSubmit
-                      ? formatMessage({ id: 'component.previewOffer.submitted' })
-                      : ''}
-                  </span>
-                </div>
+                <div className={styles.submitContainer} />
               </div>
+            )}
 
-              {/* Candidate Signature */}
-              {candidateSignature && candidateSignature.url && (
-                <div className={styles.signature}>
-                  <header>
-                    <div className={styles.icon}>
-                      <div className={styles.bigGlow}>
-                        <div className={styles.smallGlow}>
-                          <EditOutlined />
-                        </div>
-                      </div>
-                    </div>
-                    <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
-                  </header>
-
-                  {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                  <p>Undersigned - {candidateName}</p>
-
-                  <div className={styles.upload}>
-                    {candidateSignature !== null && candidateSignature.url ? (
-                      // Default image
-                      <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-                    ) : (
-                      <img className={styles.signatureImg} src={whiteImg} alt="" />
-                    )}
-                  </div>
-
-                  <div className={styles.submitContainer} />
-                </div>
-              )}
-
-              {/* Send final offer */}
-              {!isOfferAccepted() && (
-                <div style={{ marginBottom: '16px' }}>
-                  <SendEmail
-                    title="Send final offer to the candidate"
-                    formatMessage={formatMessage}
-                    handleSendEmail={handleSendFinalOffer}
-                    loading={loading2}
-                    isSentEmail={false}
-                    privateEmail={candidateEmailProp}
-                  />
-                </div>
-              )}
-            </>
-          )}
+            {/* Send final offer */}
+            {!isOfferAccepted() && (
+              <div style={{ marginBottom: '16px' }}>
+                <SendEmail
+                  title="Send final offer to the candidate"
+                  formatMessage={formatMessage}
+                  handleSendEmail={handleSendFinalOffer}
+                  loading={loading2}
+                  isSentEmail={false}
+                  privateEmail={candidateEmailProp}
+                />
+              </div>
+            )}
+          </>
+        )}
 
         <ModalUpload
           visible={uploadVisible1}

@@ -109,7 +109,7 @@ class CommonLayout extends Component {
     console.log('HERE 4');
     return {
       selectedItemId: '',
-      displayComponent: <BasicInformation />,
+      displayComponent: <PreviewOffer />,
     };
   }
 
