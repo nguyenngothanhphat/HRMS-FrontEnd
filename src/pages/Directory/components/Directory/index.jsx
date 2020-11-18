@@ -108,6 +108,10 @@ class DirectoryComponent extends PureComponent {
     this.setState = () => {
       return { tabId: 'active', changeTab: false };
     };
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/ClearFilter',
+    });
   }
 
   // Define tabID to filter
