@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { EyeFilled, GooglePlusOutlined } from '@ant-design/icons';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage } from 'umi';

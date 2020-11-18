@@ -15,9 +15,13 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    candidateInfo: { tableData = [], data: { _id = '', fullName = '', processStatus = '' } } = {},
+    candidateInfo: {
+      tableData = [],
+      data: { _id = '', fullName = '', processStatus = '', privateEmail = '' },
+    } = {},
   }) => ({
     processStatus,
+    privateEmail,
     _id,
     fullName,
     tableData,
@@ -184,7 +188,11 @@ class SalaryAcceptance extends PureComponent {
             </p>
           </div>
         </div>
-        <SendEmail formatMessage={formatMessage} handleSendEmail={this.handleSendEmail} />
+        <SendEmail
+          privateEmail={privateEmail}
+          formatMessage={formatMessage}
+          handleSendEmail={this.handleSendEmail}
+        />
       </>
     );
   };
