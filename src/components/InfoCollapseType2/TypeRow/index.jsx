@@ -102,25 +102,25 @@ const CollapseRow = (props) => {
         extra={statusAndButtons()}
       >
         {row.files.map((file) => {
-          const { fileName = '' } = file;
-          if (fileName === '') return null;
+          const { id = '', fileName = '', source = '', generatedBy = '', date = '' } = file;
+          if (id === '') return null;
           return (
-            <Row key={file.id} className={styles.eachRow}>
+            <Row key={id} className={styles.eachRow}>
               <Col span={8} className={styles.fileName}>
-                <div onClick={() => onFileClick(file.id)}>
-                  {identifyImageOrPdf(file.source) === 1 ? (
+                <div onClick={() => onFileClick(id)}>
+                  {identifyImageOrPdf(source) === 1 ? (
                     <img src={PDFIcon} alt="file" className={styles.fileIcon} />
                   ) : (
                     <img src={ImageIcon} alt="img" className={styles.fileIcon} />
                   )}
-                  <span>{file.fileName}</span>
+                  <span>{fileName}</span>
                 </div>
               </Col>
-              <Col span={7}>{file.generatedBy}</Col>
-              <Col span={7}>{file.date}</Col>
+              <Col span={7}>{generatedBy}</Col>
+              <Col span={7}>{date}</Col>
               <Col span={2}>
                 <div className={styles.downloadFile}>
-                  <DownloadFile content={renderDownloadIcon()} url={file.source} />
+                  <DownloadFile content={renderDownloadIcon()} url={source} />
                 </div>
               </Col>
             </Row>
