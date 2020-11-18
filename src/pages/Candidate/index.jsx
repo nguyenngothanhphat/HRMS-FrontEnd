@@ -36,6 +36,7 @@ const Candidate = (props) => {
   useEffect(() => {
     setScreen(localStep);
   }, [localStep]);
+
   useEffect(() => {
     if (!dispatch) {
       return;

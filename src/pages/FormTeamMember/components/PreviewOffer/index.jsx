@@ -25,7 +25,7 @@ const ROLE = {
 };
 
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
+  const { dispatch, currentUser = {}, tempData = {}, data = {}, loading1, loading2 } = props;
 
   const {
     // email: mailProp,
@@ -458,7 +458,7 @@ const PreviewOffer = (props) => {
                     />
                   </Form.Item>
 
-                  <Button type="primary" onClick={() => handleSentForApproval()}>
+                  <Button type="primary" loading={loading1} onClick={() => handleSentForApproval()}>
                     {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
                   </Button>
                 </Form>
@@ -566,12 +566,13 @@ const PreviewOffer = (props) => {
               )}
 
               {/* Send final offer */}
-              {!isOfferAccepted && (
+              {!isOfferAccepted() && (
                 <div style={{ marginBottom: '16px' }}>
                   <SendEmail
                     title="Send final offer to the candidate"
                     formatMessage={formatMessage}
                     handleSendEmail={handleSendFinalOffer}
+                    loading={loading2}
                     isSentEmail={false}
                     privateEmail={candidateEmailProp}
                   />
@@ -654,5 +655,7 @@ export default connect(
     tempData,
     data,
     rookieId,
+    loading1: loading.effects['candidateInfo/sentForApprovalEffect'],
+    loading2: loading.effects['candidateInfo/approveFinalOfferEffect'],
   }),
 )(PreviewOffer);

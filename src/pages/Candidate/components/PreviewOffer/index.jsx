@@ -18,7 +18,7 @@ import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 
 const PreviewOffer = (props) => {
-  const { dispatch, tempData = {}, data = {}, candidate } = props;
+  const { dispatch, tempData = {}, data = {}, candidate, loading1 } = props;
 
   const {
     hrSignature: hrSignatureProp,
@@ -318,6 +318,7 @@ const PreviewOffer = (props) => {
                 ? `${styles.proceed}`
                 : `${styles.proceed} ${styles.disabled}`
             }
+            loading={loading1}
             onClick={() => handleFinalSubmit()}
           >
             Submit & Proceed
@@ -372,5 +373,6 @@ export default connect(
     data,
     candidate,
     // rookieId,
+    loading1: loading.effects['candidateProfile/submitCandidateFinalOffer'],
   }),
 )(PreviewOffer);
