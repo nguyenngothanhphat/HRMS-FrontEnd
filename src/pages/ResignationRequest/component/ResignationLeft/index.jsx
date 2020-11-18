@@ -19,7 +19,7 @@ const ResigationLeft = (props) => {
         type: 'offboarding/sendRequest',
         payload: {
           reasonForLeaving: data,
-          action: type,
+          action: type === 'draft ' ? 'submit' : 'draft',
           approvalFlow: fiterActive._id,
         },
       });
@@ -47,7 +47,10 @@ const ResigationLeft = (props) => {
               <span style={{ color: 'black' }}> {date}</span>
             </p>
           </div>
-          <Form.Item name="field2">
+          <Form.Item
+            name="field2"
+            rules={[{ required: true, message: `'Please input your reason!'` }]}
+          >
             <TextArea className={styles.boxReason} />
           </Form.Item>
         </div>

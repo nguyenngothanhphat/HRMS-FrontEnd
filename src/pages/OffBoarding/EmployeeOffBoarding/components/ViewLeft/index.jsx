@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Button, Tabs } from 'antd';
-import { Link } from 'umi';
+import { Link, connect } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
 import TabContent from './tabContent';
 import TabDrafts from './TableEmployee';
 import styles from './index.less';
 
-export default class ViewLeft extends Component {
+@connect()
+class ViewLeft extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,24 +19,37 @@ export default class ViewLeft extends Component {
     this.initDataTable('1');
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  shouldComponentUpdate(nextProps, nextState) {
     const { tabId } = this.state;
-
-    if (prevState.tabId !== tabId) {
-      this.initDataTable(tabId);
+    const { tabId: nextTabId } = nextState;
+    if (tabId !== nextTabId) {
+      this.initDataTable(nextTabId);
     }
+    return true;
   }
 
   initDataTable = (tabId) => {
+    const { dispatch } = this.props;
     if (tabId === '1') {
-      console.log('tab1');
+      dispatch({
+        type: 'offboarding/fetchList',
+        payload: {
+          status: 'IN-PROGRESS',
+        },
+      });
     }
     if (tabId === '2') {
-      console.log('tab2');
+      dispatch({
+        type: 'offboarding/fetchList',
+        payload: {
+          status: 'DRAFT',
+        },
+      });
     }
   };
 
   callback = (key) => {
+    console.log(key);
     this.setState({
       tabId: key,
     });
@@ -82,3 +96,5 @@ export default class ViewLeft extends Component {
     );
   }
 }
+
+export default ViewLeft;
