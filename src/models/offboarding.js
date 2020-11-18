@@ -6,6 +6,8 @@ import {
   getList1On1,
   getapprovalflowList,
   getRequestById,
+  getMeetingTime,
+  create1On1,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -16,6 +18,7 @@ const offboarding = {
     myRequest: {},
     list1On1: [],
     approvalflow: [],
+    listMeetingTime: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -68,6 +71,30 @@ const offboarding = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *getMeetingTime(_, { call, put }) {
+      try {
+        const response = yield call(getMeetingTime);
+        const { statusCode, data: listMeetingTime = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listMeetingTime } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *create1On1({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(create1On1, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

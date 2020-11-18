@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
+import ModalSet1On1 from '@/components/ModalSet1On1';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
 import ListComment from './ListComment';
 import styles from './index.less';
 
-@connect(({ offboarding: { myRequest = {}, list1On1 = [] } = {} }) => ({
-  myRequest,
-  list1On1,
-}))
+@connect(
+  ({ loading, offboarding: { myRequest = {}, list1On1 = [], listMeetingTime = [] } = {} }) => ({
+    myRequest,
+    list1On1,
+    listMeetingTime,
+    loading: loading.effects['offboarding/create1On1'],
+  }),
+)
 class ResignationRequest extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      visible: false,
+      keyModal: '',
+    };
   }
 
   componentDidMount() {
@@ -34,10 +42,45 @@ class ResignationRequest extends Component {
         offBoardingRequest: code,
       },
     });
+    dispatch({
+      type: 'offboarding/getMeetingTime',
+    });
   }
 
+  handleModalSet1On1 = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+      keyModal: !visible ? '' : Date.now(),
+    });
+  };
+
+  handleSubmit = (values) => {
+    const { dispatch, myRequest = {} } = this.props;
+    const {
+      manager: { _id: managerId } = {},
+      employee: { _id: employeeId } = {},
+      _id: offBoardingRequest,
+    } = myRequest;
+    const payload = { ...values, meetingWith: managerId, employee: employeeId, offBoardingRequest };
+    dispatch({
+      type: 'offboarding/create1On1',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.handleModalSet1On1();
+      }
+    });
+  };
+
   render() {
-    const { myRequest = {}, list1On1 = [] } = this.props;
+    const { myRequest = {}, list1On1 = [], listMeetingTime = [], loading } = this.props;
+    const { visible, keyModal } = this.state;
+    const {
+      manager: {
+        generalInfo: { employeeId: idManager = '', firstName: nameManager = '' } = {},
+      } = {},
+    } = myRequest;
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -61,16 +104,28 @@ class ResignationRequest extends Component {
             </Col>
             <Col span={8}>
               <WorkFlow />
-              {list1On1.length > 0 && (
-                <div className={styles.list1on1}>
-                  {list1On1.map(() => {
-                    return <div>Request a 1-on-1 with [PSI: 001] Anil Reddy</div>;
-                  })}
+              <div className={styles.viewSet1On1}>
+                <div>
+                  <span className={styles.viewSet1On1__request} onClick={this.handleModalSet1On1}>
+                    Request a 1-on-1
+                  </span>{' '}
+                  with [{idManager}] {nameManager}.
                 </div>
-              )}
+              </div>
             </Col>
           </Row>
         </div>
+        <ModalSet1On1
+          visible={visible}
+          handleCancel={this.handleModalSet1On1}
+          handleSubmit={this.handleSubmit}
+          listMeetingTime={listMeetingTime}
+          title="Request 1 0n 1"
+          hideMeetingWith
+          textSubmit="Submit"
+          key={keyModal}
+          loading={loading}
+        />
       </PageContainer>
     );
   }

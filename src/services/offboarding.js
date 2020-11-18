@@ -38,3 +38,16 @@ export async function getRequestById(payload) {
     data: payload,
   });
 }
+
+export async function getMeetingTime() {
+  return request('/api/offboardingrequest/get-meeting-time', {
+    method: 'POST',
+  });
+}
+
+export async function create1On1(payload) {
+  return request('/api/offboardingrequest/add-1-on-1', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -45,8 +45,12 @@
     border: 1px solid #d6dce0;
     height: 141px;
     box-sizing: border-box;
-    color: #464646 !important;
+    color: rgba(70, 70, 70, 0.5);
     padding: 13px 40px 20px;
+    resize: none;
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   .center {
@@ -115,14 +119,9 @@
       background-color: #ffa100;
       color: #fff;
       border-radius: 40px;
-    }
-
-    .buttonDraft {
-      width: 106px;
-      height: 40px;
-      background-color: #fff;
-      color: #2c6df9;
-      border-radius: 40px;
+      &:disabled {
+        opacity: 0.5;
+      }
     }
   }
 }
