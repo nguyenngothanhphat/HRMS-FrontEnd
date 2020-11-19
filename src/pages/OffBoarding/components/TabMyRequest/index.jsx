@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import TableEmployee from '../TableManager';
-import RejectTable from '../RejectTable';
+import TableEmployee from './ManagerMyTable';
+import RejectTable from './RenderTableTab';
 import styles from './index.less';
 
 @connect()
-class TabContent extends Component {
+class RenderRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,37 +28,50 @@ class TabContent extends Component {
 
   initDataTable = (tabId) => {
     const { dispatch } = this.props;
-    if (tabId === '1') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'IN-PROGRESS',
-        },
-      });
-    }
-    if (tabId === '2') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'ON-HOLD',
-        },
-      });
-    }
-    if (tabId === '3') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'ACCEPTED',
-        },
-      });
-    }
-    if (tabId === '4') {
-      dispatch({
-        type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'REJECTED',
-        },
-      });
+    switch (tabId) {
+      case '1':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'IN-PROGRESS',
+          },
+        });
+        break;
+      case '2':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'ON-HOLD',
+          },
+        });
+        break;
+      case '3':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'ACCEPTED',
+          },
+        });
+        break;
+      case '4':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'REJECTED',
+          },
+        });
+        break;
+      case '5':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'DRAFT',
+          },
+        });
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -81,10 +94,11 @@ class TabContent extends Component {
           {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}
           {selectedFilterTab === '3' ? <TableEmployee data={data} /> : ''}
           {selectedFilterTab === '4' ? <TableEmployee data={data} /> : ''}
+          {selectedFilterTab === '5' ? <TableEmployee data={data} /> : ''}
         </div>
       </div>
     );
   }
 }
 
-export default TabContent;
+export default RenderRequest;

@@ -4,6 +4,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
 import addIcon from '@/assets/addTicket.svg';
 import TabContent from './component/tabContent';
+import MyRequestContent from '../components/TabMyRequest';
+
 import styles from './index.less';
 
 @connect(
@@ -81,7 +83,9 @@ class ManagerOffBoading extends Component {
                   </div>
                 </TabPane>
                 <TabPane tab="My Request" key="2">
-                  my request
+                  <div className={styles.tableTab}>
+                    <MyRequestContent />
+                  </div>
                 </TabPane>
               </Tabs>
             </Col>

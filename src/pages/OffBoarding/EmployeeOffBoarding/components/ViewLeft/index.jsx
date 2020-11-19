@@ -49,7 +49,6 @@ class ViewLeft extends Component {
   };
 
   callback = (key) => {
-    console.log(key);
     this.setState({
       tabId: key,
     });
