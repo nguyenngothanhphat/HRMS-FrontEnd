@@ -58,11 +58,11 @@ class ResignationRequest extends Component {
   handleSubmit = (values) => {
     const { dispatch, myRequest = {} } = this.props;
     const {
-      manager: { _id: managerId } = {},
-      employee: { _id: employeeId } = {},
+      manager: { _id: meetingWith } = {},
+      // employee: { _id: employeeId } = {},
       _id: offBoardingRequest,
     } = myRequest;
-    const payload = { ...values, meetingWith: managerId, employee: employeeId, offBoardingRequest };
+    const payload = { meetingWith, offBoardingRequest, ...values };
     dispatch({
       type: 'offboarding/create1On1',
       payload,

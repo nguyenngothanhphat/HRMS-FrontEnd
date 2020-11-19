@@ -26,8 +26,8 @@ class ModalSet1On1 extends Component {
 
   handleSubmit = () => {
     const { handleSubmit = () => {} } = this.props;
-    const { meetingOn, meetingAt } = this.state;
-    const values = { meetingOn, meetingAt };
+    const { meetingOn: meetingDate, meetingAt: meetingTime } = this.state;
+    const values = { meetingDate, meetingTime };
     handleSubmit(values);
   };
 
