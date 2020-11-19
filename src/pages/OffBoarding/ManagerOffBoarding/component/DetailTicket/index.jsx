@@ -155,13 +155,12 @@ class DetailTicket extends Component {
                   })}
                 </div>
               )}
-              {listDisplay.length === 0 && (
-                <ActionDetailTicket
-                  isOpenFormReason={isOpenFormReason}
-                  openNotification={this.openNotification}
-                  itemRequest={myRequest}
-                />
-              )}
+              <ActionDetailTicket
+                isOpenFormReason={isOpenFormReason}
+                openNotification={this.openNotification}
+                itemRequest={myRequest}
+                listDisplay={listDisplay}
+              />
             </Col>
             <Col span={6}>
               <RightContent />

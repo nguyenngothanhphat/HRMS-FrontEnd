@@ -145,12 +145,13 @@ class ActionDetailTicket extends Component {
       loading,
       itemRequest,
       openNotification = () => {},
+      listDisplay = [],
     } = this.props;
     const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = itemRequest;
     return (
       <Fragment>
         <div className={styles.actionDetailTicket}>
-          {isDisplayBtnSetMeeting && this.renderBtnSetMeeting()}
+          {isDisplayBtnSetMeeting && listDisplay.length === 0 && this.renderBtnSetMeeting()}
           {isOpenSetMeeting && !isDisplayBtnSetMeeting && this.renderScheduleMeeting()}
           {isOpenClosingComments && <ClosingComments idComment={idSet1on1} />}
           {isOpenFormReason && <ReasonPutOnHold openNotification={openNotification} />}
