@@ -11,29 +11,15 @@ import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
 import PROCESS_STATUS from '../utils';
 
-@connect(
-  ({
-    candidateInfo: {
-      tempData,
-      data: {
-        documentsByCandidate = [],
-        documentsByCandidateRD = [],
-        privateEmail = '',
-        candidate = '',
-        processStatus,
-      },
-    },
-    loading,
-  }) => ({
-    tempData,
-    documentsByCandidate,
-    documentsByCandidateRD,
-    privateEmail,
-    candidate,
-    processStatus,
-    loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
-  }),
-)
+@connect(({ candidateInfo: { tempData, data: { // documentsByCandidate = [],
+      // documentsByCandidateRD = [],
+      privateEmail = '', candidate = '', processStatus } }, loading }) => ({
+  tempData,
+  privateEmail,
+  candidate,
+  processStatus,
+  loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
+}))
 class BackgroundRecheck extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +48,8 @@ class BackgroundRecheck extends Component {
       docsList: docsListProp,
     });
 
+    // this.processDocumentData(docsListProp);
+
     if (
       processStatus === PROVISIONAL_OFFER_DRAFT ||
       processStatus === SENT_PROVISIONAL_OFFERS ||
@@ -77,13 +65,13 @@ class BackgroundRecheck extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    const nextData = nextProps.documentsByCandidate;
-    const currentData = this.props.documentsByCandidate;
-    if (nextData.length > 0 && nextData.length !== currentData.length) {
-      this.processDocumentData(nextProps.documentsByCandidate);
+  componentDidUpdate(prevProps) {
+    // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
+    if (this.state.docsList.length === 0 && this.props.tempData.documentsByCandidateRD) {
+      this.setState({
+        docsList: this.props.tempData.documentsByCandidateRD,
+      });
     }
-    return true;
   }
 
   processDocumentData = (documentArr) => {
@@ -213,7 +201,9 @@ class BackgroundRecheck extends Component {
   };
 
   handleCheckDocument = (event, indexGroupDoc, document) => {
-    const { documentsByCandidateRD, dispatch } = this.props;
+    const { tempData, dispatch } = this.props;
+    const { documentsByCandidateRD } = tempData;
+    // const { documentsByCandidateRD, dispatch } = this.props;
     const candidateDocumentStatus = event.target.value;
     const docsByCandidateRDCheck = documentsByCandidateRD;
     const checkedDocument = {
@@ -268,7 +258,6 @@ class BackgroundRecheck extends Component {
 
       // -------------------  END MODIFY
 
-      // console.log('setState all');
       this.setState({
         docsList: docsByCandidateRDCheck,
         feedbackStatus: status,
@@ -276,10 +265,6 @@ class BackgroundRecheck extends Component {
         resubmitDocs: newResubmitDocs,
         ineligibleDocs: newIneligibleDocs,
       });
-
-      // console.log(this.state.verifiedDocs);
-      // console.log(this.state.resubmitDocs);
-      // console.log(this.state.ineligibleDocs);
 
       dispatch({
         type: 'candidateInfo/saveOrigin',

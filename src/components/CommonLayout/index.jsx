@@ -80,8 +80,8 @@ class CommonLayout extends Component {
     } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
 
-    console.log(processStatus);
-    console.log(currentStep);
+    // console.log(processStatus);
+    // console.log(currentStep);
 
     if (currentStep !== null) {
       if (
@@ -146,22 +146,17 @@ class CommonLayout extends Component {
       return null;
     }
 
-    if (
-      processStatus === PENDING ||
-      processStatus === ELIGIBLE_CANDIDATES ||
-      processStatus === INELIGIBLE_CANDIDATES
-    ) {
-      // console.log('HERE 5');
-      console.log(listMenu[3].id);
-      this.setState({
-        selectedItemId: listMenu[3].id,
-        displayComponent: <BackgroundRecheck />,
-      });
-      // return {
-      //   selectedItemId: listMenu[3].id,
-      //   displayComponent: <BackgroundRecheck />,
-      // };
-    }
+    // if (
+    //   processStatus === PENDING ||
+    //   processStatus === ELIGIBLE_CANDIDATES ||
+    //   processStatus === INELIGIBLE_CANDIDATES
+    // ) {
+    //   console.log(listMenu[3].id);
+    //   this.setState({
+    //     selectedItemId: listMenu[3].id,
+    //     displayComponent: <BackgroundRecheck />,
+    //   });
+    // }
     // if (processStatus === DRAFT) {
     //   return {
     //     selectedItemId: '',
@@ -173,6 +168,18 @@ class CommonLayout extends Component {
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
     });
+  }
+
+  componentWillUnmount() {
+    // const { dispatch } = this.props;
+    // console.log('UNMOUNT');
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     a: 2,
+    //     data: {},
+    //   },
+    // });
   }
 
   _handlePreviewOffer = () => {
@@ -254,7 +261,7 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
-        console.log('PENDING HERE');
+        // console.log('PENDING HERE');
 
         return true;
       }

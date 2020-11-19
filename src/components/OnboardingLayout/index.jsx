@@ -60,13 +60,35 @@ class OnboardingLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], dispatch } = this.props;
     const firstComponent = listMenu[0].component;
     this.setState({
       pageTitle: listMenu[0].name,
       selectedId: listMenu[0].id,
       displayComponent: getComponent(firstComponent),
     });
+
+    console.log('CLEAR');
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        a: 2,
+        data: {},
+      },
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { dispatch } = this.props;
+    if (prevProps.data._id) {
+      console.log('Clear here');
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          data: {},
+        },
+      });
+    }
   }
 
   handleClick = (item) => {
@@ -133,6 +155,7 @@ class OnboardingLayout extends PureComponent {
 }
 
 // export default OnboardingLayout;
-export default connect(({ info }) => ({
+export default connect(({ info, candidateInfo: { data = {} } = {} }) => ({
   info,
+  data,
 }))(OnboardingLayout);

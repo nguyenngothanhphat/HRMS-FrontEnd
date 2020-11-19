@@ -465,8 +465,8 @@ const OfferDetail = (props) => {
                 <Form.Item name="compensation">
                   <Select className={styles.select} disabled={disableAll}>
                     <Option value="salary">Salary</Option>
-                    <Option value="salary2">Stock</Option>
-                    <Option value="salary3">Other Non-cash benefit</Option>
+                    <Option value="stock">Stock</Option>
+                    <Option value="other">Other Non-cash benefit</Option>
                   </Select>
                 </Form.Item>
               </div>

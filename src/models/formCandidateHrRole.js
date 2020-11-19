@@ -37,6 +37,7 @@ import {
 const candidateInfo = {
   namespace: 'candidateInfo',
   state: {
+    a: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: false,
@@ -755,6 +756,7 @@ const candidateInfo = {
             },
           },
         });
+        console.log(data);
         yield put({
           type: 'saveTemp',
           payload: {
@@ -862,12 +864,48 @@ const candidateInfo = {
           type: 'saveOrigin',
           payload: { documentsByCandidate: data },
         });
-        // yield put({
-        //   type: 'saveTemp',
-        //   payload: {
-        //     ...data,
-        //   },
-        // });
+
+        // Group data
+        const groupA = [];
+        const groupB = [];
+        const groupC = [];
+        const groupD = [];
+        data.map((item) => {
+          const { candidateGroup } = item;
+          switch (candidateGroup) {
+            case 'A':
+              groupA.push(item);
+              break;
+            case 'B':
+              groupB.push(item);
+              break;
+            case 'C':
+              groupC.push(item);
+              break;
+            case 'D':
+              groupD.push(item);
+              break;
+            default:
+              break;
+          }
+          return null;
+        });
+
+        const documentsCandidateList = [
+          { type: 'A', name: 'Identity Proof', data: [...groupA] },
+          { type: 'B', name: 'Address Proof', data: [...groupB] },
+          { type: 'C', name: 'Educational', data: [...groupC] },
+          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+        ];
+
+        yield put({
+          type: 'saveTemp',
+          payload: { documentsByCandidate: data, documentsByCandidateRD: documentsCandidateList },
+        });
+        yield put({
+          type: 'updateBackgroundRecheck',
+          payload: documentsCandidateList,
+        });
       } catch (error) {
         dialog(error);
       }
