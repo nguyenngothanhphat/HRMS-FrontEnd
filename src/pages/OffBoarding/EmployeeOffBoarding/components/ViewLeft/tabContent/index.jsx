@@ -71,9 +71,11 @@ class TabContent extends Component {
   render() {
     const { selectedFilterTab } = this.state;
     const { data = [] } = this.props;
+    const length = data.length || 0;
+
     return (
       <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} />
+        <RejectTable setSelectedTab={this.setSelectedTab} lengthData={length} />
         <div className={styles.tableContainer}>
           {selectedFilterTab === '1' ? <TableEmployee data={data} /> : ''}
           {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}

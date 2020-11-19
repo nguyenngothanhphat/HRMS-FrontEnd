@@ -51,3 +51,9 @@ export async function create1On1(payload) {
     data: payload,
   });
 }
+export async function teamRequestList(payload) {
+  return request('/api/offboardingrequest/list-team-request', {
+    method: 'POST',
+    data: payload,
+  });
+}

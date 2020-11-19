@@ -8,12 +8,14 @@ import {
   getRequestById,
   getMeetingTime,
   create1On1,
+  teamRequestList,
 } from '../services/offboarding';
 
 const offboarding = {
   namespace: 'offboarding',
   state: {
     listOffboarding: [],
+    listTeamRequest: [],
     request: [],
     sendrequest: false,
     myRequest: {},
@@ -28,6 +30,16 @@ const offboarding = {
         const { statusCode, data: listOffboarding = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listOffboarding } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListTeamRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(teamRequestList, payload);
+        const { statusCode, data: listTeamRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listTeamRequest } });
       } catch (errors) {
         dialog(errors);
       }

@@ -18,7 +18,6 @@ class TableEmployee extends PureComponent {
 
   render() {
     const { data = [] } = this.props;
-
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,

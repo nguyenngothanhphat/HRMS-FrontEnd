@@ -17,9 +17,7 @@ export class Step3 extends Component {
     return (
       <Fragment key={item.id}>
         <div className={styles.minWidth}>
-          <div className={item.id === 1 ? styles.borderImage : styles.borderSuccess}>
-            {item.body}
-          </div>
+          <div className={styles.borderImage}>{item.body}</div>
           <div>{item.text}</div>
         </div>
         <div className={styles.borderStyles} />
@@ -31,15 +29,11 @@ export class Step3 extends Component {
     const arr1 = [
       {
         id: 1,
-        success: true,
         body: '',
-        status: 'done',
         text: 'Request Sent',
       },
       {
-        id: 1,
-        success: true,
-        body: '',
+        id: 2,
         status: 'done',
         text: 'Manager Approval',
       },
