@@ -80,8 +80,8 @@ class CommonLayout extends Component {
     } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
 
-    console.log(processStatus);
-    console.log(currentStep);
+    // console.log(processStatus);
+    // console.log(currentStep);
 
     if (currentStep !== null) {
       if (
@@ -254,7 +254,7 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
-        console.log('PENDING HERE');
+        // console.log('PENDING HERE');
 
         return true;
       }
