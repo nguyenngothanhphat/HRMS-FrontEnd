@@ -290,6 +290,13 @@ const routes = [
             authority: ['employee', 'leader'],
           },
           {
+            path: '/manager-offboarding',
+            name: 'Manager OffBoarding',
+            icon: '/assets/images/iconOffboarding.svg',
+            component: './OffBoarding/ManagerOffboarding',
+            authority: ['manager'],
+          },
+          {
             path: '/employee-offboarding/resignation-request',
             name: 'ResignationRequest',
             hideInMenu: true,
@@ -318,20 +325,11 @@ const routes = [
             ],
           },
           {
-            path: '/employee-offboarding/ManagerRequest/:ticketId',
+            path: 'manager-offboarding/:ticketId',
             name: 'ticketId',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
-            authority: [
-              'employee',
-              'hr-manager',
-              'hr',
-              'hr-global',
-              'admin-csa',
-              'admin-cla',
-              'admin-cda',
-              'leader',
-            ],
+            authority: ['manager'],
           },
           {
             path: '/hr-offboarding/HrRequest/:id',
