@@ -44,8 +44,6 @@ class BackgroundRecheck extends Component {
       tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
     } = this.props;
 
-    console.log(docsListProp);
-
     this.setState({
       docsList: docsListProp,
     });
@@ -67,58 +65,16 @@ class BackgroundRecheck extends Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
-      const nextData = nextProps.tempData.documentsByCandidateRD;
-      const currentData = this.props.tempData.documentsByCandidateRD;
-
-      const {
-        tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
-      } = this.props;
-
-      console.log('next', nextData);
-      console.log('current', currentData);
-      // if (nextData.length > 0 && nextData.length !== currentData.length) {
-      //   this.processDocumentData(nextProps.tempData.documentsByCandidate);
-      // }
-
-      let willUpdate = true;
-
-      nextData.forEach((item, index) => {
-        if (!(item.data.length > 0 && item.data.length !== currentData[index].length)) {
-          willUpdate = false;
-        }
-      });
-
-      if (willUpdate) {
-        // this.setState({
-        //   docsList: docsListProp,
-        // });
-      }
-
-      console.log(willUpdate);
-    }
-    return true;
-  }
-
   componentDidUpdate(prevProps) {
-    // if (prevProps.text !== this.props.text) {
-    //   this.updateAndNotify();
-    // }
-    console.log(prevProps.tempData.documentsByCandidateRD);
-    console.log(this.props.tempData.documentsByCandidateRD);
     // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
     if (this.state.docsList.length === 0 && this.props.tempData.documentsByCandidateRD) {
-      console.log('BINGO');
       this.setState({
         docsList: this.props.tempData.documentsByCandidateRD,
       });
     }
-    console.log('DID UPDATE');
   }
 
   processDocumentData = (documentArr) => {
-    console.log('input', documentArr);
     const { dispatch } = this.props;
     const groupA = [];
     const groupB = [];
@@ -154,8 +110,6 @@ class BackgroundRecheck extends Component {
     this.setState({
       docsList: documentsCandidateList,
     });
-
-    console.log('HEEEER');
 
     dispatch({
       type: 'candidateInfo/saveOrigin',
@@ -304,7 +258,6 @@ class BackgroundRecheck extends Component {
 
       // -------------------  END MODIFY
 
-      // console.log('setState all');
       this.setState({
         docsList: docsByCandidateRDCheck,
         feedbackStatus: status,
@@ -312,10 +265,6 @@ class BackgroundRecheck extends Component {
         resubmitDocs: newResubmitDocs,
         ineligibleDocs: newIneligibleDocs,
       });
-
-      // console.log(this.state.verifiedDocs);
-      // console.log(this.state.resubmitDocs);
-      // console.log(this.state.ineligibleDocs);
 
       dispatch({
         type: 'candidateInfo/saveOrigin',

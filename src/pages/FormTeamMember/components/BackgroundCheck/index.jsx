@@ -172,7 +172,6 @@ class BackgroundCheck extends Component {
       });
     }
     this.handleUpdateByHR();
-    // console.log('1');
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -186,14 +185,12 @@ class BackgroundCheck extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    console.log(processStatus);
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
     if (
       processStatus === PROVISIONAL_OFFER_DRAFT ||
       processStatus === FINAL_OFFERS_DRAFT ||
       processStatus === SENT_PROVISIONAL_OFFERS
     ) {
-      console.log('false');
       return true;
     }
     return false;
@@ -235,7 +232,6 @@ class BackgroundCheck extends Component {
 
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory } = this.props;
-    // console.log('e', e.target.value);
     if (e.target.value === 1) {
       dispatch({
         type: 'candidateInfo/save',
@@ -723,7 +719,6 @@ class BackgroundCheck extends Component {
   };
 
   render() {
-    console.log(this.disableEdit());
     const {
       openModal,
       tempData,

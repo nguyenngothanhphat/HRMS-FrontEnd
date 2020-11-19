@@ -37,6 +37,7 @@ import {
 const candidateInfo = {
   namespace: 'candidateInfo',
   state: {
+    a: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: false,
