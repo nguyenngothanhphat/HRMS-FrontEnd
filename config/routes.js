@@ -325,8 +325,8 @@ const routes = [
             ],
           },
           {
-            path: 'manager-offboarding/:ticketId',
-            name: 'ticketId',
+            path: 'manager-offboarding/:id',
+            name: 'Request',
             component: './OffBoarding/ManagerOffBoarding/component/DetailTicket',
             hideInMenu: true,
             authority: ['manager'],

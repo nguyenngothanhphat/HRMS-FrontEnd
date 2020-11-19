@@ -82,7 +82,7 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: 'Action',
+        dataIndex: '_id',
         render: (_id) => (
           <div className={styles.rowAction}>
             <span>Set 1-on-1</span>

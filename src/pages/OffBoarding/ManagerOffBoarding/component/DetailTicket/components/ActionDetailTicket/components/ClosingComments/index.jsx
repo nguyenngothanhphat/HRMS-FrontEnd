@@ -72,6 +72,7 @@ class ClosingComments extends PureComponent {
           ) : (
             <div className={styles.closingComments__textArea}>
               <TextArea
+                style={{ resize: 'none' }}
                 allowClear
                 placeholder="The reason I have decided to end my journey with Lollypop here is because…"
               />

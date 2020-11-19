@@ -1,15 +1,17 @@
 import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
 
 class ResignationRequestDetail extends PureComponent {
   render() {
-    const requestDetail = {
-      date: '20.08.2020',
-      employeeName: 'Employee Name',
-      reason:
-        'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…',
-    };
+    const { itemRequest = {} } = this.props;
+    const {
+      employee: { generalInfo: { firstName: employeeName = '' } = {} } = {},
+      requestDate: date = '',
+      reasonForLeaving: reason = '',
+    } = itemRequest;
+
     return (
       <div className={styles.resignationRequest}>
         <p className={styles.resignationRequest__title}>
@@ -19,10 +21,10 @@ class ResignationRequestDetail extends PureComponent {
           <p className={styles.resignationRequest__text}>
             {formatMessage({ id: 'pages.offBoarding.resignation.date' })}
           </p>
-          <p>{requestDetail.date}</p>
+          <p>{date && moment(date).format('MM.DD.YYYY')}</p>
         </div>
-        <p className={styles.resignationRequest__text}>Employee Name</p>
-        <p>{requestDetail.reason}</p>
+        <p className={styles.resignationRequest__text}>{employeeName}</p>
+        <p>{reason}</p>
       </div>
     );
   }
