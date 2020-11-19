@@ -120,7 +120,7 @@ class ResignationRequest extends Component {
           handleCancel={this.handleModalSet1On1}
           handleSubmit={this.handleSubmit}
           listMeetingTime={listMeetingTime}
-          title="Request 1 0n 1"
+          title="Request 1 on 1 with reporting manager"
           hideMeetingWith
           textSubmit="Submit"
           key={keyModal}
