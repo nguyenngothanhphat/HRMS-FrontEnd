@@ -59,6 +59,17 @@ class DetailTicket extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        itemNewCreate1On1: {},
+        myRequest: {},
+      },
+    });
+  }
+
   openFormReason = () => {
     this.setState({
       isOpenFormReason: true,
@@ -144,11 +155,13 @@ class DetailTicket extends Component {
                   })}
                 </div>
               )}
-              <ActionDetailTicket
-                isOpenFormReason={isOpenFormReason}
-                openNotification={this.openNotification}
-                itemRequest={myRequest}
-              />
+              {listDisplay.length === 0 && (
+                <ActionDetailTicket
+                  isOpenFormReason={isOpenFormReason}
+                  openNotification={this.openNotification}
+                  itemRequest={myRequest}
+                />
+              )}
             </Col>
             <Col span={6}>
               <RightContent />
