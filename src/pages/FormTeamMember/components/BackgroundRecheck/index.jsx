@@ -9,6 +9,7 @@ import CollapseField from './components/CollapseField';
 import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
+import PROCESS_STATUS from '../utils';
 
 @connect(
   ({
@@ -19,6 +20,7 @@ import CloseCandidateModal from './components/CloseCandidateModal';
         documentsByCandidateRD = [],
         privateEmail = '',
         candidate = '',
+        processStatus,
       },
     },
     loading,
@@ -28,6 +30,7 @@ import CloseCandidateModal from './components/CloseCandidateModal';
     documentsByCandidateRD,
     privateEmail,
     candidate,
+    processStatus,
     loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
   }),
 )
@@ -49,15 +52,29 @@ class BackgroundRecheck extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, candidate } = this.props;
+    const { dispatch, candidate, processStatus = '' } = this.props;
+    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+    const {
+      tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
+    } = this.props;
 
-    dispatch({
-      type: 'candidateInfo/updateByHR',
-      payload: {
-        candidate,
-        currentStep: 3,
-      },
+    this.setState({
+      docsList: docsListProp,
     });
+
+    if (
+      processStatus === PROVISIONAL_OFFER_DRAFT ||
+      processStatus === SENT_PROVISIONAL_OFFERS ||
+      processStatus === PENDING
+    ) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: 3,
+        },
+      });
+    }
   }
 
   shouldComponentUpdate(nextProps) {
