@@ -291,7 +291,7 @@ const routes = [
           },
           {
             path: '/manager-offboarding',
-            name: 'Manager OffBoarding',
+            name: 'Manager Offboarding',
             icon: '/assets/images/iconOffboarding.svg',
             component: './OffBoarding/ManagerOffboarding',
             authority: ['manager'],
