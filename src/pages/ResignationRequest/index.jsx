@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
+import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ResignationLeft from './component/ResignationLeft';
 import Resignation from './component/ResignationRight';
 // import Submited from './component/SubmitedResignation';
-// import Workflow from './component/TerminationWorkflow';
+import Workflow from './component/TerminationWorkflow';
 import styles from './index.less';
 
 class ResignationRequest extends Component {
@@ -14,6 +15,7 @@ class ResignationRequest extends Component {
   }
 
   render() {
+    const { sendrequest } = this.props;
     return (
       <PageContainer>
         <div className={styles.root}>
@@ -34,11 +36,7 @@ class ResignationRequest extends Component {
             <Col span={17}>
               <ResignationLeft />
             </Col>
-            <Col span={7}>
-              {/* <Workflow /> */}
-              {/* <Submited /> */}
-              <Resignation />
-            </Col>
+            <Col span={7}>{sendrequest ? <Workflow /> : <Resignation />}</Col>
           </Row>
         </div>
       </PageContainer>
@@ -46,4 +44,6 @@ class ResignationRequest extends Component {
   }
 }
 
-export default ResignationRequest;
+export default connect(({ offboarding: { sendrequest } = {} }) => ({
+  sendrequest,
+}))(ResignationRequest);
