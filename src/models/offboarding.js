@@ -15,6 +15,7 @@ const offboarding = {
   state: {
     listOffboarding: [],
     request: [],
+    sendrequest: false,
     myRequest: {},
     list1On1: [],
     approvalflow: [],
@@ -35,8 +36,10 @@ const offboarding = {
       try {
         const response = yield call(sendRequest, payload);
         const { statusCode, data: request = [] } = response;
+
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { request } });
+
+        yield put({ type: 'save', payload: { request, sendrequest: true } });
         notification.success({ message: `Submit Request successfully!` });
       } catch (errors) {
         dialog(errors);

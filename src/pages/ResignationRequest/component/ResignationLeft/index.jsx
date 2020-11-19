@@ -36,7 +36,7 @@ class ResigationLeft extends Component {
 
   render() {
     const { reasonForLeaving = '' } = this.state;
-    const { loading } = this.props;
+    const { loading, sendrequest } = this.props;
     const date = moment().format('DD.MM.YY | h:mm A');
     return (
       <div className={styles.resignationLeft}>
@@ -65,35 +65,37 @@ class ResigationLeft extends Component {
             onChange={this.handleChange}
           />
         </div>
-
-        <div className={styles.subbmitForm}>
-          <div className={styles.subbmiText}>
-            By default notifications will be sent to HR, your manager and recursively loop to your
-            department head.
+        {!sendrequest && (
+          <div className={styles.subbmitForm}>
+            <div className={styles.subbmiText}>
+              By default notifications will be sent to HR, your manager and recursively loop to your
+              department head.
+            </div>
+            <Button
+              disabled={!reasonForLeaving}
+              onClick={() => this.submitForm('saveDraft')}
+              type="link"
+            >
+              Save to draft
+            </Button>
+            <Button
+              className={styles.buttonSubmit}
+              htmlType="submit"
+              onClick={() => this.submitForm('submit')}
+              disabled={!reasonForLeaving}
+              loading={loading}
+            >
+              Submit
+            </Button>
           </div>
-          <Button
-            disabled={!reasonForLeaving}
-            onClick={() => this.submitForm('saveDraft')}
-            type="link"
-          >
-            Save to draft
-          </Button>
-          <Button
-            className={styles.buttonSubmit}
-            htmlType="submit"
-            onClick={() => this.submitForm('submit')}
-            disabled={!reasonForLeaving}
-            loading={loading}
-          >
-            Submit
-          </Button>
-        </div>
+        )}
       </div>
     );
   }
 }
 
-export default connect(({ offboarding: { approvalflow = [] } = {}, loading }) => ({
+export default connect(({ offboarding: { sendrequest, approvalflow = [] } = {}, loading }) => ({
   approvalflow,
+  sendrequest,
   loading: loading.effects['offboarding/sendRequest'],
 }))(ResigationLeft);

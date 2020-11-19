@@ -28,9 +28,11 @@ class HrOffBoading extends Component {
     ];
 
     const resignationRequest = (
-      <div className={styles.buttonRequest}>
-        <img src={addIcon} alt="" style={{ margin: '5px' }} />
-        <span>Initiate Resignation Request</span>
+      <div style={{ padding: '17px' }}>
+        <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
+        <Link to="/hr-offboarding/resignation-request">
+          <span className={styles.buttonRequest}>Initiate Resignation Request</span>
+        </Link>
       </div>
     );
 
@@ -40,7 +42,6 @@ class HrOffBoading extends Component {
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relationship</p>
-              <Link to="/employee-offboarding/employee"> Open Employee Request </Link>
             </div>
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
