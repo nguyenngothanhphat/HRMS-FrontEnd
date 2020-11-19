@@ -50,7 +50,7 @@ class RequesteeDetail extends PureComponent {
         {listProject.length === 0 ? (
           <Fragment>
             <Divider />
-            <div>No Project</div>
+            <div className={styles.textNoProject}>No Project</div>
           </Fragment>
         ) : (
           listProject.map((item) => {

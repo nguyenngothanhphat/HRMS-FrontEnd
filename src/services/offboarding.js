@@ -65,3 +65,10 @@ export async function getListProjectByEmployee(payload) {
     data: payload,
   });
 }
+
+export async function complete1On1(payload) {
+  return request('/api/offboardingrequest/complete-1-on-1', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -10,6 +10,7 @@ import {
   create1On1,
   teamRequestList,
   getListProjectByEmployee,
+  complete1On1,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -24,6 +25,7 @@ const offboarding = {
     approvalflow: [],
     listMeetingTime: [],
     listProjectByEmployee: [],
+    itemNewCreate1On1: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -101,15 +103,13 @@ const offboarding = {
         dialog(errors);
       }
     },
-    *create1On1({ payload }, { call }) {
+    *create1On1({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(create1On1, payload);
-        const { statusCode, message } = response;
+        const { statusCode, data: itemNewCreate1On1 = {} } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        yield put({ type: 'save', payload: { itemNewCreate1On1 } });
       } catch (errors) {
         dialog(errors);
       }
@@ -124,6 +124,17 @@ const offboarding = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *complete1On1({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(complete1On1, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col } from 'antd';
+import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
@@ -17,6 +17,7 @@ import styles from './index.less';
       list1On1 = [],
       listMeetingTime = [],
       listProjectByEmployee = [],
+      itemNewCreate1On1 = {},
     } = {},
   }) => ({
     myRequest,
@@ -24,14 +25,15 @@ import styles from './index.less';
     listMeetingTime,
     listProjectByEmployee,
     loading: loading.effects['offboarding/fetchRequestById'],
+    itemNewCreate1On1,
   }),
 )
-class DetailTicket extends PureComponent {
+class DetailTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDisplayNotifications: false,
       isOpenFormReason: false,
+      handleNotification: true,
     };
   }
 
@@ -59,9 +61,13 @@ class DetailTicket extends PureComponent {
 
   openFormReason = () => {
     this.setState({
-      isDisplayNotifications: false,
       isOpenFormReason: true,
+      handleNotification: false,
     });
+  };
+
+  openNotification = () => {
+    this.setState({ isOpenFormReason: false, handleNotification: true });
   };
 
   renderBlockNotifications = () => {
@@ -84,19 +90,14 @@ class DetailTicket extends PureComponent {
     );
   };
 
-  handleDisplayNotifications = () => {
-    this.setState({
-      isDisplayNotifications: true,
-    });
-  };
-
   render() {
-    const { isDisplayNotifications, isOpenFormReason } = this.state;
+    const { isOpenFormReason, handleNotification } = this.state;
     const {
       loading,
       myRequest = {},
       list1On1 = [],
       listProjectByEmployee: listProject = [],
+      itemNewCreate1On1: { _id: idNewComment } = {},
     } = this.props;
     const {
       status = '',
@@ -105,8 +106,15 @@ class DetailTicket extends PureComponent {
         title: { name: title = '' } = {},
       } = {},
     } = myRequest;
-    if (loading) return <div>Loading...</div>;
+    if (loading)
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
     const employeeInfo = { nameEmployee, employeeId, avatar, title };
+    const listComment = list1On1.filter((item) => item.content !== '');
+    const listDisplay = listComment.filter((item) => item._id !== idNewComment);
 
     return (
       <PageContainer>
@@ -122,19 +130,23 @@ class DetailTicket extends PureComponent {
           <Row className={styles.detailTicket__content} gutter={[40, 0]}>
             <Col span={18}>
               <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
-              <ResignationRequestDetail itemRequest={myRequest} />           
-              {list1On1.map((item) => {
-                const { meetingDate = '', meetingTime = '', _id = '' } = item;
-                const date = moment(meetingDate).format('YYYY-DD-MM');
-                return (
-                  <div key={_id}>
-                    {date} | {meetingTime}
-                  </div>
-                );
-              })}
+              <ResignationRequestDetail itemRequest={myRequest} />            
+              {listDisplay.length !== 0 && (
+                <div className={styles.viewListComment}>
+                  {listDisplay.map((item) => {
+                    const { meetingDate = '', meetingTime = '', _id = '', content = '' } = item;
+                    const date = moment(meetingDate).format('YYYY-DD-MM');
+                    return (
+                      <div key={_id}>
+                        {date} | {meetingTime} | Content: {content}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               <ActionDetailTicket
                 isOpenFormReason={isOpenFormReason}
-                handleDisplayNotifications={this.handleDisplayNotifications}
+                openNotification={this.openNotification}
                 itemRequest={myRequest}
               />
             </Col>
@@ -142,7 +154,7 @@ class DetailTicket extends PureComponent {
               <RightContent />
             </Col>
           </Row>
-          {isDisplayNotifications ? this.renderBlockNotifications() : ''}
+          {listComment.length !== 0 && handleNotification && this.renderBlockNotifications()}
         </div>
       </PageContainer>
     );

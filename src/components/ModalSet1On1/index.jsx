@@ -58,7 +58,7 @@ class ModalSet1On1 extends Component {
       <Modal
         className={styles.modalSchedule}
         visible={visible}
-        key={key}
+        key={key === '' ? undefined : key}
         title={false}
         onOk={this.handleSubmit}
         onCancel={this.handleCancel}

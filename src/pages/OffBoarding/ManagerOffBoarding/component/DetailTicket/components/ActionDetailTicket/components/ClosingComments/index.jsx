@@ -1,32 +1,69 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Button, Row, Col, Space, Input } from 'antd';
 import editIcon from '@/assets/edit-off-boarding.svg';
 import thumbsUpIcon from '@/assets/thumbs-up.svg';
-import { formatMessage } from 'umi';
+import moment from 'moment';
+import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-class ClosingComments extends PureComponent {
+@connect(({ loading, offboarding: { myRequest = {} } = {} }) => ({
+  myRequest,
+  loading: loading.effects['offboarding/complete1On1'],
+}))
+class ClosingComments extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isSumbit: false,
+      q: '',
     };
   }
 
   handleSubmitComments = () => {
-    const { handleDisplayNotifications } = this.props;
-    this.setState({
-      isSumbit: true,
+    const { dispatch, idComment: id = '' } = this.props;
+    const { q: content = '' } = this.state;
+    const payload = { id, content };
+    dispatch({
+      type: 'offboarding/complete1On1',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState(
+          {
+            isSumbit: true,
+          },
+          () => {
+            this.getList1On1();
+          },
+        );
+      }
     });
-    setTimeout(() => {
-      handleDisplayNotifications();
-    }, 1000);
+  };
+
+  getList1On1 = () => {
+    const { dispatch, myRequest: { _id: code } = {} } = this.props;
+    dispatch({
+      type: 'offboarding/getList1On1',
+      payload: {
+        offBoardingRequest: code,
+      },
+    });
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      q: e.target.value,
+    });
   };
 
   render() {
-    const { isSumbit } = this.state;
+    const { myRequest = {}, loading } = this.props;
+    const { isSumbit, q } = this.state;
+    const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = myRequest;
+    const date = moment().format('DD.MM.YY | h:mm A');
+
     return (
       <>
         <div className={styles.closingComments}>
@@ -36,35 +73,29 @@ class ClosingComments extends PureComponent {
             </Col>
             <Col>
               <Row>
-                {isSumbit ? (
-                  <div className={styles.closingComments__edit}>
+                {isSumbit && (
+                  <div
+                    className={styles.closingComments__edit}
+                    onClick={() => this.setState({ isSumbit: false })}
+                  >
                     <img src={editIcon} alt="edit-icon" />
                     <span>Edit</span>
                   </div>
-                ) : (
-                  ''
                 )}
-                <div className={styles.closingComments__dateTime}>
-                  <span>
-                    22.05.20 &nbsp; | &nbsp; <span>12PM</span>
-                  </span>
-                </div>
+                <div className={styles.closingComments__dateTime}>{date}</div>
               </Row>
             </Col>
           </Row>
 
           {isSumbit ? (
             <div className={styles.closingComments__content}>
-              <div className={styles.closingComments__content__text}>
-                The reason I have decided to end my journey with Lollypop here is because The reason
-                I have decided to end my journey with Lollypop here is because
-              </div>
+              <div className={styles.closingComments__content__text}>{q}</div>
               <div className={styles.closingComments__content__note}>
                 <Space>
                   <img src={thumbsUpIcon} alt="thumbs-up-icon" />
                   <span>
-                    Your comment for the 1-on-1 with Venkat has been recorded. Venkat and the HR
-                    manager will be able to view this comment.
+                    Your comment for the 1-on-1 with {nameEmployee} has been recorded.{' '}
+                    {nameEmployee} and the HR manager will be able to view this comment.
                   </span>
                 </Space>
               </div>
@@ -72,11 +103,17 @@ class ClosingComments extends PureComponent {
           ) : (
             <div className={styles.closingComments__textArea}>
               <TextArea
-                style={{ resize: 'none' }}
                 allowClear
                 placeholder="The reason I have decided to end my journey with Lollypop here is because…"
+                value={q}
+                onChange={this.handleChange}
               />
-              <Button className={styles.btn__submit} onClick={this.handleSubmitComments}>
+              <Button
+                className={styles.btn__submit}
+                onClick={this.handleSubmitComments}
+                disabled={!q}
+                loading={loading}
+              >
                 Submit
               </Button>
             </div>

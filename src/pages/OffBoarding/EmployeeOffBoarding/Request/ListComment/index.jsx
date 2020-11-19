@@ -14,13 +14,15 @@ export default class ListComment extends PureComponent {
         {listComment.length > 0 && (
           <div className={styles.root}>
             {listComment.map((item) => {
-              const { title = '', content = '' } = item;
+              const { updatedAt = '', content = '' } = item;
               return (
                 <div className={styles.itemComment}>
                   <div className={styles.itemComment__viewInfo}>
-                    <div className={styles.itemComment__viewInfo__title}>{title}</div>
+                    <div className={styles.itemComment__viewInfo__title}>
+                      Reporting Manger’s comment
+                    </div>
                     <div className={styles.itemComment__viewInfo__date}>
-                      {moment().format('DD.MM.YY | h:mm A')}
+                      {updatedAt && moment(updatedAt).format('DD.MM.YY | h:mm A')}
                     </div>
                   </div>
                   <TextArea className={styles.itemComment__content} value={content} disabled />
