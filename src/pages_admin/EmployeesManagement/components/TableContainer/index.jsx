@@ -102,6 +102,13 @@ class TableContainer extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/ClearFilter',
+    });
+  }
+
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({

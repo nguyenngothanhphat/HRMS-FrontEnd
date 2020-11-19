@@ -130,15 +130,16 @@ class Documents extends Component {
       x.body.forEach((y) => {
         let count = 0;
         y.files.forEach((z) => {
-          count += 1;
+          if (z.id !== '') count += 1;
           if (z.id === id) {
+            const groupViewingFiles = y.files.filter((value) => value.id !== '');
             this.setState({
               isViewingDocument: true,
               selectedFile: count,
             });
             dispatch({
               type: 'employeeProfile/saveGroupViewingDocuments',
-              payload: { files: y.files },
+              payload: { files: groupViewingFiles },
             });
           }
         });
