@@ -4,7 +4,6 @@ import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ResignationLeft from './component/ResignationLeft';
 import Resignation from './component/ResignationRight';
-// import Submited from './component/SubmitedResignation';
 import Workflow from './component/TerminationWorkflow';
 import styles from './index.less';
 
@@ -32,7 +31,7 @@ class ResignationRequest extends Component {
               </div>
             </div>
           </Affix>
-          <Row className={styles.content} gutter={[40, 0]}>
+          <Row className={styles.content} gutter={[42, 0]}>
             <Col span={17}>
               <ResignationLeft />
             </Col>

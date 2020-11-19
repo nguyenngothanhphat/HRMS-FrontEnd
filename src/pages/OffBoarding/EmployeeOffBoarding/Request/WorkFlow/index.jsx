@@ -1,11 +1,7 @@
-// import React, { Component } from 'react';
 import React, { Component, Fragment } from 'react';
-// import { Row, Col } from 'antd';
 import icon1 from '@/assets/exclamation.svg';
 import icon2 from '@/assets/check-true.svg';
 import styles from './index.less';
-
-// const { Step } = Steps;
 
 export class Step3 extends Component {
   constructor(props) {
@@ -47,7 +43,7 @@ export class Step3 extends Component {
         success: true,
         body: '',
         status: 'done',
-        text: 'Request Sent',
+        text: '',
       },
       {
         id: 1,

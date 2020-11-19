@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import { history } from 'umi';
@@ -12,6 +13,9 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
+  // push = (data) => {
+  //   history.push(`/manager-offboarding/${data}`);
+  // };
   push = () => {
     history.push('/manager-offboarding/16001288');
   };
@@ -42,15 +46,25 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: 'employeeId',
+        dataIndex: 'employee',
+        render: (employee) => {
+          return <p>{employee.employeeId}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
+        render: (createDate) => {
+          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: 'name',
+        dataIndex: 'employee',
+        render: (employee) => {
+          const { generalInfo = {} } = employee;
+          return <p>{generalInfo.firstName}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Current Project </span>,

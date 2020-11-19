@@ -1,58 +1,66 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import HrTable from '../TableHRManager';
 import RejectTable from '../RejectTable';
 import styles from './index.less';
 
-const Data = [
-  {
-    ticketId: 8097,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    department: 'UX & Research',
-    name: 'Vamsi Venkat Krishna A..',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8098,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    department: 'UX & Research',
-    name: 'Vamsi Venkat Krishna A..',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8099,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    department: 'UX & Research',
-    name: 'Vamsi Venkat Krishna A..',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8897,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    department: 'UX & Research',
-    name: 'Vamsi Venkat Krishna A..',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8797,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    department: 'UX & Research',
-    name: 'Vamsi Venkat Krishna A..',
-    date: 'Oct-20, 20',
-  },
-];
-
-export default class TabContent extends PureComponent {
+@connect()
+class TabContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedFilterTab: '1',
     };
   }
+
+  componentDidMount() {
+    this.initDataTable('1');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { selectedFilterTab } = this.state;
+    const { selectedFilterTab: nextTabId } = nextState;
+    if (selectedFilterTab !== nextTabId) {
+      this.initDataTable(nextTabId);
+    }
+    return true;
+  }
+
+  initDataTable = (tabId) => {
+    const { dispatch } = this.props;
+    if (tabId === '1') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'IN-PROGRESS',
+        },
+      });
+    }
+    if (tabId === '2') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'ON-HOLD',
+        },
+      });
+    }
+    if (tabId === '3') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'ACCEPTED',
+        },
+      });
+    }
+    if (tabId === '4') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'REJECTED',
+        },
+      });
+    }
+  };
 
   setSelectedTab = (id) => {
     this.setState({
@@ -62,17 +70,21 @@ export default class TabContent extends PureComponent {
 
   render() {
     const { selectedFilterTab } = this.state;
+    const { data = [] } = this.props;
+    const length = data.length || 0;
 
     return (
       <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} />
+        <RejectTable setSelectedTab={this.setSelectedTab} lengthData={length} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <HrTable data={Data} /> : ''}
-          {selectedFilterTab === '2' ? <HrTable /> : ''}
-          {selectedFilterTab === '3' ? <HrTable /> : ''}
-          {selectedFilterTab === '4' ? <HrTable /> : ''}
+          {selectedFilterTab === '1' ? <HrTable data={data} /> : ''}
+          {selectedFilterTab === '2' ? <HrTable data={data} /> : ''}
+          {selectedFilterTab === '3' ? <HrTable data={data} /> : ''}
+          {selectedFilterTab === '4' ? <HrTable data={data} /> : ''}
         </div>
       </div>
     );
   }
 }
+
+export default TabContent;
