@@ -12,8 +12,8 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/manager-offboarding/16001288');
+  push = (id) => {
+    history.push(`/manager-offboarding/${id}`);
   };
 
   render() {
@@ -83,10 +83,10 @@ class TableEmployee extends PureComponent {
       {
         title: <span className={styles.title}>Action</span>,
         dataIndex: 'Action',
-        render: () => (
+        render: (_id) => (
           <div className={styles.rowAction}>
             <span>Set 1-on-1</span>
-            <span onClick={this.push}>View Request</span>
+            <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
       },
