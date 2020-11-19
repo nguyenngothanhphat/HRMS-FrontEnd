@@ -10,6 +10,7 @@ import {
   getReportingManagerList,
   addEmployee,
   importEmployees,
+  searchEmployees,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -88,27 +89,10 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchSearchEmployeesList(
-      {
-        payload: {
-          status = 'ACTIVE',
-          department = [],
-          location = [],
-          company = [],
-          employeeType = [],
-          name = '',
-        } = {},
-      },
-      { call, put },
-    ) {
+    *fetchSearchEmployeesList({ payload: { query = '' } = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeesList, {
-          status,
-          name,
-          department,
-          location,
-          company,
-          employeeType,
+        const response = yield call(searchEmployees, {
+          query,
         });
         const { statusCode, data: searchEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;

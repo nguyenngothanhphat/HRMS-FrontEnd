@@ -61,3 +61,10 @@ export async function importEmployees(payload) {
     data: payload,
   });
 }
+
+export async function searchEmployees(payload) {
+  return request('/api/employee/employee-list', {
+    method: 'POST',
+    data: payload,
+  });
+}

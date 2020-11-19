@@ -47,9 +47,9 @@ class TableEmployees extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
-        dataIndex: 'generalInfo',
+        dataIndex: 'employeeId',
         key: 'employeeId',
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        render: (employeeId) => <span>{employeeId || ''}</span>,
         width: '8%',
         fixed: 'left',
         align: 'left',
@@ -99,7 +99,7 @@ class TableEmployees extends Component {
         key: 'manager',
         render: (manager) => (
           <span>
-            {manager.generalInfo
+            {manager && manager.generalInfo
               ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
               : ''}
           </span>
@@ -108,16 +108,17 @@ class TableEmployees extends Component {
       },
       {
         title: 'Email',
-        dataIndex: 'generalInfo',
+        dataIndex: 'user',
         key: 'email',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        render: (user) => <span>{user?.email}</span>,
         align: 'left',
         width: '18%',
       },
       {
         title: 'Contact Number',
         key: 'contactNumber',
-        render: (location) => <span>{location ? location.name : ''}</span>,
+        dataIndex: 'generalInfo',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo?.personalNumber : ''}</span>,
         align: 'left',
       },
       {
