@@ -194,9 +194,9 @@ class BackgroundCheck extends Component {
       processStatus === SENT_PROVISIONAL_OFFERS
     ) {
       console.log('false');
-      return false;
+      return true;
     }
-    return true;
+    return false;
   };
 
   handleUpdateByHR = () => {
@@ -723,6 +723,7 @@ class BackgroundCheck extends Component {
   };
 
   render() {
+    console.log(this.disableEdit());
     const {
       openModal,
       tempData,
@@ -738,6 +739,7 @@ class BackgroundCheck extends Component {
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
     const { loading, processStatus, loading4 } = this.props;
+
     return (
       <>
         {loading ? (
@@ -766,6 +768,7 @@ class BackgroundCheck extends Component {
                           documentChecklistSetting={documentChecklistSetting}
                           processStatus={processStatus}
                           handleValidation={this.handleValidation}
+                          disabled={this.disableEdit()}
                         />
                       );
                     })}
