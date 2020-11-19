@@ -1,31 +1,55 @@
 import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-// import Icon from '@ant-design/icons';
-import { Link } from 'umi';
+import { Link, connect } from 'umi';
 import addIcon from '@/assets/addTicket.svg';
 import TabContent from './component/tabContent';
 import styles from './index.less';
 
-class HrOffBoading extends Component {
+@connect(
+  ({
+    offboarding: { listTeamRequest = [] } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+    } = {},
+  }) => ({
+    locationID,
+    companyID,
+    listTeamRequest,
+  }),
+)
+class ManagerOffBoading extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  componentDidMount() {
+    const { dispatch, locationID, companyID } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'offboarding/fetchListTeamRequest',
+      payload: {
+        status: 'IN-PROGRESS',
+      },
+    });
+    dispatch({
+      type: 'offboarding/fetchApprovalFlowList',
+      payload: {
+        company: companyID,
+        location: locationID,
+      },
+    });
+  }
+
   render() {
     const { TabPane } = Tabs;
-
-    const data = [
-      {
-        id: 1,
-        name: 'Team request',
-      },
-      {
-        id: 2,
-        name: 'My request',
-      },
-    ];
+    const { listTeamRequest = [] } = this.props;
 
     const resignationRequest = (
       <div style={{ padding: '17px' }}>
@@ -51,13 +75,14 @@ class HrOffBoading extends Component {
                 className={styles.tabComponent}
                 tabBarExtraContent={resignationRequest}
               >
-                {data.map((tab) => (
-                  <TabPane tab={tab.name} key={tab.id}>
-                    <div className={styles.tableTab}>
-                      <TabContent />
-                    </div>
-                  </TabPane>
-                ))}
+                <TabPane tab="Team Request" key="1">
+                  <div className={styles.tableTab}>
+                    <TabContent data={listTeamRequest} />
+                  </div>
+                </TabPane>
+                <TabPane tab="My Request" key="2">
+                  my request
+                </TabPane>
               </Tabs>
             </Col>
           </Row>
@@ -67,4 +92,4 @@ class HrOffBoading extends Component {
   }
 }
 
-export default HrOffBoading;
+export default ManagerOffBoading;

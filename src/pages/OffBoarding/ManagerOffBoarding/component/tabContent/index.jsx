@@ -3,54 +3,6 @@ import TableEmployee from '../TableManager';
 import RejectTable from '../RejectTable';
 import styles from './index.less';
 
-const Data = [
-  {
-    ticketId: 8097,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    name: 'Vamsi Venkat Krishna A..',
-    currentProject: 'Vodafone Idea',
-    projectManager: ' Rose Mar y Mali',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8098,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    name: 'Vamsi Venkat Krishna A..',
-    currentProject: 'Vodafone Idea',
-    projectManager: ' Rose Mar y Mali',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8099,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    name: 'Vamsi Venkat Krishna A..',
-    currentProject: 'Vodafone Idea',
-    projectManager: ' Rose Mar y Mali',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8897,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    name: 'Vamsi Venkat Krishna A..',
-    currentProject: 'Vodafone Idea',
-    projectManager: ' Rose Mar y Mali',
-    date: 'Oct-20, 20',
-  },
-  {
-    ticketId: 8797,
-    employeeId: 'PSI 2090',
-    createDate: 'Aug-7,20',
-    name: 'Vamsi Venkat Krishna A..',
-    currentProject: 'Vodafone Idea',
-    projectManager: ' Rose Mar y Mali',
-    date: 'Oct-20, 20',
-  },
-];
-
 export default class TabContent extends PureComponent {
   constructor(props) {
     super(props);
@@ -67,15 +19,16 @@ export default class TabContent extends PureComponent {
 
   render() {
     const { selectedFilterTab } = this.state;
+    const { data = [] } = this.props;
 
     return (
       <div>
         <RejectTable setSelectedTab={this.setSelectedTab} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TableEmployee data={Data} /> : ''}
-          {selectedFilterTab === '2' ? <TableEmployee /> : ''}
-          {selectedFilterTab === '3' ? <TableEmployee /> : ''}
-          {selectedFilterTab === '4' ? <TableEmployee /> : ''}
+          {selectedFilterTab === '1' ? <TableEmployee data={data} /> : ''}
+          {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}
+          {selectedFilterTab === '3' ? <TableEmployee data={data} /> : ''}
+          {selectedFilterTab === '4' ? <TableEmployee data={data} /> : ''}
         </div>
       </div>
     );

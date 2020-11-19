@@ -11,6 +11,30 @@ export default class RejectTable extends PureComponent {
     setSelectedTab(activeKey);
   };
 
+  inprogress = () => {
+    const { lengthData } = this.props;
+
+    return `In-progress ${lengthData}`;
+  };
+
+  onhold = () => {
+    const { lengthData } = this.props;
+
+    return `On-hold  ${lengthData}`;
+  };
+
+  accepted = () => {
+    const { lengthData } = this.props;
+
+    return ` Accepted ${lengthData}`;
+  };
+
+  rejected = () => {
+    const { lengthData } = this.props;
+
+    return ` Rejected ${lengthData}`;
+  };
+
   render() {
     return (
       <div className={styles.tabTable}>
@@ -20,10 +44,10 @@ export default class RejectTable extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab="In-progress (01)" key="1" />
-          <TabPane tab="On-hold (00)" key="2" />
-          <TabPane tab="Accepted (00)" key="3" />
-          <TabPane tab="Rejected (00)" key="4" />
+          <TabPane tab={this.inprogress()} key="1" />
+          <TabPane tab={this.onhold()} key="2" />
+          <TabPane tab={this.accepted()} key="3" />
+          <TabPane tab={this.rejected()} key="4" />
         </Tabs>
       </div>
     );
