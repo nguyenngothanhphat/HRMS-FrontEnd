@@ -219,7 +219,7 @@ class FormTeamMember extends PureComponent {
         salaryPosition: '',
         listTitle: [],
         tableData: [],
-        candidateSignature: null,
+        candidateSignature: {},
         hrManagerSignature: {},
         hrSignature: {},
         hiringAgreements: null,

@@ -132,7 +132,14 @@ const candidateInfo = {
         addSchedule,
       },
 
-      candidateSignature: null,
+      candidateSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -755,6 +762,7 @@ const candidateInfo = {
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,
+            candidateSignature: data.candidateSignature || {},
           },
         });
         yield put({
@@ -888,6 +896,19 @@ const candidateInfo = {
         dialog(error);
       }
       return response;
+    },
+
+    *redirectToCandidateList({ payload }) {
+      try {
+        const { rookieId = '' } = payload;
+        history.push({
+          pathname: `/employee-onboarding/review/${rookieId}`,
+          state: { isAddNew: true },
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 

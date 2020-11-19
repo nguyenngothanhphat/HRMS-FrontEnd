@@ -13,6 +13,7 @@ const HeaderSearch = (props) => {
     placeholder,
     open,
     defaultOpen,
+    visible,
     ...restProps
   } = props;
   const inputRef = useRef(null);
@@ -80,7 +81,9 @@ const HeaderSearch = (props) => {
             }
           }}
           onBlur={() => {
-            setSearchMode(false);
+            if (!visible) {
+              setSearchMode(false);
+            }
           }}
         />
       </AutoComplete>

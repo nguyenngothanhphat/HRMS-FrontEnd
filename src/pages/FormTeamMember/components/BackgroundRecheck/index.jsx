@@ -21,12 +21,14 @@ import CloseCandidateModal from './components/CloseCandidateModal';
         candidate = '',
       },
     },
+    loading,
   }) => ({
     tempData,
     documentsByCandidate,
     documentsByCandidateRD,
     privateEmail,
     candidate,
+    loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
   }),
 )
 class BackgroundRecheck extends Component {
@@ -283,7 +285,7 @@ class BackgroundRecheck extends Component {
 
   render() {
     const { docsList, feedbackStatus, openModal, modalTitle } = this.state;
-    const { privateEmail } = this.props;
+    const { privateEmail, loading1 } = this.props;
     const Note = {
       title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
@@ -323,6 +325,7 @@ class BackgroundRecheck extends Component {
                   handleSendEmail={this.handleSendEmail}
                   isSentEmail={false}
                   privateEmail={privateEmail}
+                  loading={loading1}
                   // email={privateEmail}
                 />
               </Row>

@@ -98,9 +98,15 @@ const CandidateLayout = (props) => {
     setCurrent(localStep);
   }, [localStep]);
 
-  // useEffect(() => {
-  //   console.log('candidate layout');
-  // }, []);
+  useEffect(() => {
+    console.log('candidate layout');
+    return () => {
+      dispatch({
+        type: 'candidateProfile/clearAll',
+      });
+      console.log('OUT');
+    };
+  }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -145,7 +151,6 @@ const CandidateLayout = (props) => {
     //   }
     // }
 
-    console.log(id);
     if (valid) {
       dispatch({
         type: 'candidateProfile/save',
@@ -163,10 +168,8 @@ const CandidateLayout = (props) => {
       processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
       processStatus === 'PENDING-BACKGROUND-CHECK'
     ) {
-      console.log('Phase 1');
       return steps.slice(0, 4);
     }
-    console.log('Phase 2');
     return steps;
   };
 
@@ -175,8 +178,6 @@ const CandidateLayout = (props) => {
   };
 
   const newSteps = getSteps();
-
-  console.log(processStatus);
 
   return (
     <div className={s.candidate}>

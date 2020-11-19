@@ -16,7 +16,7 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData, loading1 } = props;
   const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
@@ -129,6 +129,8 @@ const OfferDetail = (props) => {
     });
   };
 
+  console.log(props);
+
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues, agreement, handbook });
@@ -222,13 +224,6 @@ const OfferDetail = (props) => {
     const { compensation, currency, timeoff } = formValues;
 
     dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: nextStep,
-      },
-    });
-
-    dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         compensationType: compensation,
@@ -278,6 +273,7 @@ const OfferDetail = (props) => {
         if (statusCode !== 200) {
           return;
         }
+
         dispatch({
           type: 'candidateInfo/updateByHR',
           payload: {
@@ -285,6 +281,13 @@ const OfferDetail = (props) => {
             currentStep: nextStep,
             offerLetter: templateID,
             // offerTemplate: templateId,
+          },
+        });
+
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: nextStep,
           },
         });
       });
@@ -327,6 +330,7 @@ const OfferDetail = (props) => {
                   <Button
                     type="primary"
                     onClick={onClickNext}
+                    loading={loading1}
                     className={`${styles.bottomBar__button__primary} ${
                       !allFieldsFilled ? styles.bottomBar__button__disabled : ''
                     }`}
@@ -461,8 +465,8 @@ const OfferDetail = (props) => {
                 <Form.Item name="compensation">
                   <Select className={styles.select} disabled={disableAll}>
                     <Option value="salary">Salary</Option>
-                    <Option value="salary2">Salary2</Option>
-                    <Option value="salary3">Salary3</Option>
+                    <Option value="salary2">Stock</Option>
+                    <Option value="salary3">Other Non-cash benefit</Option>
                   </Select>
                 </Form.Item>
               </div>
@@ -530,10 +534,11 @@ const OfferDetail = (props) => {
 //   offerDetail,
 // }))(OfferDetail);
 export default connect(
-  ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
+  ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
     data,
     checkMandatory,
     currentStep,
     tempData,
+    loading1: loading.effects['candidateInfo/createFinalOfferEffect'], // Loading for generating offer service
   }),
 )(OfferDetail);
