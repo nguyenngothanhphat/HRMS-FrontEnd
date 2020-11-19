@@ -23,6 +23,7 @@ class TableOffBoarding extends PureComponent {
     },
     {
       title: 'User ID',
+      width: '7%',
       dataIndex: 'userId',
     },
     {
