@@ -172,7 +172,6 @@ class BackgroundCheck extends Component {
       });
     }
     this.handleUpdateByHR();
-    // console.log('1');
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -186,17 +185,15 @@ class BackgroundCheck extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    console.log(processStatus);
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
     if (
       processStatus === PROVISIONAL_OFFER_DRAFT ||
       processStatus === FINAL_OFFERS_DRAFT ||
       processStatus === SENT_PROVISIONAL_OFFERS
     ) {
-      console.log('false');
-      return false;
+      return true;
     }
-    return true;
+    return false;
   };
 
   handleUpdateByHR = () => {
@@ -220,14 +217,21 @@ class BackgroundCheck extends Component {
   };
 
   closeModal = () => {
+    const { data = {}, dispatch } = this.props;
+    const { ticketID = '' } = data;
     this.setState({
       openModal: false,
+    });
+    dispatch({
+      type: 'candidateInfo/redirectToCandidateList',
+      payload: {
+        rookieId: ticketID,
+      },
     });
   };
 
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory } = this.props;
-    // console.log('e', e.target.value);
     if (e.target.value === 1) {
       dispatch({
         type: 'candidateInfo/save',
@@ -730,6 +734,7 @@ class BackgroundCheck extends Component {
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
     const { loading, processStatus, loading4 } = this.props;
+
     return (
       <>
         {loading ? (
@@ -758,6 +763,7 @@ class BackgroundCheck extends Component {
                           documentChecklistSetting={documentChecklistSetting}
                           processStatus={processStatus}
                           handleValidation={this.handleValidation}
+                          disabled={this.disableEdit()}
                         />
                       );
                     })}

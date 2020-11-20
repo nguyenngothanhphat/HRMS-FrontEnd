@@ -4,13 +4,14 @@ import send from './Assets/group-11.svg';
 import sent from './Assets/modal_img_1.png';
 import style from './index.less';
 
-const index = ({
+const SendEmail = ({
   email,
   handleSendEmail,
   onValuesChangeEmail,
   isSentEmail,
   handleSubmitAgain,
   privateEmail = '',
+  loading,
 }) => {
   return (
     <div className={style.SendEmail}>
@@ -73,7 +74,9 @@ const index = ({
                 <Input />
               </Form.Item>
               <Form.Item>
-                <Button htmlType="submit">Send Email</Button>
+                <Button htmlType="submit" loading={loading}>
+                  Send Email
+                </Button>
               </Form.Item>
             </Form>
           </div>
@@ -83,4 +86,4 @@ const index = ({
   );
 };
 
-export default index;
+export default SendEmail;

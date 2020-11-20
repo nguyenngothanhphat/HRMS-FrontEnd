@@ -150,7 +150,7 @@ export default {
   'component.eligibilityDocs.linkSubtitle':
     'The link to the form will be generated which can be shared',
   'component.eligibilityDocs.headerReminder': 'To be uploaded by candidate only',
-  'component.eligibilityDocs.title': 'Eligibility Documents',
+  'component.eligibilityDocs.title': 'Background Check',
   'component.eligibilityDocs.subtitle':
     'All documents supporting candidate’s employment eligibility will be displayed here',
   'component.eligibilityDocs.emailLabel': 'Personal email id of the joinee',

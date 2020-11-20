@@ -19,7 +19,7 @@ export default class OptionsHeader extends PureComponent {
         <div className={styles.container}>
           <Form name="uploadForm" ref={this.formRef} onFinish={this.onFinish}>
             <Row gutter={['20', '20']}>
-              <Col xs={5}>
+              <Col xs={7}>
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
                   <Select placeholder="Select an user" onChange={() => {}}>
@@ -28,7 +28,7 @@ export default class OptionsHeader extends PureComponent {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xs={8}>
+              <Col xs={9}>
                 <span className={styles.itemLabel}>Duration</span>
                 <div>
                   <Row gutter={['20', '20']}>
@@ -46,44 +46,24 @@ export default class OptionsHeader extends PureComponent {
                   </Row>
                 </div>
               </Col>
-
-              <Col xs={7}>
-                <span className={styles.itemLabel}>Status</span>
+              <Col className={styles.buttons} xs={8}>
+                <Button className={styles.submitBtn} htmlType="submit">
+                  Get data
+                </Button>
+                <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col className={styles.statusFilter}>
                 <Form.Item name="status">
-                  <Checkbox.Group style={{ width: '100%' }}>
-                    <Row>
-                      <Col span={12}>
-                        <Checkbox value="Approved">Approved</Checkbox>
-                      </Col>
-                      <Col span={12}>
-                        <Checkbox value="New">New</Checkbox>
-                      </Col>
-                      <Col span={12}>
-                        <Checkbox value="Rejected">Rejected</Checkbox>
-                      </Col>
-                      <Col span={12}>
-                        <Checkbox value="Waiting for approve">Waiting for approve</Checkbox>
-                      </Col>
-                    </Row>
+                  <span className={styles.itemLabel}>Status</span>
+                  <Checkbox.Group>
+                    <Checkbox value="Approved">Approved</Checkbox>
+                    <Checkbox value="New">New</Checkbox>
+                    <Checkbox value="Rejected">Rejected</Checkbox>
+                    <Checkbox value="Waiting for approve">Waiting for approve</Checkbox>
                   </Checkbox.Group>
                 </Form.Item>
-              </Col>
-              <Col xs={4}>
-                <Row
-                  className={styles.buttons}
-                  align="middle"
-                  justify="center"
-                  gutter={['20', '20']}
-                >
-                  <Col>
-                    <Button className={styles.submitBtn} htmlType="submit">
-                      Get data
-                    </Button>
-                  </Col>
-                  <Col>
-                    <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
-                  </Col>
-                </Row>
               </Col>
             </Row>
           </Form>

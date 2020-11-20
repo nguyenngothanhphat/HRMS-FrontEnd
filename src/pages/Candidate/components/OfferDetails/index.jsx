@@ -42,6 +42,7 @@ const OfferDetails = (props) => {
   const { candidateSignature: candidateSignatureProp = {} } = data;
 
   const [signature, setSignature] = useState(candidateSignatureProp || {});
+  const [signatureSubmit, setSignatureSubmit] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [uploadVisible, setUploadVisible] = useState(false);
@@ -193,19 +194,23 @@ const OfferDetails = (props) => {
     setModalVisible(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!dispatch) {
       return;
     }
     const { id } = signature;
     const { candidate } = data;
-    dispatch({
+    const res = await dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         candidateSignature: id,
         candidate,
       },
     });
+    const { statusCode = 1 } = res;
+    if (statusCode === 200) {
+      setSignatureSubmit(true);
+    }
   };
 
   const loadImage = (response) => {
@@ -284,7 +289,7 @@ const OfferDetails = (props) => {
                       </Button>
 
                       <span className={s.submitMessage}>
-                        {signature.url
+                        {signatureSubmit
                           ? formatMessage({ id: 'component.previewOffer.submitted' })
                           : ''}
                       </span>
@@ -296,7 +301,7 @@ const OfferDetails = (props) => {
                   md={10}
                   className={s.alert}
                 >
-                  {signature.url && (
+                  {signatureSubmit && (
                     <Alert display type="info">
                       <p>The signature has been submitted.</p>
                     </Alert>
@@ -335,6 +340,10 @@ const OfferDetails = (props) => {
         visible={uploadVisible}
         getResponse={(response) => {
           loadImage(response);
+          const { statusCode = 1 } = response;
+          if (statusCode === 200) {
+            setUploadVisible(false);
+          }
         }}
         handleCancel={() => {
           setUploadVisible(false);
