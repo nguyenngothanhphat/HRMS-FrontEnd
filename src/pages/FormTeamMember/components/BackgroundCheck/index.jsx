@@ -185,12 +185,8 @@ class BackgroundCheck extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
-    if (
-      processStatus === PROVISIONAL_OFFER_DRAFT ||
-      processStatus === FINAL_OFFERS_DRAFT ||
-      processStatus === SENT_PROVISIONAL_OFFERS
-    ) {
+    const { FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === FINAL_OFFERS_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
       return true;
     }
     return false;

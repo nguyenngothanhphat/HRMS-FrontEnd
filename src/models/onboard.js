@@ -102,6 +102,8 @@ const PROCESS_STATUS = {
 
   PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
   FINAL_OFFERS: 'FINAL-OFFERS',
+  FINAL_OFFERS_HR: 'REJECT-FINAL-OFFER-HR',
+  FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
 };
 
 const formatMonth = (month) => {
@@ -419,17 +421,6 @@ const onboard = {
 
     *fetchOnboardList({ payload }, { call, put }) {
       try {
-        const { processStatus = '' } = payload;
-        const req = {
-          processStatus: [processStatus],
-          page: 1,
-        };
-        const response = yield call(getOnboardingList, req);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        // const returnedData = formatData(response.data[0].paginatedResults);
-        const returnedData = formatData(response.data);
-
         const {
           PROVISIONAL_OFFER_DRAFT,
           FINAL_OFFERS_DRAFT,
@@ -451,7 +442,28 @@ const onboard = {
 
           PROVISIONAL_OFFERS,
           FINAL_OFFERS,
+          FINAL_OFFERS_HR,
+          FINAL_OFFERS_CANDIDATE,
         } = PROCESS_STATUS;
+
+        const { processStatus = '' } = payload;
+        let req;
+        if (processStatus === FINAL_OFFERS) {
+          req = {
+            processStatus: [FINAL_OFFERS_HR, FINAL_OFFERS_CANDIDATE],
+            page: 1,
+          };
+        } else {
+          req = {
+            processStatus: [processStatus],
+            page: 1,
+          };
+        }
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
 
         // Fetch data
         switch (processStatus) {
