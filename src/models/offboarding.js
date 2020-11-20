@@ -28,6 +28,7 @@ const offboarding = {
     listProjectByEmployee: [],
     itemNewCreate1On1: {},
     totallist: [],
+    showModalSuccessfully: false,
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -150,16 +151,18 @@ const offboarding = {
       return response;
     },
     *reviewRequest({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(reviewRequest, payload);
-        const { statusCode, message } = response;
+        response = yield call(reviewRequest, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message });
         const { id } = payload;
         yield put({ type: 'fetchRequestById', payload: { id } });
+        yield put({ type: 'save', payload: { showModalSuccessfully: true } });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {

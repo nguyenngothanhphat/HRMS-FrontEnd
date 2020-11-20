@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Button, Space } from 'antd';
 import warningNoteIcon from '@/assets/warning-icon.svg';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import moment from 'moment';
-import ModalNotice from '../ModalNotice';
 import styles from './index.less';
 
 const { TextArea } = Input;
-
+@connect(({ loading, offboarding: { myRequest: { _id: id } = {} } = {} }) => ({
+  id,
+  loading: loading.effects['offboarding/create1On1'],
+  loadingReview: loading.effects['offboarding/reviewRequest'],
+}))
 class ReasonPutOnHold extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
       q: '',
     };
   }
 
-  handleSubmitReason = (e) => {
-    e.stopPropagation();
-    this.openModal();
+  handleSubmitReason = () => {
+    const { q } = this.state;
+    const { dispatch, id, openNotification = () => {} } = this.props;
+    const payload = { id, reasonOnHold: q, action: 'ON-HOLD' };
+    dispatch({
+      type: 'offboarding/reviewRequest',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        openNotification();
+      }
+    });
   };
 
   handleChange = (e) => {
@@ -28,21 +39,9 @@ class ReasonPutOnHold extends Component {
     });
   };
 
-  openModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   render() {
-    const { visible, q } = this.state;
-    const { openNotification = () => {} } = this.props;
+    const { q } = this.state;
+    const { openNotification = () => {}, loadingReview } = this.props;
     const date = moment().format('DD.MM.YY | h:mm A');
 
     return (
@@ -80,18 +79,14 @@ class ReasonPutOnHold extends Component {
               <Button
                 disabled={!q}
                 className={styles.btn__submit}
-                onClick={(e) => this.handleSubmitReason(e)}
+                onClick={this.handleSubmitReason}
+                loading={loadingReview}
               >
                 Submit
               </Button>
             </div>
           </div>
         </div>
-        <ModalNotice
-          modalContent="Your decision to put this project On hold has been recorded."
-          visible={visible}
-          handleCancel={this.handleCancel}
-        />
       </div>
     );
   }
