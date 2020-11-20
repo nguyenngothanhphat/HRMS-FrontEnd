@@ -24,6 +24,7 @@ class ActionDetailTicket extends Component {
       keyModal: '',
       meetingDate: '',
       meetingTime: '',
+      idSet1on1: '',
     };
   }
 
@@ -91,12 +92,13 @@ class ActionDetailTicket extends Component {
     dispatch({
       type: 'offboarding/create1On1',
       payload,
-    }).then(({ statusCode }) => {
+    }).then(({ statusCode, data: { _id } = {} }) => {
       if (statusCode === 200) {
         this.setState(
           {
             meetingDate,
             meetingTime,
+            idSet1on1: _id,
           },
           () => {
             this.handleModalSet1On1();
@@ -121,9 +123,17 @@ class ActionDetailTicket extends Component {
   };
 
   removeScheduleMeeting = () => {
+    const { dispatch } = this.props;
     this.setState({
       isOpenSetMeeting: false,
       isDisplayBtnSetMeeting: true,
+      idSet1on1: '',
+    });
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        itemNewCreate1On1: {},
+      },
     });
   };
 
@@ -134,24 +144,24 @@ class ActionDetailTicket extends Component {
       isDisplayBtnSetMeeting,
       visible,
       keyModal,
+      idSet1on1,
     } = this.state;
     const {
-      handleDisplayNotifications,
       isOpenFormReason,
       listMeetingTime = [],
       loading,
       itemRequest,
+      openNotification = () => {},
+      listDisplay = [],
     } = this.props;
     const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = itemRequest;
     return (
       <Fragment>
         <div className={styles.actionDetailTicket}>
-          {isDisplayBtnSetMeeting && this.renderBtnSetMeeting()}
+          {isDisplayBtnSetMeeting && listDisplay.length === 0 && this.renderBtnSetMeeting()}
           {isOpenSetMeeting && !isDisplayBtnSetMeeting && this.renderScheduleMeeting()}
-          {isOpenClosingComments && (
-            <ClosingComments handleDisplayNotifications={handleDisplayNotifications} />
-          )}
-          {isOpenFormReason && <ReasonPutOnHold />}
+          {isOpenClosingComments && <ClosingComments idComment={idSet1on1} />}
+          {isOpenFormReason && <ReasonPutOnHold openNotification={openNotification} />}
         </div>
         <ModalSet1On1
           visible={visible}

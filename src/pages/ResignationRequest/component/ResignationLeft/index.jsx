@@ -56,7 +56,7 @@ class ResigationLeft extends Component {
           <div className={styles.center}>
             <p className={styles.textBox}>Reason for leaving us?</p>
             <p className={styles.textTime}>
-              <span style={{ color: 'black' }}> {date}</span>
+              <span style={{ color: 'black' }}>{date}</span>
             </p>
           </div>
           <TextArea

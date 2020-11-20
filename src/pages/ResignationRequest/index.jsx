@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
@@ -7,21 +7,19 @@ import Resignation from './component/ResignationRight';
 import Workflow from './component/TerminationWorkflow';
 import styles from './index.less';
 
-class ResignationRequest extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
+class ResignationRequest extends PureComponent {
   render() {
-    const { sendrequest } = this.props;
+    const {
+      sendrequest,
+      currentUser: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
+    } = this.props;
     return (
       <PageContainer>
         <div className={styles.root}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with Aditya Venkatesh [PSI: 1022]
+                Terminate work relationship with {firstName} [{employeeId}]
               </p>
               <div>
                 <span className={styles.textActivity}>View Activity Log</span>
@@ -43,6 +41,9 @@ class ResignationRequest extends Component {
   }
 }
 
-export default connect(({ offboarding: { sendrequest } = {} }) => ({
-  sendrequest,
-}))(ResignationRequest);
+export default connect(
+  ({ offboarding: { sendrequest } = {}, user: { currentUser = {} } = {} }) => ({
+    sendrequest,
+    currentUser,
+  }),
+)(ResignationRequest);

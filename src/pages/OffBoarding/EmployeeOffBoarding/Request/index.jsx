@@ -66,6 +66,7 @@ class ResignationRequest extends Component {
     dispatch({
       type: 'offboarding/create1On1',
       payload,
+      isEmployee: true,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         this.handleModalSet1On1();
@@ -80,19 +81,22 @@ class ResignationRequest extends Component {
       manager: {
         generalInfo: { employeeId: idManager = '', firstName: nameManager = '' } = {},
       } = {},
+      status = '',
+      employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
     } = myRequest;
+
     return (
       <PageContainer>
         <div className={styles.request}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with Aditya Venkatesh [PSI: 1022]
+                Terminate work relationship with {nameEmployee} [{employeeId}]
               </p>
               <div>
-                <span className={styles.textActivity}>View Activity Log</span>
+                <span className={styles.textActivity}>Status:</span>
                 <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
-                  (00)
+                  {status}
                 </span>
               </div>
             </div>
