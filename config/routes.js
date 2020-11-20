@@ -313,7 +313,7 @@ const routes = [
             authority: ['manager'],
           },
           {
-            path: '/employee-offboarding/resignation-request',
+            path: '/manager-offboarding/resignation-request',
             name: 'ResignationRequest',
             hideInMenu: true,
             component: './ResignationRequest',

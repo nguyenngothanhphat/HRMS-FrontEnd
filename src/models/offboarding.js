@@ -29,7 +29,7 @@ const offboarding = {
     *fetchList({ payload }, { call, put }) {
       try {
         const response = yield call(getOffboardingList, payload);
-        const { statusCode, data: listOffboarding = [] } = response;
+        const { statusCode, data: { items: listOffboarding = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listOffboarding } });
       } catch (errors) {
@@ -39,7 +39,7 @@ const offboarding = {
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
         const response = yield call(teamRequestList, payload);
-        const { statusCode, data: listTeamRequest = [] } = response;
+        const { statusCode, data: { items: listTeamRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTeamRequest } });
       } catch (errors) {

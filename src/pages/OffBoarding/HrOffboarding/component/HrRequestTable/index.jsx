@@ -70,7 +70,7 @@ class HRrequestTable extends Component {
             className={styles.tabComponent}
             tabBarExtraContent={resignationRequest}
           >
-            <TabPane tab="'Team request" key="1">
+            <TabPane tab="Team request" key="1">
               <div className={styles.tableTab}>
                 <TabContent data={listTeamRequest} />
               </div>

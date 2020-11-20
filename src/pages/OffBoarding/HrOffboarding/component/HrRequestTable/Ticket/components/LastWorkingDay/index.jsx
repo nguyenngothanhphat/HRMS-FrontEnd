@@ -33,27 +33,42 @@ class LastWorkingDay extends PureComponent {
     });
   };
 
+  handleChange = () => {};
+
   render() {
     const { visible } = this.state;
+    const { lastWorkingDate } = this.props;
     const date = moment().format('DD.MM.YY | h:mm A');
 
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
           <div className={styles.titleText}>Last working day</div>
-          <div>
-            <span className={styles.subText}>
-              <span style={{ marginRight: '30px' }}>
-                <img src={Editicon} alt="" className={styles.icon} style={{ cursor: 'pointer' }} />
-                <span style={{ fontWeight: 'normal' }}> Edit</span>
+          {lastWorkingDate && (
+            <div>
+              <span className={styles.subText}>
+                <span style={{ marginRight: '30px' }}>
+                  <img
+                    src={Editicon}
+                    alt=""
+                    className={styles.icon}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <span style={{ fontWeight: 'normal' }}> Edit</span>
+                </span>
+                {date}
               </span>
-              {date}
-            </span>
-          </div>
+            </div>
+          )}
         </div>
         <Row className={styles.flex}>
           <Col span={8}>
-            <DatePicker className={styles.datePicker} />
+            <DatePicker
+              format="DD /MM /YYYY"
+              className={styles.datePicker}
+              // value={lastWorkingDate}
+              onChange={this.handleChange}
+            />
           </Col>
           <Col span={1} />
           <Col span={15} className={styles.detalFrom}>

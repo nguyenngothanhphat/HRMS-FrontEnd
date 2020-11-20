@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
+import { connect } from 'umi';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import LastWorkingDay from './components/LastWorkingDay';
@@ -10,6 +11,9 @@ import ActionSchedule from './components/ActionSchedule';
 import InfoEmployee from './components/RightContent';
 import styles from './index.less';
 
+@connect(({ offboarding: { myRequest = {} } = {} }) => ({
+  myRequest,
+}))
 class HRDetailTicket extends PureComponent {
   constructor(props) {
     super(props);
@@ -17,6 +21,19 @@ class HRDetailTicket extends PureComponent {
       data: false,
       saveSchedule: false,
     };
+  }
+
+  componentDidMount() {
+    const {
+      dispatch,
+      match: { params: { id: code = '' } = {} },
+    } = this.props;
+    dispatch({
+      type: 'offboarding/fetchRequestById',
+      payload: {
+        id: code,
+      },
+    });
   }
 
   handleChange = () => {
@@ -33,23 +50,46 @@ class HRDetailTicket extends PureComponent {
 
   render() {
     const { data, saveSchedule } = this.state;
-    const { visible } = this.props;
+    const { visible, myRequest } = this.props;
+
+    const {
+      reasonForLeaving = '',
+      requestDate = '',
+      lastWorkingDate,
+      employee: {
+        generalInfo: { firstName: nameFrist = '', employeeId = '', avatar = '' } = {},
+        title: { name: jobTitle = '' } = {},
+      } = {},
+    } = myRequest;
     return (
       <PageContainer>
         <div className={styles.hrDetailTicket}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with Venkat Vamsi Kr ... [PSI: 1022]
+                Terminate work relationship with {nameFrist}...[{employeeId}]
               </p>
             </div>
           </Affix>
           <Row className={styles.detailTicket__content} gutter={[30, 30]}>
             <Col span={17}>
-              <RequesteeDetail />
-              <ResignationRequestDetail />
+              <RequesteeDetail
+                id={employeeId}
+                avatar={avatar}
+                name={nameFrist}
+                jobTitle={jobTitle}
+              />
+              <ResignationRequestDetail
+                reason={reasonForLeaving}
+                date={requestDate}
+                name={nameFrist}
+              />
               <CommentsFromHR />
-              <LastWorkingDay handleRemoveToServer={this.handleChange} visible={visible} />
+              <LastWorkingDay
+                handleRemoveToServer={this.handleChange}
+                visible={visible}
+                lastWorkingDate={lastWorkingDate}
+              />
             </Col>
             <Col span={7}>
               <InfoEmployee />
