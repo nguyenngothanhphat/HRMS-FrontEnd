@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
+import StatusRequest from '@/components/StatusRequest';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
@@ -93,12 +94,7 @@ class ResignationRequest extends Component {
               <p className={styles.titlePage__text}>
                 Terminate work relationship with {nameEmployee} [{employeeId}]
               </p>
-              <div>
-                <span className={styles.textActivity}>Status:</span>
-                <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
-                  {status}
-                </span>
-              </div>
+              <StatusRequest status={status} />
             </div>
           </Affix>
           <Row className={styles.content} gutter={[40, 40]}>

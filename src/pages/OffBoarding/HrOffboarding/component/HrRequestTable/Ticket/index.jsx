@@ -67,7 +67,7 @@ class HRDetailTicket extends PureComponent {
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with {nameFrist}...[{employeeId}]
+                Terminate work relationship with {nameFrist} [{employeeId}]
               </p>
             </div>
           </Affix>
