@@ -1,15 +1,11 @@
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class ResignationRequestDetail extends PureComponent {
   render() {
-    const requestDetail = {
-      date: '20.08.2020',
-      employeeName: 'Employee Name',
-      reason:
-        'The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…The reason I have decided to end my journey with Lollypop here is because…',
-    };
+    const { reason, date, name } = this.props;
     return (
       <div className={styles.resignationRequest}>
         <p className={styles.resignationRequest__title}>
@@ -19,10 +15,10 @@ class ResignationRequestDetail extends PureComponent {
           <p className={styles.resignationRequest__text}>
             {formatMessage({ id: 'pages.offBoarding.resignation.date' })}
           </p>
-          <p>{requestDetail.date}</p>
+          <p>{moment(date).format('DD . MM .YYYY')}</p>
         </div>
-        <p className={styles.resignationRequest__text}>Employee Name</p>
-        <p>{requestDetail.reason}</p>
+        <p className={styles.resignationRequest__text}>{name}</p>
+        <p>{reason}</p>
       </div>
     );
   }
