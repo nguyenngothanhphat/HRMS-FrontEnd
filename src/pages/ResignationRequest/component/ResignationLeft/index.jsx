@@ -15,6 +15,20 @@ class ResigationLeft extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch, locationID, companyID } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'offboarding/fetchApprovalFlowList',
+      payload: {
+        company: companyID,
+        location: locationID,
+      },
+    });
+  }
+
   submitForm = (action) => {
     const { dispatch, approvalflow = [] } = this.props;
     const { reasonForLeaving } = this.state;
@@ -102,8 +116,21 @@ class ResigationLeft extends Component {
   }
 }
 
-export default connect(({ offboarding: { sendrequest, approvalflow = [] } = {}, loading }) => ({
-  approvalflow,
-  sendrequest,
-  loading: loading.effects['offboarding/sendRequest'],
-}))(ResigationLeft);
+export default connect(
+  ({
+    offboarding: { sendrequest, approvalflow = [] } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+    } = {},
+    loading,
+  }) => ({
+    locationID,
+    companyID,
+    approvalflow,
+    sendrequest,
+    loading: loading.effects['offboarding/sendRequest'],
+  }),
+)(ResigationLeft);

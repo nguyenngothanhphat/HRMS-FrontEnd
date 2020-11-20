@@ -30,7 +30,7 @@ class EmployeeOffBoading extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, companyID } = this.props;
+    const { dispatch } = this.props;
     if (!dispatch) {
       return;
     }
@@ -38,13 +38,6 @@ class EmployeeOffBoading extends Component {
       type: 'offboarding/fetchList',
       payload: {
         status: 'IN-PROGRESS',
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
       },
     });
   }
