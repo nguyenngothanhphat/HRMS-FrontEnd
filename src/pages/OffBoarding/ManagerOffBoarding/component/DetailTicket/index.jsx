@@ -8,6 +8,7 @@ import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ActionDetailTicket from './components/ActionDetailTicket';
 import RightContent from './components/RightContent';
+import ModalNotice from './components/ModalNotice';
 import styles from './index.less';
 
 @connect(
@@ -19,6 +20,7 @@ import styles from './index.less';
       listMeetingTime = [],
       listProjectByEmployee = [],
       itemNewCreate1On1 = {},
+      showModalSuccessfully = false,
     } = {},
   }) => ({
     myRequest,
@@ -28,6 +30,7 @@ import styles from './index.less';
     loading: loading.effects['offboarding/fetchRequestById'],
     loadingReview: loading.effects['offboarding/reviewRequest'],
     itemNewCreate1On1,
+    showModalSuccessfully,
   }),
 )
 class DetailTicket extends Component {
@@ -36,6 +39,7 @@ class DetailTicket extends Component {
     this.state = {
       isOpenFormReason: false,
       handleNotification: true,
+      selectButton: '',
     };
   }
 
@@ -68,14 +72,27 @@ class DetailTicket extends Component {
       payload: {
         itemNewCreate1On1: {},
         myRequest: {},
+        showModalSuccessfully: false,
       },
     });
   }
+
+  hideModal = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        showModalSuccessfully: false,
+      },
+    });
+    this.setState({ selectButton: '' });
+  };
 
   openFormReason = () => {
     this.setState({
       isOpenFormReason: true,
       handleNotification: false,
+      selectButton: 'ON-HOLD',
     });
   };
 
@@ -88,6 +105,7 @@ class DetailTicket extends Component {
       dispatch,
       match: { params: { id = '' } = {} },
     } = this.props;
+    this.setState({ selectButton: action });
     dispatch({
       type: 'offboarding/reviewRequest',
       payload: {
@@ -135,13 +153,14 @@ class DetailTicket extends Component {
   };
 
   render() {
-    const { isOpenFormReason, handleNotification } = this.state;
+    const { isOpenFormReason, handleNotification, selectButton } = this.state;
     const {
       loading,
       myRequest = {},
       list1On1 = [],
       listProjectByEmployee: listProject = [],
       itemNewCreate1On1: { _id: idNewComment } = {},
+      showModalSuccessfully,
     } = this.props;
     const {
       status = '',
@@ -161,49 +180,56 @@ class DetailTicket extends Component {
     const listDisplay = listComment.filter((item) => item._id !== idNewComment);
 
     return (
-      <PageContainer>
-        <div className={styles.detailTicket}>
-          <Affix offsetTop={40}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>
-                Terminate work relationship with {nameEmployee} [{employeeId}]
-              </p>
-              <StatusRequest status={status} />
-            </div>
-          </Affix>
-          <Row className={styles.detailTicket__content} gutter={[40, 0]}>
-            <Col span={18}>
-              <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
-              <ResignationRequestDetail itemRequest={myRequest} />            
-              {listDisplay.length !== 0 && (
-                <div className={styles.viewListComment}>
-                  {listDisplay.map((item) => {
-                    const { _id } = item;
-                    return (
-                      <Fragment key={_id}>
-                        <EditComment itemComment={item} />
-                      </Fragment>
-                    );
-                  })}
-                </div>
-              )}
-              <ActionDetailTicket
-                isOpenFormReason={isOpenFormReason}
-                openNotification={this.openNotification}
-                itemRequest={myRequest}
-                listDisplay={listDisplay}
-              />
-            </Col>
-            <Col span={6}>
-              <RightContent />
-            </Col>
-          </Row>
-          {listComment.length !== 0 &&
-            handleNotification &&
-            status === 'IN-PROGRESS' &&
-            this.renderBlockNotifications()}
-        </div>
-      </PageContainer>
+      <>
+        <PageContainer>
+          <div className={styles.detailTicket}>
+            <Affix offsetTop={40}>
+              <div className={styles.titlePage}>
+                <p className={styles.titlePage__text}>
+                  Terminate work relationship with {nameEmployee} [{employeeId}]
+                </p>
+                <StatusRequest status={status} />
+              </div>
+            </Affix>
+            <Row className={styles.detailTicket__content} gutter={[40, 0]}>
+              <Col span={18}>
+                <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
+                <ResignationRequestDetail itemRequest={myRequest} />            
+                {listDisplay.length !== 0 && (
+                  <div className={styles.viewListComment}>
+                    {listDisplay.map((item) => {
+                      const { _id } = item;
+                      return (
+                        <Fragment key={_id}>
+                          <EditComment itemComment={item} />
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                )}
+                <ActionDetailTicket
+                  isOpenFormReason={isOpenFormReason}
+                  openNotification={this.openNotification}
+                  itemRequest={myRequest}
+                  listDisplay={listDisplay}
+                />
+              </Col>
+              <Col span={6}>
+                <RightContent />
+              </Col>
+            </Row>
+            {listComment.length !== 0 &&
+              handleNotification &&
+              status === 'IN-PROGRESS' &&
+              this.renderBlockNotifications()}
+          </div>
+        </PageContainer>
+        <ModalNotice
+          visible={showModalSuccessfully}
+          type={selectButton}
+          handleCancel={this.hideModal}
+        />
+      </>
     );
   }
 }
