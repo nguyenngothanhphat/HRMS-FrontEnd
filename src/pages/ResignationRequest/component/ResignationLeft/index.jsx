@@ -11,6 +11,7 @@ class ResigationLeft extends Component {
     super(props);
     this.state = {
       reasonForLeaving: '',
+      sendleaveRequest: false,
     };
   }
 
@@ -25,6 +26,13 @@ class ResigationLeft extends Component {
         action,
         approvalFlow: fiterActive._id,
       },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        this.setState({
+          sendleaveRequest: true,
+        });
+      }
     });
   };
 
@@ -35,8 +43,8 @@ class ResigationLeft extends Component {
   };
 
   render() {
-    const { reasonForLeaving = '' } = this.state;
-    const { loading, sendrequest } = this.props;
+    const { reasonForLeaving = '', sendleaveRequest } = this.state;
+    const { loading } = this.props;
     const date = moment().format('DD.MM.YY | h:mm A');
     return (
       <div className={styles.resignationLeft}>
@@ -65,7 +73,7 @@ class ResigationLeft extends Component {
             onChange={this.handleChange}
           />
         </div>
-        {!sendrequest && (
+        {!sendleaveRequest && (
           <div className={styles.subbmitForm}>
             <div className={styles.subbmiText}>
               By default notifications will be sent to HR, your manager and recursively loop to your

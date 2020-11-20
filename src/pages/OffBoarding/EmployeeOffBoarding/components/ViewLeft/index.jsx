@@ -56,8 +56,7 @@ class ViewLeft extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { data = [] } = this.props;
-
+    const { data = [], countdata = [] } = this.props;
     return (
       <div className={styles.Contanner}>
         <div className={styles.title_Box}>
@@ -82,7 +81,7 @@ class ViewLeft extends Component {
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
             <TabPane tab="Send Request" key="1">
-              <TabContent data={data} />
+              <TabContent data={data} countTable={countdata} />
             </TabPane>
             <TabPane tab="Drafts" key="2">
               <div className={styles.marrinTop}>

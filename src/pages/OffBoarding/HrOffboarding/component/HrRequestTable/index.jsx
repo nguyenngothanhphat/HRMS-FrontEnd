@@ -76,7 +76,9 @@ class HRrequestTable extends Component {
               </div>
             </TabPane>
             <TabPane tab="My Request" key="2">
-              <MyRequestContent />
+              <div className={styles.tableTab}>
+                <MyRequestContent />
+              </div>
             </TabPane>
           </Tabs>
         </Col>

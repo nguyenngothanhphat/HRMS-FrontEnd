@@ -1,16 +1,18 @@
 import React, { PureComponent } from 'react';
 import { DatePicker, Row, Col, Button } from 'antd';
 import Editicon from '@/assets/editIcon.svg';
-import moment from 'moment';
+import { connect } from 'umi';
 import warningNoteIcon from '@/assets/warning-icon.svg';
 import ModalNoticeSuccess from '../ModalNoticeSuccess';
 import styles from './index.less';
 
+@connect()
 class LastWorkingDay extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      lastday: '',
     };
   }
 
@@ -33,12 +35,40 @@ class LastWorkingDay extends PureComponent {
     });
   };
 
-  handleChange = () => {};
+  handleSubmit = () => {
+    const { lastday } = this.state;
+    const { code, dispatch } = this.props;
+    const time = lastday;
+
+    dispatch({
+      type: 'offboarding/reviewRequest',
+      payload: {
+        action: 'ACCEPTED',
+        lastWorkingDate: time,
+        id: code,
+      },
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      lastday: '',
+    });
+  };
+
+  changeDate = (a) => {
+    console.log('a', a);
+    const event = new Date(a);
+    event.toDateString();
+
+    this.setState({
+      lastday: event,
+    });
+  };
 
   render() {
     const { visible } = this.state;
     const { lastWorkingDate } = this.props;
-    const date = moment().format('DD.MM.YY | h:mm A');
 
     return (
       <div className={styles.lastWorkDay}>
@@ -56,7 +86,7 @@ class LastWorkingDay extends PureComponent {
                   />
                   <span style={{ fontWeight: 'normal' }}> Edit</span>
                 </span>
-                {date}
+                {/* {date} */}
               </span>
             </div>
           )}
@@ -64,10 +94,10 @@ class LastWorkingDay extends PureComponent {
         <Row className={styles.flex}>
           <Col span={8}>
             <DatePicker
-              format="DD /MM /YYYY"
+              format="DD-MM-YYYY"
               className={styles.datePicker}
-              // value={lastWorkingDate}
-              onChange={this.handleChange}
+              // value="10/08/1997"
+              onChange={this.changeDate}
             />
           </Col>
           <Col span={1} />
@@ -84,8 +114,10 @@ class LastWorkingDay extends PureComponent {
               your department head.
             </span>
           </div>
-          <Button className={styles.btnCancel}>Cancel</Button>
-          <Button className={styles.btnSubmit} onClick={this.handleOpenSchedule}>
+          <Button className={styles.btnCancel} onClick={this.handleCancel}>
+            Cancel
+          </Button>
+          <Button className={styles.btnSubmit} onClick={this.handleSubmit}>
             Submit
           </Button>
         </div>

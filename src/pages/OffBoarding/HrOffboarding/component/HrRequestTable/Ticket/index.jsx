@@ -34,6 +34,12 @@ class HRDetailTicket extends PureComponent {
         id: code,
       },
     });
+    dispatch({
+      type: 'offboarding/getList1On1',
+      payload: {
+        offBoardingRequest: code,
+      },
+    });
   }
 
   handleChange = () => {
@@ -50,7 +56,11 @@ class HRDetailTicket extends PureComponent {
 
   render() {
     const { data, saveSchedule } = this.state;
-    const { visible, myRequest } = this.props;
+    const {
+      visible,
+      myRequest,
+      match: { params: { id: code = '' } = {} },
+    } = this.props;
 
     const {
       reasonForLeaving = '',
@@ -87,6 +97,7 @@ class HRDetailTicket extends PureComponent {
               <CommentsFromHR />
               <LastWorkingDay
                 handleRemoveToServer={this.handleChange}
+                code={code}
                 visible={visible}
                 lastWorkingDate={lastWorkingDate}
               />

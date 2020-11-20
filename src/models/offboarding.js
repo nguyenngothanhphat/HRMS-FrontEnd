@@ -27,14 +27,18 @@ const offboarding = {
     listMeetingTime: [],
     listProjectByEmployee: [],
     itemNewCreate1On1: {},
+    totallist: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
       try {
         const response = yield call(getOffboardingList, payload);
-        const { statusCode, data: { items: listOffboarding = [] } = {} } = response;
+        const {
+          statusCode,
+          data: { items: listOffboarding = [], total: totallist = [] } = {},
+        } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding } });
+        yield put({ type: 'save', payload: { listOffboarding, totallist } });
       } catch (errors) {
         dialog(errors);
       }
@@ -42,16 +46,20 @@ const offboarding = {
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
         const response = yield call(teamRequestList, payload);
-        const { statusCode, data: { items: listTeamRequest = [] } = {} } = response;
+        const {
+          statusCode,
+          data: { items: listTeamRequest = [], total: totallist = [] } = {},
+        } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTeamRequest } });
+        yield put({ type: 'save', payload: { listTeamRequest, totallist } });
       } catch (errors) {
         dialog(errors);
       }
     },
     *sendRequest({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(sendRequest, payload);
+        response = yield call(sendRequest, payload);
         const { statusCode, data: request = [] } = response;
 
         if (statusCode !== 200) throw response;
@@ -61,6 +69,7 @@ const offboarding = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchRequestById({ payload }, { call, put }) {
       try {

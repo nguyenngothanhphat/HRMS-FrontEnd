@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Button } from 'antd';
 import { formatMessage, connect } from 'umi';
 import externalLinkIcon from '@/assets/external-link.svg';
@@ -156,7 +156,7 @@ class ActionDetailTicket extends Component {
     } = this.props;
     const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = itemRequest;
     return (
-      <Fragment>
+      <>
         <div className={styles.actionDetailTicket}>
           {isDisplayBtnSetMeeting && listDisplay.length === 0 && this.renderBtnSetMeeting()}
           {isOpenSetMeeting && !isDisplayBtnSetMeeting && this.renderScheduleMeeting()}
@@ -174,7 +174,7 @@ class ActionDetailTicket extends Component {
           key={keyModal}
           loading={loading}
         />
-      </Fragment>
+      </>
     );
   }
 }
