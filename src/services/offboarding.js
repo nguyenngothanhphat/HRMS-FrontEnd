@@ -72,3 +72,10 @@ export async function complete1On1(payload) {
     data: payload,
   });
 }
+
+export async function reviewRequest(payload) {
+  return request('/api/offboardingrequest/review', {
+    method: 'POST',
+    data: payload,
+  });
+}

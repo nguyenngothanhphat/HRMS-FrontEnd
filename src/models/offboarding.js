@@ -11,6 +11,7 @@ import {
   teamRequestList,
   getListProjectByEmployee,
   complete1On1,
+  reviewRequest,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -138,6 +139,18 @@ const offboarding = {
         dialog(errors);
       }
       return response;
+    },
+    *reviewRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(reviewRequest, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        const { id } = payload;
+        yield put({ type: 'fetchRequestById', payload: { id } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

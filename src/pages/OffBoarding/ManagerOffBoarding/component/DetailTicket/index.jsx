@@ -25,6 +25,7 @@ import styles from './index.less';
     listMeetingTime,
     listProjectByEmployee,
     loading: loading.effects['offboarding/fetchRequestById'],
+    loadingReview: loading.effects['offboarding/reviewRequest'],
     itemNewCreate1On1,
   }),
 )
@@ -81,21 +82,52 @@ class DetailTicket extends Component {
     this.setState({ isOpenFormReason: false, handleNotification: true });
   };
 
+  handleReviewRequest = (action) => {
+    const {
+      dispatch,
+      match: { params: { id = '' } = {} },
+    } = this.props;
+    dispatch({
+      type: 'offboarding/reviewRequest',
+      payload: {
+        id,
+        action,
+      },
+    });
+  };
+
   renderBlockNotifications = () => {
+    const { loadingReview } = this.props;
     return (
       <Row>
         <div className={styles.notification}>
-          <div className={styles.notification__content}>
-            <span>
-              By default notifications will be sent to HR, your manager and recursively loop to your
-              department head.
-            </span>
-            <span onClick={this.openFormReason}>
-              {formatMessage({ id: 'pages.offBoarding.putOnHold' })}
-            </span>
-            <span>{formatMessage({ id: 'pages.offBoarding.reject' })}</span>
-            <span>{formatMessage({ id: 'pages.offBoarding.accept' })}</span>
-          </div>
+          {loadingReview ? (
+            <div className={styles.notification__loading}>
+              <Spin />
+            </div>
+          ) : (
+            <div className={styles.notification__content}>
+              <span>
+                By default notifications will be sent to HR, your manager and recursively loop to
+                your department head.
+              </span>
+              <span style={{ cursor: 'pointer' }} onClick={this.openFormReason}>
+                {formatMessage({ id: 'pages.offBoarding.putOnHold' })}
+              </span>
+              <span
+                style={{ cursor: 'pointer' }}
+                onClick={() => this.handleReviewRequest('REJECTED')}
+              >
+                {formatMessage({ id: 'pages.offBoarding.reject' })}
+              </span>
+              <span
+                style={{ cursor: 'pointer' }}
+                onClick={() => this.handleReviewRequest('ACCEPTED')}
+              >
+                {formatMessage({ id: 'pages.offBoarding.accept' })}
+              </span>
+            </div>
+          )}
         </div>
       </Row>
     );
@@ -165,7 +197,10 @@ class DetailTicket extends Component {
               <RightContent />
             </Col>
           </Row>
-          {listComment.length !== 0 && handleNotification && this.renderBlockNotifications()}
+          {listComment.length !== 0 &&
+            handleNotification &&
+            status === 'IN-PROGRESS' &&
+            this.renderBlockNotifications()}
         </div>
       </PageContainer>
     );
