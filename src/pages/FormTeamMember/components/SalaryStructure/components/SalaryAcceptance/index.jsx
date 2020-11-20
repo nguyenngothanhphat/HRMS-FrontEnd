@@ -169,6 +169,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderNegotiationForm = () => {
+    const { privateEmail = '' } = this.props;
     return (
       <>
         <div className={styles.salaryAcceptanceWrapper}>
