@@ -1,8 +1,12 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import { Modal, Button } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ employeesManagement }) => ({
+  employeesManagement,
+}))
 class ModalConfirmRemove extends Component {
   constructor(props) {
     super(props);
@@ -24,11 +28,32 @@ class ModalConfirmRemove extends Component {
   };
 
   handleRemoveToServer = () => {
-    console.log('handleRemoveToServer');
+    const { dispatch, user = {} } = this.props;
+    const { _id = '' } = user;
+    dispatch({
+      type: 'employeesManagement/removeEmployee',
+      id: _id,
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        this.handleCancel();
+        this.refreshUsersList();
+      }
+    });
+  };
+
+  refreshUsersList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/fetchActiveEmployeesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchInActiveEmployeesList',
+    });
   };
 
   render() {
-    const { visible = false, loading } = this.props;
+    const { visible = false, loading, employee } = this.props;
+    const { generalInfo: { firstName = '', lastName = '', employeeId = '' } = {} } = employee;
     return (
       <Modal
         className={styles.modalUpload}
@@ -52,7 +77,7 @@ class ModalConfirmRemove extends Component {
           </Button>,
         ]}
       >
-        content
+        Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
       </Modal>
     );
   }

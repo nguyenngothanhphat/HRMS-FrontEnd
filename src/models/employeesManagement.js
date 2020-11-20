@@ -11,6 +11,8 @@ import {
   addEmployee,
   importEmployees,
   searchEmployees,
+  getEmployeeDetailById,
+  updateEmployee,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -29,6 +31,7 @@ const employeesManagement = {
     statusAddEmployee: false,
     returnEmployeesList: {},
     filter: [],
+    employeeDetail: {},
     clearFilter: false,
     clearName: false,
   },
@@ -192,6 +195,30 @@ const employeesManagement = {
         dialog(errors);
       }
       yield put({ type: 'save', payload: { statusImportEmployees } });
+    },
+    *fetchEmployeeDetail({ id = '' }, { call, put }) {
+      try {
+        const response = yield call(getEmployeeDetailById, { id });
+        const { statusCode, data: employeeDetail = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeDetail } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeEmployee({ id = '' }, { call }) {
+      try {
+        const response = yield call(updateEmployee, { id, status: 'INACTIVE' });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Employee Inactivated!',
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return null;
+      }
     },
   },
   reducers: {

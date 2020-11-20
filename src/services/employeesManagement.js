@@ -68,3 +68,17 @@ export async function searchEmployees(payload) {
     data: payload,
   });
 }
+
+export async function getEmployeeDetailById(payload) {
+  return request('/api/employee/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateEmployee(payload) {
+  return request('/api/employee/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

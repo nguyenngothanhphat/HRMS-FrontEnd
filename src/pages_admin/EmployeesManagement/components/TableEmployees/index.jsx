@@ -1,17 +1,22 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, history } from 'umi';
+import { formatMessage, history, connect } from 'umi';
 import moment from 'moment';
 import ModalConfirmRemove from '../ModalConfirmRemove';
 import styles from './index.less';
 
-export default class TableEmployees extends PureComponent {
+@connect(({ loading, employeesManagement }) => ({
+  loadingEmployeeProfile: loading.effects['employeesManagement/fetchEmployeeDetail'],
+  employeesManagement,
+}))
+class TableEmployees extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
       visible: false,
+      selectedEmployeeId: null,
     };
   }
 
@@ -113,10 +118,10 @@ export default class TableEmployees extends PureComponent {
       },
       {
         title: 'Action',
-        dataIndex: 'action',
+        dataIndex: '_id',
         width: '5%',
         align: 'center',
-        render: () => (
+        render: (_id) => (
           <div className={styles.employeesAction}>
             <img
               src="assets/images/remove.svg"
@@ -135,27 +140,25 @@ export default class TableEmployees extends PureComponent {
     }));
   };
 
-  openModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
   handleCancel = () => {
     this.setState({
       visible: false,
+      selectedEmployeeId: null,
     });
   };
 
-  deleteEmployee = (e) => {
+  deleteEmployee = (e, record) => {
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'employeesManagement/fetchEmployeeDetail',
+    //   id: record,
+    // }).then(() => {
     e.stopPropagation();
-    this.openModal();
-  };
-
-  editUser = (key, e) => {
-    e.preventDefault();
-    // eslint-disable-next-line no-alert
-    alert('EDIT USER', key);
+    this.setState({
+      selectedEmployeeId: record,
+      visible: true,
+    });
+    // });
   };
 
   // pagination
@@ -185,8 +188,12 @@ export default class TableEmployees extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys, visible } = this.state;
+    const {
+      data = [],
+      loading,
+      employeesManagement: { employeeDetail = {} },
+    } = this.props;
+    const { pageSelected, selectedRowKeys, visible, selectedEmployeeId } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100vw',
@@ -238,9 +245,11 @@ export default class TableEmployees extends PureComponent {
           titleModal="Confirm Remove Employee"
           visible={visible}
           handleCancel={this.handleCancel}
-          getResponse={this.getResponse}
+          employee={employeeDetail}
         />
       </div>
     );
   }
 }
+
+export default TableEmployees;

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
@@ -61,7 +61,6 @@ class DirectoryComponent extends PureComponent {
         active: 'active',
         myTeam: 'myTeam',
         inActive: 'inActive',
-        viewProfile: 'viewProfile',
       },
       tabId: 'active',
       changeTab: false,
@@ -342,12 +341,6 @@ class DirectoryComponent extends PureComponent {
       changeTab: true,
       filterName: '',
     });
-    const {
-      tabList: { viewProfile },
-    } = this.state;
-    if (tabId === viewProfile) {
-      this.viewProfile();
-    }
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
@@ -441,15 +434,9 @@ class DirectoryComponent extends PureComponent {
     return null;
   };
 
-  viewProfile = () => {
-    const { currentUser } = this.props;
-    const { employee } = currentUser;
-    history.push(`/employees/employee-profile/${employee._id}`);
-  };
-
   renderTabPane = () => {
     const {
-      tabList: { active, myTeam, inActive, viewProfile },
+      tabList: { active, myTeam, inActive },
     } = this.state;
     const {
       loadingListActive,
@@ -497,10 +484,6 @@ class DirectoryComponent extends PureComponent {
               myTeam,
               loadingListMyTeam,
             )}
-            <TabPane
-              tab={formatMessage({ id: 'pages.directory.directory.viewProfile' })}
-              key={viewProfile}
-            />
           </>
         )}
         {findIndexInActive !== -1 &&

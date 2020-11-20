@@ -72,7 +72,7 @@ class TableEmployees extends Component {
               )
             : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '16%',
+        width: '14%',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -112,7 +112,7 @@ class TableEmployees extends Component {
         key: 'email',
         render: (user) => <span>{user?.email}</span>,
         align: 'left',
-        width: '18%',
+        width: '16%',
       },
       {
         title: 'Contact Number',
