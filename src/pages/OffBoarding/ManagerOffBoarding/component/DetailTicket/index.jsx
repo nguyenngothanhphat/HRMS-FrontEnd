@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
-import moment from 'moment';
+import EditComment from '@/components/EditComment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ActionDetailTicket from './components/ActionDetailTicket';
@@ -145,12 +145,11 @@ class DetailTicket extends Component {
               {listDisplay.length !== 0 && (
                 <div className={styles.viewListComment}>
                   {listDisplay.map((item) => {
-                    const { meetingDate = '', meetingTime = '', _id = '', content = '' } = item;
-                    const date = moment(meetingDate).format('YYYY-DD-MM');
+                    const { _id } = item;
                     return (
-                      <div key={_id}>
-                        {date} | {meetingTime} | Content: {content}
-                      </div>
+                      <Fragment key={_id}>
+                        <EditComment itemComment={item} />
+                      </Fragment>
                     );
                   })}
                 </div>

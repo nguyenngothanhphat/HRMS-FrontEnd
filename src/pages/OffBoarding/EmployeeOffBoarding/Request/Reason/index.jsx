@@ -25,7 +25,7 @@ export default class Reason extends PureComponent {
         </div>
         <div className={styles.titleBody}>
           <div className={styles.center}>
-            <p className={styles.textBox}> Reason for leaving us?</p>
+            <p className={styles.textBox}>Reason for leaving us?</p>
             <p className={styles.textTime}>
               {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
             </p>
