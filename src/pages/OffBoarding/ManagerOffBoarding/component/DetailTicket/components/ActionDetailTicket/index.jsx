@@ -123,10 +123,17 @@ class ActionDetailTicket extends Component {
   };
 
   removeScheduleMeeting = () => {
+    const { dispatch } = this.props;
     this.setState({
       isOpenSetMeeting: false,
       isDisplayBtnSetMeeting: true,
       idSet1on1: '',
+    });
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        itemNewCreate1On1: {},
+      },
     });
   };
 

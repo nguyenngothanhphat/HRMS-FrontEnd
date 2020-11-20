@@ -103,12 +103,15 @@ const offboarding = {
         dialog(errors);
       }
     },
-    *create1On1({ payload }, { call, put }) {
+    *create1On1({ payload, isEmployee = false }, { call, put }) {
       let response = {};
       try {
         response = yield call(create1On1, payload);
         const { statusCode, data: itemNewCreate1On1 = {} } = response;
         if (statusCode !== 200) throw response;
+        if (isEmployee) {
+          notification.success({ message: `Create 1 on 1 successfully!` });
+        }
         yield put({ type: 'save', payload: { itemNewCreate1On1 } });
       } catch (errors) {
         dialog(errors);
