@@ -309,7 +309,7 @@ const routes = [
             path: '/manager-offboarding',
             name: 'Manager Offboarding',
             icon: '/assets/images/iconOffboarding.svg',
-            component: './OffBoarding/ManagerOffboarding',
+            component: './OffBoarding/ManagerOffBoarding',
             authority: ['manager'],
           },
           {
