@@ -3,11 +3,16 @@ import CollapseRow from './CollapseRow';
 
 class TypeRow extends PureComponent {
   render() {
-    const { data = [], onFileClick = () => {} } = this.props;
+    const { data = [], onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
     return (
       <div>
         {data.map((row, index) => (
-          <CollapseRow key={`${index + 1}`} onFileClick={onFileClick} data={row} />
+          <CollapseRow
+            parentEmployeeGroup={parentEmployeeGroup}
+            key={`${index + 1}`}
+            onFileClick={onFileClick}
+            data={row}
+          />
         ))}
       </div>
     );
