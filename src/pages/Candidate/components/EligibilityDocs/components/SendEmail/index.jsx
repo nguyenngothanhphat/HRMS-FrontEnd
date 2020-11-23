@@ -4,7 +4,14 @@ import send from './Assets/group-11.svg';
 import sent from './Assets/modal_img_1.png';
 import style from './index.less';
 
-const index = ({ email, handleSendEmail, onValuesChangeEmail, isSentEmail, handleSubmitAgain }) => {
+const index = ({
+  email,
+  handleSendEmail,
+  onValuesChangeEmail,
+  isSentEmail,
+  handleSubmitAgain,
+  loading,
+}) => {
   return (
     <div className={style.SendEmail}>
       <div className={isSentEmail ? style.header1 : style.header}>
@@ -64,7 +71,9 @@ const index = ({ email, handleSendEmail, onValuesChangeEmail, isSentEmail, handl
                 <Input disabled="true" />
               </Form.Item>
               <Form.Item>
-                <Button htmlType="submit">Send Email</Button>
+                <Button htmlType="submit" loading={loading}>
+                  Send Email
+                </Button>
               </Form.Item>
             </Form>
           </div>

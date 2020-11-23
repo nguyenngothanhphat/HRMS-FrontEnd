@@ -7,6 +7,7 @@ import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
+import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheck';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -70,16 +71,47 @@ class CommonLayout extends Component {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
-    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
+    const {
+      SENT_PROVISIONAL_OFFERS,
+      SENT_FOR_APPROVAL,
+      PENDING,
+      ELIGIBLE_CANDIDATES,
+      INELIGIBLE_CANDIDATES,
+    } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
+
+    // console.log(processStatus);
+    // console.log(currentStep);
+
     if (currentStep !== null) {
+      if (
+        (processStatus === PENDING ||
+          processStatus === ELIGIBLE_CANDIDATES ||
+          processStatus === INELIGIBLE_CANDIDATES) &&
+        currentStep === 3
+      ) {
+        // console.log('HERE 1');
+        return {
+          selectedItemId: listMenu[3].id,
+          displayComponent: <BackgroundRecheck />,
+        };
+      }
+      if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
+        console.log('Right here');
+        return {
+          selectedItemId: listMenu[3].id,
+          displayComponent: <BackgroundCheck />,
+        };
+      }
       if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
+        // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
       if (currentStep !== 7) {
+        // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
           displayComponent: listMenu[currentStep].component,
@@ -87,6 +119,7 @@ class CommonLayout extends Component {
       }
     }
 
+    // console.log('HERE 4');
     return {
       selectedItemId: '',
       displayComponent: <PreviewOffer />,
@@ -102,25 +135,8 @@ class CommonLayout extends Component {
       INELIGIBLE_CANDIDATES,
       DRAFT,
     } = PROCESS_STATUS;
-    if (
-      processStatus === PENDING ||
-      processStatus === ELIGIBLE_CANDIDATES ||
-      processStatus === INELIGIBLE_CANDIDATES
-    ) {
-      // console.log('HERE 1');
-      return {
-        selectedItemId: '',
-        displayComponent: <BackgroundRecheck />,
-      };
-    }
-    // if (processStatus === DRAFT) {
-    //   return {
-    //     selectedItemId: '',
-    //     displayComponent: <BasicInformation />,
-    //   };
-    // }
     if (processStatus === SENT_FOR_APPROVAL) {
-      // console.log('HERE 2');
+      // console.log('HERE 6');
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -129,11 +145,41 @@ class CommonLayout extends Component {
     if (!listMenu[currentStep]) {
       return null;
     }
-    // console.log('HERE 3');
+
+    // if (
+    //   processStatus === PENDING ||
+    //   processStatus === ELIGIBLE_CANDIDATES ||
+    //   processStatus === INELIGIBLE_CANDIDATES
+    // ) {
+    //   console.log(listMenu[3].id);
+    //   this.setState({
+    //     selectedItemId: listMenu[3].id,
+    //     displayComponent: <BackgroundRecheck />,
+    //   });
+    // }
+    // if (processStatus === DRAFT) {
+    //   return {
+    //     selectedItemId: '',
+    //     displayComponent: <BasicInformation />,
+    //   };
+    // }
+    // console.log('HERE 7');
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
     });
+  }
+
+  componentWillUnmount() {
+    // const { dispatch } = this.props;
+    // console.log('UNMOUNT');
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     a: 2,
+    //     data: {},
+    //   },
+    // });
   }
 
   _handlePreviewOffer = () => {
@@ -148,6 +194,7 @@ class CommonLayout extends Component {
   };
 
   _handleClick = (item) => {
+    console.log('CLICK');
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/save',
@@ -214,6 +261,7 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
+        // console.log('PENDING HERE');
 
         return true;
       }
@@ -269,17 +317,6 @@ class CommonLayout extends Component {
         </div>
         <div className={s.viewRight} style={currentPage === 'settings' ? { padding: '0' } : {}}>
           {displayComponent}
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              {/* {currentPage !== 'settings' && (
-                <BottomBar
-                  onClickPrev={this.handlePrev}
-                  onClickNext={this.handleNext}
-                  currentPage={selectedItemId}
-                />
-              )} */}
-            </Col>
-          </Row>
         </div>
       </div>
     );

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownloadFile from '@/components/DownloadFile';
 import styles from './index.less';
@@ -84,14 +85,28 @@ class ViewDocument extends PureComponent {
     </div>
   );
 
+  goBack = () => {
+    history.push('/documents');
+  };
+
   render() {
     const { numPages } = this.state;
-    const { viewDocument: { documentDetail = {} } = {} } = this.props;
-    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
+    const { viewDocument: { documentDetail = {} } = {}, location = '' } = this.props;
+    const { state = '' } = location;
+    const { renderBackButton } = state;
+    const { key = '', employeeGroup = '', attachment = {} } = documentDetail;
+    const url = attachment !== null ? attachment.url : '';
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
-          <span>View Document</span>
+          <div className={styles.backAndTitle}>
+            {renderBackButton ? (
+              <ArrowLeftOutlined onClick={this.goBack} className={styles.backButton} />
+            ) : (
+              ''
+            )}
+            <span className={styles.title}>View Document</span>
+          </div>
           <div className={styles.downloadButtonArea}>
             <DownloadFile content={this.renderDownloadIcon()} url={url} />
           </div>
@@ -100,7 +115,7 @@ class ViewDocument extends PureComponent {
         <Row className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <Col xs={16} className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(url) === 0 ? (
+            {url && identifyImageOrPdf(url) === 0 ? (
               <div className={styles.imageFrame}>
                 <img alt="preview" src={url} />
               </div>

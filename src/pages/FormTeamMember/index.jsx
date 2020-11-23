@@ -219,7 +219,7 @@ class FormTeamMember extends PureComponent {
         salaryPosition: '',
         listTitle: [],
         tableData: [],
-        candidateSignature: null,
+        candidateSignature: {},
         hrManagerSignature: {},
         hrSignature: {},
         hiringAgreements: null,
@@ -291,10 +291,9 @@ class FormTeamMember extends PureComponent {
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component:
-          processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ? (
-            !checkDocument ? null : (
-              <BackgroundRecheck />
-            )
+          processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
+          processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFER ? (
+            <BackgroundRecheck />
           ) : (
             <BackgroundCheck
               documentList={documentList}
@@ -303,6 +302,21 @@ class FormTeamMember extends PureComponent {
               processStatus={processStatus}
             />
           ),
+
+        // component:
+        //   processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
+        //   processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
+        //     !checkDocument ? null : (
+        //       <BackgroundRecheck />
+        //     )
+        //   ) : (
+        //     <BackgroundCheck
+        //       documentList={documentList}
+        //       loading={loading1}
+        //       reId={reId}
+        //       processStatus={processStatus}
+        //     />
+        //   ),
       },
       {
         id: 5,

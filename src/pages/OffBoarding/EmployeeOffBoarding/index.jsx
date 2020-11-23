@@ -7,9 +7,22 @@ import ViewRight from './components/ViewRight';
 import RightDataTable from './components/RightContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { list = [] } = {} }) => ({
-  list,
-}))
+@connect(
+  ({
+    offboarding: { listOffboarding = [], totallist = [] } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+    } = {},
+  }) => ({
+    totallist,
+    locationID,
+    companyID,
+    listOffboarding,
+  }),
+)
 class EmployeeOffBoading extends Component {
   constructor(props) {
     super(props);
@@ -24,23 +37,13 @@ class EmployeeOffBoading extends Component {
     dispatch({
       type: 'offboarding/fetchList',
       payload: {
-        id: '5fa5092a53f4cf5c9ab0fbd1',
+        status: 'IN-PROGRESS',
       },
     });
   }
 
   render() {
-    const { list = {} } = this.props;
-    const data = [list];
-
-    // console.log(JSON.stringify(list));
-    // const data = [
-    //   {
-    //     ticketId: 16003134,
-    //     requestOn: '22.08.2020',
-    //     reasionOfLeaving: 'The reason why I have decide to quit….',
-    //   },
-    // ];
+    const { listOffboarding = [], totallist = [] } = this.props;
 
     return (
       <PageContainer>
@@ -58,9 +61,9 @@ class EmployeeOffBoading extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
             <Col span={18}>
-              <ViewLeft data={data} />
+              <ViewLeft data={listOffboarding} countdata={totallist} />
             </Col>
-            <Col span={6}>{data && data ? <RightDataTable /> : <ViewRight />}</Col>
+            <Col span={6}>{listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}</Col>
           </Row>
         </div>
       </PageContainer>

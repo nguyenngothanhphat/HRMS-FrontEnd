@@ -125,7 +125,11 @@ class TableDocuments extends PureComponent {
 
   // view document
   viewDocument = (record) => {
-    history.push(`/view-document/${record._id}`);
+    // history.push(`/view-document/${record._id}`);
+    history.push({
+      pathname: `/view-document/${record._id}`,
+      state: { renderBackButton: true },
+    });
   };
 
   // pagination

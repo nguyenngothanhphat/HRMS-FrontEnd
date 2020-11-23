@@ -22,6 +22,17 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location } = this.props;
+    if (prevProps.location.pathname !== location.pathname) {
+      this.fetchData();
+    }
+  }
+
+  fetchData = () => {
     const {
       employeeProfile,
       match: { params: { reId: employee = '' } = {} },
@@ -82,7 +93,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
-  }
+  };
 
   render() {
     const listMenu = [
