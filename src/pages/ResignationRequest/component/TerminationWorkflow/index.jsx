@@ -1,70 +1,71 @@
-// // import React, { Component } from 'react';
-// import React, { Component } from 'react';
-// import { Row, Col } from 'antd';
-// import icon1 from '@/assets/workflow1.svg';
-// import styles from './index.less';
+import React, { Component, Fragment } from 'react';
+import styles from './index.less';
 
-// // const { Step } = Steps;
+export class TerminationWorkflow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
-// export class TerminationWorkflow extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {};
-//   }
+  renderNode = (item) => {
+    return (
+      <Fragment key={item.id}>
+        <div className={styles.minWidth}>
+          <div className={styles.borderImage}> {item.body} </div>
+          <div>{item.text}</div>
+        </div>
+        <div className={styles.borderStyles} />
+      </Fragment>
+    );
+  };
 
-//   render() {
-//     return (
-//       <div className={styles.root}>
-//         <p className={styles.title}>Termination Workflow</p>
-//         <Row>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <div className={styles.textWorkflow}>Request Sent</div>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '29px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <p className={styles.textWorkflow}>Manager Approval</p>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '29px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <p className={styles.textWorkflow}>Manager Approval</p>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '29px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <p className={styles.textWorkflow}>Manager Approval</p>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '19px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//         </Row>
-//         <Row justify="end" style={{ marginTop: '45px' }}>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <p className={styles.textWorkflow}>ExitInterview</p>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '29px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//           <Col span={3}>
-//             <img src={icon1} alt="" />
-//             <p className={styles.textWorkflow}>ExitInterview</p>
-//           </Col>
-//           <Col span={3}>
-//             <hr style={{ width: '29px', marginLeft: '5px', marginTop: '18px' }} />
-//           </Col>
-//         </Row>
-//       </div>
-//     );
-//   }
-// }
+  render() {
+    const arr2 = [
+      {
+        id: 4,
+        body: 5,
+        text: 'ExitInterview',
+      },
+      {
+        id: 5,
+        body: 4,
+        text: 'Termination Complete',
+      },
+    ];
 
-// export default TerminationWorkflow;
+    const arr1 = [
+      {
+        id: 1,
+        body: 1,
+        text: 'Request Sent',
+      },
+      {
+        id: 2,
+        body: 2,
+        text: 'Manager Approval',
+      },
+      {
+        id: 3,
+        body: 3,
+        text: 'HR Approval',
+      },
+      {
+        id: 4,
+        body: 4,
+        text: 'LWD Generated',
+      },
+    ];
+
+    return (
+      <div className={styles.root}>
+        <p className={styles.title}>Termination Workflow</p>
+        <div className={styles.flex}>{arr1.map((item) => this.renderNode(item))}</div>
+        <div className={styles.flex_end}>
+          <div className={styles.flex_data}>{arr2.map((item) => this.renderNode(item))}</div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default TerminationWorkflow;

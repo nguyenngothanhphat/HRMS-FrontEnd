@@ -1,39 +1,49 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col, Input, Button, Space } from 'antd';
 import warningNoteIcon from '@/assets/warning-icon.svg';
-import { formatMessage } from 'umi';
-import ModalNotice from '../ModalNotice';
+import { formatMessage, connect } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
 
 const { TextArea } = Input;
-
-class ReasonPutOnHold extends PureComponent {
+@connect(({ loading, offboarding: { myRequest: { _id: id } = {} } = {} }) => ({
+  id,
+  loading: loading.effects['offboarding/create1On1'],
+  loadingReview: loading.effects['offboarding/reviewRequest'],
+}))
+class ReasonPutOnHold extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
+      q: '',
     };
   }
 
-  handleSubmitReason = (e) => {
-    e.stopPropagation();
-    this.openModal();
-  };
-
-  openModal = () => {
-    this.setState({
-      visible: true,
+  handleSubmitReason = () => {
+    const { q } = this.state;
+    const { dispatch, id, openNotification = () => {} } = this.props;
+    const payload = { id, reasonOnHold: q, action: 'ON-HOLD' };
+    dispatch({
+      type: 'offboarding/reviewRequest',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        openNotification();
+      }
     });
   };
 
-  handleCancel = () => {
+  handleChange = (e) => {
     this.setState({
-      visible: false,
+      q: e.target.value,
     });
   };
 
   render() {
-    const { visible } = this.state;
+    const { q } = this.state;
+    const { openNotification = () => {}, loadingReview } = this.props;
+    const date = moment().format('DD.MM.YY | h:mm A');
+
     return (
       <div className={styles.reasonPutOnHold}>
         <Row gutter={[0, 20]} justify="space-between">
@@ -42,11 +52,7 @@ class ReasonPutOnHold extends PureComponent {
           </Col>
           <Col>
             <Row>
-              <div className={styles.reasonPutOnHold__dateTime}>
-                <span>
-                  22.05.20 &nbsp; | &nbsp; <span>12PM</span>
-                </span>
-              </div>
+              <div className={styles.reasonPutOnHold__dateTime}>{date}</div>
             </Row>
           </Col>
         </Row>
@@ -54,6 +60,8 @@ class ReasonPutOnHold extends PureComponent {
           <TextArea
             allowClear
             placeholder="The reason I have decided to end out this request on-hold is because …"
+            value={q}
+            onChange={this.handleChange}
           />
           <div className={styles.reasonPutOnHold__action}>
             <Space>
@@ -65,18 +73,20 @@ class ReasonPutOnHold extends PureComponent {
             </Space>
 
             <div className={styles.reasonPutOnHold__action__btn}>
-              <Button className={styles.btn__cancel}>Cancel</Button>
-              <Button className={styles.btn__submit} onClick={(e) => this.handleSubmitReason(e)}>
+              <Button className={styles.btn__cancel} onClick={openNotification}>
+                Cancel
+              </Button>
+              <Button
+                disabled={!q}
+                className={styles.btn__submit}
+                onClick={this.handleSubmitReason}
+                loading={loadingReview}
+              >
                 Submit
               </Button>
             </div>
           </div>
         </div>
-        <ModalNotice
-          modalContent="Your decision to put this project On hold has been recorded."
-          visible={visible}
-          handleCancel={this.handleCancel}
-        />
       </div>
     );
   }

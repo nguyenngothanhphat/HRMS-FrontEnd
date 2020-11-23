@@ -20,7 +20,7 @@ export default class RejectTable extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab="In-progress (05)" key="1" />
+          <TabPane tab="In-progress (00)" key="1" />
           <TabPane tab="On-hold (00)" key="2" />
           <TabPane tab="Accepted (00)" key="3" />
           <TabPane tab="Rejected (00)" key="4" />

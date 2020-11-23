@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import { history } from 'umi';
@@ -12,13 +13,12 @@ class TableEmployee extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/employee-offboarding/ManagerRequest/16001288');
+  push = (id) => {
+    history.push(`/manager-offboarding/${id}`);
   };
 
   render() {
     const { data = [] } = this.props;
-
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -43,15 +43,25 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: 'employeeId',
+        dataIndex: 'employee',
+        render: (employee) => {
+          return <p>{employee.employeeId}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
+        render: (createDate) => {
+          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: 'name',
+        dataIndex: 'employee',
+        render: (employee) => {
+          const { generalInfo = {} } = employee;
+          return <p>{generalInfo.firstName}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Current Project </span>,
@@ -83,11 +93,11 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: 'Action',
-        render: () => (
+        dataIndex: '_id',
+        render: (_id) => (
           <div className={styles.rowAction}>
             <span>Set 1-on-1</span>
-            <span onClick={this.push}>View Request</span>
+            <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
       },
