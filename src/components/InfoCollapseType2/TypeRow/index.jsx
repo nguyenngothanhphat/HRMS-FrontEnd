@@ -1,6 +1,6 @@
 import React, { useState, PureComponent } from 'react';
-import { Collapse, Row, Col, Menu, Dropdown } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { Collapse, Row, Col } from 'antd';
+// import { EllipsisOutlined } from '@ant-design/icons';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
 import UploadIcon from '@/assets/upload_icon.png';
@@ -18,32 +18,33 @@ const CollapseRow = (props) => {
   const [row] = useState(data);
   const [open, setOpen] = useState(true);
 
-  const handleMenuClick = (event) => {
-    event.stopPropagation();
-  };
+  // const handleMenuClick = (event) => {
+  //   event.stopPropagation();
+  // };
 
   const handleUploadClick = () => {
     alert('Uploading');
     // event.stopPropagation();
   };
 
-  const menu = () => (
-    <Menu>
-      <Menu.Item>
-        <div>1st menu item</div>
-      </Menu.Item>
-      <Menu.Item>
-        <div>2nd menu item</div>
-      </Menu.Item>
-      <Menu.Item danger>a danger item</Menu.Item>
-    </Menu>
-  );
+  // const menu = () => (
+  //   <Menu>
+  //     <Menu.Item>
+  //       <div>1st menu item</div>
+  //     </Menu.Item>
+  //     <Menu.Item>
+  //       <div>2nd menu item</div>
+  //     </Menu.Item>
+  //     <Menu.Item danger>a danger item</Menu.Item>
+  //   </Menu>
+  // );
 
   const statusAndButtons = () => (
     <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
-      <a>Complete</a>
+      {/* <a>Complete</a> */}
       <div onClick={handleUploadClick} className={styles.uploadButton}>
         <img src={UploadIcon} alt="upload" />
+        <span className={styles.uploadText}>Choose file</span>
       </div>
       {/* <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />

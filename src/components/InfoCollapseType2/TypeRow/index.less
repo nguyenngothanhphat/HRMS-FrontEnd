@@ -85,15 +85,28 @@
     }
 
     .uploadButton {
+      display: flex;
+      align-items: center;
+      background-color: #568afa;
+      padding: 2px 5px;
+      border-radius: 3px;
       // margin-right: 20px;
       width: 100%;
       img {
         width: 14px;
+        filter: brightness(100);
       }
+      .uploadText {
+        font-size: 13px;
+        margin-left: 5px;
+        color: white;
+      }
+
       &:hover {
         opacity: 0.7;
       }
     }
+
     .menuButton {
       color: #bfbfbf;
       font-size: 17px;
