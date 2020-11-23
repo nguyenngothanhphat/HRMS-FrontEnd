@@ -68,7 +68,7 @@ class LastWorkingDay extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { lastWorkingDate } = this.props;
+    const { lastWorkingDate, list1On1 } = this.props;
 
     return (
       <div className={styles.lastWorkDay}>
@@ -93,12 +93,21 @@ class LastWorkingDay extends PureComponent {
         </div>
         <Row className={styles.flex}>
           <Col span={8}>
-            <DatePicker
-              format="DD-MM-YYYY"
-              className={styles.datePicker}
-              // value="10/08/1997"
-              onChange={this.changeDate}
-            />
+            {list1On1.length === 0 ? (
+              <DatePicker
+                format="DD-MM-YYYY"
+                disabled
+                className={styles.datePicker}
+                // value="10/08/1997"
+              />
+            ) : (
+              <DatePicker
+                format="DD-MM-YYYY"
+                className={styles.datePicker}
+                // value="10/08/1997"
+                onChange={this.changeDate}
+              />
+            )}
           </Col>
           <Col span={1} />
           <Col span={15} className={styles.detalFrom}>

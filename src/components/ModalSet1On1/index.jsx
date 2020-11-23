@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Modal, Button, DatePicker, Select } from 'antd';
 import styles from './index.less';
 
@@ -42,6 +43,10 @@ class ModalSet1On1 extends Component {
     this.setState({ meetingAt: value });
   };
 
+  disabledDate = (current) => {
+    return current && current < moment().endOf('day');
+  };
+
   render() {
     const {
       visible = false,
@@ -76,6 +81,11 @@ class ModalSet1On1 extends Component {
                 format="YYYY-MM-DD"
                 className={styles.datePicker}
                 onChange={this.changeDate}
+                // disabledDate={(current) => {
+                //   const customDate = Date.now();
+                //   return current && current < moment(customDate, 'YYYY-MM-DD');
+                // }}
+                disabledDate={this.disabledDate}
               />
             </div>
             <div>

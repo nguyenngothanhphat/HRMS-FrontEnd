@@ -10,7 +10,12 @@ import styles from './index.less';
 
 @connect(
   ({
-    offboarding: { listTeamRequest = [] } = {},
+    offboarding: {
+      listTeamRequest = [],
+      totalListTeamRequest = [],
+      listOffboarding = [],
+      totalList = [],
+    } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -18,6 +23,9 @@ import styles from './index.less';
       } = {},
     } = {},
   }) => ({
+    listOffboarding,
+    totalListTeamRequest,
+    totalList,
     locationID,
     companyID,
     listTeamRequest,
@@ -51,7 +59,12 @@ class HRrequestTable extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { listTeamRequest = [] } = this.props;
+    const {
+      listTeamRequest = [],
+      totalListTeamRequest = [],
+      listOffboarding = [],
+      totalList = [],
+    } = this.props;
 
     const resignationRequest = (
       <div style={{ padding: '17px' }}>
@@ -72,12 +85,12 @@ class HRrequestTable extends Component {
           >
             <TabPane tab="Team request" key="1">
               <div className={styles.tableTab}>
-                <TabContent data={listTeamRequest} />
+                <TabContent data={listTeamRequest} countdata={totalListTeamRequest} />
               </div>
             </TabPane>
             <TabPane tab="My Request" key="2">
               <div className={styles.tableTab}>
-                <MyRequestContent />
+                <MyRequestContent data={listOffboarding} countdata={totalList} />
               </div>
             </TabPane>
           </Tabs>

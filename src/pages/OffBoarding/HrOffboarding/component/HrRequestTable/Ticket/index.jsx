@@ -11,8 +11,9 @@ import ActionSchedule from './components/ActionSchedule';
 import InfoEmployee from './components/RightContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { myRequest = {} } = {} }) => ({
+@connect(({ offboarding: { myRequest = {}, list1On1 = [] } = {} }) => ({
   myRequest,
+  list1On1,
 }))
 class HRDetailTicket extends PureComponent {
   constructor(props) {
@@ -59,6 +60,7 @@ class HRDetailTicket extends PureComponent {
     const {
       visible,
       myRequest,
+      list1On1 = [],
       match: { params: { id: code = '' } = {} },
     } = this.props;
 
@@ -66,6 +68,7 @@ class HRDetailTicket extends PureComponent {
       reasonForLeaving = '',
       requestDate = '',
       lastWorkingDate,
+      listProjectByEmployee = [],
       employee: {
         generalInfo: { firstName: nameFrist = '', employeeId = '', avatar = '' } = {},
         title: { name: jobTitle = '' } = {},
@@ -88,14 +91,16 @@ class HRDetailTicket extends PureComponent {
                 avatar={avatar}
                 name={nameFrist}
                 jobTitle={jobTitle}
+                listProject={listProjectByEmployee}
               />
               <ResignationRequestDetail
                 reason={reasonForLeaving}
                 date={requestDate}
                 name={nameFrist}
               />
-              <CommentsFromHR />
+              <CommentsFromHR list1On1={list1On1} />
               <LastWorkingDay
+                list1On1={list1On1}
                 handleRemoveToServer={this.handleChange}
                 code={code}
                 visible={visible}
