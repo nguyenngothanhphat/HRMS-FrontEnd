@@ -1,11 +1,12 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Skeleton } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeesManagement }) => ({
+@connect(({ employeesManagement, loading }) => ({
   employeesManagement,
+  loading: loading.effects['employeesManagement/removeEmployee'],
 }))
 class ModalConfirmRemove extends Component {
   constructor(props) {
@@ -28,8 +29,8 @@ class ModalConfirmRemove extends Component {
   };
 
   handleRemoveToServer = () => {
-    const { dispatch, user = {} } = this.props;
-    const { _id = '' } = user;
+    const { dispatch, employee = {} } = this.props;
+    const { _id = '' } = employee;
     dispatch({
       type: 'employeesManagement/removeEmployee',
       id: _id,
@@ -52,7 +53,7 @@ class ModalConfirmRemove extends Component {
   };
 
   render() {
-    const { visible = false, loading, employee } = this.props;
+    const { visible = false, loading, employee, loadingEmployeeProfile } = this.props;
     const { generalInfo: { firstName = '', lastName = '', employeeId = '' } = {} } = employee;
     return (
       <Modal
@@ -77,7 +78,14 @@ class ModalConfirmRemove extends Component {
           </Button>,
         ]}
       >
-        Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
+        {loadingEmployeeProfile ? (
+          <Skeleton paragraph={{ rows: 1 }} active />
+        ) : (
+          <>
+            {' '}
+            Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
+          </>
+        )}
       </Modal>
     );
   }

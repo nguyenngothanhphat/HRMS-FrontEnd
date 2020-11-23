@@ -16,7 +16,6 @@ class TableEmployees extends PureComponent {
       pageSelected: 1,
       selectedRowKeys: [],
       visible: false,
-      selectedEmployeeId: null,
     };
   }
 
@@ -126,7 +125,7 @@ class TableEmployees extends PureComponent {
             <img
               src="assets/images/remove.svg"
               alt="removeIcon"
-              onClick={(e) => this.deleteEmployee(e)}
+              onClick={(e) => this.deleteEmployee(_id, e)}
               width="15px"
             />
           </div>
@@ -143,22 +142,20 @@ class TableEmployees extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      selectedEmployeeId: null,
     });
   };
 
-  deleteEmployee = (e, record) => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeesManagement/fetchEmployeeDetail',
-    //   id: record,
-    // }).then(() => {
+  deleteEmployee = (record, e) => {
     e.stopPropagation();
-    this.setState({
-      selectedEmployeeId: record,
-      visible: true,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/fetchEmployeeDetail',
+      id: record,
+    }).then(() => {
+      this.setState({
+        visible: true,
+      });
     });
-    // });
   };
 
   // pagination
@@ -179,7 +176,6 @@ class TableEmployees extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
-    // console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
@@ -191,9 +187,10 @@ class TableEmployees extends PureComponent {
     const {
       data = [],
       loading,
+      loadingEmployeeProfile = true,
       employeesManagement: { employeeDetail = {} },
     } = this.props;
-    const { pageSelected, selectedRowKeys, visible, selectedEmployeeId } = this.state;
+    const { pageSelected, selectedRowKeys, visible } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '100vw',
@@ -245,6 +242,7 @@ class TableEmployees extends PureComponent {
           titleModal="Confirm Remove Employee"
           visible={visible}
           handleCancel={this.handleCancel}
+          loadingEmployeeProfile={loadingEmployeeProfile}
           employee={employeeDetail}
         />
       </div>
