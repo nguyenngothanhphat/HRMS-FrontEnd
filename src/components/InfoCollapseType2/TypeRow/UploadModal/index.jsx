@@ -196,7 +196,7 @@ class UploadModal extends Component {
                   className={styles.btnSubmit}
                   onClick={this.handleRemoveToServer}
                 >
-                  Confirm
+                  Upload
                 </Button>
               </div>
             ),
