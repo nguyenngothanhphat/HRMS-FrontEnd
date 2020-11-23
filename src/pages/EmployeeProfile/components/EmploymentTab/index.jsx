@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
+import { checkPermissions } from '@/utils/permissions';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -18,8 +19,9 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
+  currentUser,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -133,19 +135,29 @@ class EmploymentTab extends Component {
 
   render() {
     const { isChanging, current, currentData, isEdit } = this.state;
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      currentUser: { roles = [] },
+    } = this.props;
+    const permissions = checkPermissions(roles);
     return (
       <div>
         <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title}>
-            <div>Employment & Compensation</div>
+          <div className={styles.employmentTab__title}>
+            <div classnam>Employment & Compensation</div>
             {isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
-              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
-                <img alt="" src={edit} />
-                <div>Edit</div>
-              </div>
+              permissions.editEmployment !== -1 && (
+                <div
+                  className={styles.employmentTab__action}
+                  onClick={this.handleEditCurrentInfo}
+                  style={{ display: 'flex' }}
+                >
+                  <img alt="" src={edit} />
+                  <div>Edit</div>
+                </div>
+              )
             )}
           </div>
           {isEdit ? (
@@ -155,7 +167,7 @@ class EmploymentTab extends Component {
           )}
         </div>
         <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title} align="middle">
+          <div className={styles.employmentTab__title} align="middle">
             <div>
               {isChanging
                 ? `Employment & Compensation - ${steps[current].title}`
@@ -167,10 +179,16 @@ class EmploymentTab extends Component {
                 <div>Cancel & Return</div>
               </div>
             ) : (
-              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
-                <img alt="" src={edit} />
-                <div>Make changes</div>
-              </div>
+              permissions.makeChangesHistory !== -1 && (
+                <div
+                  className={styles.employmentTab__action}
+                  onClick={this.handleMakeChanges}
+                  style={{ display: 'flex' }}
+                >
+                  <img alt="" src={edit} />
+                  <div>Make changes</div>
+                </div>
+              )
             )}
           </div>
           {isChanging ? (

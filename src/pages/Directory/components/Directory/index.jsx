@@ -498,7 +498,9 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
-    const { checkRoleEmployee } = this.props;
+    const {
+      currentUser: { roles = [] },
+    } = this.props;
     const {
       tabId,
       collapsed,
@@ -510,7 +512,7 @@ class DirectoryComponent extends PureComponent {
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
             <DirectoryTable
-              checkRoleEmployee={checkRoleEmployee}
+              permissions={this.generatePermissions(roles)}
               loading={loading}
               list={this.renderListEmployee(key)}
             />

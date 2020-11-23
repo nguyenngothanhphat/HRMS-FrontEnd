@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Row, Input, Form, DatePicker, Radio, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
@@ -5,6 +6,7 @@ import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import ModalReviewImage from '@/components/ModalReviewImage';
+import { checkPermissions } from '@/utils/permissions';
 import styles from './index.less';
 
 @connect(
@@ -17,6 +19,7 @@ import styles from './index.less';
       tempData: { generalData = {} } = {},
     } = {},
     upload: { employeeInformationURL = '' },
+    user: { currentUser = [] },
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     loadingAdhaarCard: loading.effects['upload/uploadFile'],
@@ -25,6 +28,7 @@ import styles from './index.less';
     employeeInformationURL,
     idCurrentEmployee,
     AdhaarCard,
+    currentUser,
   }),
 )
 class Edit extends PureComponent {
@@ -254,7 +258,13 @@ class Edit extends PureComponent {
 
   render() {
     const { isLt5M, visible, linkImage } = this.state;
-    const { generalData, loading, handleCancel = () => {}, loadingAdhaarCard } = this.props;
+    const {
+      generalData,
+      loading,
+      handleCancel = () => {},
+      loadingAdhaarCard,
+      currentUser: { roles = [] },
+    } = this.props;
     const {
       urlFile = '',
       legalName = '',
@@ -280,6 +290,9 @@ class Edit extends PureComponent {
     };
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'Do MMM YYYY';
+
+    const permissions = checkPermissions(roles);
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -325,7 +338,7 @@ class Edit extends PureComponent {
             </Radio.Group>
           </Form.Item>
           <Form.Item label="Employee ID" name="employeeId">
-            <Input className={styles.inputForm} />
+            <Input className={styles.inputForm} disabled={!(permissions.editEmployeeID !== -1)} />
           </Form.Item>
           <Form.Item
             label="Work Email"
@@ -337,7 +350,7 @@ class Edit extends PureComponent {
               },
             ]}
           >
-            <Input className={styles.inputForm} disabled />
+            <Input className={styles.inputForm} disabled={!(permissions.editWorkEmail !== -1)} />
           </Form.Item>
           <Form.Item
             label="Work Number"

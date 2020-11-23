@@ -158,9 +158,15 @@ class DirectoryTable extends Component {
     });
   };
 
+  checkPermissionViewProfile = (permissions) => {
+    const viewProfile = 'P_PROFILE_VIEW';
+    const findIndexViewProfile = permissions.indexOf(viewProfile);
+    return findIndexViewProfile;
+  };
+
   render() {
     const { sortedName = {}, pageSelected } = this.state;
-    const { list = [], loading, checkRoleEmployee } = this.props;
+    const { list = [], loading, permissions } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -179,19 +185,22 @@ class DirectoryTable extends Component {
       current: pageSelected,
       onChange: this.onChangePagination,
     };
+
+    const findIndexViewProfile = this.checkPermissionViewProfile(permissions);
+
     return (
       <div className={styles.directoryTable}>
         <Table
-          className={!checkRoleEmployee ? `${styles.directoryTable__employee}` : ''}
+          className={findIndexViewProfile !== -1 ? `${styles.directoryTable__employee}` : ''}
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
-            if (checkRoleEmployee) {
-              return null;
+            if (findIndexViewProfile !== -1) {
+              return {
+                onClick: () => this.handleProfileEmployee(record), // click row
+              };
             }
-            return {
-              onClick: () => this.handleProfileEmployee(record), // click row
-            };
+            return null;
           }}
           dataSource={list}
           rowKey={(record) => record._id}
