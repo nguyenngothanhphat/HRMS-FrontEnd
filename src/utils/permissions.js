@@ -28,6 +28,7 @@ export function checkPermissions(roles) {
   const findIndexEditEmp = permissionList.indexOf(editEmployment);
   const findIndexMakeChanges = permissionList.indexOf(makeChangesHistory);
   return {
+    // Profile employee
     editWorkEmail: findIndexWorkEmail,
     editEmployeeID: findIndexEmployeeID,
     editEmployment: findIndexEditEmp,
