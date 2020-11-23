@@ -60,10 +60,10 @@ class ViewLeft extends Component {
     const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
-    const checkSendRequest = checkInprogress.count > 0 || checkAccepted > 0;
+    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     return (
       <div className={styles.Contanner}>
-        {checkSendRequest && (
+        {!checkSendRequest && (
           <div>
             <div className={styles.title_Box}>
               <div>
