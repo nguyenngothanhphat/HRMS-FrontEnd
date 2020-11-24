@@ -83,7 +83,7 @@ class CommonLayout extends Component {
     // const selectedItemId = listMenu[currentStep]
 
     // console.log(processStatus);
-    // console.log(currentStep);
+    console.log(currentStep);
 
     if (currentStep !== null) {
       if (
@@ -105,14 +105,14 @@ class CommonLayout extends Component {
           displayComponent: <BackgroundCheck />,
         };
       }
-      if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
+      if (processStatus === SENT_FOR_APPROVAL && currentStep === 8) {
         // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
-      if (currentStep !== 7) {
+      if (currentStep !== 8) {
         // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
@@ -198,6 +198,7 @@ class CommonLayout extends Component {
 
   _handleClick = (item) => {
     const { dispatch } = this.props;
+    console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -263,7 +264,6 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
-        // console.log('PENDING HERE');
 
         return true;
       }
@@ -301,10 +301,10 @@ class CommonLayout extends Component {
               {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
-                  className={this.isDisabled(7) ? s.disabled : ''}
+                  className={this.isDisabled(8) ? s.disabled : ''}
                   ghost
                   onClick={() => {
-                    if (this.isDisabled(7)) {
+                    if (this.isDisabled(8)) {
                       return;
                     }
                     this._handlePreviewOffer();

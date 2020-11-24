@@ -37,7 +37,6 @@ import {
 const candidateInfo = {
   namespace: 'candidateInfo',
   state: {
-    a: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: false,
@@ -46,6 +45,7 @@ const candidateInfo = {
       filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
+      filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -170,6 +170,13 @@ const candidateInfo = {
         url: '',
       },
       hidePreviewOffer: false,
+
+      additionalQuestion: {
+        opportunity: '',
+        payment: '',
+        shirt: '',
+        dietary: '',
+      },
     },
     data: {
       fullName: null,
@@ -1150,6 +1157,18 @@ const candidateInfo = {
         tempData: {
           ...tempData,
           offerLetter: action.payload,
+        },
+      };
+    },
+
+    updateAdditionalQuestion(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestion: action.payload,
         },
       };
     },
