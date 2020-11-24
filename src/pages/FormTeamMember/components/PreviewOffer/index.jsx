@@ -32,6 +32,7 @@ const PreviewOffer = (props) => {
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
     offerLetter: offerLetterProp,
+    staticOfferLetter: staticOfferLetterProp,
     candidateSignature: candidateSignatureProp,
   } = tempData;
   const {
@@ -62,12 +63,18 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
+  const getOfferLetterProp = () => {
+    if (staticOfferLetterProp && staticOfferLetterProp.url) {
+      return staticOfferLetterProp.url;
+    }
+    if (offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url) {
+      return offerLetterProp.attachment.url;
+    }
+    return '';
+  };
+
   // eslint-disable-next-line no-unused-vars
-  const [offerLetter, setOfferLetter] = useState(
-    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
-      ? offerLetterProp.attachment.url
-      : '',
-  );
+  const [offerLetter, setOfferLetter] = useState(getOfferLetterProp());
 
   const resetImg = (type) => {
     if (type === 'hr') {

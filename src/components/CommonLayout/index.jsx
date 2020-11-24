@@ -45,6 +45,7 @@ const PROCESS_STATUS = {
       tempData: {
         valueToFinalOffer = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
+        hidePreviewOffer,
       } = {},
     } = {},
   }) => ({
@@ -54,6 +55,7 @@ const PROCESS_STATUS = {
     processStatus,
     valueToFinalOffer,
     allDocumentVerified,
+    hidePreviewOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -184,6 +186,7 @@ class CommonLayout extends Component {
 
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -194,7 +197,6 @@ class CommonLayout extends Component {
   };
 
   _handleClick = (item) => {
-    console.log('CLICK');
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/save',
@@ -280,7 +282,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '' } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = true } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>
@@ -296,7 +298,7 @@ class CommonLayout extends Component {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && (
+              {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
                   className={this.isDisabled(7) ? s.disabled : ''}

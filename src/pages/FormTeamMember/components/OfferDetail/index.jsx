@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 
-import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
+import { Radio, Select, Checkbox, Form, Row, Col, Button, Typography } from 'antd';
 
 import { connect, formatMessage } from 'umi';
+import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
 import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';
@@ -16,7 +17,7 @@ import { getFileType } from './components/utils';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, loading1 } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData, loading1, loading2 } = props;
   const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
@@ -30,6 +31,7 @@ const OfferDetail = (props) => {
     includeOffer: includeOfferProp,
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
+    staticOfferLetter: staticOfferLetterProp,
   } = tempData;
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
@@ -47,8 +49,10 @@ const OfferDetail = (props) => {
   // const [currency, setCurrency] = useState(currencyProp);
   // const [timeoff, setTimeoff] = useState(timeoffProp);
   // const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
-  const [displayTemplate, setDisplayTemplate] = useState(includeOfferProp);
+  const [displayTemplate, setDisplayTemplate] = useState(includeOfferProp === 3);
   const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
+  const [uploadedOffer, setUploadedOffer] = useState(staticOfferLetterProp || {});
+  const [displayUploadedOffer, setDisplayUploadedOffer] = useState(includeOfferProp === 2);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
   // eslint-disable-next-line no-unused-vars
@@ -107,7 +111,8 @@ const OfferDetail = (props) => {
       return;
     }
 
-    setDisplayTemplate(includeOffer);
+    setDisplayTemplate(includeOffer === 3);
+    setDisplayUploadedOffer(includeOffer === 2);
 
     const { _id = '' } = data;
 
@@ -124,12 +129,11 @@ const OfferDetail = (props) => {
           companyHandbook: handbook,
           template: file,
           candidate: _id,
+          hidePreviewOffer: includeOffer === 2,
         },
       },
     });
   };
-
-  console.log(props);
 
   useEffect(() => {
     const formValues = form.getFieldsValue();
@@ -207,6 +211,9 @@ const OfferDetail = (props) => {
       return;
     }
 
+    const allFormValues = form.getFieldsValue();
+    const { includeOffer = 1 } = allFormValues;
+
     const { id: templateId = '' } = file;
 
     const {
@@ -252,19 +259,80 @@ const OfferDetail = (props) => {
       },
     });
 
-    const offerData = {
-      candidateId: candidate,
-      templateId,
-      fullname: fullName,
-      position,
-      classification: classificationName,
-      workLocation: workLocationName,
-      department: departmentName,
-      jobTitle,
-      reportManager: `${firstName} ${lastName}`,
-    };
+    if (includeOffer === 1) {
+      // Do not include offer
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: nextStep,
+        },
+      });
 
-    if (dispatch) {
+      // Save next step
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          currentStep: nextStep,
+        },
+      });
+    }
+
+    if (includeOffer === 2) {
+      // Upload offer letter
+      const { id: offerId } = uploadedOffer;
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: nextStep,
+          staticOfferLetter: offerId,
+        },
+      }).then((res) => {
+        const { statusCode = 1 } = res;
+        if (statusCode !== 200) {
+          return;
+        }
+
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: nextStep,
+          },
+        });
+
+        // Save next step
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            currentStep: nextStep,
+          },
+        });
+
+        // Save offer letter
+        dispatch({
+          type: 'candidateInfo/updateOfferLetter',
+          payload: uploadedOffer,
+        });
+      });
+    }
+
+    if (includeOffer === 3) {
+      // Use existing offer letter
+
+      const offerData = {
+        candidateId: candidate,
+        templateId,
+        fullname: fullName,
+        position,
+        classification: classificationName,
+        workLocation: workLocationName,
+        department: departmentName,
+        jobTitle,
+        reportManager: `${firstName} ${lastName}`,
+      };
+
       dispatch({
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
@@ -284,6 +352,7 @@ const OfferDetail = (props) => {
           },
         });
 
+        // Save next step
         dispatch({
           type: 'candidateInfo/save',
           payload: {
@@ -347,6 +416,30 @@ const OfferDetail = (props) => {
     );
   };
 
+  const handleUploadResponse = (res) => {
+    const { data: uploadFileData = [] } = res;
+    if (uploadFileData.length === 0) {
+      return;
+    }
+    const { id, name = '', url = '' } = uploadFileData[0];
+    const offerData = {
+      id,
+      name,
+      url,
+    };
+    setUploadedOffer(offerData);
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          staticOfferLetter: offerData,
+        },
+      },
+    });
+  };
+
   return (
     <Form
       form={form}
@@ -376,10 +469,42 @@ const OfferDetail = (props) => {
 
             <Form.Item name="includeOffer">
               <Radio.Group className={styles.radioGroup} disabled={disableAll}>
-                <Radio value={false}>
-                  {formatMessage({ id: 'component.offerDetail.notInclude' })}
-                </Radio>
-                <Radio value>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
+                <Row className={styles.radioRow}>
+                  <Radio value={1}>
+                    {formatMessage({ id: 'component.offerDetail.notInclude' })}
+                  </Radio>
+                </Row>
+                <Row className={styles.radioRow} align="middle">
+                  <Col sm={8} md={10}>
+                    <Radio value={2}>
+                      {formatMessage({ id: 'component.offerDetail.uploadOffer' })}
+                    </Radio>
+                  </Col>
+                  <Col sm={8} md={10} style={{ textAlign: 'right' }}>
+                    {/* If user choose upload offer then display upload section */}
+                    {displayUploadedOffer && (
+                      <>
+                        {uploadedOffer.url ? (
+                          // If file uploaded succesfully
+                          <Button className={styles.uploadFile} type="link">
+                            {uploadedOffer.name}
+                          </Button>
+                        ) : (
+                          // <span>{uploadedOffer.url}</span>
+                          <UploadImage
+                            content="Choose file"
+                            getResponse={(res) => handleUploadResponse(res)}
+                            loading={loading2}
+                            hideValidation
+                          />
+                        )}
+                      </>
+                    )}
+                  </Col>
+                </Row>
+                <Row className={styles.radioRow}>
+                  <Radio value={3}>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
+                </Row>
               </Radio.Group>
             </Form.Item>
 
@@ -395,7 +520,6 @@ const OfferDetail = (props) => {
                   }
                   className={styles.select}
                   onChange={(value, option) => handleTemplateChange(value, option)}
-                  // onSelect={(option) => console.log(option)}
                   disabled={disableAll}
                 >
                   {templateList.map((fileItem) => {
@@ -408,16 +532,6 @@ const OfferDetail = (props) => {
                       </Option>
                     );
                   })}
-                  {/* {fileArr.map((file, index) => {
-                    const { name } = file;
-                    return (
-                      <Option value={name} key={index}>
-                        <div className={styles.iconWrapper}>
-                          <span>{name}</span>
-                        </div>
-                      </Option>
-                    );
-                  })} */}
                 </Select>
                 {/* </Form.Item> */}
 
@@ -540,5 +654,6 @@ export default connect(
     currentStep,
     tempData,
     loading1: loading.effects['candidateInfo/createFinalOfferEffect'], // Loading for generating offer service
+    loading2: loading.effects['upload/uploadFile'],
   }),
 )(OfferDetail);

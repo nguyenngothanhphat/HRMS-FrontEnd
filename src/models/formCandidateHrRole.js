@@ -82,7 +82,7 @@ const candidateInfo = {
       },
       // Offer details
       template: '',
-      includeOffer: false,
+      includeOffer: 1,
       compensationType: '',
       amountIn: '',
       timeOffPolicy: '',
@@ -164,6 +164,12 @@ const candidateInfo = {
         name: '',
         url: '',
       },
+      staticOfferLetter: {
+        id: '',
+        name: '',
+        url: '',
+      },
+      hidePreviewOffer: false,
     },
     data: {
       fullName: null,
@@ -756,7 +762,7 @@ const candidateInfo = {
             },
           },
         });
-        console.log(data);
+
         yield put({
           type: 'saveTemp',
           payload: {
@@ -765,6 +771,10 @@ const candidateInfo = {
             offerLetter: data.offerLetter,
             candidate: data._id,
             candidateSignature: data.candidateSignature || {},
+            amountIn: data.amountIn || '',
+            timeOffPolicy: data.timeOffPolicy || '',
+            compensationType: data.compensationType || '',
+            hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
           },
         });
         yield put({
@@ -830,7 +840,6 @@ const candidateInfo = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
-        console.log(response);
         yield put({
           type: 'updateOfferLetter',
           payload: {
