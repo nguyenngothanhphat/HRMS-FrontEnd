@@ -22,8 +22,8 @@ class GeneralInfo extends Component {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation />
-        <PersonalInformation />
+        <EmployeeInformation permissions={permissions} profileOwner={profileOwner} />
+        <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
         {(permissions.viewPassportAndVisa !== -1 || profileOwner) && <PassportVisaInformation />}
         <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
         <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />

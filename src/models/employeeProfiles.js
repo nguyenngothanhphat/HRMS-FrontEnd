@@ -975,6 +975,20 @@ const employeeProfile = {
         },
       };
     },
+    closeModeEdit(state) {
+      return {
+        ...state,
+        editGeneral: {
+          openContactDetails: false,
+          openEmployeeInfor: false,
+          openPassportandVisa: false,
+          openPersonnalInfor: false,
+          openAcademic: false,
+          openTax: false,
+          openBank: false,
+        },
+      };
+    },
   },
 };
 export default employeeProfile;

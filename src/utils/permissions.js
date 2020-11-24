@@ -44,18 +44,28 @@ export function checkPermissions(roles) {
 
   // View and edit info of general info tab
   const passportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW';
+  const editEmployeeInfo = 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT';
+  const editPersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
   const editPassportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT';
   const editContact = 'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT';
   const editProfessionalAcademic = 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT';
   const indexViewPPAndVisa = permissionList.indexOf(passportAndVisa);
+  const indexEditEmployeeInfo = permissionList.indexOf(editEmployeeInfo);
+  const indexEditPersonalInfo = permissionList.indexOf(editPersonalInfo);
   const indexEditPPAndVisa = permissionList.indexOf(editPassportAndVisa);
   const indexEditContact = permissionList.indexOf(editContact);
   const indexEditProfessionalAcademic = permissionList.indexOf(editProfessionalAcademic);
+
+  // Update avatar employee
+  const updateAvatarEmp = 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW';
+  const indexUpdateAvatar = permissionList.indexOf(updateAvatarEmp);
 
   return {
     // Profile employee
     editWorkEmail: findIndexWorkEmail,
     editEmployeeID: findIndexEmployeeID,
+    editEmployeeInfo: indexEditEmployeeInfo,
+    editPersonalInfo: indexEditPersonalInfo,
     editPassportAndVisa: indexEditPPAndVisa,
     editEmergencyContact: indexEditContact,
     editProfessionalAcademic: indexEditProfessionalAcademic,
@@ -68,5 +78,7 @@ export function checkPermissions(roles) {
     viewTabDocument: indexDocument,
     viewTabTimeSchedule: indexTimeAndSchedule,
     viewTabBenefitPlans: indexBenefitPlans,
+    // Update avatar employee
+    updateAvatarEmployee: indexUpdateAvatar,
   };
 }

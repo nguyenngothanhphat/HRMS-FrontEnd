@@ -6,16 +6,16 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { checkPermissions } from '@/utils/permissions';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
 
-@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
+@connect(({ employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
   employeeProfile,
   currentUser,
+  permissions,
 }))
 class EmployeeProfile extends Component {
   constructor(props) {
@@ -32,11 +32,6 @@ class EmployeeProfile extends Component {
     if (prevProps.location.pathname !== location.pathname) {
       this.fetchData();
     }
-  }
-
-  componentWillUnmount() {
-    // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = () => {};
   }
 
   fetchData = () => {
@@ -109,10 +104,10 @@ class EmployeeProfile extends Component {
     return false;
   };
 
-  renderListMenu = (roles, employee, _id) => {
+  renderListMenu = (employee, _id) => {
     const listMenu = [];
     const profileOwner = this.checkProfileOwner(_id, employee);
-    const permissions = checkPermissions(roles);
+    const { permissions } = this.props;
     listMenu.push({
       id: 1,
       name: 'General Info',
@@ -152,11 +147,14 @@ class EmployeeProfile extends Component {
   render() {
     const {
       match: { params: { reId: employee = '' } = {} },
-      currentUser: { roles = [], employee: currentEmployee = {} },
+      currentUser: { employee: currentEmployee = {} },
+      permissions = {},
       location: { state: { location = '' } = {} } = {},
     } = this.props;
 
-    const listMenu = this.renderListMenu(roles, employee, currentEmployee._id);
+    const listMenu = this.renderListMenu(employee, currentEmployee._id);
+
+    const profileOwner = this.checkProfileOwner(currentEmployee._id, employee);
 
     return (
       <PageContainer>
@@ -166,7 +164,12 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          <LayoutEmployeeProfile listMenu={listMenu} employeeLocation={location} />
+          <LayoutEmployeeProfile
+            listMenu={listMenu}
+            employeeLocation={location}
+            permissions={permissions}
+            profileOwner={profileOwner}
+          />
         </div>
       </PageContainer>
     );

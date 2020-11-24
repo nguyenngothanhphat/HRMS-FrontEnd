@@ -59,16 +59,6 @@ class EmploymentTab extends Component {
     return null;
   }
 
-  checkRoleEmployee = (roles) => {
-    let flag = false;
-    const { roles: rolesConst } = this.state;
-    const checkRole = (obj) => obj._id === rolesConst.employee;
-    if (roles.length === 1 && roles.some(checkRole)) {
-      flag = true;
-    }
-    return flag;
-  };
-
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
     this.setState({ current: 0 });
@@ -144,7 +134,7 @@ class EmploymentTab extends Component {
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title}>
-            <div classnam>Employment & Compensation</div>
+            <div>Employment & Compensation</div>
             {isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
