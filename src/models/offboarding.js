@@ -7,6 +7,10 @@ import {
   getapprovalflowList,
   getRequestById,
   getMeetingTime,
+  getDefaultTemplates,
+  getCustomTemplates,
+  getTemplateById,
+  addCustomTemplate,
   create1On1,
   teamRequestList,
   getListProjectByEmployee,
@@ -29,6 +33,11 @@ const offboarding = {
     itemNewCreate1On1: {},
     totallist: [],
     showModalSuccessfully: false,
+    defaultExitPackage: [],
+    defaultClosingPackage: [],
+    customExitPackage: [],
+    customClosingPackage: [],
+    currentTemplate: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -164,12 +173,56 @@ const offboarding = {
       }
       return response;
     },
+    *getDefaultExitPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDefaultTemplates, payload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { defaultExitPackage: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchTemplateById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getTemplateById, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addCustomTemplate({ payload = {} }, { call, put }) {
+      const response = {};
+      try {
+        response = yield call(addCustomTemplate, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveCurrentTemplateSetting(state, action) {
+      const { currentTemplate } = state;
+      return {
+        ...state,
+        currentTemplate: {
+          ...currentTemplate,
+          ...action.payload,
+        },
       };
     },
   },
