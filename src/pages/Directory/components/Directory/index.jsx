@@ -11,12 +11,13 @@ import TableFilter from '../TableFilter';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-@connect(({ loading, employee, user: { currentUser = {} } }) => ({
+@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
   loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
   loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
   loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
   currentUser,
+  permissions,
 }))
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -115,27 +116,17 @@ class DirectoryComponent extends PureComponent {
 
   // Define tabID to filter
   initTabId = () => {
-    const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-    // const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
-    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
-
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexActive = groupPermissions.indexOf(tabActive);
-    // const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
-    const findIndexInActive = groupPermissions.indexOf(tabInActive);
-
+    const { permissions = {} } = this.props;
     let tabId = 'active';
+    const viewTabActive = permissions.viewTabActive === -1;
+    const viewTabInActive = permissions.viewTabInActive === -1;
 
-    if (findIndexActive === -1) {
+    if (viewTabActive) {
       tabId = 'inActive';
     }
 
     // Set tabId for myTeam to hide button Filter
-    if (findIndexActive === -1 && findIndexInActive === -1) {
+    if (viewTabActive && viewTabInActive) {
       tabId = 'myTeam';
     }
 
@@ -145,26 +136,33 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrGloBal = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, permissions = {} } = this.props;
     const { company } = currentUser;
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
         company: company._id,
       },
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: company._id,
-      },
-    });
-    dispatch({
-      type: 'employee/fetchListEmployeeInActive',
-      payload: {
-        company: company._id,
-      },
-    });
+    if (viewTabActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: {
+          company: company._id,
+        },
+      });
+    }
+    if (viewTabInActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: {
+          company: company._id,
+        },
+      });
+    }
+
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -174,8 +172,10 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, permissions = {} } = this.props;
     const { company, location } = currentUser;
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
@@ -183,20 +183,24 @@ class DirectoryComponent extends PureComponent {
         location: [location._id],
       },
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: company._id,
-        location: [location._id],
-      },
-    });
-    dispatch({
-      type: 'employee/fetchListEmployeeInActive',
-      payload: {
-        company: company._id,
-        location: [location._id],
-      },
-    });
+    if (viewTabActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: {
+          company: company._id,
+          location: [location._id],
+        },
+      });
+    }
+    if (viewTabInActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: {
+          company: company._id,
+          location: [location._id],
+        },
+      });
+    }
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -374,17 +378,14 @@ class DirectoryComponent extends PureComponent {
 
   rightButton = (roles, collapsed) => {
     const { tabId } = this.state;
-    const permissionImport = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
-    const permissionAdd = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
+    const { permissions = {} } = this.props;
 
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexImport = groupPermissions.indexOf(permissionImport);
-    const findIndexAdd = groupPermissions.indexOf(permissionAdd);
+    const findIndexImport = permissions.importEmployees !== -1;
+    const findIndexAdd = permissions.addEmployee !== -1;
 
     return (
       <div className={styles.tabBarExtra}>
-        {findIndexImport !== -1 && (
+        {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={this.importEmployees}>
             <img
               className={styles.buttonAddImport_imgImport}
@@ -397,7 +398,7 @@ class DirectoryComponent extends PureComponent {
           </div>
         )}
 
-        {findIndexAdd !== -1 && (
+        {findIndexAdd && (
           <div className={styles.buttonAddImport} onClick={this.addEmployee}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
             <p className={styles.buttonAddImport_text}>

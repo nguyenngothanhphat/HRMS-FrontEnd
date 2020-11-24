@@ -16,6 +16,18 @@ export function groupPermissions(roles) {
 
 export function checkPermissions(roles) {
   const permissionList = groupPermissions(roles);
+  // Directory Page
+  const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
+  const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+  const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+  const importEmployees = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
+  const addEmployee = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
+  const findIndexActive = permissionList.indexOf(tabActive);
+  const findIndexMyTeam = permissionList.indexOf(tabMyTeam);
+  const findIndexInActive = permissionList.indexOf(tabInActive);
+  const findIndexImport = permissionList.indexOf(importEmployees);
+  const findIndexAdd = permissionList.indexOf(addEmployee);
+
   // Edit profile tab general info
   const editWorkEmail = 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT';
   const editEmployeeID = 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EDIT';
@@ -61,6 +73,12 @@ export function checkPermissions(roles) {
   const indexUpdateAvatar = permissionList.indexOf(updateAvatarEmp);
 
   return {
+    // Directory Page
+    viewTabActive: findIndexActive,
+    viewTabMyTeam: findIndexMyTeam,
+    viewTabInActive: findIndexInActive,
+    importEmployees: findIndexImport,
+    addEmployee: findIndexAdd,
     // Profile employee
     editWorkEmail: findIndexWorkEmail,
     editEmployeeID: findIndexEmployeeID,
