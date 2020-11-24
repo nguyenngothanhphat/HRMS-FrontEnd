@@ -1,6 +1,7 @@
 /* eslint-disable compat/compat */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import CloseIcon from '@/assets/xclose.svg';
+import moment from 'moment';
 import EditIcon from '@/assets/xEdit.svg';
 import styles from './index.less';
 
@@ -11,16 +12,28 @@ class ActionSchedule extends Component {
   }
 
   render() {
+    const { list1On1, nameFrist } = this.props;
+    const lastArray = list1On1[list1On1.length - 1];
+    const array = [lastArray];
     return (
-      <div className={styles.modalSchedule__content}>
-        <div className={styles.flex}>
-          <div className={styles.modal__Content}>1-on-1 scheduled with Venkat</div>
-          <div style={{ marginTop: '-5px' }}>
-            <img src={EditIcon} alt="" style={{ padding: '5px' }} />
-            <img src={CloseIcon} alt="" />
-          </div>
-        </div>
-        <div className={styles.modal__text}>Schedule on: 22.05.20 | 12PM</div>
+      <div>
+        {list1On1.length !== 0 &&
+          array.map((item) => (
+            <Fragment key={item}>
+              <div className={styles.modalSchedule__content}>
+                <div className={styles.flex}>
+                  <div className={styles.modal__Content}>1-on-1 scheduled with {nameFrist}</div>
+                  <div style={{ marginTop: '-5px' }}>
+                    <img src={EditIcon} alt="" style={{ padding: '5px' }} />
+                    <img src={CloseIcon} alt="" />
+                  </div>
+                </div>
+                <div className={styles.modal__text}>
+                  Schedule on: {moment(item.meetingDate).format('DD.MM.YYYY')} | {item.meetingTime}
+                </div>
+              </div>
+            </Fragment>
+          ))}
       </div>
     );
   }

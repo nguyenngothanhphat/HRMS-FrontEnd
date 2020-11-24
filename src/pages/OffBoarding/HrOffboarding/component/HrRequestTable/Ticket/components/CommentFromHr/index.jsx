@@ -13,12 +13,12 @@ class CommentsFromHR extends PureComponent {
 
   render() {
     const { list1On1 = [] } = this.props;
-    const data = [list1On1];
-    console.log(data);
+    const listcontent = list1On1.find((item) => item.content !== '');
+    const mapdata = [listcontent];
     return (
       <div>
         {list1On1.length !== 0 &&
-          list1On1.map((item) => (
+          mapdata.map((item) => (
             <Fragment key={item}>
               <div className={styles.reasonPutOnHold}>
                 <Row gutter={[0, 20]} justify="space-between">
@@ -28,6 +28,7 @@ class CommentsFromHR extends PureComponent {
                       <div className={styles.reasonPutOnHold__dateTime}>
                         <span>
                           <span className={styles.subText}>
+                            Lasted updated by{' '}
                             {item.createdBy && item.createdBy.generalInfo.firstName}
                           </span>{' '}
                           | {moment(item.updatedAt).format('DD.MM.YY | h:mm A')}

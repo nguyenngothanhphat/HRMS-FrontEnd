@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 import { DatePicker, Row, Col, Button } from 'antd';
 import Editicon from '@/assets/editIcon.svg';
 import { connect } from 'umi';
@@ -47,6 +48,13 @@ class LastWorkingDay extends PureComponent {
         lastWorkingDate: time,
         id: code,
       },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        this.setState({
+          visible: true,
+        });
+      }
     });
   };
 
@@ -56,19 +64,24 @@ class LastWorkingDay extends PureComponent {
     });
   };
 
-  changeDate = (a) => {
-    console.log('a', a);
-    const event = new Date(a);
+  changeDate = (date) => {
+    const event = new Date(date);
     event.toDateString();
-
     this.setState({
       lastday: event,
     });
   };
 
+  disabledDate = (current) => {
+    return current && current < moment().endOf('day');
+  };
+
   render() {
     const { visible } = this.state;
     const { lastWorkingDate, list1On1 } = this.props;
+    const check = list1On1.length >= 1;
+    console.log(check);
+    const day = '2020-11-28T10:06:20.476Z';
 
     return (
       <div className={styles.lastWorkDay}>
@@ -86,7 +99,6 @@ class LastWorkingDay extends PureComponent {
                   />
                   <span style={{ fontWeight: 'normal' }}> Edit</span>
                 </span>
-                {/* {date} */}
               </span>
             </div>
           )}
@@ -94,18 +106,14 @@ class LastWorkingDay extends PureComponent {
         <Row className={styles.flex}>
           <Col span={8}>
             {list1On1.length === 0 ? (
-              <DatePicker
-                format="DD-MM-YYYY"
-                disabled
-                className={styles.datePicker}
-                // value="10/08/1997"
-              />
+              <DatePicker format="DD-MM-YYYY" disabled className={styles.datePicker} />
             ) : (
               <DatePicker
+                defaultValue={moment(day, 'DD-MM-YYYY')}
                 format="DD-MM-YYYY"
                 className={styles.datePicker}
-                // value="10/08/1997"
                 onChange={this.changeDate}
+                disabledDate={this.disabledDate}
               />
             )}
           </Col>
@@ -126,7 +134,7 @@ class LastWorkingDay extends PureComponent {
           <Button className={styles.btnCancel} onClick={this.handleCancel}>
             Cancel
           </Button>
-          <Button className={styles.btnSubmit} onClick={this.handleSubmit}>
+          <Button className={styles.btnSubmit} onClick={this.handleSubmit} disabled={!check}>
             Submit
           </Button>
         </div>

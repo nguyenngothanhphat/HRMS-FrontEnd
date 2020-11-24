@@ -81,10 +81,6 @@ class ModalSet1On1 extends Component {
                 format="YYYY-MM-DD"
                 className={styles.datePicker}
                 onChange={this.changeDate}
-                // disabledDate={(current) => {
-                //   const customDate = Date.now();
-                //   return current && current < moment(customDate, 'YYYY-MM-DD');
-                // }}
                 disabledDate={this.disabledDate}
               />
             </div>
