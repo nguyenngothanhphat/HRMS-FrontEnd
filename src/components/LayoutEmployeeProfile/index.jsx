@@ -28,6 +28,20 @@ class CommonLayout extends PureComponent {
     });
   }
 
+  componentDidUpdate(preProps) {
+    const { listMenu } = this.props;
+    if (preProps.listMenu !== listMenu) {
+      this.initItemMenu(listMenu);
+    }
+  }
+
+  initItemMenu = (listMenu) => {
+    this.setState({
+      selectedItemId: listMenu[0].id,
+      displayComponent: listMenu[0].component,
+    });
+  };
+
   handleCLickItemMenu = (item) => {
     this.setState({
       selectedItemId: item.id,

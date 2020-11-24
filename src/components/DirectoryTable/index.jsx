@@ -166,7 +166,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {}, pageSelected } = this.state;
-    const { list = [], loading, permissions } = this.props;
+    const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -186,21 +186,15 @@ class DirectoryTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const findIndexViewProfile = this.checkPermissionViewProfile(permissions);
-
     return (
       <div className={styles.directoryTable}>
         <Table
-          className={findIndexViewProfile !== -1 ? `${styles.directoryTable__employee}` : ''}
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
-            if (findIndexViewProfile !== -1) {
-              return {
-                onClick: () => this.handleProfileEmployee(record), // click row
-              };
-            }
-            return null;
+            return {
+              onClick: () => this.handleProfileEmployee(record), // click row
+            };
           }}
           dataSource={list}
           rowKey={(record) => record._id}

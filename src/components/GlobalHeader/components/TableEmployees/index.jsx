@@ -209,9 +209,6 @@ class TableEmployees extends Component {
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
-            if (checkRoleEmployee) {
-              return null;
-            }
             return {
               onClick: () => this.handleProfileEmployee(record), // click row
             };

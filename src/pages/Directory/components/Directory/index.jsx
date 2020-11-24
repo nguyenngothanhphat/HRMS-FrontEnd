@@ -499,9 +499,6 @@ class DirectoryComponent extends PureComponent {
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
     const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const {
       tabId,
       collapsed,
       changeTab,
@@ -511,11 +508,7 @@ class DirectoryComponent extends PureComponent {
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable
-              permissions={this.generatePermissions(roles)}
-              loading={loading}
-              list={this.renderListEmployee(key)}
-            />
+            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} />
           </Content>
           {key !== myTeam && (
             <TableFilter

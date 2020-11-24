@@ -13,7 +13,7 @@ import styles from './index.less';
 }))
 class GeneralInfo extends Component {
   render() {
-    const { loadingGeneral = false } = this.props;
+    const { loadingGeneral = false, permissions = {}, profileOwner = false } = this.props;
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
@@ -24,9 +24,9 @@ class GeneralInfo extends Component {
       <div className={styles.GeneralInfo}>
         <EmployeeInformation />
         <PersonalInformation />
-        <PassportVisaInformation />
-        <EmergencyContact />
-        <ProfessionalAcademicBackground />
+        {(permissions.viewPassportAndVisa !== -1 || profileOwner) && <PassportVisaInformation />}
+        <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
+        <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
       </div>
     );
   }

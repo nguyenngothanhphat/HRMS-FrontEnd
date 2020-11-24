@@ -6,14 +6,16 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
+import { checkPermissions } from '@/utils/permissions';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
+  currentUser,
 }))
 class EmployeeProfile extends Component {
   constructor(props) {
@@ -30,6 +32,11 @@ class EmployeeProfile extends Component {
     if (prevProps.location.pathname !== location.pathname) {
       this.fetchData();
     }
+  }
+
+  componentWillUnmount() {
+    // fix Warning: Can't perform a React state update on an unmounted component
+    this.setState = () => {};
   }
 
   fetchData = () => {
@@ -95,31 +102,62 @@ class EmployeeProfile extends Component {
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
   };
 
-  render() {
-    const listMenu = [
-      {
-        id: 1,
-        name: 'General Info',
+  checkProfileOwner = (currentUserID, employeeID) => {
+    if (currentUserID === employeeID) {
+      return true;
+    }
+    return false;
+  };
 
-        component: <GeneralInfo />,
-      },
-      {
+  renderListMenu = (roles, employee, _id) => {
+    const listMenu = [];
+    const profileOwner = this.checkProfileOwner(_id, employee);
+    const permissions = checkPermissions(roles);
+    listMenu.push({
+      id: 1,
+      name: 'General Info',
+      component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
+    });
+    if (permissions.viewTabEmployment !== -1 || profileOwner) {
+      listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
         component: <EmploymentTab />,
-      },
-      {
+      });
+    }
+    if (permissions.viewTabPerformance !== -1 || profileOwner) {
+      listMenu.push({
         id: 3,
         name: 'Performance History',
         component: <PerformanceHistory />,
-      },
-      { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
-      { id: 5, name: 'Documents', component: <Documents /> },
-      // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
-      { id: 7, name: 'Time & Scheduling', component: <Test /> },
-      { id: 8, name: 'Benefit Plans', component: <BenefitTab /> },
-    ];
-    const { location: { state: { location = '' } = {} } = {} } = this.props;
+      });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+    }
+    if (permissions.viewTabDocument !== -1 || profileOwner) {
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
+    }
+    // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
+    if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
+      listMenu.push({ id: 7, name: 'Time & Scheduling', component: <Test /> });
+    }
+    if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
+      listMenu.push({ id: 8, name: 'Benefit Plans', component: <BenefitTab /> });
+    }
+
+    return listMenu;
+  };
+
+  render() {
+    const {
+      match: { params: { reId: employee = '' } = {} },
+      currentUser: { roles = [], employee: currentEmployee = {} },
+      location: { state: { location = '' } = {} } = {},
+    } = this.props;
+
+    const listMenu = this.renderListMenu(roles, employee, currentEmployee._id);
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
