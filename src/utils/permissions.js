@@ -27,6 +27,11 @@ export function checkPermissions(roles) {
   const findIndexInActive = permissionList.indexOf(tabInActive);
   const findIndexImport = permissionList.indexOf(importEmployees);
   const findIndexAdd = permissionList.indexOf(addEmployee);
+  // Directory Page - Filter - Display location
+  const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
+  const showLocationInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
+  const findIndexShowLocationActive = permissionList.indexOf(showLocationActive);
+  const findIndexShowLocationInActive = permissionList.indexOf(showLocationInActive);
 
   // Edit profile tab general info
   const editWorkEmail = 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT';
@@ -79,6 +84,9 @@ export function checkPermissions(roles) {
     viewTabInActive: findIndexInActive,
     importEmployees: findIndexImport,
     addEmployee: findIndexAdd,
+    // Directory Page - Filter - Display location
+    filterLocationActive: findIndexShowLocationActive,
+    filterLocationInActive: findIndexShowLocationInActive,
     // Profile employee
     editWorkEmail: findIndexWorkEmail,
     editEmployeeID: findIndexEmployeeID,

@@ -107,7 +107,7 @@ class TableEmployees extends Component {
         align: 'left',
       },
       {
-        title: 'Email',
+        title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'user',
         key: 'email',
         render: (user) => <span>{user?.email}</span>,

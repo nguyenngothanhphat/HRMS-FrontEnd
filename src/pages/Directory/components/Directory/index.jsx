@@ -219,21 +219,6 @@ class DirectoryComponent extends PureComponent {
     return this.renderHrTeam();
   };
 
-  generatePermissions = (roles) => {
-    let groupPermissions = [];
-
-    roles.map((role) => {
-      const { permissions = [] } = role;
-      groupPermissions = [...groupPermissions, ...permissions];
-      return null;
-    });
-
-    // Remove duplicates
-    const permissionsUnique = groupPermissions.filter((v, i, a) => a.indexOf(v) === i);
-
-    return permissionsUnique;
-  };
-
   ChangeTabHrGloBal = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
@@ -444,23 +429,14 @@ class DirectoryComponent extends PureComponent {
       loadingListMyTeam,
       loadingListInActive,
       checkRoleEmployee,
-      currentUser: { roles = [] },
+      permissions = {},
     } = this.props;
 
-    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-    const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
-    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
-    const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
-    const showLocationInActive =
-      'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
-
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexActive = groupPermissions.indexOf(tabActive);
-    const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
-    const findIndexInActive = groupPermissions.indexOf(tabInActive);
-    const findIndexShowLocationActive = groupPermissions.indexOf(showLocationActive);
-    const findIndexShowLocationInActive = groupPermissions.indexOf(showLocationInActive);
+    const findIndexActive = permissions.viewTabActive;
+    const findIndexMyTeam = permissions.viewTabMyTeam;
+    const findIndexInActive = permissions.viewTabInActive;
+    const findIndexShowLocationActive = permissions.filterLocationActive;
+    const findIndexShowLocationInActive = permissions.filterLocationInActive;
 
     return (
       <>
