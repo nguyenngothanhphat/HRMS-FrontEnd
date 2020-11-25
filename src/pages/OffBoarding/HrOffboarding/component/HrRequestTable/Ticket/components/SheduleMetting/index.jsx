@@ -26,14 +26,20 @@ class ScheduleMetting extends Component {
   };
 
   render() {
-    const { visible } = this.state;
-    const { handleSubmit, listMeetingTime } = this.props;
+    // const { visible } = this.state;
+    const {
+      handleSubmit,
+      listMeetingTime,
+      handleclick,
+      visible,
+      handleCandelSchedule,
+    } = this.props;
     return (
       <div className={styles.modal__content}>
         <div className={styles.modal__text}>
           A change has been requested for the last working day. To resolve the same:
         </div>
-        <Button className={styles.modal__Button} onClick={this.handleclick}>
+        <Button className={styles.modal__Button} onClick={handleclick}>
           Schedule a 1 -on -1
         </Button>
         <ScheduleModal
@@ -41,7 +47,7 @@ class ScheduleMetting extends Component {
           visible={visible}
           handleSubmit={handleSubmit}
           modalContent="Schedule 1-on-1"
-          handleCancel={this.handleCandelSchedule}
+          handleCancel={handleCandelSchedule}
         />
       </div>
     );

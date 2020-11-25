@@ -7,13 +7,15 @@ import warningNoteIcon from '@/assets/warning-icon.svg';
 import ModalNoticeSuccess from '../ModalNoticeSuccess';
 import styles from './index.less';
 
-@connect()
+@connect(({ offboarding: { myRequest = {} } = {} }) => ({
+  myRequest,
+}))
 class LastWorkingDay extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      lastday: '',
+      lastDay: '',
     };
   }
 
@@ -37,15 +39,13 @@ class LastWorkingDay extends PureComponent {
   };
 
   handleSubmit = () => {
-    const { lastday } = this.state;
+    const { lastDay } = this.state;
     const { code, dispatch } = this.props;
-    const time = lastday;
-
     dispatch({
       type: 'offboarding/reviewRequest',
       payload: {
         action: 'ACCEPTED',
-        lastWorkingDate: time,
+        lastWorkingDate: lastDay,
         id: code,
       },
     }).then((response) => {
@@ -60,15 +60,15 @@ class LastWorkingDay extends PureComponent {
 
   handleCancel = () => {
     this.setState({
-      lastday: '',
+      lastDay: '',
     });
   };
 
-  changeDate = (date) => {
-    const event = new Date(date);
-    event.toDateString();
+  changeDate = (lastDay) => {
+    // const event = new Date(date);
+    // event.toDateString();
     this.setState({
-      lastday: event,
+      lastDay,
     });
   };
 
@@ -78,11 +78,10 @@ class LastWorkingDay extends PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { lastWorkingDate, list1On1 } = this.props;
-    const check = list1On1.length >= 1;
-    console.log(check);
-    const day = '2020-11-28T10:06:20.476Z';
-
+    const { list1On1 = [], lastWorkingDate } = this.props;
+    const check = list1On1.length > 0;
+    const dateFormat = 'YYYY/MM/DD';
+    // const { date } = this.props;
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
@@ -105,17 +104,14 @@ class LastWorkingDay extends PureComponent {
         </div>
         <Row className={styles.flex}>
           <Col span={8}>
-            {list1On1.length === 0 ? (
-              <DatePicker format="DD-MM-YYYY" disabled className={styles.datePicker} />
-            ) : (
-              <DatePicker
-                defaultValue={moment(day, 'DD-MM-YYYY')}
-                format="DD-MM-YYYY"
-                className={styles.datePicker}
-                onChange={this.changeDate}
-                disabledDate={this.disabledDate}
-              />
-            )}
+            <DatePicker
+              defaultValue={!lastWorkingDate ? null : moment(lastWorkingDate, dateFormat)}
+              // defaultValue={moment(null, dateFormat)}
+              format={dateFormat}
+              className={styles.datePicker}
+              onChange={this.changeDate}
+              disabledDate={this.disabledDate}
+            />
           </Col>
           <Col span={1} />
           <Col span={15} className={styles.detalFrom}>
@@ -131,7 +127,7 @@ class LastWorkingDay extends PureComponent {
               your department head.
             </span>
           </div>
-          <Button className={styles.btnCancel} onClick={this.handleCancel}>
+          <Button className={styles.btnCancel} onClick={this.handleCancel} disabled={!check}>
             Cancel
           </Button>
           <Button className={styles.btnSubmit} onClick={this.handleSubmit} disabled={!check}>

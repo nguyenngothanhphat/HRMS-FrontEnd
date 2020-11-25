@@ -12,7 +12,7 @@ class ActionSchedule extends Component {
   }
 
   render() {
-    const { list1On1, nameFrist } = this.props;
+    const { list1On1, nameFrist, onclose = () => {}, handleEdit = () => {} } = this.props;
     const lastArray = list1On1[list1On1.length - 1];
     const array = [lastArray];
     return (
@@ -24,8 +24,8 @@ class ActionSchedule extends Component {
                 <div className={styles.flex}>
                   <div className={styles.modal__Content}>1-on-1 scheduled with {nameFrist}</div>
                   <div style={{ marginTop: '-5px' }}>
-                    <img src={EditIcon} alt="" style={{ padding: '5px' }} />
-                    <img src={CloseIcon} alt="" />
+                    <img src={EditIcon} alt="" style={{ padding: '5px' }} onClick={handleEdit} />
+                    <img src={CloseIcon} alt="" onClick={onclose} />
                   </div>
                 </div>
                 <div className={styles.modal__text}>
