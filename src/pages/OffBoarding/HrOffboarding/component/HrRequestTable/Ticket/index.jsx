@@ -31,6 +31,7 @@ class HRDetailTicket extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      editLWD: false,
       // data: false,
       openModal: false,
       // saveSchedule: false,
@@ -201,7 +202,6 @@ class HRDetailTicket extends PureComponent {
             </Col>
             <Col span={7}>
               <InfoEmployee />
-
               {list1On1.length > 0 && (
                 <ScheduleMetting
                   visible={openModal}

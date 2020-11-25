@@ -16,6 +16,7 @@ class LastWorkingDay extends PureComponent {
     this.state = {
       visible: false,
       lastDay: '',
+      edit: false,
     };
   }
 
@@ -53,6 +54,7 @@ class LastWorkingDay extends PureComponent {
       if (statusCode === 200) {
         this.setState({
           visible: true,
+          edit: true,
         });
       }
     });
@@ -61,6 +63,11 @@ class LastWorkingDay extends PureComponent {
   handleCancel = () => {
     this.setState({
       lastDay: '',
+    });
+  };
+  openSubmit = () => {
+    this.setState({
+      edit: false,
     });
   };
 
@@ -77,8 +84,9 @@ class LastWorkingDay extends PureComponent {
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible, edit, lastDay } = this.state;
     const { list1On1 = [], lastWorkingDate } = this.props;
+    console.log(edit);
     const check = list1On1.length > 0;
     const dateFormat = 'YYYY/MM/DD';
     // const { date } = this.props;
@@ -86,24 +94,20 @@ class LastWorkingDay extends PureComponent {
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
           <div className={styles.titleText}>Last working day</div>
-          {lastWorkingDate && (
-            <div>
+          {lastWorkingDate && edit && (
+            <div className={styles.edit} onClick={this.openSubmit}>
               <span className={styles.subText}>
                 <span style={{ marginRight: '30px' }}>
-                  <img
-                    src={Editicon}
-                    alt=""
-                    className={styles.icon}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <span style={{ fontWeight: 'normal' }}> Edit</span>
+                  <img src={Editicon} alt="" className={styles.icon} />
+                  <span className={styles.editText}> Edit</span>
                 </span>
+                <span>{moment().format('DD.MM.YY | h:mm A')}</span>
               </span>
             </div>
           )}
         </div>
-        <Row className={styles.flex}>
-          <Col span={8}>
+        <div className={styles.bettween}>
+          <div className={styles.padding}>
             <DatePicker
               defaultValue={!lastWorkingDate ? null : moment(lastWorkingDate, dateFormat)}
               // defaultValue={moment(null, dateFormat)}
@@ -111,29 +115,33 @@ class LastWorkingDay extends PureComponent {
               className={styles.datePicker}
               onChange={this.changeDate}
               disabledDate={this.disabledDate}
+              // disabled={!lastWorkingDate}
             />
-          </Col>
-          <Col span={1} />
-          <Col span={15} className={styles.detalFrom}>
+          </div>
+          <div className={styles.detalFrom}>
             A last working date (LWD) is generated as per a 90 days notice period according to our
             Standard Resignation Policy
-          </Col>
-        </Row>
-        <div className={styles.bettween}>
-          <div>
-            <img src={warningNoteIcon} alt="warning-note-icon" />
-            <span className={styles.notifications}>
-              By default notifications will be sent to HR, the requestee and recursively loop to
-              your department head.
-            </span>
           </div>
-          <Button className={styles.btnCancel} onClick={this.handleCancel} disabled={!check}>
-            Cancel
-          </Button>
-          <Button className={styles.btnSubmit} onClick={this.handleSubmit} disabled={!check}>
-            Submit
-          </Button>
         </div>
+        {!edit && (
+          <div className={styles.flex}>
+            <div className={styles.paddingRight}>
+              <img src={warningNoteIcon} alt="warning-note-icon" />
+              <span className={styles.notifications}>
+                By default notifications will be sent to HR, the requestee and recursively loop to
+                your department head.
+              </span>
+            </div>
+            <div className={styles.paddingRight}>
+              <Button className={styles.btnCancel} onClick={this.handleCancel} disabled={!check}>
+                Cancel
+              </Button>
+            </div>
+            <Button className={styles.btnSubmit} onClick={this.handleSubmit} disabled={!lastDay}>
+              Submit
+            </Button>
+          </div>
+        )}
         <ModalNoticeSuccess
           visible={visible}
           handleRemoveToServer={this.handleRemoveToServer}

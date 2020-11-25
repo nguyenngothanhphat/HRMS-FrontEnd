@@ -2,15 +2,24 @@
   margin-top: 20px;
   padding: 26px 40px;
   background-color: #fff;
-  height: 210px;
+  height: auto;
   .bettween {
     display: flex;
     justify-content: space-between;
     padding-bottom: 20px;
+    .padding {
+      padding-right: 28px;
+    }
     .titleText {
       font-weight: bold;
       font-size: 16px;
       line-height: 19px;
+    }
+    .edit {
+      cursor: pointer;
+      .editText {
+        color: #ffa100;
+      }
     }
     .subText {
       font-weight: 500;
@@ -22,13 +31,13 @@
       }
     }
     .icon {
+      margin-top: -5px;
       padding: 5px;
     }
   }
   .datePicker {
     width: 268px;
     height: 56px;
-    margin-right: 28px;
   }
   .notifications {
     font-size: 11px;
@@ -36,14 +45,24 @@
     color: #707177;
   }
   .detalFrom {
-    height: 68px;
+    margin-top: -10px;
+    height: auto;
     padding: 17px 23px;
     background-color: #fff4d1;
     box-sizing: border-box;
     border-radius: 5px;
   }
   .flex {
-    padding-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+
+    .paddingRight {
+      padding-right: 15px;
+    }
+    .flexButton {
+      display: flex;
+      justify-content: space-between;
+    }
   }
   .btnCancel {
     width: 100px;

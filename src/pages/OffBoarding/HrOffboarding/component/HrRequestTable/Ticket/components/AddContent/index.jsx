@@ -39,7 +39,11 @@ class AddContent extends PureComponent {
         </Row>
         <div className={styles.reasonPutOnHold__textArea}>
           <TextArea allowClear onChange={this.handleChange} />
-          <Button className={styles.submit} disabled={!content} onClick={() => addcontent(content)}>
+          <Button
+            className={styles.btn__submit}
+            disabled={!content}
+            onClick={() => addcontent(content)}
+          >
             Submit
           </Button>
         </div>

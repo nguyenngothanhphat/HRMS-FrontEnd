@@ -20,9 +20,9 @@ class ActionSchedule extends Component {
         {list1On1.length !== 0 &&
           array.map((item) => (
             <Fragment key={item}>
-              <div className={styles.modalSchedule__content}>
+              <div className={styles.actionSchedule}>
                 <div className={styles.flex}>
-                  <div className={styles.modal__Content}>1-on-1 scheduled with {nameFrist}</div>
+                  <div className={styles.modalContent}>1-on-1 scheduled with {nameFrist}</div>
                   <div style={{ marginTop: '-5px' }}>
                     <img src={EditIcon} alt="" style={{ padding: '5px' }} onClick={handleEdit} />
                     <img src={CloseIcon} alt="" onClick={onclose} />
@@ -32,6 +32,7 @@ class ActionSchedule extends Component {
                   Schedule on: {moment(item.meetingDate).format('DD.MM.YYYY')} | {item.meetingTime}
                 </div>
               </div>
+              )
             </Fragment>
           ))}
       </div>
