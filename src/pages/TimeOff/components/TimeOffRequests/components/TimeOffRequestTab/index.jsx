@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import TimeOffTable from '../TimeOffRequestTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
-export default class TimeOffRequestTab extends PureComponent {
+export default class mockDataTimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,14 +78,31 @@ export default class TimeOffRequestTab extends PureComponent {
       acceptedNumber: acceptedData.length,
       rejectedNumber: rejectedData.length,
     };
+
     return (
       <div className={styles.TimeOffRequestTab}>
+        <span className={styles.title}>Leave Request</span>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TimeOffTable data={inProgressData} /> : ''}
-          {selectedFilterTab === '2' ? <TimeOffTable data={onHoldData} /> : ''}
-          {selectedFilterTab === '3' ? <TimeOffTable data={acceptedData} /> : ''}
-          {selectedFilterTab === '4' ? <TimeOffTable data={rejectedData} /> : ''}
+          {inProgressData.length === 0 &&
+          onHoldData.length === 0 &&
+          acceptedData.length === 0 &&
+          rejectedData.length === 0 ? (
+            <div className={styles.emptyTable}>
+              <img src={EmptyIcon} alt="empty-table" />
+              <p className={styles.describeTexts}>
+                You have not applied for any Leave requests. <br />
+                Submitted Casual, Sick & Compoff requests will be displayed here.
+              </p>
+            </div>
+          ) : (
+            <div>
+              {selectedFilterTab === '1' ? <TimeOffTable data={inProgressData} /> : ''}
+              {selectedFilterTab === '2' ? <TimeOffTable data={onHoldData} /> : ''}
+              {selectedFilterTab === '3' ? <TimeOffTable data={acceptedData} /> : ''}
+              {selectedFilterTab === '4' ? <TimeOffTable data={rejectedData} /> : ''}
+            </div>
+          )}
         </div>
       </div>
     );

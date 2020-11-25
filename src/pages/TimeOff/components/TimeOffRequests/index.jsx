@@ -188,17 +188,23 @@ export default class TimeOffRequests extends PureComponent {
   renderTableTitle = {
     left: (
       <div className={styles.renderTableTitle}>
-        <span>Time Off Requests</span>
+        <span>Timeoff Requests</span>
       </div>
     ),
   };
 
   render() {
+    const emptyData = [];
     return (
       <div className={styles.TimeOffRequests}>
-        <Tabs tabBarGutter={40} defaultActiveKey="1" tabBarExtraContent={this.renderTableTitle}>
+        <Tabs
+          tabPosition="left"
+          tabBarGutter={40}
+          defaultActiveKey="1"
+          tabBarExtraContent={this.renderTableTitle}
+        >
           <TabPane tab="Leave Request" key="1">
-            <TimeOffRequestTab data={mockData} />
+            <TimeOffRequestTab data={emptyData} />
           </TabPane>
           <TabPane tab="Special Leave Request" key="2">
             <TimeOffRequestTab data={mockData} />
