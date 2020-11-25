@@ -57,7 +57,9 @@ class RequesteeDetail extends PureComponent {
             const {
               name = '',
               projectHealth = 0,
-              manager: { generalInfo: { name: nameManager = '', avatar = '' } = {} } = {},
+              manager: {
+                generalInfo: { firstName: nameManager = '', avatar: avatarManager = '' } = {},
+              } = {},
             } = item;
             return (
               <Fragment key={item}>
@@ -82,7 +84,7 @@ class RequesteeDetail extends PureComponent {
                       <Avatar
                         className={styles.requesteeDetail__avatar}
                         icon={<UserOutlined />}
-                        src={avatar}
+                        src={avatarManager}
                       />
                       <span>
                         <u>{nameManager}</u>

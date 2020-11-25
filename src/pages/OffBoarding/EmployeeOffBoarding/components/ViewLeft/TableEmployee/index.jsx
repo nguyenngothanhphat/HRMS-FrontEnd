@@ -13,7 +13,7 @@ class TableEmployee extends PureComponent {
   }
 
   push = (data) => {
-    history.push(`/employee-offboarding/request/${data}`);
+    history.push(`/offboarding/review/${data}`);
   };
 
   render() {
