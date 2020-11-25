@@ -27,7 +27,8 @@ const offboarding = {
     listMeetingTime: [],
     listProjectByEmployee: [],
     itemNewCreate1On1: {},
-    totallist: [],
+    totalList: [],
+    totalListTeamRequest: [],
     showModalSuccessfully: false,
   },
   effects: {
@@ -36,10 +37,10 @@ const offboarding = {
         const response = yield call(getOffboardingList, payload);
         const {
           statusCode,
-          data: { items: listOffboarding = [], total: totallist = [] } = {},
+          data: { items: listOffboarding = [], total: totalList = [] } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totallist } });
+        yield put({ type: 'save', payload: { listOffboarding, totalList } });
       } catch (errors) {
         dialog(errors);
       }
@@ -49,10 +50,10 @@ const offboarding = {
         const response = yield call(teamRequestList, payload);
         const {
           statusCode,
-          data: { items: listTeamRequest = [], total: totallist = [] } = {},
+          data: { items: listTeamRequest = [], total: totalListTeamRequest = [] } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTeamRequest, totallist } });
+        yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest } });
       } catch (errors) {
         dialog(errors);
       }

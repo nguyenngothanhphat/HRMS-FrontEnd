@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { Row, Col, Input, Space, Checkbox } from 'antd';
 import moment from 'moment';
 import styles from './index.less';
@@ -12,38 +12,47 @@ class CommentsFromHR extends PureComponent {
   }
 
   render() {
-    const date = moment().format('DD.MM.YY | h:mm A');
-
+    const { list1On1 = [] } = this.props;
+    const listcontent = list1On1.find((item) => item.content !== '');
+    const mapdata = [listcontent];
     return (
-      <div className={styles.reasonPutOnHold}>
-        <Row gutter={[0, 20]} justify="space-between">
-          <Col className={styles.reasonPutOnHold__title}>Closing comments from 1-on-1</Col>
-          <Col>
-            <Row>
-              <div className={styles.reasonPutOnHold__dateTime}>
-                <span>
-                  <span className={styles.subText}>Lasted updated by Sandeep Metta </span>| {date}
-                </span>
+      <div>
+        {list1On1.length !== 0 &&
+          mapdata.map((item) => (
+            <Fragment key={item}>
+              <div className={styles.reasonPutOnHold}>
+                <Row gutter={[0, 20]} justify="space-between">
+                  <Col className={styles.reasonPutOnHold__title}>Closing comments from 1-on-1</Col>
+                  <Col>
+                    <Row>
+                      <div className={styles.reasonPutOnHold__dateTime}>
+                        <span>
+                          <span className={styles.subText}>
+                            Lasted updated by{' '}
+                            {item.createdBy && item.createdBy.generalInfo.firstName}
+                          </span>{' '}
+                          | {moment(item.updatedAt).format('DD.MM.YY | h:mm A')}
+                        </span>
+                      </div>
+                    </Row>
+                  </Col>
+                </Row>
+                <div className={styles.reasonPutOnHold__textArea}>
+                  <TextArea allowClear value={item.content} disabled />
+                  <div className={styles.reasonPutOnHold__action}>
+                    <Space>
+                      <Checkbox>
+                        <span style={{ color: '#2C6DF9' }}>Can be rehired</span>
+                      </Checkbox>
+                      <span className={styles.reasonPutOnHold__action__text}>
+                        (This will remain private to yourself and the approving manager)
+                      </span>
+                    </Space>
+                  </div>
+                </div>
               </div>
-            </Row>
-          </Col>
-        </Row>
-        <div className={styles.reasonPutOnHold__textArea}>
-          <TextArea
-            allowClear
-            placeholder="The reason I have decided to end out this request on-hold is because …"
-          />
-          <div className={styles.reasonPutOnHold__action}>
-            <Space>
-              <Checkbox>
-                <span style={{ color: '#2C6DF9' }}>Can be rehired</span>
-              </Checkbox>
-              <span className={styles.reasonPutOnHold__action__text}>
-                (This will remain private to yourself and the approving manager)
-              </span>
-            </Space>
-          </div>
-        </div>
+            </Fragment>
+          ))}
       </div>
     );
   }

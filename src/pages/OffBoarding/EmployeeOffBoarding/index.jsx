@@ -9,7 +9,7 @@ import styles from './index.less';
 
 @connect(
   ({
-    offboarding: { listOffboarding = [], totallist = [] } = {},
+    offboarding: { listOffboarding = [], totalList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -17,7 +17,7 @@ import styles from './index.less';
       } = {},
     } = {},
   }) => ({
-    totallist,
+    totalList,
     locationID,
     companyID,
     listOffboarding,
@@ -43,7 +43,7 @@ class EmployeeOffBoading extends Component {
   }
 
   render() {
-    const { listOffboarding = [], totallist = [] } = this.props;
+    const { listOffboarding = [], totalList = [] } = this.props;
 
     return (
       <PageContainer>
@@ -61,7 +61,7 @@ class EmployeeOffBoading extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 0]}>
             <Col span={18}>
-              <ViewLeft data={listOffboarding} countdata={totallist} />
+              <ViewLeft data={listOffboarding} countdata={totalList} />
             </Col>
             <Col span={6}>{listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}</Col>
           </Row>
