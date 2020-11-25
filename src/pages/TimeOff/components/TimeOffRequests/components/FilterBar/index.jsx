@@ -16,7 +16,7 @@ export default class FilterBar extends PureComponent {
   };
 
   render() {
-    const { dataNumber } = this.props;
+    // const { dataNumber } = this.props;
     return (
       <div className={styles.FilterBar}>
         <Tabs

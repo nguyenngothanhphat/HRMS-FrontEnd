@@ -7,6 +7,7 @@ import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
 import TimeOffRequests from './components/TimeOffRequests';
+import FeedbackBar from './components/FeedbackBar';
 import SetupTimeoff from './components/SetupTimeoff';
 import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
@@ -18,8 +19,15 @@ export default class TimeOff extends PureComponent {
     super(props);
     this.state = {
       viewInformation: false,
+      closeFeedbackBar: false,
     };
   }
+
+  onCloseFeedbackBar = () => {
+    this.setState({
+      closeFeedbackBar: true,
+    });
+  };
 
   buttonOnClick = () => {
     // eslint-disable-next-line no-alert
@@ -29,13 +37,6 @@ export default class TimeOff extends PureComponent {
   buttonOnClickLeave = () => {
     // eslint-disable-next-line no-alert
     history.push(`/time-off/leave-request`);
-  };
-
-  onInformationCLick = () => {
-    const { viewInformation } = this.state;
-    this.setState({
-      viewInformation: !viewInformation,
-    });
   };
 
   onInformationCLick = () => {
@@ -59,7 +60,7 @@ export default class TimeOff extends PureComponent {
         your manager and supervisor, it will be credited to your total leave balance.
       </p>,
     ];
-    const { viewInformation } = this.state;
+    const { viewInformation, closeFeedbackBar } = this.state;
     return (
       <>
         <Affix offsetTop={40}>
@@ -109,6 +110,13 @@ export default class TimeOff extends PureComponent {
                     <TimeOffRequests />
                   </Col>
                 </Row>
+                {!closeFeedbackBar && (
+                  <Row gutter={[20, 20]}>
+                    <Col span={24}>
+                      <FeedbackBar onClose={this.onCloseFeedbackBar} />
+                    </Col>
+                  </Row>
+                )}
               </Col>
             )}
 
