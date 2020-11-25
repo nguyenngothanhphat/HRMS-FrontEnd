@@ -1,28 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Button, Input } from 'antd';
+import { connect } from 'umi';
 import { SearchOutlined } from '@ant-design/icons';
 import TableComponent from '../TableComponent';
 import filterIcon from './assets/filterIcon.png';
 import styles from './index.less';
 
+@connect(({ loading, offboarding: { inQueuesList = {} } }) => ({
+  loadingList: loading.effects['offboarding/getListRelieving'],
+  inQueuesList,
+}))
 class InQueueTable extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/getListRelieving',
+      payload: {
+        relievingStatus: 'IN-QUEUES',
+      },
+    });
+  };
+
   render() {
-    const inQueueTable = [
-      {
-        ticketId: 123,
-        employeeId: 'PSI 2090',
-        name: 'Vamsi Venkat Krishna A..',
-        department: 'UX & Research',
-        lwd: '22.01.2021',
-      },
-      {
-        ticketId: 123,
-        employeeId: 'PSI 2090',
-        name: 'Vamsi Venkat Krishna A..',
-        department: 'UX & Research',
-        lwd: '22.01.2021',
-      },
-    ];
+    const { inQueuesList, loadingList } = this.props;
 
     return (
       <div className={styles.inQueueTable}>
@@ -44,7 +44,7 @@ class InQueueTable extends PureComponent {
             />
           </div>
         </div>
-        <TableComponent data={inQueueTable} />
+        <TableComponent loading={loadingList} data={inQueuesList} />
       </div>
     );
   }

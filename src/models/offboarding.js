@@ -11,6 +11,7 @@ import {
   getCustomTemplates,
   getTemplateById,
   addCustomTemplate,
+  getListRelieving,
   create1On1,
   teamRequestList,
   getListProjectByEmployee,
@@ -38,6 +39,8 @@ const offboarding = {
     customExitPackage: [],
     customClosingPackage: [],
     currentTemplate: {},
+    inQueuesList: [],
+    closeRecordsList: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -183,6 +186,36 @@ const offboarding = {
         dialog(errors);
       }
     },
+    *getDefaultClosingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDefaultTemplates, payload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { defaultClosingPackage: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getCustomExitPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(getCustomTemplates, payload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { customExitPackage: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getCustomClosingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(getCustomTemplates, payload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { customClosingPackage: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchTemplateById({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getTemplateById, payload);
@@ -195,13 +228,37 @@ const offboarding = {
       }
     },
     *addCustomTemplate({ payload = {} }, { call, put }) {
-      const response = {};
+      let response = {};
       try {
         response = yield call(addCustomTemplate, payload);
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getListRelieving({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListRelieving, payload);
+        const { relievingStatus } = payload;
+        const { statusCode, data = [] } = response;
+        console.log(relievingStatus);
+        if (statusCode !== 200) throw response;
+        switch (relievingStatus) {
+          case 'CLOSE-RECORDS':
+            yield put({ type: 'save', payload: { closeRecordsList: data.items } });
+            console.log('ye');
+            break;
+          case 'IN-QUEUES':
+            yield put({ type: 'save', payload: { inQueuesList: data.items } });
+            break;
+          default:
+            return null;
+        }
       } catch (errors) {
         dialog(errors);
       }

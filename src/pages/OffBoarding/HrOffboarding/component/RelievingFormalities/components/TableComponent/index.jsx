@@ -24,9 +24,33 @@ class TableComponent extends PureComponent {
     );
   };
 
-  render() {
-    const { data = [], isClosedTable = false } = this.props;
+  _renderEmployeeId = (id) => {
+    const { data = [] } = this.props;
+    const newItem = data?.filter((item) => item._id === id);
+    return newItem[0].employee.employeeId;
+  };
 
+  _renderEmployeeName = (id) => {
+    const { data = [] } = this.props;
+    const newItem = data?.filter((item) => item._id === id);
+    return `${newItem[0].employee.generalInfo.firstName} ${newItem[0].employee.generalInfo.lastName}`;
+  };
+
+  _renderDepartment = (id) => {
+    const { data = [] } = this.props;
+    const newItem = data?.filter((item) => item._id === id);
+    return newItem[0].department.name;
+  };
+
+  _renderLastWorkingDate = (id) => {
+    const { data = [] } = this.props;
+    const newItem = data?.filter((item) => item._id === id);
+    const date = newItem[0].lastWorkingDate.slice(0, 10);
+    return date;
+  };
+
+  render() {
+    const { data = [], isClosedTable = false, loading } = this.props;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -47,23 +71,27 @@ class TableComponent extends PureComponent {
     const columns = [
       {
         title: <span className={styles.title}>Ticket ID </span>,
-        dataIndex: 'ticketId',
+        dataIndex: '_id',
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: 'employeeId',
+        dataIndex: '_id',
+        render: (_id) => this._renderEmployeeId(_id),
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: 'name',
+        dataIndex: '_id',
+        render: (_id) => this._renderEmployeeName(_id),
       },
       {
         title: <span className={styles.title}>Department </span>,
-        dataIndex: 'department',
+        dataIndex: '_id',
+        render: (_id) => this._renderDepartment(_id),
       },
       {
         title: <span className={styles.title}>LWD </span>,
-        dataIndex: 'lwd',
+        dataIndex: '_id',
+        render: (_id) => this._renderLastWorkingDate(_id),
       },
       {
         title: !isClosedTable ? <span className={styles.title}>Action </span> : null,
@@ -76,14 +104,15 @@ class TableComponent extends PureComponent {
     return (
       <div className={styles.tableComponent}>
         <Table
-          locale={{
-            emptyText: (
-              <span>
-                {/* <img src={empty} alt="" /> */}
-                <p className={styles.textEmpty}>No data</p>
-              </span>
-            ),
-          }}
+          loading={loading}
+          // locale={{
+          //   emptyText: (
+          //     <span>
+          //       {/* <img src={empty} alt="" /> */}
+          //       <p className={styles.textEmpty}>No data</p>
+          //     </span>
+          //   ),
+          // }}
           columns={columns}
           dataSource={data}
           pagination={{ ...pagination, total: data.length }}

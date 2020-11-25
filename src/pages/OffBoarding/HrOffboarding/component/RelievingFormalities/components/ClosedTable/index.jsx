@@ -1,28 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Button, Input } from 'antd';
+import { connect } from 'umi';
 import { SearchOutlined } from '@ant-design/icons';
 import TableComponent from '../TableComponent';
 import filterIcon from './assets/filterIcon.png';
 import styles from './index.less';
 
+@connect(({ loading, offboarding: { closeRecordsList = {} } }) => ({
+  loadingList: loading.effects['offboarding/getListRelieving'],
+  closeRecordsList,
+}))
 class ClosedTable extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/getListRelieving',
+      payload: {
+        relievingStatus: 'CLOSE-RECORDS',
+      },
+    });
+  };
+
   render() {
-    const closedTable = [
-      {
-        ticketId: 123,
-        employeeId: 'PSI 2090',
-        name: 'Vamsi Venkat Krishna A..',
-        department: 'UX & Research',
-        lwd: '22.01.2021',
-      },
-      {
-        ticketId: 123,
-        employeeId: 'PSI 2090',
-        name: 'Vamsi Venkat Krishna A..',
-        department: 'UX & Research',
-        lwd: '22.01.2021',
-      },
-    ];
+    const { closeRecordsList, loadingList } = this.props;
 
     return (
       <div className={styles.closedTable}>
@@ -44,7 +44,7 @@ class ClosedTable extends PureComponent {
             />
           </div>
         </div>
-        <TableComponent data={closedTable} isClosedTable />
+        <TableComponent loading={loadingList} data={closeRecordsList} isClosedTable />
       </div>
     );
   }

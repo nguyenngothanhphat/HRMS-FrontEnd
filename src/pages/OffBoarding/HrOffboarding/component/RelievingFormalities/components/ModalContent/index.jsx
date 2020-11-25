@@ -53,7 +53,7 @@ class ModalContent extends Component {
   };
 
   onNext = () => {
-    const { dispatch, currentTemplate, closeModal } = this.props;
+    const { dispatch, currentTemplate, closeModal, onReload } = this.props;
     const { settings, type, title, htmlContent } = currentTemplate;
 
     dispatch({
@@ -67,6 +67,7 @@ class ModalContent extends Component {
     }).then(() => {
       notification.success({ message: `Upload file successfully!` });
       closeModal();
+      onReload(type);
     });
   };
 

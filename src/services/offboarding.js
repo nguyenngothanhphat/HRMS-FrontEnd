@@ -107,3 +107,10 @@ export async function addCustomTemplate(payload) {
     data: payload,
   });
 }
+
+export async function getListRelieving(payload) {
+  return request('/api/offboardingrequest/list-relieving', {
+    method: 'POST',
+    data: payload,
+  });
+}
