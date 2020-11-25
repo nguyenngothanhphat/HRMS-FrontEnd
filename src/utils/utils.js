@@ -100,3 +100,23 @@ export const filteredArr = (data) => {
     return precur;
   }, []);
 };
+
+export const formatAdditionalQuestion = (questionArr) => {
+  let finalArr = [];
+  finalArr = questionArr.map((item) => {
+    const { question = '', answer = '', type = '', defaultAnswer = [], description = '' } = item;
+    const itemData = {
+      type,
+      name: question.replace(/ /g, ''), // Discard white spaces
+      question,
+      defaultAnswer,
+      answer,
+      description,
+    };
+    return { ...itemData };
+    // finalArr.push({...itemData});
+    // return null;
+  });
+  console.log(finalArr);
+  return finalArr;
+};

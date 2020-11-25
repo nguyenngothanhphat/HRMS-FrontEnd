@@ -19,17 +19,24 @@ const Note = {
 
 const INPUT_TYPE = {
   TEXT: 'text',
+  SELECT: 'select',
 };
 
-const getInput = (type) => {
+const getInput = (data) => {
+  const { type = '' } = data;
+  console.log(data);
   const { Option } = Select;
   if (type === INPUT_TYPE.TEXT) {
     return <Input />;
   }
   if (type === INPUT_TYPE.SELECT) {
+    const { defaultAnswer = [] } = data;
+    console.log('Select');
     return (
       <Select>
-        <Option />
+        {defaultAnswer.map((answerItem) => (
+          <Option value={answerItem}>{answerItem}</Option>
+        ))}
       </Select>
     );
   }
@@ -44,6 +51,7 @@ const AdditionalQuestion = (props) => {
     hidePreviewOffer,
     additionalQuestion: additionalQuestionProp,
     additionalQuestions: additionalQuestionsProp,
+    candidate,
   } = props;
 
   const {
@@ -66,6 +74,21 @@ const AdditionalQuestion = (props) => {
   };
 
   const onClickNext = () => {
+    const dataToSend = additionalQuestionsProp.map((item) => {
+      const { question, answer, defaultAnswer, description, type } = item;
+      return { question, answer, defaultAnswer, description, type };
+    });
+
+    console.log(dataToSend);
+
+    dispatch({
+      type: 'candidateProfile/updateByCandidateEffect',
+      payload: {
+        additionalQuestions: dataToSend,
+        candidate,
+      },
+    });
+
     if (hidePreviewOffer) {
       return;
     }
@@ -194,7 +217,7 @@ const AdditionalQuestion = (props) => {
     return formattedValues;
   };
 
-  console.log(getInitialValues());
+  // console.log(getInitialValues());
 
   return (
     <div className={s.additionalQuestion}>
@@ -226,7 +249,7 @@ const AdditionalQuestion = (props) => {
                         const { name = '', type = '', question = '', answer = '' } = item;
                         return (
                           <Form.Item name={name} label={question}>
-                            {getInput(type)}
+                            {getInput(item)}
                           </Form.Item>
                         );
                       })}
@@ -304,6 +327,7 @@ export default connect(
     candidateInfo: {
       checkMandatory = {},
       currentStep = 7,
+      data: { _id: candidate = '' } = {},
       tempData: { hidePreviewOffer = true, additionalQuestion = {}, additionalQuestions = [] },
     } = {},
   }) => ({
@@ -312,5 +336,6 @@ export default connect(
     hidePreviewOffer,
     additionalQuestion,
     additionalQuestions,
+    candidate,
   }),
 )(AdditionalQuestion);

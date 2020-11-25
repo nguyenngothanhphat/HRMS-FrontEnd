@@ -21,7 +21,7 @@ import {
   getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 import {
   addTeamMember,
@@ -765,9 +765,6 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const { _id } = data;
         yield put({
-          type: 'fetchAdditionalQuestion',
-        });
-        yield put({
           type: 'save',
           payload: {
             currentStep: data.currentStep,
@@ -799,7 +796,7 @@ const candidateInfo = {
             },
           },
         });
-
+        console.log(data);
         yield put({
           type: 'saveTemp',
           payload: {
@@ -812,8 +809,14 @@ const candidateInfo = {
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
             hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
+            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
+
+        // yield put({
+        //   type: 'upadateAdditionalQuestion',
+        //   payload: formatAdditionalQuestion(data.additionalQuestions),
+        // });
         yield put({
           type: 'updateSignature',
           payload: data,
