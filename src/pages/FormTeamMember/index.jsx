@@ -13,6 +13,7 @@ import SalaryStructure from './components/SalaryStructure';
 import BackgroundCheck from './components/BackgroundCheck';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
+import AdditionalQuestion from './components/AdditionalQuestion';
 import PROCESS_STATUS from './components/utils';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
@@ -47,6 +48,7 @@ class FormTeamMember extends PureComponent {
         const { currentStep = 0 } = data;
 
         if (currentStep >= 4) {
+          console.log('valueToFinalOffer = 1 here');
           dispatch({
             type: 'candidateInfo/saveTemp',
             payload: {
@@ -338,6 +340,12 @@ class FormTeamMember extends PureComponent {
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
+      {
+        id: 8,
+        name: 'Additional Question',
+        key: 'additionalQuestion',
+        component: <AdditionalQuestion processStatus={processStatus} reId={reId} />,
+      },
       // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       // {
       //   id: 9,
@@ -356,6 +364,7 @@ class FormTeamMember extends PureComponent {
       offerDetails: false,
       payrollSettings: false,
       benefits: false,
+      additionalQuestion: false,
       // customFields: false,
       // additionalOptions: false,
     };

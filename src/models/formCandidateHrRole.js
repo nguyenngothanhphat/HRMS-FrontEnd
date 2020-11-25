@@ -37,7 +37,6 @@ import {
 const candidateInfo = {
   namespace: 'candidateInfo',
   state: {
-    a: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: false,
@@ -46,6 +45,7 @@ const candidateInfo = {
       filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
+      filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -75,6 +75,7 @@ const candidateInfo = {
       title: null,
       reportingManager: null,
       valueToFinalOffer: 0,
+      skip: 0,
       // Background Recheck
       backgroundRecheck: {
         documentList: [],
@@ -82,7 +83,7 @@ const candidateInfo = {
       },
       // Offer details
       template: '',
-      includeOffer: false,
+      includeOffer: 1,
       compensationType: '',
       amountIn: '',
       timeOffPolicy: '',
@@ -163,6 +164,19 @@ const candidateInfo = {
       offerLetter: {
         name: '',
         url: '',
+      },
+      staticOfferLetter: {
+        id: '',
+        name: '',
+        url: '',
+      },
+      hidePreviewOffer: false,
+
+      additionalQuestion: {
+        opportunity: '',
+        payment: '',
+        shirt: '',
+        dietary: '',
       },
     },
     data: {
@@ -756,7 +770,7 @@ const candidateInfo = {
             },
           },
         });
-        console.log(data);
+
         yield put({
           type: 'saveTemp',
           payload: {
@@ -765,6 +779,10 @@ const candidateInfo = {
             offerLetter: data.offerLetter,
             candidate: data._id,
             candidateSignature: data.candidateSignature || {},
+            amountIn: data.amountIn || '',
+            timeOffPolicy: data.timeOffPolicy || '',
+            compensationType: data.compensationType || '',
+            hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
           },
         });
         yield put({
@@ -830,7 +848,6 @@ const candidateInfo = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
-        console.log(response);
         yield put({
           type: 'updateOfferLetter',
           payload: {
@@ -1141,6 +1158,18 @@ const candidateInfo = {
         tempData: {
           ...tempData,
           offerLetter: action.payload,
+        },
+      };
+    },
+
+    updateAdditionalQuestion(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestion: action.payload,
         },
       };
     },
