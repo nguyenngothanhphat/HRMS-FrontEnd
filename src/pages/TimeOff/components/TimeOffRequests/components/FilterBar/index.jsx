@@ -16,7 +16,7 @@ export default class FilterBar extends PureComponent {
   };
 
   render() {
-    // const { dataNumber } = this.props;
+    const { dataNumber } = this.props;
     return (
       <div className={styles.FilterBar}>
         <Tabs
@@ -25,17 +25,17 @@ export default class FilterBar extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          {/* <TabPane
+          <TabPane
             tab={`In-progress (${this.addZeroToNumber(dataNumber.inProgressNumber)})`}
             key="1"
           />
           <TabPane tab={`On-hold  (${this.addZeroToNumber(dataNumber.onHoldNumber)})`} key="2" />
           <TabPane tab={`Accepted  (${this.addZeroToNumber(dataNumber.acceptedNumber)})`} key="3" />
-          <TabPane tab={`Rejected  (${this.addZeroToNumber(dataNumber.rejectedNumber)})`} key="4" /> */}
-          <TabPane tab="In Progress" key="1" />
+          <TabPane tab={`Rejected  (${this.addZeroToNumber(dataNumber.rejectedNumber)})`} key="4" />
+          {/* <TabPane tab="In Progress" key="1" />
           <TabPane tab="Approved" key="2" />
           <TabPane tab="Rejected" key="3" />
-          <TabPane tab="Drafts" key="4" />
+          <TabPane tab="Drafts" key="4" /> */}
         </Tabs>
       </div>
     );
