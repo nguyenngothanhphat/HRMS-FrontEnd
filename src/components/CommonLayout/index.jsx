@@ -43,7 +43,7 @@ const PROCESS_STATUS = {
       displayComponent = {},
       data: { processStatus = '' } = {},
       tempData: {
-        valueToFinalOffer = 0,
+        skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
         hidePreviewOffer,
       } = {},
@@ -53,7 +53,7 @@ const PROCESS_STATUS = {
     currentStep,
     displayComponent,
     processStatus,
-    valueToFinalOffer,
+    skip,
     allDocumentVerified,
     hidePreviewOffer,
   }),
@@ -213,8 +213,8 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus, valueToFinalOffer } = this.props;
-    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+    const { processStatus, skip } = this.props;
+    return processStatus === 'DRAFT' && skip === 0;
   };
 
   isDisabled = (index) => {
@@ -241,9 +241,9 @@ class CommonLayout extends Component {
       FINAL_OFFERS,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, valueToFinalOffer } = this.props;
+    const { allDocumentVerified, processStatus, skip } = this.props;
 
-    if (valueToFinalOffer === 1) {
+    if (skip === 1) {
       return false;
     }
 

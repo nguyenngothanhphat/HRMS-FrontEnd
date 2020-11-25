@@ -75,6 +75,7 @@ const candidateInfo = {
       title: null,
       reportingManager: null,
       valueToFinalOffer: 0,
+      skip: 0,
       // Background Recheck
       backgroundRecheck: {
         documentList: [],

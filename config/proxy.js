@@ -10,7 +10,7 @@ export default {
     '/api/': {
       // target: 'http://localhost:4500',
       // target: 'http://api-stghrms.paxanimi.ai',
-      target: 'http://10.20.29.115:3000',
+      target: 'http://10.20.29.118:3000',
       changeOrigin: true,
       pathRewrite: {
         '^': '',

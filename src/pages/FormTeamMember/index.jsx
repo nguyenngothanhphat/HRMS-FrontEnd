@@ -48,6 +48,7 @@ class FormTeamMember extends PureComponent {
         const { currentStep = 0 } = data;
 
         if (currentStep >= 4) {
+          console.log('valueToFinalOffer = 1 here');
           dispatch({
             type: 'candidateInfo/saveTemp',
             payload: {

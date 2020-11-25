@@ -72,6 +72,15 @@ const OfferDetail = (props) => {
       return null;
     });
 
+    const { includeOffer = 1 } = allFieldsValues;
+    console.log(includeOffer);
+    console.log(uploadedOffer);
+    if (includeOffer === 2) {
+      if (!uploadedOffer.url) {
+        valid = false;
+      }
+    }
+
     setAllFieldsFilled(valid);
 
     return valid;
@@ -95,6 +104,20 @@ const OfferDetail = (props) => {
       });
     }
   }, [allFieldsFilled]);
+
+  useEffect(() => {
+    const { includeOffer = 1 } = form.getFieldsValue();
+    console.log(includeOffer);
+    console.log(uploadedOffer);
+    console.log(allFieldsFilled);
+    if (includeOffer === 2) {
+      if (!uploadedOffer.url) {
+        setAllFieldsFilled(false);
+      } else if (!allFieldsFilled) {
+        setAllFieldsFilled(true);
+      }
+    }
+  }, [uploadedOffer]);
 
   const handleFormChange = (changedValues, allFieldsValues) => {
     const { includeOffer, compensation, currency, timeoff } = allFieldsValues;

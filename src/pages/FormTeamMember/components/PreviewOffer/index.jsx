@@ -183,7 +183,7 @@ const PreviewOffer = (props) => {
 
     const { id } = hrSignature;
     const { candidate } = data;
-    const { valueToFinalOffer = 0 } = tempData;
+    const { skip = 0 } = tempData;
     // let option = 1;
     // if (valueToFinalOffer === 1) {
     //   option = 2;
@@ -193,7 +193,7 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate, options: valueToFinalOffer },
+      payload: { hrSignature: id, candidate, options: skip },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal2(true);
