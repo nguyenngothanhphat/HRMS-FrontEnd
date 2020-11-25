@@ -186,7 +186,7 @@ class UploadModal extends Component {
                 <div key="cancel" className={styles.btnCancel} onClick={handleCancel}>
                   Cancel
                 </div>
-                ,
+
                 <Button
                   key="submit"
                   type="primary"

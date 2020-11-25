@@ -60,18 +60,32 @@ class CollapseRow extends PureComponent {
     }, 1000);
   };
 
-  statusAndButtons = () => (
-    <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
-      {/* <a>Complete</a> */}
-      <div onClick={this.handleUploadClick} className={styles.uploadButton}>
-        <img src={UploadIcon} alt="upload" />
-        <span className={styles.uploadText}>Choose file</span>
-      </div>
-      {/* <Dropdown overlay={menu}>
+  statusAndButtons = () => {
+    const { data: row = [] } = this.props;
+    console.log('row', row);
+    const { kind = '', files = [] } = row;
+    let checkExistFile = true;
+    if (files.length === 1) {
+      files.forEach((value) => {
+        const { id = '' } = value;
+        if (id === '') checkExistFile = false;
+      });
+    }
+    return (
+      <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
+        {/* <a>Complete</a> */}
+        <div onClick={this.handleUploadClick} className={styles.uploadButton}>
+          {/* <img src={UploadIcon} alt="upload" /> */}
+          {kind !== 'Identity' && checkExistFile === false && (
+            <span className={styles.uploadText}>Choose file</span>
+          )}
+        </div>
+        {/* <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
       </Dropdown> */}
-    </div>
-  );
+      </div>
+    );
+  };
 
   onChange = () => {
     const { open } = this.state;
