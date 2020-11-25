@@ -96,8 +96,7 @@ class HRDetailTicket extends PureComponent {
   };
 
   render() {
-    const { data, saveSchedule } = this.state;
-    console.log(saveSchedule);
+    const { data } = this.state;
     const {
       visible,
       myRequest,
