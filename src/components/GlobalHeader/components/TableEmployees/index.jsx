@@ -47,9 +47,9 @@ class TableEmployees extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
-        dataIndex: 'generalInfo',
+        dataIndex: 'employeeId',
         key: 'employeeId',
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        render: (employeeId) => <span>{employeeId || ''}</span>,
         width: '8%',
         fixed: 'left',
         align: 'left',
@@ -72,7 +72,7 @@ class TableEmployees extends Component {
               )
             : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
-        width: '16%',
+        width: '14%',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -99,7 +99,7 @@ class TableEmployees extends Component {
         key: 'manager',
         render: (manager) => (
           <span>
-            {manager.generalInfo
+            {manager && manager.generalInfo
               ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
               : ''}
           </span>
@@ -107,17 +107,18 @@ class TableEmployees extends Component {
         align: 'left',
       },
       {
-        title: 'Email',
-        dataIndex: 'generalInfo',
+        title: formatMessage({ id: 'component.directory.table.email' }),
+        dataIndex: 'user',
         key: 'email',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        render: (user) => <span>{user?.email}</span>,
         align: 'left',
-        width: '18%',
+        width: '16%',
       },
       {
         title: 'Contact Number',
         key: 'contactNumber',
-        render: (location) => <span>{location ? location.name : ''}</span>,
+        dataIndex: 'generalInfo',
+        render: (generalInfo) => <span>{generalInfo ? generalInfo?.personalNumber : ''}</span>,
         align: 'left',
       },
       {
@@ -208,9 +209,6 @@ class TableEmployees extends Component {
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
-            if (checkRoleEmployee) {
-              return null;
-            }
             return {
               onClick: () => this.handleProfileEmployee(record), // click row
             };
