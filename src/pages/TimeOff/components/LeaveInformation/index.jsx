@@ -1,8 +1,9 @@
-import React, { PureComponent, useState } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Collapse, Tooltip } from 'antd';
 import { InfoCircleOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
+import DonutChart from './components/DonutChart';
 
 import styles from './index.less';
 
@@ -120,14 +121,13 @@ export default class LeaveInformation extends PureComponent {
 
   render() {
     const { onInformationCLick = () => {} } = this.props;
+    const percent = 74;
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
           <span className={styles.title}>Total Leave Balance</span>
           <div className={styles.leaveBalanceBox}>
-            <span className={styles.text1}>{`0${mockData.remainingLeaveDay}`.slice(-2)}</span>
-            <span className={styles.text2}>Remaining out of</span>
-            <span className={styles.text3}>{`0${mockData.totalLeaveDay}`.slice(-2)}</span>
+            <DonutChart value={12} percent={percent} />
           </div>
           <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">
