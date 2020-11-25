@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 import React, { Component } from 'react';
 import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
@@ -56,7 +57,7 @@ class EmergencyContact extends Component {
   };
 
   render() {
-    const { generalData, openContactDetails } = this.props;
+    const { generalData, openContactDetails, permissions = {}, profileOwner = false } = this.props;
     const renderComponent = openContactDetails ? (
       <Edit refForm={this.editRef} handleCancel={this.handleCancel} />
     ) : (
@@ -66,14 +67,14 @@ class EmergencyContact extends Component {
       <div className={styles.EmergencyContact}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Emergency Contact Details</p>
-          {openContactDetails ? (
-            ''
-          ) : (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
-              <EditFilled className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
+          {openContactDetails
+            ? ''
+            : (permissions.editEmergencyContact !== -1 || profileOwner) && (
+                <div className={styles.flexEdit} onClick={this.handleEdit}>
+                  <EditFilled className={styles.IconEdit} />
+                  <p className={styles.Edit}>Edit</p>
+                </div>
+              )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>

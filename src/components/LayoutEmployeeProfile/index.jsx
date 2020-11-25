@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Row, Col, Modal, Affix } from 'antd';
+import _ from 'lodash';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
@@ -27,6 +28,35 @@ class CommonLayout extends PureComponent {
       displayComponent: listMenu[0].component,
     });
   }
+
+  componentDidUpdate(prevProps) {
+    const { listMenu } = this.props;
+
+    const prevListMenu = prevProps.listMenu.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+      };
+    });
+
+    const nextListMenu = listMenu.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+      };
+    });
+
+    if (!_.isEqual(prevListMenu, nextListMenu)) {
+      this.initItemMenu(listMenu);
+    }
+  }
+
+  initItemMenu = (listMenu) => {
+    this.setState({
+      selectedItemId: listMenu[0].id,
+      displayComponent: listMenu[0].component,
+    });
+  };
 
   handleCLickItemMenu = (item) => {
     this.setState({
@@ -62,7 +92,12 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [], employeeLocation = '' } = this.props;
+    const {
+      listMenu = [],
+      employeeLocation = '',
+      permissions = {},
+      profileOwner = false,
+    } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
@@ -85,7 +120,11 @@ class CommonLayout extends PureComponent {
         <Row className={s.viewRight} gutter={[24, 0]}>
           <Col span={18}>{displayComponent}</Col>
           <Col span={6}>
-            <ViewInformation employeeLocation={employeeLocation} />
+            <ViewInformation
+              permissions={permissions}
+              profileOwner={profileOwner}
+              employeeLocation={employeeLocation}
+            />
           </Col>
         </Row>
       </div>

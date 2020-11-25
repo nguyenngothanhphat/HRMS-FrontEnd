@@ -927,6 +927,36 @@ const employeeProfile = {
       }
       yield put({ type: 'save', payload: { isUpdateEmployment } });
     },
+    *uploadDocument({ data }, { call, put }) {
+      try {
+        const {
+          key = '',
+          employeeGroup = '',
+          parentEmployeeGroup = '',
+          attachment = '',
+          employee = '',
+          company = '',
+        } = data;
+
+        const response = yield call(getDocumentAdd, {
+          key, // file name
+          employeeGroup,
+          parentEmployeeGroup,
+          attachment,
+          employee,
+          company,
+        });
+
+        const { statusCode, data: uploadedDocument = [] } = response;
+        // console.log('upload document res', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { uploadedDocument } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return '';
+      }
+    },
   },
 
   reducers: {
@@ -972,6 +1002,20 @@ const employeeProfile = {
         editGeneral: {
           ...editGeneral,
           ...action.payload,
+        },
+      };
+    },
+    closeModeEdit(state) {
+      return {
+        ...state,
+        editGeneral: {
+          openContactDetails: false,
+          openEmployeeInfor: false,
+          openPassportandVisa: false,
+          openPersonnalInfor: false,
+          openAcademic: false,
+          openTax: false,
+          openBank: false,
         },
       };
     },

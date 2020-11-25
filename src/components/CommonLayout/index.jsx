@@ -43,8 +43,9 @@ const PROCESS_STATUS = {
       displayComponent = {},
       data: { processStatus = '' } = {},
       tempData: {
-        valueToFinalOffer = 0,
+        skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
+        hidePreviewOffer,
       } = {},
     } = {},
   }) => ({
@@ -52,8 +53,9 @@ const PROCESS_STATUS = {
     currentStep,
     displayComponent,
     processStatus,
-    valueToFinalOffer,
+    skip,
     allDocumentVerified,
+    hidePreviewOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -81,7 +83,7 @@ class CommonLayout extends Component {
     // const selectedItemId = listMenu[currentStep]
 
     // console.log(processStatus);
-    // console.log(currentStep);
+    console.log(currentStep);
 
     if (currentStep !== null) {
       if (
@@ -103,14 +105,14 @@ class CommonLayout extends Component {
           displayComponent: <BackgroundCheck />,
         };
       }
-      if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
+      if (processStatus === SENT_FOR_APPROVAL && currentStep === 8) {
         // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
-      if (currentStep !== 7) {
+      if (currentStep !== 8) {
         // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
@@ -184,6 +186,7 @@ class CommonLayout extends Component {
 
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -194,8 +197,8 @@ class CommonLayout extends Component {
   };
 
   _handleClick = (item) => {
-    console.log('CLICK');
     const { dispatch } = this.props;
+    console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -210,8 +213,8 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus, valueToFinalOffer } = this.props;
-    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+    const { processStatus, skip } = this.props;
+    return processStatus === 'DRAFT' && skip === 0;
   };
 
   isDisabled = (index) => {
@@ -238,9 +241,9 @@ class CommonLayout extends Component {
       FINAL_OFFERS,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, valueToFinalOffer } = this.props;
+    const { allDocumentVerified, processStatus, skip } = this.props;
 
-    if (valueToFinalOffer === 1) {
+    if (skip === 1) {
       return false;
     }
 
@@ -261,7 +264,6 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
-        // console.log('PENDING HERE');
 
         return true;
       }
@@ -280,7 +282,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '' } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = true } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>
@@ -296,13 +298,13 @@ class CommonLayout extends Component {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && (
+              {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
-                  className={this.isDisabled(7) ? s.disabled : ''}
+                  className={this.isDisabled(8) ? s.disabled : ''}
                   ghost
                   onClick={() => {
-                    if (this.isDisabled(7)) {
+                    if (this.isDisabled(8)) {
                       return;
                     }
                     this._handlePreviewOffer();

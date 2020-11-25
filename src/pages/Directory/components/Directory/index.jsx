@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
@@ -11,12 +11,13 @@ import TableFilter from '../TableFilter';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-@connect(({ loading, employee, user: { currentUser = {} } }) => ({
+@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
   loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
   loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
   loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
   employee,
   currentUser,
+  permissions,
 }))
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -61,7 +62,6 @@ class DirectoryComponent extends PureComponent {
         active: 'active',
         myTeam: 'myTeam',
         inActive: 'inActive',
-        viewProfile: 'viewProfile',
       },
       tabId: 'active',
       changeTab: false,
@@ -116,27 +116,17 @@ class DirectoryComponent extends PureComponent {
 
   // Define tabID to filter
   initTabId = () => {
-    const {
-      currentUser: { roles = [] },
-    } = this.props;
-    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-    // const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
-    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
-
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexActive = groupPermissions.indexOf(tabActive);
-    // const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
-    const findIndexInActive = groupPermissions.indexOf(tabInActive);
-
+    const { permissions = {} } = this.props;
     let tabId = 'active';
+    const viewTabActive = permissions.viewTabActive === -1;
+    const viewTabInActive = permissions.viewTabInActive === -1;
 
-    if (findIndexActive === -1) {
+    if (viewTabActive) {
       tabId = 'inActive';
     }
 
     // Set tabId for myTeam to hide button Filter
-    if (findIndexActive === -1 && findIndexInActive === -1) {
+    if (viewTabActive && viewTabInActive) {
       tabId = 'myTeam';
     }
 
@@ -146,26 +136,33 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrGloBal = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, permissions = {} } = this.props;
     const { company } = currentUser;
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
         company: company._id,
       },
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: company._id,
-      },
-    });
-    dispatch({
-      type: 'employee/fetchListEmployeeInActive',
-      payload: {
-        company: company._id,
-      },
-    });
+    if (viewTabActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: {
+          company: company._id,
+        },
+      });
+    }
+    if (viewTabInActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: {
+          company: company._id,
+        },
+      });
+    }
+
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -175,8 +172,10 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, currentUser } = this.props;
+    const { dispatch, currentUser, permissions = {} } = this.props;
     const { company, location } = currentUser;
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
@@ -184,20 +183,24 @@ class DirectoryComponent extends PureComponent {
         location: [location._id],
       },
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: company._id,
-        location: [location._id],
-      },
-    });
-    dispatch({
-      type: 'employee/fetchListEmployeeInActive',
-      payload: {
-        company: company._id,
-        location: [location._id],
-      },
-    });
+    if (viewTabActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: {
+          company: company._id,
+          location: [location._id],
+        },
+      });
+    }
+    if (viewTabInActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: {
+          company: company._id,
+          location: [location._id],
+        },
+      });
+    }
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -214,21 +217,6 @@ class DirectoryComponent extends PureComponent {
       return this.renderHrGloBal();
     }
     return this.renderHrTeam();
-  };
-
-  generatePermissions = (roles) => {
-    let groupPermissions = [];
-
-    roles.map((role) => {
-      const { permissions = [] } = role;
-      groupPermissions = [...groupPermissions, ...permissions];
-      return null;
-    });
-
-    // Remove duplicates
-    const permissionsUnique = groupPermissions.filter((v, i, a) => a.indexOf(v) === i);
-
-    return permissionsUnique;
   };
 
   ChangeTabHrGloBal = (params, tabId) => {
@@ -342,12 +330,6 @@ class DirectoryComponent extends PureComponent {
       changeTab: true,
       filterName: '',
     });
-    const {
-      tabList: { viewProfile },
-    } = this.state;
-    if (tabId === viewProfile) {
-      this.viewProfile();
-    }
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
@@ -381,17 +363,14 @@ class DirectoryComponent extends PureComponent {
 
   rightButton = (roles, collapsed) => {
     const { tabId } = this.state;
-    const permissionImport = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
-    const permissionAdd = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
+    const { permissions = {} } = this.props;
 
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexImport = groupPermissions.indexOf(permissionImport);
-    const findIndexAdd = groupPermissions.indexOf(permissionAdd);
+    const findIndexImport = permissions.importEmployees !== -1;
+    const findIndexAdd = permissions.addEmployee !== -1;
 
     return (
       <div className={styles.tabBarExtra}>
-        {findIndexImport !== -1 && (
+        {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={this.importEmployees}>
             <img
               className={styles.buttonAddImport_imgImport}
@@ -404,7 +383,7 @@ class DirectoryComponent extends PureComponent {
           </div>
         )}
 
-        {findIndexAdd !== -1 && (
+        {findIndexAdd && (
           <div className={styles.buttonAddImport} onClick={this.addEmployee}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Employee" />
             <p className={styles.buttonAddImport_text}>
@@ -441,38 +420,23 @@ class DirectoryComponent extends PureComponent {
     return null;
   };
 
-  viewProfile = () => {
-    const { currentUser } = this.props;
-    const { employee } = currentUser;
-    history.push(`/employees/employee-profile/${employee._id}`);
-  };
-
   renderTabPane = () => {
     const {
-      tabList: { active, myTeam, inActive, viewProfile },
+      tabList: { active, myTeam, inActive },
     } = this.state;
     const {
       loadingListActive,
       loadingListMyTeam,
       loadingListInActive,
       checkRoleEmployee,
-      currentUser: { roles = [] },
+      permissions = {},
     } = this.props;
 
-    const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-    const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
-    const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
-    const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
-    const showLocationInActive =
-      'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
-
-    const groupPermissions = this.generatePermissions(roles);
-
-    const findIndexActive = groupPermissions.indexOf(tabActive);
-    const findIndexMyTeam = groupPermissions.indexOf(tabMyTeam);
-    const findIndexInActive = groupPermissions.indexOf(tabInActive);
-    const findIndexShowLocationActive = groupPermissions.indexOf(showLocationActive);
-    const findIndexShowLocationInActive = groupPermissions.indexOf(showLocationInActive);
+    const findIndexActive = permissions.viewTabActive;
+    const findIndexMyTeam = permissions.viewTabMyTeam;
+    const findIndexInActive = permissions.viewTabInActive;
+    const findIndexShowLocationActive = permissions.filterLocationActive;
+    const findIndexShowLocationInActive = permissions.filterLocationInActive;
 
     return (
       <>
@@ -497,10 +461,6 @@ class DirectoryComponent extends PureComponent {
               myTeam,
               loadingListMyTeam,
             )}
-            <TabPane
-              tab={formatMessage({ id: 'pages.directory.directory.viewProfile' })}
-              key={viewProfile}
-            />
           </>
         )}
         {findIndexInActive !== -1 &&
@@ -515,7 +475,6 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
-    const { checkRoleEmployee } = this.props;
     const {
       tabId,
       collapsed,
@@ -526,11 +485,7 @@ class DirectoryComponent extends PureComponent {
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable
-              checkRoleEmployee={checkRoleEmployee}
-              loading={loading}
-              list={this.renderListEmployee(key)}
-            />
+            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} />
           </Content>
           {key !== myTeam && (
             <TableFilter

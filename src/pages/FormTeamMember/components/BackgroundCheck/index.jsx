@@ -229,12 +229,14 @@ class BackgroundCheck extends Component {
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory } = this.props;
     if (e.target.value === 1) {
+      console.log(e.target.value);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           tempData: {
             ...tempData,
             valueToFinalOffer: 1,
+            skip: 1,
           },
           checkMandatory: {
             ...checkMandatory,
@@ -249,6 +251,7 @@ class BackgroundCheck extends Component {
           tempData: {
             ...tempData,
             valueToFinalOffer: 0,
+            skip: 0,
           },
           checkMandatory: {
             ...checkMandatory,
