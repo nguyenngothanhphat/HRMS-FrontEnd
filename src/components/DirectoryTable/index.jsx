@@ -108,7 +108,7 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
-        width: '10%',
+        width: '12%',
       },
       {
         title: formatMessage({ id: 'component.directory.table.email' }),
