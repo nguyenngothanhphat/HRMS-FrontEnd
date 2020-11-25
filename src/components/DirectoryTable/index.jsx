@@ -69,11 +69,19 @@ class DirectoryTable extends Component {
         align: 'left',
       },
       {
+        title: formatMessage({ id: 'component.directory.table.email' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        width: '18%',
+        align: 'left',
+      },
+      {
         title: formatMessage({ id: 'component.directory.table.title' }),
         dataIndex: 'title',
         key: 'title',
         render: (title) => <span>{title ? title.name : ''}</span>,
-        width: '10%',
+        width: '12%',
         align: 'left',
       },
       {
@@ -85,7 +93,7 @@ class DirectoryTable extends Component {
             {department ? department.name : ''}
           </span>
         ),
-        width: '12%',
+        width: '10%',
         align: 'left',
       },
       {
@@ -109,14 +117,6 @@ class DirectoryTable extends Component {
         ),
         align: 'left',
         width: '12%',
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.email' }),
-        dataIndex: 'generalInfo',
-        key: 'employeeId',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '16%',
-        align: 'left',
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
