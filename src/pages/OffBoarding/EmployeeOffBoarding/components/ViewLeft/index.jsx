@@ -82,7 +82,7 @@ class ViewLeft extends Component {
               But, if you have made your mind then lets get to it.
             </div>
             <Button className={styles.submitButton}>
-              <Link to="/employee-offboarding/resignation-request">Set a resgination request </Link>
+              <Link to="/offboarding/resignation-request">Set a resgination request </Link>
             </Button>
           </div>
         )}

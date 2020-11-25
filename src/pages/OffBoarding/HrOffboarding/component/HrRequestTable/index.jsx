@@ -69,7 +69,7 @@ class HRrequestTable extends Component {
     const resignationRequest = (
       <div style={{ padding: '17px' }}>
         <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
-        <Link to="/hr-offboarding/resignation-request">
+        <Link to="offboarding/resignation-request">
           <span className={styles.buttonRequest}>Initiate Resignation Request</span>
         </Link>
       </div>
