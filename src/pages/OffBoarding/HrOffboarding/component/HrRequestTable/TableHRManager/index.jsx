@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import { history } from 'umi';
@@ -12,13 +13,14 @@ class HrTable extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/hr-offboarding/HrRequest/1854545');
+  push = (data) => {
+    history.push(`/hr-offboarding/HrRequest/${data}`);
+    // history.push(`/hr-offboarding/HrRequest/123456`);
   };
 
   render() {
     const { data = [] } = this.props;
-
+    console.log(data._id);
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -43,15 +45,25 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: 'employeeId',
+        dataIndex: 'employee',
+        render: (employee) => {
+          return <p>{employee.employeeId}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
+        render: (createDate) => {
+          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: 'name',
+        dataIndex: 'employee',
+        render: (employee) => {
+          const { generalInfo = {} } = employee;
+          return <p>{generalInfo.firstName}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Assigned </span>,
@@ -75,7 +87,10 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>LWD</span>,
-        dataIndex: 'lwd',
+        dataIndex: 'lastWorkingDate',
+        render: (lastWorkingDate) => {
+          return <p>{moment(lastWorkingDate).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={styles.title}>LWD Change</span>,
@@ -83,11 +98,11 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: 'Action',
+        dataIndex: '_id',
         align: 'left',
-        render: () => (
+        render: (_id) => (
           <div className={styles.rowAction}>
-            <span onClick={this.push}>View Request</span>
+            <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
       },

@@ -7,7 +7,6 @@ import righticon2 from '@/assets/offboarding-2.svg';
 import righticon3 from '@/assets/offboarding-3.svg';
 import righticon4 from '@/assets/offboarding-4.svg';
 import persion from '@/assets/manager.svg';
-import ScheduleModal from './ScheduleModal';
 import styles from './index.less';
 
 class RightDataTable extends Component {
@@ -200,7 +199,7 @@ class RightDataTable extends Component {
       },
     ];
 
-    const { visible, open, openSchedule } = this.state;
+    const { open, openSchedule } = this.state;
     return (
       <div className={styles.root}>
         <div className={styles.boxRight}>
@@ -244,11 +243,6 @@ class RightDataTable extends Component {
             >
               {this.infoModal()}
             </Modal>
-            <ScheduleModal
-              visible={visible}
-              modalContent="Schedule 1-on-1"
-              handleCancel={this.handleCandelSchedule}
-            />
           </div>
         </div>
       </div>

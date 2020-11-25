@@ -1,24 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Col, Divider, Row, Avatar, Progress } from 'antd';
+import { Col, Divider, Row, Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class RequesteeDetail extends PureComponent {
   render() {
-    const requesteeDetail = {
-      employee: {
-        _id: 'PSI 1022',
-        name: 'Vamsi Venkat Krishna A..',
-        jobTitle: 'UX designer',
-      },
-      project: {
-        current: 'Intranet',
-        manager: 'Rose Mary',
-        projectHealth: 80,
-      },
-    };
-    const { employee, project } = requesteeDetail;
+    const { id, avatar, name, jobTitle } = this.props;
     return (
       <div className={styles.requesteeDetail}>
         <p className={styles.requesteeDetail__title}>
@@ -29,7 +17,7 @@ class RequesteeDetail extends PureComponent {
             <p className={styles.requesteeDetail__text}>
               {formatMessage({ id: 'pages.offBoarding.requestee.employeeID' })}
             </p>
-            <span>{employee._id}</span>
+            <span>{id}</span>
           </Col>
           <Col span={7} className={styles.requesteeDetail__center}>
             <div style={{ display: 'flex' }}>
@@ -39,9 +27,13 @@ class RequesteeDetail extends PureComponent {
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
-              <Avatar className={styles.requesteeDetail__avatar} icon={<UserOutlined />} />
+              <img
+                alt=""
+                src={avatar || <UserOutlined />}
+                className={styles.requesteeDetail__avatar}
+              />
               <span>
-                <u>{employee.name}</u>
+                <u>{name} </u>
               </span>
             </div>
           </Col>
@@ -49,7 +41,7 @@ class RequesteeDetail extends PureComponent {
             <p className={styles.requesteeDetail__text}>
               {formatMessage({ id: 'pages.offBoarding.requestee.jobTitle' })}
             </p>
-            <p>{employee.jobTitle}</p>
+            <p>{jobTitle}</p>
           </Col>
         </Row>
         <Divider />
@@ -59,7 +51,7 @@ class RequesteeDetail extends PureComponent {
               {formatMessage({ id: 'pages.offBoarding.requestee.currentProject' })}
             </p>
             <p>
-              <u>{project.current}</u>
+              <u />
             </p>
           </Col>
           <Col span={7}>
@@ -72,7 +64,7 @@ class RequesteeDetail extends PureComponent {
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
               <Avatar className={styles.requesteeDetail__avatar} icon={<UserOutlined />} />
               <span>
-                <u>{project.manager}</u>
+                <u />
               </span>
             </div>
           </Col>
@@ -80,7 +72,7 @@ class RequesteeDetail extends PureComponent {
             <p className={styles.requesteeDetail__text}>
               {formatMessage({ id: 'pages.offBoarding.requestee.projectHealth' })}
             </p>
-            <Progress percent={project.projectHealth} status="active" />
+            {/* <Progress percent={project.projectHealth} status="active" /> */}
           </Col>
           <Row align="middle">
             <Col>
