@@ -14,10 +14,11 @@ export default class RenderTable extends PureComponent {
   getCount = (value) => {
     const { countdata = [] } = this.props;
     const result = countdata.find(({ _id }) => _id === value) || {};
+    let count = 0;
     if (result.count > 0) {
-      return result.count;
+      count = result.count;
     }
-    return '';
+    return count;
   };
 
   renderTab = (value) => {

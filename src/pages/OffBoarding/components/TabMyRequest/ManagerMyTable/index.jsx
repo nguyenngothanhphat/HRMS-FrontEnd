@@ -13,7 +13,7 @@ class TableManager extends PureComponent {
   }
 
   push = (data) => {
-    history.push(`/offboarding/review/${data}`);
+    history.push(`/offboarding/my-request/${data}`);
   };
 
   render() {

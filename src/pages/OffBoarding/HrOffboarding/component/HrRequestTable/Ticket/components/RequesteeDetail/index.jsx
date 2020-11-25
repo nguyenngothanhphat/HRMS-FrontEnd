@@ -51,6 +51,11 @@ class RequesteeDetail extends PureComponent {
           </>
         ) : (
           listProject.map((item) => {
+            const {
+              name: nameProject,
+              projectHealth,
+              manager: { generalInfo: { firstName: nameManager, avatar: avatarManager = '' } = {} },
+            } = item;
             return (
               <Fragment key={item}>
                 <Divider />
@@ -60,7 +65,7 @@ class RequesteeDetail extends PureComponent {
                       {formatMessage({ id: 'pages.offBoarding.requestee.currentProject' })}
                     </p>
                     <p>
-                      <u>{item.name}</u>
+                      <u>{nameProject}</u>
                     </p>
                   </Col>
                   <Col span={7}>
@@ -71,9 +76,13 @@ class RequesteeDetail extends PureComponent {
                       </p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
-                      <Avatar className={styles.requesteeDetail__avatar} icon={<UserOutlined />} />
+                      <Avatar
+                        className={styles.requesteeDetail__avatar}
+                        icon={<UserOutlined />}
+                        src={avatarManager}
+                      />
                       <span>
-                        <u />
+                        <u>{nameManager}</u>
                       </span>
                     </div>
                   </Col>
@@ -81,7 +90,7 @@ class RequesteeDetail extends PureComponent {
                     <p className={styles.requesteeDetail__text}>
                       {formatMessage({ id: 'pages.offBoarding.requestee.projectHealth' })}
                     </p>
-                    <Progress percent={item.projectHealth} status="active" />
+                    <Progress percent={projectHealth} status="active" />
                   </Col>
                   <Row align="middle">
                     <Col>
