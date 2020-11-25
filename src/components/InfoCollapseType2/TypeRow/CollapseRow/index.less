@@ -1,0 +1,122 @@
+.eachCollapse {
+  padding: 0 24px 0 24px;
+  background-color: white;
+  :global {
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0;
+      border: none;
+    }
+    .ant-collapse-header {
+      font-size: 13px;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .ant-collapse-arrow {
+      margin-left: -15px;
+      margin-top: -3px;
+    }
+  }
+
+  &:not(:last-child) {
+    .eachPanel {
+      border-bottom: 1px solid #d6dce0;
+    }
+  }
+  .eachPanel {
+    overflow: hidden;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    .headerWithArrowIcon {
+      display: inline;
+      img {
+        margin-left: 25px;
+        margin-top: -3px;
+      }
+    }
+    .eachRow {
+      font-size: 13px;
+      padding-top: 15px;
+      &:last-child {
+        padding-bottom: 23px;
+      }
+      .fileName {
+        display: flex;
+        margin-top: -3px;
+        align-items: center;
+        cursor: pointer;
+        span {
+          margin-left: 16px;
+          text-decoration: underline;
+          color: #2c6df9;
+        }
+        .fileIcon {
+          height: 25px;
+          font-size: 20px;
+          color: #2c6df9;
+        }
+        overflow: auto;
+      }
+      .downloadFile {
+        text-align: right;
+        .downloadButton {
+          margin-top: -3px;
+          height: 16px;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+
+  .statusAndButtons {
+    display: flex;
+    align-items: center;
+    position: relative;
+    a {
+      color: #00ba73;
+      margin-right: 20px;
+      font-weight: 500;
+      font-size: 13px;
+      align-self: center;
+    }
+
+    .uploadButton {
+      display: flex;
+      align-items: center;
+      background-color: #568afa;
+      padding: 2px 5px;
+      border-radius: 3px;
+      // margin-right: 20px;
+      width: 100%;
+      img {
+        width: 14px;
+        filter: brightness(100);
+      }
+      .uploadText {
+        font-size: 13px;
+        margin-left: 5px;
+        color: white;
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+
+    .menuButton {
+      color: #bfbfbf;
+      font-size: 17px;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  .collapseIcon {
+    color: #707070 !important;
+    font-size: 16px !important;
+  }
+}

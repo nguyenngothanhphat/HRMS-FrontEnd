@@ -59,7 +59,13 @@ import styles from './index.less';
 
 class InfoCollapseType2 extends PureComponent {
   render() {
-    const { data = [], onFileClick } = this.props;
+    const {
+      data = [],
+      onFileClick = () => {},
+      employeeGroup = '',
+      parentEmployeeGroup = '',
+    } = this.props;
+    const { title = '' } = data;
     return (
       <div className={styles.InfoCollapseType2}>
         <div className={styles.tableTitle}>
@@ -87,7 +93,7 @@ class InfoCollapseType2 extends PureComponent {
             </Col>
           </Row>
           <div className={styles.tableOfContents}>
-            <TypeRow data={data.body} onFileClick={onFileClick} />
+            <TypeRow data={data.body} onFileClick={onFileClick} parentEmployeeGroup={title} />
           </div>
         </div>
       </div>
