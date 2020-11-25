@@ -16,11 +16,11 @@ export default class LeaveHistoryList extends PureComponent {
                 <span>{moment(fromDate).locale('en').format('MMM')}</span>
                 <span>{moment(fromDate).locale('en').format('DD')}</span>
               </Col>
-              <Col xs={4} className={styles.dateAndMonth}>
+              {/* <Col xs={4} className={styles.dateAndMonth}>
                 <span>{moment(toDate).locale('en').format('MMM')}</span>
                 <span>{moment(toDate).locale('en').format('DD')}</span>
-              </Col>
-              <Col xs={11} className={styles.eventOfDay}>
+              </Col> */}
+              <Col xs={15} className={styles.eventOfDay}>
                 {name}
               </Col>
               <Col className={styles.dayInWeek} xs={5}>

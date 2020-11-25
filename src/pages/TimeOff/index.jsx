@@ -48,9 +48,8 @@ export default class TimeOff extends PureComponent {
   _renderLandingPage = () => {
     const describeText = [
       <p>
-        Apply for leaves with/without pay, work from home or client office.
-        <br />
-        All request must be approved by your manager and supervisor to avail it.
+        Apply for leaves with/without pay, work from home or client office. All request must be
+        approved by your manager and supervisor to avail it.
         <br />
         <br />
         Special leaves can be availed on acase-to-case basis.
