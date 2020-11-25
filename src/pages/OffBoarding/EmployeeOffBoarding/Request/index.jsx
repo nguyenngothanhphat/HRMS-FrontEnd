@@ -58,11 +58,7 @@ class ResignationRequest extends Component {
 
   handleSubmit = (values) => {
     const { dispatch, myRequest = {} } = this.props;
-    const {
-      manager: { _id: meetingWith } = {},
-      // employee: { _id: employeeId } = {},
-      _id: offBoardingRequest,
-    } = myRequest;
+    const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
     const payload = { meetingWith, offBoardingRequest, ...values };
     dispatch({
       type: 'offboarding/create1On1',
@@ -86,7 +82,6 @@ class ResignationRequest extends Component {
       status = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
     } = myRequest;
-
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -100,7 +95,7 @@ class ResignationRequest extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
-              <Reason data={myRequest} />
+              <Reason />
               {list1On1.length > 0 && <ListComment data={list1On1} />}
             </Col>
             <Col span={8}>
