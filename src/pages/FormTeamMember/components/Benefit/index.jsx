@@ -205,14 +205,21 @@ class Benefit extends PureComponent {
   // };
 
   onClickNext = () => {
-    const { dispatch } = this.props;
+    const { dispatch, currentStep } = this.props;
+    const nextStep = currentStep + 1;
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        currentStep: null,
-        displayComponent: <PreviewOffer />,
+        currentStep: nextStep,
       },
     });
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     currentStep: null,
+    //     displayComponent: <PreviewOffer />,
+    //   },
+    // });
   };
 
   onClickPrev = () => {
