@@ -121,7 +121,9 @@ export default class LeaveInformation extends PureComponent {
 
   render() {
     const { onInformationCLick = () => {} } = this.props;
-    const percent = 74;
+    const total = 35;
+    const value = 12;
+    const percent = Math.round((value / total) * 100);
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
