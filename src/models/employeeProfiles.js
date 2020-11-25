@@ -41,6 +41,7 @@ import {
   getTitleByDepartment,
   getLocationsByCompany,
   updateEmployment,
+  updatePrivate,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -955,6 +956,24 @@ const employeeProfile = {
       } catch (errors) {
         dialog(errors);
         return '';
+      }
+    },
+    *setPrivate({ payload = {} }, { call, put, select }) {
+      try {
+        // console.log(payload);
+        const response = yield call(updatePrivate, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchGeneralInfo',
+          payload: { employee: idCurrentEmployee },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },
