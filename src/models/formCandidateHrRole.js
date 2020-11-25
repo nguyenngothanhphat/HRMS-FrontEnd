@@ -32,6 +32,7 @@ import {
   createFinalOffer,
   checkDocument,
   sendDocumentStatus,
+  getAdditionalQuestion,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -171,13 +172,38 @@ const candidateInfo = {
         url: '',
       },
       hidePreviewOffer: false,
-
       additionalQuestion: {
         opportunity: '',
         payment: '',
         shirt: '',
         dietary: '',
       },
+      additionalQuestions: [
+        {
+          type: 'text',
+          name: 'opportunity',
+          question: 'Equal employee opportunity',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'payment',
+          question: 'Preferred payment method',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'shirt',
+          question: 'T-shirt size',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'dietary',
+          question: 'Dietary restriction',
+          answer: '',
+        },
+      ],
     },
     data: {
       fullName: null,
@@ -739,6 +765,9 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const { _id } = data;
         yield put({
+          type: 'fetchAdditionalQuestion',
+        });
+        yield put({
           type: 'save',
           payload: {
             currentStep: data.currentStep,
@@ -965,6 +994,23 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    *fetchAdditionalQuestion({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getAdditionalQuestion, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        console.log(response);
+        // put({
+        //   type: 'updateAdditionalQuestion',
+        //   payload: data
+        // })
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
   },
 
   reducers: {
@@ -1162,6 +1208,7 @@ const candidateInfo = {
       };
     },
 
+    // DRAFT
     updateAdditionalQuestion(state, action) {
       const { tempData } = state;
 
@@ -1170,6 +1217,18 @@ const candidateInfo = {
         tempData: {
           ...tempData,
           additionalQuestion: action.payload,
+        },
+      };
+    },
+
+    updateAdditionalQuestions(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestions: action.payload,
         },
       };
     },

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { connect, formatMessage } from 'umi';
-import { Row, Col, Button, Form, Typography, Input } from 'antd';
+import { Row, Col, Button, Form, Typography, Input, Select } from 'antd';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 
@@ -17,6 +17,25 @@ const Note = {
   ),
 };
 
+const INPUT_TYPE = {
+  TEXT: 'text',
+};
+
+const getInput = (type) => {
+  const { Option } = Select;
+  if (type === INPUT_TYPE.TEXT) {
+    return <Input />;
+  }
+  if (type === INPUT_TYPE.SELECT) {
+    return (
+      <Select>
+        <Option />
+      </Select>
+    );
+  }
+  return null;
+};
+
 const AdditionalQuestion = (props) => {
   const {
     checkMandatory,
@@ -24,7 +43,9 @@ const AdditionalQuestion = (props) => {
     currentStep,
     hidePreviewOffer,
     additionalQuestion: additionalQuestionProp,
+    additionalQuestions: additionalQuestionsProp,
   } = props;
+
   const {
     opportunity: opportunityProp,
     payment: paymentProp,
@@ -112,7 +133,6 @@ const AdditionalQuestion = (props) => {
 
   const checkAllFieldsValidate = () => {
     const allValues = form.getFieldsValue();
-    // console.log(allValues);
     let valid = true;
     Object.keys(allValues).forEach((key) => {
       if (allValues[key].length === 0) {
@@ -135,10 +155,22 @@ const AdditionalQuestion = (props) => {
     });
 
     // Save input data
-    dispatch({
-      type: 'candidateInfo/updateAdditionalQuestion',
-      payload: allValues,
+    const newValues = additionalQuestionsProp.map((item) => {
+      const { name } = item;
+      return {
+        ...item,
+        answer: allValues[name],
+      };
     });
+
+    dispatch({
+      type: 'candidateInfo/updateAdditionalQuestions',
+      payload: newValues,
+    });
+    // dispatch({
+    //   type: 'candidateInfo/updateAdditionalQuestion',
+    //   payload: allValues,
+    // });
   };
 
   const handleFormChange = () => {
@@ -148,6 +180,21 @@ const AdditionalQuestion = (props) => {
   useEffect(() => {
     checkAllFieldsValidate();
   }, []);
+
+  const getInitialValues = () => {
+    let formattedValues = {};
+    additionalQuestionsProp.map((item) => {
+      const { name = '', answer = '' } = item;
+      formattedValues = {
+        ...formattedValues,
+        [name]: answer,
+      };
+      return null;
+    });
+    return formattedValues;
+  };
+
+  console.log(getInitialValues());
 
   return (
     <div className={s.additionalQuestion}>
@@ -161,6 +208,37 @@ const AdditionalQuestion = (props) => {
 
             <div className={s.mainContent}>
               <Form
+                form={form}
+                // initialValues={{
+                //   opportunity: opportunityProp,
+                //   payment: paymentProp,
+                //   shirt: shirtProp,
+                //   dietary: dietaryProp,
+                // }}
+                initialValues={getInitialValues()}
+                onValuesChange={handleFormChange}
+                layout="vertical"
+              >
+                <div className={s.form}>
+                  <Row>
+                    <Col md={12}>
+                      {additionalQuestionsProp.map((item) => {
+                        const { name = '', type = '', question = '', answer = '' } = item;
+                        return (
+                          <Form.Item name={name} label={question}>
+                            {getInput(type)}
+                          </Form.Item>
+                        );
+                      })}
+
+                      {/* <Form.Item name="opportunity" label="Equal employee opportunity">
+                        <Input />
+                      </Form.Item> */}
+                    </Col>
+                  </Row>
+                </div>
+              </Form>
+              {/* <Form
                 form={form}
                 initialValues={{
                   opportunity: opportunityProp,
@@ -200,7 +278,7 @@ const AdditionalQuestion = (props) => {
                     </Col>
                   </Row>
                 </div>
-              </Form>
+              </Form> */}
             </div>
           </div>
 
@@ -226,12 +304,13 @@ export default connect(
     candidateInfo: {
       checkMandatory = {},
       currentStep = 7,
-      tempData: { hidePreviewOffer = true, additionalQuestion = {} },
+      tempData: { hidePreviewOffer = true, additionalQuestion = {}, additionalQuestions = [] },
     } = {},
   }) => ({
     checkMandatory,
     currentStep,
     hidePreviewOffer,
     additionalQuestion,
+    additionalQuestions,
   }),
 )(AdditionalQuestion);

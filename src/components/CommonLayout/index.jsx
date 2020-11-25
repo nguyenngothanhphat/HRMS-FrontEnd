@@ -83,7 +83,7 @@ class CommonLayout extends Component {
     // const selectedItemId = listMenu[currentStep]
 
     // console.log(processStatus);
-    console.log(currentStep);
+    // console.log(currentStep);
 
     if (currentStep !== null) {
       if (
