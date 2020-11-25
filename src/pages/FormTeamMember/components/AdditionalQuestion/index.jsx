@@ -173,13 +173,13 @@ const AdditionalQuestion = (props) => {
               >
                 <div className={s.form}>
                   <Row>
-                    <Col md={12} style={{ paddingRight: '24px' }}>
+                    <Col md={12}>
                       <Form.Item name="opportunity" label="Equal employee opportunity">
                         <Input />
                       </Form.Item>
                     </Col>
 
-                    <Col md={12} style={{ paddingLeft: '24px' }}>
+                    <Col md={12}>
                       <Form.Item name="payment" label="Preferred payment method">
                         <Input />
                       </Form.Item>
@@ -187,13 +187,13 @@ const AdditionalQuestion = (props) => {
                   </Row>
 
                   <Row>
-                    <Col md={12} style={{ paddingRight: '24px' }}>
+                    <Col md={12}>
                       <Form.Item name="shirt" label="T-shirt size">
                         <Input />
                       </Form.Item>
                     </Col>
 
-                    <Col md={12} style={{ paddingLeft: '24px' }}>
+                    <Col md={12}>
                       <Form.Item name="dietary" label="Dietary restrictions">
                         <Input />
                       </Form.Item>
