@@ -28,7 +28,7 @@ class EmploymentTab extends Component {
 
     const { title, location } = employeeProfile.originData.employmentData;
     const { firstName, legalName } = employeeProfile.originData.generalData;
-    const { currentAnnualCTC } = employeeProfile.originData.compensationData;
+    const { currentCTC } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
@@ -37,7 +37,7 @@ class EmploymentTab extends Component {
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
-        annualSalary: currentAnnualCTC || 0,
+        annualSalary: currentCTC?.amount || 0,
         location: location?.name || null,
       },
     };
@@ -94,7 +94,7 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepTwo.title || null,
         manager: data.stepThree.reportTo || null,
-        currentAnnualCTC: Number(data.stepTwo.salary) || null,
+        currentCTC: data.stepTwo.salary || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
         department: data.stepThree.department || null,
@@ -123,6 +123,8 @@ class EmploymentTab extends Component {
       this.setState({ isChanging: false });
     } else if (msg === 'TITLE_REQUIRED') {
       this.setState({ current: 2 });
+    } else if (msg === 'SALARY_REQUIRED') {
+      this.setState({ current: 1 });
     } else this.setState({ current: current + 1 });
   };
 

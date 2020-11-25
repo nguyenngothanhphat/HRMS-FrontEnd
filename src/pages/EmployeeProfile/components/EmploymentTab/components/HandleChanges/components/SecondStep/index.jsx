@@ -2,6 +2,8 @@ import React from 'react';
 import { Select, InputNumber } from 'antd';
 import styles from './styles.less';
 
+const compenTypes = ['Salaried', 'Stock options', 'Other non-cash benefits'];
+
 export default function SecondStep(props) {
   const { Option } = Select;
   const { onChange, onSearch, changeData, fetchedState } = props;
@@ -73,7 +75,7 @@ export default function SecondStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Salaried', 'Stock options', 'Other non-cash benefits'].map((item) => {
+          {compenTypes.map((item) => {
             return (
               <Option key={makeKey()} value={item}>
                 {item}
@@ -83,18 +85,39 @@ export default function SecondStep(props) {
           ]
         </Select>
       </div>
-      <div className={styles.select}>
-        <div>Annual Salary</div>
-        <InputNumber
-          defaultValue={changeData.stepTwo.salary}
-          style={{ width: 300 }}
-          min={0}
-          formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={(value) => value.replace(/\D/g, '')}
-          placeholder="Enter an amount"
-          onChange={(value) => onChange(value, 'salary')}
-        />
-      </div>
+      {changeData.stepTwo.compensation === compenTypes[0] ? (
+        <div className={styles.select}>
+          <div>
+            <Select
+              style={{ width: '55%' }}
+              defaultValue={changeData.stepTwo.salary?.type || null}
+              optionFilterProp="children"
+              onChange={(value) => onChange(value, 'salaryType')}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {['Hourly', 'Annually'].map((item) => {
+                return (
+                  <Option key={makeKey()} value={item.toLowerCase()}>
+                    {item}
+                  </Option>
+                );
+              })}
+              ]
+            </Select>
+          </div>
+
+          <InputNumber
+            defaultValue={changeData.stepTwo.salary?.amount || null}
+            style={{ width: 300 }}
+            min={0}
+            formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value.replace(/\D/g, '')}
+            onChange={(value) => onChange(value, 'salary')}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

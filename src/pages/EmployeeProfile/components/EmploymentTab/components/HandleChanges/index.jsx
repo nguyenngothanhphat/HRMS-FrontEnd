@@ -28,7 +28,7 @@ class HandleChanges extends PureComponent {
           wLocation: '',
           employment: '',
           compensation: '',
-          salary: '',
+          salary: null,
         },
         stepThree: {
           title: '',
@@ -57,6 +57,13 @@ class HandleChanges extends PureComponent {
       if (current > 2) {
         nextTab('TITLE_REQUIRED');
         dialog({ message: 'Please choose a job title corresponds with the selected department' });
+      }
+    }
+
+    if (changeData.stepTwo.salary?.type && !changeData.stepTwo.salary.amount) {
+      if (current > 1) {
+        nextTab('SALARY_REQUIRED');
+        dialog({ message: 'Please enter an amount for salary' });
       }
     }
   }
@@ -151,12 +158,45 @@ class HandleChanges extends PureComponent {
         break;
       case 'compensation':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, compensation: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: { ...changeData.stepTwo, compensation: value, salary: null },
+          },
         });
+        if (value === 'Salaried') {
+          this.setState({
+            changeData: {
+              ...changeData,
+              stepTwo: {
+                ...changeData.stepTwo,
+                compensation: value,
+                salary: { ...changeData.stepTwo.salary, type: 'annually' },
+              },
+            },
+          });
+        }
+
         break;
       case 'salary':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, salary: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              salary: { ...changeData.stepTwo.salary, amount: Number(value) },
+            },
+          },
+        });
+        break;
+      case 'salaryType':
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              salary: { ...changeData.stepTwo.salary, type: value },
+            },
+          },
         });
         break;
       case 'department':
@@ -222,7 +262,7 @@ class HandleChanges extends PureComponent {
             currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
             data={{
               newTitle: changeData.newTitle,
-              newSalary: changeData.stepTwo.salary,
+              newSalary: changeData.stepTwo.salary?.amount,
               newLocation: changeData.newLocation,
             }}
           />
