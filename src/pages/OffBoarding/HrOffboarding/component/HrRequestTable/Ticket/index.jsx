@@ -11,9 +11,21 @@ import ActionSchedule from './components/ActionSchedule';
 import InfoEmployee from './components/RightContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { myRequest = {} } = {} }) => ({
-  myRequest,
-}))
+@connect(
+  ({
+    offboarding: {
+      myRequest = {},
+      list1On1 = [],
+      listProjectByEmployee = [],
+      listMeetingTime = [],
+    } = {},
+  }) => ({
+    myRequest,
+    list1On1,
+    listProjectByEmployee,
+    listMeetingTime,
+  }),
+)
 class HRDetailTicket extends PureComponent {
   constructor(props) {
     super(props);
@@ -40,6 +52,9 @@ class HRDetailTicket extends PureComponent {
         offBoardingRequest: code,
       },
     });
+    dispatch({
+      type: 'offboarding/getMeetingTime',
+    });
   }
 
   handleChange = () => {
@@ -48,17 +63,47 @@ class HRDetailTicket extends PureComponent {
     });
   };
 
-  handleSaveSchedule = () => {
-    this.setState({
-      saveSchedule: true,
+  handleSaveSchedule = (value) => {
+    const {
+      dispatch,
+      myRequest,
+      match: { params: { id: code = '' } = {} },
+    } = this.props;
+    const { employee: { _id } = {} } = myRequest;
+    const { meetingTime, meetingDate } = value;
+    dispatch({
+      type: 'offboarding/create1On1',
+      payload: {
+        meetingDate,
+        meetingTime,
+        meetingWith: _id,
+        offBoardingRequest: code,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        this.setState({
+          saveSchedule: true,
+        });
+        dispatch({
+          type: 'offboarding/getList1On1',
+          payload: {
+            offBoardingRequest: code,
+          },
+        });
+      }
     });
   };
 
   render() {
     const { data, saveSchedule } = this.state;
+    console.log(saveSchedule);
     const {
       visible,
       myRequest,
+      list1On1 = [],
+      listProjectByEmployee = [],
+      listMeetingTime,
       match: { params: { id: code = '' } = {} },
     } = this.props;
 
@@ -67,7 +112,8 @@ class HRDetailTicket extends PureComponent {
       requestDate = '',
       lastWorkingDate,
       employee: {
-        generalInfo: { firstName: nameFrist = '', employeeId = '', avatar = '' } = {},
+        employeeId,
+        generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
         title: { name: jobTitle = '' } = {},
       } = {},
     } = myRequest;
@@ -88,14 +134,16 @@ class HRDetailTicket extends PureComponent {
                 avatar={avatar}
                 name={nameFrist}
                 jobTitle={jobTitle}
+                listProject={listProjectByEmployee}
               />
               <ResignationRequestDetail
                 reason={reasonForLeaving}
                 date={requestDate}
                 name={nameFrist}
               />
-              <CommentsFromHR />
+              <CommentsFromHR list1On1={list1On1} />
               <LastWorkingDay
+                list1On1={list1On1}
                 handleRemoveToServer={this.handleChange}
                 code={code}
                 visible={visible}
@@ -104,8 +152,14 @@ class HRDetailTicket extends PureComponent {
             </Col>
             <Col span={7}>
               <InfoEmployee />
-              {data ? <ScheduleMetting handleSubmit={this.handleSaveSchedule} /> : ''}
-              {saveSchedule ? <ActionSchedule /> : ''}
+              {data ||
+                (list1On1.length > 0 && (
+                  <ScheduleMetting
+                    handleSubmit={(value) => this.handleSaveSchedule(value)}
+                    listMeetingTime={listMeetingTime}
+                  />
+                ))}
+              <ActionSchedule list1On1={list1On1} nameFrist={nameFrist} />
             </Col>
           </Row>
         </div>

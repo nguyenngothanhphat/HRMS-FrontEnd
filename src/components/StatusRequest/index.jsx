@@ -21,6 +21,10 @@ export default class index extends PureComponent {
         color: '#6600cc',
         text: 'On-hold',
       },
+      DRAFT: {
+        color: '#A9A9A9',
+        text: 'draft',
+      },
     };
 
     return (

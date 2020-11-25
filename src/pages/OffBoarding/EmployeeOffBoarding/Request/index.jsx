@@ -79,6 +79,7 @@ class ResignationRequest extends Component {
     const { myRequest = {}, list1On1 = [], listMeetingTime = [], loading } = this.props;
     const { visible, keyModal } = this.state;
     const {
+      approvalStep = '',
       manager: {
         generalInfo: { employeeId: idManager = '', firstName: nameManager = '' } = {},
       } = {},
@@ -103,7 +104,7 @@ class ResignationRequest extends Component {
               {list1On1.length > 0 && <ListComment data={list1On1} />}
             </Col>
             <Col span={8}>
-              <WorkFlow />
+              <WorkFlow approvalStep={approvalStep} nameManager={nameManager} />
               <div className={styles.viewSet1On1}>
                 <div>
                   <span className={styles.viewSet1On1__request} onClick={this.handleModalSet1On1}>
