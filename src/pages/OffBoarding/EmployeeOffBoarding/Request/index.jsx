@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix } from 'antd';
+import { Row, Col, Affix, Spin } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
@@ -15,6 +15,7 @@ import styles from './index.less';
     list1On1,
     listMeetingTime,
     loading: loading.effects['offboarding/create1On1'],
+    loadingGetById: loading.effects['offboarding/fetchRequestById'],
   }),
 )
 class ResignationRequest extends Component {
@@ -58,11 +59,7 @@ class ResignationRequest extends Component {
 
   handleSubmit = (values) => {
     const { dispatch, myRequest = {} } = this.props;
-    const {
-      manager: { _id: meetingWith } = {},
-      // employee: { _id: employeeId } = {},
-      _id: offBoardingRequest,
-    } = myRequest;
+    const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
     const payload = { meetingWith, offBoardingRequest, ...values };
     dispatch({
       type: 'offboarding/create1On1',
@@ -76,7 +73,13 @@ class ResignationRequest extends Component {
   };
 
   render() {
-    const { myRequest = {}, list1On1 = [], listMeetingTime = [], loading } = this.props;
+    const {
+      myRequest = {},
+      list1On1 = [],
+      listMeetingTime = [],
+      loading,
+      loadingGetById,
+    } = this.props;
     const { visible, keyModal } = this.state;
     const {
       approvalStep = '',
@@ -86,7 +89,13 @@ class ResignationRequest extends Component {
       status = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
     } = myRequest;
-
+    if (loadingGetById) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
+    }
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -100,7 +109,7 @@ class ResignationRequest extends Component {
           </Affix>
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
-              <Reason data={myRequest} />
+              <Reason />
               {list1On1.length > 0 && <ListComment data={list1On1} />}
             </Col>
             <Col span={8}>
