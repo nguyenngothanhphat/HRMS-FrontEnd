@@ -79,3 +79,38 @@ export async function reviewRequest(payload) {
     data: payload,
   });
 }
+
+export async function getDefaultTemplates(payload) {
+  return request('/api/template/get-default', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getCustomTemplates(payload) {
+  return request('/api/template/get-custom', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTemplateById(payload) {
+  return request('/api/template/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addCustomTemplate(payload) {
+  return request('/api/template/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListRelieving(payload) {
+  return request('/api/offboardingrequest/list-relieving', {
+    method: 'POST',
+    data: payload,
+  });
+}
