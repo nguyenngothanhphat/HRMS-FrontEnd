@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
-import { Link } from 'umi';
+import SuccessModal from '../SuccessModal';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -13,6 +13,7 @@ class RequestInformation extends Component {
     super(props);
     this.state = {
       selectedType: '',
+      showSuccessModal: false,
     };
   }
 
@@ -22,16 +23,19 @@ class RequestInformation extends Component {
     });
   };
 
+  setShowSuccessModal = (value) => {
+    this.setState({
+      showSuccessModal: value,
+    });
+  };
+
   onFinish = (values) => {
-    // eslint-disable-next-line no-alert
-    alert('Finish');
     // eslint-disable-next-line no-console
     console.log('Success:', values);
+    this.setShowSuccessModal(true);
   };
 
   onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-alert
-    alert('Finish Fail');
     // eslint-disable-next-line no-console
     console.log('Failed:', errorInfo);
   };
@@ -42,7 +46,7 @@ class RequestInformation extends Component {
   };
 
   render() {
-    const { selectedType } = this.state;
+    const { selectedType, showSuccessModal } = this.state;
 
     const layout = {
       labelCol: {
@@ -254,6 +258,7 @@ class RequestInformation extends Component {
             </Button>
           </div>
         </div>
+        <SuccessModal visible={showSuccessModal} onClose={this.setShowSuccessModal} />
       </div>
     );
   }
