@@ -747,8 +747,12 @@ const onboard = {
     *createProfileEffect({ payload }, { call, put }) {
       let response;
       try {
-        console.log(history);
         response = yield call(createProfile, payload);
+        const { statusCode, data } = response;
+        console.log(data[0].defaultMessage);
+        if (statusCode === 400) {
+          dialog(response);
+        }
       } catch (error) {
         dialog(error);
       }
