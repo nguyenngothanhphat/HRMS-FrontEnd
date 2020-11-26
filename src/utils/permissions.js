@@ -71,13 +71,11 @@ export function checkPermissions(roles) {
   // View and edit info of general info tab
   const passportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW';
   const editEmployeeInfo = 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT';
-  const editModePersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
   const editPassportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT';
   const editContact = 'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT';
   const editProfessionalAcademic = 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT';
   const indexViewPPAndVisa = permissionList.indexOf(passportAndVisa);
   const indexEditEmployeeInfo = permissionList.indexOf(editEmployeeInfo);
-  const indexEditModePersonalInfo = permissionList.indexOf(editModePersonalInfo);
   const indexEditPPAndVisa = permissionList.indexOf(editPassportAndVisa);
   const indexEditContact = permissionList.indexOf(editContact);
   const indexEditProfessionalAcademic = permissionList.indexOf(editProfessionalAcademic);
@@ -97,7 +95,6 @@ export function checkPermissions(roles) {
     filterLocationActive: findIndexShowLocationActive,
     filterLocationInActive: findIndexShowLocationInActive,
     // Directory Page - Tab general info - Public/Private Personal phone/email
-    editModePersonalInfo: indexEditModePersonalInfo,
     viewPersonalNumber: indexViewPersonalNumber,
     viewPersonalEmail: indexViewPersonalEmail,
     // Profile employee

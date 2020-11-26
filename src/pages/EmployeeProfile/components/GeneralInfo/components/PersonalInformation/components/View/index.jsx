@@ -11,7 +11,6 @@ import styles from './index.less';
 class View extends PureComponent {
   handleChangesPrivate = (e, label) => {
     const { dispatch, generalData } = this.props;
-    console.log('e.target.value', e.target.value);
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
@@ -114,7 +113,7 @@ class View extends PureComponent {
               )}
             </Col>
             {item.label === 'Personal Number' &&
-            (permissions.editModePersonalInfo !== -1 || profileOwner) ? (
+            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
@@ -138,7 +137,7 @@ class View extends PureComponent {
             )}
 
             {item.label === 'Personal Email' &&
-            (permissions.editModePersonalInfo !== -1 || profileOwner) ? (
+            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
