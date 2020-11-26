@@ -105,14 +105,14 @@ class CommonLayout extends Component {
           displayComponent: <BackgroundCheck />,
         };
       }
-      if (processStatus === SENT_FOR_APPROVAL && currentStep === 8) {
+      if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
         // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
-      if (currentStep !== 8) {
+      if (currentStep !== 7) {
         // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,

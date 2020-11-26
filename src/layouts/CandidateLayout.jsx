@@ -167,14 +167,14 @@ const CandidateLayout = (props) => {
   };
 
   const getSteps = () => {
-    // if (
-    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
-    //   processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-    //   processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
-    //   processStatus === 'PENDING-BACKGROUND-CHECK'
-    // ) {
-    //   return steps.slice(0, 4);
-    // }
+    if (
+      processStatus === 'SENT-PROVISIONAL-OFFER' ||
+      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+      processStatus === 'PENDING-BACKGROUND-CHECK'
+    ) {
+      return steps.slice(0, 4);
+    }
     return steps;
   };
 
