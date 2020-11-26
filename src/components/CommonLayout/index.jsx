@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
@@ -99,7 +99,7 @@ class CommonLayout extends Component {
         };
       }
       if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
-        console.log('Right here');
+        // console.log('Right here');
         return {
           selectedItemId: listMenu[3].id,
           displayComponent: <BackgroundCheck />,
@@ -130,13 +130,7 @@ class CommonLayout extends Component {
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    const {
-      SENT_FOR_APPROVAL,
-      PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-      DRAFT,
-    } = PROCESS_STATUS;
+    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
     if (processStatus === SENT_FOR_APPROVAL) {
       // console.log('HERE 6');
       return {
@@ -198,7 +192,7 @@ class CommonLayout extends Component {
 
   _handleClick = (item) => {
     const { dispatch } = this.props;
-    console.log(item);
+    // console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -220,25 +214,10 @@ class CommonLayout extends Component {
   isDisabled = (index) => {
     const {
       PROVISIONAL_OFFER_DRAFT,
-      FINAL_OFFERS_DRAFT,
 
       SENT_PROVISIONAL_OFFERS,
-      ACCEPTED_PROVISIONAL_OFFERS,
-      RENEGOTIATE_PROVISIONAL_OFFERS,
 
       PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-
-      SENT_FOR_APPROVAL,
-      APPROVED_OFFERS,
-
-      SENT_FINAL_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
-
-      PROVISIONAL_OFFERS,
-      FINAL_OFFERS,
     } = PROCESS_STATUS;
 
     const { allDocumentVerified, processStatus, skip } = this.props;
