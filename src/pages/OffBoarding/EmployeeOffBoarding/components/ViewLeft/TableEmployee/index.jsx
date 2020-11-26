@@ -46,11 +46,10 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>LWD</span>,
-        dataIndex: 'lwd',
-      },
-      {
-        title: <span className={t.title}>LWD Change</span>,
-        dataIndex: 'lwdChange',
+        dataIndex: 'lastWorkingDate',
+        render: (lastWorkingDate) => {
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+        },
       },
       {
         title: <span className={t.title}>Assigned</span>,
@@ -70,7 +69,9 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,
+
         dataIndex: 'reasonForLeaving',
+        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
       },
       {
         title: <span className={t.title}>Action</span>,
