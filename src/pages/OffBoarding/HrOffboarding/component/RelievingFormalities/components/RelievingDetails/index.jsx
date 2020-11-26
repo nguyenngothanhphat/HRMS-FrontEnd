@@ -11,7 +11,7 @@ import Feedback from './components/Feedback';
 import ClosePackage from './components/ClosingPackage';
 import styles from './index.less';
 
-@connect(({ offboarding }) => ({ offboarding }))
+@connect(({ offboarding, user: { currentUser = {} } }) => ({ offboarding, currentUser }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
     this.fetchRelievingDetails();
@@ -28,11 +28,18 @@ class RelievingDetails extends PureComponent {
         id,
       },
     });
+    // dispatch({
+    //   type: 'offboarding/getDefaultExitPackage',
+    //   payload: {
+    //     company: _id,
+    //     type: 'OFF_BOARDING-EXIT_PACKAGE',
+    //   },
+    // });
   };
 
   render() {
     const {
-      offboarding: { relievingDetails = {} },
+      offboarding: { relievingDetails = {}, defaultExitPackage = {} },
     } = this.props;
     return (
       <PageContainer>
@@ -50,7 +57,7 @@ class RelievingDetails extends PureComponent {
               <ResignationOverview relievingDetails={relievingDetails} />
             </Col>
             <Col md={24} lg={14}>
-              <MailExit />
+              <MailExit exitPackageTemplates={defaultExitPackage} />
               <ConductExit />
               <Feedback />
               <ClosePackage />

@@ -1,11 +1,13 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Skeleton } from 'antd';
+import { Modal, Button, Skeleton, Form, Input } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ employeesManagement, loading }) => ({
+const { TextArea } = Input;
+@connect(({ employeesManagement, loading, offboarding: { currentTemplate = {} } }) => ({
   employeesManagement,
+  currentTemplate,
   loading: loading.effects['employeesManagement/removeEmployee'],
 }))
 class RelievingTemplates extends Component {
@@ -19,11 +21,11 @@ class RelievingTemplates extends Component {
     this.setState({}, () => handleCancelEdit());
   };
 
-  renderHeaderModal = () => {
-    const { titleModal = 'Your title' } = this.props;
+  renderHeaderModal = (template) => {
+    const { title = '' } = template;
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>{titleModal}</p>
+        <p className={styles.header__text}>Questions for {title}</p>
       </div>
     );
   };
@@ -37,28 +39,18 @@ class RelievingTemplates extends Component {
     }).then((statusCode) => {
       if (statusCode === 200) {
         this.handleCancel();
-        this.refreshUsersList();
       }
     });
   };
 
-  refreshUsersList = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeesManagement/fetchActiveEmployeesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchInActiveEmployeesList',
-    });
-  };
-
   render() {
-    const { visible = false, loading } = this.props;
+    const { visible = false, loading, template, content } = this.props;
     return (
       <Modal
         className={styles.modalRelievingTemplates}
         visible={visible}
-        title={this.renderHeaderModal()}
+        style={{ top: '50px' }}
+        title={this.renderHeaderModal(template)}
         onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         destroyOnClose
@@ -77,7 +69,7 @@ class RelievingTemplates extends Component {
           </Button>,
         ]}
       >
-        Relieving Templates
+        {content}
       </Modal>
     );
   }

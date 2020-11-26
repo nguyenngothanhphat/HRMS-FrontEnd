@@ -79,7 +79,7 @@ class RelievingFormalities extends Component {
           </Col>
           <Col xs={24} sm={24} md={24} lg={7} xl={7}>
             <RelievingTemplates
-              isOpenModal={() => this.onOpenModal()}
+              isOpenModal={this.onOpenModal}
               listTitle="Templates"
               exitPackageTemplates={defaultExitPackage}
             />

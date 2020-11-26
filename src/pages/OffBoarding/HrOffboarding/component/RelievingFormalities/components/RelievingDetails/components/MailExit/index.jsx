@@ -7,6 +7,7 @@ import sendTemplateIcon from '@/assets/send-template-icon.svg';
 import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
 import RelievingTemplates from '../RelievingTemplates';
+import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
 const mailInterviewPackage = [
@@ -35,7 +36,7 @@ class MailExit extends PureComponent {
     super(props);
     this.state = {
       isSend: false,
-      templateId: '',
+      template: {},
       isOpenModalEdit: false,
     };
   }
@@ -75,26 +76,28 @@ class MailExit extends PureComponent {
     });
   };
 
-  handleClickEdit = (id) => {
+  handleClickEdit = (template) => {
     this.setState({
       isOpenModalEdit: true,
-      templateId: id,
+      template,
     });
   };
 
   handleCancelEdit = () => {
     this.setState({
       isOpenModalEdit: false,
-      templateId: '',
+      template: {},
     });
   };
 
   renderModalEditTemplate = () => {
-    const { isOpenModalEdit, templateId } = this.state;
+    const { isOpenModalEdit, template } = this.state;
+    const { _id } = template;
     return (
       <RelievingTemplates
         visible={isOpenModalEdit}
-        templateId={templateId}
+        template={template}
+        content={<ModalContent templateId={_id} />}
         handleCancelEdit={this.handleCancelEdit}
       />
     );
@@ -102,6 +105,7 @@ class MailExit extends PureComponent {
 
   render() {
     const { isSend = false } = this.state;
+    const { exitPackageTemplates } = this.props;
     return (
       <div className={styles.mailExit}>
         <Card
@@ -131,18 +135,18 @@ class MailExit extends PureComponent {
             </Row>
           ) : (
             <Row gutter={[10, 20]}>
-              {mailInterviewPackage.map((template) => {
-                const { id, attachment } = template;
+              {exitPackageTemplates.map((template) => {
+                const { title } = template;
                 return (
-                  <Col span={this.renderSpanColumn(attachment.name)}>
+                  <Col span={this.renderSpanColumn(title)}>
                     <div className={styles.template}>
                       <div className={styles.template__content}>
                         <img src={templateIcon} alt="template-icon" />
-                        <span>{attachment.name}</span>
+                        <span>{title}</span>
                       </div>
                       <div className={styles.template__action}>
                         <img
-                          onClick={() => this.handleClickEdit(id)}
+                          onClick={() => this.handleClickEdit(template)}
                           className={styles.edit__icon}
                           src={editIcon}
                           alt="edit-icon"

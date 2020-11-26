@@ -12,6 +12,9 @@ import {
   getListProjectByEmployee,
   complete1On1,
   reviewRequest,
+  getDefaultTemplates,
+  getCustomTemplates,
+  getTemplateById,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -31,6 +34,11 @@ const offboarding = {
     totalListTeamRequest: [],
     showModalSuccessfully: false,
     relievingDetails: {},
+    defaultExitPackage: [],
+    defaultClosingPackage: [],
+    customExitPackage: [],
+    customClosingPackage: [],
+    currentTemplate: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -176,6 +184,40 @@ const offboarding = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *getDefaultExitPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(getDefaultTemplates, payload);
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { defaultExitPackage: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchTemplateById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getTemplateById, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addCustomTemplate({ payload = {} }, { call, put }) {
+      const response = {};
+      try {
+        response = yield call(addCustomTemplate, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
     // End Relieving Formalities
   },
