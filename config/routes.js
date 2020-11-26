@@ -215,7 +215,7 @@ const routes = [
           },
           {
             path: '/time-off/new-leave-request',
-            name: 'Apply for timeoff',
+            name: 'Request for Timeoff',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],

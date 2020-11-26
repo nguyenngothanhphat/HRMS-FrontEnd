@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Row, Collapse, Tooltip } from 'antd';
+import { Row, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
-import DonutChart from './components/DonutChart';
 
 import styles from './index.less';
 
@@ -124,17 +123,31 @@ export default class LeaveInformation extends PureComponent {
     );
   };
 
+  renderCircleProgress = (percentVal, value) => (
+    <div className={styles.circleProgress}>
+      <span className={styles.percentValue}>{value}</span>
+      <p className={styles.remainingText}>Remaining</p>
+    </div>
+  );
+
   render() {
     const { onInformationCLick = () => {} } = this.props;
     const total = 35;
     const value = 12;
     const percent = Math.round(((total - value) / total) * 100);
+    // const percent = 100;
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
           <span className={styles.title}>Total Leave Balance</span>
           <div className={styles.leaveBalanceBox}>
-            <DonutChart value={12} percent={percent} />
+            <Progress
+              type="circle"
+              strokeColor="#FFA100"
+              trailColor="#EAE7E3"
+              percent={percent}
+              format={(percentVal) => this.renderCircleProgress(percentVal, value)}
+            />
           </div>
           <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">

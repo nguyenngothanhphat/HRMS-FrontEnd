@@ -6,7 +6,7 @@ import styles from './index.less';
 
 // const { Step } = Steps;
 
-export class RightContet extends Component {
+export class RightContent extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -44,8 +44,15 @@ export class RightContet extends Component {
     ];
 
     return (
-      <div className={styles.root}>
-        <p className={styles.title}>Termination Workflow</p>
+      <div className={styles.RightContent}>
+        <div className={styles.header}>
+          <span className={styles.title}>Note</span>
+          <span className={styles.description}>
+            Timeoff requests requires approvals.
+            <br />
+            It takes anywhere around 2-4 standard working days for the entire process to complete.
+          </span>
+        </div>
         <div className={styles.flex}>
           {arr1.map((item, index) => this.renderNode(item, index, arr1))}
         </div>
@@ -54,4 +61,4 @@ export class RightContet extends Component {
   }
 }
 
-export default RightContet;
+export default RightContent;

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
 import RightContetInfo from './RightContent';
-import LeftInfo from './RequestInfonation';
+import RequestInformation from './RequestInformation';
 import styles from './index.less';
 
 class LeaveRequestForm extends PureComponent {
@@ -17,14 +17,14 @@ class LeaveRequestForm extends PureComponent {
         <div className={styles.leaveRequest}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>Request for Compoff</p>
+              <p className={styles.titlePage__text}>Request for Timeoff</p>
             </div>
           </Affix>
-          <Row className={styles.leaveRequest__content} gutter={[24, 0]}>
-            <Col span={17}>
-              <LeftInfo />
+          <Row className={styles.leaveRequest__content} gutter={[20, 20]}>
+            <Col span={14}>
+              <RequestInformation />
             </Col>
-            <Col span={7}>
+            <Col span={10}>
               <RightContetInfo />
             </Col>
           </Row>
