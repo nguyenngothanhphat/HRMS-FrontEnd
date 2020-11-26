@@ -178,6 +178,14 @@ const routes = [
             component: '../pages_admin/OffBoardingManagement',
             authority: ['admin-sa'],
           },
+          // working...
+          // {
+          //   path: '/project-management',
+          //   name: 'projectManagement',
+          //   icon: '/assets/images/iconOffboarding.svg',
+          //   component: '../pages_admin/ProjectManagement',
+          //   authority: ['admin-sa'],
+          // },
           {
             path: '/documents/upload-document',
             name: 'uploadDocument',
@@ -207,17 +215,17 @@ const routes = [
             authority: ['P_DIRECTORY_VIEW'],
           },
           {
-            path: '/time-off/Compoff-request',
+            path: '/time-off/new-compoff-request',
             name: 'Request for Compoff',
             hideInMenu: true,
-            component: './TimeOff/components/CompoffRequest',
+            component: './TimeOff/components/EmployeeRole/components/CompoffRequestForm',
             // authority: ['employee'],
           },
           {
-            path: '/time-off/Leave-request',
+            path: '/time-off/new-leave-request',
             name: 'Apply for timeoff',
             hideInMenu: true,
-            component: './TimeOff/components/LeaveRequest',
+            component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],
           },
           {

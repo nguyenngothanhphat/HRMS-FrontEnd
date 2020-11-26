@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import { Checkbox } from 'antd';
 
 import styles from './index.less';
 
+@connect(({ employeeSetting }) => ({ employeeSetting }))
 class Option extends Component {
   constructor(props) {
     super(props);
@@ -19,26 +21,34 @@ class Option extends Component {
     return null;
   }
 
-  handleChange = (e, name) => {
+  handleChange = (e, id) => {
+    const { dispatch } = this.props;
     const value = e.nativeEvent.target.checked;
-    console.log(name, value);
+    dispatch({
+      type: 'employeeSetting/updateOptionalQuestions',
+      payload: {
+        id,
+        isChosen: value,
+      },
+    });
   };
 
   render() {
     const { option = {} } = this.props;
-    const { checked, name = '', title = '', description = '', link = '' } = option;
+    const { isChosen, _id = '', question = '', description = '', link = '' } = option;
     return (
       <div className={styles.Option}>
-        <Checkbox
-          onChange={(e) => this.handleChange(e, option.name)}
-          defaultChecked={checked}
-          value={name}
-          style={{
-            lineHeight: '32px',
-          }}
-        >
-          {title}
-        </Checkbox>
+        <Checkbox.Group defaultValue={isChosen ? _id : ''}>
+          <Checkbox
+            onChange={(e) => this.handleChange(e, option._id)}
+            value={_id}
+            style={{
+              lineHeight: '32px',
+            }}
+          >
+            {question}
+          </Checkbox>
+        </Checkbox.Group>
         <div className={styles.Option_description}>
           {link === '' ? description : <a href={link}>{description}</a>}
         </div>
