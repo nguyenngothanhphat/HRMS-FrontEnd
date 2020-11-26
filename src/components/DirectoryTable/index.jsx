@@ -63,8 +63,17 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
         dataIndex: 'generalInfo',
         key: 'employeeId',
+        className: `${styles.employeeId} `,
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         width: '10%',
+        align: 'left',
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.email' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        width: '18%',
         align: 'left',
       },
       {
@@ -72,7 +81,7 @@ class DirectoryTable extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => <span>{title ? title.name : ''}</span>,
-        width: '10%',
+        width: '12%',
         align: 'left',
       },
       {
@@ -84,7 +93,7 @@ class DirectoryTable extends Component {
             {department ? department.name : ''}
           </span>
         ),
-        width: '16%',
+        width: '10%',
         align: 'left',
       },
       {
@@ -107,7 +116,7 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
-        width: '15%',
+        width: '12%',
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
@@ -158,9 +167,15 @@ class DirectoryTable extends Component {
     });
   };
 
+  checkPermissionViewProfile = (permissions) => {
+    const viewProfile = 'P_PROFILE_VIEW';
+    const findIndexViewProfile = permissions.indexOf(viewProfile);
+    return findIndexViewProfile;
+  };
+
   render() {
     const { sortedName = {}, pageSelected } = this.state;
-    const { list = [], loading, checkRoleEmployee } = this.props;
+    const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -179,16 +194,18 @@ class DirectoryTable extends Component {
       current: pageSelected,
       onChange: this.onChangePagination,
     };
+
+    const scroll = {
+      x: '100vw',
+      y: 'max-content',
+    };
+
     return (
       <div className={styles.directoryTable}>
         <Table
-          className={!checkRoleEmployee ? `${styles.directoryTable__employee}` : ''}
           size="small"
           columns={this.generateColumns(sortedName)}
           onRow={(record) => {
-            if (checkRoleEmployee) {
-              return null;
-            }
             return {
               onClick: () => this.handleProfileEmployee(record), // click row
             };
@@ -199,7 +216,7 @@ class DirectoryTable extends Component {
           pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
           loading={loading}
           onChange={this.handleChangeTable}
-          scroll={{ x: 1000, y: 'max-content' }}
+          scroll={scroll}
         />
       </div>
     );

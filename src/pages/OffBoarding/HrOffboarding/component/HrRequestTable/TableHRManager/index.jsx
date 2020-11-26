@@ -14,13 +14,11 @@ class HrTable extends PureComponent {
   }
 
   push = (data) => {
-    history.push(`/hr-offboarding/HrRequest/${data}`);
-    // history.push(`/hr-offboarding/HrRequest/123456`);
+    history.push(`/offboarding/review/${data}`);
   };
 
   render() {
     const { data = [] } = this.props;
-    console.log(data._id);
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -89,7 +87,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>LWD</span>,
         dataIndex: 'lastWorkingDate',
         render: (lastWorkingDate) => {
-          return <p>{moment(lastWorkingDate).format('YYYY/MM/DD')}</p>;
+          return <p>{moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
       },
       {

@@ -20,7 +20,6 @@ const GlobalHeaderRight = (props) => {
     dispatch,
     employeesManagement: { searchEmployeesList = [] },
     loadingList,
-    currentUser: { roles = [], company = {} },
   } = props;
   const [visible, setVisible] = useState(false);
   let className = styles.right;
@@ -31,17 +30,10 @@ const GlobalHeaderRight = (props) => {
 
   const handleSearch = (value) => {
     setVisible(!visible);
-    let companyID = [company._id];
-    // Admin-sa no need param company
-    const filterRoles = roles.filter((item) => item._id === 'ADMIN-SA');
-    if (filterRoles.length > 0) {
-      companyID = [];
-    }
     dispatch({
       type: 'employeesManagement/fetchSearchEmployeesList',
       payload: {
-        name: value,
-        company: companyID,
+        query: value,
       },
     });
   };
@@ -93,12 +85,9 @@ const GlobalHeaderRight = (props) => {
   );
 };
 
-export default connect(
-  ({ settings, employeesManagement, user: { currentUser = {} }, loading }) => ({
-    theme: settings.navTheme,
-    layout: settings.layout,
-    employeesManagement,
-    currentUser,
-    loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
-  }),
-)(GlobalHeaderRight);
+export default connect(({ settings, employeesManagement, loading }) => ({
+  theme: settings.navTheme,
+  layout: settings.layout,
+  employeesManagement,
+  loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
+}))(GlobalHeaderRight);

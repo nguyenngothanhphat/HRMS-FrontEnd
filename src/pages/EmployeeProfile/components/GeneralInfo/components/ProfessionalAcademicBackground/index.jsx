@@ -63,20 +63,22 @@ class ProfessionalAcademicBackground extends PureComponent {
   };
 
   render() {
-    const { openAcademic } = this.props;
+    const { openAcademic, permissions = {}, profileOwner = false } = this.props;
     const renderComponent = openAcademic ? <Edit handleCancel={this.handleCancel} /> : <View />;
     return (
       <div className={styles.root}>
         <div className={styles.viewTitle}>
           <p className={styles.viewTitle__text}>Professional &amp; Academic Background</p>
-          <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
-            <img
-              src="/assets/images/edit.svg"
-              alt="edit"
-              className={styles.viewTitle__edit__icon}
-            />
-            <p className={styles.viewTitle__edit__text}>Edit</p>
-          </div>
+          {(permissions.editProfessionalAcademic !== -1 || profileOwner) && (
+            <div className={styles.viewTitle__edit} onClick={this.handleEdit}>
+              <img
+                src="/assets/images/edit.svg"
+                alt="edit"
+                className={styles.viewTitle__edit__icon}
+              />
+              <p className={styles.viewTitle__edit__text}>Edit</p>
+            </div>
+          )}
         </div>
         <div className={styles.viewBottom} style={openAcademic ? { padding: 0 } : {}}>
           {renderComponent}

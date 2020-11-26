@@ -84,23 +84,32 @@ class PermissionInfo extends PureComponent {
         const key = index + 21;
         return { key, ...item };
       });
+
     const getListEmployees = formatDataPermission
       .filter((item) => Object.keys(item).some((k) => item[k].includes('P_EMPLOYEES')))
       .map((item, index) => {
         const key = index + 31;
         return { key, ...item };
       });
+
+    const getProfileEmployees = formatDataPermission
+      .filter((item) => Object.keys(item).some((k) => item[k].includes('P_PROFILE')))
+      .map((item, index) => {
+        const key = index + 41;
+        return { key, ...item };
+      });
+
     const getListOnBoarding = formatDataPermission
       .filter((item) => Object.keys(item).some((k) => item[k].includes('P_ONBOARDING')))
       .map((item, index) => {
-        const key = index + 41;
+        const key = index + 51;
         return { key, ...item };
       });
 
     const getListSETTING = formatDataPermission
       .filter((item) => Object.keys(item).some((k) => item[k].includes('P_SETTINGS')))
       .map((item, index) => {
-        const key = index + 51;
+        const key = index + 61;
         return { key, ...item };
       });
 
@@ -125,12 +134,18 @@ class PermissionInfo extends PureComponent {
       },
       {
         key: 4,
+        PermissionID: 'All PROFILE',
+        PermissionName: 'PROFILE',
+        children: getProfileEmployees,
+      },
+      {
+        key: 5,
         PermissionID: 'All ONBOARDING',
         PermissionName: 'ONBOARDING',
         children: getListOnBoarding,
       },
       {
-        key: 5,
+        key: 6,
         PermissionID: 'All SETTING',
         PermissionName: 'SETTING',
         children: getListSETTING,

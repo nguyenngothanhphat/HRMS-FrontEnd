@@ -62,6 +62,12 @@ const Model = {
           currentUser: {},
         },
       });
+      yield put({
+        type: 'user/save',
+        payload: {
+          permissions: {},
+        },
+      });
       history.replace('/login');
     },
     *loginThirdParty({ payload }, { call, put }) {

@@ -163,6 +163,8 @@ class ViewInformation extends Component {
       loading,
       originGeneralData: { bioInfo = '' } = {},
       employeeLocation = '',
+      permissions = {},
+      profileOwner = false,
     } = this.props;
     const { firstName = '', avatar = '', skills = [], createdAt = '', linkedIn = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
@@ -204,12 +206,14 @@ class ViewInformation extends Component {
           alt="img-avt"
           className={s.infoEmployee__imgAvt}
         />
-        <img
-          src="/assets/images/iconUploadImage.svg"
-          onClick={this.openModalUpload}
-          alt="img-upload"
-          className={s.infoEmployee__imgAvt__upload}
-        />
+        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+          <img
+            src="/assets/images/iconUploadImage.svg"
+            onClick={this.openModalUpload}
+            alt="img-upload"
+            className={s.infoEmployee__imgAvt__upload}
+          />
+        )}
         <div className={s.infoEmployee__textNameAndTitle}>
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
           <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
