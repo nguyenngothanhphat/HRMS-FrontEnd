@@ -207,17 +207,17 @@ const routes = [
             authority: ['P_DIRECTORY_VIEW'],
           },
           {
-            path: '/time-off/Compoff-request',
+            path: '/time-off/new-compoff-request',
             name: 'Request for Compoff',
             hideInMenu: true,
-            component: './TimeOff/components/CompoffRequest',
+            component: './TimeOff/components/EmployeeRole/components/CompoffRequest',
             // authority: ['employee'],
           },
           {
-            path: '/time-off/Leave-request',
+            path: '/time-off/new-leave-request',
             name: 'Apply for timeoff',
             hideInMenu: true,
-            component: './TimeOff/components/LeaveRequest',
+            component: './TimeOff/components/EmployeeRole/components/LeaveRequest',
             // authority: ['employee'],
           },
           {

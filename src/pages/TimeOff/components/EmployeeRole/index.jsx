@@ -28,12 +28,12 @@ export default class EmployeeRole extends PureComponent {
 
   buttonOnClick = () => {
     // eslint-disable-next-line no-alert
-    history.push(`/time-off/compoff-request`);
+    history.push(`/time-off/new-compoff-request`);
   };
 
   buttonOnClickLeave = () => {
     // eslint-disable-next-line no-alert
-    history.push(`/time-off/leave-request`);
+    history.push(`/time-off/new-leave-request`);
   };
 
   onInformationCLick = () => {
