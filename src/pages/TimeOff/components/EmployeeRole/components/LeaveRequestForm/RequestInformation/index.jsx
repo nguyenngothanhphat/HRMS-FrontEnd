@@ -57,11 +57,11 @@ class RequestInformation extends Component {
       },
     };
 
-    const dataTimeOffTypes = [
+    const dataTimeOffTypes1 = [
       {
         name: 'Casual Leave',
         shortName: 'CL',
-        remaining: 7,
+        remaining: 0,
         total: 10,
       },
       {
@@ -77,6 +77,24 @@ class RequestInformation extends Component {
         total: 10,
       },
     ];
+    const dataTimeOffTypes2 = [
+      {
+        name: 'Maternity Leave',
+        shortName: 'ML',
+        total: 30,
+      },
+      {
+        name: 'Bereavement Leave',
+        shortName: 'BL',
+        total: 7,
+      },
+      {
+        name: 'Restricted Holiday',
+        shortName: 'RH',
+        total: 1,
+      },
+    ];
+
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
@@ -113,17 +131,56 @@ class RequestInformation extends Component {
                   onChange={(value) => this.setSelectedType(value)}
                   placeholder="Timeoff Type"
                 >
-                  {dataTimeOffTypes.map((value) => {
+                  {dataTimeOffTypes1.map((value) => {
                     const { name = '', shortName = '', remaining = 0, total = 0 } = value;
+                    const defaultCss = {
+                      fontSize: 12,
+                      color: '#6f7076',
+                      fontWeight: 'bold',
+                    };
+                    const invalidCss = {
+                      fontSize: 12,
+                      color: '#FD4546',
+                      fontWeight: 'bold',
+                    };
                     return (
                       <Option value={name}>
-                        <Row className={styles.timeOffTypeOptions}>
-                          <div className={styles.name}>{`${name} (${shortName})`}</div>
-                          <div className={styles.days}>
-                            <span>{remaining}</span>
-                            <span className={styles.total}>/{total} days</span>
-                          </div>
-                        </Row>
+                        <div className={styles.timeOffTypeOptions}>
+                          {/* I don't knew why I could not CSS this block in styles.less file
+                          So I tried inline CSS. 
+                          Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
+                          <span style={{ fontSize: 13 }} className={styles.name}>
+                            {`${name} (${shortName})`}
+                          </span>
+                          <span
+                            className={styles.days}
+                            style={{
+                              float: 'right',
+                            }}
+                          >
+                            <span
+                              style={remaining === 0 ? invalidCss : defaultCss}
+                              className={styles.totals}
+                            >
+                              {remaining}/{total} days
+                            </span>
+                          </span>
+                        </div>
+                      </Option>
+                    );
+                  })}
+                  {dataTimeOffTypes2.map((value) => {
+                    const { name = '', shortName = '', total = 0 } = value;
+                    return (
+                      <Option value={name}>
+                        <div className={styles.timeOffTypeOptions}>
+                          <span style={{ fontSize: 13 }} className={styles.name}>
+                            {`${name} (${shortName})`}
+                          </span>
+                          <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
+                            {total} days
+                          </span>
+                        </div>
                       </Option>
                     );
                   })}
@@ -236,8 +293,12 @@ class RequestInformation extends Component {
                 ]}
               >
                 <Select placeholder="Search a person you want to loop">
-                  <Option value="Person 1">Person 1</Option>
-                  <Option value="Person 2">Person 2</Option>
+                  <Option value="Person 1">
+                    <span style={{ fontSize: 13 }}>Person 1</span>
+                  </Option>
+                  <Option value="Person 2">
+                    <span style={{ fontSize: 13 }}>Person 2</span>
+                  </Option>
                 </Select>
               </Form.Item>
             </Col>
