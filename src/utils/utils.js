@@ -102,8 +102,10 @@ export const filteredArr = (data) => {
 };
 
 export const formatAdditionalQuestion = (questionArr) => {
-  let finalArr = [];
-  finalArr = questionArr.map((item) => {
+  if (!questionArr) {
+    return [];
+  }
+  const finalArr = questionArr.map((item) => {
     const { question = '', answer = '', type = '', defaultAnswer = [], description = '' } = item;
     const itemData = {
       type,

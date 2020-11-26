@@ -796,7 +796,7 @@ const candidateInfo = {
             },
           },
         });
-        console.log(data);
+        
         yield put({
           type: 'saveTemp',
           payload: {

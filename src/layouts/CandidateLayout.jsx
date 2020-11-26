@@ -55,6 +55,11 @@ const steps = [
   {
     id: 6,
     title: 'Benefits',
+    content: 'Sixth-content',
+  },
+  {
+    id: 7,
+    title: 'Additional Questions',
     content: 'Last-content',
   },
 ];
@@ -129,7 +134,7 @@ const CandidateLayout = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        localStep: 7,
+        localStep: 8,
       },
     });
   };
@@ -162,14 +167,14 @@ const CandidateLayout = (props) => {
   };
 
   const getSteps = () => {
-    if (
-      processStatus === 'SENT-PROVISIONAL-OFFER' ||
-      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-      processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
-      processStatus === 'PENDING-BACKGROUND-CHECK'
-    ) {
-      return steps.slice(0, 4);
-    }
+    // if (
+    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
+    //   processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+    //   processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
+    //   processStatus === 'PENDING-BACKGROUND-CHECK'
+    // ) {
+    //   return steps.slice(0, 4);
+    // }
     return steps;
   };
 
@@ -219,7 +224,11 @@ const CandidateLayout = (props) => {
                   </Steps>
 
                   {!isPhase1(newSteps) && (
-                    <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
+                    <button
+                      type="submit"
+                      className={localStep === 8 ? `${s.btn} ${s.active}` : `${s.btn}`}
+                      onClick={renderPreviewOffer}
+                    >
                       Preview offer letter
                     </button>
                   )}
