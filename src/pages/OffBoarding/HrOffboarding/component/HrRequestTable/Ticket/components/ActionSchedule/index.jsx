@@ -1,5 +1,5 @@
 /* eslint-disable compat/compat */
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import CloseIcon from '@/assets/xclose.svg';
 import moment from 'moment';
 import EditIcon from '@/assets/xEdit.svg';
@@ -12,29 +12,25 @@ class ActionSchedule extends Component {
   }
 
   render() {
-    const { list1On1, nameFrist, onclose = () => {}, handleEdit = () => {} } = this.props;
-    const lastArray = list1On1[list1On1.length - 1];
-    const array = [lastArray];
+    const { nameFrist, onclose = () => {}, handleEdit = () => {}, itemSet1On1 = {} } = this.props;
+    const { meetingDate, meetingTime } = itemSet1On1;
     return (
-      <div>
-        {list1On1.length !== 0 &&
-          array.map((item) => (
-            <Fragment key={item}>
-              <div className={styles.actionSchedule}>
-                <div className={styles.flex}>
-                  <div className={styles.modalContent}>1-on-1 scheduled with {nameFrist}</div>
-                  <div style={{ marginTop: '-5px' }}>
-                    <img src={EditIcon} alt="" style={{ padding: '5px' }} onClick={handleEdit} />
-                    <img src={CloseIcon} alt="" onClick={onclose} />
-                  </div>
-                </div>
-                <div className={styles.modal__text}>
-                  Schedule on: {moment(item.meetingDate).format('DD.MM.YYYY')} | {item.meetingTime}
-                </div>
-              </div>
-              )
-            </Fragment>
-          ))}
+      <div className={styles.actionSchedule}>
+        <div className={styles.flex}>
+          <div className={styles.modalContent}>1-on-1 scheduled with {nameFrist}</div>
+          <div style={{ marginTop: '-5px' }}>
+            <img
+              src={EditIcon}
+              alt=""
+              style={{ padding: '5px', cursor: 'pointer' }}
+              onClick={handleEdit}
+            />
+            <img src={CloseIcon} style={{ cursor: 'pointer' }} alt="" onClick={onclose} />
+          </div>
+        </div>
+        <div className={styles.modal__text}>
+          Schedule on: {moment(meetingDate).format('DD.MM.YYYY')} | {meetingTime}
+        </div>
       </div>
     );
   }

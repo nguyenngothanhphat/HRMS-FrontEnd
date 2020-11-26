@@ -29,7 +29,7 @@ class CommentsFromHR extends PureComponent {
             </Col>
           </Row>
           <div className={styles.reasonPutOnHold__textArea}>
-            <TextArea allowClear disabled />
+            <TextArea allowClear disabled className={styles.resize} />
             <div className={styles.reasonPutOnHold__action}>
               <Space>
                 <Checkbox>
