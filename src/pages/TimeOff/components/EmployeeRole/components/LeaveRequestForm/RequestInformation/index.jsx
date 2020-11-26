@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form, Popover } from 'antd';
+import RedCautionIcon from '@/assets/redcaution.svg';
 import SuccessModal from '../SuccessModal';
 import styles from './index.less';
 
@@ -43,6 +44,91 @@ class RequestInformation extends Component {
   saveDraft = () => {
     // eslint-disable-next-line no-alert
     alert('Save Draft');
+  };
+
+  // hover content
+  content = () => (
+    <span
+      // style={{
+      //   position: 'absolute',
+      //   top: 0,
+      //   right: 0,
+      //   display: 'flex',
+      //   background: '#FFFFFF',
+      //   boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
+      //   borderRadius: '4px',
+      //   width: '200px',
+      //   overflow: 'auto',
+      // }}
+      className={styles.runOutOfRemainingDayNotice}
+    >
+      <img src={RedCautionIcon} alt="caution-icon" />
+      <p>
+        You cannot apply for this leave.
+        {/* You have exhausted all your {name} ({shortName} */}
+        s).
+      </p>
+    </span>
+  );
+
+  // render select options
+  renderType1 = (data) => {
+    return data.map((value) => {
+      const { name = '', shortName = '', remaining = 0, total = 0 } = value;
+      const defaultCss = {
+        fontSize: 12,
+        color: '#6f7076',
+        fontWeight: 'bold',
+      };
+      const invalidCss = {
+        fontSize: 12,
+        color: '#FD4546',
+        fontWeight: 'bold',
+      };
+      return (
+        <Option value={shortName}>
+          <div className={styles.timeOffTypeOptions}>
+            {/* I don't knew why I could not CSS this block in styles.less file
+          So I tried inline CSS. 
+          Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
+            <>
+              <span style={{ fontSize: 13 }} className={styles.name}>
+                {`${name} (${shortName})`}
+              </span>
+              <span
+                className={styles.days}
+                style={{
+                  float: 'right',
+                }}
+              >
+                <span style={remaining === 0 ? invalidCss : defaultCss} className={styles.totals}>
+                  <span style={remaining === 0 ? { color: '#FD4546' } : { color: 'black' }}>
+                    {remaining}
+                  </span>
+                  /{total} days
+                </span>
+              </span>
+            </>
+          </div>
+        </Option>
+      );
+    });
+  };
+
+  renderType2 = (data) => {
+    return data.map((value) => {
+      const { name = '', shortName = '', total = 0 } = value;
+      return (
+        <Option value={shortName}>
+          <div className={styles.timeOffTypeOptions}>
+            <span style={{ fontSize: 13 }} className={styles.name}>
+              {`${name} (${shortName})`}
+            </span>
+            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>{total} days</span>
+          </div>
+        </Option>
+      );
+    });
   };
 
   render() {
@@ -95,6 +181,20 @@ class RequestInformation extends Component {
       },
     ];
 
+    let selectedTypeName = '';
+    dataTimeOffTypes1.forEach((value) => {
+      if (value.shortName === selectedType) {
+        selectedTypeName = value.name;
+      }
+      return null;
+    });
+    dataTimeOffTypes2.forEach((value) => {
+      if (value.shortName === selectedType) {
+        selectedTypeName = value.name;
+      }
+      return null;
+    });
+
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
@@ -131,67 +231,17 @@ class RequestInformation extends Component {
                   onChange={(value) => this.setSelectedType(value)}
                   placeholder="Timeoff Type"
                 >
-                  {dataTimeOffTypes1.map((value) => {
-                    const { name = '', shortName = '', remaining = 0, total = 0 } = value;
-                    const defaultCss = {
-                      fontSize: 12,
-                      color: '#6f7076',
-                      fontWeight: 'bold',
-                    };
-                    const invalidCss = {
-                      fontSize: 12,
-                      color: '#FD4546',
-                      fontWeight: 'bold',
-                    };
-                    return (
-                      <Option value={name}>
-                        <div className={styles.timeOffTypeOptions}>
-                          {/* I don't knew why I could not CSS this block in styles.less file
-                          So I tried inline CSS. 
-                          Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
-                          <span style={{ fontSize: 13 }} className={styles.name}>
-                            {`${name} (${shortName})`}
-                          </span>
-                          <span
-                            className={styles.days}
-                            style={{
-                              float: 'right',
-                            }}
-                          >
-                            <span
-                              style={remaining === 0 ? invalidCss : defaultCss}
-                              className={styles.totals}
-                            >
-                              {remaining}/{total} days
-                            </span>
-                          </span>
-                        </div>
-                      </Option>
-                    );
-                  })}
-                  {dataTimeOffTypes2.map((value) => {
-                    const { name = '', shortName = '', total = 0 } = value;
-                    return (
-                      <Option value={name}>
-                        <div className={styles.timeOffTypeOptions}>
-                          <span style={{ fontSize: 13 }} className={styles.name}>
-                            {`${name} (${shortName})`}
-                          </span>
-                          <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
-                            {total} days
-                          </span>
-                        </div>
-                      </Option>
-                    );
-                  })}
+                  {this.renderType1(dataTimeOffTypes1)}
+                  {this.renderType2(dataTimeOffTypes2)}
                 </Select>
               </Form.Item>
             </Col>
             <Col span={6}>
-              {selectedType === 'Casual Leave' && (
+              {selectedType !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
-                    CLs are covered under <span className={styles.link}>Standard Policy</span>
+                    {selectedType}s are covered under{' '}
+                    <span className={styles.link}>Standard Policy</span>
                   </span>
                 </div>
               )}
@@ -252,9 +302,11 @@ class RequestInformation extends Component {
               </Row>
             </Col>
             <Col span={6}>
-              {selectedType === 'Casual Leave' && (
+              {selectedType !== '' && (
                 <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>Casual leaves gets credited each month.</span>
+                  <span className={styles.normalText}>
+                    {selectedTypeName}s gets credited each month.
+                  </span>
                 </div>
               )}
             </Col>
