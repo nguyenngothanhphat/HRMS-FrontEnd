@@ -204,34 +204,38 @@ class BasicInformation extends Component {
 
   _renderEmployeeId = () => {
     const { isOpenReminder = {} } = this.state;
-    // const { data } = this.props;
-    // const { processStatus } = data;
-    // console.log(processStatus);
+    const { data } = this.props;
+    const { processStatus } = data;
+    console.log(processStatus);
+    if (processStatus === 'ACCEPT-FINAL-OFFER') {
+      return (
+        <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          <Form.Item
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+            required={false}
+            label={formatMessage({ id: 'component.basicInformation.employeeId' })}
+            name="employeeId"
+            // rules={[
+            //   { required: true, message: `'Please input your full name!'` },
+            //   {
+            //     pattern: /[^\s-]/,
+            //     message: 'Fullname is invalid!',
+            //   },
+            // ]}
+          >
+            <Input
+              // onChange={(e) => this.handleChange(e)}
+              className={styles.formInput}
+              name="employeeId"
+              disabled={this.disableEdit()}
+            />
+          </Form.Item>
+        </Col>
+      );
+    }
     return (
       <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
-      // <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-      //   <Form.Item
-      //     labelCol={{ span: 24 }}
-      //     wrapperCol={{ span: 24 }}
-      //     required={false}
-      //     label={formatMessage({ id: 'component.basicInformation.employeeId' })}
-      //     name="employeeId"
-      //     // rules={[
-      //     //   { required: true, message: `'Please input your full name!'` },
-      //     //   {
-      //     //     pattern: /[^\s-]/,
-      //     //     message: 'Fullname is invalid!',
-      //     //   },
-      //     // ]}
-      //   >
-      //     <Input
-      //       // onChange={(e) => this.handleChange(e)}
-      //       className={styles.formInput}
-      //       name="employeeId"
-      //       disabled={this.disableEdit()}
-      //     />
-      //   </Form.Item>
-      // </Col>
     );
   };
 
@@ -413,7 +417,7 @@ class BasicInformation extends Component {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { fullName, privateEmail, workEmail, previousExperience, employeeId } = data;
     const { loading1 } = this.props;
     const Note = {
       title: 'Note',
@@ -437,7 +441,13 @@ class BasicInformation extends Component {
                 <Form
                   wrapperCol={{ span: 24 }}
                   name="basic"
-                  initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
+                  initialValues={{
+                    fullName,
+                    privateEmail,
+                    workEmail,
+                    previousExperience,
+                    employeeId,
+                  }}
                   onFocus={this.onFocus}
                   onValuesChange={this.handleChange}
                   onFinish={this.onFinish}
