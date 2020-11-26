@@ -27,7 +27,7 @@ class ScheduleMetting extends Component {
 
   render() {
     const { visible } = this.state;
-    const { handleSubmit } = this.props;
+    const { handleSubmit, listMeetingTime } = this.props;
     return (
       <div className={styles.modal__content}>
         <div className={styles.modal__text}>
@@ -37,6 +37,7 @@ class ScheduleMetting extends Component {
           Schedule a 1 -on -1
         </Button>
         <ScheduleModal
+          list={listMeetingTime}
           visible={visible}
           handleSubmit={handleSubmit}
           modalContent="Schedule 1-on-1"

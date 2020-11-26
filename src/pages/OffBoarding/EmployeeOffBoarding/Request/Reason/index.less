@@ -6,11 +6,56 @@
   }
 
   .titleBody {
-    margin-top: 60px;
     background-color: #fff;
-    padding: 29px 40px 0px;
-    height: 261px;
+    padding: 29px 40px;
+    height: auto;
     border-radius: 5px;
+    .viewChangeLastWorkingDay {
+      &__title {
+        margin-bottom: 17px;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 19px;
+        color: #000;
+      }
+      &__label {
+        margin-bottom: 17px;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 19px;
+        color: #000;
+      }
+      &__viewDateApproved {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 23px;
+        &__datePicker {
+          width: 100%;
+          height: 56px;
+          box-sizing: border-box;
+          border-radius: 5px;
+        }
+        &__description {
+          background: #fff4d1;
+          padding: 17px 32px;
+          border-radius: 5px;
+          &__text1 {
+            font-size: 13px;
+            line-height: 17px;
+            color: #464646;
+          }
+          &__text2 {
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 17px;
+            color: #464646;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+      }
+    }
   }
 
   .textTime {
