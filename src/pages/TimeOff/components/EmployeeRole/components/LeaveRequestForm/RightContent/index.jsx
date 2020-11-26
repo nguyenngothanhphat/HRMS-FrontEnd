@@ -1,10 +1,8 @@
-// import React, { Component } from 'react';
 import React, { Component, Fragment } from 'react';
-// import { Row, Col } from 'antd';
-// import icon1 from '@/assets/workflow1.svg';
+import { Steps, Popover } from 'antd';
 import styles from './index.less';
 
-// const { Step } = Steps;
+const { Step } = Steps;
 
 export class RightContent extends Component {
   constructor(props) {
@@ -12,34 +10,37 @@ export class RightContent extends Component {
     this.state = {};
   }
 
-  renderNode = (item, index, arr) => {
-    return (
-      <Fragment key={item.id}>
-        <div className={styles.minWidth}>
-          <div className={styles.borderImage}> {item.body} </div>
-          <div>{item.text}</div>
-        </div>
-        {index !== arr.length - 1 && <div className={styles.borderStyles} />}
-      </Fragment>
-    );
+  // customDot = (dot, { status, index }) => {
+  //   console.log('status', status);
+  //   return this.renderIcon('https://cdn.iconscout.com/icon/free/png-256/avatar-367-456319.png');
+  // };
+
+  renderIcon = (url) => {
+    return <img className={styles.avatar} src={url} alt="avatar" />;
   };
 
   render() {
-    const arr1 = [
+    const people = [
       {
         id: 1,
         body: '',
         text: 'Rose Mary',
+        avatar:
+          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
       },
       {
         id: 2,
         body: '',
         text: 'Aditya Venkatesan',
+        avatar:
+          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
       },
       {
         id: 3,
         body: '',
         text: 'Thammu Ayappa',
+        avatar:
+          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
       },
     ];
 
@@ -53,8 +54,14 @@ export class RightContent extends Component {
             It takes anywhere around 2-4 standard working days for the entire process to complete.
           </span>
         </div>
-        <div className={styles.flex}>
-          {arr1.map((item, index) => this.renderNode(item, index, arr1))}
+        <div className={styles.content}>
+          <span className={styles.title}>Chain of approval</span>
+          <Steps current={0} labelPlacement="vertical">
+            {people.map((value) => {
+              const { avatar = '', text = '' } = value;
+              return <Step icon={this.renderIcon(avatar)} title={text} />;
+            })}
+          </Steps>
         </div>
       </div>
     );
