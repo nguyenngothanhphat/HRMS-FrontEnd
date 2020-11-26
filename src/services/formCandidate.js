@@ -53,3 +53,9 @@ export async function sendDocumentStatus(payload) {
     data: payload, // {candidate: id, options: 1, comments: ''}
   });
 }
+
+export async function getAdditionalQuestion() {
+  return request('/api/onboardingquestion/list', {
+    method: 'POST',
+  });
+}

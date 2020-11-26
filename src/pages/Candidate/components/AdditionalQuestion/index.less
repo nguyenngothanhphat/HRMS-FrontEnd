@@ -1,14 +1,60 @@
 @import (css)
   url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
 
+@black: #161c29;
+@gray: #707177;
 @spacing-xxs: 4px;
 
-.basicInformation {
+.additionalQuestion {
   font-family: 'Roboto', sans-serif;
-  width: 100%;
-  min-height: 216px;
-  position: relative;
+  .left > * {
+    margin: 0;
+    padding: 0;
+  }
 
+  .left {
+    object-fit: contain;
+    border-radius: 2.5px;
+    border: solid 0.5px #d6dce0;
+    background-color: #ffffff;
+
+    header {
+      padding: 32px;
+      border-bottom: solid 0.5px #d6dce0;
+
+      h1 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: @black;
+      }
+
+      p {
+        font-size: 13px;
+        margin-bottom: 0;
+        color: @gray;
+      }
+    }
+
+    .mainContent {
+      padding: 32px;
+
+      .form {
+        label {
+          color: @gray;
+          font-size: 13px;
+        }
+
+        .column {
+          padding-right: 24px;
+        }
+
+        input {
+          max-width: 270px !important;
+        }
+      }
+    }
+  }
   .bottomBar {
     // position: fixed;
     // bottom: 0;
@@ -44,14 +90,16 @@
 
     &__button {
       text-align: right;
+      display: flex;
+      justify-content: space-between;
       &__disabled {
         opacity: 0.3;
       }
       :global {
         .ant-btn-primary {
-          // display: none;
-          text-shadow: none;
           box-shadow: none;
+          text-shadow: none;
+          // display: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
@@ -85,78 +133,32 @@
     }
   }
 
-  &__bottom {
-    position: fixed;
-    height: 72px;
-    bottom: 0;
-    width: inherit;
-  }
-
-  &__top {
-    object-fit: contain;
-    border-radius: 2.5px;
-    border: solid 0.5px #d6dce0;
-    background-color: #ffffff;
-
-    hr {
-      width: 100%;
-      height: 0.5px;
-      object-fit: contain;
-      border-top: solid 0.5px #d6dce0;
-      border-bottom: none;
-    }
-  }
-  .basicInformation__form {
-    padding: 8 * @spacing-xxs;
-
-    width: 100%;
-    :global {
-      .ant-form-item-has-success {
-        .ant-input {
-          border: solid 1px #47c97f;
-        }
-      }
-      .ant-form-item-label {
-        padding-bottom: 0;
-        label {
-          color: #707177;
-          font-size: 13px;
-        }
-      }
+  :global {
+    .ant-select-arrow {
+      margin-top: -6px !important;
     }
 
-    .formInput__email {
-      position: relative;
-      .formInput__domain {
-        position: absolute;
-        right: 4 * @spacing-xxs;
-        top: 10px;
-        z-index: 1000;
-        color: #707177;
-      }
-    }
-    .formInput {
-      font-family: 'Roboto', sans-serif;
+    .ant-input {
       height: 42px;
       object-fit: contain;
-      padding-left: 15px;
-      padding-right: 15px;
       border-radius: 8px;
-      //   border: solid 0.5px #d6dce4;
       background-color: #ffffff;
     }
-  }
-}
-.viewLoading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-}
 
-.RightComponents {
-  width: 322px;
-  .stepRow {
-    width: 100%;
+    .ant-form-item-label {
+      color: @gray;
+      font-size: 13px;
+    }
+    .ant-select {
+      max-width: 270px !important;
+    }
+
+    .ant-select-selector {
+      height: 40px !important;
+    }
+
+    .ant-select-selection-item {
+      line-height: 40px !important;
+    }
   }
 }

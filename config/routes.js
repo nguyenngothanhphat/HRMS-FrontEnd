@@ -178,6 +178,14 @@ const routes = [
             component: '../pages_admin/OffBoardingManagement',
             authority: ['admin-sa'],
           },
+          // working...
+          // {
+          //   path: '/project-management',
+          //   name: 'projectManagement',
+          //   icon: '/assets/images/iconOffboarding.svg',
+          //   component: '../pages_admin/ProjectManagement',
+          //   authority: ['admin-sa'],
+          // },
           {
             path: '/documents/upload-document',
             name: 'uploadDocument',

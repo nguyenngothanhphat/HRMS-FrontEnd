@@ -4,6 +4,8 @@ import {
   getDefaultTemplateList,
   getCustomTemplateList,
   getTemplateById,
+  getOptionalQuestions,
+  updateOptionalQuestions,
   uploadSignature,
   addCustomTemplate,
   removeTemplate,
@@ -12,6 +14,7 @@ import {
 const employeeSetting = {
   namespace: 'employeeSetting',
   state: {
+    optionalQuestions: [],
     isAbleToSubmit: false,
     defaultTemplateList: [],
     customTemplateList: [],
@@ -113,6 +116,33 @@ const employeeSetting = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchOptionalQuestions(_, { call, put }) {
+      try {
+        const response = yield call(getOptionalQuestions);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { optionalQuestions: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateOptionalQuestions({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateOptionalQuestions, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {},
+        });
       } catch (errors) {
         dialog(errors);
       }

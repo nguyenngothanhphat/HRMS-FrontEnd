@@ -31,7 +31,7 @@ const getInput = (data) => {
   }
   if (type === INPUT_TYPE.SELECT) {
     const { defaultAnswer = [] } = data;
-    // console.log('Select');
+    console.log('Select');
     return (
       <Select>
         {defaultAnswer.map((answerItem) => (
@@ -45,13 +45,14 @@ const getInput = (data) => {
 
 const AdditionalQuestion = (props) => {
   const {
-    checkMandatory,
+    checkCandidateMandatory,
     dispatch,
-    currentStep,
+    localStep,
     hidePreviewOffer,
     additionalQuestion: additionalQuestionProp,
     additionalQuestions: additionalQuestionsProp,
     candidate,
+    loading1,
   } = props;
 
   const {
@@ -64,24 +65,24 @@ const AdditionalQuestion = (props) => {
   const [form] = Form.useForm();
 
   const onClickPrevious = () => {
-    const prevStep = currentStep - 1;
+    const prevStep = localStep - 1;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
-        currentStep: prevStep,
+        localStep: prevStep,
       },
     });
   };
 
-  const onClickNext = () => {
+  const onClickNext = async () => {
     const dataToSend = additionalQuestionsProp.map((item) => {
       const { question, answer, defaultAnswer, description, type } = item;
       return { question, answer, defaultAnswer, description, type };
     });
 
-    // console.log(dataToSend);
+    console.log(dataToSend);
 
-    dispatch({
+    const response = await dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         additionalQuestions: dataToSend,
@@ -89,22 +90,26 @@ const AdditionalQuestion = (props) => {
       },
     });
 
-    if (hidePreviewOffer) {
+    const { statusCode = 1 } = response;
+    if (statusCode !== 200) {
       return;
     }
+    // if (hidePreviewOffer) {
+    //   return;
+    // }
 
-    const nextStep = currentStep + 1;
+    const nextStep = localStep + 1;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
-        currentStep: nextStep,
+        localStep: nextStep,
       },
     });
   };
 
   const _renderStatus = () => {
-    const { checkMandatory } = props;
-    const { filledAdditionalQuestion } = checkMandatory;
+    const { checkCandidateMandatory } = props;
+    const { filledAdditionalQuestion } = checkCandidateMandatory;
     return !filledAdditionalQuestion ? (
       <div className={s.normalText}>
         <div className={s.redText}>*</div>
@@ -118,8 +123,8 @@ const AdditionalQuestion = (props) => {
   };
 
   const _renderBottomBar = () => {
-    const { checkMandatory } = props;
-    const { filledAdditionalQuestion } = checkMandatory;
+    const { checkCandidateMandatory } = props;
+    const { filledAdditionalQuestion } = checkCandidateMandatory;
 
     return (
       <div className={s.bottomBar}>
@@ -143,6 +148,7 @@ const AdditionalQuestion = (props) => {
                 className={`${s.bottomBar__button__primary} ${
                   !filledAdditionalQuestion ? s.bottomBar__button__disabled : ''
                 }`}
+                loading={loading1}
                 disabled={!filledAdditionalQuestion}
               >
                 Next
@@ -156,6 +162,7 @@ const AdditionalQuestion = (props) => {
 
   const checkAllFieldsValidate = () => {
     const allValues = form.getFieldsValue();
+    console.log(allValues);
     let valid = true;
     Object.keys(allValues).forEach((key) => {
       if (allValues[key].length === 0) {
@@ -168,10 +175,10 @@ const AdditionalQuestion = (props) => {
     }
 
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateProfile/save',
       payload: {
-        checkMandatory: {
-          ...checkMandatory,
+        checkCandidateMandatory: {
+          ...checkCandidateMandatory,
           filledAdditionalQuestion: valid,
         },
       },
@@ -185,9 +192,10 @@ const AdditionalQuestion = (props) => {
         answer: allValues[name],
       };
     });
+    console.log('newValues', newValues);
 
     dispatch({
-      type: 'candidateInfo/updateAdditionalQuestions',
+      type: 'candidateProfile/updateAdditionalQuestions',
       payload: newValues,
     });
     // dispatch({
@@ -324,18 +332,20 @@ const AdditionalQuestion = (props) => {
 
 export default connect(
   ({
-    candidateInfo: {
-      checkMandatory = {},
-      currentStep = 7,
+    candidateProfile: {
+      checkCandidateMandatory = {},
+      localStep = 7,
       data: { _id: candidate = '' } = {},
       tempData: { hidePreviewOffer = true, additionalQuestion = {}, additionalQuestions = [] },
     } = {},
+    loading,
   }) => ({
-    checkMandatory,
-    currentStep,
+    checkCandidateMandatory,
+    localStep,
     hidePreviewOffer,
     additionalQuestion,
     additionalQuestions,
     candidate,
+    loading1: loading.effects['candidateProfile/updateByCandidateEffect'],
   }),
 )(AdditionalQuestion);

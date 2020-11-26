@@ -21,7 +21,7 @@ import {
   getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 import {
   addTeamMember,
@@ -32,6 +32,7 @@ import {
   createFinalOffer,
   checkDocument,
   sendDocumentStatus,
+  getAdditionalQuestion,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -171,13 +172,38 @@ const candidateInfo = {
         url: '',
       },
       hidePreviewOffer: false,
-
       additionalQuestion: {
         opportunity: '',
         payment: '',
         shirt: '',
         dietary: '',
       },
+      additionalQuestions: [
+        {
+          type: 'text',
+          name: 'opportunity',
+          question: 'Equal employee opportunity',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'payment',
+          question: 'Preferred payment method',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'shirt',
+          question: 'T-shirt size',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'dietary',
+          question: 'Dietary restriction',
+          answer: '',
+        },
+      ],
     },
     data: {
       fullName: null,
@@ -770,7 +796,7 @@ const candidateInfo = {
             },
           },
         });
-
+        
         yield put({
           type: 'saveTemp',
           payload: {
@@ -783,8 +809,14 @@ const candidateInfo = {
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
             hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
+            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
+
+        // yield put({
+        //   type: 'upadateAdditionalQuestion',
+        //   payload: formatAdditionalQuestion(data.additionalQuestions),
+        // });
         yield put({
           type: 'updateSignature',
           payload: data,
@@ -964,6 +996,23 @@ const candidateInfo = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    *fetchAdditionalQuestion({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getAdditionalQuestion, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        console.log(response);
+        // put({
+        //   type: 'updateAdditionalQuestion',
+        //   payload: data
+        // })
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
 
@@ -1162,6 +1211,7 @@ const candidateInfo = {
       };
     },
 
+    // DRAFT
     updateAdditionalQuestion(state, action) {
       const { tempData } = state;
 
@@ -1170,6 +1220,18 @@ const candidateInfo = {
         tempData: {
           ...tempData,
           additionalQuestion: action.payload,
+        },
+      };
+    },
+
+    updateAdditionalQuestions(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestions: action.payload,
         },
       };
     },
