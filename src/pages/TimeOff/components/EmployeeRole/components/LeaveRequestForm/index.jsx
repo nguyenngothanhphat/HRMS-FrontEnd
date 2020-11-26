@@ -5,7 +5,7 @@ import RightContetInfo from './RightContent';
 import LeftInfo from './RequestInfonation';
 import styles from './index.less';
 
-class HRDetailTicket extends PureComponent {
+class LeaveRequestForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -14,13 +14,13 @@ class HRDetailTicket extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <div className={styles.compoffRequest}>
+        <div className={styles.leaveRequest}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Request for Compoff</p>
             </div>
           </Affix>
-          <Row className={styles.compoffRequest__content} gutter={[24, 0]}>
+          <Row className={styles.leaveRequest__content} gutter={[24, 0]}>
             <Col span={17}>
               <LeftInfo />
             </Col>
@@ -34,4 +34,4 @@ class HRDetailTicket extends PureComponent {
   }
 }
 
-export default HRDetailTicket;
+export default LeaveRequestForm;

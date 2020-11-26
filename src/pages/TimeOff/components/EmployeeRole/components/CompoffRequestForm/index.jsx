@@ -5,7 +5,7 @@ import LeftMenu from './LeftMenu';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-class HRDetailTicket extends PureComponent {
+class CompoffRequestForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -34,4 +34,4 @@ class HRDetailTicket extends PureComponent {
   }
 }
 
-export default HRDetailTicket;
+export default CompoffRequestForm;

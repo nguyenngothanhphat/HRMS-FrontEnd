@@ -210,14 +210,14 @@ const routes = [
             path: '/time-off/new-compoff-request',
             name: 'Request for Compoff',
             hideInMenu: true,
-            component: './TimeOff/components/EmployeeRole/components/CompoffRequest',
+            component: './TimeOff/components/EmployeeRole/components/CompoffRequestForm',
             // authority: ['employee'],
           },
           {
             path: '/time-off/new-leave-request',
             name: 'Apply for timeoff',
             hideInMenu: true,
-            component: './TimeOff/components/EmployeeRole/components/LeaveRequest',
+            component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],
           },
           {
