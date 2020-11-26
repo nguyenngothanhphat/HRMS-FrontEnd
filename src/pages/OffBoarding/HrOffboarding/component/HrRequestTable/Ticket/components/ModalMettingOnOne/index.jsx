@@ -17,7 +17,13 @@ class ScheduleModal extends Component {
 
   handleCancel = () => {
     const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    this.setState(
+      {
+        meetingDate: '',
+        meetingTime: '',
+      },
+      () => handleCancel(),
+    );
   };
 
   handleSubmit = () => {
@@ -40,11 +46,13 @@ class ScheduleModal extends Component {
   };
 
   render() {
-    const { visible = false, loading, modalContent, list } = this.props;
+    const { visible = false, loading, modalContent, list, keyModal: key } = this.props;
     const { meetingDate, meetingTime } = this.state;
+    console.log(meetingDate, meetingTime);
     const check = !meetingDate || !meetingTime;
     return (
       <Modal
+        key={key === '' ? undefined : key}
         className={styles.modalSchedule}
         visible={visible}
         title={false}
