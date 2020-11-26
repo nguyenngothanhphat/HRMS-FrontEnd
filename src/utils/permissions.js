@@ -27,6 +27,15 @@ export function checkPermissions(roles) {
   const findIndexInActive = permissionList.indexOf(tabInActive);
   const findIndexImport = permissionList.indexOf(importEmployees);
   const findIndexAdd = permissionList.indexOf(addEmployee);
+
+  // Directory Page - Tab general info - Public/Private Personal phone/email
+  const editPersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
+  const viewPersonalNumber = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW';
+  const viewPersonalEmail = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW';
+  const indexEditPersonalInfo = permissionList.indexOf(editPersonalInfo);
+  const indexViewPersonalNumber = permissionList.indexOf(viewPersonalNumber);
+  const indexViewPersonalEmail = permissionList.indexOf(viewPersonalEmail);
+
   // Directory Page - Filter - Display location
   const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
   const showLocationInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';
@@ -62,13 +71,13 @@ export function checkPermissions(roles) {
   // View and edit info of general info tab
   const passportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW';
   const editEmployeeInfo = 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT';
-  const editPersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
+  const editModePersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
   const editPassportAndVisa = 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT';
   const editContact = 'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT';
   const editProfessionalAcademic = 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT';
   const indexViewPPAndVisa = permissionList.indexOf(passportAndVisa);
   const indexEditEmployeeInfo = permissionList.indexOf(editEmployeeInfo);
-  const indexEditPersonalInfo = permissionList.indexOf(editPersonalInfo);
+  const indexEditModePersonalInfo = permissionList.indexOf(editModePersonalInfo);
   const indexEditPPAndVisa = permissionList.indexOf(editPassportAndVisa);
   const indexEditContact = permissionList.indexOf(editContact);
   const indexEditProfessionalAcademic = permissionList.indexOf(editProfessionalAcademic);
@@ -87,6 +96,10 @@ export function checkPermissions(roles) {
     // Directory Page - Filter - Display location
     filterLocationActive: findIndexShowLocationActive,
     filterLocationInActive: findIndexShowLocationInActive,
+    // Directory Page - Tab general info - Public/Private Personal phone/email
+    editModePersonalInfo: indexEditModePersonalInfo,
+    viewPersonalNumber: indexViewPersonalNumber,
+    viewPersonalEmail: indexViewPersonalEmail,
     // Profile employee
     editWorkEmail: findIndexWorkEmail,
     editEmployeeID: findIndexEmployeeID,

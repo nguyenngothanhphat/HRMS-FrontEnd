@@ -25,8 +25,42 @@ class View extends PureComponent {
     }
   };
 
+  renderValue = (
+    label,
+    value,
+    permissions,
+    profileOwner,
+    isShowPersonalNumber,
+    isShowPersonalEmail,
+  ) => {
+    const blank = '_blank';
+    if (label === 'Personal Number') {
+      if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
+        return value;
+      }
+      return 'Private';
+    }
+    if (label === 'Personal Email') {
+      if (isShowPersonalEmail || permissions.viewPersonalEmail !== -1 || profileOwner) {
+        return value;
+      }
+      return 'Private';
+    }
+    if (label === 'Linkedin') {
+      return (
+        <a href={value} target={blank}>
+          {value}
+        </a>
+      );
+    }
+    if (label !== 'Personal Number' && label !== 'Personal Email' && label !== 'Linkedin') {
+      return value;
+    }
+    return null;
+  };
+
   render() {
-    const { dataAPI, generalData } = this.props;
+    const { dataAPI, generalData, permissions = {}, profileOwner = false } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
     const dummyData = [
@@ -45,7 +79,7 @@ class View extends PureComponent {
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
     const contentEmail =
       'The email will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
-    const blank = '_blank';
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         {dummyData.map((item) => (
@@ -69,15 +103,17 @@ class View extends PureComponent {
               span={16}
               className={item.label === 'Linkedin' ? styles.Linkedin : styles.textValue}
             >
-              {item.label === 'Linkedin' ? (
-                <a href={item.value} target={blank}>
-                  {item.value}
-                </a>
-              ) : (
-                item.value
+              {this.renderValue(
+                item.label,
+                item.value,
+                permissions,
+                profileOwner,
+                isShowPersonalNumber,
+                isShowPersonalEmail,
               )}
             </Col>
-            {item.label === 'Personal Number' ? (
+            {item.label === 'Personal Number' &&
+            (permissions.editModePersonalInfo !== -1 || profileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
@@ -100,7 +136,8 @@ class View extends PureComponent {
               ''
             )}
 
-            {item.label === 'Personal Email' ? (
+            {item.label === 'Personal Email' &&
+            (permissions.editModePersonalInfo !== -1 || profileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
