@@ -30,6 +30,7 @@ const offboarding = {
     totalList: [],
     totalListTeamRequest: [],
     showModalSuccessfully: false,
+    relievingDetails: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -165,6 +166,18 @@ const offboarding = {
       }
       return response;
     },
+    // Relieving Formalities
+    *fetchRelievingDetailsById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getRequestById, payload);
+        const { statusCode, data: relievingDetails = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    // End Relieving Formalities
   },
   reducers: {
     save(state, action) {

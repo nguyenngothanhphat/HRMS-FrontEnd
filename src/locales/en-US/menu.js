@@ -70,6 +70,7 @@ export default {
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId': 'Ticket Id',
+  'menu.relievingDetail': 'Ticket Id',
   'menu.setting': 'Setting',
   'menu.permission': 'Permission',
   'menu.change-password': 'Change Password',

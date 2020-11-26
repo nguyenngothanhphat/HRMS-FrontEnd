@@ -327,6 +327,14 @@ const routes = [
             authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
           },
           {
+            path: '/offboarding/relieving-detail/:ticketId',
+            name: 'relievingDetail',
+            component:
+              './OffBoarding/HrOffboarding/component/RelievingFormalities/components/RelievingDetails',
+            hideInMenu: true,
+            authority: ['hr-manager'],
+          },
+          {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
             component: './EmployeeProfile',

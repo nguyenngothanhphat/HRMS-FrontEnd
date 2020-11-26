@@ -1,0 +1,53 @@
+.relievingDetail {
+  min-height: 100vh;
+  .titlePage {
+    height: 60px;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 40px 0 20px;
+    box-shadow: 0 1px 2px 0 #eeeeee;
+    &__text {
+      font-size: 18px;
+      font-weight: 500;
+      color: #2c6df9;
+      margin: 0;
+    }
+  }
+  &__container {
+    padding: 20px 30px;
+  }
+
+  .btn {
+    background-color: #ffa100;
+    color: #fff;
+  }
+  &__btnClose {
+    .btn;
+    width: 100%;
+    margin-top: 6px;
+    border: none;
+    height: 52px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    &:focus,
+    &:hover {
+      .btn;
+    }
+  }
+
+  &__closeRecord {
+    padding: 25px;
+    background: #2c6df9;
+    img {
+      margin-right: 20px;
+    }
+    span {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}
