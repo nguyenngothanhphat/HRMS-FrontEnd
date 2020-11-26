@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Collapse, Tooltip } from 'antd';
-import { InfoCircleOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
 import DonutChart from './components/DonutChart';
@@ -114,7 +115,11 @@ export default class LeaveInformation extends PureComponent {
     return (
       <div className={styles.showBtn}>
         <span>View Leave breakdown</span>
-        {show ? <UpOutlined /> : <DownOutlined />}
+        {show ? (
+          <img src={ShowBreakdownIcon} className={styles.rotateIcon} alt="show-breakdown" />
+        ) : (
+          <img src={ShowBreakdownIcon} className={styles.defaultIcon} alt="show-breakdown" />
+        )}
       </div>
     );
   };

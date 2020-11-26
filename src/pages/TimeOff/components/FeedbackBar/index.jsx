@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
-import { LikeOutlined, DislikeOutlined, CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
+import DislikeIcon from '@/assets/dislike.svg';
+import LikeIcon from '@/assets/like.svg';
+
 import styles from './index.less';
 
 export default class FeedbackBar extends PureComponent {
@@ -30,11 +33,11 @@ export default class FeedbackBar extends PureComponent {
             <div className={styles.leftPart}>
               <span className={styles.title}>Are you satisfied with our Timeoff app?</span>
               <div className={styles.likeButton} onClick={this.onLikeClick}>
-                <LikeOutlined />
+                <img src={LikeIcon} alt="like-feedback" />
                 <span className={styles.text}>Yes</span>
               </div>
               <div className={styles.likeButton} onClick={this.onLikeClick}>
-                <DislikeOutlined />
+                <img src={DislikeIcon} alt="like-feedback" />
                 <span className={styles.text}>No</span>
               </div>
             </div>
