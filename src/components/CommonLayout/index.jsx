@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
@@ -43,8 +43,9 @@ const PROCESS_STATUS = {
       displayComponent = {},
       data: { processStatus = '' } = {},
       tempData: {
-        valueToFinalOffer = 0,
+        skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
+        hidePreviewOffer,
       } = {},
     } = {},
   }) => ({
@@ -52,8 +53,9 @@ const PROCESS_STATUS = {
     currentStep,
     displayComponent,
     processStatus,
-    valueToFinalOffer,
+    skip,
     allDocumentVerified,
+    hidePreviewOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -97,7 +99,7 @@ class CommonLayout extends Component {
         };
       }
       if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
-        console.log('Right here');
+        // console.log('Right here');
         return {
           selectedItemId: listMenu[3].id,
           displayComponent: <BackgroundCheck />,
@@ -128,13 +130,7 @@ class CommonLayout extends Component {
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    const {
-      SENT_FOR_APPROVAL,
-      PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-      DRAFT,
-    } = PROCESS_STATUS;
+    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
     if (processStatus === SENT_FOR_APPROVAL) {
       // console.log('HERE 6');
       return {
@@ -184,6 +180,7 @@ class CommonLayout extends Component {
 
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -194,8 +191,8 @@ class CommonLayout extends Component {
   };
 
   _handleClick = (item) => {
-    console.log('CLICK');
     const { dispatch } = this.props;
+    // console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -210,37 +207,22 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus, valueToFinalOffer } = this.props;
-    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+    const { processStatus, skip } = this.props;
+    return processStatus === 'DRAFT' && skip === 0;
   };
 
   isDisabled = (index) => {
     const {
       PROVISIONAL_OFFER_DRAFT,
-      FINAL_OFFERS_DRAFT,
 
       SENT_PROVISIONAL_OFFERS,
-      ACCEPTED_PROVISIONAL_OFFERS,
-      RENEGOTIATE_PROVISIONAL_OFFERS,
 
       PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-
-      SENT_FOR_APPROVAL,
-      APPROVED_OFFERS,
-
-      SENT_FINAL_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
-
-      PROVISIONAL_OFFERS,
-      FINAL_OFFERS,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, valueToFinalOffer } = this.props;
+    const { allDocumentVerified, processStatus, skip } = this.props;
 
-    if (valueToFinalOffer === 1) {
+    if (skip === 1) {
       return false;
     }
 
@@ -261,7 +243,6 @@ class CommonLayout extends Component {
         if (index === 0 || index === 1 || index === 2 || index === 3) {
           return false;
         }
-        // console.log('PENDING HERE');
 
         return true;
       }
@@ -280,7 +261,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '' } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = true } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>
@@ -296,13 +277,13 @@ class CommonLayout extends Component {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && (
+              {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
-                  className={this.isDisabled(7) ? s.disabled : ''}
+                  className={this.isDisabled(8) ? s.disabled : ''}
                   ghost
                   onClick={() => {
-                    if (this.isDisabled(7)) {
+                    if (this.isDisabled(8)) {
                       return;
                     }
                     this._handlePreviewOffer();

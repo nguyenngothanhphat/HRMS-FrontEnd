@@ -24,12 +24,11 @@ export class Step3 extends Component {
     return (
       <Fragment key={item.id}>
         <div className={styles.minWidth}>
-          <div className={item.id === 1 ? styles.borderImage : styles.borderSuccess}>
+          <div className={!item.noteStep ? styles.borderImage : styles.borderSuccess}>
             {item.body}
-            {/* <img src={icon2} alt="" className={styles.iconStyles} /> */}
             {this._renderScreen(item.status)}
           </div>
-          <div>{item.text}</div>
+          <div style={{ maxWidth: '40px' }}>{item.text}</div>
         </div>
         {index !== arr.length - 1 && <div className={styles.borderStyles} />}
       </Fragment>
@@ -37,27 +36,19 @@ export class Step3 extends Component {
   };
 
   render() {
+    const { approvalStep, nameManager } = this.props;
     const arr1 = [
       {
         id: 1,
-        success: true,
-        body: '',
-        status: 'done',
-        text: '',
+        noteStep: approvalStep > 0,
+        status: approvalStep > 0 ? 'Success' : 'done',
+        text: nameManager,
       },
       {
         id: 1,
-        success: true,
-        body: '',
-        status: 'done',
-        text: 'Manager Approval',
-      },
-
-      {
-        id: 2,
-        body: '',
-        status: 'Success',
-        text: 'HR Approval',
+        noteStep: approvalStep > 1,
+        status: approvalStep > 1 ? 'Success' : 'done',
+        text: 'Manager name',
       },
     ];
 

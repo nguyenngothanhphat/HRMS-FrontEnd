@@ -1,0 +1,35 @@
+.HolidayList {
+  // padding: 0 20px;
+  .eachRow {
+    background-color: #fafafa;
+    align-items: center;
+    padding: 10px 20px;
+    margin-top: 7px;
+    :global {
+      .ant-col {
+        font-size: 13px;
+        color: #464646;
+      }
+    }
+    .eventOfDay {
+      padding-left: 10px;
+    }
+    .dateAndMonth {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #f4f4f6;
+      align-items: center;
+      border-radius: 5px;
+      padding: 5px 0;
+      span {
+        font-size: 11px;
+        font-weight: bold;
+        color: #161c29;
+      }
+    }
+    .dayInWeek {
+      text-align: right;
+    }
+  }
+}

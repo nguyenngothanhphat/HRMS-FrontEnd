@@ -7,6 +7,7 @@ import OfferDetails from './components/OfferDetails';
 import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
+import AdditionalQuestion from './components/AdditionalQuestion';
 import PreviewOffer from './components/PreviewOffer';
 
 const _renderScreen = (screenNumber) => {
@@ -24,6 +25,8 @@ const _renderScreen = (screenNumber) => {
     case 6:
       return <Benefits />;
     case 7:
+      return <AdditionalQuestion />;
+    case 8:
       return <PreviewOffer />;
     default:
       return null;

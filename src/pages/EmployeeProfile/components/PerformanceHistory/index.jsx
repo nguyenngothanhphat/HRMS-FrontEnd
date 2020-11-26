@@ -15,7 +15,7 @@ class PerformanceHistory extends PureComponent {
         <div className={styles.performanceHistory_syncEPASS}>
           <a href="http://epas.terralogic.com/E-PAS/#/login" target="_blank">
             <Button
-              onclick="window.open('http://epas.terralogic.com/E-PAS/#/login')"
+              onClick="window.open('http://epas.terralogic.com/E-PAS/#/login')"
               className={styles.performanceHistory_syncEPASS_btn}
               block
             >

@@ -41,6 +41,7 @@ import {
   getTitleByDepartment,
   getLocationsByCompany,
   updateEmployment,
+  updatePrivate,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -927,6 +928,54 @@ const employeeProfile = {
       }
       yield put({ type: 'save', payload: { isUpdateEmployment } });
     },
+    *uploadDocument({ data }, { call, put }) {
+      try {
+        const {
+          key = '',
+          employeeGroup = '',
+          parentEmployeeGroup = '',
+          attachment = '',
+          employee = '',
+          company = '',
+        } = data;
+
+        const response = yield call(getDocumentAdd, {
+          key, // file name
+          employeeGroup,
+          parentEmployeeGroup,
+          attachment,
+          employee,
+          company,
+        });
+
+        const { statusCode, data: uploadedDocument = [] } = response;
+        // console.log('upload document res', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { uploadedDocument } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return '';
+      }
+    },
+    *setPrivate({ payload = {} }, { call, put, select }) {
+      try {
+        // console.log(payload);
+        const response = yield call(updatePrivate, payload);
+        const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchGeneralInfo',
+          payload: { employee: idCurrentEmployee },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
 
   reducers: {
@@ -972,6 +1021,20 @@ const employeeProfile = {
         editGeneral: {
           ...editGeneral,
           ...action.payload,
+        },
+      };
+    },
+    closeModeEdit(state) {
+      return {
+        ...state,
+        editGeneral: {
+          openContactDetails: false,
+          openEmployeeInfor: false,
+          openPassportandVisa: false,
+          openPersonnalInfor: false,
+          openAcademic: false,
+          openTax: false,
+          openBank: false,
         },
       };
     },

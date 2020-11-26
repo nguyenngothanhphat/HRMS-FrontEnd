@@ -1,0 +1,31 @@
+.DonutChart {
+  margin: 0 auto;
+  border-radius: 50%;
+  display: block;
+  .donutcharttrack {
+    fill: transparent;
+    stroke: #eae7e3;
+    stroke-width: 4;
+  }
+  .donutchartindicator {
+    fill: transparent;
+    stroke: #ffa100;
+    stroke-width: 4;
+    stroke-dasharray: 0 10000;
+    transition: stroke-dasharray 0.3s ease;
+  }
+
+  .donutcharttext {
+    fill: #464646;
+  }
+  .donutcharttextval {
+    font-size: 28px;
+    font-weight: bold;
+    display: block;
+  }
+  .donutcharttextlabel {
+    margin-top: 10px;
+    font-size: 13px;
+    display: block;
+  }
+}

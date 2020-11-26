@@ -44,11 +44,24 @@
     .middle {
       .radioGroup {
         margin: 14px 0;
+        width: 100%;
+
+        .radioRow:not(:first-child) {
+          // display: none;
+          margin-top: 7px;
+        }
 
         label {
           &:first-child {
             margin-right: 20px;
           }
+        }
+
+        .uploadFile {
+          span {
+            font-size: 14px !important;
+          }
+          padding: 0;
         }
       }
     }
@@ -91,7 +104,7 @@
       .wrapper1,
       .wrapper2,
       .wrapper3 {
-        margin-top: 18px;
+        // margin-top: 18px;
         display: flex;
         align-items: flex-start;
       }
@@ -205,6 +218,12 @@
   }
 
   :global {
+    .ant-upload {
+      color: @blue;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
     .ant-select-arrow {
       top: 40%;
       color: #161c29;

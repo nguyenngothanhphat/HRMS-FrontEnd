@@ -40,6 +40,7 @@ export default {
   'component.offerDetail.offerLetter': 'Offer letter',
   'component.offerDetail.notInclude': 'Do not include offer letter',
   'component.offerDetail.include': 'Use an existing offer letter',
+  'component.offerDetail.uploadOffer': 'Upload offer letter',
   'component.offerDetail.agreementTitle': 'Hiring agreements',
   'component.offerDetail.agreement': 'Default YC IP / Confidentiality Agreement',
   'component.offerDetail.handbookTitle': 'Company handbook',

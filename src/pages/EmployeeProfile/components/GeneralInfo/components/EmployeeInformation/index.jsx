@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
@@ -21,6 +22,13 @@ import styles from './index.less';
   }),
 )
 class EmployeeInformation extends PureComponent {
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/closeModeEdit',
+    });
+  }
+
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -72,7 +80,7 @@ class EmployeeInformation extends PureComponent {
   };
 
   render() {
-    const { generalData, openEmployeeInfor } = this.props;
+    const { generalData, openEmployeeInfor, permissions = {}, profileOwner = false } = this.props;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
@@ -82,14 +90,14 @@ class EmployeeInformation extends PureComponent {
       <div className={styles.EmployeeInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Employee Information</p>
-          {openEmployeeInfor ? (
-            ''
-          ) : (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
-              <EditFilled className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
+          {openEmployeeInfor
+            ? ''
+            : (permissions.editEmployeeInfo !== -1 || profileOwner) && (
+                <div className={styles.flexEdit} onClick={this.handleEdit}>
+                  <EditFilled className={styles.IconEdit} />
+                  <p className={styles.Edit}>Edit</p>
+                </div>
+              )}
         </div>
 
         <div className={styles.viewBottom}>{renderComponent}</div>

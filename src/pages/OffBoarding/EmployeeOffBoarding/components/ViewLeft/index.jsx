@@ -57,27 +57,35 @@ class ViewLeft extends Component {
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [] } = this.props;
+    const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
+
+    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     return (
       <div className={styles.Contanner}>
-        <div className={styles.title_Box}>
+        {!checkSendRequest && (
           <div>
-            <img src={icon} alt="iconCheck" className={styles.icon} />
+            <div className={styles.title_Box}>
+              <div>
+                <img src={icon} alt="iconCheck" className={styles.icon} />
+              </div>
+              <span className={styles.title_Text}>
+                Super six years with us. Thank you. We are indebted by your contribution to our
+                company and clients all this while.
+                <p>
+                  This is not the end we like to see.{' '}
+                  <span style={{ color: 'blue' }}> Request for feedback?</span>
+                </p>
+              </span>
+            </div>
+            <div className={styles.subTitle_Text}>
+              But, if you have made your mind then lets get to it.
+            </div>
+            <Button className={styles.submitButton}>
+              <Link to="/offboarding/resignation-request">Set a resgination request </Link>
+            </Button>
           </div>
-          <span className={styles.title_Text}>
-            Super six years with us. Thank you. We are indebted by your contribution to our company
-            and clients all this while.
-            <p>
-              This is not the end we like to see.{' '}
-              <span style={{ color: 'blue' }}> Request for feedback?</span>
-            </p>
-          </span>
-        </div>
-        <div className={styles.subTitle_Text}>
-          But, if you have made your mind then lets get to it.
-        </div>
-        <Button className={styles.submitButton}>
-          <Link to="/employee-offboarding/resignation-request"> Set a resgination request </Link>
-        </Button>
+        )}
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
             <TabPane tab="Send Request" key="1">
