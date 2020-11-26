@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
+// import { formatMessage } from 'umi';
 import styles from './index.less';
 
 class HROffboarding extends PureComponent {

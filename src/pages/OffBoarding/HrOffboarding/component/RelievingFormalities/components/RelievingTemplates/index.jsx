@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Pagination } from 'antd';
 import documentIcon from './assets/documentIcon.png';
 import emailIcon from './assets/emailIcon.png';
 import editIcon from './assets/editIcon.png';
@@ -11,9 +12,15 @@ class RelievingTemplates extends PureComponent {
     isOpenModal(id);
   };
 
+  _renderPagination = () => {
+    return <Pagination simple defaultCurrent={2} total={50} />;
+  };
+
   _renderExitInterview = () => {
     const { exitPackageTemplates } = this.props;
-
+    if (exitPackageTemplates.length === 0) {
+      return null;
+    }
     return (
       <div className={styles.templateList} style={{ paddingTop: '30px' }}>
         <p className={styles.title}>
@@ -30,10 +37,16 @@ class RelievingTemplates extends PureComponent {
             <Col span={22} offset={2}>
               {exitPackageTemplates?.map((template) => {
                 return (
-                  <div className={styles.template}>
+                  <div key={template._id} className={styles.template}>
                     <Row justify="space-between">
                       <Col span={18}>
-                        <a className={styles.templateName}>{template.title}</a>
+                        <a
+                          href={template.attachment.url}
+                          target="_blank"
+                          className={styles.templateName}
+                        >
+                          {template.title}
+                        </a>
                       </Col>
                       <Col className={styles.icons} align="right" span={6}>
                         <img src={emailIcon} alt="icon" />
@@ -55,6 +68,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   _renderClosingPackage = () => {
+    const { closingPackageTemplates } = this.props;
+    if (closingPackageTemplates.length === 0) {
+      return null;
+    }
     return (
       <>
         <hr />
@@ -71,39 +88,31 @@ class RelievingTemplates extends PureComponent {
           <div className={styles.list}>
             <Row gutter={24} justify="center">
               <Col span={22} offset={2}>
-                <div className={styles.template}>
-                  <Row justify="space-between">
-                    <Col span={18}>
-                      <a className={styles.templateName}>Experience letter</a>
-                    </Col>
-                    <Col className={styles.icons} align="right" span={6}>
-                      <img src={emailIcon} alt="icon" />
-                      <img src={editIcon} alt="icon" />
-                    </Col>
-                  </Row>
-                </div>
-                <div className={styles.template}>
-                  <Row justify="space-between">
-                    <Col span={18}>
-                      <a className={styles.templateName}>Exit interview form</a>
-                    </Col>
-                    <Col className={styles.icons} align="right" span={6}>
-                      <img src={emailIcon} alt="icon" />
-                      <img src={editIcon} alt="icon" />
-                    </Col>
-                  </Row>
-                </div>
-                <div className={styles.template}>
-                  <Row justify="space-between">
-                    <Col span={18}>
-                      <a className={styles.templateName}>Exit interview form</a>
-                    </Col>
-                    <Col className={styles.icons} align="right" span={6}>
-                      <img src={emailIcon} alt="icon" />
-                      <img src={editIcon} alt="icon" />
-                    </Col>
-                  </Row>
-                </div>
+                {closingPackageTemplates?.map((template) => {
+                  return (
+                    <div key={template._id} className={styles.template}>
+                      <Row justify="space-between">
+                        <Col span={18}>
+                          <a
+                            href={template.attachment.url}
+                            target="_blank"
+                            className={styles.templateName}
+                          >
+                            {template.title}
+                          </a>
+                        </Col>
+                        <Col className={styles.icons} align="right" span={6}>
+                          <img src={emailIcon} alt="icon" />
+                          <img
+                            src={editIcon}
+                            alt="icon"
+                            onClick={() => this.onClickEdit(template._id)}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  );
+                })}
               </Col>
             </Row>
           </div>
@@ -113,7 +122,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   render() {
-    const { listTitle } = this.props;
+    const { listTitle, exitPackageTemplates, closingPackageTemplates } = this.props;
+    if (exitPackageTemplates.length === 0 && closingPackageTemplates.length === 0) {
+      return null;
+    }
     return (
       <div className={styles.relievingTemplates}>
         <div className={styles.header}>

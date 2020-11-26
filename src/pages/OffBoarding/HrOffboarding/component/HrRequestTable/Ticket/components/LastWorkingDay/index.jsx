@@ -1,19 +1,23 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
-import { DatePicker, Row, Col, Button } from 'antd';
+import { DatePicker, Button } from 'antd';
 import Editicon from '@/assets/editIcon.svg';
 import { connect } from 'umi';
 import warningNoteIcon from '@/assets/warning-icon.svg';
 import ModalNoticeSuccess from '../ModalNoticeSuccess';
 import styles from './index.less';
 
-@connect()
+@connect(({ loading, offboarding: { myRequest = {} } = {} }) => ({
+  loading: loading.effects['offboarding/reviewRequest'],
+  myRequest,
+}))
 class LastWorkingDay extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
-      lastday: '',
+      lastDay: '',
+      edit: false,
     };
   }
 
@@ -37,15 +41,13 @@ class LastWorkingDay extends PureComponent {
   };
 
   handleSubmit = () => {
-    const { lastday } = this.state;
+    const { lastDay } = this.state;
     const { code, dispatch } = this.props;
-    const time = lastday;
-
     dispatch({
       type: 'offboarding/reviewRequest',
       payload: {
         action: 'ACCEPTED',
-        lastWorkingDate: time,
+        lastWorkingDate: lastDay,
         id: code,
       },
     }).then((response) => {
@@ -53,6 +55,7 @@ class LastWorkingDay extends PureComponent {
       if (statusCode === 200) {
         this.setState({
           visible: true,
+          edit: true,
         });
       }
     });
@@ -60,15 +63,21 @@ class LastWorkingDay extends PureComponent {
 
   handleCancel = () => {
     this.setState({
-      lastday: '',
+      lastDay: '',
     });
   };
 
-  changeDate = (date) => {
-    const event = new Date(date);
-    event.toDateString();
+  openSubmit = () => {
     this.setState({
-      lastday: event,
+      edit: false,
+    });
+  };
+
+  changeDate = (lastDay) => {
+    // const event = new Date(lastDay);
+    // event.toDateString();
+    this.setState({
+      lastDay,
     });
   };
 
@@ -77,67 +86,73 @@ class LastWorkingDay extends PureComponent {
   };
 
   render() {
-    const { visible } = this.state;
-    const { lastWorkingDate, list1On1 } = this.props;
-    const check = list1On1.length >= 1;
-    console.log(check);
-    const day = '2020-11-28T10:06:20.476Z';
-
+    const { visible, edit, lastDay } = this.state;
+    const { list1On1 = [], lastWorkingDate, loading } = this.props;
+    const check = list1On1.length > 0;
+    const dateFormat = 'YYYY/MM/DD';
+    let dateValue;
+    if (lastDay) {
+      dateValue = lastDay;
+    } else if (lastWorkingDate) {
+      dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
+    } else {
+      dateValue = null;
+    }
     return (
       <div className={styles.lastWorkDay}>
         <div className={styles.bettween}>
           <div className={styles.titleText}>Last working day</div>
-          {lastWorkingDate && (
-            <div>
+          {lastWorkingDate && edit && (
+            <div className={styles.edit} onClick={this.openSubmit}>
               <span className={styles.subText}>
                 <span style={{ marginRight: '30px' }}>
-                  <img
-                    src={Editicon}
-                    alt=""
-                    className={styles.icon}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <span style={{ fontWeight: 'normal' }}> Edit</span>
+                  <img src={Editicon} alt="" className={styles.icon} />
+                  <span className={styles.editText}> Edit</span>
                 </span>
+                <span>{moment().format('DD.MM.YY | h:mm A')}</span>
               </span>
             </div>
           )}
         </div>
-        <Row className={styles.flex}>
-          <Col span={8}>
-            {list1On1.length === 0 ? (
-              <DatePicker format="DD-MM-YYYY" disabled className={styles.datePicker} />
-            ) : (
-              <DatePicker
-                defaultValue={moment(day, 'DD-MM-YYYY')}
-                format="DD-MM-YYYY"
-                className={styles.datePicker}
-                onChange={this.changeDate}
-                disabledDate={this.disabledDate}
-              />
-            )}
-          </Col>
-          <Col span={1} />
-          <Col span={15} className={styles.detalFrom}>
+        <div className={styles.bettween}>
+          <div className={styles.padding}>
+            <DatePicker
+              value={dateValue && moment(dateValue, dateFormat)}
+              format={dateFormat}
+              className={styles.datePicker}
+              onChange={this.changeDate}
+              disabledDate={this.disabledDate}
+            />
+          </div>
+          <div className={styles.detalFrom}>
             A last working date (LWD) is generated as per a 90 days notice period according to our
             Standard Resignation Policy
-          </Col>
-        </Row>
-        <div className={styles.bettween}>
-          <div>
-            <img src={warningNoteIcon} alt="warning-note-icon" />
-            <span className={styles.notifications}>
-              By default notifications will be sent to HR, the requestee and recursively loop to
-              your department head.
-            </span>
           </div>
-          <Button className={styles.btnCancel} onClick={this.handleCancel}>
-            Cancel
-          </Button>
-          <Button className={styles.btnSubmit} onClick={this.handleSubmit} disabled={!check}>
-            Submit
-          </Button>
         </div>
+        {!edit && (
+          <div className={styles.flex}>
+            <div className={styles.paddingRight}>
+              <img src={warningNoteIcon} alt="warning-note-icon" />
+              <span className={styles.notifications}>
+                By default notifications will be sent to HR, the requestee and recursively loop to
+                your department head.
+              </span>
+            </div>
+            <div className={styles.paddingRight}>
+              <Button className={styles.btnCancel} onClick={this.handleCancel} disabled={!check}>
+                Cancel
+              </Button>
+            </div>
+            <Button
+              className={styles.btnSubmit}
+              onClick={this.handleSubmit}
+              loading={loading}
+              disabled={!lastDay}
+            >
+              Submit
+            </Button>
+          </div>
+        )}
         <ModalNoticeSuccess
           visible={visible}
           handleRemoveToServer={this.handleRemoveToServer}
