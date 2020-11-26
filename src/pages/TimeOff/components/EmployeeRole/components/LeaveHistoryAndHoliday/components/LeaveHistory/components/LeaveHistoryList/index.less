@@ -1,0 +1,35 @@
+.LeaveHistoryList {
+  .eachRow {
+    background-color: #fafafa;
+    align-items: center;
+    // border-bottom: 1px solid #d6dce0;
+    padding: 10px 20px;
+    margin-top: 7px;
+    :global {
+      .ant-col {
+        font-size: 13px;
+        color: #464646;
+      }
+    }
+    .eventOfDay {
+      padding-left: 10px;
+    }
+    .dateAndMonth {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f4f4f6;
+      border-radius: 5px;
+      padding: 5px 0;
+      span {
+        font-size: 11px;
+        font-weight: bold;
+        color: #161c29;
+      }
+    }
+    .dayInWeek {
+      text-align: right;
+    }
+  }
+}

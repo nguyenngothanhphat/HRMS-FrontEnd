@@ -267,3 +267,10 @@ export async function updateEmployment(payload) {
     data: payload,
   });
 }
+
+export async function updatePrivate(payload) {
+  return request('/api/generalinfo/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

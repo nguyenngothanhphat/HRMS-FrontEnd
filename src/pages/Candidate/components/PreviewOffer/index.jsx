@@ -311,7 +311,7 @@ const PreviewOffer = (props) => {
           <Button
             type="primary"
             disabled={
-              !candidateSignature.url && !hrManagerSignature.url && disableCandidateSubmit()
+              !(candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit())
             }
             className={
               candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit()

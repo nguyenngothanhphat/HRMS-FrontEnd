@@ -1,12 +1,68 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Row, Col, Tooltip } from 'antd';
-import Icon from '@ant-design/icons';
+import { Row, Col, Tooltip, Radio } from 'antd';
+import { connect } from 'umi';
+import Icon, { LockFilled, UserOutlined } from '@ant-design/icons';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
+@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
+  generalData,
+}))
 class View extends PureComponent {
+  handleChangesPrivate = (e, label) => {
+    const { dispatch, generalData } = this.props;
+    if (label === 'Personal Number') {
+      dispatch({
+        type: 'employeeProfile/setPrivate',
+        payload: { id: generalData._id, isShowPersonalNumber: e.target.value },
+      });
+    }
+    if (label === 'Personal Email') {
+      dispatch({
+        type: 'employeeProfile/setPrivate',
+        payload: { id: generalData._id, isShowPersonalEmail: e.target.value },
+      });
+    }
+  };
+
+  renderValue = (
+    label,
+    value,
+    permissions,
+    profileOwner,
+    isShowPersonalNumber,
+    isShowPersonalEmail,
+  ) => {
+    const blank = '_blank';
+    if (label === 'Personal Number') {
+      if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
+        return value;
+      }
+      return <LockFilled />;
+    }
+    if (label === 'Personal Email') {
+      if (isShowPersonalEmail || permissions.viewPersonalEmail !== -1 || profileOwner) {
+        return value;
+      }
+      return <LockFilled />;
+    }
+    if (label === 'Linkedin') {
+      return (
+        <a href={value} target={blank}>
+          {value}
+        </a>
+      );
+    }
+    if (label !== 'Personal Number' && label !== 'Personal Email' && label !== 'Linkedin') {
+      return value;
+    }
+    return null;
+  };
+
   render() {
-    const { dataAPI } = this.props;
+    const { dataAPI, generalData, permissions = {}, profileOwner = false } = this.props;
+    const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
+
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },
       { label: 'Personal Email', value: dataAPI.personalEmail },
@@ -23,7 +79,7 @@ class View extends PureComponent {
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
     const contentEmail =
       'The email will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
-    const blank = '_blank';
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         {dummyData.map((item) => (
@@ -47,27 +103,30 @@ class View extends PureComponent {
               span={16}
               className={item.label === 'Linkedin' ? styles.Linkedin : styles.textValue}
             >
-              {item.label === 'Linkedin' ? (
-                <a href={item.value} target={blank}>
-                  {item.value}
-                </a>
-              ) : (
-                item.value
+              {this.renderValue(
+                item.label,
+                item.value,
+                permissions,
+                profileOwner,
+                isShowPersonalNumber,
+                isShowPersonalEmail,
               )}
             </Col>
-            {/* {item.label === 'Personal Number' || item.label === 'Personal Email' ? (
+            {item.label === 'Personal Number' &&
+            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
               <Col span={2}>
                 <div className={styles.iconBox}>
                   <Radio.Group
-                    defaultValue="a"
+                    defaultValue={isShowPersonalNumber}
                     buttonStyle="solid"
                     size="small"
                     className={styles.iconRadio}
+                    onChange={(e) => this.handleChangesPrivate(e, item.label)}
                   >
-                    <Radio.Button value="a">
+                    <Radio.Button value={false}>
                       <LockFilled />
                     </Radio.Button>
-                    <Radio.Button value="b">
+                    <Radio.Button value>
                       <UserOutlined />
                     </Radio.Button>
                   </Radio.Group>
@@ -75,7 +134,31 @@ class View extends PureComponent {
               </Col>
             ) : (
               ''
-            )} */}
+            )}
+
+            {item.label === 'Personal Email' &&
+            (permissions.editPersonalInfo !== -1 || profileOwner) ? (
+              <Col span={2}>
+                <div className={styles.iconBox}>
+                  <Radio.Group
+                    defaultValue={isShowPersonalEmail}
+                    buttonStyle="solid"
+                    size="small"
+                    className={styles.iconRadio}
+                    onChange={(e) => this.handleChangesPrivate(e, item.label)}
+                  >
+                    <Radio.Button value={false}>
+                      <LockFilled />
+                    </Radio.Button>
+                    <Radio.Button value>
+                      <UserOutlined />
+                    </Radio.Button>
+                  </Radio.Group>
+                </div>
+              </Col>
+            ) : (
+              ''
+            )}
           </Fragment>
         ))}
         {/* Custom Col Here */}

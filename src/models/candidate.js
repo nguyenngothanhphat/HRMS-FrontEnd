@@ -8,7 +8,7 @@ import {
   candidateFinalOffer,
 } from '@/services/candidate';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
@@ -64,6 +64,32 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
+      additionalQuestions: [
+        {
+          type: 'text',
+          name: 'opportunity',
+          question: 'Equal employee opportunity',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'payment',
+          question: 'Preferred payment method',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'shirt',
+          question: 'T-shirt size',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'dietary',
+          question: 'Dietary restriction',
+          answer: '',
+        },
+      ],
     },
     salaryStructure: [],
     jobDetails: {
@@ -126,6 +152,7 @@ const candidateProfile = {
       filledCandidateCustomField: false,
       filledOfferDetails: false,
       filledBenefits: false,
+      filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
   },
@@ -148,6 +175,7 @@ const candidateProfile = {
           type: 'saveTemp',
           payload: {
             candidateSignature: data.candidateSignature,
+            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
         yield put({
@@ -413,6 +441,18 @@ const candidateProfile = {
           filledOfferDetails: false,
           filledBenefits: false,
           salaryStatus: 2,
+        },
+      };
+    },
+
+    updateAdditionalQuestions(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestions: action.payload,
         },
       };
     },
