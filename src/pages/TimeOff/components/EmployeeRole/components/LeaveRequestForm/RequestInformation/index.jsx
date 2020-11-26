@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
+import { Link } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -10,8 +11,16 @@ class RequestInformation extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedType: '',
+    };
   }
+
+  setSelectedType = (type) => {
+    this.setState({
+      selectedType: type,
+    });
+  };
 
   onFinish = (values) => {
     // eslint-disable-next-line no-alert
@@ -33,6 +42,8 @@ class RequestInformation extends Component {
   };
 
   render() {
+    const { selectedType } = this.state;
+
     const layout = {
       labelCol: {
         span: 6,
@@ -94,7 +105,10 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <Select placeholder="Timeoff Type">
+                <Select
+                  onChange={(value) => this.setSelectedType(value)}
+                  placeholder="Timeoff Type"
+                >
                   {dataTimeOffTypes.map((value) => {
                     const { name = '', shortName = '', remaining = 0, total = 0 } = value;
                     return (
@@ -112,7 +126,15 @@ class RequestInformation extends Component {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={6} />
+            <Col span={6}>
+              {selectedType === 'Casual Leave' && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>
+                    CLs are covered under <span className={styles.link}>Standard Policy</span>
+                  </span>
+                </div>
+              )}
+            </Col>
           </Row>
 
           <Row className={styles.eachRow}>
@@ -168,7 +190,13 @@ class RequestInformation extends Component {
                 </Col>
               </Row>
             </Col>
-            <Col span={6} />
+            <Col span={6}>
+              {selectedType === 'Casual Leave' && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>Casual leaves gets credited each month.</span>
+                </div>
+              )}
+            </Col>
           </Row>
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
