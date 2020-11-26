@@ -18,6 +18,7 @@ class Reason extends PureComponent {
       myRequest: { reasonForLeaving: reason = '', requestDate = '', lastWorkingDate = '' } = {},
     } = this.props;
     const marginTop = lastWorkingDate ? '0px' : '60px';
+    const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
     return (
       <div className={styles.stepContain}>
         {!lastWorkingDate && (
@@ -45,8 +46,8 @@ class Reason extends PureComponent {
               <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
                 <Col span={8}>
                   <DatePicker
-                    format="YYYY-MM-DD"
-                    defaultValue={moment(lastWorkingDate, dateFormat)}
+                    value={dateValue && moment(dateValue, dateFormat)}
+                    format={dateFormat}
                     className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
                     disabled
                   />

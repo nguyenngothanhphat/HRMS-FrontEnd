@@ -69,7 +69,7 @@ class PersonalInformation extends PureComponent {
     const renderComponent = openPersonnalInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={generalData} />
+      <View dataAPI={generalData} permissions={permissions} profileOwner={profileOwner} />
     );
     return (
       <div className={styles.PersonalInformation}>
