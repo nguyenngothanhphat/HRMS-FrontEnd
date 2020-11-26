@@ -9,11 +9,22 @@ class RequestInformation extends Component {
   formRef = React.createRef();
 
   onFinish = (values) => {
+    // eslint-disable-next-line no-alert
+    alert('Finish');
+    // eslint-disable-next-line no-console
     console.log('Success:', values);
   };
 
   onFinishFailed = (errorInfo) => {
+    // eslint-disable-next-line no-alert
+    alert('Finish Fail');
+    // eslint-disable-next-line no-console
     console.log('Failed:', errorInfo);
+  };
+
+  saveDraft = () => {
+    // eslint-disable-next-line no-alert
+    alert('Save Draft');
   };
 
   render() {
@@ -169,7 +180,7 @@ class RequestInformation extends Component {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button type="link" htmlType="button">
+            <Button type="link" htmlType="button" onClick={this.saveDraft}>
               Save to Draft
             </Button>
             <Button key="submit" type="primary" form="myForm" htmlType="submit">

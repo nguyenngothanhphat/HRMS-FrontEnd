@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { Steps, Popover } from 'antd';
+import React, { Component } from 'react';
+import { Steps } from 'antd';
 import styles from './index.less';
 
 const { Step } = Steps;
