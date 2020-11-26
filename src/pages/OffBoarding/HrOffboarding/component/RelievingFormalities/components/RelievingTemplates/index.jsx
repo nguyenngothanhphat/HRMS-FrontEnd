@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React, { PureComponent } from 'react';
 import { Row, Col, Pagination } from 'antd';
 import documentIcon from './assets/documentIcon.png';
@@ -39,7 +40,13 @@ class RelievingTemplates extends PureComponent {
                   <div key={template._id} className={styles.template}>
                     <Row justify="space-between">
                       <Col span={18}>
-                        <a className={styles.templateName}>{template.title}</a>
+                        <a
+                          href={template.attachment.url}
+                          target="_blank"
+                          className={styles.templateName}
+                        >
+                          {template.title}
+                        </a>
                       </Col>
                       <Col className={styles.icons} align="right" span={6}>
                         <img src={emailIcon} alt="icon" />
@@ -86,7 +93,13 @@ class RelievingTemplates extends PureComponent {
                     <div key={template._id} className={styles.template}>
                       <Row justify="space-between">
                         <Col span={18}>
-                          <a className={styles.templateName}>{template.title}</a>
+                          <a
+                            href={template.attachment.url}
+                            target="_blank"
+                            className={styles.templateName}
+                          >
+                            {template.title}
+                          </a>
                         </Col>
                         <Col className={styles.icons} align="right" span={6}>
                           <img src={emailIcon} alt="icon" />

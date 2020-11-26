@@ -202,11 +202,40 @@ class BasicInformation extends Component {
     });
   };
 
-  _renderForm = () => {
+  _renderEmployeeId = () => {
     const { isOpenReminder = {} } = this.state;
-    const { processStatus } = this.props;
-    console.log(processStatus);
-    console.log(this.disableEdit());
+    // const { data } = this.props;
+    // const { processStatus } = data;
+    // console.log(processStatus);
+    return (
+      <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
+      // <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+      //   <Form.Item
+      //     labelCol={{ span: 24 }}
+      //     wrapperCol={{ span: 24 }}
+      //     required={false}
+      //     label={formatMessage({ id: 'component.basicInformation.employeeId' })}
+      //     name="employeeId"
+      //     // rules={[
+      //     //   { required: true, message: `'Please input your full name!'` },
+      //     //   {
+      //     //     pattern: /[^\s-]/,
+      //     //     message: 'Fullname is invalid!',
+      //     //   },
+      //     // ]}
+      //   >
+      //     <Input
+      //       // onChange={(e) => this.handleChange(e)}
+      //       className={styles.formInput}
+      //       name="employeeId"
+      //       disabled={this.disableEdit()}
+      //     />
+      //   </Form.Item>
+      // </Col>
+    );
+  };
+
+  _renderForm = () => {
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -305,7 +334,7 @@ class BasicInformation extends Component {
               />
             </Form.Item>
           </Col>
-          {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
+          {this._renderEmployeeId()}
         </Row>
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
