@@ -11,6 +11,7 @@ import styles from './index.less';
 class View extends PureComponent {
   handleChangesPrivate = (e, label) => {
     const { dispatch, generalData } = this.props;
+    console.log('e.target.value', e.target.value);
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
@@ -38,13 +39,13 @@ class View extends PureComponent {
       if (isShowPersonalNumber || permissions.viewPersonalNumber !== -1 || profileOwner) {
         return value;
       }
-      return 'Private';
+      return <LockFilled />;
     }
     if (label === 'Personal Email') {
       if (isShowPersonalEmail || permissions.viewPersonalEmail !== -1 || profileOwner) {
         return value;
       }
-      return 'Private';
+      return <LockFilled />;
     }
     if (label === 'Linkedin') {
       return (
@@ -123,10 +124,10 @@ class View extends PureComponent {
                     className={styles.iconRadio}
                     onChange={(e) => this.handleChangesPrivate(e, item.label)}
                   >
-                    <Radio.Button value>
+                    <Radio.Button value={false}>
                       <LockFilled />
                     </Radio.Button>
-                    <Radio.Button value={false}>
+                    <Radio.Button value>
                       <UserOutlined />
                     </Radio.Button>
                   </Radio.Group>
@@ -147,10 +148,10 @@ class View extends PureComponent {
                     className={styles.iconRadio}
                     onChange={(e) => this.handleChangesPrivate(e, item.label)}
                   >
-                    <Radio.Button value>
+                    <Radio.Button value={false}>
                       <LockFilled />
                     </Radio.Button>
-                    <Radio.Button value={false}>
+                    <Radio.Button value>
                       <UserOutlined />
                     </Radio.Button>
                   </Radio.Group>
