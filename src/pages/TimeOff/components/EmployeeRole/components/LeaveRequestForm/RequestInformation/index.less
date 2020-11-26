@@ -19,8 +19,25 @@
     .eachRow {
       margin-bottom: 5px;
       .label {
+        padding-top: 8px;
         padding-right: 10px;
         color: #161c29;
+      }
+      .timeOffTypeOptions {
+        display: flex !important;
+        justify-content: space-between !important;
+        .name {
+          font-size: 13px;
+        }
+        .days {
+          .total {
+            color: #6f7076;
+          }
+          span {
+            font-size: 12px;
+            font-weight: bold;
+          }
+        }
       }
     }
     :global {
@@ -40,6 +57,37 @@
     .ant-picker {
       width: 100%;
     }
+
+    // .ant-input
+    .ant-picker-input {
+      input {
+        font-size: 13px;
+      }
+    }
+
+    .ant-select-selection-search {
+      align-content: center;
+    }
+    .ant-picker,
+    .ant-input {
+      border-radius: 5px !important;
+      min-height: 42px !important;
+      font-size: 13px;
+    }
+
+    .ant-select-selector {
+      border-radius: 5px !important;
+      height: 42px !important;
+      font-size: 13px;
+      padding-top: 5px !important;
+    }
+
+    // text area
+    .ant-form-item-control-input-content {
+      textarea {
+        padding-top: 9px;
+      }
+    }
   }
 
   .footer {
@@ -50,6 +98,7 @@
     .note {
       font-size: 12px;
       padding-right: 100px;
+      color: #161c2980; // hex with alpha 0.5
     }
     .formButtons {
       display: flex;

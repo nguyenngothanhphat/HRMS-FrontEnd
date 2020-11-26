@@ -8,6 +8,11 @@ const { TextArea } = Input;
 class RequestInformation extends Component {
   formRef = React.createRef();
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   onFinish = (values) => {
     // eslint-disable-next-line no-alert
     alert('Finish');
@@ -36,6 +41,27 @@ class RequestInformation extends Component {
         span: 10,
       },
     };
+
+    const dataTimeOffTypes = [
+      {
+        name: 'Casual Leave',
+        shortName: 'CL',
+        remaining: 7,
+        total: 10,
+      },
+      {
+        name: 'Sick Leave',
+        shortName: 'SL',
+        remaining: 7,
+        total: 10,
+      },
+      {
+        name: 'Compensation Leave',
+        shortName: 'CO',
+        remaining: 7,
+        total: 10,
+      },
+    ];
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
@@ -69,8 +95,20 @@ class RequestInformation extends Component {
                 ]}
               >
                 <Select placeholder="Timeoff Type">
-                  <Option value="Type 1">Type 1</Option>
-                  <Option value="Type 2">Type 2</Option>
+                  {dataTimeOffTypes.map((value) => {
+                    const { name = '', shortName = '', remaining = 0, total = 0 } = value;
+                    return (
+                      <Option value={name}>
+                        <Row className={styles.timeOffTypeOptions}>
+                          <div className={styles.name}>{`${name} (${shortName})`}</div>
+                          <div className={styles.days}>
+                            <span>{remaining}</span>
+                            <span className={styles.total}>/{total} days</span>
+                          </div>
+                        </Row>
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
@@ -108,7 +146,7 @@ class RequestInformation extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please select!',
+                        message: 'Please select a date!',
                       },
                     ]}
                   >
@@ -121,7 +159,7 @@ class RequestInformation extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please select!',
+                        message: 'Please select a date!',
                       },
                     ]}
                   >
