@@ -12,7 +12,11 @@ class ResignationOverview extends PureComponent {
       <div className={styles.resignationOverview}>
         <Card className={styles.resignationOverview__card} title="Resignation Overview">
           <p>Last working day</p>
-          <p>{moment(lastWorkingDate).locale('en').format('DD.MM.YYYY')}</p>
+          <p>
+            {lastWorkingDate
+              ? moment(lastWorkingDate).locale('en').format('DD.MM.YYYY')
+              : 'No data'}
+          </p>
           <p>Reson for leaving us?</p>
           <p>{reasonForLeaving}</p>
         </Card>

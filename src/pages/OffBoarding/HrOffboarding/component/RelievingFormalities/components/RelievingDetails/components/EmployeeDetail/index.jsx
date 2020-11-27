@@ -6,21 +6,8 @@ import styles from './index.less';
 
 class EmployeeDetail extends PureComponent {
   render() {
-    const requesteeDetail = {
-      employee: {
-        _id: 'PSI 1022',
-        name: 'Vamsi Venkat Krishna A',
-        jobTitle: 'UX designer',
-      },
-      project: {
-        current: 'Intranet',
-        manager: 'Rose Mary',
-        projectHealth: 85,
-      },
-    };
-    const { project } = requesteeDetail;
     const { relievingDetails = {} } = this.props;
-    const { employee = {} } = relievingDetails;
+    const { employee = {}, manager = {} } = relievingDetails;
     const { employeeId = '', generalInfo = {}, title = {} } = employee;
 
     return (
@@ -37,7 +24,11 @@ class EmployeeDetail extends PureComponent {
                 <p className={styles.employeeDetail__text}>Employee Name</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
-                <Avatar className={styles.employeeDetail__avatar} src={generalInfo.avatar} />
+                {generalInfo?.avatar ? (
+                  <Avatar className={styles.employeeDetail__avatar} src={generalInfo.avatar} />
+                ) : (
+                  <Avatar className={styles.employeeDetail__avatar} icon={<UserOutlined />} />
+                )}
                 <span className={styles.employeeDetail__name}>
                   <u> {`${generalInfo?.firstName} ${generalInfo?.lastName}`}</u>
                 </span>
@@ -60,9 +51,17 @@ class EmployeeDetail extends PureComponent {
                 <p className={styles.employeeDetail__text}>Reporting Manager</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
-                <Avatar className={styles.employeeDetail__avatar} icon={<UserOutlined />} />
+                {manager?.generalInfo?.avatar ? (
+                  <Avatar
+                    className={styles.employeeDetail__avatar}
+                    src={manager?.generalInfo?.avatar}
+                  />
+                ) : (
+                  <Avatar className={styles.employeeDetail__avatar} icon={<UserOutlined />} />
+                )}
+
                 <span>
-                  <u>{project.manager}</u>
+                  <u>{`${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`}</u>
                 </span>
               </div>
             </Col>

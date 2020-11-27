@@ -128,7 +128,7 @@ class RelievingFormalities extends Component {
       <div className={styles.relievingFormalities}>
         <NavLink
           style={{ padding: '24px' }}
-          to="/offboarding/relieving-detail/5fb79777cf47a32790312f46"
+          to="/offboarding/relieving-detail/5fbf58c54b5530669606ffba"
         >
           Relieving Details
         </NavLink>

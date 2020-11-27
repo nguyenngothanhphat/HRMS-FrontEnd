@@ -20,6 +20,7 @@ class RelievingDetails extends PureComponent {
   fetchRelievingDetails = () => {
     const {
       match: { params: { ticketId: id = '' } = {} },
+      currentUser: { company = {} },
       dispatch,
     } = this.props;
     dispatch({
@@ -28,13 +29,13 @@ class RelievingDetails extends PureComponent {
         id,
       },
     });
-    // dispatch({
-    //   type: 'offboarding/getDefaultExitPackage',
-    //   payload: {
-    //     company: _id,
-    //     type: 'OFF_BOARDING-EXIT_PACKAGE',
-    //   },
-    // });
+    dispatch({
+      type: 'offboarding/getDefaultExitPackage',
+      payload: {
+        company: company._id,
+        type: 'OFF_BOARDING-EXIT_PACKAGE',
+      },
+    });
   };
 
   render() {
