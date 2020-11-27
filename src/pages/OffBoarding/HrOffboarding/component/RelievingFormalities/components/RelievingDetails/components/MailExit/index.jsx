@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
-import { Card, Row, Col } from 'antd';
+import React, { Component } from 'react';
+import { Card, Row, Col, Popconfirm } from 'antd';
+import { connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
@@ -31,14 +32,23 @@ const mailInterviewPackage = [
   },
 ];
 
-class MailExit extends PureComponent {
+@connect(() => ({}))
+class MailExit extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isSend: false,
       template: {},
       isOpenModalEdit: false,
+      exitPackageTemplates: [],
     };
+  }
+
+  componentDidMount() {
+    const { exitPackageTemplates } = this.props;
+    this.setState({
+      exitPackageTemplates,
+    });
   }
 
   renderExtraContent = () => {
@@ -83,6 +93,17 @@ class MailExit extends PureComponent {
     });
   };
 
+  handleRemoveTemplate = (template) => {
+    const { exitPackageTemplates } = this.state;
+    const findIndex = exitPackageTemplates.findIndex((temp) => temp._id === template._id);
+    if (findIndex > -1) {
+      exitPackageTemplates.splice(findIndex, 1);
+    }
+    this.setState({
+      exitPackageTemplates,
+    });
+  };
+
   handleCancelEdit = () => {
     this.setState({
       isOpenModalEdit: false,
@@ -104,8 +125,7 @@ class MailExit extends PureComponent {
   };
 
   render() {
-    const { isSend = false } = this.state;
-    const { exitPackageTemplates } = this.props;
+    const { isSend = false, exitPackageTemplates } = this.state;
     return (
       <div className={styles.mailExit}>
         <Card
@@ -151,7 +171,15 @@ class MailExit extends PureComponent {
                           src={editIcon}
                           alt="edit-icon"
                         />
-                        <img src={removeIcon} alt="remove-icon" />
+                        <Popconfirm
+                          title="Are you sure?"
+                          onConfirm={() => this.handleRemoveTemplate(template)}
+                          // onCancel={cancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <img src={removeIcon} alt="remove-icon" />
+                        </Popconfirm>
                       </div>
                     </div>
                   </Col>

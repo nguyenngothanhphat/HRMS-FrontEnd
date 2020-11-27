@@ -43,6 +43,83 @@ const offboarding = {
     currentTemplate: {},
     inQueuesList: [],
     closeRecordsList: [],
+    exitPackageDummy: [
+      {
+        attachment: {
+          category: 'attachments',
+          createdAt: '2020-11-25T10:09:32.117Z',
+          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
+          id: '5fbe2d5c91a5331e2ca60565',
+          name: 'Exit Interview.pdf',
+          size: 23084,
+          status: 0,
+          type: 'application/pdf',
+          updatedAt: '2020-11-25T10:09:32.117Z',
+          url:
+            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
+          user: '5f57544e899f4743e8fdb3f0',
+        },
+        createdAt: '2020-11-25T10:09:32.129Z',
+        default: true,
+        settings: [],
+        thumbnail:
+          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
+        title: 'Exit Interview',
+        type: 'OFF_BOARDING-EXIT_PACKAGE',
+        updatedAt: '2020-11-25T10:09:32.129Z',
+        _id: '5fbe2d5c91a5331e2ca60566',
+      },
+      {
+        attachment: {
+          category: 'attachments',
+          createdAt: '2020-11-25T10:09:32.117Z',
+          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
+          id: '5fbe2d5c91a5331e2ca60565',
+          name: 'Exit Interview.pdf',
+          size: 23084,
+          status: 0,
+          type: 'application/pdf',
+          updatedAt: '2020-11-25T10:09:32.117Z',
+          url:
+            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
+          user: '5f57544e899f4743e8fdb3f0',
+        },
+        createdAt: '2020-11-25T10:09:32.129Z',
+        default: true,
+        settings: [],
+        thumbnail:
+          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
+        title: 'NOC form',
+        type: 'OFF_BOARDING-EXIT_PACKAGE',
+        updatedAt: '2020-11-25T10:09:32.129Z',
+        _id: '5fbe2d5c91a5331e2ca60567',
+      },
+      {
+        attachment: {
+          category: 'attachments',
+          createdAt: '2020-11-25T10:09:32.117Z',
+          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
+          id: '5fbe2d5c91a5331e2ca60565',
+          name: 'Exit Interview.pdf',
+          size: 23084,
+          status: 0,
+          type: 'application/pdf',
+          updatedAt: '2020-11-25T10:09:32.117Z',
+          url:
+            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
+          user: '5f57544e899f4743e8fdb3f0',
+        },
+        createdAt: '2020-11-25T10:09:32.129Z',
+        default: true,
+        settings: [],
+        thumbnail:
+          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
+        title: 'Off boarding checklist',
+        type: 'OFF_BOARDING-EXIT_PACKAGE',
+        updatedAt: '2020-11-25T10:09:32.129Z',
+        _id: '5fbe2d5c91a5331e2ca60568',
+      },
+    ],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {

@@ -40,7 +40,7 @@ class RelievingDetails extends PureComponent {
 
   render() {
     const {
-      offboarding: { relievingDetails = {}, defaultExitPackage = {} },
+      offboarding: { relievingDetails = {}, exitPackageDummy = {} },
     } = this.props;
     return (
       <PageContainer>
@@ -58,7 +58,7 @@ class RelievingDetails extends PureComponent {
               <ResignationOverview relievingDetails={relievingDetails} />
             </Col>
             <Col md={24} lg={14}>
-              <MailExit exitPackageTemplates={defaultExitPackage} />
+              <MailExit exitPackageTemplates={exitPackageDummy} />
               <ConductExit />
               <Feedback />
               <ClosePackage />
