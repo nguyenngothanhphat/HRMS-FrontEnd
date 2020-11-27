@@ -3,7 +3,7 @@ import { queryNotices } from '@/services/user';
 const GlobalModel = {
   namespace: 'global',
   state: {
-    collapsed: true,
+    collapsed: false,
     notices: [],
   },
   effects: {

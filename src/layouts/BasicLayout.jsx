@@ -26,9 +26,6 @@ const noMatch = (
   />
 );
 
-/**
- * use Authorized check all menu item
- */
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
@@ -46,21 +43,11 @@ const BasicLayout = (props) => {
     location = {
       pathname: '/',
     },
-    collapsed,
     route: { routes } = {},
   } = props;
   /**
    * init variables
    */
-
-  const handleCollapse = () => {
-    if (!collapsed) {
-      dispatch({
-        type: 'global/changeLayoutCollapsed',
-        payload: true,
-      });
-    }
-  };
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -138,9 +125,7 @@ const BasicLayout = (props) => {
         {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
-          <div onMouseOver={() => handleCollapse()} onFocus={() => handleCollapse()}>
-            {children}
-          </div>
+          {children}
         </Authorized>
       </ProLayout>
     </div>
