@@ -30,7 +30,7 @@ class EmploymentTab extends Component {
 
     const { title, location } = employeeProfile.originData.employmentData;
     const { firstName, legalName } = employeeProfile.originData.generalData;
-    const { currentCTC } = employeeProfile.originData.compensationData;
+    const { compensationType } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
@@ -39,7 +39,7 @@ class EmploymentTab extends Component {
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
-        annualSalary: currentCTC?.amount || 0,
+        compensationType: compensationType || null,
         location: location?.name || null,
       },
     };
@@ -86,11 +86,12 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepTwo.title || null,
         manager: data.stepThree.reportTo || null,
-        currentCTC: data.stepTwo.salary || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
         department: data.stepThree.department || null,
-        compensationType: data.stepTwo.compensation || null,
+        compensationType: `${data.stepTwo.compensation || null} - ${
+          data.stepTwo.compensationType || null
+        }`,
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,
@@ -101,7 +102,8 @@ class EmploymentTab extends Component {
       for (let i = 0; i < array.length; i += 1) {
         if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
       }
-      dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+      console.log(payload);
+      // dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
     }
   };
 
@@ -115,8 +117,6 @@ class EmploymentTab extends Component {
       this.setState({ isChanging: false });
     } else if (msg === 'TITLE_REQUIRED') {
       this.setState({ current: 2 });
-    } else if (msg === 'SALARY_REQUIRED') {
-      this.setState({ current: 1 });
     } else this.setState({ current: current + 1 });
   };
 

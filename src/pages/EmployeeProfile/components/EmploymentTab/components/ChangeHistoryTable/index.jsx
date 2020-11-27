@@ -36,12 +36,7 @@ class ChangeHistoryTable extends PureComponent {
                   {employee} is promoted to {info.promotedPosition} postion
                 </div>
               ) : null}
-              {info.salary ? (
-                <div>
-                  Revised Salary:{' '}
-                  <b>${String(info.salary).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</b>
-                </div>
-              ) : null}
+
               {info.location ? <div>Location: {info.location}</div> : null}
               {info.deparment ? (
                 <div>
@@ -111,7 +106,6 @@ class ChangeHistoryTable extends PureComponent {
       key: `${index + 1}`,
       changedInfomation: {
         promotedPosition: item.title?.name,
-        salary: item.currentAnnualCTC,
         location: item.location?.name,
         department: item.department?.name,
         employment: item.employeeType?.name,

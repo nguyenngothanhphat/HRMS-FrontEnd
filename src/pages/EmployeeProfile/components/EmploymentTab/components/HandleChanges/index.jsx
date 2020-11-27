@@ -28,7 +28,7 @@ class HandleChanges extends PureComponent {
           wLocation: '',
           employment: '',
           compensation: '',
-          salary: null,
+          compensationType: null,
         },
         stepThree: {
           title: '',
@@ -57,13 +57,6 @@ class HandleChanges extends PureComponent {
       if (current > 2) {
         nextTab('TITLE_REQUIRED');
         dialog({ message: 'Please choose a job title corresponds with the selected department' });
-      }
-    }
-
-    if (changeData.stepTwo.salary?.type && !changeData.stepTwo.salary.amount) {
-      if (current > 1) {
-        nextTab('SALARY_REQUIRED');
-        dialog({ message: 'Please enter an amount for salary' });
       }
     }
   }
@@ -107,6 +100,61 @@ class HandleChanges extends PureComponent {
           changeData: {
             ...changeData,
             stepFour: { ...changeData.stepFour, toHR: !changeData.stepFour.toHR },
+          },
+        });
+        break;
+      case 7:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Hourly',
+            },
+          },
+        });
+        break;
+      case 8:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Annually',
+            },
+          },
+        });
+        break;
+      case 9:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Intentive',
+            },
+          },
+        });
+        break;
+      case 10:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Bonus',
+            },
+          },
+        });
+        break;
+      case 11:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Stock option',
+            },
           },
         });
         break;
@@ -157,47 +205,46 @@ class HandleChanges extends PureComponent {
         });
         break;
       case 'compensation':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: { ...changeData.stepTwo, compensation: value, salary: null },
-          },
-        });
-        if (value === 'Salaried') {
-          this.setState({
-            changeData: {
-              ...changeData,
-              stepTwo: {
-                ...changeData.stepTwo,
-                compensation: value,
-                salary: { ...changeData.stepTwo.salary, type: 'annually' },
+        switch (value) {
+          case 'Salaried':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: 'Hourly',
+                },
               },
-            },
-          });
+            });
+            break;
+          case 'Stock options':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: 'Intentive',
+                },
+              },
+            });
+            break;
+          case 'Other non-cash benefits':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: '',
+                },
+              },
+            });
+            break;
+          default:
+            break;
         }
-
-        break;
-      case 'salary':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              salary: { ...changeData.stepTwo.salary, amount: Number(value) },
-            },
-          },
-        });
-        break;
-      case 'salaryType':
-        this.setState({
-          changeData: {
-            ...changeData,
-            stepTwo: {
-              ...changeData.stepTwo,
-              salary: { ...changeData.stepTwo.salary, type: value },
-            },
-          },
-        });
         break;
       case 'department':
         this.setState({
@@ -244,6 +291,7 @@ class HandleChanges extends PureComponent {
             fetchedState={employeeProfile}
             changeData={changeData}
             onChange={this.onChange}
+            onRadioChange={this.onRadioChange}
           />
         ) : null}
         {current === 2 ? (
@@ -259,10 +307,15 @@ class HandleChanges extends PureComponent {
         {current === 4 ? (
           <FifthStep
             name={data.name}
-            currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
+            currentData={{
+              title: data.title,
+              compensationType: data.compensationType,
+              location: data.location,
+            }}
             data={{
               newTitle: changeData.newTitle,
-              newSalary: changeData.stepTwo.salary?.amount,
+              currentCompensation: changeData.stepTwo.compensation,
+              newCompensationType: changeData.stepTwo.compensationType,
               newLocation: changeData.newLocation,
             }}
           />
