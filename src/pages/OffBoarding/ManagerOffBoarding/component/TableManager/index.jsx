@@ -50,9 +50,9 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
-        render: (createDate) => {
-          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        dataIndex: 'requestDate',
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {

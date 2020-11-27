@@ -19,6 +19,8 @@ class HrTable extends PureComponent {
 
   render() {
     const { data = [] } = this.props;
+    // const dateFormat = 'YYYY/MM/DD';
+
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -87,7 +89,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>LWD</span>,
         dataIndex: 'lastWorkingDate',
         render: (lastWorkingDate) => {
-          return <p>{moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
       },
       {

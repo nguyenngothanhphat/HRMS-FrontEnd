@@ -8,11 +8,17 @@ import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 
-@connect(({ info: { benefits } = {}, candidateInfo: { data = {}, currentStep = 0 } = {} }) => ({
-  benefits,
-  data,
-  currentStep,
-}))
+@connect(
+  ({
+    info: { benefits } = {},
+    candidateInfo: { data = {}, currentStep = 0, tempData: { hidePreviewOffer = false } = {} } = {},
+  }) => ({
+    benefits,
+    data,
+    currentStep,
+    hidePreviewOffer,
+  }),
+)
 class Benefit extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('benefits' in props) {
@@ -205,8 +211,13 @@ class Benefit extends PureComponent {
   // };
 
   onClickNext = () => {
+    const { hidePreviewOffer } = this.props;
+    if (hidePreviewOffer) {
+      return;
+    }
     const { dispatch, currentStep } = this.props;
     const nextStep = currentStep + 1;
+
     dispatch({
       type: 'candidateInfo/save',
       payload: {
