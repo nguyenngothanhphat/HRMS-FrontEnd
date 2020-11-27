@@ -21,10 +21,10 @@ class LeaveRequestForm extends PureComponent {
             </div>
           </Affix>
           <Row className={styles.container} gutter={[20, 20]}>
-            <Col xs={24} lg={14}>
+            <Col xs={24} lg={16}>
               <RequestInformation />
             </Col>
-            <Col xs={24} lg={10}>
+            <Col xs={24} lg={8}>
               <RightContent />
             </Col>
           </Row>

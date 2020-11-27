@@ -1,13 +1,49 @@
 import { dialog } from '@/utils/utils';
-import { getHolidaysList, getLeavingListByEmployee } from '../services/timeOff';
+import {
+  getHolidaysList,
+  getLeavingListByEmployee,
+  getLeaveBalanceOfUser,
+  getLeaveRequestOfEmployee,
+  addLeaveRequest,
+} from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
     holidaysList: [],
     leavingList: [],
+    totalLeaveBalance: {},
+    leaveRequests: {},
   },
   effects: {
+    *fetchLeaveBalanceOfUser(_, { call, put }) {
+      try {
+        const response = yield call(getLeaveBalanceOfUser);
+        const { statusCode, data: totalLeaveBalance = {} } = response;
+        console.log('totalLeaveBalance', totalLeaveBalance);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totalLeaveBalance },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeaveRequestOfEmployee(_, { call, put }) {
+      try {
+        const response = yield call(getLeaveRequestOfEmployee);
+        const { statusCode, data: leaveRequests = {} } = response;
+        console.log('leaveRequests', leaveRequests);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { leaveRequests },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchHolidaysList(_, { call, put }) {
       try {
         const response = yield call(getHolidaysList);
@@ -29,6 +65,20 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { leavingList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addLeaveRequest(_, { call, put }) {
+      try {
+        const response = yield call(addLeaveRequest);
+        const { statusCode, data: addedLeaveRequest = {} } = response;
+        console.log('addedLeaveRequest', addedLeaveRequest);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { addedLeaveRequest },
         });
       } catch (errors) {
         dialog(errors);

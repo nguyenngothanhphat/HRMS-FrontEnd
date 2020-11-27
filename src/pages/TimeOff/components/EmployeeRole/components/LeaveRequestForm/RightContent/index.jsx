@@ -3,8 +3,7 @@ import { Steps } from 'antd';
 import styles from './index.less';
 
 const { Step } = Steps;
-
-export class RightContent extends Component {
+class RightContent extends Component {
   constructor(props) {
     super(props);
     this.state = {};

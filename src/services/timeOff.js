@@ -1,4 +1,25 @@
-// import request from '@/utils/request';
+import request from '@/utils/request';
+
+export async function getLeaveBalanceOfUser(payload) {
+  return request('/api/leavebalance/get-by-user', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getLeaveRequestOfEmployee(payload) {
+  return request('/api/leaverequest/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addLeaveRequest(payload) {
+  return request('/api/leaverequest/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
 
 const mockData = [
   {

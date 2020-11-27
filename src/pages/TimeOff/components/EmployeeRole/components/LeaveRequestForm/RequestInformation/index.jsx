@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, Popover } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import RedCautionIcon from '@/assets/redcaution.svg';
+import { connect } from 'umi';
 import SuccessModal from '../SuccessModal';
 import styles from './index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
 class RequestInformation extends Component {
   formRef = React.createRef();
 
