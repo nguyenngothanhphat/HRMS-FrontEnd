@@ -1,4 +1,5 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
+import { checkPermissions } from '@/utils/permissions';
 import { dialog } from '@/utils/utils';
 import { setToken } from '@/utils/token';
 
@@ -6,6 +7,7 @@ const UserModel = {
   namespace: 'user',
   state: {
     currentUser: {},
+    permissions: {},
   },
   effects: {
     *fetch(_, { call, put }) {
@@ -30,6 +32,13 @@ const UserModel = {
               .join(' '),
           },
         });
+
+        yield put({
+          type: 'save',
+          payload: {
+            permissions: checkPermissions(response.data.roles),
+          },
+        });
       } catch (errors) {
         setToken('');
         yield put({
@@ -43,6 +52,13 @@ const UserModel = {
     },
   },
   reducers: {
+    save(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+
     saveCurrentUser(state, action) {
       return { ...state, currentUser: action.payload || {} };
     },

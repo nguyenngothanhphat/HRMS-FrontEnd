@@ -14,7 +14,7 @@ class TableEmployee extends PureComponent {
   }
 
   push = (id) => {
-    history.push(`/manager-offboarding/${id}`);
+    history.push(`/offboarding/review/${id}`);
   };
 
   render() {
@@ -50,9 +50,9 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
-        render: (createDate) => {
-          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        dataIndex: 'requestDate',
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
@@ -96,7 +96,7 @@ class TableEmployee extends PureComponent {
         dataIndex: '_id',
         render: (_id) => (
           <div className={styles.rowAction}>
-            <span>Set 1-on-1</span>
+            {/* <span>Set 1-on-1</span> */}
             <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),

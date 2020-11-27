@@ -1,5 +1,11 @@
-import { getOnboardingList, deleteDraft, inititateBackgroundCheck } from '@/services/onboard';
+import {
+  getOnboardingList,
+  deleteDraft,
+  inititateBackgroundCheck,
+  createProfile,
+} from '@/services/onboard';
 import _ from 'lodash';
+import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 // const employeeList = rookieList.filter(
@@ -725,6 +731,32 @@ const onboard = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    *redirectToReview({ payload }, { call, put }) {
+      try {
+        const { id } = payload;
+        console.log(history);
+        history.push(`/employee-onboarding/review/${id}`);
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *createProfileEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(createProfile, payload);
+        const { statusCode, data } = response;
+        console.log(data[0].defaultMessage);
+        if (statusCode === 400) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-indent */
 import React, { PureComponent } from 'react';
 import { EditFilled } from '@ant-design/icons';
 import { connect } from 'umi';
@@ -64,24 +65,24 @@ class PersonalInformation extends PureComponent {
   };
 
   render() {
-    const { generalData, openPersonnalInfor } = this.props;
+    const { generalData, openPersonnalInfor, permissions = {}, profileOwner } = this.props;
     const renderComponent = openPersonnalInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={generalData} />
+      <View dataAPI={generalData} permissions={permissions} profileOwner={profileOwner} />
     );
     return (
       <div className={styles.PersonalInformation}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Personal Information</p>
-          {openPersonnalInfor ? (
-            ''
-          ) : (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
-              <EditFilled className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
+          {openPersonnalInfor
+            ? ''
+            : (permissions.editPersonalInfo !== -1 || profileOwner) && (
+                <div className={styles.flexEdit} onClick={this.handleEdit}>
+                  <EditFilled className={styles.IconEdit} />
+                  <p className={styles.Edit}>Edit</p>
+                </div>
+              )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>

@@ -1,5 +1,6 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Modal, Button, DatePicker, Select } from 'antd';
 import styles from './index.less';
 
@@ -8,23 +9,50 @@ const { Option } = Select;
 class ScheduleModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      meetingDate: '',
+      meetingTime: '',
+    };
   }
 
   handleCancel = () => {
     const { handleCancel } = this.props;
-    this.setState({}, () => handleCancel());
+    this.setState(
+      {
+        meetingDate: '',
+        meetingTime: '',
+      },
+      () => handleCancel(),
+    );
   };
 
   handleSubmit = () => {
-    const { handleSubmit } = this.props;
-    this.setState({}, () => handleSubmit());
+    const { handleSubmit = () => {} } = this.props;
+    const { meetingDate, meetingTime } = this.state;
+    const data = { meetingDate, meetingTime };
+    handleSubmit(data);
+  };
+
+  meetingTime = (value) => {
+    this.setState({ meetingTime: value });
+  };
+
+  mettingDate = (date) => {
+    this.setState({ meetingDate: date });
+  };
+
+  disabledDate = (current) => {
+    return current && current < moment().endOf('day');
   };
 
   render() {
-    const { visible = false, loading, modalContent } = this.props;
+    const { visible = false, loading, modalContent, list, keyModal: key } = this.props;
+    const { meetingDate, meetingTime } = this.state;
+    console.log(meetingDate, meetingTime);
+    const check = !meetingDate || !meetingTime;
     return (
       <Modal
+        key={key === '' ? undefined : key}
         className={styles.modalSchedule}
         visible={visible}
         title={false}
@@ -40,29 +68,33 @@ class ScheduleModal extends Component {
           <div className={styles.flexContent}>
             <div>
               <div className={styles.subText}>Meeting on</div>
-              <DatePicker format="MM/DD" className={styles.datePicker} />
+              <DatePicker
+                format="DD.MM.YYYY"
+                className={styles.datePicker}
+                onChange={this.mettingDate}
+                disabledDate={this.disabledDate}
+              />
             </div>
             <div>
               <div className={styles.subText}>Meeting at</div>
-              <Select className={styles.datePicker}>
-                <Option value="">2:00 pm - 3:00pm</Option>
-                <Option value="">4:00 pm - 5:00pm</Option>
-                <Option value="">6:00 pm - 7:00pm</Option>
+              <Select className={styles.datePicker} onChange={(value) => this.meetingTime(value)}>
+                {list.map((item) => (
+                  <Option key={item} value={item}>
+                    {item}
+                  </Option>
+                ))}
               </Select>
             </div>
           </div>
-          <div className={styles.subText}>Meeting with</div>
-          <div className={styles.flexContent}>
-            <div>
-              <Select className={styles.selectPicker} />
-            </div>
+          <div className={styles.center}>
             <Button
               key="submit"
               loading={loading}
+              disabled={check}
               className={styles.btnSubmit}
               onClick={this.handleSubmit}
             >
-              Send mail
+              Submit
             </Button>
           </div>
         </div>
