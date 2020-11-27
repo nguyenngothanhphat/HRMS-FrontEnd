@@ -138,7 +138,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         />
       )}
       <Sider
-        collapsible
+        collapsible={true}
         trigger={null}
         collapsed={collapsed}
         breakpoint={breakpoint === false ? undefined : breakpoint}
@@ -153,6 +153,8 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         style={{
           overflow: 'hidden',
           paddingTop: layout === 'mix' && !isMobile ? headerHeight : undefined,
+          position: 'absolute',
+          height: '100%',
           ...style,
         }}
         width={siderWidth}

@@ -4,13 +4,13 @@ const proSettings = {
   // layout: 'mix',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  fixSiderbar: true,
+  fixSiderbar: false,
   colorWeak: false,
   navTheme: 'light',
   menu: {
     locale: true,
   },
-  title: 'App Name',
+  title: 'HRMS',
   pwa: false,
   iconfontUrl: '',
 };
