@@ -71,18 +71,6 @@ const BasicLayout = (props) => {
     }
   };
 
-  // const _renderBtnToggle = (
-  //   <div className={styles.titleHeader}>
-  //     <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
-  //       <img
-  //         src="/assets/images/menu.svg"
-  //         alt="toggle-menu"
-  //         style={{ width: '45px', height: '20px' }}
-  //       />
-  //     </div>
-  //   </div>
-  // );
-
   const _renderLogo = (
     <Link to="/">
       <img
@@ -110,7 +98,6 @@ const BasicLayout = (props) => {
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
         headerContentRender={() => _renderLogo}
-        // menuHeaderRender={() => _renderBtnToggle}
         menuHeaderRender={false}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
