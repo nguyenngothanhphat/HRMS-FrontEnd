@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Checkbox, Button, notification } from 'antd';
+import { Row, Col, Checkbox, Button, notification } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import Option from './components/Option';
@@ -117,14 +117,18 @@ class OptionalOnboardingQuestions extends PureComponent {
         <Checkbox.Group className={styles.OptionalOnboardingQuestions_list}>
           {this._renderOptionList()}
         </Checkbox.Group>
-        <div className={styles.OptionalOnboardingQuestions_button}>
-          <Button type="link" onClick={this.openModal}>
-            {formatMessage({ id: 'component.optionalOnboardingQuestions.addCustomFields' })}
-          </Button>
-        </div>
-        <Button type="primary" loading={loadingSaveQuestions} onClick={this.onSaveQuestions}>
-          Save
-        </Button>
+        <Row align="space-between" className={styles.OptionalOnboardingQuestions_button}>
+          <Col>
+            <Button type="link" onClick={this.openModal}>
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.addCustomFields' })}
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" loading={loadingSaveQuestions} onClick={this.onSaveQuestions}>
+              Save
+            </Button>
+          </Col>
+        </Row>
       </div>
     );
   }
