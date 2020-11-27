@@ -1,13 +1,23 @@
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
+import QuillMention from 'quill-mention';
+Quill.register('modules/mentions', QuillMention);
 import 'react-quill/dist/quill.snow.css';
 
 import removeIcon from './assets/removeIcon.svg';
 
 import styles from './index.less';
 
+const atValues = [
+  { id: 1, value: 'Lam Nguyen' },
+  { id: 2, value: 'Terralogic' },
+];
+const hashValues = [
+  { id: 3, value: '385 Cong Hoa' },
+  { id: 4, value: 'Tan Binh TP HCM' },
+];
 class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -341,6 +351,33 @@ class EmailReminderForm extends PureComponent {
     return null;
   };
 
+  mentionModule = {
+    allowedChars: /^[A-Za-z\s]*$/,
+    mentionDenotationChars: ['##', '#'],
+    renderItem: (item) => {
+      return item.value;
+    },
+    source: function (searchTerm, renderList, mentionChar) {
+      let values;
+
+      if (mentionChar === '##') {
+        values = atValues;
+      } else {
+        values = hashValues;
+      }
+
+      if (searchTerm.length === 0) {
+        renderList(values, searchTerm);
+      } else {
+        const matches = [];
+        for (let i = 0; i < values.length; i++)
+          if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+            matches.push(values[i]);
+        renderList(matches, searchTerm);
+      }
+    },
+  };
+
   _renderForm = () => {
     const { Option } = Select;
     const {
@@ -445,6 +482,7 @@ class EmailReminderForm extends PureComponent {
               className={styles.quill}
               value={emailMessage}
               onChange={this.handleChangeEmail}
+              modules={{ mention: this.mentionModule }}
             />
             {/* </Form.Item> */}
           </Col>
