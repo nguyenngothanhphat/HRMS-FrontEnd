@@ -5,6 +5,7 @@ import { formatMessage, Link, connect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
+import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
 import { getActionText, getColumnWidth } from './utils';
@@ -42,6 +43,22 @@ class OnboardTable extends Component {
   closeModal = () => {
     this.setState({
       openModal: false,
+    });
+  };
+
+  getModalContent = () => {
+    const { dispatch } = this.props;
+    const { currentRecord } = this.state;
+    const { rookieId = '' } = currentRecord;
+    return (
+      <ProfileModalContent closeModal={this.closeModal} dispatch={dispatch} rookieId={rookieId} />
+    );
+    // return <ModalContent closeModal={this.closeModal} />;
+  };
+
+  openModal = () => {
+    this.setState({
+      openModal: true,
     });
   };
 
@@ -197,7 +214,14 @@ class OnboardTable extends Component {
 
         actionContent = (
           <>
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+            <span
+              onClick={() => {
+                this.openModal();
+              }}
+            >
+              Create Profile
+            </span>
+            {/* <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
               <Dropdown.Button
                 overlay={menu}
                 placement="bottomCenter"
@@ -205,9 +229,7 @@ class OnboardTable extends Component {
               >
                 {actionText}
               </Dropdown.Button>
-              {/* <span onClick={() => this.handleActionClick(type)}>{actionText}</span> */}
-              {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
-            </Link>
+            </Link> */}
           </>
         );
         break;
@@ -463,7 +485,7 @@ class OnboardTable extends Component {
           open={openModal}
           width={590}
           closeModal={this.closeModal}
-          content={<ModalContent closeModal={this.closeModal} />}
+          content={this.getModalContent()}
         />
       </>
     );
