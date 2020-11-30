@@ -5,6 +5,8 @@ import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
+import exportToCsv from '@/utils/exportToCsv';
+import iconDownload from '@/assets/download-icon-yellow.svg';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
@@ -361,6 +363,59 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      return {
+        'Employee Id': item.employeeId,
+        'First Name': item.firstName,
+        'Last Name': item.lastName,
+        'Joined Date': item.joinDate,
+        Location: item.location,
+        Department: item.department,
+        Title: item.title,
+        'Work Email': item.workEmail,
+        'Personal Email': item.personalEmail,
+        'Manager Work Email': item.managerWorkEmail,
+        'Personal Number': item.personalNumber,
+      };
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+
+    return dataExport;
+  };
+
+  // Download template to import employees
+  downloadTemplate = () => {
+    const exportData = [
+      {
+        employeeId: 'PSI 0000',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        joinDate: '11/30/2020',
+        location: 'Vietnam',
+        department: 'Develop',
+        title: 'Junior Frontend',
+        workEmail: 'template@terralogic.com',
+        personalEmail: 'template@gmail.com',
+        managerWorkEmail: 'manager@terralogic.com',
+        personalNumber: '0123456789',
+      },
+    ];
+    exportToCsv('Template_Import_Employees.csv', this.processData(exportData));
+  };
+
   rightButton = (roles, collapsed) => {
     const { tabId } = this.state;
     const { permissions = {} } = this.props;
@@ -370,6 +425,14 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.tabBarExtra}>
+        {findIndexImport && (
+          <div className={styles.buttonAddImport} onClick={this.downloadTemplate}>
+            <img src={iconDownload} alt="Download Template" />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
+            </p>
+          </div>
+        )}
         {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={this.importEmployees}>
             <img
