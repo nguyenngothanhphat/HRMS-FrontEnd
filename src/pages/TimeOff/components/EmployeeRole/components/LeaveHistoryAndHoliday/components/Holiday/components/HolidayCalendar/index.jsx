@@ -145,7 +145,7 @@ export default class HolidayCalendar extends PureComponent {
       let lineClassName = '';
       let colorClassName = '';
       let eventMarkSingleClassName = '';
-      let weekDayCheckClassName = '';
+      const weekDayCheckClassName = '';
 
       holidaysList.forEach((value) => {
         const { fromDate: from = '', toDate: to = '' } = value; // parse
@@ -155,9 +155,7 @@ export default class HolidayCalendar extends PureComponent {
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
-        if (this.checkWeekDay(d, this.selectedMonth(), this.selectedYear()) === 'Sun') {
-          weekDayCheckClassName = styles.sundayColor;
-        }
+
         if (
           d === eventFromDay * 1 &&
           d === eventToDay * 1 &&
@@ -266,8 +264,8 @@ export default class HolidayCalendar extends PureComponent {
     // Map the weekdays i.e Sun, Mon, Tue etc as <td>
     const weekdays = this.weekdaysShort.map((day) => {
       return (
-        <th key={day} className={`${styles.weekDay} ${day === 'Sun' ? styles.sundayColor : ''} `}>
-          {day.slice(0, 1)}
+        <th key={day} className={`${styles.weekDay}`}>
+          {day.slice(0, 2)}
           {/* get first letter of weekdays */}
         </th>
       );
