@@ -78,7 +78,7 @@ export default class LeaveBalanceInfo extends PureComponent {
               bordered={false}
               expandIconPosition="right"
               expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
-              defaultActiveKey={['1']}
+              // defaultActiveKey={['1']}
             >
               {this.renderMockData().map((data, index) => {
                 const { title = '', content = '' } = data;

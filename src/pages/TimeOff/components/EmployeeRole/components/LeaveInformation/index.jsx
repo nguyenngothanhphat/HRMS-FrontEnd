@@ -209,7 +209,7 @@ class LeaveInformation extends PureComponent {
             </Panel>
           </Collapse>
         </div>
-        <Tooltip title="More information">
+        <Tooltip title="Leave balances detail">
           <div onClick={onInformationCLick} className={styles.infoIcon}>
             <InfoCircleOutlined />
           </div>
