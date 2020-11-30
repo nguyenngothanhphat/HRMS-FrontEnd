@@ -16,8 +16,16 @@ class TableManager extends PureComponent {
     history.push(`/offboarding/my-request/${data}`);
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageNavigation: pageNumber,
+    });
+  };
+
   render() {
     const { data = [] } = this.props;
+    const { pageNavigation } = this.state;
+    const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -30,12 +38,18 @@ class TableManager extends PureComponent {
           total
         </span>
       ),
+      pageSize: rowSize,
+      current: pageNavigation,
+      onChange: this.onChangePagination,
     };
 
     const columns = [
       {
         title: <span className={t.title}>Ticket ID</span>,
-        dataIndex: 'ticketId',
+        dataIndex: 'ticketID',
+        render: (ticketID) => {
+          return <p>{ticketID}</p>;
+        },
       },
       {
         title: <span className={t.title}>Requested on</span>,
@@ -96,6 +110,7 @@ class TableManager extends PureComponent {
           }}
           columns={columns}
           dataSource={data}
+          hideOnSinglePage
           pagination={{
             ...pagination,
             total: data.length,
