@@ -132,7 +132,7 @@ const renderSiderMenu = (props: BasicLayoutProps): React.ReactNode => {
     return null;
   }
   if (layout === 'top' && !isMobile) {
-    return <SiderMenu {...props} hide />;
+    return <SiderMenu {...props} hide={true} />;
   }
   if (menuRender) {
     return menuRender(props, <SiderMenu {...props} />);
@@ -419,13 +419,14 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           <Layout
             style={{
               minHeight: '100%',
+              display: 'contents',
               ...style,
             }}
-            hasSider
+            hasSider={true}
           >
-            {siderMenuDom}
+            {headerDom}
             <Layout style={genLayoutStyle}>
-              {headerDom}
+              {siderMenuDom}
               <WrapContent
                 isChildrenLayout={isChildrenLayout}
                 {...rest}

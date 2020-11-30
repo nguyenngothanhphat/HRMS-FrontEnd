@@ -69,18 +69,18 @@ class HeaderView extends Component<HeaderViewProps, HeaderViewState> {
       layout,
       className: propsClassName,
       style,
-      collapsed,
-      siderWidth = 208,
-      hasSiderMenu,
+      // collapsed,
+      // siderWidth = 208,
+      // hasSiderMenu,
+      // isMobile,
       headerRender,
-      isMobile,
       prefixCls,
       headerHeight,
     } = this.props;
     const needFixedHeader = fixedHeader || layout === 'mix';
     const isTop = layout === 'top';
 
-    const needSettingWidth = needFixedHeader && hasSiderMenu && !isTop && !isMobile;
+    // const needSettingWidth = needFixedHeader && hasSiderMenu && !isTop && !isMobile;
 
     const className = classNames(propsClassName, {
       [`${prefixCls}-fixed-header`]: needFixedHeader,
@@ -91,10 +91,10 @@ class HeaderView extends Component<HeaderViewProps, HeaderViewState> {
       return null;
     }
 
-    const width =
-      layout !== 'mix' && needSettingWidth
-        ? `calc(100% - ${collapsed ? 80 : siderWidth}px)`
-        : '100%';
+    // const width =
+    //   layout !== 'mix' && needSettingWidth
+    //     ? `calc(100% - ${collapsed ? 80 : siderWidth}px)`
+    //     : '100%';
 
     const right = needFixedHeader ? 0 : undefined;
 
@@ -114,7 +114,7 @@ class HeaderView extends Component<HeaderViewProps, HeaderViewState> {
             padding: 0,
             height: headerHeight,
             lineHeight: `${headerHeight}px`,
-            width,
+            // width,
             zIndex: layout === 'mix' ? 100 : 9,
             right,
             ...style,

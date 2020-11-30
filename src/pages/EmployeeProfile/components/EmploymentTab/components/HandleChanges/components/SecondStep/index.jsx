@@ -1,10 +1,14 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import { Select, InputNumber } from 'antd';
+import { Select, Input } from 'antd';
 import styles from './styles.less';
+
+const compenTypes = ['Salaried', 'Stock options', 'Other non-cash benefits'];
 
 export default function SecondStep(props) {
   const { Option } = Select;
-  const { onChange, onSearch, changeData, fetchedState } = props;
+  const { TextArea } = Input;
+  const { onChange, onSearch, changeData, fetchedState, onRadioChange } = props;
 
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
@@ -73,7 +77,7 @@ export default function SecondStep(props) {
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
         >
-          {['Salaried', 'Stock options', 'Other non-cash benefits'].map((item) => {
+          {compenTypes.map((item) => {
             return (
               <Option key={makeKey()} value={item}>
                 {item}
@@ -83,18 +87,82 @@ export default function SecondStep(props) {
           ]
         </Select>
       </div>
-      <div className={styles.select}>
-        <div>Annual Salary</div>
-        <InputNumber
-          defaultValue={changeData.stepTwo.salary}
-          style={{ width: 300 }}
-          min={0}
-          formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-          parser={(value) => value.replace(/\D/g, '')}
-          placeholder="Enter an amount"
-          onChange={(value) => onChange(value, 'salary')}
-        />
-      </div>
+      {changeData.stepTwo.compensation === compenTypes[0] ? (
+        <div className={styles.select}>
+          <div>Salary type</div>
+          <div style={{ width: '300px', display: 'flex', justifyContent: 'space-evenly' }}>
+            <label className={styles.container}>
+              <input
+                value={7}
+                checked={changeData.stepTwo.compensationType === 'Hourly'}
+                onChange={(e) => onRadioChange(e)}
+                type="checkbox"
+              />
+              <span className={styles.checkmark} />
+              Hourly
+            </label>
+            <label className={styles.container}>
+              <input
+                value={8}
+                checked={changeData.stepTwo.compensationType === 'Annually'}
+                onChange={(e) => onRadioChange(e)}
+                type="checkbox"
+              />
+              <span className={styles.checkmark} />
+              Annually
+            </label>
+          </div>
+        </div>
+      ) : null}
+      {changeData.stepTwo.compensation === compenTypes[1] ? (
+        <div className={styles.select}>
+          <div>Options</div>
+          <div style={{ width: '300px', display: 'flex', justifyContent: 'space-evenly' }}>
+            <label className={styles.container}>
+              <input
+                value={9}
+                checked={changeData.stepTwo.compensationType === 'Intentive'}
+                onChange={(e) => onRadioChange(e)}
+                type="checkbox"
+              />
+              <span className={styles.checkmark} />
+              Intentive
+            </label>
+            <label className={styles.container}>
+              <input
+                value={10}
+                checked={changeData.stepTwo.compensationType === 'Bonus'}
+                onChange={(e) => onRadioChange(e)}
+                type="checkbox"
+              />
+              <span className={styles.checkmark} />
+              Bonus
+            </label>
+            <label className={styles.container}>
+              <input
+                value={11}
+                checked={changeData.stepTwo.compensationType === 'Stock option'}
+                onChange={(e) => onRadioChange(e)}
+                type="checkbox"
+              />
+              <span className={styles.checkmark} />
+              Stock option
+            </label>
+          </div>
+        </div>
+      ) : null}
+      {changeData.stepTwo.compensation === compenTypes[2] ? (
+        <div className={styles.select}>
+          <div />
+          <div style={{ width: '300px' }}>
+            <TextArea
+              value={changeData.stepTwo.compensationType || null}
+              onChange={(e) => onChange(e.target.value, 'other')}
+              rows={4}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
