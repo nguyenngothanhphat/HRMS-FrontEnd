@@ -19,13 +19,21 @@ class RequestInformation extends Component {
     this.state = {
       selectedType: '',
       showSuccessModal: false,
+      secondNotice: '',
     };
   }
+
+  setSecondNotice = (value) => {
+    this.setState({
+      secondNotice: value,
+    });
+  };
 
   setSelectedType = (type) => {
     this.setState({
       selectedType: type,
     });
+    this.setSecondNotice(`${type}s are covered under Standard Policy`);
   };
 
   setShowSuccessModal = (value) => {
@@ -136,7 +144,7 @@ class RequestInformation extends Component {
   };
 
   render() {
-    const { selectedType, showSuccessModal } = this.state;
+    const { selectedType, showSuccessModal, secondNotice } = this.state;
 
     const layout = {
       labelCol: {
@@ -306,11 +314,9 @@ class RequestInformation extends Component {
               </Row>
             </Col>
             <Col span={6}>
-              {selectedType !== '' && (
+              {secondNotice !== '' && (
                 <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>
-                    {selectedTypeName}s gets credited each month.
-                  </span>
+                  <span className={styles.normalText}>{secondNotice}</span>
                 </div>
               )}
             </Col>
