@@ -246,6 +246,17 @@ class HandleChanges extends PureComponent {
             break;
         }
         break;
+      case 'other':
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: value,
+            },
+          },
+        });
+        break;
       case 'department':
         this.setState({
           changeData: {

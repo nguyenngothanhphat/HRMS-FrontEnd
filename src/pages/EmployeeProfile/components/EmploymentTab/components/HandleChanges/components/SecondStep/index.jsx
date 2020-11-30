@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import { Select } from 'antd';
+import { Select, Input } from 'antd';
 import styles from './styles.less';
 
 const compenTypes = ['Salaried', 'Stock options', 'Other non-cash benefits'];
 
 export default function SecondStep(props) {
   const { Option } = Select;
+  const { TextArea } = Input;
   const { onChange, onSearch, changeData, fetchedState, onRadioChange } = props;
 
   const makeKey = () => {
@@ -147,6 +148,18 @@ export default function SecondStep(props) {
               <span className={styles.checkmark} />
               Stock option
             </label>
+          </div>
+        </div>
+      ) : null}
+      {changeData.stepTwo.compensation === compenTypes[2] ? (
+        <div className={styles.select}>
+          <div />
+          <div style={{ width: '300px' }}>
+            <TextArea
+              value={changeData.stepTwo.compensationType || null}
+              onChange={(e) => onChange(e.target.value, 'other')}
+              rows={4}
+            />
           </div>
         </div>
       ) : null}

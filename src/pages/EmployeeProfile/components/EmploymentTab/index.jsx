@@ -102,8 +102,7 @@ class EmploymentTab extends Component {
       for (let i = 0; i < array.length; i += 1) {
         if (payload[array[i]] === null || payload[array[i]] === undefined) delete payload[array[i]];
       }
-      console.log(payload);
-      // dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
+      dispatch({ type: 'employeeProfile/addNewChangeHistory', payload });
     }
   };
 
