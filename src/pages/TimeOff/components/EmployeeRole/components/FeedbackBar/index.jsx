@@ -14,6 +14,11 @@ export default class FeedbackBar extends PureComponent {
     };
   }
 
+  onGiveFeedbackClick = () => {
+    // eslint-disable-next-line no-alert
+    alert('Give feedback');
+  };
+
   onLikeClick = () => {
     this.setState({
       onLikeClick: true,
