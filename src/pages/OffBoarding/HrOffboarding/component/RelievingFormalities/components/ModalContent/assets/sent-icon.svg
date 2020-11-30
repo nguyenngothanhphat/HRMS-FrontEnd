@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="104.972" height="101.972" viewBox="0 0 104.972 101.972">
+    <defs>
+        <linearGradient id="linear-gradient" x1=".5" x2=".5" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#ecf2ff"/>
+            <stop offset="1" stop-color="#fff"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-3" x2="1" y1=".5" y2=".5" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#d9e5ff"/>
+            <stop offset="1" stop-color="#fff"/>
+        </linearGradient>
+        <linearGradient id="linear-gradient-7" x1=".785" x2=".19" y1=".851" y2=".085" gradientUnits="objectBoundingBox">
+            <stop offset="0" stop-color="#13a951"/>
+            <stop offset="1" stop-color="#32c46e"/>
+        </linearGradient>
+        <clipPath id="clip-path">
+            <path id="Path_49" d="M-9371.354 7853.818c-9.217-.271-50.42 5.693-53.673 42.56s40.933 42.017 59.366 38.493 71.564-34.969 23.583-52.588c-.271-.543-11.113-.271-10.03-12.2s-10.029-15.994-19.246-16.265z" class="cls-1" transform="translate(10113.921 -7489.309)"/>
+        </clipPath>
+        <filter id="Ellipse_10" width="52.972" height="52.972" x="52" y="49" filterUnits="userSpaceOnUse">
+            <feOffset dx="3" dy="3"/>
+            <feGaussianBlur result="blur" stdDeviation="4"/>
+            <feFlood flood-color="#076e00" flood-opacity=".251"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <style>
+            .cls-1{fill:url(#linear-gradient)}.cls-3{fill:#6b96e2}.cls-4{fill:#fff}.cls-5{fill:url(#linear-gradient-3)}
+        </style>
+    </defs>
+    <g id="Group_96" transform="translate(-688.5 -355.5)">
+        <path id="Path_48" d="M-9371.354 7853.818c-9.217-.271-50.42 5.693-53.673 42.56s40.933 42.017 59.366 38.493 71.564-34.969 23.583-52.588c-.271-.543-11.113-.271-10.03-12.2s-10.029-15.994-19.246-16.265z" class="cls-1" transform="translate(10113.696 -7498.309)"/>
+        <g id="Mask_Group_2" clip-path="url(#clip-path)" transform="translate(-.225 -9)">
+            <g id="Group_91" transform="translate(0 10.545)">
+                <path id="Rectangle_18" d="M0 0h25.2a7 7 0 0 1 7 7v26.85H0V0z" class="cls-3" transform="translate(728.987 403.955)"/>
+                <path id="Rectangle_19" d="M0 0h25.2a7 7 0 0 1 7 7v49.85H0V0z" class="cls-3" transform="translate(708.987 380.955)"/>
+                <g id="Group_90">
+                    <path id="Rectangle_12" d="M0 0h39.2a7 7 0 0 1 7 7v49.85H0V0z" class="cls-4" transform="translate(710.987 380.955)"/>
+                    <g id="Group_89">
+                        <rect id="Rectangle_13" width="30.538" height="3" class="cls-5" rx="1.5" transform="translate(718.817 390.351)"/>
+                        <rect id="Rectangle_14" width="30.538" height="2" class="cls-5" rx="1" transform="translate(718.817 396.832)"/>
+                        <rect id="Rectangle_16" width="30.538" height="2" class="cls-5" rx="1" transform="translate(718.817 401.832)"/>
+                        <rect id="Rectangle_17" width="19" height="2" class="cls-5" rx="1" transform="translate(718.817 406.832)"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g id="send" transform="rotate(-8 3035.552 -5146.176)">
+            <path id="Path_50" fill="#4dbbeb" d="M25.9.224a.765.765 0 0 0-.83-.169L.482 9.89a.765.765 0 0 0-.05 1.4l9.7 4.7 4.7 9.7a.765.765 0 0 0 .688.431h.027a.765.765 0 0 0 .683-.48L26.064 1.05A.765.765 0 0 0 25.9.224z"/>
+            <path id="Path_51" fill="#2488ff" d="M214.289 4.395l-15.767 15.767 4.7 9.7a.765.765 0 0 0 .688.431h.027a.765.765 0 0 0 .683-.48l9.839-24.593a.765.765 0 0 0-.169-.825z" transform="translate(-188.394 -4.171)"/>
+        </g>
+        <g id="Group_92" transform="translate(0 -9)">
+            <g filter="url(#Ellipse_10)" transform="translate(688.5 364.5)">
+                <circle id="Ellipse_10-2" cx="14.486" cy="14.486" r="14.486" fill="url(#linear-gradient-7)" transform="translate(61 58)"/>
+            </g>
+            <path id="Icon_ionic-ios-checkmark" d="M21.859 13.236l-.939-.965a.2.2 0 0 0-.149-.064.194.194 0 0 0-.149.064l-6.507 6.555-2.368-2.368a.206.206 0 0 0-.3 0l-.949.949a.213.213 0 0 0 0 .3l2.987 2.993a.945.945 0 0 0 .624.3.99.99 0 0 0 .619-.293h.005l7.131-7.169a.228.228 0 0 0-.005-.302z" class="cls-4" transform="translate(748.065 420.294)"/>
+        </g>
+        <path id="Path_52" fill="none" stroke="#2c6df9" stroke-dasharray="2 4" d="M-14111.547 5450.788s-2.1 30.461-29.41 21.008c-19.607-4.2-22.547 9.039-24.727 21.681" transform="rotate(19 8443.122 47344.132)"/>
+    </g>
+</svg>

@@ -40,3 +40,24 @@ export async function uploadSignature(data) {
     data,
   });
 }
+
+export async function getOptionalQuestions(data) {
+  return request('/api/onboardingquestion/list', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function saveOptionalQuestions(payload) {
+  return request('/api/onboardingquestion/save-setting', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateOptionalQuestions(payload) {
+  return request('/api/onboardingquestion/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

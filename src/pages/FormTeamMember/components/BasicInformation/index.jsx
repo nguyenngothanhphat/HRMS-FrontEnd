@@ -202,11 +202,44 @@ class BasicInformation extends Component {
     });
   };
 
-  _renderForm = () => {
+  _renderEmployeeId = () => {
     const { isOpenReminder = {} } = this.state;
-    const { processStatus } = this.props;
+    const { data } = this.props;
+    const { processStatus } = data;
     console.log(processStatus);
-    console.log(this.disableEdit());
+    if (processStatus === 'ACCEPT-FINAL-OFFER') {
+      return (
+        <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          <Form.Item
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+            required={false}
+            label={formatMessage({ id: 'component.basicInformation.employeeId' })}
+            name="employeeId"
+            // rules={[
+            //   { required: true, message: `'Please input your full name!'` },
+            //   {
+            //     pattern: /[^\s-]/,
+            //     message: 'Fullname is invalid!',
+            //   },
+            // ]}
+          >
+            <Input
+              // onChange={(e) => this.handleChange(e)}
+              className={styles.formInput}
+              name="employeeId"
+              disabled={this.disableEdit()}
+            />
+          </Form.Item>
+        </Col>
+      );
+    }
+    return (
+      <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
+    );
+  };
+
+  _renderForm = () => {
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -305,7 +338,7 @@ class BasicInformation extends Component {
               />
             </Form.Item>
           </Col>
-          {isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}
+          {this._renderEmployeeId()}
         </Row>
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
@@ -384,7 +417,7 @@ class BasicInformation extends Component {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, previousExperience } = data;
+    const { fullName, privateEmail, workEmail, previousExperience, employeeId } = data;
     const { loading1 } = this.props;
     const Note = {
       title: 'Note',
@@ -408,7 +441,13 @@ class BasicInformation extends Component {
                 <Form
                   wrapperCol={{ span: 24 }}
                   name="basic"
-                  initialValues={{ fullName, privateEmail, workEmail, previousExperience }}
+                  initialValues={{
+                    fullName,
+                    privateEmail,
+                    workEmail,
+                    previousExperience,
+                    employeeId,
+                  }}
                   onFocus={this.onFocus}
                   onValuesChange={this.handleChange}
                   onFinish={this.onFinish}
