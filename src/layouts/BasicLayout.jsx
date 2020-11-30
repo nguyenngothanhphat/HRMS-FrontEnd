@@ -121,6 +121,7 @@ const BasicLayout = (props) => {
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
+        disableMobile
         {...props}
         {...settings}
       >
