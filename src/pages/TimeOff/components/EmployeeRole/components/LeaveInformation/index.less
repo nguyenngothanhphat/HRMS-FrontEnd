@@ -3,32 +3,34 @@
   border-radius: 5px;
   background: white;
   width: 100%;
-  padding: 20px;
   position: relative;
   .totalLeaveBalance {
     display: flex;
     // align-items: center;
     flex-direction: column;
-    .title {
-      font-weight: bold;
-      font-size: 18px;
-      color: #464646;
-    }
-    .leaveBalanceBox {
-      margin: 15px 0 3px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .circleProgress {
-        margin-top: 10px;
-        .percentValue {
-          font-size: 28px;
-          font-weight: bold;
-          color: #464646;
-        }
-        .remainingText {
-          font-size: 13px;
-          color: #6c717a;
+    .aboveContainer {
+      padding: 24px 24px 0 24px;
+      .title {
+        font-weight: bold;
+        font-size: 18px;
+        color: #464646;
+      }
+      .leaveBalanceBox {
+        margin: 15px 0 3px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .circleProgress {
+          margin-top: 10px;
+          .percentValue {
+            font-size: 28px;
+            font-weight: bold;
+            color: #464646;
+          }
+          .remainingText {
+            font-size: 13px;
+            color: #6c717a;
+          }
         }
       }
     }
@@ -52,6 +54,7 @@
     }
     .showBtn {
       cursor: pointer;
+      margin-bottom: 10px;
       span {
         font-weight: bold;
         color: #2c6df9;
@@ -70,8 +73,8 @@
 
   .infoIcon {
     position: absolute;
-    top: 23px;
-    right: 12px;
+    top: 27px;
+    right: 14px;
     width: 20px;
     cursor: pointer;
     :global {
@@ -88,26 +91,33 @@
   }
 
   .CollapseInformation {
-    margin: 20px 0;
-    .secondTitle {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 30px;
-      &__left {
-        font-weight: bold;
-        line-height: 1;
-      }
-      &__right {
-        line-height: 1;
-        font-size: 9px;
-        a {
-          text-decoration: underline;
+    .container {
+      padding: 20px 20px 3px 20px;
+      border-top: 1px solid #e2e4e8;
+      .secondTitle {
+        display: flex;
+        flex-direction: column;
+        &__left {
+          font-weight: bold;
+          line-height: 1;
+        }
+        &__right {
+          // line-height: 2;
+          margin-top: 10px;
+          font-size: 10px;
+          a {
+            text-decoration: underline;
+            color: #ffa100;
+            font-weight: bold;
+          }
         }
       }
     }
   }
   .leaveProgressBars {
-    margin: 25px 0 40px 0;
+    // margin-top: 16px;
+    .hr {
+      border-bottom: 1px solid #e2e4e8;
+    }
   }
 }

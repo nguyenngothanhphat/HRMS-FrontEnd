@@ -1,17 +1,45 @@
 .SpecialLeaveBox {
+  padding-bottom: 5px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   .title {
-    font-size: 11px;
+    padding-left: 25px;
+    font-size: 13px;
+    color: #707177;
+    padding-top: 28px;
     span {
       font-weight: bold;
+      color: #ffa100;
     }
   }
-  .days {
-    .activeDays {
-      font-size: 24px;
-      font-weight: bold;
+  .daysBox {
+    position: relative;
+    .days {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 17px;
+      .activeDays {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffa100;
+      }
+      .daysText {
+        margin-top: -4px;
+        color: #707177;
+        font-size: 10px;
+      }
+    }
+    .circleBackground {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      left: 0;
+      top: -5px;
+      background: rgba(255, 161, 0, 0.12);
+      border-radius: 50%;
     }
   }
 }

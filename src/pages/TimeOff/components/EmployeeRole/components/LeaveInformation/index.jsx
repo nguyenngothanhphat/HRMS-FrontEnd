@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Collapse, Tooltip, Progress } from 'antd';
+import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import { connect, history } from 'umi';
@@ -9,7 +9,7 @@ import SpecialLeaveBox from './components/SpecialLeaveBox';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-const colorsList = ['#FF3397', '#2C6DF9', '#FFA100'];
+const colorsList = ['#2C6DF9', '#FD4546', '#6236FF'];
 
 const CollapseInformation = (props) => {
   const {
@@ -31,51 +31,60 @@ const CollapseInformation = (props) => {
 
   return (
     <div className={styles.CollapseInformation}>
-      <div className={styles.secondTitle}>
-        <span className={styles.secondTitle__left}>Common Leaves</span>
-        <div className={styles.secondTitle__right}>
-          <span>Under </span>
-          {renderPolicyLink(policyCommonLeaves)}
+      <div className={styles.container}>
+        <div className={styles.secondTitle}>
+          <span className={styles.secondTitle__left}>Common Leaves</span>
+          <div className={styles.secondTitle__right}>
+            <span>Under </span>
+            {renderPolicyLink(policyCommonLeaves)}
+          </div>
+        </div>
+        <div className={styles.leaveProgressBars}>
+          {typesOfCommonLeaves.map((type, index) => {
+            const {
+              currentAllowance = 0,
+              defaultSettings: { name = '', baseAccrual: { time = 0 } = {} } = {},
+            } = type;
+            return (
+              <div>
+                <LeaveProgressBar
+                  color={colorsList[index % 3]}
+                  title={name}
+                  shorten="CL"
+                  stepNumber={currentAllowance}
+                  limitNumber={time}
+                />
+                {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
+              </div>
+            );
+          })}
         </div>
       </div>
-      <div className={styles.leaveProgressBars}>
-        {typesOfCommonLeaves.map((type, index) => {
-          const {
-            currentAllowance = 0,
-            defaultSettings: { name = '', baseAccrual: { time = 0 } = {} } = {},
-          } = type;
-          return (
-            <LeaveProgressBar
-              color={colorsList[index % 3]}
-              title={name}
-              shorten="CL"
-              stepNumber={currentAllowance}
-              limitNumber={time}
-            />
-          );
-        })}
-      </div>
-
-      <div className={styles.secondTitle}>
-        <span className={styles.secondTitle__left}>Special Leaves</span>
-        <div className={styles.secondTitle__right}>
-          <span>Under </span>
-          {renderPolicyLink(policySpecialLeaves)}
+      <div className={styles.container}>
+        <div className={styles.secondTitle}>
+          <span className={styles.secondTitle__left}>Special Leaves</span>
+          <div className={styles.secondTitle__right}>
+            <span>Under </span>
+            {renderPolicyLink(policySpecialLeaves)}
+          </div>
         </div>
+        <Row className={styles.leaveProgressBars}>
+          {typesOfSpecialLeaves.map((type, index) => {
+            const { currentAllowance = 0, defaultSettings: { name = '' } = {} } = type;
+            return (
+              <Col span={24}>
+                <SpecialLeaveBox
+                  color={colorsList[index % 3]}
+                  title={name}
+                  shorten="ML"
+                  days={currentAllowance}
+                />
+                {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}
+              </Col>
+            );
+          })}
+        </Row>
       </div>
-      <Row>
-        {typesOfSpecialLeaves.map((type, index) => {
-          const { currentAllowance = 0, defaultSettings: { name = '' } = {} } = type;
-          return (
-            <SpecialLeaveBox
-              color={colorsList[index % 3]}
-              title={name}
-              shorten="ML"
-              days={currentAllowance}
-            />
-          );
-        })}
-      </Row>
     </div>
   );
 };
@@ -177,15 +186,17 @@ class LeaveInformation extends PureComponent {
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
-          <span className={styles.title}>Total Leave Balance</span>
-          <div className={styles.leaveBalanceBox}>
-            <Progress
-              type="circle"
-              strokeColor="#FFA100"
-              trailColor="#EAE7E3"
-              percent={percent}
-              format={(percentVal) => this.renderCircleProgress(percentVal, remaining)}
-            />
+          <div className={styles.aboveContainer}>
+            <span className={styles.title}>Total Leave Balance</span>
+            <div className={styles.leaveBalanceBox}>
+              <Progress
+                type="circle"
+                strokeColor="#FFA100"
+                trailColor="#EAE7E3"
+                percent={percent}
+                format={(percentVal) => this.renderCircleProgress(percentVal, remaining)}
+              />
+            </div>
           </div>
           <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">

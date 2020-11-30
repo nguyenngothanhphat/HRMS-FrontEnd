@@ -75,48 +75,42 @@ export default class EmployeeRole extends PureComponent {
                 </Col>
               </Row>
             </Col>
-            {!viewInformation && (
-              <Col xs={24} md={18}>
-                <Row gutter={[20, 20]}>
-                  <Col xs={24} lg={15}>
-                    <ApplyRequest
-                      title="Apply for Timeoff from Office"
-                      describe={describeText[0]}
-                      buttonText="Request Time Off"
-                      onClick={this.buttonOnClickLeave}
-                      type={1}
-                    />
-                  </Col>
-                  <Col xs={24} lg={9}>
-                    <ApplyRequest
-                      title="Apply for Compoff"
-                      describe={describeText[1]}
-                      onClick={this.buttonOnClick}
-                      buttonText="Request Compoff"
-                      type={2}
-                    />
-                  </Col>
-                </Row>
+
+            <Col xs={24} md={18}>
+              <Row gutter={[20, 20]}>
+                <Col xs={24} lg={15}>
+                  <ApplyRequest
+                    title="Apply for Timeoff from Office"
+                    describe={describeText[0]}
+                    buttonText="Request Time Off"
+                    onClick={this.buttonOnClickLeave}
+                    type={1}
+                  />
+                </Col>
+                <Col xs={24} lg={9}>
+                  <ApplyRequest
+                    title="Apply for Compoff"
+                    describe={describeText[1]}
+                    onClick={this.buttonOnClick}
+                    buttonText="Request Compoff"
+                    type={2}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={[20, 20]}>
+                <Col span={24}>
+                  <TimeOffRequests />
+                </Col>
+              </Row>
+              {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
-                    <TimeOffRequests />
+                    <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-                {!closeFeedbackBar && (
-                  <Row gutter={[20, 20]}>
-                    <Col span={24}>
-                      <FeedbackBar onClose={this.onCloseFeedbackBar} />
-                    </Col>
-                  </Row>
-                )}
-              </Col>
-            )}
-
-            {viewInformation && (
-              <Col xs={24} md={18}>
-                <LeaveBalanceInfo onClose={this.onInformationCLick} />
-              </Col>
-            )}
+              )}
+              {viewInformation && <LeaveBalanceInfo onClose={this.onInformationCLick} />}
+            </Col>
           </Row>
         </div>
       </>

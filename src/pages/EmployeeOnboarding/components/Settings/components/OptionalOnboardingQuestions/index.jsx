@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Checkbox, Button } from 'antd';
+import { Row, Col, Checkbox, Button, notification } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import Option from './components/Option';
@@ -8,7 +8,8 @@ import OrderSavedContent from './components/OrderSavedContent';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { optionalQuestions = [] } = [] }) => ({
+@connect(({ loading, employeeSetting: { optionalQuestions = [] } = [] }) => ({
+  loadingSaveQuestions: loading.effects['employeeSetting/saveOptionalQuestions'],
   optionalQuestions,
 }))
 class OptionalOnboardingQuestions extends PureComponent {
@@ -60,7 +61,7 @@ class OptionalOnboardingQuestions extends PureComponent {
   };
 
   _renderOptionList = () => {
-    const { optionalQuestions } = this.props;
+    const { optionalQuestions = [] } = this.props;
     return optionalQuestions?.map((option) => {
       return <Option option={option} />;
     });
@@ -85,8 +86,25 @@ class OptionalOnboardingQuestions extends PureComponent {
     });
   };
 
+  onSaveQuestions = () => {
+    const { dispatch, optionalQuestions } = this.props;
+    dispatch({
+      type: 'employeeSetting/saveOptionalQuestions',
+      payload: {
+        onboardingQuestions: optionalQuestions,
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: `Save questions successfully!`,
+        });
+      }
+    });
+  };
+
   render() {
     const { openModal, currentModal } = this.state;
+    const { loadingSaveQuestions } = this.props;
     return (
       <div className={styles.OptionalOnboardingQuestions}>
         <CustomModal open={openModal} closeModal={this.closeModal} content={currentModal} />
@@ -99,11 +117,18 @@ class OptionalOnboardingQuestions extends PureComponent {
         <Checkbox.Group className={styles.OptionalOnboardingQuestions_list}>
           {this._renderOptionList()}
         </Checkbox.Group>
-        <div className={styles.OptionalOnboardingQuestions_button}>
-          <Button type="primary" onClick={this.openModal}>
-            {formatMessage({ id: 'component.optionalOnboardingQuestions.addCustomFields' })}
-          </Button>
-        </div>
+        <Row align="space-between" className={styles.OptionalOnboardingQuestions_button}>
+          <Col>
+            <Button type="link" onClick={this.openModal}>
+              {formatMessage({ id: 'component.optionalOnboardingQuestions.addCustomFields' })}
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" loading={loadingSaveQuestions} onClick={this.onSaveQuestions}>
+              Save
+            </Button>
+          </Col>
+        </Row>
       </div>
     );
   }

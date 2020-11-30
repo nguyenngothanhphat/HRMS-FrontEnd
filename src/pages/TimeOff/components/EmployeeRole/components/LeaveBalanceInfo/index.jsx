@@ -57,28 +57,39 @@ export default class LeaveBalanceInfo extends PureComponent {
     const { onClose = () => {} } = this.props;
     return (
       <div className={styles.LeaveBalanceInfo}>
-        <div className={styles.title}>
-          <span>All you need to know about Leave balances</span>
-          <Tooltip title="Close">
-            <CloseOutlined className={styles.closeIcon} onClick={onClose} />
-          </Tooltip>
-        </div>
-        <div className={styles.collapseInfoContainer}>
-          <Collapse
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
-            defaultActiveKey={['1']}
-          >
-            {this.renderMockData().map((data, index) => {
-              const { title = '', content = '' } = data;
-              return (
-                <Panel className={styles.eachCollapse} header={title} key={`${index + 1}`}>
-                  <p>{content}</p>
-                </Panel>
-              );
-            })}
-          </Collapse>
+        <div className={styles.container}>
+          <div className={styles.title}>
+            <span>All you need to know about Leave balances</span>
+            <Tooltip title="Close">
+              <div className={styles.closeIcon}>
+                <CloseOutlined onClick={onClose} />
+              </div>
+            </Tooltip>
+          </div>
+          <p className={styles.description}>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+            sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
+            sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.
+          </p>
+          <p className={styles.collapseInfoContainer}>
+            <Collapse
+              bordered={false}
+              expandIconPosition="right"
+              expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
+              defaultActiveKey={['1']}
+            >
+              {this.renderMockData().map((data, index) => {
+                const { title = '', content = '' } = data;
+                return (
+                  <Panel className={styles.eachCollapse} header={title} key={`${index + 1}`}>
+                    <p>{content}</p>
+                  </Panel>
+                );
+              })}
+            </Collapse>
+          </p>
         </div>
       </div>
     );
