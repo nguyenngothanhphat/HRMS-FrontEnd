@@ -10,15 +10,26 @@ import styles from './index.less';
 class TableEmployee extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageNavigation: '1',
+    };
   }
 
   push = (id) => {
     history.push(`/offboarding/review/${id}`);
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageNavigation: pageNumber,
+    });
+  };
+
   render() {
     const { data = [] } = this.props;
+    const { pageNavigation } = this.state;
+    const rowSize = 10;
+
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -31,15 +42,18 @@ class TableEmployee extends PureComponent {
           total
         </span>
       ),
-      // pageSize: rowSize,
-      // current: pageSelected,
-      // onChange: this.onChangePagination,
+      pageSize: rowSize,
+      current: pageNavigation,
+      onChange: this.onChangePagination,
     };
 
     const columns = [
       {
         title: <span className={styles.title}>Ticket ID </span>,
-        dataIndex: 'ticketId',
+        dataIndex: 'ticketID',
+        render: (ticketID) => {
+          return <p>{ticketID}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
@@ -116,10 +130,7 @@ class TableEmployee extends PureComponent {
           }}
           columns={columns}
           dataSource={data}
-          // pagination={{
-          //   ...pagination,
-          //   total: data.length,
-          // }}
+          hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}

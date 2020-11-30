@@ -28,7 +28,7 @@ class HandleChanges extends PureComponent {
           wLocation: '',
           employment: '',
           compensation: '',
-          salary: '',
+          compensationType: null,
         },
         stepThree: {
           title: '',
@@ -103,6 +103,61 @@ class HandleChanges extends PureComponent {
           },
         });
         break;
+      case 7:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Hourly',
+            },
+          },
+        });
+        break;
+      case 8:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Annually',
+            },
+          },
+        });
+        break;
+      case 9:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Intentive',
+            },
+          },
+        });
+        break;
+      case 10:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Bonus',
+            },
+          },
+        });
+        break;
+      case 11:
+        this.setState({
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: 'Stock option',
+            },
+          },
+        });
+        break;
       default:
         break;
     }
@@ -150,13 +205,56 @@ class HandleChanges extends PureComponent {
         });
         break;
       case 'compensation':
-        this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, compensation: value } },
-        });
+        switch (value) {
+          case 'Salaried':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: 'Hourly',
+                },
+              },
+            });
+            break;
+          case 'Stock options':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: 'Intentive',
+                },
+              },
+            });
+            break;
+          case 'Other non-cash benefits':
+            this.setState({
+              changeData: {
+                ...changeData,
+                stepTwo: {
+                  ...changeData.stepTwo,
+                  compensation: value,
+                  compensationType: '',
+                },
+              },
+            });
+            break;
+          default:
+            break;
+        }
         break;
-      case 'salary':
+      case 'other':
         this.setState({
-          changeData: { ...changeData, stepTwo: { ...changeData.stepTwo, salary: value } },
+          changeData: {
+            ...changeData,
+            stepTwo: {
+              ...changeData.stepTwo,
+              compensationType: value,
+            },
+          },
         });
         break;
       case 'department':
@@ -204,6 +302,7 @@ class HandleChanges extends PureComponent {
             fetchedState={employeeProfile}
             changeData={changeData}
             onChange={this.onChange}
+            onRadioChange={this.onRadioChange}
           />
         ) : null}
         {current === 2 ? (
@@ -219,10 +318,15 @@ class HandleChanges extends PureComponent {
         {current === 4 ? (
           <FifthStep
             name={data.name}
-            currentData={{ title: data.title, salary: data.annualSalary, location: data.location }}
+            currentData={{
+              title: data.title,
+              compensationType: data.compensationType,
+              location: data.location,
+            }}
             data={{
               newTitle: changeData.newTitle,
-              newSalary: changeData.stepTwo.salary,
+              currentCompensation: changeData.stepTwo.compensation,
+              newCompensationType: changeData.stepTwo.compensationType,
               newLocation: changeData.newLocation,
             }}
           />
