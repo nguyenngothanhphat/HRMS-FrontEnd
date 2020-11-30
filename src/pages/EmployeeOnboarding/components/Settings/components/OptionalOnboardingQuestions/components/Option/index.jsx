@@ -22,15 +22,26 @@ class Option extends Component {
   }
 
   handleChange = (e, id) => {
-    const { dispatch } = this.props;
+    const { dispatch, employeeSetting } = this.props;
+    const { optionalQuestions = [] } = employeeSetting;
     const value = e.nativeEvent.target.checked;
+
+    const newOptionalQuestions = [...optionalQuestions];
+    const index = newOptionalQuestions.findIndex((item) => item._id === id);
+    newOptionalQuestions[index].isChosen = value;
     dispatch({
-      type: 'employeeSetting/updateOptionalQuestions',
+      type: 'employeeSetting/save',
       payload: {
-        id,
-        isChosen: value,
+        optionalQuestions: newOptionalQuestions,
       },
     });
+    // dispatch({
+    //   type: 'employeeSetting/updateOptionalQuestions',
+    //   payload: {
+    //     id,
+    //     isChosen: value,
+    //   },
+    // });
   };
 
   render() {
