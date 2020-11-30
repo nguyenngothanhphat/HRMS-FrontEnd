@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import RedCautionIcon from '@/assets/redcaution.svg';
 import { connect } from 'umi';
-import SuccessModal from '../SuccessModal';
+import TimeOffModal from '@/components/TimeOffModal';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -375,7 +375,12 @@ class RequestInformation extends Component {
             </Button>
           </div>
         </div>
-        <SuccessModal visible={showSuccessModal} onClose={this.setShowSuccessModal} />
+        <TimeOffModal
+          visible={showSuccessModal}
+          onClose={this.setShowSuccessModal}
+          content={`${selectedTypeName} request submitted to the HR and your manager.`}
+          submitText="OK"
+        />
       </div>
     );
   }
