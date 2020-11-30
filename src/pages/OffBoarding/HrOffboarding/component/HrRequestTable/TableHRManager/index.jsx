@@ -10,17 +10,26 @@ import styles from './index.less';
 class HrTable extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageNavigation: 1,
+    };
   }
 
   push = (data) => {
     history.push(`/offboarding/review/${data}`);
   };
 
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageNavigation: pageNumber,
+    });
+  };
+
   render() {
+    const { pageNavigation } = this.state;
     const { data = [] } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
-
+    const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -33,15 +42,18 @@ class HrTable extends PureComponent {
           total
         </span>
       ),
-      // pageSize: rowSize,
-      // current: pageSelected,
-      // onChange: this.onChangePagination,
+      pageSize: rowSize,
+      current: pageNavigation,
+      onChange: this.onChangePagination,
     };
 
     const columns = [
       {
         title: <span className={styles.title}>Ticket ID </span>,
-        dataIndex: 'ticketId',
+        dataIndex: 'ticketID',
+        render: (ticketID) => {
+          return <p>{ticketID}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
@@ -121,6 +133,7 @@ class HrTable extends PureComponent {
           }}
           columns={columns}
           dataSource={data}
+          hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
