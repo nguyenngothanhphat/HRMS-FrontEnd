@@ -212,7 +212,10 @@ export default class TimeOffRequests extends PureComponent {
           <TabPane tab="LWP Request" key="3">
             <TimeOffRequestTab data={mockData} />
           </TabPane>
-          <TabPane tab="Compoff Request" key="4">
+          <TabPane tab=" WFH/CP Requests" key="4">
+            <TimeOffRequestTab data={emptyData} />
+          </TabPane>
+          <TabPane tab="Compoff Request" key="5">
             <TimeOffRequestTab data={mockData} />
           </TabPane>
         </Tabs>

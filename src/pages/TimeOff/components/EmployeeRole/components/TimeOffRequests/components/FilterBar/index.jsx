@@ -26,16 +26,37 @@ export default class FilterBar extends PureComponent {
           tabBarExtraContent={this.renderTableTitle}
         >
           <TabPane
-            tab={`In-progress (${this.addZeroToNumber(dataNumber.inProgressNumber)})`}
+            tab={`In Progress  ${
+              dataNumber.onHoldNumber !== 0
+                ? `(${this.addZeroToNumber(dataNumber.inProgressNumber)})`
+                : ''
+            } `}
             key="1"
           />
-          <TabPane tab={`On-hold  (${this.addZeroToNumber(dataNumber.onHoldNumber)})`} key="2" />
-          <TabPane tab={`Accepted  (${this.addZeroToNumber(dataNumber.acceptedNumber)})`} key="3" />
-          <TabPane tab={`Rejected  (${this.addZeroToNumber(dataNumber.rejectedNumber)})`} key="4" />
-          {/* <TabPane tab="In Progress" key="1" />
-          <TabPane tab="Approved" key="2" />
-          <TabPane tab="Rejected" key="3" />
-          <TabPane tab="Drafts" key="4" /> */}
+          <TabPane
+            tab={`Approved  ${
+              dataNumber.onHoldNumber !== 0
+                ? `(${this.addZeroToNumber(dataNumber.onHoldNumber)})`
+                : ''
+            } `}
+            key="2"
+          />
+          <TabPane
+            tab={`Rejected  ${
+              dataNumber.onHoldNumber !== 0
+                ? `(${this.addZeroToNumber(dataNumber.acceptedNumber)})`
+                : ''
+            } `}
+            key="3"
+          />
+          <TabPane
+            tab={`Drafts  ${
+              dataNumber.onHoldNumber !== 0
+                ? `(${this.addZeroToNumber(dataNumber.rejectedNumber)})`
+                : ''
+            } `}
+            key="4"
+          />
         </Tabs>
       </div>
     );

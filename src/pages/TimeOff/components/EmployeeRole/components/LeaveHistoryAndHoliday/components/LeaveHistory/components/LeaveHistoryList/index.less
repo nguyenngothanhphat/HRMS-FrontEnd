@@ -15,17 +15,32 @@
       padding-left: 10px;
     }
     .dateAndMonth {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #f4f4f6;
       border-radius: 5px;
+      background-color: #f4f4f6;
       padding: 5px 0;
-      span {
-        font-size: 11px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      .subtractSymbol {
         font-weight: bold;
-        color: #161c29;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 10px;
+        span {
+          font-weight: bold;
+          color: #161c29;
+        }
+        .day {
+          font-size: 14px;
+        }
+        .month {
+          font-size: 11px;
+        }
       }
     }
     .dayInWeek {
