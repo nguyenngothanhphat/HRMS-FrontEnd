@@ -30,19 +30,6 @@ class RelievingTemplates extends Component {
     );
   };
 
-  handleRemoveToServer = () => {
-    const { dispatch, employee = {} } = this.props;
-    const { _id = '' } = employee;
-    dispatch({
-      type: 'employeesManagement/removeEmployee',
-      id: _id,
-    }).then((statusCode) => {
-      if (statusCode === 200) {
-        this.handleCancel();
-      }
-    });
-  };
-
   render() {
     const { visible = false, loading, template, content, mode } = this.props;
     return (
@@ -51,7 +38,7 @@ class RelievingTemplates extends Component {
         visible={visible}
         style={{ top: '50px' }}
         title={this.renderHeaderModal(template)}
-        onOk={this.handleRemoveToServer}
+        // onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         destroyOnClose
         footer={

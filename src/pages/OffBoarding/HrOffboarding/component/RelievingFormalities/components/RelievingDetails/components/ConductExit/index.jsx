@@ -8,6 +8,7 @@ import externalLinkIcon from '@/assets/external-link.svg';
 import removeIcon from '@/assets/remove-off-boarding.svg';
 import ScheduleInterview from '../ScheduleInterview';
 import FeedbackForm from './components/FeedbackForm';
+import FeedbackFormContent from './components/FeedbackFormContent';
 import styles from './index.less';
 
 class ConductExit extends PureComponent {
@@ -28,6 +29,7 @@ class ConductExit extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
+      isOpenFeedbackForm: false,
     });
   };
 
@@ -39,7 +41,13 @@ class ConductExit extends PureComponent {
 
   renderFeedbackForm = () => {
     const { isOpenFeedbackForm } = this.state;
-    return <FeedbackForm visible={isOpenFeedbackForm} />;
+    return (
+      <FeedbackForm
+        content={<FeedbackFormContent />}
+        visible={isOpenFeedbackForm}
+        handleCancelEdit={this.handleCancel}
+      />
+    );
   };
 
   render() {

@@ -74,7 +74,6 @@ class EmployeeDetail extends PureComponent {
                 ) : (
                   <Avatar className={styles.employeeDetail__avatar} icon={<UserOutlined />} />
                 )}
-
                 <span>
                   <u>{`${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`}</u>
                 </span>
