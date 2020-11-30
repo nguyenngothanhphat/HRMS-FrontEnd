@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Button } from 'antd';
+import { formatMessage } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 // import editIcon from '@/assets/edit-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
@@ -60,7 +61,7 @@ class ClosingPackage extends PureComponent {
           <Col span={14}>
             <Input
               className={styles.closingPackage__input}
-              placeholder="Enter mail id to send package"
+              placeholder={formatMessage({ id: 'pages.relieving.placeholder.sendMail' })}
             />
           </Col>
           <Col span={7}>
@@ -69,7 +70,7 @@ class ClosingPackage extends PureComponent {
               className={styles.closingPackage__btn}
               onClick={this.handleSendMail}
             >
-              Send mail
+              {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
             </Button>
           </Col>
         </Row>
@@ -102,7 +103,10 @@ class ClosingPackage extends PureComponent {
           <Col span={12}>
             <div className={styles.closingPackage__notification}>
               <img src={lightBulbIcon} alt="light-buld-icon" />
-              <span>The closing package has been sent to avvk.krishna@gmail.com</span>
+              <span>
+                {formatMessage({ id: 'pages.relieving.closePackage.notification' })}{' '}
+                avvk.krishna@gmail.com
+              </span>
             </div>
           </Col>
         </Row>
@@ -114,7 +118,9 @@ class ClosingPackage extends PureComponent {
     const { isSend } = this.state;
     return (
       <div className={styles.closingPackage}>
-        <p className={styles.closingPackage__title}>Close Package</p>
+        <p className={styles.closingPackage__title}>
+          {formatMessage({ id: 'pages.relieving.closePackage' })}
+        </p>
         {isSend ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
       </div>
     );

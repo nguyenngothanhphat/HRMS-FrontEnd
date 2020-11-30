@@ -1,10 +1,10 @@
+/* eslint-disable react/jsx-indent */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Skeleton, Form, Input } from 'antd';
+import { Modal, Button } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-const { TextArea } = Input;
 @connect(({ employeesManagement, loading, offboarding: { currentTemplate = {} } }) => ({
   employeesManagement,
   currentTemplate,
@@ -44,7 +44,7 @@ class RelievingTemplates extends Component {
   };
 
   render() {
-    const { visible = false, loading, template, content } = this.props;
+    const { visible = false, loading, template, content, mode } = this.props;
     return (
       <Modal
         className={styles.modalRelievingTemplates}
@@ -54,20 +54,18 @@ class RelievingTemplates extends Component {
         onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         destroyOnClose
-        footer={[
-          <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
-            Cancel
-          </div>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={loading}
-            className={styles.btnSubmit}
-            // onClick={this.handleRemoveToServer}
-          >
-            Submit
-          </Button>,
-        ]}
+        footer={
+          mode === 'Edit'
+            ? [
+                <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
+                  Cancel
+                </div>,
+                <Button key="submit" type="primary" loading={loading} className={styles.btnSubmit}>
+                  Submit
+                </Button>,
+              ]
+            : false
+        }
       >
         {content}
       </Modal>

@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Modal, Button, DatePicker, TimePicker, Form } from 'antd';
+import { formatMessage } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
 
 const { RangePicker } = TimePicker;
@@ -16,6 +18,10 @@ class ScheduleInterview extends PureComponent {
 
   handleSendSchedule = (values) => {
     console.log('values', values);
+  };
+
+  disabledDate = (current) => {
+    return current && current < moment().endOf('day');
   };
 
   render() {
@@ -41,7 +47,11 @@ class ScheduleInterview extends PureComponent {
                 name="date"
                 rules={[{ required: true, message: 'Please input date!' }]}
               >
-                <DatePicker format="MM/DD" className={styles.datePicker} />
+                <DatePicker
+                  format="MM/DD"
+                  className={styles.datePicker}
+                  disabledDate={this.disabledDate}
+                />
               </Form.Item>
               <Form.Item
                 label="Meeting at"
@@ -59,7 +69,7 @@ class ScheduleInterview extends PureComponent {
               </Form.Item>
             </div>
             <Button htmlType="submit" loading={loading} className={styles.btnSubmit}>
-              Send mail
+              {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
             </Button>
           </Form>
         </div>

@@ -1,29 +1,20 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
-import { Form, Input, Skeleton, notification, Row, Col } from 'antd';
+import { formatMessage, connect } from 'umi';
+import { Form, Input, Button, Skeleton, notification } from 'antd';
 import styles from './index.less';
 
-const { TextArea } = Input;
 @connect(({ loading, offboarding: { currentTemplate = {} } }) => ({
   loadingTemplate: loading.effects['offboarding/fetchTemplateById'],
   loadingAddTemplate: loading.effects['employeeSetting/addCustomTemplate'],
   currentTemplate,
 }))
-class ModalContent extends Component {
+class FeedbackFormContent extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const { dispatch, templateId } = this.props;
-    dispatch({
-      type: 'offboarding/fetchTemplateById',
-      payload: {
-        id: templateId,
-      },
-    });
-  };
+  componentDidMount = () => {};
 
   handleChange = (e, template) => {
     const {
@@ -52,7 +43,7 @@ class ModalContent extends Component {
   };
 
   onNext = () => {
-    const { dispatch, currentTemplate, closeModal } = this.props;
+    const { dispatch, currentTemplate, closeModal, onReload } = this.props;
     const { settings, type, title, htmlContent } = currentTemplate;
 
     dispatch({
@@ -66,31 +57,25 @@ class ModalContent extends Component {
     }).then(() => {
       notification.success({ message: `Upload file successfully!` });
       closeModal();
+      onReload(type);
     });
   };
 
-  renderContentModal = (mode) => {
-    const { currentTemplate } = this.props;
-    const { settings } = currentTemplate;
-    if (mode === 'View') {
-      return (
-        <>
-          {settings?.map((template) => {
-            return (
-              <Row gutter={[8, 12]}>
-                <Col span={6}>
-                  <span className={styles.template__label}>{template.description} : </span>
-                </Col>
-                <Col span={18}>{template.value}</Col>
-              </Row>
-            );
-          })}
-        </>
-      );
-    }
-    if (mode === 'Edit') {
-      return (
-        <Form name="templateSetting" onFinish={this.onFinish}>
+  _renderModal = () => {
+    const { currentTemplate, loadingAddTemplate } = this.props;
+    const { settings, title } = currentTemplate;
+    const { TextArea } = Input;
+    return (
+      <>
+        <Form
+          name="templateSetting"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={this.onFinish}
+        >
+          <h2>{`Questions for ${title}`}</h2>
+
           {settings?.map((template) => {
             return (
               <Form.Item
@@ -111,20 +96,25 @@ class ModalContent extends Component {
               </Form.Item>
             );
           })}
+          <Form.Item>
+            <Button loading={loadingAddTemplate} onClick={this.onNext} type="primary">
+              Save
+            </Button>
+          </Form.Item>
         </Form>
-      );
-    }
-    return null;
+      </>
+    );
   };
 
   render() {
-    const { loadingTemplate, mode } = this.props;
+    const { loadingTemplate } = this.props;
+    // console.log(urlImage);
     return (
-      <div className={styles.modalContent}>
-        {loadingTemplate ? <Skeleton className={styles.spin} /> : this.renderContentModal(mode)}
+      <div className={styles.ModalContent}>
+        {loadingTemplate ? <Skeleton className={styles.spin} /> : this._renderModal()}
       </div>
     );
   }
 }
 
-export default ModalContent;
+export default FeedbackFormContent;

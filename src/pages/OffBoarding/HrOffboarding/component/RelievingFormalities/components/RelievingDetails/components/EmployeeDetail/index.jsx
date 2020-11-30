@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Card, Col, Row, Avatar, Divider } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { formatMessage } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -12,16 +13,24 @@ class EmployeeDetail extends PureComponent {
 
     return (
       <div className={styles.employeeDetail}>
-        <Card className={styles.employeeDetail__card} title="Employee Detail">
+        <Card
+          className={styles.employeeDetail__card}
+          title={formatMessage({ id: 'pages.relieving.employeeDetail' })}
+        >
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={6}>
-              <p className={styles.employeeDetail__text}>Employee ID</p>
+              <p className={styles.employeeDetail__text}>
+                {formatMessage({ id: 'pages.relieving.employeeID' })}
+              </p>
               <span>{employeeId}</span>
             </Col>
             <Col span={11}>
               <div style={{ display: 'flex' }}>
                 <div className={styles.employeeDetail__avatar} />
-                <p className={styles.employeeDetail__text}>Employee Name</p>
+                <p className={styles.employeeDetail__text}>
+                  {' '}
+                  {formatMessage({ id: 'pages.relieving.employeeName' })}
+                </p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
                 {generalInfo?.avatar ? (
@@ -35,20 +44,26 @@ class EmployeeDetail extends PureComponent {
               </div>
             </Col>
             <Col span={7}>
-              <p className={styles.employeeDetail__text}>Joined Date</p>
+              <p className={styles.employeeDetail__text}>
+                {formatMessage({ id: 'pages.relieving.employee.joinedDate' })}
+              </p>
               <p>{moment(employee.joinDate).locale('en').format('DD-MM-YYYY')}</p>
             </Col>
           </Row>
           <Divider />
           <Row gutter={{ xs: 8, sm: 18, md: 24, lg: 32 }}>
             <Col span={6}>
-              <p className={styles.employeeDetail__text}>Job Title</p>
+              <p className={styles.employeeDetail__text}>
+                {formatMessage({ id: 'pages.relieving.employee.jobTitle' })}
+              </p>
               <span>{title.name}</span>
             </Col>
             <Col span={11}>
               <div style={{ display: 'flex' }}>
                 <div className={styles.employeeDetail__avatar} />
-                <p className={styles.employeeDetail__text}>Reporting Manager</p>
+                <p className={styles.employeeDetail__text}>
+                  {formatMessage({ id: 'pages.relieving.employee.reporting' })}
+                </p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginTop: '-8px' }}>
                 {manager?.generalInfo?.avatar ? (
@@ -66,7 +81,9 @@ class EmployeeDetail extends PureComponent {
               </div>
             </Col>
             <Col span={7}>
-              <p className={styles.employeeDetail__text}>Department</p>
+              <p className={styles.employeeDetail__text}>
+                {formatMessage({ id: 'pages.relieving.employee.department' })}
+              </p>
               <p>{employee?.department?.name}</p>
             </Col>
           </Row>

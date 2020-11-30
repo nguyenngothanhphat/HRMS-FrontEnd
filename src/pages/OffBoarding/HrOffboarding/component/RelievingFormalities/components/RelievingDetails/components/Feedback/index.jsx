@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { formatMessage } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import styles from './index.less';
 
@@ -7,7 +8,9 @@ class Feedback extends PureComponent {
   render() {
     return (
       <div className={styles.feedback}>
-        <p className={styles.feedback__title}>Feedback from Exit interview</p>
+        <p className={styles.feedback__title}>
+          {formatMessage({ id: 'pages.relieving.feedbackFrom' })}
+        </p>
         <Row gutter={[10, 15]} align="middle" justify="s">
           <Col span={8}>
             <div className={styles.template}>
@@ -18,7 +21,11 @@ class Feedback extends PureComponent {
             </div>
           </Col>
           <Col span={16} className={styles.feedback__text}>
-            <span>Conducted by [PSI: 20014] Mokchada Sinha | 22.02.20 | 01:30 PM</span>
+            <span>
+              {' '}
+              {formatMessage({ id: 'pages.relieving.conducted' })} [PSI: 20014] Mokchada Sinha |
+              22.02.20 | 01:30 PM
+            </span>
           </Col>
         </Row>
       </div>
