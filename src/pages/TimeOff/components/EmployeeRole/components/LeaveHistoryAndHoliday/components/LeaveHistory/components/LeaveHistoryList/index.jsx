@@ -14,7 +14,7 @@ export default class LeaveHistoryList extends PureComponent {
             <Row className={styles.eachRow}>
               {fromDate === toDate && (
                 <>
-                  <Col xs={4} className={styles.dateAndMonth}>
+                  <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
                     <span className={styles.container}>
                       <span className={styles.day}>
                         {moment(fromDate).locale('en').format('DD')}
@@ -31,7 +31,11 @@ export default class LeaveHistoryList extends PureComponent {
               )}
               {fromDate !== toDate && (
                 <>
-                  <Col xs={8} className={styles.dateAndMonth}>
+                  <Col
+                    xs={8}
+                    className={styles.dateAndMonth}
+                    style={{ justifyContent: 'space-evenly' }}
+                  >
                     <span className={styles.container}>
                       <span className={styles.day}>
                         {moment(fromDate).locale('en').format('DD')}
@@ -56,7 +60,7 @@ export default class LeaveHistoryList extends PureComponent {
 
               <Col className={styles.dayInWeek} xs={5}>
                 {`-`}
-                {duration}
+                {duration} {` `}
                 {type}
               </Col>
             </Row>

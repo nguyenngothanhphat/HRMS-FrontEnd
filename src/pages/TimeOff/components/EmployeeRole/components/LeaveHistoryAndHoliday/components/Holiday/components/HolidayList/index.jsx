@@ -16,20 +16,12 @@ export default class HolidayList extends PureComponent {
                 <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
                 <span className={styles.month}>{moment(fromDate).locale('en').format('MMM')}</span>
               </Col>
-              {/* {fromDate !== toDate ? (
-                <Col xs={4} className={styles.dateAndMonth}>
-                  <span>{moment(toDate).locale('en').format('MMM')}</span>
-                  <span>{moment(toDate).locale('en').format('DD')}</span>
-                </Col>
-              ) : (
-                <Col xs={4} />
-              )} */}
-              <Col xs={20} className={styles.eventOfDay}>
+              <Col xs={16} className={styles.eventOfDay}>
                 {name}
               </Col>
-              {/* <Col className={styles.dayInWeek} xs={5}>
-                {moment(fromDate).locale('en').format('ddd')}
-              </Col> */}
+              <Col xs={4} className={styles.dateName}>
+                <span>{moment(fromDate).locale('en').format('ddd')}</span>
+              </Col>
             </Row>
           );
         })}
