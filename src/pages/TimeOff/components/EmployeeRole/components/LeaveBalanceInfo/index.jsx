@@ -61,8 +61,8 @@ export default class LeaveBalanceInfo extends PureComponent {
           <div className={styles.title}>
             <span>All you need to know about Leave balances</span>
             <Tooltip title="Close">
-              <div className={styles.closeIcon}>
-                <CloseOutlined onClick={onClose} />
+              <div onClick={onClose} className={styles.closeIcon}>
+                <CloseOutlined />
               </div>
             </Tooltip>
           </div>
