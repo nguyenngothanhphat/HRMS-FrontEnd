@@ -179,13 +179,23 @@ const routes = [
             authority: ['admin-sa'],
           },
           // working...
-          // {
-          //   path: '/project-management',
-          //   name: 'projectManagement',
-          //   icon: '/assets/images/iconOffboarding.svg',
-          //   component: '../pages_admin/ProjectManagement',
-          //   authority: ['admin-sa'],
-          // },
+          {
+            path: '/project-management',
+            name: 'projectManagement',
+            icon: '/assets/images/iconOffboarding.svg',
+            component: '../pages_admin/ProjectManagement',
+            // authority: ['admin-sa'],
+            authority: [
+              'employee',
+              'hr-manager',
+              'hr',
+              'hr-global',
+              'admin-csa',
+              'admin-cla',
+              'admin-cda',
+              'leader',
+            ],
+          },
           {
             path: '/documents/upload-document',
             name: 'uploadDocument',
