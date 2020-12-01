@@ -22,6 +22,7 @@ class RequestInformation extends Component {
       showSuccessModal: false,
       secondNotice: '',
       durationFrom: '',
+      durationTo: '',
     };
   }
 
@@ -70,11 +71,22 @@ class RequestInformation extends Component {
   };
 
   // CHECK DAY ORDER
-  checkDayOrder = (rule, value, callback) => {
-    const { durationFrom } = this.state;
+  fromDateValidator = (rule, value, callback) => {
+    const { durationTo } = this.state;
+    if (durationTo !== '') {
+      const checkDayOrder = moment(durationTo).isAfter(value);
+      if (!checkDayOrder && value !== null) {
+        callback('From Date must be before To Date!');
+      } else {
+        callback();
+      }
+    }
+  };
 
+  toDateValidator = (rule, value, callback) => {
+    const { durationFrom } = this.state;
     const checkDayOrder = moment(value).isAfter(durationFrom);
-    if (!checkDayOrder) {
+    if (!checkDayOrder && value !== null) {
       callback('To Date must be after From Date!');
     } else {
       callback();
@@ -230,7 +242,7 @@ class RequestInformation extends Component {
       },
     };
 
-    const { selectedShortType, showSuccessModal, secondNotice, durationFrom } = this.state;
+    const { selectedShortType, showSuccessModal, secondNotice } = this.state;
 
     const {
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
@@ -330,6 +342,7 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
+                      { validator: this.fromDateValidator },
                     ]}
                   >
                     <DatePicker
@@ -350,10 +363,17 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
-                      { validator: this.checkDayOrder },
+                      { validator: this.toDateValidator },
                     ]}
                   >
-                    <DatePicker disabled={durationFrom === ''} placeholder="To Date" />
+                    <DatePicker
+                      onChange={(value) => {
+                        this.setState({
+                          durationTo: value,
+                        });
+                      }}
+                      placeholder="To Date"
+                    />
                   </Form.Item>
                 </Col>
               </Row>
