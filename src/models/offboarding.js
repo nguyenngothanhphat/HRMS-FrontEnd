@@ -17,6 +17,8 @@ import {
   getListProjectByEmployee,
   complete1On1,
   reviewRequest,
+  getListAssigned,
+  getListAssignee,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -42,6 +44,8 @@ const offboarding = {
     currentTemplate: {},
     inQueuesList: [],
     closeRecordsList: [],
+    listAssigned: [],
+    listAssignee: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -221,7 +225,6 @@ const offboarding = {
       try {
         const response = yield call(getTemplateById, payload);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
       } catch (errors) {
@@ -233,7 +236,6 @@ const offboarding = {
       try {
         response = yield call(addCustomTemplate, payload);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
       } catch (errors) {
@@ -247,12 +249,10 @@ const offboarding = {
         response = yield call(getListRelieving, payload);
         const { relievingStatus } = payload;
         const { statusCode, data = [] } = response;
-        console.log(relievingStatus);
         if (statusCode !== 200) throw response;
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
             yield put({ type: 'save', payload: { closeRecordsList: data.items } });
-            console.log('ye');
             break;
           case 'IN-QUEUES':
             yield put({ type: 'save', payload: { inQueuesList: data.items } });
@@ -264,6 +264,34 @@ const offboarding = {
         dialog(errors);
       }
       return response;
+    },
+    *getListAssigned(_, { call, put }) {
+      try {
+        const response = yield call(getListAssigned);
+        const { statusCode, data: { items: listAssigned = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAssigned } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListAssignee({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListAssignee, payload);
+        const { statusCode, data = [] } = response;
+        const listAssignee = data.map((item = {}) => {
+          const { _id = '', generalInfo: { firstName = '', workEmail = '' } = {} } = item;
+          return {
+            _id,
+            name: firstName,
+            email: workEmail,
+          };
+        });
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAssignee } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

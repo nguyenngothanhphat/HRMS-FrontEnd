@@ -85,10 +85,11 @@ class ActionDetailTicket extends Component {
     });
   };
 
-  handleSubmit = ({ meetingDate, meetingTime }) => {
+  handleSubmit = (values) => {
+    const { meetingDate, meetingTime } = values;
     const { dispatch, itemRequest = {} } = this.props;
     const { employee: { _id: meetingWith } = {}, _id: offBoardingRequest } = itemRequest;
-    const payload = { meetingWith, offBoardingRequest, meetingDate, meetingTime };
+    const payload = { meetingWith, offBoardingRequest, ...values };
     dispatch({
       type: 'offboarding/create1On1',
       payload,
@@ -153,6 +154,7 @@ class ActionDetailTicket extends Component {
       itemRequest,
       openNotification = () => {},
       listDisplay = [],
+      listAssignee = [],
     } = this.props;
     const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = itemRequest;
     return (
@@ -169,7 +171,8 @@ class ActionDetailTicket extends Component {
           handleSubmit={this.handleSubmit}
           listMeetingTime={listMeetingTime}
           title={`Request 1 on 1 with ${nameEmployee}`}
-          hideMeetingWith
+          listAssignee={listAssignee}
+          hideMeetingWith={false}
           textSubmit="Submit"
           key={keyModal}
           loading={loading}

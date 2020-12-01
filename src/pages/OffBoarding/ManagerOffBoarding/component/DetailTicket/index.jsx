@@ -21,7 +21,9 @@ import styles from './index.less';
       listProjectByEmployee = [],
       itemNewCreate1On1 = {},
       showModalSuccessfully = false,
+      listAssignee = [],
     } = {},
+    user: { currentUser: { company: { _id: company } = {} } = {} } = {},
   }) => ({
     myRequest,
     list1On1,
@@ -31,6 +33,8 @@ import styles from './index.less';
     loadingReview: loading.effects['offboarding/reviewRequest'],
     itemNewCreate1On1,
     showModalSuccessfully,
+    company,
+    listAssignee,
   }),
 )
 class DetailTicket extends Component {
@@ -47,6 +51,7 @@ class DetailTicket extends Component {
     const {
       dispatch,
       match: { params: { id: code = '' } = {} },
+      company,
     } = this.props;
     dispatch({
       type: 'offboarding/fetchRequestById',
@@ -62,6 +67,12 @@ class DetailTicket extends Component {
     });
     dispatch({
       type: 'offboarding/getMeetingTime',
+    });
+    dispatch({
+      type: 'offboarding/getListAssignee',
+      payload: {
+        company,
+      },
     });
   }
 
@@ -161,14 +172,17 @@ class DetailTicket extends Component {
       listProjectByEmployee: listProject = [],
       itemNewCreate1On1: { _id: idNewComment } = {},
       showModalSuccessfully,
+      listAssignee = [],
     } = this.props;
     const {
       status = '',
       employee: {
+        _id: ownerRequest = '',
         generalInfo: { firstName: nameEmployee = '', employeeId = '', avatar = '' } = {},
         title: { name: title = '' } = {},
       } = {},
     } = myRequest;
+    const filterListAssignee = listAssignee.filter((item) => item._id !== ownerRequest);
     if (loading)
       return (
         <div className={styles.viewLoading}>
@@ -212,6 +226,7 @@ class DetailTicket extends Component {
                   openNotification={this.openNotification}
                   itemRequest={myRequest}
                   listDisplay={listDisplay}
+                  listAssignee={filterListAssignee}
                 />
               </Col>
               <Col span={6}>
