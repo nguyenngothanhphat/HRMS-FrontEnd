@@ -5,7 +5,7 @@ import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
-import TimeOffRequests from './components/TimeOffRequests';
+import TimeOffRequestsTable from './components/TimeOffRequestsTable';
 import FeedbackBar from './components/FeedbackBar';
 import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
@@ -99,7 +99,7 @@ export default class EmployeeRole extends PureComponent {
               </Row>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <TimeOffRequests />
+                  <TimeOffRequestsTable />
                 </Col>
               </Row>
               {!closeFeedbackBar && (

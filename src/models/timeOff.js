@@ -14,25 +14,7 @@ const timeOff = {
     holidaysList: [],
     leavingList: [],
     totalLeaveBalance: {},
-    leaveRequests: {
-      type: '',
-      status: '',
-      employee: {},
-      subject: '',
-      fromDate: '',
-      toDate: '',
-      leaveDates: [
-        {
-          date: '',
-          timeOfDay: '',
-        },
-      ],
-      duration: 0,
-      onDate: '',
-      description: '',
-      approvalManager: {},
-      cc: [],
-    },
+    leaveRequests: [],
     timeOffTypes: [],
   },
   effects: {
@@ -67,13 +49,13 @@ const timeOff = {
     *fetchLeaveRequestOfEmployee(_, { call, put }) {
       try {
         const response = yield call(getLeaveRequestOfEmployee);
-        const { statusCode, data: leaveRequests = {} } = response;
+        const { statusCode, data: leaveRequests = [] } = response;
         console.log('leaveRequests', leaveRequests);
         if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { leaveRequests },
-        // });
+        yield put({
+          type: 'save',
+          payload: { leaveRequests },
+        });
       } catch (errors) {
         dialog(errors);
       }

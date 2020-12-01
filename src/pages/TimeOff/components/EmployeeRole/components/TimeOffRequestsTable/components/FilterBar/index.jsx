@@ -16,7 +16,15 @@ export default class FilterBar extends PureComponent {
   };
 
   render() {
-    const { dataNumber } = this.props;
+    const {
+      dataNumber: {
+        inProgressNumber = '',
+        approvedNumber = '',
+        rejectedNumber = '',
+        draftNumber = '',
+      } = {},
+    } = this.props;
+
     return (
       <div className={styles.FilterBar}>
         <Tabs
@@ -26,35 +34,25 @@ export default class FilterBar extends PureComponent {
           tabBarExtraContent={this.renderTableTitle}
         >
           <TabPane
-            tab={`In Progress  ${
-              dataNumber.onHoldNumber !== 0
-                ? `(${this.addZeroToNumber(dataNumber.inProgressNumber)})`
-                : ''
+            tab={`In Progress ${
+              inProgressNumber !== 0 ? `(${this.addZeroToNumber(inProgressNumber)})` : ''
             } `}
             key="1"
           />
           <TabPane
-            tab={`Approved  ${
-              dataNumber.onHoldNumber !== 0
-                ? `(${this.addZeroToNumber(dataNumber.onHoldNumber)})`
-                : ''
+            tab={`Approved ${
+              approvedNumber !== 0 ? `(${this.addZeroToNumber(approvedNumber)})` : ''
             } `}
             key="2"
           />
           <TabPane
-            tab={`Rejected  ${
-              dataNumber.onHoldNumber !== 0
-                ? `(${this.addZeroToNumber(dataNumber.acceptedNumber)})`
-                : ''
+            tab={`Rejected ${
+              rejectedNumber !== 0 ? `(${this.addZeroToNumber(rejectedNumber)})` : ''
             } `}
             key="3"
           />
           <TabPane
-            tab={`Drafts  ${
-              dataNumber.onHoldNumber !== 0
-                ? `(${this.addZeroToNumber(dataNumber.rejectedNumber)})`
-                : ''
-            } `}
+            tab={`Drafts ${draftNumber !== 0 ? `(${this.addZeroToNumber(draftNumber)})` : ''} `}
             key="4"
           />
         </Tabs>

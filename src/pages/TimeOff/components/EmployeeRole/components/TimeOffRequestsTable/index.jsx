@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
+import { connect } from 'umi';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 
 import styles from './index.less';
@@ -184,7 +185,23 @@ const mockData = [
   },
 ];
 
-export default class TimeOffRequests extends PureComponent {
+@connect(({ timeOff, loading }) => ({
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  timeOff,
+}))
+class TimeOffRequestsTable extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestOfEmployee',
+    });
+  };
+
   renderTableTitle = {
     left: (
       <div className={styles.renderTableTitle}>
@@ -193,10 +210,20 @@ export default class TimeOffRequests extends PureComponent {
     ),
   };
 
+  renderData = (data) => {
+    return data;
+  };
+
   render() {
+    const { timeOff: { leaveRequests = [] } = {}, loadingFetchLeaveRequests } = this.props;
     const emptyData = [];
+    const leaveRequestsData = this.renderData(leaveRequests);
+    const specialRequestsData = this.renderData(leaveRequests);
+    const lwpRequestsData = this.renderData(leaveRequests);
+    const compoffRequestsData = this.renderData(leaveRequests);
+
     return (
-      <div className={styles.TimeOffRequests}>
+      <div className={styles.TimeOffRequestsTable}>
         <Tabs
           tabPosition="left"
           tabBarGutter={40}
@@ -204,22 +231,24 @@ export default class TimeOffRequests extends PureComponent {
           tabBarExtraContent={this.renderTableTitle}
         >
           <TabPane tab="Leave Request" key="1">
-            <TimeOffRequestTab data={emptyData} />
+            <TimeOffRequestTab data={leaveRequestsData} />
           </TabPane>
           <TabPane tab="Special Leave Request" key="2">
-            <TimeOffRequestTab data={mockData} />
+            <TimeOffRequestTab data={specialRequestsData} />
           </TabPane>
           <TabPane tab="LWP Request" key="3">
-            <TimeOffRequestTab data={mockData} />
+            <TimeOffRequestTab data={lwpRequestsData} />
           </TabPane>
-          <TabPane tab=" WFH/CP Requests" key="4">
+          <TabPane tab="WFH/CP Requests" key="4">
             <TimeOffRequestTab data={emptyData} />
           </TabPane>
           <TabPane tab="Compoff Request" key="5">
-            <TimeOffRequestTab data={mockData} />
+            <TimeOffRequestTab data={compoffRequestsData} />
           </TabPane>
         </Tabs>
       </div>
     );
   }
 }
+
+export default TimeOffRequestsTable;

@@ -21,6 +21,53 @@ export async function getLeaveRequestOfEmployee(payload) {
   });
 }
 
+const mockLeaveRequests = [
+  {
+    type: 'Leave Request',
+    status: 'IN-PROGRESS',
+    employee: {},
+    subject: '',
+    fromDate: '',
+    toDate: '',
+    leaveDates: [
+      {
+        date: '',
+        timeOfDay: '',
+      },
+    ],
+    duration: 0,
+    onDate: '',
+    description: '',
+    approvalManager: {},
+    cc: [],
+  },
+  {
+    type: 'Special Leave Request',
+    status: 'APPROVED',
+    employee: {},
+    subject: '',
+    fromDate: '',
+    toDate: '',
+    leaveDates: [
+      {
+        date: '',
+        timeOfDay: '',
+      },
+    ],
+    duration: 0,
+    onDate: '',
+    description: '',
+    approvalManager: {},
+    cc: [],
+  },
+];
+// export async function getLeaveRequestOfEmployee() {
+//   return {
+//     statusCode: 200,
+//     data: mockLeaveRequests,
+//   };
+// }
+
 export async function addLeaveRequest(payload) {
   return request('/api/leaverequest/add', {
     method: 'POST',

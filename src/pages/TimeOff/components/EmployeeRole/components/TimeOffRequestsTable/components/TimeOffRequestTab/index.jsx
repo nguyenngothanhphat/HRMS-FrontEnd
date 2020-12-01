@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
-import TimeOffTable from '../TimeOffRequestTable';
+import DataTable from '../DataTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
@@ -10,14 +10,14 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
     this.state = {
       selectedFilterTab: '1',
       inProgressData: [],
-      onHoldData: [],
-      acceptedData: [],
       rejectedData: [],
+      approvedData: [],
+      draftData: [],
     };
   }
 
   componentDidMount = () => {
-    const { data } = this.props;
+    const { data = [] } = this.props;
     this.progressData(data);
   };
 
@@ -29,26 +29,27 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
 
   progressData = (originalData) => {
     const inProgressData = [];
-    const onHoldData = [];
-    const acceptedData = [];
+    const approvedData = [];
     const rejectedData = [];
+    const draftData = [];
 
     originalData.forEach((row) => {
-      switch (row.status) {
-        case 1: {
+      const { status = '' } = row;
+      switch (status) {
+        case 'IN-PROGRESS': {
           inProgressData.push(row);
           break;
         }
-        case 2: {
-          onHoldData.push(row);
+        case 'APPROVED': {
+          approvedData.push(row);
           break;
         }
-        case 3: {
-          acceptedData.push(row);
-          break;
-        }
-        case 4: {
+        case 'REJECTED': {
           rejectedData.push(row);
+          break;
+        }
+        case 'DRAFTS': {
+          draftData.push(row);
           break;
         }
         default:
@@ -57,26 +58,21 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
     });
     this.setState({
       inProgressData,
-      onHoldData,
-      acceptedData,
+      approvedData,
       rejectedData,
+      draftData,
     });
   };
 
   render() {
-    const {
-      selectedFilterTab,
-      inProgressData,
-      onHoldData,
-      acceptedData,
-      rejectedData,
-    } = this.state;
+    const { selectedFilterTab, inProgressData, approvedData, rejectedData, draftData } = this.state;
+    const { data = [] } = this.props;
 
     const dataNumber = {
       inProgressNumber: inProgressData.length,
-      onHoldNumber: onHoldData.length,
-      acceptedNumber: acceptedData.length,
+      approvedNumber: approvedData.length,
       rejectedNumber: rejectedData.length,
+      draftNumber: draftData.length,
     };
 
     return (
@@ -84,10 +80,7 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
         <span className={styles.title}>Leave Request</span>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
-          {inProgressData.length === 0 &&
-          onHoldData.length === 0 &&
-          acceptedData.length === 0 &&
-          rejectedData.length === 0 ? (
+          {data.length === 0 ? (
             <div className={styles.emptyTable}>
               <img src={EmptyIcon} alt="empty-table" />
               <p className={styles.describeTexts}>
@@ -97,10 +90,10 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
             </div>
           ) : (
             <div>
-              {selectedFilterTab === '1' ? <TimeOffTable data={inProgressData} /> : ''}
-              {selectedFilterTab === '2' ? <TimeOffTable data={onHoldData} /> : ''}
-              {selectedFilterTab === '3' ? <TimeOffTable data={acceptedData} /> : ''}
-              {selectedFilterTab === '4' ? <TimeOffTable data={rejectedData} /> : ''}
+              {selectedFilterTab === '1' ? <DataTable data={inProgressData} /> : ''}
+              {selectedFilterTab === '2' ? <DataTable data={approvedData} /> : ''}
+              {selectedFilterTab === '3' ? <DataTable data={rejectedData} /> : ''}
+              {selectedFilterTab === '4' ? <DataTable data={draftData} /> : ''}
             </div>
           )}
         </div>

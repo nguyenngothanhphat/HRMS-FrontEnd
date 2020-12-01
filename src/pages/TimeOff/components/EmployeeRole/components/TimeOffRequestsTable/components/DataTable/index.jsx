@@ -3,7 +3,7 @@ import { Table, Avatar, Tooltip } from 'antd';
 
 import styles from './index.less';
 
-export default class TimeOffRequestTable extends PureComponent {
+export default class DataTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -17,7 +17,7 @@ export default class TimeOffRequestTable extends PureComponent {
     },
     {
       title: `Req’ted on `,
-      dataIndex: 'requestedOn',
+      dataIndex: 'onDate',
       align: 'left',
     },
     {
@@ -25,6 +25,7 @@ export default class TimeOffRequestTable extends PureComponent {
       width: '20%',
       dataIndex: 'leaveDate',
       align: 'left',
+      // render: <span>Leave date</span>,
     },
     {
       title: 'Duration',
@@ -139,7 +140,7 @@ export default class TimeOffRequestTable extends PureComponent {
       onChange: this.onSelectChange,
     };
     return (
-      <div className={styles.TimeOffRequestTable}>
+      <div className={styles.DataTable}>
         <Table
           size="small"
           loading={loading}
