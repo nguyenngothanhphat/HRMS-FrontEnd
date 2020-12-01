@@ -95,6 +95,7 @@ class TableEmployee extends PureComponent {
               </span>
             ),
           }}
+          hidein
           columns={columns}
           dataSource={data}
           pagination={{

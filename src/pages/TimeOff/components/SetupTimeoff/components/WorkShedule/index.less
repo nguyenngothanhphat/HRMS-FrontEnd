@@ -1,9 +1,16 @@
 .root {
-  padding: 27px 30px;
+  :global {
+    .ant-input-number {
+      padding: 3px;
+      width: 141px;
+      height: 42px;
+      border-radius: 5px;
+    }
+  }
   .formActive {
     background-color: #fff;
     width: auto;
-
+    height: 580px;
     // padding: 27px 24px;
     .straight {
       height: 1px;
@@ -51,15 +58,67 @@
   .pb17 {
     padding-bottom: 17px;
   }
+  .radio {
+    width: 72px;
+    height: 30px;
+    border-radius: 5px;
+  }
   .form {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     padding-bottom: 28px;
+    .formInput {
+      padding: 18px;
+      width: 190px;
+      height: 130px;
+      background: #fafafa;
+      border-radius: 13px;
+    }
   }
   .checkboxWrap {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    // flex-direction: row;
+    // justify-content: space-between;
+  }
+  .circle {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #f1f6ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 17px;
+  }
+  .circleActive {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f6ff;
+    border: 2px solid #2c6df9;
+    box-sizing: border-box;
+    margin: 0 17px;
+
+    .padding {
+      color: #2c6df9;
+    }
+  }
+  .flex {
+    display: flex;
+    justify-content: flex-end;
+    .btnSave {
+      width: 108px;
+      color: #fff;
+      margin: 0 20px;
+      height: 40px;
+      background: #ffa100;
+      border-radius: 25px;
+    }
   }
 }

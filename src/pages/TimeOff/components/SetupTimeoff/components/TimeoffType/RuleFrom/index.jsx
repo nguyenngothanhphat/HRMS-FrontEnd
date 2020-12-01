@@ -112,7 +112,7 @@ class RuleFrom extends Component {
     return (
       <Row className={styles.root} gutter={[30, 25]}>
         {array.map((render) => (
-          <Col span={12}>{this.renderItem(render)}</Col>
+          <Col span={24}>{this.renderItem(render)}</Col>
         ))}
       </Row>
     );

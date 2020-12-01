@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Input, Row, Col, Radio, Checkbox } from 'antd';
+import moment from 'moment';
+import { Form, InputNumber, Row, Col, Radio, Button, TimePicker } from 'antd';
 import s from './index.less';
 
 class WorkShedule extends Component {
@@ -8,6 +9,36 @@ class WorkShedule extends Component {
     this.state = {
       value1: 'am',
       value2: 'am',
+      array: [
+        {
+          id: 1,
+          name: 'Sun',
+        },
+        {
+          id: 2,
+          name: 'Mon',
+        },
+        {
+          id: 3,
+          name: 'Tue',
+        },
+        {
+          id: 4,
+          name: 'Wed',
+        },
+        {
+          id: 5,
+          name: 'Thu',
+        },
+        {
+          id: 6,
+          name: 'Fri',
+        },
+        {
+          id: 7,
+          name: 'Sat',
+        },
+      ],
     };
   }
 
@@ -23,7 +54,31 @@ class WorkShedule extends Component {
     });
   };
 
+  handleClick = (id) => {
+    const { array } = this.state;
+    const result = array.map((item) => ({
+      ...item,
+      check: item.id === id ? !item.check : item.check,
+    }));
+    console.log(result, 'result');
+    this.setState({ array: result });
+  };
+
+  renderItem = (item = {}) => {
+    return (
+      <div
+        className={item.check ? s.circleActive : s.circle}
+        onClick={() => this.handleClick(item.id)}
+      >
+        <div className={s.padding}>{item.name}</div>
+      </div>
+    );
+  };
+
   render() {
+    const { array } = this.state;
+    const format = 'HH:mm';
+
     const options = [
       { label: 'AM', value: 'am' },
       { label: 'PM', value: 'pm' },
@@ -41,23 +96,25 @@ class WorkShedule extends Component {
           <div className={s.straight} />
           <div className={s.formWorkHour}>
             <div className={s.workHour}>Work hour</div>
+
             <div className={`${s.description} ${s.pb17}`}>
               For each day the employee takes off, the number of hours as per the standard work
               schedule will be deducted from the total leave balance.
             </div>
             <Form layout="vertical" className={s.form}>
-              <Form.Item label="Total Hours in a workday">
-                <Input placeholder="hours/day" />
+              <Form.Item label="Total Hours in a workday" className={s.formInput}>
+                <InputNumber min={0} placeholder="hours/day" />
               </Form.Item>
               <Row>
-                <Col span={14}>
+                <Col>
                   <Form.Item label="Workday start at">
-                    <Input placeholder="hours/day" />
+                    <TimePicker defaultValue={moment('12:08', format)} format={format} />
                   </Form.Item>
                 </Col>
-                <Col span={10}>
+                <Col>
                   <Form.Item label=" ">
                     <Radio.Group
+                      // className={s.radio}
                       options={options}
                       onChange={this.onChange1}
                       value={value1}
@@ -68,12 +125,12 @@ class WorkShedule extends Component {
                 </Col>
               </Row>
               <Row>
-                <Col span={14}>
+                <Col>
                   <Form.Item label="Workday end at">
-                    <Input placeholder="hours/day" />
+                    <InputNumber min={0} placeholder="hours/day" />
                   </Form.Item>
                 </Col>
-                <Col span={10}>
+                <Col>
                   <Form.Item label=" ">
                     <Radio.Group
                       options={options}
@@ -91,15 +148,11 @@ class WorkShedule extends Component {
               For each day the employee takes off, the number of hours as per the standard work
               schedule will be deducted from the total leave balance.
             </div>
-            <div className={s.checkboxWrap}>
-              <Checkbox>Sunday</Checkbox>
-              <Checkbox>Monday</Checkbox>
-              <Checkbox>TuesDay</Checkbox>
-              <Checkbox>Wednesday</Checkbox>
-              <Checkbox>Thursday</Checkbox>
-              <Checkbox>Friday</Checkbox>
-              <Checkbox>Saturday</Checkbox>
-            </div>
+            <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
+          </div>
+          <div className={s.straight} />
+          <div className={s.flex}>
+            <Button className={s.btnSave}>Next</Button>
           </div>
         </div>
       </div>
