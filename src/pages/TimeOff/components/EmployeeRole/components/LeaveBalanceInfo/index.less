@@ -1,15 +1,20 @@
 .LeaveBalanceInfo {
-  border: 1px solid #ebeff2;
-  border-radius: 10px;
-  background-color: white;
-  padding: 24px;
-  margin: 10px;
-  position: absolute;
-  left: 0;
-  // right: 100px;
-  top: 0;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.171);
+  // border: 1px solid #ebeff2;
+  // border-radius: 10px;
+  // background-color: white;
+  // padding: 24px;
+  // margin: 10px;
+  // position: absolute;
+  // left: 0;
+  // // right: 100px;
+  // top: 0;
+  // box-shadow: 0 0 100px rgba(0, 0, 0, 0.171);
 
+  :global {
+    .ant-modal-close {
+      display: none;
+    }
+  }
   .container {
     .title {
       font-size: 18px;
@@ -72,18 +77,6 @@
       }
     }
     .collapseInfoContainer {
-      max-height: 100vh;
-      position: relative;
-      overflow-y: scroll;
-
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      &::-webkit-scrollbar {
-        display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-
       .alternativeExpandIcon {
         color: #707177;
         font-weight: bold !important;
@@ -94,17 +87,17 @@
       }
     }
   }
-  &::after {
-    height: 25px;
-    content: '';
-    width: 25px;
-    background-color: white;
-    position: absolute;
-    top: 28px;
-    left: 0;
-    margin-left: -13px;
-    border-top: #d6dce0 solid 1px;
-    border-left: #d6dce0 solid 1px;
-    transform: rotate(315deg);
-  }
+  // &::after {
+  //   height: 25px;
+  //   content: '';
+  //   width: 25px;
+  //   background-color: white;
+  //   position: absolute;
+  //   top: 28px;
+  //   left: 0;
+  //   margin-left: -13px;
+  //   border-top: #d6dce0 solid 1px;
+  //   border-left: #d6dce0 solid 1px;
+  //   transform: rotate(315deg);
+  // }
 }

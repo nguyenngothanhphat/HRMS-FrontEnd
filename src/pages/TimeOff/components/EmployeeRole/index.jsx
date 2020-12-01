@@ -109,7 +109,7 @@ export default class EmployeeRole extends PureComponent {
                   </Col>
                 </Row>
               )}
-              {viewInformation && <LeaveBalanceInfo onClose={this.onInformationCLick} />}
+              <LeaveBalanceInfo onClose={this.onInformationCLick} visible={viewInformation} />
             </Col>
           </Row>
         </div>
