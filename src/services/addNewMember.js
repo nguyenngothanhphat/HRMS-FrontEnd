@@ -21,7 +21,11 @@ export function getDepartmentList(params) {
 }
 
 export function getTitleList(params) {
-  return request('/api/title/list-by-company', {
+  // return request('/api/title/list-by-company', {
+  //   method: 'POST',
+  //   data: params,
+  // });
+  return request('/api/title/list-by-department', {
     method: 'POST',
     data: params,
   });
@@ -44,6 +48,10 @@ export function getManagerList(params) {
     method: 'POST',
     data: params,
   });
+  // return request('/api/employee/list-active', {
+  //   method: 'POST',
+  //   data: params,
+  // });
 }
 
 export function getCandidateManagerList(params) {
