@@ -5,6 +5,7 @@ import {
   getCustomTemplateList,
   getTemplateById,
   getOptionalQuestions,
+  saveOptionalQuestions,
   updateOptionalQuestions,
   uploadSignature,
   addCustomTemplate,
@@ -146,6 +147,22 @@ const employeeSetting = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *saveOptionalQuestions({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(saveOptionalQuestions, payload);
+        const { statusCode } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

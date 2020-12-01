@@ -12,7 +12,7 @@ const WrapContent: React.FC<{
   const { style, className, children } = props;
   return (
     <ConfigProviderWarp>
-      <Layout.Content className={className} style={style}>
+      <Layout.Content className={className} style={{ ...style, paddingLeft: '104px' }}>
         {children}
       </Layout.Content>
     </ConfigProviderWarp>
