@@ -72,6 +72,7 @@ class RequestInformation extends Component {
   // CHECK DAY ORDER
   checkDayOrder = (rule, value, callback) => {
     const { durationFrom } = this.state;
+
     const checkDayOrder = moment(value).isAfter(durationFrom);
     if (!checkDayOrder) {
       callback('To Date must be after From Date!');
@@ -229,7 +230,7 @@ class RequestInformation extends Component {
       },
     };
 
-    const { selectedShortType, showSuccessModal, secondNotice } = this.state;
+    const { selectedShortType, showSuccessModal, secondNotice, durationFrom } = this.state;
 
     const {
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
@@ -352,7 +353,7 @@ class RequestInformation extends Component {
                       { validator: this.checkDayOrder },
                     ]}
                   >
-                    <DatePicker placeholder="To Date" />
+                    <DatePicker disabled={durationFrom === ''} placeholder="To Date" />
                   </Form.Item>
                 </Col>
               </Row>
