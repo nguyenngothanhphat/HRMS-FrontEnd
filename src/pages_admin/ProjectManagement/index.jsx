@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'umi';
 
 import { Tabs } from 'antd';
@@ -24,7 +24,17 @@ const {
 } = COLUMN_NAME;
 
 const ProjectManagement = (props) => {
-  const { activeList, inactiveList } = props;
+  const { activeList, inactiveList, dispatch } = props;
+
+  useEffect(() => {
+    dispatch({
+      type: 'projectManagement/getProjectByCompany',
+      payload: {
+        company: '5e8723f131c6e53d60ae9678',
+      },
+    });
+  }, []);
+
   console.log(props);
 
   return (
