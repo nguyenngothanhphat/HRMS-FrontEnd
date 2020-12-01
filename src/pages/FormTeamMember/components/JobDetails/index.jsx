@@ -154,7 +154,6 @@ class JobDetails extends PureComponent {
   };
 
   _handleSelect = (value, name) => {
-    console.log('RUN');
     const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
@@ -186,7 +185,6 @@ class JobDetails extends PureComponent {
           },
         });
 
-        console.log(department);
         // dispatch({
         //   type: 'candidateInfo/fetchTitleList',
         //   payload: {
@@ -209,7 +207,6 @@ class JobDetails extends PureComponent {
       } = this.props;
       const changedtitleList = JSON.parse(JSON.stringify(titleList));
       const selectedTitle = changedtitleList.find((data) => data._id === value);
-      console.log('selectedTitle', selectedTitle);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -223,7 +220,6 @@ class JobDetails extends PureComponent {
       const { location, departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
       const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
-      console.log('selectedDepartment', selectedDepartment);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
