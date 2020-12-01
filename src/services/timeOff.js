@@ -62,9 +62,6 @@ const mockData = [
 ];
 
 export async function getHolidaysList() {
-  //   return request('/api/attachments/upload/image', {
-  //     method: 'POST',
-  //   });
   return {
     data: mockData,
     statusCode: 200,

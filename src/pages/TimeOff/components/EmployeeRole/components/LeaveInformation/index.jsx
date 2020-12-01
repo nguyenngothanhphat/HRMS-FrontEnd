@@ -140,20 +140,11 @@ class LeaveInformation extends PureComponent {
     </div>
   );
 
-  calculateValueForCircleProgress = (typesOfCommonLeaves, typesOfSpecialLeaves) => {
+  calculateValueForCircleProgress = (typesOfCommonLeaves) => {
     let remaining = 0;
     let total = 0;
 
     typesOfCommonLeaves.forEach((type) => {
-      const {
-        currentAllowance = 0,
-        defaultSettings: { baseAccrual: { time = 0 } = {} } = {},
-      } = type;
-      remaining += currentAllowance;
-      total += time;
-    });
-
-    typesOfSpecialLeaves.forEach((type) => {
       const {
         currentAllowance = 0,
         defaultSettings: { baseAccrual: { time = 0 } = {} } = {},
@@ -183,7 +174,7 @@ class LeaveInformation extends PureComponent {
       policy: policySpecialLeaves = {},
     } = specialLeaves;
 
-    const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves, typesOfSpecialLeaves);
+    const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
 
     return (
       <div className={styles.LeaveInformation}>

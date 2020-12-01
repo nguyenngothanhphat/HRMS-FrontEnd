@@ -68,11 +68,11 @@ class LeaveBalanceInfo extends PureComponent {
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
                 {this.renderData().map((data, index) => {
-                  const { name = '', description = '', shortenName = 'Short name' } = data;
+                  const { name = '', description = '', shortType = 'Short name' } = data;
                   return (
                     <Panel
                       className={styles.eachCollapse}
-                      header={`${name} (${shortenName})`}
+                      header={`${name} (${shortType})`}
                       key={`${index + 1}`}
                     >
                       <p>{description}</p>

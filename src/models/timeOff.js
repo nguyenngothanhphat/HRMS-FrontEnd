@@ -14,7 +14,25 @@ const timeOff = {
     holidaysList: [],
     leavingList: [],
     totalLeaveBalance: {},
-    leaveRequests: {},
+    leaveRequests: {
+      type: '',
+      status: '',
+      employee: {},
+      subject: '',
+      fromDate: '',
+      toDate: '',
+      leaveDates: [
+        {
+          date: '',
+          timeOfDay: '',
+        },
+      ],
+      duration: 0,
+      onDate: '',
+      description: '',
+      approvalManager: {},
+      cc: [],
+    },
     timeOffTypes: [],
   },
   effects: {
@@ -52,10 +70,10 @@ const timeOff = {
         const { statusCode, data: leaveRequests = {} } = response;
         console.log('leaveRequests', leaveRequests);
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { leaveRequests },
-        });
+        // yield put({
+        //   type: 'save',
+        //   payload: { leaveRequests },
+        // });
       } catch (errors) {
         dialog(errors);
       }

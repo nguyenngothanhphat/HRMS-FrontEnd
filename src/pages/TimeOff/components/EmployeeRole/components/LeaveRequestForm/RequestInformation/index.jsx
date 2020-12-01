@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import RedCautionIcon from '@/assets/redcaution.svg';
 import { connect } from 'umi';
+import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import styles from './index.less';
 
@@ -17,25 +18,40 @@ class RequestInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedType: '',
+      selectedShortType: '',
       showSuccessModal: false,
       secondNotice: '',
+      durationFrom: '',
     };
   }
 
+  // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchLeaveBalanceOfUser',
+    });
+    dispatch({
+      type: 'timeOff/fetchTimeOffTypes',
+    });
+  };
+
+  // SHOW ABOVE NOTICE (BESIDE SELECT TIMEOFF TYPE FIELD)
+  setSelectedShortType = (shortType) => {
+    this.setState({
+      selectedShortType: shortType,
+    });
+    this.setSecondNotice(`${shortType}s are covered under Standard Policy`);
+  };
+
+  // SHOW BELOW NOTICE (BESIDE DURATION FIELD)
   setSecondNotice = (value) => {
     this.setState({
       secondNotice: value,
     });
   };
 
-  setSelectedType = (type) => {
-    this.setState({
-      selectedType: type,
-    });
-    this.setSecondNotice(`${type}s are covered under Standard Policy`);
-  };
-
+  // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
   setShowSuccessModal = (value) => {
     this.setState({
       showSuccessModal: value,
@@ -53,12 +69,24 @@ class RequestInformation extends Component {
     console.log('Failed:', errorInfo);
   };
 
+  // CHECK DAY ORDER
+  checkDayOrder = (rule, value, callback) => {
+    const { durationFrom } = this.state;
+    const checkDayOrder = moment(value).isAfter(durationFrom);
+    if (!checkDayOrder) {
+      callback('To Date must be after From Date!');
+    } else {
+      callback();
+    }
+  };
+
+  // ON SAVE DRAFT CLICKED
   saveDraft = () => {
     // eslint-disable-next-line no-alert
     alert('Save Draft');
   };
 
-  // hover content
+  // HOVER ON EACH OPTION IN SELECT
   content = () => (
     <span
       // style={{
@@ -83,7 +111,24 @@ class RequestInformation extends Component {
     </span>
   );
 
-  // render select options
+  // RENDER SELECT BOX
+  // GET DATA FOR SELECT BOX
+  renderTimeOffTypes = (data) => {
+    return data.map((type) => {
+      const {
+        currentAllowance = 0,
+        defaultSettings: { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = {},
+      } = type;
+      return {
+        name,
+        shortName: shortType,
+        remaining: currentAllowance,
+        total: time,
+      };
+    });
+  };
+
+  // TYPE A: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
     return data.map((value) => {
       const { name = '', shortName = '', remaining = 0, total = 0 } = value;
@@ -98,7 +143,7 @@ class RequestInformation extends Component {
         fontWeight: 'bold',
       };
       return (
-        <Option value={shortName}>
+        <Option value={name}>
           <div className={styles.timeOffTypeOptions}>
             {/* I don't knew why I could not CSS this block in styles.less file
           So I tried inline CSS. 
@@ -127,7 +172,25 @@ class RequestInformation extends Component {
     });
   };
 
+  // TYPE C: SPECIAL LEAVES
   renderType2 = (data) => {
+    return data.map((value) => {
+      const { name = '', shortName = '', total = 0 } = value;
+      return (
+        <Option value={name}>
+          <div className={styles.timeOffTypeOptions}>
+            <span style={{ fontSize: 13 }} className={styles.name}>
+              {`${name} (${shortName})`}
+            </span>
+            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>{total} days</span>
+          </div>
+        </Option>
+      );
+    });
+  };
+
+  // TYPE D: WORKING OUT OF OFFICE
+  renderType3 = (data) => {
     return data.map((value) => {
       const { name = '', shortName = '', total = 0 } = value;
       return (
@@ -143,9 +206,20 @@ class RequestInformation extends Component {
     });
   };
 
-  render() {
-    const { selectedType, showSuccessModal, secondNotice } = this.state;
+  getSelectedType = () => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    const { selectedShortType } = this.state;
+    let selectedType = '';
+    timeOffTypes.forEach((value) => {
+      if (value.shortType === selectedShortType) {
+        selectedType = value.name;
+      }
+      return null;
+    });
+    return selectedType;
+  };
 
+  render() {
     const layout = {
       labelCol: {
         span: 6,
@@ -155,57 +229,19 @@ class RequestInformation extends Component {
       },
     };
 
-    const dataTimeOffTypes1 = [
-      {
-        name: 'Casual Leave',
-        shortName: 'CL',
-        remaining: 0,
-        total: 10,
-      },
-      {
-        name: 'Sick Leave',
-        shortName: 'SL',
-        remaining: 7,
-        total: 10,
-      },
-      {
-        name: 'Compensation Leave',
-        shortName: 'CO',
-        remaining: 7,
-        total: 10,
-      },
-    ];
-    const dataTimeOffTypes2 = [
-      {
-        name: 'Maternity Leave',
-        shortName: 'ML',
-        total: 30,
-      },
-      {
-        name: 'Bereavement Leave',
-        shortName: 'BL',
-        total: 7,
-      },
-      {
-        name: 'Restricted Holiday',
-        shortName: 'RH',
-        total: 1,
-      },
-    ];
+    const { selectedShortType, showSuccessModal, secondNotice } = this.state;
 
-    let selectedTypeName = '';
-    dataTimeOffTypes1.forEach((value) => {
-      if (value.shortName === selectedType) {
-        selectedTypeName = value.name;
-      }
-      return null;
-    });
-    dataTimeOffTypes2.forEach((value) => {
-      if (value.shortName === selectedType) {
-        selectedTypeName = value.name;
-      }
-      return null;
-    });
+    const {
+      timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+    } = this.props;
+    const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
+    const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
+
+    const dataTimeOffTypes1 = this.renderTimeOffTypes(typesOfCommonLeaves);
+    const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
+
+    // SET VALUE FOR THE ABOVE NOTICE
+    const selectedType = this.getSelectedType();
 
     return (
       <div className={styles.RequestInformation}>
@@ -240,7 +276,7 @@ class RequestInformation extends Component {
                 ]}
               >
                 <Select
-                  onChange={(value) => this.setSelectedType(value)}
+                  onChange={(value) => this.setSelectedShortType(value)}
                   placeholder="Timeoff Type"
                 >
                   {this.renderType1(dataTimeOffTypes1)}
@@ -249,10 +285,10 @@ class RequestInformation extends Component {
               </Form.Item>
             </Col>
             <Col span={6}>
-              {selectedType !== '' && (
+              {selectedShortType !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
-                    {selectedType}s are covered under{' '}
+                    {selectedShortType}s are covered under{' '}
                     <span className={styles.link}>Standard Policy</span>
                   </span>
                 </div>
@@ -295,7 +331,14 @@ class RequestInformation extends Component {
                       },
                     ]}
                   >
-                    <DatePicker placeholder="From Date" />
+                    <DatePicker
+                      onChange={(value) => {
+                        this.setState({
+                          durationFrom: value,
+                        });
+                      }}
+                      placeholder="From Date"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -306,6 +349,7 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
+                      { validator: this.checkDayOrder },
                     ]}
                   >
                     <DatePicker placeholder="To Date" />
@@ -384,7 +428,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content={`${selectedTypeName} request submitted to the HR and your manager.`}
+          content={`${selectedType} request submitted to the HR and your manager.`}
           submitText="OK"
         />
       </div>
