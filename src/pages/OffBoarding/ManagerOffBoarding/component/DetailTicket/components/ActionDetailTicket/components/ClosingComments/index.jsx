@@ -102,12 +102,7 @@ class ClosingComments extends Component {
             </div>
           ) : (
             <div className={styles.closingComments__textArea}>
-              <TextArea
-                allowClear
-                placeholder="The reason I have decided to end my journey with Lollypop here is because…"
-                value={q}
-                onChange={this.handleChange}
-              />
+              <TextArea allowClear value={q} onChange={this.handleChange} />
               <Button
                 className={styles.btn__submit}
                 onClick={this.handleSubmitComments}
