@@ -7,6 +7,13 @@ export async function getLeaveBalanceOfUser(payload) {
   });
 }
 
+export async function getTimeOffTypes(payload) {
+  return request('/api/timeofftype/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequest/get-by-employee', {
     method: 'POST',

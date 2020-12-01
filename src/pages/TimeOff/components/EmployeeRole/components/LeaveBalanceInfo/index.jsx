@@ -1,49 +1,29 @@
 import React, { PureComponent } from 'react';
 import { Collapse, Tooltip, Modal } from 'antd';
 import { CloseOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-export default class LeaveBalanceInfo extends PureComponent {
-  renderMockData = () => {
-    const sampleContent = (
-      <p>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-        Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
-        gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-        <br />
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea.
-        <br />
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea.Lorem ipsum dolor sit
-        amet, consetetur sadipscing elitr.
-      </p>
-    );
-    return [
-      {
-        title: 'Casual Leave (CL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Sick Leave (SL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Compensation Leave (CL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Malternity Leave (ML)',
-        content: sampleContent,
-      },
-    ];
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class LeaveBalanceInfo extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchTimeOffTypes',
+    });
+  };
+
+  renderData = () => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    return timeOffTypes;
   };
 
   renderExpandIcon = (isActive) =>
@@ -87,11 +67,15 @@ export default class LeaveBalanceInfo extends PureComponent {
                 expandIconPosition="right"
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
-                {this.renderMockData().map((data, index) => {
-                  const { title = '', content = '' } = data;
+                {this.renderData().map((data, index) => {
+                  const { name = '', description = '', shortenName = 'Short name' } = data;
                   return (
-                    <Panel className={styles.eachCollapse} header={title} key={`${index + 1}`}>
-                      <p>{content}</p>
+                    <Panel
+                      className={styles.eachCollapse}
+                      header={`${name} (${shortenName})`}
+                      key={`${index + 1}`}
+                    >
+                      <p>{description}</p>
                     </Panel>
                   );
                 })}
@@ -103,3 +87,5 @@ export default class LeaveBalanceInfo extends PureComponent {
     );
   }
 }
+
+export default LeaveBalanceInfo;

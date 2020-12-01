@@ -5,6 +5,7 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
+  getTimeOffTypes,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -14,8 +15,23 @@ const timeOff = {
     leavingList: [],
     totalLeaveBalance: {},
     leaveRequests: {},
+    timeOffTypes: [],
   },
   effects: {
+    *fetchTimeOffTypes(_, { call, put }) {
+      try {
+        const response = yield call(getTimeOffTypes);
+        const { statusCode, data: timeOffTypes = {} } = response;
+        console.log('timeOffTypes', timeOffTypes);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypes },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchLeaveBalanceOfUser(_, { call, put }) {
       try {
         const response = yield call(getLeaveBalanceOfUser);
