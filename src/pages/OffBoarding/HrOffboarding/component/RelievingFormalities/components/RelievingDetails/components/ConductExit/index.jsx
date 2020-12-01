@@ -63,9 +63,10 @@ class ConductExit extends PureComponent {
   };
 
   handleSendSchedule = (values) => {
-    const { dispatch, myRequest = {} } = this.props;
-    const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
-    const payload = { meetingWith, offBoardingRequest, ...values };
+    const { dispatch, employeeDetails = {}, currentUser } = this.props;
+    const { employee: { _id: meetingWith } = {}, _id: offBoardingRequest } = employeeDetails;
+    const createdBy = currentUser?.employee?._id;
+    const payload = { createdBy, meetingWith, offBoardingRequest, ...values };
     dispatch({
       type: 'offboarding/createScheduleInterview',
       payload,

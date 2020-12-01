@@ -17,6 +17,7 @@ import {
   getListProjectByEmployee,
   complete1On1,
   reviewRequest,
+  sendMailExitPackage,
 } from '../services/offboarding';
 
 const offboarding = {

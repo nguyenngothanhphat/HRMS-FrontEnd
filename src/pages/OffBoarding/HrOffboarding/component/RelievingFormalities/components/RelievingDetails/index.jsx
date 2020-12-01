@@ -41,6 +41,7 @@ class RelievingDetails extends PureComponent {
   render() {
     const {
       offboarding: { relievingDetails = {}, exitPackageDummy = {} },
+      currentUser = {},
     } = this.props;
     return (
       <PageContainer>
@@ -59,7 +60,7 @@ class RelievingDetails extends PureComponent {
             </Col>
             <Col md={24} lg={14}>
               <MailExit exitPackageTemplates={exitPackageDummy} />
-              <ConductExit />
+              <ConductExit employeeDetails={relievingDetails} currentUser={currentUser} />
               <Feedback />
               <ClosePackage />
               <Button className={styles.relievingDetail__btnClose}>Close employee record</Button>

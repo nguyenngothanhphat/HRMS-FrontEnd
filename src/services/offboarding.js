@@ -114,3 +114,10 @@ export async function getListRelieving(payload) {
     data: payload,
   });
 }
+
+export async function sendMailExitPackage(payload) {
+  return request('/api/offboardingrequest/send-package', {
+    method: 'POST',
+    data: payload,
+  });
+}
