@@ -1,16 +1,20 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
 import viewTemplateIcon from '@/assets/view-template-icon.svg';
 import externalLinkIcon from '@/assets/external-link.svg';
 import removeIcon from '@/assets/remove-off-boarding.svg';
-import ScheduleInterview from '../ScheduleInterview';
+import ScheduleInterview from './components/ScheduleInterview';
 import FeedbackForm from './components/FeedbackForm';
 import FeedbackFormContent from './components/FeedbackFormContent';
 import styles from './index.less';
 
+@connect(({ loading, offboarding: { listMeetingTime = [] } = {} }) => ({
+  listMeetingTime,
+  loadingCreateSchedule: loading.effects['offboarding/createScheduleInterview'],
+}))
 class ConductExit extends PureComponent {
   constructor(props) {
     super(props);
@@ -20,9 +24,17 @@ class ConductExit extends PureComponent {
     };
   }
 
-  openScheduleInterview = () => {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/getMeetingTime',
+    });
+  }
+
+  handleModalScheduleInterview = () => {
+    const { visible } = this.state;
     this.setState({
-      visible: true,
+      visible: !visible,
     });
   };
 
@@ -50,8 +62,24 @@ class ConductExit extends PureComponent {
     );
   };
 
+  handleSendSchedule = (values) => {
+    const { dispatch, myRequest = {} } = this.props;
+    const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
+    const payload = { meetingWith, offBoardingRequest, ...values };
+    dispatch({
+      type: 'offboarding/createScheduleInterview',
+      payload,
+      isEmployee: true,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.handleModalScheduleInterview();
+      }
+    });
+  };
+
   render() {
     const { visible } = this.state;
+    const { listMeetingTime, loadingCreateSchedule } = this.props;
     return (
       <>
         <div className={styles.conductExit}>
@@ -71,15 +99,18 @@ class ConductExit extends PureComponent {
             </div>
             <Button
               className={styles.conductExit__btnSchedule}
-              onClick={this.openScheduleInterview}
+              onClick={this.handleModalScheduleInterview}
             >
               {formatMessage({ id: 'pages.relieving.scheduleInterview' })}
             </Button>
           </div>
           <ScheduleInterview
+            loadingCreateSchedule={loadingCreateSchedule}
+            listMeetingTime={listMeetingTime}
             modalContent={formatMessage({ id: 'pages.relieving.scheduleInterview' })}
             visible={visible}
             handleCancel={this.handleCancel}
+            handleSendSchedule={this.handleSendSchedule}
           />
         </div>
         <div className={styles.conductExit}>

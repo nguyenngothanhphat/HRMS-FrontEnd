@@ -43,6 +43,7 @@ const offboarding = {
     currentTemplate: {},
     inQueuesList: [],
     closeRecordsList: [],
+    itemCreateScheduleInterview: {},
     exitPackageDummy: [
       {
         attachment: {
@@ -336,12 +337,10 @@ const offboarding = {
         response = yield call(getListRelieving, payload);
         const { relievingStatus } = payload;
         const { statusCode, data = [] } = response;
-        console.log(relievingStatus);
         if (statusCode !== 200) throw response;
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
             yield put({ type: 'save', payload: { closeRecordsList: data.items } });
-            console.log('ye');
             break;
           case 'IN-QUEUES':
             yield put({ type: 'save', payload: { inQueuesList: data.items } });
@@ -349,6 +348,21 @@ const offboarding = {
           default:
             return null;
         }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *createScheduleInterview({ payload, isEmployee = false }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(create1On1, payload);
+        const { statusCode, data: itemCreateScheduleInterview = {} } = response;
+        if (statusCode !== 200) throw response;
+        if (isEmployee) {
+          notification.success({ message: `Set schedule interview successfully!` });
+        }
+        yield put({ type: 'save', payload: { itemCreateScheduleInterview } });
       } catch (errors) {
         dialog(errors);
       }

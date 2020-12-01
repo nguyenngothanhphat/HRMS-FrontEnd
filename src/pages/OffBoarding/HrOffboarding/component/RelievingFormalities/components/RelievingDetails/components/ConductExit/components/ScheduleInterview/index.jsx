@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, DatePicker, TimePicker, Form } from 'antd';
+import { Modal, Button, DatePicker, Form, Select } from 'antd';
 import { formatMessage } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-const { RangePicker } = TimePicker;
+// const { RangePicker } = TimePicker;
+
+const { Option } = Select;
 class ScheduleInterview extends PureComponent {
   constructor(props) {
     super(props);
@@ -17,15 +19,16 @@ class ScheduleInterview extends PureComponent {
   };
 
   handleSendSchedule = (values) => {
-    console.log('values', values);
+    const { handleSendSchedule = () => {} } = this.props;
+    handleSendSchedule(values);
   };
 
   disabledDate = (current) => {
-    return current && current < moment().endOf('day');
+    return current && current < moment().subtract(1, 'day').endOf('day');
   };
 
   render() {
-    const { visible = false, loading, modalContent } = this.props;
+    const { visible = false, loadingCreateSchedule, modalContent, listMeetingTime } = this.props;
     return (
       <Modal
         className={styles.scheduleInterview}
@@ -44,31 +47,38 @@ class ScheduleInterview extends PureComponent {
             <div className={styles.flexContent}>
               <Form.Item
                 label="Meeting on"
-                name="date"
+                name="meetingDate"
                 rules={[{ required: true, message: 'Please input date!' }]}
               >
                 <DatePicker
-                  format="MM/DD"
+                  format="YYYY-MM-DD"
                   className={styles.datePicker}
                   disabledDate={this.disabledDate}
                 />
               </Form.Item>
               <Form.Item
                 label="Meeting at"
-                name="time"
+                name="meetingTime"
                 rules={[{ required: true, message: 'Please input time!' }]}
               >
-                <RangePicker
+                {/* <RangePicker
                   //   onChange={(time, timeString) => console.log(time, timeString)}
                   picker="time"
                   format="h:mm A"
                   minuteStep={5}
                   showTime={{ format: 'hh:mm A', use12Hours: true }}
                   className={styles.datePicker}
-                />
+                /> */}
+                <Select className={styles.datePicker}>
+                  {listMeetingTime.map((item) => (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
             </div>
-            <Button htmlType="submit" loading={loading} className={styles.btnSubmit}>
+            <Button htmlType="submit" loading={loadingCreateSchedule} className={styles.btnSubmit}>
               {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
             </Button>
           </Form>

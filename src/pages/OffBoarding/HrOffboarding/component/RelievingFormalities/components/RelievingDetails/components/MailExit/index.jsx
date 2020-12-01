@@ -138,10 +138,10 @@ class MailExit extends Component {
         >
           {isSend ? (
             <Row gutter={[10, 20]}>
-              {mailInterviewPackage.map((template) => {
+              {mailInterviewPackage.map((template, index) => {
                 const { attachment } = template;
                 return (
-                  <Col span={this.renderSpanColumn(attachment.name)}>
+                  <Col span={this.renderSpanColumn(attachment.name)} key={`${index + 1}`}>
                     <div className={styles.template}>
                       <div className={styles.template__content}>
                         <img src={templateIcon} alt="template-icon" />
@@ -158,10 +158,10 @@ class MailExit extends Component {
             </Row>
           ) : (
             <Row gutter={[10, 20]}>
-              {exitPackageTemplates.map((template) => {
+              {exitPackageTemplates.map((template, index) => {
                 const { title } = template;
                 return (
-                  <Col span={this.renderSpanColumn(title)}>
+                  <Col span={this.renderSpanColumn(title)} key={`${index + 1}`}>
                     <div className={styles.template}>
                       <div
                         className={styles.template__content}

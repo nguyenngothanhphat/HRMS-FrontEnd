@@ -39,10 +39,10 @@ class ClosingPackage extends PureComponent {
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closePackage.map((template) => {
+          {closePackage.map((template, index) => {
             const { attachment } = template;
             return (
-              <Col span={10}>
+              <Col span={10} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
                     <img src={templateIcon} alt="template-icon" />
