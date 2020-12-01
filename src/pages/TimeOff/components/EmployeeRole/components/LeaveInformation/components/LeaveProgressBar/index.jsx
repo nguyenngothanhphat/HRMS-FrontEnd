@@ -36,7 +36,7 @@ export default class LeaveProgressBar extends PureComponent {
   render() {
     const {
       title = '',
-      shorten = '',
+      shortType = '',
       stepNumber = 0,
       limitNumber = 0,
       color = '#000',
@@ -54,7 +54,7 @@ export default class LeaveProgressBar extends PureComponent {
               className={styles.title__shorten}
             >
               {' '}
-              ({shorten})
+              {shortType !== '' && `(${shortType})`}
             </span>
           </p>
           <p className={styles.progress}>

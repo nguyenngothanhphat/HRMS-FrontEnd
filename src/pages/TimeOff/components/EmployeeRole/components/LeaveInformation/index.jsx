@@ -43,7 +43,7 @@ const CollapseInformation = (props) => {
           {typesOfCommonLeaves.map((type, index) => {
             const {
               currentAllowance = 0,
-              defaultSettings: { name = '', baseAccrual: { time = 0 } = {} } = {},
+              defaultSettings: { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = {},
             } = type;
             const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
             return (
@@ -51,7 +51,7 @@ const CollapseInformation = (props) => {
                 <LeaveProgressBar
                   color={colorsList[index % 3]}
                   title={name}
-                  shorten="CL"
+                  shortType={shortType}
                   stepNumber={currentAllowance}
                   limitNumber={time}
                   moreContent={moreContentMock[index % 3]}
@@ -72,13 +72,16 @@ const CollapseInformation = (props) => {
         </div>
         <Row className={styles.leaveProgressBars}>
           {typesOfSpecialLeaves.map((type, index) => {
-            const { currentAllowance = 0, defaultSettings: { name = '' } = {} } = type;
+            const {
+              currentAllowance = 0,
+              defaultSettings: { name = '', shortType = '' } = {},
+            } = type;
             return (
               <Col span={24}>
                 <SpecialLeaveBox
                   color={colorsList[index % 3]}
                   title={name}
-                  shorten="ML"
+                  shortType={shortType}
                   days={currentAllowance}
                 />
                 {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}

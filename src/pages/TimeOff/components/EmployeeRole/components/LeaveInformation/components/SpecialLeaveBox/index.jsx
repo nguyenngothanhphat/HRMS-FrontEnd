@@ -4,7 +4,7 @@ import styles from './index.less';
 
 export default class SpecialLeaveBox extends PureComponent {
   render() {
-    const { title = '', shorten = '', days = 0 } = this.props;
+    const { title = '', shortType = '', days = 0 } = this.props;
     return (
       <Col className={styles.SpecialLeaveBox} span={24}>
         <div className={styles.daysBox}>
@@ -16,7 +16,7 @@ export default class SpecialLeaveBox extends PureComponent {
         </div>
         <p className={styles.title}>
           <p>
-            {title} <span> ({shorten})</span>
+            {title} <span> {shortType !== '' && `(${shortType})`}</span>
           </p>
         </p>
       </Col>
