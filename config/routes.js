@@ -142,8 +142,7 @@ const routes = [
             name: 'projectManagement',
             icon: '/assets/images/iconOffboarding.svg',
             component: '../pages_admin/ProjectManagement',
-            // authority: ['admin-sa'],
-            authority: ['hr-manager'],
+            authority: ['admin-sa'],
           },
           {
             path: '/companies/add-company',
