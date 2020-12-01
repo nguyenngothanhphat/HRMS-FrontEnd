@@ -1,18 +1,22 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable react/sort-comp */
+/* eslint-disable no-bitwise */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
-Quill.register('modules/mentions', QuillMention);
 import 'react-quill/dist/quill.snow.css';
 
 import removeIcon from './assets/removeIcon.svg';
 
 import styles from './index.less';
 
+Quill.register('modules/mentions', QuillMention);
+
 const atValues = [
-  { id: 1, value: 'Lam Nguyen' },
-  { id: 2, value: 'Terralogic' },
+  { id: 1, value: '@name' },
+  { id: 2, value: '@Terralogic' },
 ];
 const hashValues = [
   { id: 3, value: '385 Cong Hoa' },
@@ -296,7 +300,7 @@ class EmailReminderForm extends PureComponent {
                     placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'department', value)}
                   >
-                    {departments.map((department) => {
+                    {deparenderListrtments.map((department) => {
                       return <Option value={department.value}>{department.name}</Option>;
                     })}
                   </Select>
@@ -353,14 +357,15 @@ class EmailReminderForm extends PureComponent {
 
   mentionModule = {
     allowedChars: /^[A-Za-z\s]*$/,
-    mentionDenotationChars: ['##', '#'],
+    mentionDenotationChars: ['_', '#'],
+    showDenotationChar: false,
     renderItem: (item) => {
       return item.value;
     },
-    source: function (searchTerm, renderList, mentionChar) {
+    source(searchTerm, renderList, mentionChar) {
       let values;
 
-      if (mentionChar === '##') {
+      if (mentionChar === '_') {
         values = atValues;
       } else {
         values = hashValues;
