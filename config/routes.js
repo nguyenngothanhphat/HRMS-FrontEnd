@@ -136,7 +136,6 @@ const routes = [
             component: '../pages_admin/CompaniesManagement/components/AddCompany',
             authority: ['admin-sa'],
           },
-          // working...
           {
             path: '/project-management',
             name: 'projectManagement',
