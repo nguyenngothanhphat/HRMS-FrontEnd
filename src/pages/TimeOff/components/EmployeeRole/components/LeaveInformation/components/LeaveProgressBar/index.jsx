@@ -40,6 +40,7 @@ export default class LeaveProgressBar extends PureComponent {
       stepNumber = 0,
       limitNumber = 0,
       color = '#000',
+      moreContent = '',
     } = this.props;
     return (
       <div className={styles.LeaveProgressBar}>
@@ -68,7 +69,10 @@ export default class LeaveProgressBar extends PureComponent {
             <span className={styles.limitNumber}>/{`0${limitNumber}`.slice(-2)}</span>
           </p>
         </div>
-        <div className={styles.LeaveProgressBar__below}>{this.renderProgressBar()}</div>
+        <div className={styles.LeaveProgressBar__below}>
+          {this.renderProgressBar()}
+          {moreContent !== '' && <span className={styles.moreContent}>{moreContent}</span>}
+        </div>
       </div>
     );
   }

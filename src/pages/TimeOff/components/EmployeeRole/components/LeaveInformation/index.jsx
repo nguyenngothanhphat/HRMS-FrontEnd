@@ -45,6 +45,7 @@ const CollapseInformation = (props) => {
               currentAllowance = 0,
               defaultSettings: { name = '', baseAccrual: { time = 0 } = {} } = {},
             } = type;
+            const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
             return (
               <div>
                 <LeaveProgressBar
@@ -53,6 +54,7 @@ const CollapseInformation = (props) => {
                   shorten="CL"
                   stepNumber={currentAllowance}
                   limitNumber={time}
+                  moreContent={moreContentMock[index % 3]}
                 />
                 {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
               </div>
