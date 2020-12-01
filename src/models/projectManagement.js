@@ -128,8 +128,8 @@ const formatStartDate = (date) => {
 const projectManagement = {
   namespace: 'projectManagement',
   state: {
-    activeList: mockData,
-    inactiveList: mockData,
+    activeList: [],
+    inactiveList: [],
   },
   effects: {
     *getProjectByCompany({ payload }, { call, put }) {
