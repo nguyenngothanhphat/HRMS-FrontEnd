@@ -3,7 +3,6 @@ import { Layout, Menu } from 'antd';
 import classNames from 'classnames';
 import { SiderProps } from 'antd/lib/layout/Sider';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-
 import './index.less';
 import { WithFalse } from '../typings';
 import BaseMenu, { BaseMenuProps } from './BaseMenu';
@@ -138,7 +137,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         />
       )}
       <Sider
-        collapsible
+        collapsible={true}
         trigger={null}
         collapsed={collapsed}
         breakpoint={breakpoint === false ? undefined : breakpoint}
@@ -153,6 +152,8 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         style={{
           overflow: 'hidden',
           paddingTop: layout === 'mix' && !isMobile ? headerHeight : undefined,
+          position: 'absolute',
+          height: '100%',
           ...style,
         }}
         width={siderWidth}

@@ -2,6 +2,7 @@ export default {
   'pages_admin.employees.title': 'Employees Management',
   'pages_admin.employees.table.activeEmployeesTab': 'Active Employees',
   'pages_admin.employees.table.inactiveEmployeesTab': 'Inactive Employees',
+  'pages_admin.employees.table.downloadTemplate': 'Download Template',
   'pages_admin.employees.table.importEmployees': 'Import employees',
   'pages_admin.employees.table.addEmployee': 'Add employee',
   'pages_admin.employees.table.userID': 'User ID',
