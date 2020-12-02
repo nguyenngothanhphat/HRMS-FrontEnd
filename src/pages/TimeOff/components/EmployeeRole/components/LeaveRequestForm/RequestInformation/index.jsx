@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import RedCautionIcon from '@/assets/redcaution.svg';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import styles from './index.less';
@@ -9,8 +9,10 @@ import styles from './index.less';
 const { Option } = Select;
 const { TextArea } = Input;
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, user, loading }) => ({
   timeOff,
+  user,
+  loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
 }))
 class RequestInformation extends Component {
   formRef = React.createRef();
@@ -19,7 +21,6 @@ class RequestInformation extends Component {
     super(props);
     this.state = {
       selectedShortType: '',
-      selectedTypeId: '',
       selectedTypeName: '',
       showSuccessModal: false,
       secondNotice: '',
@@ -47,7 +48,6 @@ class RequestInformation extends Component {
       const { _id = '', name = '', shortType = '' } = type;
       if (id === _id) {
         this.setState({
-          selectedTypeId: id,
           selectedShortType: shortType,
           selectedTypeName: name,
         });
@@ -78,8 +78,12 @@ class RequestInformation extends Component {
     this.setState({
       showSuccessModal: value,
     });
+    if (!value) {
+      history.push('/time-off');
+    }
   };
 
+  // CACULATE DURATION FOR API
   calculateNumberOfLeaveDay = (list) => {
     let count = 0;
     list.forEach((value) => {
@@ -100,44 +104,58 @@ class RequestInformation extends Component {
     return count;
   };
 
+  // GENERATE LEAVE DATES FOR API
+  generateLeaveDates = (from, to, leaveTimeLists) => {
+    const dateLists = this.getDateLists(from, to);
+    const result = dateLists.map((value, index) => {
+      return {
+        date: value,
+        timeOfDay: leaveTimeLists[index],
+      };
+    });
+    return result;
+  };
+
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
-    const {
-      dispatch,
-      timeOff: { totalLeaveBalance: { employee = '' } = {} },
-    } = this.props;
+    const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+    const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
     const {
       timeOffType = '',
       subject = '',
       description = '',
       durationFrom = '',
       durationTo = '',
-      personCC = '',
+      personCC = [],
       leaveTimeLists = [],
     } = values;
 
+    const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // generate data for API
     const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
     const data = {
       type: timeOffType,
-      status: 'IN PROGRESS',
-      employee,
+      status: 'IN-PROGRESS',
+      employee: employeeId,
       subject,
       fromDate: durationFrom,
       toDate: durationTo,
       duration,
+      leaveDates,
       onDate: moment(),
       description,
-      approvalManager: '', // id
-      cc: '', // id
+      approvalManager: managerId, // id
+      cc: [],
     };
 
     dispatch({
       type: 'timeOff/addLeaveRequest',
-      data,
+      payload: data,
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) this.setShowSuccessModal(true);
     });
-    this.setShowSuccessModal(true);
   };
 
   onFinishFailed = (errorInfo) => {
@@ -353,6 +371,12 @@ class RequestInformation extends Component {
     return dates;
   };
 
+  // DISABLE PAST DATE OF DATE PICKER
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().endOf('day');
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -375,6 +399,7 @@ class RequestInformation extends Component {
 
     const {
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+      loadingAddLeaveRequest,
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
@@ -469,6 +494,7 @@ class RequestInformation extends Component {
                     ]}
                   >
                     <DatePicker
+                      disabledDate={this.disabledDate}
                       onChange={(value) => this.fromDateOnChange(value)}
                       placeholder="From Date"
                     />
@@ -486,6 +512,7 @@ class RequestInformation extends Component {
                     ]}
                   >
                     <DatePicker
+                      disabledDate={this.disabledDate}
                       onChange={(value) => this.toDateOnChange(value)}
                       placeholder="To Date"
                     />
@@ -605,7 +632,13 @@ class RequestInformation extends Component {
             <Button type="link" htmlType="button" onClick={this.saveDraft}>
               Save to Draft
             </Button>
-            <Button key="submit" type="primary" form="myForm" htmlType="submit">
+            <Button
+              loading={loadingAddLeaveRequest}
+              key="submit"
+              type="primary"
+              form="myForm"
+              htmlType="submit"
+            >
               Submit
             </Button>
           </div>

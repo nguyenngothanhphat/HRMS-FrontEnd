@@ -9,11 +9,14 @@ export default class DataTable extends PureComponent {
       title: 'Ticket ID',
       dataIndex: 'ticketId',
       align: 'left',
+      render: () => <span>ID</span>,
     },
     {
       title: 'Type',
       dataIndex: 'type',
       align: 'left',
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: `Req’ted on `,

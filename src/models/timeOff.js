@@ -16,13 +16,14 @@ const timeOff = {
     totalLeaveBalance: {},
     leaveRequests: [],
     timeOffTypes: [],
+    employeeInfo: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
       try {
         const response = yield call(getTimeOffTypes);
         const { statusCode, data: timeOffTypes = {} } = response;
-        console.log('timeOffTypes', timeOffTypes);
+        // console.log('timeOffTypes', timeOffTypes);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -36,7 +37,7 @@ const timeOff = {
       try {
         const response = yield call(getLeaveBalanceOfUser);
         const { statusCode, data: totalLeaveBalance = {} } = response;
-        console.log('totalLeaveBalance', totalLeaveBalance);
+        // console.log('totalLeaveBalance', totalLeaveBalance);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -46,16 +47,18 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchLeaveRequestOfEmployee(_, { call, put }) {
+    *fetchLeaveRequestOfEmployee({ employee = '' }, { call, put }) {
       try {
-        const response = yield call(getLeaveRequestOfEmployee);
-        const { statusCode, data: leaveRequests = [] } = response;
-        console.log('leaveRequests', leaveRequests);
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { leaveRequests },
-        });
+        if (employee !== '') {
+          const response = yield call(getLeaveRequestOfEmployee, { employee });
+          const { statusCode, data: leaveRequests = [] } = response;
+          console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { leaveRequests },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -86,19 +89,21 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *addLeaveRequest({ data }, { call, put }) {
+    *addLeaveRequest({ payload = {} }, { call, put }) {
       try {
-        console.log('add Leave Request', data);
-        // const response = yield call(addLeaveRequest);
-        // const { statusCode, data: addedLeaveRequest = {} } = response;
-        // console.log('addedLeaveRequest', addedLeaveRequest);
-        // if (statusCode !== 200) throw response;
+        console.log('payload', payload);
+        const response = yield call(addLeaveRequest, payload);
+        const { statusCode, data: addedLeaveRequest = {} } = response;
+        console.log('response', response);
+        if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: {},
+          payload: { addedLeaveRequest },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
   },
