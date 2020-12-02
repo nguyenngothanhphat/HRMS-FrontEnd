@@ -5,11 +5,25 @@ import TimeoffType from './components/TimeoffType';
 import ManageBalance from './components/ManageBalance';
 import AssignPolicy from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
+import ScreenBegin from './components/ScreenBegin';
 
 class SetupTimeoff extends Component {
-  onChange = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      pageStart: true,
+    };
+  }
+
+  changePage = () => {
+    const { pageStart } = this.state;
+    this.setState({
+      pageStart: !pageStart,
+    });
+  };
 
   render() {
+    const { pageStart } = this.state;
     const listMenu = [
       {
         id: 1,
@@ -44,7 +58,11 @@ class SetupTimeoff extends Component {
     ];
     return (
       <div>
-        <TimeOffLayout listMenu={listMenu} />
+        {pageStart ? (
+          <ScreenBegin handleChange={this.changePage} />
+        ) : (
+          <TimeOffLayout listMenu={listMenu} />
+        )}
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker } from 'antd';
 import s from './index.less';
 
@@ -105,16 +105,15 @@ class WorkShedule extends Component {
               <Form.Item label="Total Hours in a workday" className={s.formInput}>
                 <InputNumber min={0} placeholder="hours/day" />
               </Form.Item>
-              <Row>
+              <Row className={s.formInput}>
                 <Col>
                   <Form.Item label="Workday start at">
-                    <TimePicker defaultValue={moment('12:08', format)} format={format} />
+                    <TimePicker format={format} />
                   </Form.Item>
                 </Col>
                 <Col>
                   <Form.Item label=" ">
                     <Radio.Group
-                      // className={s.radio}
                       options={options}
                       onChange={this.onChange1}
                       value={value1}
@@ -124,7 +123,7 @@ class WorkShedule extends Component {
                   </Form.Item>
                 </Col>
               </Row>
-              <Row>
+              <Row className={s.formInput}>
                 <Col>
                   <Form.Item label="Workday end at">
                     <InputNumber min={0} placeholder="hours/day" />

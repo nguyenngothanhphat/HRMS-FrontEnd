@@ -7,7 +7,7 @@ class Switch extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      imageUrl: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     };
   }
 
@@ -31,21 +31,20 @@ class Switch extends PureComponent {
 
   handleChange = (info) => {
     if (info.file.status === 'uploading') {
-      this.setState({ loading: true });
       return;
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (imageUrl) =>
+      this.getBase64(info.file.originFileObj, (imageUrl) =>
         this.setState({
           imageUrl,
-          loading: false,
         }),
       );
     }
   };
 
   render() {
+    const { imageUrl } = this.state;
     return (
       <div className={styles.root}>
         <div>Switch</div>
@@ -57,10 +56,12 @@ class Switch extends PureComponent {
             name="avatar"
             beforeUpload={() => this.beforeUpload()}
             onChange={this.handleChange}
+            showUploadList={false}
           >
             <div className={styles.upload}>
               <img className={styles.uploadIcon} src="icon" alt="img-upload" />
               <span className={styles.uploadText}>Upload new</span>
+              {imageUrl && <img src={imageUrl} alt="avatar" style={{ width: '100%' }} />}
             </div>
           </Upload>
         </div>

@@ -1,54 +1,83 @@
 import React, { Component } from 'react';
-import { Select, Row, Col, Divider } from 'antd';
+import { Select, Form, Divider, Row, Col, Button } from 'antd';
 
 import styles from './index.less';
 
 class AssignPolicy extends Component {
   onChange = () => {};
 
-  renderItem = () => {
-    return (
-      <div className={styles.fromBody}>
-        <div className={styles.textContent}>Standard Holiday calendar</div>
-        <Row>
-          <Col span={10}>
-            <p>Assign to</p>
-            <Select className={styles.select} placeholder="All employees" />
-          </Col>
-          <Col span={10}>
-            <p>Excluding</p>
-            <Select className={styles.select} placeholder="None" />
-          </Col>
-        </Row>
-      </div>
-    );
-  };
-
   render() {
-    const array = [
-      {
-        text: 'Standard Workhours and days',
-      },
-      {
-        text: 'Assign to',
-      },
-      {
-        text: 'Assign to',
-      },
-      {
-        text: 'Assign to',
-      },
-      {
-        text: 'Assign to',
-      },
-    ];
-
     return (
       <div className={styles.balance}>
         <div className={styles.balanceFrom}>
           <div className={styles.header}>Standard Holiday calendar</div>
           <Divider />
-          {array.map((item) => this.renderItem(item))}
+          <Form>
+            <div className={styles.fromBody}>
+              <div className={styles.textContent}>Standard Holiday calendar</div>
+              <Row>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Assign to"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="All employees" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Excluding"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="None" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <div className={styles.textContent}>Standard Workhours and days</div>
+              <Row>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Assign to"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="All employees" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Excluding"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="None" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <div className={styles.textContent}>Standard Workhours and days</div>
+              <Row>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Assign to"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="All employees" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                  <Form.Item
+                    label="Excluding"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="None" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row className={styles.footer}>
+                <Col xs={24} sm={24} md={24} lg={10} xl={5}>
+                  <Button className={styles.btnSubmit}>Finish</Button>
+                </Col>
+              </Row>
+            </div>
+          </Form>
         </div>
       </div>
     );
