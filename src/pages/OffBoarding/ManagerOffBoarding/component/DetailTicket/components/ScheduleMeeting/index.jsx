@@ -52,13 +52,12 @@ class ScheduleMeeting extends Component {
               {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp; <span>{meetingTime}</span>
             </span>
             {checkOwner && (
-              <span className={styles.icon__external__link}>
-                <img
-                  src={externalLinkIcon}
-                  alt="external-link-icon"
-                  onClick={this.handleAddComment}
-                />
-              </span>
+              <img
+                className={styles.icon__external__link}
+                src={externalLinkIcon}
+                alt="external-link-icon"
+                onClick={this.handleAddComment}
+              />
             )}
           </div>
         </div>
