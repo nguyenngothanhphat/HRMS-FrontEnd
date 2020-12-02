@@ -191,7 +191,7 @@ class RequestInformation extends Component {
           isDurationValid: false,
         });
       } else {
-        callback();
+        // callback();
         this.setState({
           isDurationValid: true,
         });
@@ -209,7 +209,7 @@ class RequestInformation extends Component {
           isDurationValid: false,
         });
       } else {
-        callback();
+        // callback();
         this.setState({
           isDurationValid: true,
         });
@@ -512,7 +512,7 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
-                      { validator: this.fromDateValidator },
+                      // { validator: this.fromDateValidator },
                     ]}
                   >
                     <DatePicker
