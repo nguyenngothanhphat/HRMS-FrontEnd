@@ -12,6 +12,7 @@ import {
   getTemplateById,
   addCustomTemplate,
   getListRelieving,
+  searchListRelieving,
   create1On1,
   teamRequestList,
   getListProjectByEmployee,
@@ -236,6 +237,30 @@ const offboarding = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *searchListRelieving({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(searchListRelieving, payload);
+        const { relievingStatus } = payload;
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        console.log(data.result);
+        switch (relievingStatus) {
+          case 'CLOSE-RECORDS':
+            yield put({ type: 'save', payload: { closeRecordsList: data.result } });
+            console.log('ye');
+            break;
+          case 'IN-QUEUES':
+            yield put({ type: 'save', payload: { inQueuesList: data.result } });
+            break;
+          default:
+            return null;
+        }
       } catch (errors) {
         dialog(errors);
       }
