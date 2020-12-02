@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
-// import EditComment from '@/components/EditComment';
+import EditComment from '@/components/EditComment';
 import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
-import ActionDetailTicket from './components/ActionDetailTicket';
+import ButtonSet1On1 from './components/ButtonSet1On1';
+import ScheduleMeeting from './components/ScheduleMeeting';
 import RightContent from './components/RightContent';
 import ModalNotice from './components/ModalNotice';
 import styles from './index.less';
@@ -41,8 +42,8 @@ class DetailTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpenFormReason: false,
-      handleNotification: true,
+      // isOpenFormReason: false,
+      // handleNotification: true,
       selectButton: '',
     };
   }
@@ -101,14 +102,12 @@ class DetailTicket extends Component {
 
   openFormReason = () => {
     this.setState({
-      isOpenFormReason: true,
-      handleNotification: false,
       selectButton: 'ON-HOLD',
     });
   };
 
   openNotification = () => {
-    this.setState({ isOpenFormReason: false, handleNotification: true });
+    // this.setState({ isOpenFormReason: false, handleNotification: true });
   };
 
   handleReviewRequest = (action) => {
@@ -164,13 +163,12 @@ class DetailTicket extends Component {
   };
 
   render() {
-    const { isOpenFormReason, handleNotification, selectButton } = this.state;
+    const { selectButton } = this.state;
     const {
       loading,
       myRequest = {},
       list1On1 = [],
       listProjectByEmployee: listProject = [],
-      itemNewCreate1On1: { _id: idNewComment } = {},
       showModalSuccessfully,
       listAssignee = [],
     } = this.props;
@@ -190,8 +188,8 @@ class DetailTicket extends Component {
         </div>
       );
     const employeeInfo = { nameEmployee, employeeId, avatar, title };
+    const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
-    const listDisplay = listComment.filter((item) => item._id !== idNewComment);
 
     return (
       <>
@@ -209,9 +207,9 @@ class DetailTicket extends Component {
               <Col span={18}>
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
-                {/* {listDisplay.length !== 0 && (
+                {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
-                    {listDisplay.map((item) => {
+                    {listComment.map((item) => {
                       const { _id } = item;
                       return (
                         <Fragment key={_id}>
@@ -220,23 +218,24 @@ class DetailTicket extends Component {
                       );
                     })}
                   </div>
-                )} */}
-                <ActionDetailTicket
-                  isOpenFormReason={isOpenFormReason}
-                  openNotification={this.openNotification}
-                  itemRequest={myRequest}
-                  listDisplay={listDisplay}
-                  listAssignee={filterListAssignee}
-                />
+                )}
+                {listScheduleMeeting.map((item) => {
+                  return (
+                    <Fragment key={item._id}>
+                      <ScheduleMeeting data={item} />
+                    </Fragment>
+                  );
+                })}
+                <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} />
               </Col>
               <Col span={6}>
                 <RightContent />
               </Col>
             </Row>
-            {listComment.length !== 0 &&
+            {/* {
               handleNotification &&
               status === 'IN-PROGRESS' &&
-              this.renderBlockNotifications()}
+              this.renderBlockNotifications()} */}
           </div>
         </PageContainer>
         <ModalNotice
