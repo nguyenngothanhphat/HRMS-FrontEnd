@@ -23,6 +23,7 @@ class RequestInformation extends Component {
       secondNotice: '',
       durationFrom: '',
       durationTo: '',
+      isDurationValid: false,
     };
   }
 
@@ -77,8 +78,14 @@ class RequestInformation extends Component {
       const checkDayOrder = moment(durationTo).isAfter(value);
       if (!checkDayOrder && value !== null) {
         callback('From Date must be before To Date!');
+        this.setState({
+          isDurationValid: false,
+        });
       } else {
         callback();
+        this.setState({
+          isDurationValid: true,
+        });
       }
     }
   };
@@ -86,10 +93,18 @@ class RequestInformation extends Component {
   toDateValidator = (rule, value, callback) => {
     const { durationFrom } = this.state;
     const checkDayOrder = moment(value).isAfter(durationFrom);
-    if (!checkDayOrder && value !== null) {
-      callback('To Date must be after From Date!');
-    } else {
-      callback();
+    if (durationFrom !== '') {
+      if (!checkDayOrder && value !== null) {
+        callback('To Date must be after From Date!');
+        this.setState({
+          isDurationValid: false,
+        });
+      } else {
+        callback();
+        this.setState({
+          isDurationValid: true,
+        });
+      }
     }
   };
 
@@ -172,7 +187,13 @@ class RequestInformation extends Component {
                 }}
               >
                 <span style={remaining === 0 ? invalidCss : defaultCss} className={styles.totals}>
-                  <span style={remaining === 0 ? { color: '#FD4546' } : { color: 'black' }}>
+                  <span
+                    style={
+                      remaining === 0
+                        ? { fontSize: 12, color: '#FD4546' }
+                        : { fontSize: 12, color: 'black' }
+                    }
+                  >
                     {remaining}
                   </span>
                   /{total} days
@@ -232,6 +253,21 @@ class RequestInformation extends Component {
     return selectedType;
   };
 
+  // GET LIST OF DAYS FROM DAY A TO DAY B
+  getDateLists = (startDate, endDate) => {
+    const start = moment(startDate);
+    const end = moment(endDate);
+
+    const now = start;
+    const dates = [];
+
+    while (now.isBefore(end)) {
+      dates.push(now.format('YYYY-MM-DD'));
+      now.add(1, 'days');
+    }
+    return dates;
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -242,8 +278,16 @@ class RequestInformation extends Component {
       },
     };
 
-    const { selectedShortType, showSuccessModal, secondNotice } = this.state;
+    const {
+      selectedShortType,
+      showSuccessModal,
+      secondNotice,
+      durationFrom,
+      durationTo,
+      isDurationValid,
+    } = this.state;
 
+    console.log('day list', this.getDateLists(durationFrom, durationTo));
     const {
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
     } = this.props;
@@ -386,6 +430,50 @@ class RequestInformation extends Component {
               )}
             </Col>
           </Row>
+
+          {durationFrom !== '' && durationTo !== '' && isDurationValid && (
+            <Row className={styles.eachRow}>
+              <Col className={styles.label} span={6}>
+                <span />
+              </Col>
+              <Col span={12} className={styles.leaveDaysContainer}>
+                {this.getDateLists(durationFrom, durationTo).map((date, index) => {
+                  return (
+                    <div className={styles.eachDay}>
+                      <div className={styles.day}>
+                        <span>{date}</span>
+                      </div>
+                      <div className={styles.daySelectionBox}>
+                        <Form.Item
+                          name={`leaveDaysDetail${index}`}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please select!',
+                            },
+                          ]}
+                        >
+                          <Select placeholder="">
+                            <Option value="WHOLE-DAY">
+                              <span style={{ fontSize: 13 }}>Whole day</span>
+                            </Option>
+                            <Option value="MORNING">
+                              <span style={{ fontSize: 13 }}>Morning</span>
+                            </Option>
+                            <Option value="AFTERNOON">
+                              <span style={{ fontSize: 13 }}>Afternoon</span>
+                            </Option>
+                          </Select>
+                        </Form.Item>
+                      </div>
+                    </div>
+                  );
+                })}
+              </Col>
+              <Col span={6} />
+            </Row>
+          )}
+
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
               <span>Description</span>
