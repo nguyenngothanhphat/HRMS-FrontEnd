@@ -1,87 +1,45 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { connect } from 'umi';
-import { Form, Input, Skeleton, notification, Row, Col } from 'antd';
+import { Form, Input, Skeleton, Row, Col } from 'antd';
 import styles from './index.less';
 
 const { TextArea } = Input;
-@connect(({ loading, offboarding: { currentTemplate = {} } }) => ({
-  loadingTemplate: loading.effects['offboarding/fetchTemplateById'],
-  loadingAddTemplate: loading.effects['employeeSetting/addCustomTemplate'],
-  currentTemplate,
-}))
 class ModalContent extends Component {
   constructor(props) {
     super(props);
+    this.formRef = React.createRef();
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const { dispatch, templateId } = this.props;
-    dispatch({
-      type: 'offboarding/fetchTemplateById',
-      payload: {
-        id: templateId,
-      },
-    });
+  componentDidMount = () => {};
+
+  handleSaveTemplate = (values) => {
+    console.log('values', values);
   };
 
-  handleChange = (e, template) => {
-    const {
-      target: { value = {} },
-    } = e;
-    const { dispatch, currentTemplate } = this.props;
-    const newCurrentTemplateSettings = [...currentTemplate.settings];
-    const { key } = template;
-    const setting = {
-      key: template.key,
-      description: template.description,
-      value,
-      isEdited: false,
+  renderContentModal = (mode, template) => {
+    const { settings } = template;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 6 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 18 },
+        sm: { span: 18 },
+      },
     };
 
-    const index = newCurrentTemplateSettings.findIndex((item) => item.key === key);
-
-    newCurrentTemplateSettings[index] = setting;
-    dispatch({
-      type: 'offboarding/saveCurrentTemplateSetting',
-      payload: {
-        settings: newCurrentTemplateSettings,
-      },
-    });
-    // alert(key);
-  };
-
-  onNext = () => {
-    const { dispatch, currentTemplate, closeModal } = this.props;
-    const { settings, type, title, htmlContent } = currentTemplate;
-
-    dispatch({
-      type: 'employeeSetting/addCustomTemplate',
-      payload: {
-        title,
-        type,
-        html: htmlContent,
-        settings,
-      },
-    }).then(() => {
-      notification.success({ message: `Upload file successfully!` });
-      closeModal();
-    });
-  };
-
-  renderContentModal = (mode) => {
-    const { currentTemplate } = this.props;
-    const { settings } = currentTemplate;
     if (mode === 'View') {
       return (
         <>
-          {settings?.map((template) => {
+          {settings?.map((item) => {
             return (
               <Row gutter={[8, 12]}>
                 <Col span={6}>
-                  <span className={styles.template__label}>{template.description} : </span>
+                  <span className={styles.template__label}>{item.description} : </span>
                 </Col>
-                <Col span={18}>{template.value}</Col>
+                <Col span={18}>{item.value}</Col>
               </Row>
             );
           })}
@@ -90,12 +48,20 @@ class ModalContent extends Component {
     }
     if (mode === 'Edit') {
       return (
-        <Form name="templateSetting" onFinish={this.onFinish}>
-          {settings?.map((template) => {
+        <Form
+          name="templateSetting"
+          {...formItemLayout}
+          labelAlign="left"
+          ref={this.formRef}
+          onFinish={(values) => this.handleSaveTemplate(values)}
+          id="relievingTemplates"
+        >
+          {settings?.map((item) => {
             return (
               <Form.Item
-                label={template.description}
-                name={template.key}
+                label={item.description}
+                name={item.key}
+                initialValue={item.value}
                 rules={[
                   {
                     required: true,
@@ -103,11 +69,7 @@ class ModalContent extends Component {
                   },
                 ]}
               >
-                <TextArea
-                  onChange={(e) => this.handleChange(e, template)}
-                  defaultValue={template.value}
-                  rows={2}
-                />
+                <TextArea />
               </Form.Item>
             );
           })}
@@ -118,10 +80,14 @@ class ModalContent extends Component {
   };
 
   render() {
-    const { loadingTemplate, mode } = this.props;
+    const { loadingTemplate, mode, template } = this.props;
     return (
       <div className={styles.modalContent}>
-        {loadingTemplate ? <Skeleton className={styles.spin} /> : this.renderContentModal(mode)}
+        {loadingTemplate ? (
+          <Skeleton className={styles.spin} />
+        ) : (
+          this.renderContentModal(mode, template)
+        )}
       </div>
     );
   }

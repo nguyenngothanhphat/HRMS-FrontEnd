@@ -63,7 +63,77 @@ const offboarding = {
         },
         createdAt: '2020-11-25T10:09:32.129Z',
         default: true,
-        settings: [],
+        settings: [
+          {
+            description: 'Question 1',
+            isEdited: false,
+            key: 'q1',
+            value:
+              'Please describe your general feelings about working here. If possible, please tell us why you are leaving.',
+          },
+          {
+            description: 'Question 2',
+            isEdited: false,
+            key: 'q2',
+            value: 'What did you enjoy most about working here?',
+          },
+          {
+            description: 'Question 3',
+            isEdited: false,
+            key: 'q3',
+            value: 'If you could change three things, what would they be?',
+          },
+          {
+            description: 'Question 4',
+            isEdited: false,
+            key: 'q4',
+            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
+          },
+          {
+            description: 'Question 5',
+            isEdited: false,
+            key: 'q5',
+            value: 'How well do you believe your work was recognized and appreciated?',
+          },
+          {
+            description: 'Question 6',
+            isEdited: false,
+            key: 'q6',
+            value: 'Do you feel you were given adequate training and assistance?',
+          },
+          {
+            description: 'Question 7',
+            isEdited: false,
+            key: 'q7',
+            value: 'Are there things you wish you had known earlier?',
+          },
+          {
+            description: 'Question 8',
+            isEdited: false,
+            key: 'q8',
+            value: 'Do you think your work was aligned with your personal goals?',
+          },
+          {
+            description: 'Question 9',
+            isEdited: false,
+            key: 'q9',
+            value: 'What can we do to make this company a better place to work?',
+          },
+          {
+            description: 'Question 10',
+            isEdited: false,
+            key: 'q10',
+            value:
+              'What kind of tools, resources, or training would have helped you perform better?',
+          },
+          {
+            description: 'Question 11',
+            isEdited: false,
+            key: 'q11',
+            value:
+              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
+          },
+        ],
         thumbnail:
           'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
         title: 'Exit Interview',
@@ -88,7 +158,77 @@ const offboarding = {
         },
         createdAt: '2020-11-25T10:09:32.129Z',
         default: true,
-        settings: [],
+        settings: [
+          {
+            description: 'Question 1',
+            isEdited: false,
+            key: 'q1',
+            value:
+              'NOC form Please describe your general feelings about working here. If possible, please tell us why you are leaving.',
+          },
+          {
+            description: 'Question 2',
+            isEdited: false,
+            key: 'q2',
+            value: 'What did you enjoy most about working here?',
+          },
+          {
+            description: 'Question 3',
+            isEdited: false,
+            key: 'q3',
+            value: 'If you could change three things, what would they be?',
+          },
+          {
+            description: 'Question 4',
+            isEdited: false,
+            key: 'q4',
+            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
+          },
+          {
+            description: 'Question 5',
+            isEdited: false,
+            key: 'q5',
+            value: 'How well do you believe your work was recognized and appreciated?',
+          },
+          {
+            description: 'Question 6',
+            isEdited: false,
+            key: 'q6',
+            value: 'Do you feel you were given adequate training and assistance?',
+          },
+          {
+            description: 'Question 7',
+            isEdited: false,
+            key: 'q7',
+            value: 'Are there things you wish you had known earlier?',
+          },
+          {
+            description: 'Question 8',
+            isEdited: false,
+            key: 'q8',
+            value: 'Do you think your work was aligned with your personal goals?',
+          },
+          {
+            description: 'Question 9',
+            isEdited: false,
+            key: 'q9',
+            value: 'What can we do to make this company a better place to work?',
+          },
+          {
+            description: 'Question 10',
+            isEdited: false,
+            key: 'q10',
+            value:
+              'What kind of tools, resources, or training would have helped you perform better?',
+          },
+          {
+            description: 'Question 11',
+            isEdited: false,
+            key: 'q11',
+            value:
+              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
+          },
+        ],
         thumbnail:
           'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
         title: 'NOC form',
@@ -113,7 +253,77 @@ const offboarding = {
         },
         createdAt: '2020-11-25T10:09:32.129Z',
         default: true,
-        settings: [],
+        settings: [
+          {
+            description: 'Question 1',
+            isEdited: false,
+            key: 'q1',
+            value:
+              'Checklist please describe your general feelings about working here. If possible, please tell us why you are leaving.',
+          },
+          {
+            description: 'Question 2',
+            isEdited: false,
+            key: 'q2',
+            value: 'What did you enjoy most about working here?',
+          },
+          {
+            description: 'Question 3',
+            isEdited: false,
+            key: 'q3',
+            value: 'If you could change three things, what would they be?',
+          },
+          {
+            description: 'Question 4',
+            isEdited: false,
+            key: 'q4',
+            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
+          },
+          {
+            description: 'Question 5',
+            isEdited: false,
+            key: 'q5',
+            value: 'How well do you believe your work was recognized and appreciated?',
+          },
+          {
+            description: 'Question 6',
+            isEdited: false,
+            key: 'q6',
+            value: 'Do you feel you were given adequate training and assistance?',
+          },
+          {
+            description: 'Question 7',
+            isEdited: false,
+            key: 'q7',
+            value: 'Are there things you wish you had known earlier?',
+          },
+          {
+            description: 'Question 8',
+            isEdited: false,
+            key: 'q8',
+            value: 'Do you think your work was aligned with your personal goals?',
+          },
+          {
+            description: 'Question 9',
+            isEdited: false,
+            key: 'q9',
+            value: 'What can we do to make this company a better place to work?',
+          },
+          {
+            description: 'Question 10',
+            isEdited: false,
+            key: 'q10',
+            value:
+              'What kind of tools, resources, or training would have helped you perform better?',
+          },
+          {
+            description: 'Question 11',
+            isEdited: false,
+            key: 'q11',
+            value:
+              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
+          },
+        ],
         thumbnail:
           'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
         title: 'Off boarding checklist',
@@ -312,7 +522,6 @@ const offboarding = {
       try {
         const response = yield call(getTemplateById, payload);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
       } catch (errors) {
@@ -324,7 +533,6 @@ const offboarding = {
       try {
         response = yield call(addCustomTemplate, payload);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
       } catch (errors) {

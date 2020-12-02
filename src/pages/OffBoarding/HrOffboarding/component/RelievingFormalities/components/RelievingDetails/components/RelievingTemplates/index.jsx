@@ -13,6 +13,7 @@ import styles from './index.less';
 class RelievingTemplates extends Component {
   constructor(props) {
     super(props);
+    this.formRef = React.createRef();
     this.state = {};
   }
 
@@ -47,8 +48,15 @@ class RelievingTemplates extends Component {
                 <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
                   Cancel
                 </div>,
-                <Button key="submit" type="primary" loading={loading} className={styles.btnSubmit}>
-                  Submit
+                <Button
+                  key="submit"
+                  htmlType="submit"
+                  type="primary"
+                  loading={loading}
+                  className={styles.btnSubmit}
+                  form="relievingTemplates"
+                >
+                  Save
                 </Button>,
               ]
             : false

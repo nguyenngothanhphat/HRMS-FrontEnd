@@ -115,13 +115,12 @@ class MailExit extends Component {
 
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, template, mode } = this.state;
-    const { _id } = template;
     return (
       <RelievingTemplates
         mode={mode}
         visible={isOpenModalEdit}
         template={template}
-        content={<ModalContent templateId={_id} mode={mode} />}
+        content={<ModalContent template={template} mode={mode} />}
         handleCancelEdit={this.handleCancelEdit}
       />
     );
