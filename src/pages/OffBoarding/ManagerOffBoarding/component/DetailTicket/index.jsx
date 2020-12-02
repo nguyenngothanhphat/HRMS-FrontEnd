@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
-import EditComment from '@/components/EditComment';
+// import EditComment from '@/components/EditComment';
 import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
@@ -209,7 +209,7 @@ class DetailTicket extends Component {
               <Col span={18}>
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
-                {listDisplay.length !== 0 && (
+                {/* {listDisplay.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listDisplay.map((item) => {
                       const { _id } = item;
@@ -220,7 +220,7 @@ class DetailTicket extends Component {
                       );
                     })}
                   </div>
-                )}
+                )} */}
                 <ActionDetailTicket
                   isOpenFormReason={isOpenFormReason}
                   openNotification={this.openNotification}

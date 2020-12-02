@@ -25,6 +25,7 @@ class ActionDetailTicket extends Component {
       meetingDate: '',
       meetingTime: '',
       idSet1on1: '',
+      hasAssignee: false,
     };
   }
 
@@ -51,7 +52,7 @@ class ActionDetailTicket extends Component {
   };
 
   renderScheduleMeeting = () => {
-    const { meetingDate, meetingTime } = this.state;
+    const { meetingDate, meetingTime, hasAssignee } = this.state;
     return (
       <div className={styles.actionDetailTicket__schedule}>
         <div className={styles.schedule__content}>
@@ -63,9 +64,11 @@ class ActionDetailTicket extends Component {
               {formatMessage({ id: 'pages.offBoarding.scheduledOn' })} : {meetingDate} &nbsp; |
               &nbsp; <span>{meetingTime}</span>
             </span>
-            <span className={styles.icon__external__link}>
-              <img src={externalLinkIcon} alt="external-link-icon" onClick={this.startMeeting} />
-            </span>
+            {!hasAssignee && (
+              <span className={styles.icon__external__link}>
+                <img src={externalLinkIcon} alt="external-link-icon" onClick={this.startMeeting} />
+              </span>
+            )}
             <span className={styles.icon__remove} onClick={this.removeScheduleMeeting}>
               <img src={removeIcon} alt="remove-icon" />
             </span>
@@ -86,7 +89,7 @@ class ActionDetailTicket extends Component {
   };
 
   handleSubmit = (values) => {
-    const { meetingDate, meetingTime } = values;
+    const { meetingDate, meetingTime, assignee } = values;
     const { dispatch, itemRequest = {} } = this.props;
     const { employee: { _id: meetingWith } = {}, _id: offBoardingRequest } = itemRequest;
     const payload = { meetingWith, offBoardingRequest, ...values };
@@ -100,6 +103,7 @@ class ActionDetailTicket extends Component {
             meetingDate,
             meetingTime,
             idSet1on1: _id,
+            hasAssignee: !!assignee,
           },
           () => {
             this.handleModalSet1On1();
@@ -129,6 +133,7 @@ class ActionDetailTicket extends Component {
       isOpenSetMeeting: false,
       isDisplayBtnSetMeeting: true,
       idSet1on1: '',
+      hasAssignee: false,
     });
     dispatch({
       type: 'offboarding/save',

@@ -6,8 +6,9 @@ import { connect } from 'umi';
 import empty from '@/assets/empty.svg';
 import s from './index.less';
 
-@connect(({ offboarding: { listAssigned = [] } = {} }) => ({
+@connect(({ loading, offboarding: { listAssigned = [] } = {} }) => ({
   listAssigned,
+  loading: loading.effects['offboarding/complete1On1'],
 }))
 class TableAssigned extends Component {
   constructor(props) {
@@ -21,11 +22,15 @@ class TableAssigned extends Component {
   }
 
   componentDidMount() {
+    this.getListAssigned();
+  }
+
+  getListAssigned = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'offboarding/getListAssigned',
     });
-  }
+  };
 
   handleOpenAddComment = (item = {}) => {
     this.setState({
@@ -49,13 +54,21 @@ class TableAssigned extends Component {
     });
   };
 
-  handleSubmit = (values) => {
-    console.log('values', values);
-    this.closeAddComment();
+  handleSubmit = (payload) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/complete1On1',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.getListAssigned();
+        this.closeAddComment();
+      }
+    });
   };
 
   render() {
-    const { listAssigned: data = [] } = this.props;
+    const { listAssigned: data = [], loading } = this.props;
     const { pageNavigation, itemSet1On1 = {}, openModal, keyModal = '' } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -78,38 +91,48 @@ class TableAssigned extends Component {
     const columns = [
       {
         title: <span className={s.title}>Ticket ID</span>,
-        dataIndex: 'ticketID',
-        render: (ticketID) => {
-          return <p>{ticketID}</p>;
-        },
-      },
-
-      {
-        title: <span className={s.title}>Employee ID</span>,
-        dataIndex: 'ticketID',
-        render: (ticketID) => {
-          return <p>{ticketID}</p>;
+        dataIndex: 'offBoardingRequest',
+        render: (offBoardingRequest) => {
+          const { ticketID = '' } = offBoardingRequest;
+          return <p className={s.text}>{ticketID}</p>;
         },
       },
       {
         title: <span className={s.title}>Created date</span>,
-        dataIndex: 'createdAt',
-        render: (createdAt) => {
-          return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+        dataIndex: 'offBoardingRequest',
+        render: (offBoardingRequest) => {
+          const { createdAt = '' } = offBoardingRequest;
+          return <p className={s.text}>{moment(createdAt).format('YYYY/MM/DD')}</p>;
         },
       },
       {
-        title: <span className={s.title}>Requ’tee Name </span>,
-        dataIndex: 'ticketID',
-        render: (ticketID) => {
-          return <p>{ticketID}</p>;
+        title: <span className={s.title}>Employee ID</span>,
+        dataIndex: 'meetingWith',
+        render: (meetingWith) => {
+          const { generalInfo: { employeeId = '' } = {} } = meetingWith;
+          return <p className={s.text}>{employeeId}</p>;
+        },
+      },
+      {
+        title: <span className={s.title}>Requ’tee Name</span>,
+        dataIndex: 'meetingWith',
+        render: (meetingWith) => {
+          const { generalInfo: { firstName = '' } = {} } = meetingWith;
+          return <p className={s.text}>{firstName}</p>;
         },
       },
       {
         title: <span className={s.title}>1-on-1 date</span>,
-        dataIndex: 'ticketID',
-        render: (ticketID) => {
-          return <p>{ticketID}</p>;
+        dataIndex: 'meetingDate',
+        render: (meetingDate) => {
+          return <p className={s.text}>{moment(meetingDate).format('YYYY/MM/DD')}</p>;
+        },
+      },
+      {
+        title: <span className={s.title}>Meeting time</span>,
+        dataIndex: 'meetingTime',
+        render: (meetingTime) => {
+          return <p className={s.text}>{meetingTime}</p>;
         },
       },
       {
@@ -153,7 +176,7 @@ class TableAssigned extends Component {
           data={itemSet1On1}
           handleCancel={this.closeAddComment}
           handleSubmit={this.handleSubmit}
-          loading={false}
+          loading={loading}
         />
       </Fragment>
     );
