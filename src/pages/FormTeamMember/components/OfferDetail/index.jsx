@@ -490,7 +490,7 @@ const OfferDetail = (props) => {
           <div className={styles.middle}>
             <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
 
-            <Form.Item name="includeOffer">
+            <Form.Item name="includeOffer" className={styles.radioForm}>
               <Radio.Group className={styles.radioGroup} disabled={disableAll}>
                 <Row className={styles.radioRow}>
                   <Radio value={1}>
@@ -503,7 +503,7 @@ const OfferDetail = (props) => {
                       {formatMessage({ id: 'component.offerDetail.uploadOffer' })}
                     </Radio>
                   </Col>
-                  <Col sm={8} md={10} style={{ textAlign: 'right' }}>
+                  <Col sm={8} md={10} style={{ textAlign: 'left' }}>
                     {/* If user choose upload offer then display upload section */}
                     {displayUploadedOffer && (
                       <>

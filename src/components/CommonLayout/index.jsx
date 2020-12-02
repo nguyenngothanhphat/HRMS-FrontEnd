@@ -261,7 +261,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '', hidePreviewOffer = true } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = false } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>

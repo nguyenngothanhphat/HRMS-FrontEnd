@@ -184,12 +184,22 @@ class JobDetails extends PureComponent {
             company: _id,
           },
         });
-        dispatch({
-          type: 'candidateInfo/fetchTitleList',
-          payload: {
-            company: _id,
-          },
-        });
+
+        // dispatch({
+        //   type: 'candidateInfo/fetchTitleList',
+        //   payload: {
+        //     company: _id,
+        //   },
+        // });
+
+        // if (!isEmpty(department)) {
+        //   dispatch({
+        //     type: 'candidateInfo/fetchTitleList',
+        //     payload: {
+        //       department: department._id,
+        //     },
+        //   });
+        // }
       }
     } else if (name === 'title') {
       const {
@@ -219,14 +229,21 @@ class JobDetails extends PureComponent {
           },
         },
       });
+
       if (!isEmpty(department)) {
-        const departmentTemp = [department._id];
+        const departmentTemp = [department];
         const locationTemp = [location._id];
         dispatch({
           type: 'candidateInfo/fetchManagerList',
           payload: {
-            departmentTemp,
-            locationTemp,
+            department: departmentTemp,
+            // locationTemp,
+          },
+        });
+        dispatch({
+          type: 'candidateInfo/fetchTitleList',
+          payload: {
+            department,
           },
         });
       }
