@@ -249,8 +249,8 @@ class RequestInformation extends Component {
   );
 
   // RENDER SELECT BOX
-  // GET DATA FOR SELECT BOX
-  renderTimeOffTypes = (data) => {
+  // GET DATA FOR SELECT BOX TYPE 1,2
+  renderTimeOffTypes1 = (data) => {
     return data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
@@ -272,6 +272,24 @@ class RequestInformation extends Component {
     });
   };
 
+  // GET DATA FOR SELECT BOX TYPE 3 (WFH/CP...)
+  renderTimeOffTypes2 = (data) => {
+    let result = data.map((eachType) => {
+      const { _id = '', name = '', type = '', shortType = '' } = eachType;
+      if (type === 'D') {
+        return {
+          name,
+          shortName: shortType,
+          _id,
+        };
+      }
+      return null;
+    });
+    result = result.filter((value) => value !== null);
+    return result;
+  };
+
+  // RENDER OPTIONS
   // TYPE A: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
     return data.map((value) => {
@@ -342,14 +360,13 @@ class RequestInformation extends Component {
   // TYPE D: WORKING OUT OF OFFICE
   renderType3 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', total = 0, _id = '' } = value;
+      const { name = '', shortName = '', _id = '' } = value;
       return (
         <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
               {`${name} (${shortName})`}
             </span>
-            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>{total} days</span>
           </div>
         </Option>
       );
@@ -398,14 +415,18 @@ class RequestInformation extends Component {
     } = this.state;
 
     const {
-      timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+      timeOff: {
+        timeOffTypes = [],
+        totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
+      } = {},
       loadingAddLeaveRequest,
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
 
-    const dataTimeOffTypes1 = this.renderTimeOffTypes(typesOfCommonLeaves);
-    const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
+    const dataTimeOffTypes1 = this.renderTimeOffTypes1(typesOfCommonLeaves);
+    const dataTimeOffTypes2 = this.renderTimeOffTypes1(typesOfSpecialLeaves);
+    const dataTimeOffTypes3 = this.renderTimeOffTypes2(timeOffTypes);
 
     return (
       <div className={styles.RequestInformation}>
@@ -442,6 +463,7 @@ class RequestInformation extends Component {
                 <Select onChange={(value) => this.getTypeInfo(value)} placeholder="Timeoff Type">
                   {this.renderType1(dataTimeOffTypes1)}
                   {this.renderType2(dataTimeOffTypes2)}
+                  {this.renderType3(dataTimeOffTypes3)}
                 </Select>
               </Form.Item>
             </Col>

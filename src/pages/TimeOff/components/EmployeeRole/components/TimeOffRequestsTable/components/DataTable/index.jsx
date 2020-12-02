@@ -19,16 +19,16 @@ export default class DataTable extends PureComponent {
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
-      title: `Req’ted on `,
-      dataIndex: 'onDate',
-      align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
-    },
-    {
       title: 'Leave date',
       width: '20%',
       dataIndex: 'leaveTimes',
       align: 'left',
+    },
+    {
+      title: `Req’ted on `,
+      dataIndex: 'onDate',
+      align: 'left',
+      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
     },
     {
       title: 'Duration',
