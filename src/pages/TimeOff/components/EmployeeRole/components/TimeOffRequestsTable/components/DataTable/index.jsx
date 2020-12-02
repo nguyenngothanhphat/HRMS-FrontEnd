@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-
+import moment from 'moment';
 import styles from './index.less';
 
 export default class DataTable extends PureComponent {
@@ -22,13 +22,13 @@ export default class DataTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'left',
+      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
     },
     {
       title: 'Leave date',
       width: '20%',
-      dataIndex: 'leaveDate',
+      dataIndex: 'leaveTimes',
       align: 'left',
-      // render: <span>Leave date</span>,
     },
     {
       title: 'Duration',
@@ -38,8 +38,11 @@ export default class DataTable extends PureComponent {
     {
       title: 'Assigned',
       align: 'left',
-      render: (key) => {
-        const { assigned = [] } = key;
+      dataIndex: 'approvalManager',
+      render: (approvalManager) => {
+        const {
+          generalInfo: { firstName = '', lastName = '', avatar = '' } = {},
+        } = approvalManager;
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
@@ -49,18 +52,14 @@ export default class DataTable extends PureComponent {
                 backgroundColor: '#d6dce0',
               }}
             >
-              {assigned.map((value) => {
-                return (
-                  <Tooltip title={value.name} placement="top">
-                    <Avatar
-                      style={{
-                        backgroundColor: '#FFA100',
-                      }}
-                      src={value.imageUrl}
-                    />
-                  </Tooltip>
-                );
-              })}
+              <Tooltip title={`${firstName} ${lastName}`} placement="top">
+                <Avatar
+                  style={{
+                    backgroundColor: '#FFA100',
+                  }}
+                  src={avatar}
+                />
+              </Tooltip>
             </Avatar.Group>
           </div>
         );
@@ -112,10 +111,25 @@ export default class DataTable extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  processData = (data) => {
+    return data.map((value) => {
+      const { fromDate = '', toDate = '' } = value;
+      const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+        .locale('en')
+        .format('MM.DD.YYYY')}`;
+      return {
+        ...value,
+        leaveTimes,
+      };
+    });
+  };
+
   render() {
     const { data = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 20;
+
+    const parsedData = this.processData(data);
     // const scroll = {
     //   x: '',
     //   y: 'max-content',
@@ -150,7 +164,7 @@ export default class DataTable extends PureComponent {
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
-          dataSource={data}
+          dataSource={parsedData}
           // scroll={scroll}
           rowKey="ticketId"
         />
