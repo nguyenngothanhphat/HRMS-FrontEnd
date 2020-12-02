@@ -796,7 +796,7 @@ const candidateInfo = {
             },
           },
         });
-        
+
         yield put({
           type: 'saveTemp',
           payload: {
@@ -808,7 +808,7 @@ const candidateInfo = {
             amountIn: data.amountIn || '',
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
-            hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
+            hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
