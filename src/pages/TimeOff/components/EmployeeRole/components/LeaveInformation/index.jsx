@@ -41,24 +41,25 @@ const CollapseInformation = (props) => {
         </div>
         <div className={styles.leaveProgressBars}>
           {typesOfCommonLeaves.map((type, index) => {
-            const {
-              currentAllowance = 0,
-              defaultSettings: { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = {},
-            } = type;
-            const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
-            return (
-              <div>
-                <LeaveProgressBar
-                  color={colorsList[index % 3]}
-                  title={name}
-                  shortType={shortType}
-                  stepNumber={currentAllowance}
-                  limitNumber={time}
-                  moreContent={moreContentMock[index % 3]}
-                />
-                {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
-              </div>
-            );
+            const { currentAllowance = 0, defaultSettings = {} } = type;
+            if (defaultSettings !== null) {
+              const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+              const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
+              return (
+                <div>
+                  <LeaveProgressBar
+                    color={colorsList[index % 3]}
+                    title={name}
+                    shortType={shortType}
+                    stepNumber={currentAllowance}
+                    limitNumber={time}
+                    moreContent={moreContentMock[index % 3]}
+                  />
+                  {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
+                </div>
+              );
+            }
+            return '';
           })}
         </div>
       </div>
@@ -72,21 +73,22 @@ const CollapseInformation = (props) => {
         </div>
         <Row className={styles.leaveProgressBars}>
           {typesOfSpecialLeaves.map((type, index) => {
-            const {
-              currentAllowance = 0,
-              defaultSettings: { name = '', shortType = '' } = {},
-            } = type;
-            return (
-              <Col span={24}>
-                <SpecialLeaveBox
-                  color={colorsList[index % 3]}
-                  title={name}
-                  shortType={shortType}
-                  days={currentAllowance}
-                />
-                {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}
-              </Col>
-            );
+            const { currentAllowance = 0, defaultSettings = {} } = type;
+            if (defaultSettings !== null) {
+              const { name = '', shortType = '' } = defaultSettings;
+              return (
+                <Col span={24}>
+                  <SpecialLeaveBox
+                    color={colorsList[index % 3]}
+                    title={name}
+                    shortType={shortType}
+                    days={currentAllowance}
+                  />
+                  {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}
+                </Col>
+              );
+            }
+            return '';
           })}
         </Row>
       </div>
@@ -146,20 +148,21 @@ class LeaveInformation extends PureComponent {
   calculateValueForCircleProgress = (typesOfCommonLeaves) => {
     let remaining = 0;
     let total = 0;
+    let result = 0;
 
     typesOfCommonLeaves.forEach((type) => {
-      const {
-        currentAllowance = 0,
-        defaultSettings: { baseAccrual: { time = 0 } = {} } = {},
-      } = type;
-      remaining += currentAllowance;
-      total += time;
+      const { currentAllowance = 0, defaultSettings = {} } = type;
+      if (defaultSettings !== null) {
+        const { baseAccrual: { time = 0 } = {} } = defaultSettings;
+        remaining += currentAllowance;
+        total += time;
+        this.setState({
+          remaining,
+        });
+        result = Math.round((remaining / total) * 100);
+      }
     });
-
-    this.setState({
-      remaining,
-    });
-    return Math.round((remaining / total) * 100);
+    return result;
   };
 
   render() {

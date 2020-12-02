@@ -143,16 +143,17 @@ class RequestInformation extends Component {
   // GET DATA FOR SELECT BOX
   renderTimeOffTypes = (data) => {
     return data.map((type) => {
-      const {
-        currentAllowance = 0,
-        defaultSettings: { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = {},
-      } = type;
-      return {
-        name,
-        shortName: shortType,
-        remaining: currentAllowance,
-        total: time,
-      };
+      const { currentAllowance = 0, defaultSettings = {} } = type;
+      if (defaultSettings !== null) {
+        const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+        return {
+          name,
+          shortName: shortType,
+          remaining: currentAllowance,
+          total: time,
+        };
+      }
+      return '';
     });
   };
 
