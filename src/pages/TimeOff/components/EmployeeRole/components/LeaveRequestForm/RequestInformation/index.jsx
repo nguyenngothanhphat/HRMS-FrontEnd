@@ -19,6 +19,8 @@ class RequestInformation extends Component {
     super(props);
     this.state = {
       selectedShortType: '',
+      selectedTypeId: '',
+      selectedTypeName: '',
       showSuccessModal: false,
       secondNotice: '',
       durationFrom: '',
@@ -38,18 +40,36 @@ class RequestInformation extends Component {
     });
   };
 
-  // SHOW ABOVE NOTICE (BESIDE SELECT TIMEOFF TYPE FIELD)
-  setSelectedShortType = (shortType) => {
-    this.setState({
-      selectedShortType: shortType,
+  // GET TIME OFF TYPE BY ID
+  getTypeInfo = (id) => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    timeOffTypes.forEach((type) => {
+      const { _id = '', name = '', shortType = '' } = type;
+      if (id === _id) {
+        this.setState({
+          selectedTypeId: id,
+          selectedShortType: shortType,
+          selectedTypeName: name,
+        });
+      }
     });
-    this.setSecondNotice(`${shortType}s are covered under Standard Policy`);
   };
 
   // SHOW BELOW NOTICE (BESIDE DURATION FIELD)
   setSecondNotice = (value) => {
+    let secondNotice = '';
+    switch (value) {
+      case 'CL':
+        secondNotice = `${value}s gets credited each month.`;
+        break;
+      case 'WFH/CP':
+        secondNotice = `WFH applied for: 3 days`;
+        break;
+      default:
+        break;
+    }
     this.setState({
-      secondNotice: value,
+      secondNotice,
     });
   };
 
@@ -60,15 +80,86 @@ class RequestInformation extends Component {
     });
   };
 
+  calculateNumberOfLeaveDay = (list) => {
+    let count = 0;
+    list.forEach((value) => {
+      switch (value) {
+        case 'MORNING':
+          count += 0.5;
+          break;
+        case 'AFTERNOON':
+          count += 0.5;
+          break;
+        case 'WHOLE-DAY':
+          count += 1;
+          break;
+        default:
+          break;
+      }
+    });
+    return count;
+  };
+
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
+    const {
+      dispatch,
+      timeOff: { totalLeaveBalance: { employee = '' } = {} },
+    } = this.props;
+    const {
+      timeOffType = '',
+      subject = '',
+      description = '',
+      durationFrom = '',
+      durationTo = '',
+      personCC = '',
+      leaveTimeLists = [],
+    } = values;
+
+    // generate data for API
+    const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
+    const data = {
+      type: timeOffType,
+      status: 'IN PROGRESS',
+      employee,
+      subject,
+      fromDate: durationFrom,
+      toDate: durationTo,
+      duration,
+      onDate: moment(),
+      description,
+      approvalManager: '', // id
+      cc: '', // id
+    };
+
+    dispatch({
+      type: 'timeOff/addLeaveRequest',
+      data,
+    });
     this.setShowSuccessModal(true);
   };
 
   onFinishFailed = (errorInfo) => {
     // eslint-disable-next-line no-console
     console.log('Failed:', errorInfo);
+  };
+
+  // DATE PICKER
+  fromDateOnChange = (value) => {
+    this.setState({
+      durationFrom: value,
+    });
+    const { selectedShortType } = this.state;
+    this.setSecondNotice(selectedShortType);
+  };
+
+  toDateOnChange = (value) => {
+    this.setState({
+      durationTo: value,
+    });
+    const { selectedShortType } = this.state;
+    this.setSecondNotice(selectedShortType);
   };
 
   // CHECK DAY ORDER
@@ -145,12 +236,18 @@ class RequestInformation extends Component {
     return data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
-        const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+        const {
+          _id = '',
+          name = '',
+          shortType = '',
+          baseAccrual: { time = 0 } = {},
+        } = defaultSettings;
         return {
           name,
           shortName: shortType,
           remaining: currentAllowance,
           total: time,
+          _id,
         };
       }
       return '';
@@ -160,7 +257,7 @@ class RequestInformation extends Component {
   // TYPE A: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', remaining = 0, total = 0 } = value;
+      const { name = '', shortName = '', remaining = 0, total = 0, _id = '' } = value;
       const defaultCss = {
         fontSize: 12,
         color: '#6f7076',
@@ -172,7 +269,7 @@ class RequestInformation extends Component {
         fontWeight: 'bold',
       };
       return (
-        <Option value={name}>
+        <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
             {/* I don't knew why I could not CSS this block in styles.less file
           So I tried inline CSS. 
@@ -210,9 +307,9 @@ class RequestInformation extends Component {
   // TYPE C: SPECIAL LEAVES
   renderType2 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', total = 0 } = value;
+      const { name = '', shortName = '', total = 0, _id } = value;
       return (
-        <Option value={name}>
+        <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
               {`${name} (${shortName})`}
@@ -227,9 +324,9 @@ class RequestInformation extends Component {
   // TYPE D: WORKING OUT OF OFFICE
   renderType3 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', total = 0 } = value;
+      const { name = '', shortName = '', total = 0, _id = '' } = value;
       return (
-        <Option value={shortName}>
+        <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
               {`${name} (${shortName})`}
@@ -239,19 +336,6 @@ class RequestInformation extends Component {
         </Option>
       );
     });
-  };
-
-  getSelectedType = () => {
-    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    const { selectedShortType } = this.state;
-    let selectedType = '';
-    timeOffTypes.forEach((value) => {
-      if (value.shortType === selectedShortType) {
-        selectedType = value.name;
-      }
-      return null;
-    });
-    return selectedType;
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
@@ -286,9 +370,9 @@ class RequestInformation extends Component {
       durationFrom,
       durationTo,
       isDurationValid,
+      selectedTypeName,
     } = this.state;
 
-    console.log('day list', this.getDateLists(durationFrom, durationTo));
     const {
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
     } = this.props;
@@ -297,9 +381,6 @@ class RequestInformation extends Component {
 
     const dataTimeOffTypes1 = this.renderTimeOffTypes(typesOfCommonLeaves);
     const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
-
-    // SET VALUE FOR THE ABOVE NOTICE
-    const selectedType = this.getSelectedType();
 
     return (
       <div className={styles.RequestInformation}>
@@ -333,10 +414,7 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <Select
-                  onChange={(value) => this.setSelectedShortType(value)}
-                  placeholder="Timeoff Type"
-                >
+                <Select onChange={(value) => this.getTypeInfo(value)} placeholder="Timeoff Type">
                   {this.renderType1(dataTimeOffTypes1)}
                   {this.renderType2(dataTimeOffTypes2)}
                 </Select>
@@ -391,11 +469,7 @@ class RequestInformation extends Component {
                     ]}
                   >
                     <DatePicker
-                      onChange={(value) => {
-                        this.setState({
-                          durationFrom: value,
-                        });
-                      }}
+                      onChange={(value) => this.fromDateOnChange(value)}
                       placeholder="From Date"
                     />
                   </Form.Item>
@@ -412,11 +486,7 @@ class RequestInformation extends Component {
                     ]}
                   >
                     <DatePicker
-                      onChange={(value) => {
-                        this.setState({
-                          durationTo: value,
-                        });
-                      }}
+                      onChange={(value) => this.toDateOnChange(value)}
                       placeholder="To Date"
                     />
                   </Form.Item>
@@ -433,46 +503,51 @@ class RequestInformation extends Component {
           </Row>
 
           {durationFrom !== '' && durationTo !== '' && isDurationValid && (
-            <Row className={styles.eachRow}>
-              <Col className={styles.label} span={6}>
-                <span />
-              </Col>
-              <Col span={12} className={styles.leaveDaysContainer}>
-                {this.getDateLists(durationFrom, durationTo).map((date, index) => {
-                  return (
-                    <div className={styles.eachDay}>
-                      <div className={styles.day}>
-                        <span>{date}</span>
-                      </div>
-                      <div className={styles.daySelectionBox}>
-                        <Form.Item
-                          name={`leaveDaysDetail${index}`}
-                          rules={[
-                            {
-                              required: true,
-                              message: 'Please select!',
-                            },
-                          ]}
-                        >
-                          <Select placeholder="">
-                            <Option value="WHOLE-DAY">
-                              <span style={{ fontSize: 13 }}>Whole day</span>
-                            </Option>
-                            <Option value="MORNING">
-                              <span style={{ fontSize: 13 }}>Morning</span>
-                            </Option>
-                            <Option value="AFTERNOON">
-                              <span style={{ fontSize: 13 }}>Afternoon</span>
-                            </Option>
-                          </Select>
-                        </Form.Item>
-                      </div>
-                    </div>
-                  );
-                })}
-              </Col>
-              <Col span={6} />
-            </Row>
+            <Form.List name="leaveTimeLists">
+              {() => (
+                <Row className={styles.eachRow}>
+                  <Col className={styles.label} span={6}>
+                    <span />
+                  </Col>
+                  <Col span={12} className={styles.leaveDaysContainer}>
+                    {this.getDateLists(durationFrom, durationTo).map((date, index) => {
+                      return (
+                        <div className={styles.eachDay}>
+                          <div className={styles.day}>
+                            <span>{date}</span>
+                          </div>
+                          <div className={styles.daySelectionBox}>
+                            <Form.Item
+                              // name={`leaveDaysDetail${index}`}
+                              name={[index]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: 'Please select!',
+                                },
+                              ]}
+                            >
+                              <Select placeholder="">
+                                <Option value="WHOLE-DAY">
+                                  <span style={{ fontSize: 13 }}>Whole day</span>
+                                </Option>
+                                <Option value="MORNING">
+                                  <span style={{ fontSize: 13 }}>Morning</span>
+                                </Option>
+                                <Option value="AFTERNOON">
+                                  <span style={{ fontSize: 13 }}>Afternoon</span>
+                                </Option>
+                              </Select>
+                            </Form.Item>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </Col>
+                  <Col span={6} />
+                </Row>
+              )}
+            </Form.List>
           )}
 
           <Row className={styles.eachRow}>
@@ -538,7 +613,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content={`${selectedType} request submitted to the HR and your manager.`}
+          content={`${selectedTypeName} request submitted to the HR and your manager.`}
           submitText="OK"
         />
       </div>

@@ -9,8 +9,8 @@ export default {
   dev: {
     '/api/': {
       // target: 'http://localhost:4500',
-      target: 'http://api-stghrms.paxanimi.ai',
-      // target: 'http://f2471e7241dc.ngrok.io',
+      // target: 'http://api-stghrms.paxanimi.ai',
+      target: 'http://7023f6bfd495.ngrok.io',
       changeOrigin: true,
       pathRewrite: {
         '^': '',

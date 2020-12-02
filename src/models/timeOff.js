@@ -86,15 +86,16 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *addLeaveRequest(_, { call, put }) {
+    *addLeaveRequest({ data }, { call, put }) {
       try {
-        const response = yield call(addLeaveRequest);
-        const { statusCode, data: addedLeaveRequest = {} } = response;
-        console.log('addedLeaveRequest', addedLeaveRequest);
-        if (statusCode !== 200) throw response;
+        console.log('add Leave Request', data);
+        // const response = yield call(addLeaveRequest);
+        // const { statusCode, data: addedLeaveRequest = {} } = response;
+        // console.log('addedLeaveRequest', addedLeaveRequest);
+        // if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { addedLeaveRequest },
+          payload: {},
         });
       } catch (errors) {
         dialog(errors);
