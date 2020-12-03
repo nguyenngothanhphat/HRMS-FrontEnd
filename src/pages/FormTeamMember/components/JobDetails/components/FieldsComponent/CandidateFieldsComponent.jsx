@@ -101,7 +101,6 @@ class CandidateFieldsComponent extends PureComponent {
                       {formatMessage({ id: 'component.reminder.title' })}
                     </Typography.Title>
                   </div>
-                  <br />
                   <Typography.Text className={InternalStyle.ContentText}>
                     {formatMessage({ id: 'component.jobDetail.reminder.content' })}
                     <p className={InternalStyle.BoldText}>
