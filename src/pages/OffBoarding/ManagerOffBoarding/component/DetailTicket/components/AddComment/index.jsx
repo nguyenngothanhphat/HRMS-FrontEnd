@@ -51,7 +51,7 @@ class AddComment extends Component {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loading, nameOwner = '' } = this.props;
     const { q } = this.state;
     const date = moment().format('DD.MM.YY | h:mm A');
 
@@ -59,9 +59,7 @@ class AddComment extends Component {
       <>
         <div className={styles.closingComments}>
           <Row gutter={[0, 20]} justify="space-between">
-            <Col className={styles.closingComments__title}>
-              {formatMessage({ id: 'pages.offBoarding.closingComments' })}
-            </Col>
+            <Col className={styles.closingComments__title}>{nameOwner} comments from 1-on-1</Col>
             <Col>
               <Row>
                 <div className={styles.closingComments__dateTime}>{date}</div>

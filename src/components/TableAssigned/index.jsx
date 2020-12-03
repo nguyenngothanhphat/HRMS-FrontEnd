@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import ModalAddComment1On1 from '@/components/ModalAddComment1On1';
 import moment from 'moment';
+import { checkTime } from '@/utils/utils';
 import { connect } from 'umi';
 import empty from '@/assets/empty.svg';
 import s from './index.less';
@@ -29,6 +30,12 @@ class TableAssigned extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'offboarding/getListAssigned',
+    });
+  };
+
+  modalWarning = () => {
+    Modal.warning({
+      title: 'Comment after date, time meeting 1 on 1',
     });
   };
 
@@ -138,11 +145,17 @@ class TableAssigned extends Component {
       {
         title: <span className={s.title}>Action</span>,
         dataIndex: '_id',
-        render: (_, row) => (
-          <div className={s.rowAction}>
-            <span onClick={() => this.handleOpenAddComment(row)}>Comment 1-on-1</span>
-          </div>
-        ),
+        render: (_, row) => {
+          const { meetingDate = '', meetingTime = '' } = row;
+          const check = checkTime(meetingDate, meetingTime);
+          return (
+            <div className={s.rowAction}>
+              <span onClick={check ? () => this.handleOpenAddComment(row) : this.modalWarning}>
+                Comment 1-on-1
+              </span>
+            </div>
+          );
+        },
       },
     ];
 

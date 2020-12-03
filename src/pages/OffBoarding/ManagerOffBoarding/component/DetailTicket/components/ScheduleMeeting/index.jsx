@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { formatMessage, connect } from 'umi';
+import { Modal } from 'antd';
 import moment from 'moment';
 import externalLinkIcon from '@/assets/external-link.svg';
+import { checkTime } from '@/utils/utils';
 import AddComment from '../AddComment';
 import styles from './index.less';
 
@@ -22,6 +24,12 @@ class ScheduleMeeting extends Component {
     });
   };
 
+  modalWarning = () => {
+    Modal.warning({
+      title: 'Comment after date, time meeting 1 on 1',
+    });
+  };
+
   render() {
     const { isAddComment = false } = this.state;
     const { data = {}, myId = '' } = this.props;
@@ -34,12 +42,16 @@ class ScheduleMeeting extends Component {
         generalInfo: { firstName: nameAssignee = '', workEmail: emailAssignee = '' } = {},
       } = {},
       _id = '',
-      ownerComment: { _id: ownerCommentId = '' } = {},
+      ownerComment: {
+        _id: ownerCommentId = '',
+        generalInfo: { firstName: nameOwner = '' } = {},
+      } = {},
     } = data;
     const checkOwner = myId === ownerCommentId;
     if (isAddComment) {
-      return <AddComment idComment={_id} />;
+      return <AddComment idComment={_id} nameOwner={nameOwner} />;
     }
+    const check = checkTime(meetingDate, meetingTime);
     return (
       <div className={styles.actionDetailTicket__schedule} style={{ marginBottom: '15px' }}>
         <div className={styles.schedule__content}>
@@ -56,7 +68,7 @@ class ScheduleMeeting extends Component {
                 className={styles.icon__external__link}
                 src={externalLinkIcon}
                 alt="external-link-icon"
-                onClick={this.handleAddComment}
+                onClick={check ? this.handleAddComment : this.modalWarning}
               />
             )}
           </div>
