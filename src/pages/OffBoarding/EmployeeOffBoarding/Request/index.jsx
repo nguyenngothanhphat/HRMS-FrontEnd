@@ -6,7 +6,6 @@ import StatusRequest from '@/components/StatusRequest';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
-import ListComment from './ListComment';
 import styles from './index.less';
 
 @connect(
@@ -60,7 +59,7 @@ class ResignationRequest extends Component {
   handleSubmit = (values) => {
     const { dispatch, myRequest = {} } = this.props;
     const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
-    const payload = { meetingWith, offBoardingRequest, ...values };
+    const payload = { meetingWith, offBoardingRequest, ownerComment: meetingWith, ...values };
     dispatch({
       type: 'offboarding/create1On1',
       payload,
@@ -73,13 +72,7 @@ class ResignationRequest extends Component {
   };
 
   render() {
-    const {
-      myRequest = {},
-      list1On1 = [],
-      listMeetingTime = [],
-      loading,
-      loadingGetById,
-    } = this.props;
+    const { myRequest = {}, listMeetingTime = [], loading, loadingGetById } = this.props;
     const { visible, keyModal } = this.state;
     const {
       approvalStep = '',
@@ -110,7 +103,6 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason />
-              {list1On1.length > 0 && <ListComment data={list1On1} />}
             </Col>
             <Col span={8}>
               <WorkFlow approvalStep={approvalStep} nameManager={nameManager} />

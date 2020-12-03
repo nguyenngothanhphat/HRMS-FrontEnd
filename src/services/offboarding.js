@@ -115,6 +115,19 @@ export async function getListRelieving(payload) {
   });
 }
 
+export async function getListAssigned() {
+  return request('/api/offboardingrequest/list-assigned', {
+    method: 'POST',
+  });
+}
+
+export async function getListAssignee(payload) {
+  return request('/api/employee/list-active', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function searchListRelieving(payload) {
   return request('/api/offboardingrequest/search-request', {
     method: 'POST',

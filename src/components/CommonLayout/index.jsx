@@ -79,13 +79,23 @@ class CommonLayout extends Component {
       PENDING,
       ELIGIBLE_CANDIDATES,
       INELIGIBLE_CANDIDATES,
+      PROVISIONAL_OFFER_DRAFT,
     } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
 
     // console.log(processStatus);
     // console.log(currentStep);
 
+    // console.log(processStatus);
+
     if (currentStep !== null) {
+      // if (processStatus === PROVISIONAL_OFFER_DRAFT && currentStep === 0) {
+      //   console.log('HEEERE');
+      //   return {
+      //     selectedItemId: listMenu[0].id,
+      //     displayComponent: <BasicInformation />,
+      //   };
+      // }
       if (
         (processStatus === PENDING ||
           processStatus === ELIGIBLE_CANDIDATES ||
@@ -123,14 +133,23 @@ class CommonLayout extends Component {
 
     // console.log('HERE 4');
     return {
-      selectedItemId: '',
-      displayComponent: <PreviewOffer />,
+      selectedItemId: listMenu[0].id,
+      displayComponent: <BasicInformation />,
     };
   }
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
+    console.log(processStatus);
+    const { SENT_FOR_APPROVAL, PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT) {
+      console.log('HEEERE');
+      return {
+        selectedItemId: listMenu[0].id,
+        displayComponent: <BasicInformation />,
+      };
+    }
+
     if (processStatus === SENT_FOR_APPROVAL) {
       // console.log('HERE 6');
       return {
@@ -261,7 +280,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '', hidePreviewOffer = true } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = false } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>

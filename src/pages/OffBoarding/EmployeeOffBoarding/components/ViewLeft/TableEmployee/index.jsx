@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
@@ -6,7 +6,7 @@ import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import t from './index.less';
 
-class TableEmployee extends PureComponent {
+class TableEmployee extends Component {
   constructor(props) {
     super(props);
     this.state = {
