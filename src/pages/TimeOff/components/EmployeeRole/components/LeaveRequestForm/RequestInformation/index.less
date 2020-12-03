@@ -112,6 +112,19 @@
           }
         }
       }
+
+      // cc selection
+      .ccSelection {
+        :global {
+          .ant-select-selector {
+            padding-top: 0 !important;
+            height: auto !important;
+          }
+          // .ant-select-selection-item {
+          //   margin-top: -3px !important;
+          // }
+        }
+      }
     }
     :global {
       .ant-form-item-explain {
@@ -122,6 +135,9 @@
   }
 
   :global {
+    .ant-select-selection-item {
+      margin-top: 0px;
+    }
     .ant-col {
       max-width: 100%;
       span {

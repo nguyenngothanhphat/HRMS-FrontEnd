@@ -26,10 +26,19 @@ class RequestInformation extends Component {
       secondNotice: '',
       durationFrom: '',
       durationTo: '',
-      isDurationValid: false,
-      leaveTimeLists: [],
     };
   }
+
+  fetchEmailsListByCompany = () => {
+    const {
+      dispatch,
+      user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {},
+    } = this.props;
+    dispatch({
+      type: 'timeOff/fetchEmailsListByCompany',
+      payload: [company],
+    });
+  };
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
@@ -40,6 +49,7 @@ class RequestInformation extends Component {
     dispatch({
       type: 'timeOff/fetchTimeOffTypes',
     });
+    this.fetchEmailsListByCompany();
   };
 
   // GET TIME OFF TYPE BY ID
@@ -139,7 +149,7 @@ class RequestInformation extends Component {
 
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // generate data for API
-    // const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
+    const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
 
     const data = {
       type: timeOffType,
@@ -153,7 +163,7 @@ class RequestInformation extends Component {
       onDate: moment(),
       description,
       approvalManager: managerId, // id
-      cc: [],
+      cc: personCC,
     };
 
     dispatch({
@@ -381,6 +391,21 @@ class RequestInformation extends Component {
     return current && current < moment(durationFrom);
   };
 
+  // RENDER EMAILS LIST
+  renderEmailsList = () => {
+    const {
+      timeOff: { emailsList = [] },
+    } = this.props;
+    const list = emailsList.map((user) => {
+      const {
+        _id = '',
+        generalInfo: { firstName = '', lastName = '', workEmail = '' } = {},
+      } = user;
+      return { workEmail, firstName, lastName, _id };
+    });
+    return list.filter((value) => Object.keys(value).length !== 0);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -398,7 +423,6 @@ class RequestInformation extends Component {
       durationFrom,
       durationTo,
       selectedTypeName,
-      leaveTimeLists,
     } = this.state;
 
     const {
@@ -417,7 +441,7 @@ class RequestInformation extends Component {
 
     // DYNAMIC ROW OF DATE LISTS
     const dateLists = this.getDateLists(durationFrom, durationTo);
-    const numberOfDays = this.calculateNumberOfLeaveDay(leaveTimeLists);
+    const numberOfDays = 0;
 
     return (
       <div className={styles.RequestInformation}>
@@ -621,7 +645,7 @@ class RequestInformation extends Component {
             <Col className={styles.label} span={6}>
               <span>CC (only if you want to notify other than HR & your manager)</span>
             </Col>
-            <Col span={12}>
+            <Col span={12} className={styles.ccSelection}>
               <Form.Item
                 name="personCC"
                 rules={[
@@ -630,13 +654,16 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <Select placeholder="Search a person you want to loop">
-                  <Option value="Person 1">
-                    <span style={{ fontSize: 13 }}>Person 1</span>
-                  </Option>
-                  <Option value="Person 2">
-                    <span style={{ fontSize: 13 }}>Person 2</span>
-                  </Option>
+                <Select mode="multiple" allowClear placeholder="Search a person you want to loop">
+                  {this.renderEmailsList().map((value) => {
+                    const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
+                    return (
+                      <Option value={_id} key={_id}>
+                        {/* {firstName} {lastName} -  */}
+                        {workEmail}
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>

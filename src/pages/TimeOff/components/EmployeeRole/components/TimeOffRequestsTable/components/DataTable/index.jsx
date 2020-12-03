@@ -38,11 +38,8 @@ export default class DataTable extends PureComponent {
     {
       title: 'Assigned',
       align: 'left',
-      dataIndex: 'approvalManager',
-      render: (approvalManager) => {
-        const {
-          generalInfo: { firstName = '', lastName = '', avatar = '' } = {},
-        } = approvalManager;
+      dataIndex: 'assigned',
+      render: (assigned) => {
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
@@ -52,14 +49,19 @@ export default class DataTable extends PureComponent {
                 backgroundColor: '#d6dce0',
               }}
             >
-              <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                <Avatar
-                  style={{
-                    backgroundColor: '#FFA100',
-                  }}
-                  src={avatar}
-                />
-              </Tooltip>
+              {assigned.map((user) => {
+                const { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = user;
+                return (
+                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
+                    <Avatar
+                      style={{
+                        backgroundColor: '#FFA100',
+                      }}
+                      src={avatar}
+                    />
+                  </Tooltip>
+                );
+              })}
             </Avatar.Group>
           </div>
         );
@@ -113,13 +115,17 @@ export default class DataTable extends PureComponent {
 
   processData = (data) => {
     return data.map((value) => {
-      const { fromDate = '', toDate = '' } = value;
+      const { fromDate = '', toDate = '', approvalManager = {}, cc = [] } = value;
       const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
         .locale('en')
         .format('MM.DD.YYYY')}`;
+      const getIdFromCC = cc.map((v) => v._id);
+      const assigned = [...getIdFromCC, approvalManager];
+
       return {
         ...value,
         leaveTimes,
+        assigned,
       };
     });
   };

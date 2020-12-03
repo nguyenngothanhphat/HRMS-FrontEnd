@@ -28,6 +28,13 @@ export async function addLeaveRequest(payload) {
   });
 }
 
+export async function getEmailsListByCompany(payload) {
+  return request('/api/employee/admin-list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 const mockData = [
   {
     name: `New Year's Day`,
