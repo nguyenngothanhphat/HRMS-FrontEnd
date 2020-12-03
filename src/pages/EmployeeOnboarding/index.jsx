@@ -7,12 +7,35 @@ import Settings from './components/Settings';
 import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
+const ROLE = {
+  HRMANAGER: 'HR-MANAGER',
+  HR: 'HR',
+  HRGLOBAL: 'HR-GLOBAL',
+};
+
 @connect(({ loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
   loading: loading.effects['login/login'],
   roles,
 }))
 class EmployeeOnboarding extends PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      rolesList: '',
+    };
+  }
+
+  componentDidMount = () => {
+    const { roles } = this.props;
+    const arrRole = roles.map((itemRole) => itemRole._id);
+    this.setState({
+      rolesList: arrRole,
+    });
+  };
+
   render() {
+    const { rolesList } = this.state;
     const { location: { state: { defaultActiveKey = '1' } = {} } = {}, roles } = this.props;
     const getPermission = roles.map((item) => {
       const { permissions = [] } = item;
@@ -22,6 +45,7 @@ class EmployeeOnboarding extends PureComponent {
       .flat()
       .filter((values, index, self) => self.indexOf(values) === index);
     const { TabPane } = Tabs;
+    const isHrManager = rolesList.indexOf(ROLE.HRMANAGER) > -1;
 
     return (
       <PageContainer>
@@ -50,18 +74,22 @@ class EmployeeOnboarding extends PureComponent {
                   </div>
                   <OnboardingOverview />
                 </TabPane>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
-                  key="2"
-                >
-                  <Settings />
-                </TabPane>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
-                  key="3"
-                >
-                  <CustomFields />
-                </TabPane>
+                {isHrManager === true ? (
+                  <>
+                    <TabPane
+                      tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
+                      key="2"
+                    >
+                      <Settings />
+                    </TabPane>
+                    <TabPane
+                      tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
+                      key="3"
+                    >
+                      <CustomFields />
+                    </TabPane>
+                  </>
+                ) : null}
               </Tabs>
             </div>
           </div>

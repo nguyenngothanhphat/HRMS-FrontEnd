@@ -27,13 +27,13 @@ class TableComponent extends PureComponent {
   _renderEmployeeId = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    return newItem[0].employee.employeeId;
+    return newItem[0].employee.generalInfo.employeeId;
   };
 
   _renderEmployeeName = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    return `${newItem[0].employee.generalInfo.firstName} ${newItem[0].employee.generalInfo.lastName}`;
+    return `${newItem[0].employee.generalInfo.legalName}`;
   };
 
   _renderDepartment = (id) => {
@@ -45,7 +45,7 @@ class TableComponent extends PureComponent {
   _renderLastWorkingDate = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    const date = newItem[0].lastWorkingDate.slice(0, 10);
+    const date = newItem[0].lastWorkingDate?.slice(0, 10);
     return date;
   };
 
@@ -71,7 +71,7 @@ class TableComponent extends PureComponent {
     const columns = [
       {
         title: <span className={styles.title}>Ticket ID </span>,
-        dataIndex: '_id',
+        dataIndex: 'ticketID',
       },
       {
         title: <span className={styles.title}>Employee ID </span>,

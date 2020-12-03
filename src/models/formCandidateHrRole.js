@@ -678,8 +678,8 @@ const candidateInfo = {
         const { setting } = data;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
-          payload: { tableData: setting },
+          type: 'saveSalaryStructure',
+          payload: { settings: setting },
         });
       } catch (errors) {
         dialog(errors);
@@ -1042,6 +1042,19 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    saveSalaryStructure(state, action) {
+      const { data, salaryStructure } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          salaryStructure: {
+            ...salaryStructure,
+            ...action.payload,
+          },
         },
       };
     },

@@ -67,6 +67,7 @@
     "prettier": "^2.1.1",
     "prop-types": "^15.7.2",
     "qs": "^6.9.0",
+    "quill-mention": "^3.0.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^13.0.0",
     "react-copy-to-clipboard": "^5.0.2",
