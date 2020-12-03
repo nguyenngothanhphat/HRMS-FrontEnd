@@ -86,7 +86,7 @@ class CommonLayout extends Component {
     // console.log(processStatus);
     // console.log(currentStep);
 
-    console.log(processStatus);
+    // console.log(processStatus);
 
     if (currentStep !== null) {
       // if (processStatus === PROVISIONAL_OFFER_DRAFT && currentStep === 0) {

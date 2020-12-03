@@ -254,7 +254,10 @@ class JobDetails extends PureComponent {
     if (name === 'reportingManager') {
       const { managerList } = tempData;
       const changedManagerList = JSON.parse(JSON.stringify(managerList));
-      const selectedManager = changedManagerList.find((data) => data._id === value);
+      // const selectedManager = changedManagerList.find((data) => data._id === value);
+      const selectedManager = changedManagerList.find(
+        (data) => data.generalInfo.firstName === value,
+      );
       dispatch({
         type: 'candidateInfo/save',
         payload: {
