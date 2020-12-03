@@ -243,6 +243,30 @@ class FormTeamMember extends PureComponent {
     });
   }
 
+  handleCancel = async () => {
+    const { dispatch, history, candidateInfo: { data: { ticketID = '' } = {} } = {} } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    // console.log(ticketID);
+    const response = await dispatch({
+      type: 'onboard/deleteTicketDraft',
+      payload: {
+        id: ticketID,
+      },
+    });
+    const { statusCode = 1 } = response;
+    if (statusCode === 200) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          cancelCandidate: true,
+        },
+      });
+      history.push('/employee-onboarding');
+    }
+  };
+
   render() {
     const {
       match: { params: { action = '', reId = '' } = {} },
@@ -389,7 +413,9 @@ class FormTeamMember extends PureComponent {
                   <Button type="primary" ghost>
                     Finish Later
                   </Button>
-                  <Button danger>Cancel</Button>
+                  <Button danger onClick={this.handleCancel}>
+                    Cancel
+                  </Button>
                 </div>
               )}
             </div>

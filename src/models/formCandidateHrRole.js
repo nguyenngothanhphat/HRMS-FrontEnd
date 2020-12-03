@@ -204,6 +204,8 @@ const candidateInfo = {
           answer: '',
         },
       ],
+
+      cancelCandidate: false,
     },
     data: {
       fullName: null,

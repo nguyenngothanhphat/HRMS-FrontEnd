@@ -171,7 +171,11 @@ class BackgroundCheck extends Component {
         },
       });
     }
-    this.handleUpdateByHR();
+    const { cancelCandidate = false } = tempData;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
+
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 

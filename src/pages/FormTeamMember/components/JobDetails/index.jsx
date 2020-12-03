@@ -56,7 +56,10 @@ class JobDetails extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.handleUpdateByHR();
+    const { tempData: { cancelCandidate = false } = {} } = this.props;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
