@@ -48,7 +48,6 @@ class FormTeamMember extends PureComponent {
         const { currentStep = 0 } = data;
 
         if (currentStep >= 4) {
-          console.log('valueToFinalOffer = 1 here');
           dispatch({
             type: 'candidateInfo/saveTemp',
             payload: {
@@ -248,7 +247,7 @@ class FormTeamMember extends PureComponent {
     if (!dispatch) {
       return;
     }
-    // console.log(ticketID);
+
     const response = await dispatch({
       type: 'onboard/deleteTicketDraft',
       payload: {
@@ -269,7 +268,6 @@ class FormTeamMember extends PureComponent {
 
   handleFinishLater = async () => {
     const { candidateInfo: { data } = {}, dispatch, history } = this.props;
-    console.log(data);
     const response = await dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
