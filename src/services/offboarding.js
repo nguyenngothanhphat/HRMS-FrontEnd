@@ -121,3 +121,9 @@ export async function sendMailExitPackage(payload) {
     data: payload,
   });
 }
+export async function searchListRelieving(payload) {
+  return request('/api/offboardingrequest/search-request', {
+    method: 'POST',
+    data: payload,
+  });
+}

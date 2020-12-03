@@ -676,12 +676,13 @@ const onboard = {
     },
 
     *deleteTicketDraft({ payload }, { call, put }) {
+      let response;
       try {
         const { id = '' } = payload;
         const req = {
           rookieID: id,
         };
-        const response = yield call(deleteDraft, req);
+        response = yield call(deleteDraft, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
@@ -703,6 +704,7 @@ const onboard = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *inititateBackgroundCheckEffect({ payload }, { call, put }) {
