@@ -1,12 +1,32 @@
 import React, { Component } from 'react';
 import { Select, Form, Divider, Row, Col, Button } from 'antd';
-
+import ModalNotice from '../Modalupload';
 import styles from './index.less';
 
 class AssignPolicy extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
+
+  handleCandelSchedule = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleClick = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
   onChange = () => {};
 
   render() {
+    const { visible } = this.state;
     return (
       <div className={styles.balance}>
         <div className={styles.balanceFrom}>
@@ -73,11 +93,18 @@ class AssignPolicy extends Component {
               </Row>
               <Row className={styles.footer}>
                 <Col xs={24} sm={24} md={24} lg={10} xl={5}>
-                  <Button className={styles.btnSubmit}>Finish</Button>
+                  <Button className={styles.btnSubmit} onClick={this.handleClick}>
+                    Finish
+                  </Button>
                 </Col>
               </Row>
             </div>
           </Form>
+          <ModalNotice
+            modalContent="Syncing all data and setting up your Timeoff app."
+            visible={visible}
+            handleCancel={this.handleCandelSchedule}
+          />
         </div>
       </div>
     );

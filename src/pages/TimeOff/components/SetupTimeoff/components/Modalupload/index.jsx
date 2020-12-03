@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal } from 'antd';
 import noticeIcon from '@/assets/notice-icon.svg';
 import styles from './index.less';
 
@@ -21,7 +21,7 @@ class ModalNoticeSuccess extends Component {
   };
 
   render() {
-    const { visible = false, loading, modalContent } = this.props;
+    const { visible = false, modalContent } = this.props;
     return (
       <Modal
         className={styles.modal}
@@ -38,7 +38,7 @@ class ModalNoticeSuccess extends Component {
           </div>
 
           <p>{modalContent}</p>
-          <Button
+          {/* <Button
             key="submit"
             type="primary"
             loading={loading}
@@ -46,7 +46,7 @@ class ModalNoticeSuccess extends Component {
             onClick={this.handleRemoveToServer}
           >
             OK
-          </Button>
+          </Button> */}
         </div>
       </Modal>
     );

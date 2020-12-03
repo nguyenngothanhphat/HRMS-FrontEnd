@@ -60,7 +60,6 @@ class WorkShedule extends Component {
       ...item,
       check: item.id === id ? !item.check : item.check,
     }));
-    console.log(result, 'result');
     this.setState({ array: result });
   };
 
@@ -75,6 +74,10 @@ class WorkShedule extends Component {
     );
   };
 
+  onFinish = (values) => {
+    console.log('Success:', values);
+  };
+
   render() {
     const { array } = this.state;
     const format = 'HH:mm';
@@ -86,74 +89,79 @@ class WorkShedule extends Component {
     const { value1, value2 } = this.state;
     return (
       <div className={s.root}>
-        <div className={s.title}>Setup the employee work schedule</div>
-        <div className={s.description}>
-          How many hours does a regular work day consists of for an employee? How may days does an
-          employee work in a week?
-        </div>
-        <div className={s.formActive}>
-          <div className={s.activeText}>Standard work schedule policy</div>
-          <div className={s.straight} />
-          <div className={s.formWorkHour}>
-            <div className={s.workHour}>Work hour</div>
+        <Form onFinish={this.onFinish}>
+          <div className={s.title}>Setup the employee work schedule</div>
+          <div className={s.description}>
+            How many hours does a regular work day consists of for an employee? How may days does an
+            employee work in a week?
+          </div>
+          <div className={s.formActive}>
+            <div className={s.activeText}>Standard work schedule policy</div>
+            <div className={s.straight} />
+            <div className={s.formWorkHour}>
+              <div className={s.workHour}>Work hour</div>
 
-            <div className={`${s.description} ${s.pb17}`}>
-              For each day the employee takes off, the number of hours as per the standard work
-              schedule will be deducted from the total leave balance.
+              <div className={`${s.description} ${s.pb17}`}>
+                For each day the employee takes off, the number of hours as per the standard work
+                schedule will be deducted from the total leave balance.
+              </div>
+              <div className={s.form}>
+                <Form.Item label="Total Hours in a workday" name="totalHour">
+                  <InputNumber min={0} placeholder="hours/day" />
+                </Form.Item>
+                <Row>
+                  <Col>
+                    <Form.Item label="Workday end at" name="startAt">
+                      <TimePicker format={format} />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item label=" " name="amPM">
+                      <Radio.Group
+                        options={options}
+                        onChange={this.onChange2}
+                        value={value1}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Item label="Workday end at">
+                      <TimePicker format={format} />
+                    </Form.Item>
+                  </Col>
+                  <Col>
+                    <Form.Item label=" ">
+                      <Radio.Group
+                        options={options}
+                        onChange={this.onChange2}
+                        value={value2}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </div>
+              <div className={s.workHour}>Work days</div>
+              <div className={`${s.description} ${s.pb17}`}>
+                For each day the employee takes off, the number of hours as per the standard work
+                schedule will be deducted from the total leave balance.
+              </div>
+              <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
             </div>
-            <Form layout="vertical" className={s.form}>
-              <Form.Item label="Total Hours in a workday" className={s.formInput}>
-                <InputNumber min={0} placeholder="hours/day" />
-              </Form.Item>
-              <Row className={s.formInput}>
-                <Col>
-                  <Form.Item label="Workday start at">
-                    <TimePicker format={format} />
-                  </Form.Item>
-                </Col>
-                <Col>
-                  <Form.Item label=" ">
-                    <Radio.Group
-                      options={options}
-                      onChange={this.onChange1}
-                      value={value1}
-                      optionType="button"
-                      buttonStyle="solid"
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row className={s.formInput}>
-                <Col>
-                  <Form.Item label="Workday end at">
-                    <InputNumber min={0} placeholder="hours/day" />
-                  </Form.Item>
-                </Col>
-                <Col>
-                  <Form.Item label=" ">
-                    <Radio.Group
-                      options={options}
-                      onChange={this.onChange2}
-                      value={value2}
-                      optionType="button"
-                      buttonStyle="solid"
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-            <div className={s.workHour}>Work days</div>
-            <div className={`${s.description} ${s.pb17}`}>
-              For each day the employee takes off, the number of hours as per the standard work
-              schedule will be deducted from the total leave balance.
+            <div className={s.straight} />
+            <div className={s.flex}>
+              <Button className={s.btnSave} type="primary" htmlType="submit">
+                Next
+              </Button>
+              <Button className={s.btnSave}>Next</Button>
             </div>
-            <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
           </div>
-          <div className={s.straight} />
-          <div className={s.flex}>
-            <Button className={s.btnSave}>Next</Button>
-          </div>
-        </div>
+        </Form>
       </div>
     );
   }
