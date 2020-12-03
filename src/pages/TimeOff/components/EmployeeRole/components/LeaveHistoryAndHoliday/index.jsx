@@ -3,6 +3,7 @@ import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { connect } from 'umi';
+import moment from 'moment';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
@@ -23,6 +24,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
+      payload: { year: moment().format('YYYY'), month: '' },
     });
     dispatch({
       type: 'timeOff/fetchLeavingList',
@@ -59,9 +61,22 @@ class LeaveHistoryAndHoliday extends PureComponent {
     );
   };
 
+  formatHolidayLists = (holidaysList) => {
+    return holidaysList.map((value) => {
+      const { name = '', date = '' } = value;
+      const fromDate = moment(date).locale('en').format('MM/DD/YYYY');
+      console.log('fromDate', fromDate);
+      return {
+        name,
+        fromDate,
+      };
+    });
+  };
+
   render() {
     const { activeShowType } = this.state;
     const { timeOff: { holidaysList = [], leavingList = [] } = {} } = this.props;
+    const formatHolidayLists = this.formatHolidayLists(holidaysList);
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
@@ -69,7 +84,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
             <LeaveHistory leavingList={leavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holiday" key="2">
-            <Holiday holidaysList={holidaysList} activeShowType={activeShowType} />
+            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>

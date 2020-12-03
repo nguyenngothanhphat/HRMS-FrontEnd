@@ -27,6 +27,7 @@ class RequestInformation extends Component {
       durationFrom: '',
       durationTo: '',
       isDurationValid: false,
+      leaveTimeLists: [],
     };
   }
 
@@ -116,6 +117,11 @@ class RequestInformation extends Component {
     return result;
   };
 
+  onValuesChange = (value) => {
+    // eslint-disable-next-line no-console
+    console.log('Success:', value);
+  };
+
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
@@ -133,7 +139,8 @@ class RequestInformation extends Component {
 
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // generate data for API
-    const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
+    // const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
+
     const data = {
       type: timeOffType,
       status: 'IN-PROGRESS',
@@ -165,56 +172,31 @@ class RequestInformation extends Component {
 
   // DATE PICKER
   fromDateOnChange = (value) => {
-    this.setState({
-      durationFrom: value,
-    });
+    if (value === null) {
+      this.setState({
+        durationFrom: '',
+      });
+    } else {
+      this.setState({
+        durationFrom: value,
+      });
+    }
     const { selectedShortType } = this.state;
     this.setSecondNotice(selectedShortType);
   };
 
   toDateOnChange = (value) => {
-    this.setState({
-      durationTo: value,
-    });
+    if (value === null) {
+      this.setState({
+        durationTo: '',
+      });
+    } else {
+      this.setState({
+        durationTo: value,
+      });
+    }
     const { selectedShortType } = this.state;
     this.setSecondNotice(selectedShortType);
-  };
-
-  // CHECK DAY ORDER
-  fromDateValidator = (rule, value, callback) => {
-    const { durationTo } = this.state;
-    if (durationTo !== '') {
-      const checkDayOrder = moment(durationTo).isAfter(value);
-      if (!checkDayOrder && value !== null) {
-        callback('From Date must be before To Date!');
-        this.setState({
-          isDurationValid: false,
-        });
-      } else {
-        // callback();
-        this.setState({
-          isDurationValid: true,
-        });
-      }
-    }
-  };
-
-  toDateValidator = (rule, value, callback) => {
-    const { durationFrom } = this.state;
-    const checkDayOrder = moment(value).isAfter(durationFrom);
-    if (durationFrom !== '') {
-      if (!checkDayOrder && value !== null) {
-        callback('To Date must be after From Date!');
-        this.setState({
-          isDurationValid: false,
-        });
-      } else {
-        // callback();
-        this.setState({
-          isDurationValid: true,
-        });
-      }
-    }
   };
 
   // ON SAVE DRAFT CLICKED
@@ -388,10 +370,15 @@ class RequestInformation extends Component {
     return dates;
   };
 
-  // DISABLE PAST DATE OF DATE PICKER
-  disabledDate = (current) => {
-    // Can not select days before today and today
-    return current && current < moment().endOf('day');
+  // DISABLE DATE OF DATE PICKER
+  disabledFromDate = (current) => {
+    const { durationTo } = this.state;
+    return current && current > moment(durationTo);
+  };
+
+  disabledToDate = (current) => {
+    const { durationFrom } = this.state;
+    return current && current < moment(durationFrom);
   };
 
   render() {
@@ -410,8 +397,8 @@ class RequestInformation extends Component {
       secondNotice,
       durationFrom,
       durationTo,
-      isDurationValid,
       selectedTypeName,
+      leaveTimeLists,
     } = this.state;
 
     const {
@@ -427,6 +414,10 @@ class RequestInformation extends Component {
     const dataTimeOffTypes1 = this.renderTimeOffTypes1(typesOfCommonLeaves);
     const dataTimeOffTypes2 = this.renderTimeOffTypes1(typesOfSpecialLeaves);
     const dataTimeOffTypes3 = this.renderTimeOffTypes2(timeOffTypes);
+
+    // DYNAMIC ROW OF DATE LISTS
+    const dateLists = this.getDateLists(durationFrom, durationTo);
+    const numberOfDays = this.calculateNumberOfLeaveDay(leaveTimeLists);
 
     return (
       <div className={styles.RequestInformation}>
@@ -516,7 +507,7 @@ class RequestInformation extends Component {
                     ]}
                   >
                     <DatePicker
-                      disabledDate={this.disabledDate}
+                      disabledDate={this.disabledFromDate}
                       onChange={(value) => this.fromDateOnChange(value)}
                       placeholder="From Date"
                     />
@@ -530,11 +521,11 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
-                      { validator: this.toDateValidator },
+                      // { validator: this.toDateValidator },
                     ]}
                   >
                     <DatePicker
-                      disabledDate={this.disabledDate}
+                      disabledDate={this.disabledToDate}
                       onChange={(value) => this.toDateOnChange(value)}
                       placeholder="To Date"
                     />
@@ -551,7 +542,7 @@ class RequestInformation extends Component {
             </Col>
           </Row>
 
-          {durationFrom !== '' && durationTo !== '' && isDurationValid && (
+          {durationFrom !== '' && durationTo !== '' && (
             <Form.List name="leaveTimeLists">
               {() => (
                 <Row className={styles.eachRow}>
@@ -559,7 +550,7 @@ class RequestInformation extends Component {
                     <span />
                   </Col>
                   <Col span={12} className={styles.leaveDaysContainer}>
-                    {this.getDateLists(durationFrom, durationTo).map((date, index) => {
+                    {dateLists.map((date, index) => {
                       return (
                         <div className={styles.eachDay}>
                           <div className={styles.day}>
@@ -569,6 +560,7 @@ class RequestInformation extends Component {
                             <Form.Item
                               // name={`leaveDaysDetail${index}`}
                               name={[index]}
+                              fieldKey={[index]}
                               rules={[
                                 {
                                   required: true,
@@ -593,7 +585,13 @@ class RequestInformation extends Component {
                       );
                     })}
                   </Col>
-                  <Col span={6} />
+                  <Col span={6}>
+                    <div className={styles.smallNotice}>
+                      <span className={styles.normalText}>
+                        Number of days: {numberOfDays} day(s)
+                      </span>
+                    </div>
+                  </Col>
                 </Row>
               )}
             </Form.List>

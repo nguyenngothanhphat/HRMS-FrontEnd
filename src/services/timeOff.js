@@ -61,11 +61,11 @@ const mockData = [
   },
 ];
 
-export async function getHolidaysList() {
-  return {
-    data: mockData,
-    statusCode: 200,
-  };
+export async function getHolidaysList(payload) {
+  return request('/api/holidaycalendar/list', {
+    method: 'POST',
+    data: payload,
+  });
 }
 
 const mockData1 = [

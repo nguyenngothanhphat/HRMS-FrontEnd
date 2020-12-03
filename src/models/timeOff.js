@@ -63,9 +63,9 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchHolidaysList(_, { call, put }) {
+    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
       try {
-        const response = yield call(getHolidaysList);
+        const response = yield call(getHolidaysList, { year, month });
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
