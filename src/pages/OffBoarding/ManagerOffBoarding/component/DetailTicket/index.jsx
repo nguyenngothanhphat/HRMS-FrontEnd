@@ -11,6 +11,7 @@ import ScheduleMeeting from './components/ScheduleMeeting';
 import RightContent from './components/RightContent';
 import ModalNotice from './components/ModalNotice';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
+import RequestChangeLWD from './components/RequestChangeLWD';
 import styles from './index.less';
 
 @connect(
@@ -255,6 +256,7 @@ class DetailTicket extends Component {
                 })}
                 <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} />
                 {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
+                {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={6}>
                 <RightContent />
