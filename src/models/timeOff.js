@@ -7,6 +7,7 @@ import {
   addLeaveRequest,
   getTimeOffTypes,
   getEmailsListByCompany,
+  getLeaveRequestById,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -19,6 +20,7 @@ const timeOff = {
     timeOffTypes: [],
     employeeInfo: {},
     emailsList: [],
+    viewingLeaveRequest: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -59,6 +61,21 @@ const timeOff = {
           yield put({
             type: 'save',
             payload: { leaveRequests },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeaveRequestById({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(getLeaveRequestById, { id });
+          const { statusCode, data: viewingLeaveRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { viewingLeaveRequest },
           });
         }
       } catch (errors) {

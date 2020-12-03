@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
+import { history } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -45,8 +46,8 @@ export default class DataTable extends PureComponent {
             <Avatar.Group
               maxCount={2}
               maxStyle={{
-                color: '#d6dce0',
-                backgroundColor: '#d6dce0',
+                color: '#FFA100',
+                backgroundColor: '#464646',
               }}
             >
               {assigned.map((user) => {
@@ -57,8 +58,8 @@ export default class DataTable extends PureComponent {
                     <Avatar
                       style={
                         approvalManagerEmail === workEmail
-                          ? { backgroundColor: '#FFA100', border: '2px solid #FFA100' }
-                          : { backgroundColor: '#FFA100' }
+                          ? { backgroundColor: '#464646', border: '2px solid #FFA100' }
+                          : { backgroundColor: '#464646' }
                       }
                       src={avatar}
                     />
@@ -73,9 +74,10 @@ export default class DataTable extends PureComponent {
     {
       title: 'Action',
       align: 'left',
-      render: (key) => (
+      dataIndex: '_id',
+      render: (_id) => (
         <div className={styles.rowAction}>
-          <span onClick={() => this.viewRequest(key)}>View Request</span>
+          <span onClick={() => this.viewRequest(_id)}>View Request</span>
         </div>
       ),
     },
@@ -91,11 +93,11 @@ export default class DataTable extends PureComponent {
   }
 
   // view request
-  viewRequest = (key) => {
-    // eslint-disable-next-line no-alert
-    alert('View Requests');
-    // eslint-disable-next-line no-console
-    console.log('key', key);
+  viewRequest = (_id) => {
+    history.push({
+      pathname: `/time-off/view-request/${_id}`,
+      // state: { location: name },
+    });
   };
 
   // pagination
@@ -196,7 +198,7 @@ export default class DataTable extends PureComponent {
           columns={this.columns}
           dataSource={parsedData}
           // scroll={scroll}
-          rowKey="ticketId"
+          rowKey="_id"
         />
       </div>
     );

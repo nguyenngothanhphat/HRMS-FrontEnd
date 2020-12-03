@@ -221,6 +221,13 @@ const routes = [
             // authority: ['employee'],
           },
           {
+            path: '/time-off/view-request/:reId',
+            name: 'Time Off [Ticket Id: 123456]',
+            hideInMenu: true,
+            component: './TimeOff/components/EmployeeRole/components/ViewRequestForm',
+            // authority: ['employee'],
+          },
+          {
             path: '/time-off/new-leave-request',
             name: 'Request for Timeoff',
             hideInMenu: true,

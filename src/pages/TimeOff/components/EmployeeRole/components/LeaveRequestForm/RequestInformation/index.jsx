@@ -403,7 +403,8 @@ class RequestInformation extends Component {
       } = user;
       return { workEmail, firstName, lastName, _id };
     });
-    return list.filter((value) => Object.keys(value).length !== 0);
+    // return list.filter((value) => Object.keys(value).length !== 0);
+    return list;
   };
 
   render() {
@@ -658,9 +659,11 @@ class RequestInformation extends Component {
                   {this.renderEmailsList().map((value) => {
                     const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
                     return (
-                      <Option value={_id} key={_id}>
-                        {/* {firstName} {lastName} -  */}
-                        {workEmail}
+                      <Option value={_id} key={workEmail}>
+                        <span style={{ fontSize: 13 }}>
+                          {firstName} {lastName}
+                        </span>
+                        <span style={{ fontSize: 12, color: '#464646' }}>({workEmail})</span>
                       </Option>
                     );
                   })}

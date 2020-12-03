@@ -21,6 +21,13 @@ export async function getLeaveRequestOfEmployee(payload) {
   });
 }
 
+export async function getLeaveRequestById(payload) {
+  return request('/api/leaverequest/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addLeaveRequest(payload) {
   return request('/api/leaverequest/add', {
     method: 'POST',
