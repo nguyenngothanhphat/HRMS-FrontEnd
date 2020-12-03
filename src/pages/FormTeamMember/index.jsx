@@ -267,6 +267,22 @@ class FormTeamMember extends PureComponent {
     }
   };
 
+  handleFinishLater = async () => {
+    const { candidateInfo: { data } = {}, dispatch, history } = this.props;
+    console.log(data);
+    const response = await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        ...data,
+        // candidate: data.id
+      },
+    });
+    const { statusCode = 1 } = response;
+    if (statusCode === 200) {
+      history.push('/employee-onboarding');
+    }
+  };
+
   render() {
     const {
       match: { params: { action = '', reId = '' } = {} },
@@ -410,7 +426,7 @@ class FormTeamMember extends PureComponent {
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'add' && (
                 <div className={styles.titlePage__viewBtn}>
-                  <Button type="primary" ghost>
+                  <Button type="primary" ghost onClick={this.handleFinishLater}>
                     Finish Later
                   </Button>
                   <Button danger onClick={this.handleCancel}>
