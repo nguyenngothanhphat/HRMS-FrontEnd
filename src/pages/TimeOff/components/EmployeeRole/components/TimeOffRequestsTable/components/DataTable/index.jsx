@@ -50,13 +50,16 @@ export default class DataTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = user;
+                const { firstName = '', lastName = '', avatar = '', workEmail = '' } = user;
+                const { approvalManagerEmail } = this.state;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
                     <Avatar
-                      style={{
-                        backgroundColor: '#FFA100',
-                      }}
+                      style={
+                        approvalManagerEmail === workEmail
+                          ? { backgroundColor: '#FFA100', border: '2px solid #FFA100' }
+                          : { backgroundColor: '#FFA100' }
+                      }
                       src={avatar}
                     />
                   </Tooltip>
@@ -83,6 +86,7 @@ export default class DataTable extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
+      approvalManagerEmail: '',
     };
   }
 
@@ -113,14 +117,33 @@ export default class DataTable extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  // PARSE DATA FOR TABLE
   processData = (data) => {
     return data.map((value) => {
-      const { fromDate = '', toDate = '', approvalManager = {}, cc = [] } = value;
+      const {
+        fromDate = '',
+        toDate = '',
+        approvalManager: {
+          generalInfo: { workEmail = '' } = {},
+          generalInfo: generalInfoA = {},
+        } = {},
+        cc = [],
+      } = value;
+
+      // GET ID OF APPROVE MANAGER
+      this.setState({
+        approvalManagerEmail: workEmail,
+      });
+
       const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
         .locale('en')
         .format('MM.DD.YYYY')}`;
-      const getIdFromCC = cc.map((v) => v._id);
-      const assigned = [...getIdFromCC, approvalManager];
+
+      const employeeFromCC = cc.map((each) => {
+        const { generalInfo = {} } = each;
+        return generalInfo;
+      });
+      const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
@@ -133,29 +156,30 @@ export default class DataTable extends PureComponent {
   render() {
     const { data = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
-    const rowSize = 20;
+    // const rowSize = 20;
 
     const parsedData = this.processData(data);
     // const scroll = {
     //   x: '',
     //   y: 'max-content',
     // };
-    const pagination = {
-      position: ['bottomRight'],
-      total: data.length,
-      showTotal: (total, range) => (
-        <span>
-          Showing{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          total
-        </span>
-      ),
-      pageSize: rowSize,
-      current: pageSelected,
-      onChange: this.onChangePagination,
-    };
+
+    // const pagination = {
+    //   position: ['bottomRight'],
+    //   total: data.length,
+    //   showTotal: (total, range) => (
+    //     <span>
+    //       Showing{' '}
+    //       <b>
+    //         {range[0]} - {range[1]}
+    //       </b>{' '}
+    //       total
+    //     </span>
+    //   ),
+    //   pageSize: rowSize,
+    //   current: pageSelected,
+    //   onChange: this.onChangePagination,
+    // };
 
     const rowSelection = {
       type: 'checkbox',
@@ -168,7 +192,7 @@ export default class DataTable extends PureComponent {
           size="small"
           loading={loading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          // pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
           dataSource={parsedData}
           // scroll={scroll}
