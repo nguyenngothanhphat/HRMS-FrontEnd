@@ -66,6 +66,11 @@ export default class LeaveHistoryList extends PureComponent {
             </Row>
           );
         })}
+        {leavingList.length === 0 && (
+          <Row style={{ marginTop: 0 }} className={styles.eachRow}>
+            <span>No data</span>
+          </Row>
+        )}
       </div>
     );
   }
