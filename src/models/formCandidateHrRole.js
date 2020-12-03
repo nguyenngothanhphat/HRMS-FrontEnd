@@ -382,7 +382,6 @@ const candidateInfo = {
       documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
-      tableData: [],
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -660,7 +659,7 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
+          type: 'saveOrigin',
           payload: { listTitle: data },
         });
       } catch (error) {

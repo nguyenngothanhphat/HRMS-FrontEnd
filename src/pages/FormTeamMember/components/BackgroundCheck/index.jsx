@@ -29,16 +29,13 @@ const note = {
   ),
 };
 
-@connect(
-  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
-    tempData,
-    data,
-    tableData,
-    currentStep,
-    checkMandatory,
-    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
-  }),
-)
+@connect(({ candidateInfo: { tempData, checkMandatory, data, currentStep }, loading }) => ({
+  tempData,
+  data,
+  currentStep,
+  checkMandatory,
+  loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+}))
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
