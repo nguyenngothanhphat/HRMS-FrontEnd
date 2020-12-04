@@ -4,9 +4,10 @@ import RedCautionIcon from '@/assets/redcaution.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import { ObjectFlags } from 'typescript';
 import styles from './index.less';
 
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 const { TextArea } = Input;
 
 @connect(({ timeOff, user, loading }) => ({
@@ -119,24 +120,27 @@ class RequestInformation extends Component {
     if (leaveTimeLists.length === 0) {
       // type C,D
       result = dateLists.map((value) => {
-        // const formattedDate = moment(value).weekday();
-        // if (formattedDate !== 6 && formattedDate !== 7) {
         return {
           date: value,
           timeOfDay: 'WHOLE-DAY',
         };
-        // }
       });
     } else {
       result = dateLists.map((value, index) => {
-        return {
-          date: value,
-          timeOfDay: leaveTimeLists[index],
-        };
+        if (leaveTimeLists[index] !== 'WORK') {
+          return {
+            date: value,
+            timeOfDay: leaveTimeLists[index],
+          };
+        }
+        return {};
       });
     }
     result = result.filter(
-      (value) => moment(value.date).weekday() !== 6 && moment(value.date).weekday() !== 0,
+      (value) =>
+        moment(value.date).weekday() !== 6 &&
+        moment(value.date).weekday() !== 0 &&
+        Object.keys(value).length !== 0,
     );
 
     return result;
@@ -147,6 +151,7 @@ class RequestInformation extends Component {
     console.log('Success:', value);
   };
 
+  // ON FINISH
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
@@ -163,7 +168,7 @@ class RequestInformation extends Component {
     } = values;
 
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
-    console.log('leaveDates', leaveDates);
+    // console.log('leaveDates', leaveDates);
     // generate data for API
     const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
 
@@ -239,7 +244,7 @@ class RequestInformation extends Component {
     }
   };
 
-  // DATE PICKER
+  // DATE PICKER ON CHANGE
   fromDateOnChange = (value) => {
     if (value === null) {
       this.setState({
@@ -255,6 +260,14 @@ class RequestInformation extends Component {
     this.autoValueForToDate(selectedType, selectedShortType, value);
     if (selectedType === 'A' || selectedType === 'B')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+
+    // initial value for leave dates list
+    const { durationTo } = this.state;
+    const dateLists = this.getDateLists(value, durationTo);
+    const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+    this.formRef.current.setFieldsValue({
+      leaveTimeLists: initialValuesForLeaveTimesList,
+    });
   };
 
   toDateOnChange = (value) => {
@@ -270,6 +283,14 @@ class RequestInformation extends Component {
     const { selectedShortType, selectedType } = this.state;
     if (selectedType === 'A' || selectedType === 'B')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+
+    // initial value for leave dates list
+    const { durationFrom } = this.state;
+    const dateLists = this.getDateLists(durationFrom, value);
+    const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+    this.formRef.current.setFieldsValue({
+      leaveTimeLists: initialValuesForLeaveTimesList,
+    });
   };
 
   // ON SAVE DRAFT CLICKED
@@ -277,31 +298,6 @@ class RequestInformation extends Component {
     // eslint-disable-next-line no-alert
     alert('Save Draft');
   };
-
-  // HOVER ON EACH OPTION IN SELECT
-  content = () => (
-    <span
-      // style={{
-      //   position: 'absolute',
-      //   top: 0,
-      //   right: 0,
-      //   display: 'flex',
-      //   background: '#FFFFFF',
-      //   boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
-      //   borderRadius: '4px',
-      //   width: '200px',
-      //   overflow: 'auto',
-      // }}
-      className={styles.runOutOfRemainingDayNotice}
-    >
-      <img src={RedCautionIcon} alt="caution-icon" />
-      <p>
-        You cannot apply for this leave.
-        {/* You have exhausted all your {name} ({shortName} */}
-        s).
-      </p>
-    </span>
-  );
 
   // RENDER SELECT BOX
   // GET DATA FOR SELECT BOX TYPE 1,2
@@ -680,15 +676,30 @@ class RequestInformation extends Component {
                                     ]}
                                   >
                                     <Select placeholder="">
-                                      <Option value="WHOLE-DAY">
-                                        <span style={{ fontSize: 13 }}>Whole day</span>
-                                      </Option>
-                                      <Option value="MORNING">
-                                        <span style={{ fontSize: 13 }}>Morning</span>
-                                      </Option>
-                                      <Option value="AFTERNOON">
-                                        <span style={{ fontSize: 13 }}>Afternoon</span>
-                                      </Option>
+                                      <OptGroup label="Count/Q.ty">
+                                        <Option value="WHOLE-DAY">
+                                          <span style={{ fontSize: 13 }}>Whole day</span>
+                                        </Option>
+                                        <Option value="MORNING">
+                                          <span style={{ fontSize: 13 }}>Morning</span>
+                                        </Option>
+                                        <Option value="AFTERNOON">
+                                          <span style={{ fontSize: 13 }}>Afternoon</span>
+                                        </Option>
+                                      </OptGroup>
+                                      <OptGroup label="Other">
+                                        <Option value="WORK">
+                                          <span
+                                            style={{
+                                              fontSize: 13,
+                                              color: '#00C598',
+                                              fontWeight: 'bold',
+                                            }}
+                                          >
+                                            Go to work
+                                          </span>
+                                        </Option>
+                                      </OptGroup>
                                     </Select>
                                   </Form.Item>
                                 </div>
