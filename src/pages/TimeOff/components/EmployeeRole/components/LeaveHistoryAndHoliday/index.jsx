@@ -65,7 +65,6 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return holidaysList.map((value) => {
       const { name = '', date = '' } = value;
       const fromDate = moment(date).locale('en').format('MM/DD/YYYY');
-      console.log('fromDate', fromDate);
       return {
         name,
         fromDate,

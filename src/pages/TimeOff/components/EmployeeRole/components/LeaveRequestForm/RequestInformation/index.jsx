@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form, Checkbox } from 'antd';
 import RedCautionIcon from '@/assets/redcaution.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -115,12 +115,30 @@ class RequestInformation extends Component {
   // GENERATE LEAVE DATES FOR API
   generateLeaveDates = (from, to, leaveTimeLists) => {
     const dateLists = this.getDateLists(from, to);
-    const result = dateLists.map((value, index) => {
-      return {
-        date: value,
-        timeOfDay: leaveTimeLists[index],
-      };
-    });
+    let result = [];
+    if (leaveTimeLists.length === 0) {
+      // type C,D
+      result = dateLists.map((value) => {
+        // const formattedDate = moment(value).weekday();
+        // if (formattedDate !== 6 && formattedDate !== 7) {
+        return {
+          date: value,
+          timeOfDay: 'WHOLE-DAY',
+        };
+        // }
+      });
+    } else {
+      result = dateLists.map((value, index) => {
+        return {
+          date: value,
+          timeOfDay: leaveTimeLists[index],
+        };
+      });
+    }
+    result = result.filter(
+      (value) => moment(value.date).weekday() !== 6 && moment(value.date).weekday() !== 0,
+    );
+
     return result;
   };
 
@@ -145,6 +163,7 @@ class RequestInformation extends Component {
     } = values;
 
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
+    console.log('leaveDates', leaveDates);
     // generate data for API
     const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
 
@@ -206,9 +225,6 @@ class RequestInformation extends Component {
       let autoToDate = null;
       typeList.forEach((eachType) => {
         const { shortType = '', time = 0 } = eachType;
-        console.log('selectedShortType', selectedShortType);
-        console.log('shortType', shortType);
-        console.log('selectedType', selectedType);
         if (selectedShortType === shortType) {
           if (selectedType === 'D') {
             this.setSecondNotice(`${shortType} applied for: ${time} days`);
@@ -464,6 +480,8 @@ class RequestInformation extends Component {
       },
     };
 
+    const dateFormat = 'MM/DD/YYYY';
+
     const {
       selectedShortType,
       showSuccessModal,
@@ -490,7 +508,7 @@ class RequestInformation extends Component {
 
     // DYNAMIC ROW OF DATE LISTS
     const dateLists = this.getDateLists(durationFrom, durationTo);
-    const numberOfDays = 0;
+    // const numberOfDays = 0;
 
     return (
       <div className={styles.RequestInformation}>
@@ -586,6 +604,7 @@ class RequestInformation extends Component {
                   >
                     <DatePicker
                       disabledDate={this.disabledFromDate}
+                      format={dateFormat}
                       onChange={(value) => {
                         this.fromDateOnChange(value);
                       }}
@@ -606,6 +625,7 @@ class RequestInformation extends Component {
                   >
                     <DatePicker
                       disabledDate={this.disabledToDate}
+                      format={dateFormat}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -636,38 +656,51 @@ class RequestInformation extends Component {
                     </Col>
                     <Col span={12} className={styles.leaveDaysContainer}>
                       {dateLists.map((date, index) => {
-                        return (
-                          <div className={styles.eachDay}>
-                            <div className={styles.day}>
-                              <span>{date}</span>
-                            </div>
-                            <div className={styles.daySelectionBox}>
-                              <Form.Item
-                                // name={`leaveDaysDetail${index}`}
-                                name={[index]}
-                                fieldKey={[index]}
-                                rules={[
-                                  {
-                                    required: true,
-                                    message: 'Please select!',
-                                  },
-                                ]}
-                              >
-                                <Select placeholder="">
-                                  <Option value="WHOLE-DAY">
-                                    <span style={{ fontSize: 13 }}>Whole day</span>
-                                  </Option>
-                                  <Option value="MORNING">
-                                    <span style={{ fontSize: 13 }}>Morning</span>
-                                  </Option>
-                                  <Option value="AFTERNOON">
-                                    <span style={{ fontSize: 13 }}>Afternoon</span>
-                                  </Option>
-                                </Select>
-                              </Form.Item>
-                            </div>
-                          </div>
-                        );
+                        // NO RENDER SATURDAY AND SUNDAY
+                        if (moment(date).weekday() !== 6 && moment(date).weekday() !== 0)
+                          return (
+                            <>
+                              <div key={`${index + 1}`} className={styles.eachDay}>
+                                <div className={styles.day}>
+                                  <span>
+                                    {moment(date).locale('en').format('dddd')},{' '}
+                                    {moment(date).locale('en').format('MM/DD/YYYY')}
+                                  </span>
+                                </div>
+                                <div className={styles.daySelectionBox}>
+                                  <Form.Item
+                                    // name={`leaveDaysDetail${index}`}
+                                    name={[index]}
+                                    fieldKey={[index]}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Please select!',
+                                      },
+                                    ]}
+                                  >
+                                    <Select placeholder="">
+                                      <Option value="WHOLE-DAY">
+                                        <span style={{ fontSize: 13 }}>Whole day</span>
+                                      </Option>
+                                      <Option value="MORNING">
+                                        <span style={{ fontSize: 13 }}>Morning</span>
+                                      </Option>
+                                      <Option value="AFTERNOON">
+                                        <span style={{ fontSize: 13 }}>Afternoon</span>
+                                      </Option>
+                                    </Select>
+                                  </Form.Item>
+                                </div>
+                              </div>
+                              {/* DATE IS FRIDAY AND IS NOT END OF LIST => SHOW HR LINE */}
+                              {moment(date).weekday() === 5 &&
+                                moment(date).add(3, 'day') < moment(durationTo) && (
+                                  <div className={styles.hr} />
+                                )}
+                            </>
+                          );
+                        return '';
                       })}
                     </Col>
                     <Col span={6}>

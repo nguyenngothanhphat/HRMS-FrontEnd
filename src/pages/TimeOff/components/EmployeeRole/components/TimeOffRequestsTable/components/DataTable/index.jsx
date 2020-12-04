@@ -47,7 +47,7 @@ export default class DataTable extends PureComponent {
               maxCount={2}
               maxStyle={{
                 color: '#FFA100',
-                backgroundColor: '#464646',
+                backgroundColor: '#EAF0FF',
               }}
             >
               {assigned.map((user) => {
@@ -58,8 +58,8 @@ export default class DataTable extends PureComponent {
                     <Avatar
                       style={
                         approvalManagerEmail === workEmail
-                          ? { backgroundColor: '#464646', border: '2px solid #FFA100' }
-                          : { backgroundColor: '#464646' }
+                          ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
+                          : { backgroundColor: '#EAF0FF' }
                       }
                       src={avatar}
                     />

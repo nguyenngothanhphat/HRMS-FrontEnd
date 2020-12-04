@@ -130,7 +130,7 @@ const timeOff = {
         const response = yield call(getEmailsListByCompany, {
           company,
         });
-        console.log('email res', response);
+        // console.log('email res', response);
         const { statusCode, data: emailsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
