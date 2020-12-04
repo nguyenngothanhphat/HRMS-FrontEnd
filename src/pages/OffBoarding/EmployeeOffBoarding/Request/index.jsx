@@ -57,7 +57,11 @@ class ResignationRequest extends Component {
   };
 
   handleSubmit = (values) => {
-    const { dispatch, myRequest = {} } = this.props;
+    const {
+      dispatch,
+      myRequest = {},
+      match: { params: { id: code = '' } = {} },
+    } = this.props;
     const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
     const payload = { meetingWith, offBoardingRequest, ownerComment: meetingWith, ...values };
     dispatch({
@@ -67,6 +71,12 @@ class ResignationRequest extends Component {
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         this.handleModalSet1On1();
+        dispatch({
+          type: 'offboarding/getList1On1',
+          payload: {
+            offBoardingRequest: code,
+          },
+        });
       }
     });
   };

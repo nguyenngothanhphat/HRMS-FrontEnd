@@ -20,6 +20,7 @@ import {
   reviewRequest,
   getListAssigned,
   getListAssignee,
+  requestChangeLWD,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -251,11 +252,9 @@ const offboarding = {
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        console.log(data.result);
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
             yield put({ type: 'save', payload: { closeRecordsList: data.result } });
-            console.log('ye');
             break;
           case 'IN-QUEUES':
             yield put({ type: 'save', payload: { inQueuesList: data.result } });
@@ -317,6 +316,18 @@ const offboarding = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *requestChangeLWD({ payload = {} }, { call }) {
+      let response = {};
+      try {
+        response = yield call(requestChangeLWD, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Request Change LWD Successfully' });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {
