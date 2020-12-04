@@ -22,6 +22,7 @@ class RequestInformation extends Component {
     this.state = {
       selectedShortType: '',
       selectedTypeName: '',
+      selectedType: '', // A, B, C or D
       showSuccessModal: false,
       secondNotice: '',
       durationFrom: '',
@@ -53,13 +54,20 @@ class RequestInformation extends Component {
   };
 
   // GET TIME OFF TYPE BY ID
-  getTypeInfo = (id) => {
+  onSelectTimeOffTypeChange = (id) => {
+    const { durationFrom } = this.state;
     const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    timeOffTypes.forEach((type) => {
-      const { _id = '', name = '', shortType = '' } = type;
+    timeOffTypes.forEach((eachType) => {
+      const { _id = '', name = '', shortType = '', type = '' } = eachType;
       if (id === _id) {
+        this.autoValueForToDate(type, shortType, durationFrom);
+        if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
+          this.setSecondNotice(`${shortType}s gets credited each month.`);
+        }
+
         this.setState({
           selectedShortType: shortType,
+          selectedType: type,
           selectedTypeName: name,
         });
       }
@@ -68,19 +76,8 @@ class RequestInformation extends Component {
 
   // SHOW BELOW NOTICE (BESIDE DURATION FIELD)
   setSecondNotice = (value) => {
-    let secondNotice = '';
-    switch (value) {
-      case 'CL':
-        secondNotice = `${value}s gets credited each month.`;
-        break;
-      case 'WFH/CP':
-        secondNotice = `WFH applied for: 3 days`;
-        break;
-      default:
-        break;
-    }
     this.setState({
-      secondNotice,
+      secondNotice: value,
     });
   };
 
@@ -180,6 +177,52 @@ class RequestInformation extends Component {
     console.log('Failed:', errorInfo);
   };
 
+  // AUTO VALUE FOR TODATE DATEPICKER DEPENDING ON SELECTED TYPE
+  autoValueForToDate = (selectedType, selectedShortType, durationFrom) => {
+    if (
+      durationFrom !== null &&
+      durationFrom !== '' &&
+      (selectedType === 'C' || selectedType === 'D')
+    ) {
+      const {
+        timeOff: { timeOffTypes = [] },
+      } = this.props;
+
+      let typeList = timeOffTypes.map((eachType) => {
+        const { type = '', shortType = '', baseAccrual: { time = 0 } = {} } = eachType;
+        return {
+          type,
+          shortType,
+          time,
+        };
+      });
+
+      if (selectedType === 'C') {
+        typeList = typeList.filter((value) => value.type === 'C');
+      } else if (selectedType === 'D') {
+        typeList = typeList.filter((value) => value.type === 'D');
+      }
+
+      let autoToDate = null;
+      typeList.forEach((eachType) => {
+        const { shortType = '', time = 0 } = eachType;
+        console.log('selectedShortType', selectedShortType);
+        console.log('shortType', shortType);
+        console.log('selectedType', selectedType);
+        if (selectedShortType === shortType) {
+          if (selectedType === 'D') {
+            this.setSecondNotice(`${shortType} applied for: ${time} days`);
+          }
+          autoToDate = moment(durationFrom).add(time, 'day');
+        }
+      });
+
+      this.formRef.current.setFieldsValue({
+        durationTo: autoToDate,
+      });
+    }
+  };
+
   // DATE PICKER
   fromDateOnChange = (value) => {
     if (value === null) {
@@ -191,8 +234,11 @@ class RequestInformation extends Component {
         durationFrom: value,
       });
     }
-    const { selectedShortType } = this.state;
-    this.setSecondNotice(selectedShortType);
+
+    const { selectedShortType, selectedType } = this.state;
+    this.autoValueForToDate(selectedType, selectedShortType, value);
+    if (selectedType === 'A' || selectedType === 'B')
+      this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
   };
 
   toDateOnChange = (value) => {
@@ -205,8 +251,9 @@ class RequestInformation extends Component {
         durationTo: value,
       });
     }
-    const { selectedShortType } = this.state;
-    this.setSecondNotice(selectedShortType);
+    const { selectedShortType, selectedType } = this.state;
+    if (selectedType === 'A' || selectedType === 'B')
+      this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
   };
 
   // ON SAVE DRAFT CLICKED
@@ -424,6 +471,7 @@ class RequestInformation extends Component {
       durationFrom,
       durationTo,
       selectedTypeName,
+      selectedType,
     } = this.state;
 
     const {
@@ -476,7 +524,12 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <Select onChange={(value) => this.getTypeInfo(value)} placeholder="Timeoff Type">
+                <Select
+                  onChange={(value) => {
+                    this.onSelectTimeOffTypeChange(value);
+                  }}
+                  placeholder="Timeoff Type"
+                >
                   {this.renderType1(dataTimeOffTypes1)}
                   {this.renderType2(dataTimeOffTypes2)}
                   {this.renderType3(dataTimeOffTypes3)}
@@ -533,7 +586,9 @@ class RequestInformation extends Component {
                   >
                     <DatePicker
                       disabledDate={this.disabledFromDate}
-                      onChange={(value) => this.fromDateOnChange(value)}
+                      onChange={(value) => {
+                        this.fromDateOnChange(value);
+                      }}
                       placeholder="From Date"
                     />
                   </Form.Item>
@@ -551,7 +606,9 @@ class RequestInformation extends Component {
                   >
                     <DatePicker
                       disabledDate={this.disabledToDate}
-                      onChange={(value) => this.toDateOnChange(value)}
+                      onChange={(value) => {
+                        this.toDateOnChange(value);
+                      }}
                       placeholder="To Date"
                     />
                   </Form.Item>
@@ -567,60 +624,63 @@ class RequestInformation extends Component {
             </Col>
           </Row>
 
-          {durationFrom !== '' && durationTo !== '' && (
-            <Form.List name="leaveTimeLists">
-              {() => (
-                <Row className={styles.eachRow}>
-                  <Col className={styles.label} span={6}>
-                    <span />
-                  </Col>
-                  <Col span={12} className={styles.leaveDaysContainer}>
-                    {dateLists.map((date, index) => {
-                      return (
-                        <div className={styles.eachDay}>
-                          <div className={styles.day}>
-                            <span>{date}</span>
+          {durationFrom !== '' &&
+            durationTo !== '' &&
+            selectedType !== 'C' && // Type C: Special Leaves
+            selectedType !== 'D' && ( // Type D: Working out of office
+              <Form.List name="leaveTimeLists">
+                {() => (
+                  <Row className={styles.eachRow}>
+                    <Col className={styles.label} span={6}>
+                      <span />
+                    </Col>
+                    <Col span={12} className={styles.leaveDaysContainer}>
+                      {dateLists.map((date, index) => {
+                        return (
+                          <div className={styles.eachDay}>
+                            <div className={styles.day}>
+                              <span>{date}</span>
+                            </div>
+                            <div className={styles.daySelectionBox}>
+                              <Form.Item
+                                // name={`leaveDaysDetail${index}`}
+                                name={[index]}
+                                fieldKey={[index]}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Please select!',
+                                  },
+                                ]}
+                              >
+                                <Select placeholder="">
+                                  <Option value="WHOLE-DAY">
+                                    <span style={{ fontSize: 13 }}>Whole day</span>
+                                  </Option>
+                                  <Option value="MORNING">
+                                    <span style={{ fontSize: 13 }}>Morning</span>
+                                  </Option>
+                                  <Option value="AFTERNOON">
+                                    <span style={{ fontSize: 13 }}>Afternoon</span>
+                                  </Option>
+                                </Select>
+                              </Form.Item>
+                            </div>
                           </div>
-                          <div className={styles.daySelectionBox}>
-                            <Form.Item
-                              // name={`leaveDaysDetail${index}`}
-                              name={[index]}
-                              fieldKey={[index]}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: 'Please select!',
-                                },
-                              ]}
-                            >
-                              <Select placeholder="">
-                                <Option value="WHOLE-DAY">
-                                  <span style={{ fontSize: 13 }}>Whole day</span>
-                                </Option>
-                                <Option value="MORNING">
-                                  <span style={{ fontSize: 13 }}>Morning</span>
-                                </Option>
-                                <Option value="AFTERNOON">
-                                  <span style={{ fontSize: 13 }}>Afternoon</span>
-                                </Option>
-                              </Select>
-                            </Form.Item>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </Col>
-                  <Col span={6}>
-                    <div className={styles.smallNotice}>
-                      <span className={styles.normalText}>
-                        Number of days: {numberOfDays} day(s)
-                      </span>
-                    </div>
-                  </Col>
-                </Row>
-              )}
-            </Form.List>
-          )}
+                        );
+                      })}
+                    </Col>
+                    <Col span={6}>
+                      {/* <div className={styles.smallNotice}>
+                        <span className={styles.normalText}>
+                          Number of days: {numberOfDays} day(s)
+                        </span>
+                      </div> */}
+                    </Col>
+                  </Row>
+                )}
+              </Form.List>
+            )}
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
