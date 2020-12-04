@@ -134,6 +134,7 @@ class CollapseField extends Component {
                             )}
                             <UploadImage
                               content={this.getActionContent(file.candidateDocumentStatus)}
+                              getResponse={(res) => this.getResponse(res, index, id, docList)}
                               loading={loading}
                               hideValidation
                               typeIndex={index}
