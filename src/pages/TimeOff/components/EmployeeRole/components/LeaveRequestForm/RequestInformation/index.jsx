@@ -433,7 +433,7 @@ class RequestInformation extends Component {
     const now = start;
     const dates = [];
 
-    while (now.isBefore(end)) {
+    while (now.isBefore(end) || now.isSame(end)) {
       dates.push(now.format('YYYY-MM-DD'));
       now.add(1, 'days');
     }

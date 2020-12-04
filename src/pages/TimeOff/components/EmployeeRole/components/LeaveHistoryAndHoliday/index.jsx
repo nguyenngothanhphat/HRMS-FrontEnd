@@ -61,8 +61,19 @@ class LeaveHistoryAndHoliday extends PureComponent {
     );
   };
 
+  // SORT BY DATE
+  compareDates = (a, b) => {
+    if (moment(a.fromDate).isBefore(moment(b.fromDate))) {
+      return 1;
+    }
+    if (moment(a.fromDate).isAfter(moment(b.fromDate))) {
+      return -1;
+    }
+    return 0;
+  };
+
   formatHolidayLists = (holidaysList) => {
-    return holidaysList.map((value) => {
+    let result = holidaysList.map((value) => {
       const { name = '', date = '' } = value;
       const fromDate = moment(date).locale('en').format('MM/DD/YYYY');
       return {
@@ -70,10 +81,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
         fromDate,
       };
     });
+    result = result.sort(this.compareDates);
+    return result;
   };
 
   formatLeavingList = (leaveRequests) => {
-    return leaveRequests.map((each) => {
+    let result = leaveRequests.map((each) => {
       const {
         duration = 0,
         fromDate: from = '',
@@ -92,6 +105,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
         type: shortType,
       };
     });
+    result = result.sort(this.compareDates);
+    return result;
   };
 
   render() {
