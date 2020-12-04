@@ -171,7 +171,11 @@ class BackgroundCheck extends Component {
         },
       });
     }
-    this.handleUpdateByHR();
+    const { cancelCandidate = false } = tempData;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
+
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -303,7 +307,7 @@ class BackgroundCheck extends Component {
           candidate: _id,
           fullName,
           position,
-          employeeType,
+          employeeType: employeeType._id,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
@@ -395,7 +399,7 @@ class BackgroundCheck extends Component {
         candidate: _id,
         fullName,
         position,
-        employeeType,
+        employeeType: employeeType._id,
         department: department._id,
         title: title._id,
         workLocation: workLocation._id,

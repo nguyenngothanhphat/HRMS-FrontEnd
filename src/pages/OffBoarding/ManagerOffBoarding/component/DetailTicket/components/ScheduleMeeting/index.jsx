@@ -1,0 +1,91 @@
+import React, { Component } from 'react';
+import { formatMessage, connect } from 'umi';
+import { Modal } from 'antd';
+import moment from 'moment';
+import externalLinkIcon from '@/assets/external-link.svg';
+import { checkTime } from '@/utils/utils';
+import AddComment from '../AddComment';
+import styles from './index.less';
+
+@connect(({ user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {} }) => ({
+  myId,
+}))
+class ScheduleMeeting extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isAddComment: false,
+    };
+  }
+
+  handleAddComment = () => {
+    this.setState({
+      isAddComment: true,
+    });
+  };
+
+  modalWarning = () => {
+    Modal.warning({
+      title: 'Comment after date, time meeting 1 on 1',
+    });
+  };
+
+  render() {
+    const { isAddComment = false } = this.state;
+    const { data = {}, myId = '' } = this.props;
+    const {
+      meetingDate = '',
+      meetingTime = '',
+      createdBy: { generalInfo: { firstName = '', workEmail: email = '' } = {} } = {},
+      assignee: {
+        _id: assigneeId = '',
+        generalInfo: { firstName: nameAssignee = '', workEmail: emailAssignee = '' } = {},
+      } = {},
+      _id = '',
+      ownerComment: {
+        _id: ownerCommentId = '',
+        generalInfo: { firstName: nameOwner = '' } = {},
+      } = {},
+    } = data;
+    const checkOwner = myId === ownerCommentId;
+    if (isAddComment) {
+      return <AddComment idComment={_id} nameOwner={nameOwner} />;
+    }
+    const check = checkTime(meetingDate, meetingTime);
+    return (
+      <div className={styles.actionDetailTicket__schedule} style={{ marginBottom: '15px' }}>
+        <div className={styles.schedule__content}>
+          <span className={styles.actionDetailTicket__title}>
+            {formatMessage({ id: 'pages.offBoarding.1on1Meeting' })}
+          </span>
+          <div className={styles.actionDetailTicket__dateTime}>
+            <span>
+              {formatMessage({ id: 'pages.offBoarding.scheduledOn' })} :{' '}
+              {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp; <span>{meetingTime}</span>
+            </span>
+            {checkOwner && (
+              <img
+                className={styles.icon__external__link}
+                src={externalLinkIcon}
+                alt="external-link-icon"
+                onClick={check ? this.handleAddComment : this.modalWarning}
+              />
+            )}
+          </div>
+        </div>
+        <div>
+          <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Created by:</span> {firstName} (
+          {email})
+        </div>
+        {assigneeId && (
+          <div>
+            <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Assignee:</span> {nameAssignee} (
+            {emailAssignee})
+          </div>
+        )}
+      </div>
+    );
+  }
+}
+
+export default ScheduleMeeting;

@@ -21,15 +21,11 @@ class ReasonPutOnHold extends Component {
 
   handleSubmitReason = () => {
     const { q } = this.state;
-    const { dispatch, id, openNotification = () => {} } = this.props;
+    const { dispatch, id } = this.props;
     const payload = { id, reasonOnHold: q, action: 'ON-HOLD' };
     dispatch({
       type: 'offboarding/reviewRequest',
       payload,
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        openNotification();
-      }
     });
   };
 
@@ -41,7 +37,7 @@ class ReasonPutOnHold extends Component {
 
   render() {
     const { q } = this.state;
-    const { openNotification = () => {}, loadingReview } = this.props;
+    const { hideForm = () => {}, loadingReview } = this.props;
     const date = moment().format('DD.MM.YY | h:mm A');
 
     return (
@@ -73,7 +69,7 @@ class ReasonPutOnHold extends Component {
             </Space>
 
             <div className={styles.reasonPutOnHold__action__btn}>
-              <Button className={styles.btn__cancel} onClick={openNotification}>
+              <Button className={styles.btn__cancel} onClick={hideForm}>
                 Cancel
               </Button>
               <Button

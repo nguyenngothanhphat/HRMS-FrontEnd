@@ -6,9 +6,12 @@ import EditComment from '@/components/EditComment';
 import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
-import ActionDetailTicket from './components/ActionDetailTicket';
+import ButtonSet1On1 from './components/ButtonSet1On1';
+import ScheduleMeeting from './components/ScheduleMeeting';
 import RightContent from './components/RightContent';
 import ModalNotice from './components/ModalNotice';
+import ReasonPutOnHold from './components/ReasonPutOnHold';
+import RequestChangeLWD from './components/RequestChangeLWD';
 import styles from './index.less';
 
 @connect(
@@ -21,7 +24,9 @@ import styles from './index.less';
       listProjectByEmployee = [],
       itemNewCreate1On1 = {},
       showModalSuccessfully = false,
+      listAssignee = [],
     } = {},
+    user: { currentUser: { company: { _id: company } = {} } = {} } = {},
   }) => ({
     myRequest,
     list1On1,
@@ -31,14 +36,14 @@ import styles from './index.less';
     loadingReview: loading.effects['offboarding/reviewRequest'],
     itemNewCreate1On1,
     showModalSuccessfully,
+    company,
+    listAssignee,
   }),
 )
 class DetailTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpenFormReason: false,
-      handleNotification: true,
       selectButton: '',
     };
   }
@@ -47,6 +52,7 @@ class DetailTicket extends Component {
     const {
       dispatch,
       match: { params: { id: code = '' } = {} },
+      company,
     } = this.props;
     dispatch({
       type: 'offboarding/fetchRequestById',
@@ -62,6 +68,12 @@ class DetailTicket extends Component {
     });
     dispatch({
       type: 'offboarding/getMeetingTime',
+    });
+    dispatch({
+      type: 'offboarding/getListAssignee',
+      payload: {
+        company,
+      },
     });
   }
 
@@ -90,14 +102,14 @@ class DetailTicket extends Component {
 
   openFormReason = () => {
     this.setState({
-      isOpenFormReason: true,
-      handleNotification: false,
       selectButton: 'ON-HOLD',
     });
   };
 
-  openNotification = () => {
-    this.setState({ isOpenFormReason: false, handleNotification: true });
+  hideFormOnHold = () => {
+    this.setState({
+      selectButton: '',
+    });
   };
 
   handleReviewRequest = (action) => {
@@ -152,23 +164,50 @@ class DetailTicket extends Component {
     );
   };
 
+  checkShowNotification = () => {
+    const { myRequest: { manager: { _id: idManager = '' } = {} } = {}, list1On1 = [] } = this.props;
+    const listHasAssignee = list1On1.filter((item) => {
+      const { assignee: { _id: assigneeId = '' } = {} } = item;
+      return assigneeId;
+    });
+    const listCommentOfManagerCompleted = list1On1.filter((item) => {
+      const { ownerComment: { _id: idOwner = '' } = {}, status = '' } = item;
+      return idOwner === idManager && status === 'COMPLETED';
+    });
+
+    const listCommentAssigneeCompleted = listHasAssignee.filter((item) => {
+      const { status = '' } = item;
+      return status === 'COMPLETED';
+    });
+
+    let check = false;
+    if (listHasAssignee.length === 0 && listCommentOfManagerCompleted.length !== 0) {
+      check = true;
+    } else if (listCommentAssigneeCompleted.length !== 0) {
+      check = true;
+    }
+    return check;
+  };
+
   render() {
-    const { isOpenFormReason, handleNotification, selectButton } = this.state;
+    const { selectButton } = this.state;
     const {
       loading,
       myRequest = {},
       list1On1 = [],
       listProjectByEmployee: listProject = [],
-      itemNewCreate1On1: { _id: idNewComment } = {},
       showModalSuccessfully,
+      listAssignee = [],
     } = this.props;
     const {
       status = '',
       employee: {
+        _id: ownerRequest = '',
         generalInfo: { firstName: nameEmployee = '', employeeId = '', avatar = '' } = {},
         title: { name: title = '' } = {},
       } = {},
     } = myRequest;
+    const filterListAssignee = listAssignee.filter((item) => item._id !== ownerRequest);
     if (loading)
       return (
         <div className={styles.viewLoading}>
@@ -176,8 +215,9 @@ class DetailTicket extends Component {
         </div>
       );
     const employeeInfo = { nameEmployee, employeeId, avatar, title };
+    const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
-    const listDisplay = listComment.filter((item) => item._id !== idNewComment);
+    const checkShowNotification = this.checkShowNotification();
 
     return (
       <>
@@ -195,9 +235,9 @@ class DetailTicket extends Component {
               <Col span={18}>
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
-                {listDisplay.length !== 0 && (
+                {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
-                    {listDisplay.map((item) => {
+                    {listComment.map((item) => {
                       const { _id } = item;
                       return (
                         <Fragment key={_id}>
@@ -207,20 +247,24 @@ class DetailTicket extends Component {
                     })}
                   </div>
                 )}
-                <ActionDetailTicket
-                  isOpenFormReason={isOpenFormReason}
-                  openNotification={this.openNotification}
-                  itemRequest={myRequest}
-                  listDisplay={listDisplay}
-                />
+                {listScheduleMeeting.map((item) => {
+                  return (
+                    <Fragment key={item._id}>
+                      <ScheduleMeeting data={item} />
+                    </Fragment>
+                  );
+                })}
+                <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} />
+                {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
+                {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={6}>
                 <RightContent />
               </Col>
             </Row>
-            {listComment.length !== 0 &&
-              handleNotification &&
+            {checkShowNotification &&
               status === 'IN-PROGRESS' &&
+              selectButton !== 'ON-HOLD' &&
               this.renderBlockNotifications()}
           </div>
         </PageContainer>
