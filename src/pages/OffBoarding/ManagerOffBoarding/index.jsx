@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
+import TableAssigned from '@/components/TableAssigned';
 import addIcon from '@/assets/addTicket.svg';
 import TabContent from './component/tabContent';
 import MyRequestContent from '../components/TabMyRequest';
@@ -104,6 +105,11 @@ class ManagerOffBoading extends Component {
                 <TabPane tab="My Request" key="2">
                   <div className={styles.tableTab}>
                     <MyRequestContent data={listOffboarding} countdata={totalList} />
+                  </div>
+                </TabPane>
+                <TabPane tab="Assigned" key="3">
+                  <div style={{ marginTop: '25px' }}>
+                    <TableAssigned />
                   </div>
                 </TabPane>
               </Tabs>
