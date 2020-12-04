@@ -7,10 +7,17 @@ import s from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ loading, offboarding: { myRequest = {} } = {} }) => ({
-  loading: loading.effects['offboarding/complete1On1'],
-  myRequest,
-}))
+@connect(
+  ({
+    loading,
+    offboarding: { myRequest = {} } = {},
+    user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
+  }) => ({
+    loading: loading.effects['offboarding/complete1On1'],
+    myRequest,
+    myId,
+  }),
+)
 class EditComment extends Component {
   constructor(props) {
     super(props);
@@ -71,15 +78,19 @@ class EditComment extends Component {
 
   render() {
     const { itemComment = {}, q, isEdit } = this.state;
-    const { loading } = this.props;
-    const { updatedAt, createdBy: { generalInfo: { firstName = '' } = {} } = {} } = itemComment;
+    const { loading, myId } = this.props;
+    const {
+      updatedAt,
+      ownerComment: { _id: ownerCommentId = '', generalInfo: { firstName = '' } = {} } = {},
+    } = itemComment;
     const time = moment(updatedAt).format('DD.MM.YY | h:mm A');
+    const isOwner = myId === ownerCommentId;
     return (
       <div className={s.root}>
         <div className={s.viewTop}>
           <div className={s.viewTop__name}>{firstName}</div>
           <div className={s.viewTop__right}>
-            {!isEdit && (
+            {!isEdit && isOwner && (
               <div className={s.viewTop__right__edit} onClick={this.handleOpenEdit}>
                 <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
                 <span>Edit</span>
