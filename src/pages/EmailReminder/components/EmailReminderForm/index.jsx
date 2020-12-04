@@ -2,7 +2,7 @@
 /* eslint-disable react/sort-comp */
 /* eslint-disable no-bitwise */
 import React, { PureComponent } from 'react';
-import { Link, history, formatMessage } from 'umi';
+import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
@@ -22,6 +22,10 @@ const hashValues = [
   { id: 3, value: '385 Cong Hoa' },
   { id: 4, value: 'Tan Binh TP HCM' },
 ];
+
+@connect(({ employeeSetting: { triggerEventList = [] } = {} }) => ({
+  triggerEventList,
+}))
 class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -36,25 +40,25 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       appliesToData: '',
-      emailMessage: '',
-      triggerEventItem: [
-        {
-          name: 'Person starts work',
-          value: 'Person starts work',
-        },
-        {
-          name: 'Person leaves work',
-          value: 'Person leaves work',
-        },
-        {
-          name: 'Person’s work anniversary',
-          value: 'Person’s work anniversary',
-        },
-        {
-          name: 'Annual event',
-          value: 'Annual event',
-        },
-      ],
+      message: '',
+      // triggerEventItem: [
+      //   {
+      //     name: 'Person starts work',
+      //     value: 'Person starts work',
+      //   },
+      //   {
+      //     name: 'Person leaves work',
+      //     value: 'Person leaves work',
+      //   },
+      //   {
+      //     name: 'Person’s work anniversary',
+      //     value: 'Person’s work anniversary',
+      //   },
+      //   {
+      //     name: 'Annual event',
+      //     value: 'Annual event',
+      //   },
+      // ],
       frequencyItem: [
         {
           name: 'Premium only',
@@ -75,14 +79,14 @@ class EmailReminderForm extends PureComponent {
           value: 'Specific number of days before or after the event',
         },
       ],
-      appliesTo: [
+      applyTo: [
         {
           name: 'Any Person',
-          value: 'Any Person',
+          value: 'any',
         },
         {
           name: 'Create a condition',
-          value: 'Create a condition',
+          value: 'condition',
         },
       ],
       sendToWorker: [
@@ -192,6 +196,15 @@ class EmailReminderForm extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'employeeSetting/fetchTriggerEventList',
+      payload: {},
+    });
+  };
+
   handleChangeApply = (value) => {
     this.setState({
       appliesToData: value,
@@ -200,7 +213,7 @@ class EmailReminderForm extends PureComponent {
 
   handleChangeEmail = (value) => {
     this.setState({
-      emailMessage: value,
+      message: value,
     });
   };
 
@@ -240,15 +253,23 @@ class EmailReminderForm extends PureComponent {
   };
 
   onFinish = (values) => {
-    const { emailMessage = '', conditionsData = [], appliesToData } = this.state;
+    const { triggerEventList } = this.props;
+    const { message = '', conditionsData = [], appliesToData } = this.state;
     let payload = {};
-    if (appliesToData === 'Any Person') {
-      payload = { ...values, appliesToData, emailMessage };
+
+    const newValue = { ...values };
+    const triggerEventValue = values.triggerEvent;
+    const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
+    newValue.triggerEvent = triggerEvent;
+    const sendingDate = 'sendingDate';
+
+    if (appliesToData === 'any') {
+      payload = { ...newValue, sendingDate, appliesToData, message };
     }
-    if (appliesToData === 'Create a condition') {
-      payload = { ...values, conditionsData, emailMessage };
+    if (appliesToData === 'condition') {
+      payload = { ...newValue, sendingDate, conditionsData, message };
     }
-    payload = { ...values, emailMessage };
+
     console.log('Success:', payload);
   };
 
@@ -300,7 +321,7 @@ class EmailReminderForm extends PureComponent {
                     placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'department', value)}
                   >
-                    {deparenderListrtments.map((department) => {
+                    {departments.map((department) => {
                       return <Option value={department.value}>{department.name}</Option>;
                     })}
                   </Select>
@@ -332,7 +353,7 @@ class EmailReminderForm extends PureComponent {
   _renderApplyToOptions = () => {
     const { Option } = Select;
     const { appliesToData, receipients } = this.state;
-    if (appliesToData === 'Any Person') {
+    if (appliesToData === 'any') {
       return (
         // Receipients
         <>
@@ -349,7 +370,7 @@ class EmailReminderForm extends PureComponent {
         </>
       );
     }
-    if (appliesToData === 'Create a condition') {
+    if (appliesToData === 'condition') {
       return this._renderConditions();
     }
     return null;
@@ -385,16 +406,16 @@ class EmailReminderForm extends PureComponent {
 
   _renderForm = () => {
     const { Option } = Select;
+    const { triggerEventList } = this.props;
     const {
       // formData,
-      triggerEventItem,
       frequencyItem,
       sendingDate,
-      appliesTo,
+      applyTo,
       sendToWorker,
-      emailMessage,
+      message,
     } = this.state;
-    // const { emailMessage } = formData;
+    // const { message } = formData;
     return (
       <Form onFinish={this.onFinish}>
         <Row gutter={[36, 24]}>
@@ -402,7 +423,7 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <Form.Item label="Trigger event" name="triggerEvent">
               <Select size="large" placeholder="Please select a choice">
-                {triggerEventItem.map((option) => {
+                {triggerEventList.map((option) => {
                   return <Option value={option.value}>{option.name}</Option>;
                 })}
               </Select>
@@ -444,13 +465,13 @@ class EmailReminderForm extends PureComponent {
 
           {/* Applies to */}
           <Col span={12}>
-            <Form.Item name="appliesTo" label="Applies to">
+            <Form.Item name="applyTo" label="Applies to">
               <Select
                 size="large"
                 placeholder="Please select a choice"
                 onChange={this.handleChangeApply}
               >
-                {appliesTo.map((option) => {
+                {applyTo.map((option) => {
                   return <Option value={option.value}>{option.name}</Option>;
                 })}
               </Select>
@@ -474,18 +495,18 @@ class EmailReminderForm extends PureComponent {
 
           {/* Email subject */}
           <Col span={24}>
-            <Form.Item name="emailSubject" label="Email subject">
+            <Form.Item name="subject" label="Email subject">
               <Input placeholder="Eg:  Welcome to the company" />
             </Form.Item>
           </Col>
 
           {/* Email message */}
           <Col span={24}>
-            {/* <Form.Item name="emailMessage" label="Email message"> */}
+            {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
             <ReactQuill
               className={styles.quill}
-              value={emailMessage}
+              value={message}
               onChange={this.handleChangeEmail}
               modules={{ mention: this.mentionModule }}
             />
