@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
@@ -6,11 +6,19 @@ import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import t from './index.less';
 
-class TableEmployee extends PureComponent {
+class TableEmployee extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageNavigation: 1,
+    };
   }
+
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageNavigation: pageNumber,
+    });
+  };
 
   push = (data) => {
     history.push(`/offboarding/review/${data}`);
@@ -18,6 +26,8 @@ class TableEmployee extends PureComponent {
 
   render() {
     const { data = [] } = this.props;
+    const { pageNavigation } = this.state;
+    const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -30,12 +40,18 @@ class TableEmployee extends PureComponent {
           total
         </span>
       ),
+      pageSize: rowSize,
+      current: pageNavigation,
+      onChange: this.onChangePagination,
     };
 
     const columns = [
       {
         title: <span className={t.title}>Ticket ID</span>,
-        dataIndex: 'ticketId',
+        dataIndex: 'ticketID',
+        render: (ticketID) => {
+          return <p>{ticketID}</p>;
+        },
       },
       {
         title: <span className={t.title}>Requested on</span>,
@@ -98,6 +114,7 @@ class TableEmployee extends PureComponent {
           hidein
           columns={columns}
           dataSource={data}
+          hideOnSinglePage
           pagination={{
             ...pagination,
             total: data.length,

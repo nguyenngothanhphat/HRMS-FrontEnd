@@ -14,12 +14,6 @@ export default class RejectTable extends PureComponent {
   getCount = (value) => {
     const { countdata = [] } = this.props;
     const result = countdata.find(({ _id }) => _id === value) || {};
-    // if (result.count < 10) {
-    //   result.count = `0${result.count}`;
-    // }
-    // if (result.count === 'undefined') {
-    //   result.count = '';
-    // }
     return result.count || 0;
   };
 

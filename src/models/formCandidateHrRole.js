@@ -204,6 +204,8 @@ const candidateInfo = {
           answer: '',
         },
       ],
+
+      cancelCandidate: false,
     },
     data: {
       fullName: null,
@@ -382,7 +384,6 @@ const candidateInfo = {
       documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
-      tableData: [],
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -660,7 +661,7 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
+          type: 'saveOrigin',
           payload: { listTitle: data },
         });
       } catch (error) {
@@ -676,8 +677,8 @@ const candidateInfo = {
         const { setting } = data;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
-          payload: { tableData: setting },
+          type: 'saveSalaryStructure',
+          payload: { settings: setting },
         });
       } catch (errors) {
         dialog(errors);
@@ -796,7 +797,7 @@ const candidateInfo = {
             },
           },
         });
-        
+
         yield put({
           type: 'saveTemp',
           payload: {
@@ -808,7 +809,7 @@ const candidateInfo = {
             amountIn: data.amountIn || '',
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
-            hidePreviewOffer: data.staticOfferLetter && data.staticOfferLetter.url, // Hide preview offer screen if there's already static offer
+            hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
@@ -1040,6 +1041,19 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    saveSalaryStructure(state, action) {
+      const { data, salaryStructure } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          salaryStructure: {
+            ...salaryStructure,
+            ...action.payload,
+          },
         },
       };
     },

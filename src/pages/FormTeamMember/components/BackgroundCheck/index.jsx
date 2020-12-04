@@ -29,16 +29,13 @@ const note = {
   ),
 };
 
-@connect(
-  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
-    tempData,
-    data,
-    tableData,
-    currentStep,
-    checkMandatory,
-    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
-  }),
-)
+@connect(({ candidateInfo: { tempData, checkMandatory, data, currentStep }, loading }) => ({
+  tempData,
+  data,
+  currentStep,
+  checkMandatory,
+  loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+}))
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -171,7 +168,11 @@ class BackgroundCheck extends Component {
         },
       });
     }
-    this.handleUpdateByHR();
+    const { cancelCandidate = false } = tempData;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
+
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -303,7 +304,7 @@ class BackgroundCheck extends Component {
           candidate: _id,
           fullName,
           position,
-          employeeType,
+          employeeType: employeeType._id,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
@@ -395,7 +396,7 @@ class BackgroundCheck extends Component {
         candidate: _id,
         fullName,
         position,
-        employeeType,
+        employeeType: employeeType._id,
         department: department._id,
         title: title._id,
         workLocation: workLocation._id,

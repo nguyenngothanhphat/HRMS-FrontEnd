@@ -61,7 +61,7 @@ class BasicInformation extends Component {
   }
 
   componentWillUnmount() {
-    const { currentStep } = this.props;
+    const { currentStep, tempData: { cancelCandidate = false } = {} } = this.props;
     console.log('current', currentStep);
     // const {
     //   data,
@@ -82,7 +82,9 @@ class BasicInformation extends Component {
     //   },
     // });
     // window.removeEventListener('unload', this.handleUnload, false);
-    this.handleUpdateByHR();
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
   }
 
   disableEdit = () => {

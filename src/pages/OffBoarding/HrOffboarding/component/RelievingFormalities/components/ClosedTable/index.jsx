@@ -14,8 +14,24 @@ class ClosedTable extends PureComponent {
   componentDidMount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'offboarding/getListRelieving',
+      type: 'offboarding/searchListRelieving',
       payload: {
+        relievingStatus: 'CLOSE-RECORDS',
+      },
+    });
+  };
+
+  onChange = (e) => {
+    const { dispatch } = this.props;
+    const { target } = e;
+    const { value } = target;
+    console.log(value);
+    dispatch({
+      type: 'offboarding/searchListRelieving',
+      payload: {
+        employeeID: value,
+        requesteeName: value,
+        ticketID: value,
         relievingStatus: 'CLOSE-RECORDS',
       },
     });
@@ -39,6 +55,7 @@ class ClosedTable extends PureComponent {
           </div>
           <div className={styles.searchBar}>
             <Input
+              onChange={this.onChange}
               placeholder="Search for ticket ID, resignee, requests …"
               prefix={<SearchOutlined />}
             />

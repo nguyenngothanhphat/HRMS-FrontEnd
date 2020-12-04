@@ -7,6 +7,7 @@ import {
   getOptionalQuestions,
   saveOptionalQuestions,
   updateOptionalQuestions,
+  getTriggerEventList,
   uploadSignature,
   addCustomTemplate,
   removeTemplate,
@@ -15,6 +16,7 @@ import {
 const employeeSetting = {
   namespace: 'employeeSetting',
   state: {
+    triggerEventList: [],
     optionalQuestions: [],
     isAbleToSubmit: false,
     defaultTemplateList: [],
@@ -163,6 +165,17 @@ const employeeSetting = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchTriggerEventList(_, { call, put }) {
+      try {
+        const response = yield call(getTriggerEventList);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { triggerEventList: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {
