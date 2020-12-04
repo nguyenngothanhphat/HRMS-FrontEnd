@@ -37,7 +37,7 @@ class ScheduleModal extends Component {
     this.setState({ meetingTime: value });
   };
 
-  mettingDate = (date) => {
+  mettingDate = (_, date) => {
     this.setState({ meetingDate: date });
   };
 
@@ -48,7 +48,6 @@ class ScheduleModal extends Component {
   render() {
     const { visible = false, loading, modalContent, list, keyModal: key } = this.props;
     const { meetingDate, meetingTime } = this.state;
-    console.log(meetingDate, meetingTime);
     const check = !meetingDate || !meetingTime;
     return (
       <Modal
@@ -69,7 +68,7 @@ class ScheduleModal extends Component {
             <div>
               <div className={styles.subText}>Meeting on</div>
               <DatePicker
-                format="DD.MM.YYYY"
+                format="YYYY-MM-DD"
                 className={styles.datePicker}
                 onChange={this.mettingDate}
                 disabledDate={this.disabledDate}
