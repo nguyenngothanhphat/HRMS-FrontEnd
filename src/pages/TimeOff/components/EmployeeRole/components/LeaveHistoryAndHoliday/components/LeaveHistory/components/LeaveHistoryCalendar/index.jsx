@@ -132,12 +132,13 @@ export default class LeaveHistoryCalendar extends PureComponent {
     const { leavingList = [] } = this.props;
     const daysInMonth = [];
     for (let d = 1; d <= this.daysInMonth(); d += 1) {
-      const className =
+      const className = `${styles.day}`;
+      const currentDayClassName =
         d === currentDay * 1 &&
         currentMonth === this.selectedMonth() &&
         currentYear === this.selectedYear()
-          ? `${styles.day} ${styles.currentDay}`
-          : styles.day;
+          ? `${styles.currentDay}`
+          : '';
 
       let eventMarkBeginClassName = '';
       let eventMarkEndClassName = '';
@@ -210,7 +211,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
           key={d}
           className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName} `}
         >
-          <span className={`${weekDayCheckClassName}`}>{d}</span>
+          <span className={`${weekDayCheckClassName} ${currentDayClassName}`}>{d}</span>
         </td>,
       );
     }

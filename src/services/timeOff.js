@@ -48,34 +48,3 @@ export async function getHolidaysList(payload) {
     data: payload,
   });
 }
-
-const mockData1 = [
-  {
-    name: `Family Event 1`,
-    fromDate: '11/1/2020',
-    toDate: '11/1/2020',
-    duration: 1,
-    type: 'CL',
-  },
-  {
-    name: `Family Event 2`,
-    fromDate: '11/27/2020',
-    toDate: '11/29/2020',
-    duration: 3,
-    type: 'CL',
-  },
-  {
-    name: `Family Event 3`,
-    fromDate: '10/12/2020',
-    toDate: '10/13/2020',
-    duration: 2,
-    type: 'CL',
-  },
-  {
-    name: 'Family Event 4',
-    fromDate: '12/30/2020',
-    toDate: '12/30/2020',
-    duration: 1,
-    type: 'CL',
-  },
-];

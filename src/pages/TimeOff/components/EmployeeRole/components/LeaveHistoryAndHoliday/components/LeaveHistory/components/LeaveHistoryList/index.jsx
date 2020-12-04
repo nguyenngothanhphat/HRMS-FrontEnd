@@ -24,7 +24,7 @@ export default class LeaveHistoryList extends PureComponent {
                       </span>
                     </span>
                   </Col>
-                  <Col xs={15} className={styles.eventOfDay}>
+                  <Col xs={14} className={styles.eventOfDay}>
                     {name}
                   </Col>
                 </>
@@ -52,13 +52,13 @@ export default class LeaveHistoryList extends PureComponent {
                       </span>
                     </span>
                   </Col>
-                  <Col xs={11} className={styles.eventOfDay}>
+                  <Col xs={10} className={styles.eventOfDay}>
                     {name}
                   </Col>
                 </>
               )}
 
-              <Col className={styles.dayInWeek} xs={5}>
+              <Col className={styles.dayInWeek} xs={6}>
                 {`-`}
                 {duration} {` `}
                 {type}

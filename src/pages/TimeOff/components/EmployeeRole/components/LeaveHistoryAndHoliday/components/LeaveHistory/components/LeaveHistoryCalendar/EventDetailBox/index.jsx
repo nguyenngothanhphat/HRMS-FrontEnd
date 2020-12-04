@@ -23,7 +23,7 @@ export default class EventDetailBox extends PureComponent {
                 <span className={styles.day}>{moment(from).locale('en').format('DD')}</span>
               </span>
             </Col>
-            <Col xs={15} className={styles.eventOfDay}>
+            <Col xs={13} className={styles.eventOfDay}>
               {name}
             </Col>
           </>
@@ -46,7 +46,7 @@ export default class EventDetailBox extends PureComponent {
                 <span className={styles.day}>{moment(to).locale('en').format('DD')}</span>
               </span>
             </Col>
-            <Col xs={11} className={styles.eventOfDay}>
+            <Col xs={9} className={styles.eventOfDay}>
               {name}
             </Col>
           </>
@@ -58,7 +58,7 @@ export default class EventDetailBox extends PureComponent {
               ? `${styles.dayInWeek} ${styles.upcomingColor}`
               : `${styles.dayInWeek} ${styles.leaveTakenColor}`
           }
-          xs={5}
+          xs={7}
         >
           {`-`}
           {duration} {type}
