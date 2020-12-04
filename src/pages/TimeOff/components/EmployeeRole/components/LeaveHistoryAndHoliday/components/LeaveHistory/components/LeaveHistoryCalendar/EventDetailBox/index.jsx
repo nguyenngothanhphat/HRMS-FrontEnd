@@ -61,8 +61,7 @@ export default class EventDetailBox extends PureComponent {
           xs={5}
         >
           {`-`}
-          {duration}
-          {type}
+          {duration} {type}
           <span>
             <RightOutlined className={styles.arrowIcon} />
           </span>

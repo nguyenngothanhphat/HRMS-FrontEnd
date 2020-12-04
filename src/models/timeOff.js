@@ -1,7 +1,6 @@
 import { dialog } from '@/utils/utils';
 import {
   getHolidaysList,
-  getLeavingListByEmployee,
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
@@ -90,19 +89,6 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { holidaysList },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *fetchLeavingList(_, { call, put }) {
-      try {
-        const response = yield call(getLeavingListByEmployee);
-        const { statusCode, data: leavingList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { leavingList },
         });
       } catch (errors) {
         dialog(errors);
