@@ -96,7 +96,8 @@ class RequestInformation extends Component {
   calculateNumberOfLeaveDay = (list) => {
     let count = 0;
     list.forEach((value) => {
-      switch (value) {
+      const { timeOfDay = '' } = value;
+      switch (timeOfDay) {
         case 'MORNING':
           count += 0.5;
           break;
@@ -170,7 +171,7 @@ class RequestInformation extends Component {
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // console.log('leaveDates', leaveDates);
     // generate data for API
-    const duration = this.calculateNumberOfLeaveDay(leaveTimeLists);
+    const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
     const data = {
       type: timeOffType,
@@ -595,7 +596,6 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
-                      // { validator: this.fromDateValidator },
                     ]}
                   >
                     <DatePicker
@@ -616,7 +616,6 @@ class RequestInformation extends Component {
                         required: true,
                         message: 'Please select a date!',
                       },
-                      // { validator: this.toDateValidator },
                     ]}
                   >
                     <DatePicker
