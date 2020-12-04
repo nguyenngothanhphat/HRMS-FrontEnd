@@ -8,11 +8,12 @@ import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({
+    loading,
     candidateInfo: {
-      listTitle = [],
       checkMandatory = {},
       currentStep = {},
       data: {
+        listTitle = [],
         title = {},
         processStatus = '',
         salaryStructure: {
@@ -84,6 +85,7 @@ import PROCESS_STATUS from '../../../utils';
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
+    loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     listTitle,
     checkMandatory,
     currentStep,
@@ -119,6 +121,7 @@ class SalaryStructureTemplate extends PureComponent {
       _id,
       title,
       checkMandatory,
+      processStatus,
       settings,
       data: { salaryStructure },
     } = this.props;
@@ -137,26 +140,12 @@ class SalaryStructureTemplate extends PureComponent {
         },
       },
     });
-    dispatch({
-      type: 'candidateInfo/fetchTitleListByCompany',
-      payload: { company: _id },
-    });
-    // if (idTitle !== undefined) {
-    //   alert('ye');
-    //   dispatch({
-    //     type: 'candidateInfo/fetchTableData',
-    //     payload: { title: idTitle },
-    //   });
-    //   dispatch({
-    //     type: 'candidateInfo/saveOrigin',
-    //     payload: {
-    //       salaryStructure: {
-    //         ...salaryStructure,
-    //         title: title._id,
-    //       },
-    //     },
-    //   });
-    // }
+    if (processStatus === 'DRAFT') {
+      dispatch({
+        type: 'candidateInfo/fetchTitleListByCompany',
+        payload: { company: _id },
+      });
+    }
   };
 
   onClickPrev = () => {
@@ -262,7 +251,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch, checkMandatory, settings } = this.props;
+    const { dispatch, checkMandatory, settings = [] } = this.props;
     const tempTableData = [...settings];
 
     const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
@@ -280,9 +269,9 @@ class SalaryStructureTemplate extends PureComponent {
       payload: { title: value },
     });
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'candidateInfo/saveSalaryStructure',
       payload: {
-        tableData: tempTableData,
+        settings: tempTableData,
         checkMandatory: {
           ...checkMandatory,
           filledSalaryStructure: check,
@@ -308,7 +297,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { settings } = this.props;
+    const { settings = [] } = this.props;
     const data = settings?.find((item) => item.order === order);
     const { value = '', key } = data;
     if (this.isEditted(order) && isEditted) {
@@ -476,7 +465,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { settings, title } = this.props;
+    const { settings = [], title, loadingTable } = this.props;
     console.log(settings.length);
     const { processStatus, listTitle = [] } = this.props;
     const idTitle = title?._id;
@@ -530,6 +519,7 @@ class SalaryStructureTemplate extends PureComponent {
           {this._renderButtons()}
           <div className={styles.salaryStructureTemplate_table}>
             <Table
+              loading={loadingTable}
               dataSource={settings}
               columns={this._renderColumns()}
               // size="large"

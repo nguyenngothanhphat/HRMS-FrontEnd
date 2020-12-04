@@ -61,3 +61,15 @@ export async function updateOptionalQuestions(payload) {
     data: payload,
   });
 }
+
+export async function getTriggerEventList() {
+  return request('/api/customemail/list-trigger-event', {
+    method: 'POST',
+  });
+}
+
+export async function getLocationList() {
+  return request('/api/location/list', {
+    method: 'POST',
+  });
+}

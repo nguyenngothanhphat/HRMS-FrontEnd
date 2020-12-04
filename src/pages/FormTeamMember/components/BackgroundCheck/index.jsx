@@ -29,16 +29,13 @@ const note = {
   ),
 };
 
-@connect(
-  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
-    tempData,
-    data,
-    tableData,
-    currentStep,
-    checkMandatory,
-    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
-  }),
-)
+@connect(({ candidateInfo: { tempData, checkMandatory, data, currentStep }, loading }) => ({
+  tempData,
+  data,
+  currentStep,
+  checkMandatory,
+  loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+}))
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -301,13 +298,30 @@ class BackgroundCheck extends Component {
         },
       });
     } else {
+      console.log({
+        candidate: _id,
+        fullName,
+        position,
+        employeeType: employeeType._id,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 1,
+      });
       dispatch({
         type: 'candidateInfo/submitPhase1Effect',
         payload: {
           candidate: _id,
           fullName,
           position,
-          employeeType: employeeType._id,
+          employeeType,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
@@ -399,7 +413,7 @@ class BackgroundCheck extends Component {
         candidate: _id,
         fullName,
         position,
-        employeeType: employeeType._id,
+        employeeType,
         department: department._id,
         title: title._id,
         workLocation: workLocation._id,
