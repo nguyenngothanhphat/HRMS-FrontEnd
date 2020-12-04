@@ -22,22 +22,26 @@ class RuleFrom extends Component {
             </div>
           </div>
           <div className={styles.strang} />
-          <div className={styles.body}>
-            {children.map((item) => {
+          <div>
+            {children.map((item, index) => {
               const { title, name, change } = item;
               return (
-                <div className={styles.flexText}>
-                  <div className={styles.text}>{title}</div>
-                  {name !== 'true' ? (
-                    <div className={styles.Configure}>
-                      <span onClick={change}> Configure</span>
-                    </div>
-                  ) : (
-                    <div className={styles.Configure}>
-                      <span> Configure</span>
-                      <img src={icon} alt="" />
-                    </div>
-                  )}
+                <div>
+                  <div className={styles.flexText}>
+                    <div className={styles.text}>{title}</div>
+
+                    {name !== 'true' ? (
+                      <div className={styles.Configure}>
+                        <span onClick={change}> Configure</span>
+                      </div>
+                    ) : (
+                      <div className={styles.Configure}>
+                        <span> Configure</span>
+                        <img src={icon} alt="" />
+                      </div>
+                    )}
+                  </div>
+                  {index !== children.length - 1 && <div className={styles.borderStyles} />}
                 </div>
               );
             })}
