@@ -470,6 +470,14 @@ class RequestInformation extends Component {
     return list;
   };
 
+  // COMPARE TWO DAYS
+  compareTwoDates = (from, to) => {
+    // moment object
+    if (from < to) return -1;
+    if (from > to) return 1;
+    return 0;
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -716,8 +724,14 @@ class RequestInformation extends Component {
                         return null;
                       })}
                       {moment(durationFrom).weekday() === 6 &&
-                        moment(durationFrom).add(1, 'day').format('DD/MM/YYYY') ===
-                          moment(durationTo).format('DD/MM/YYYY') && (
+                        (this.compareTwoDates(
+                          moment(durationFrom).add(1, 'day').format('DD/MM/YYYY'),
+                          moment(durationTo).format('DD/MM/YYYY'),
+                        ) === 0 ||
+                          this.compareTwoDates(
+                            moment(durationFrom).format('DD/MM/YYYY'),
+                            moment(durationTo).format('DD/MM/YYYY'),
+                          ) === 0) && (
                           <div className={styles.eachDay}>
                             <span>Please select valid dates!</span>
                           </div>
