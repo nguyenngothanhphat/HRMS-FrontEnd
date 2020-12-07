@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form, Tooltip } from 'antd';
 import { connect, history } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import styles from './index.less';
 
-const { Option, OptGroup } = Select;
+const { Option } = Select;
 const { TextArea } = Input;
 
 @connect(({ timeOff, user, loading }) => ({
@@ -19,9 +20,6 @@ class RequestInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedShortType: '',
-      selectedTypeName: '',
-      selectedType: '', // A, B, C or D
       showSuccessModal: false,
       secondNotice: '',
       durationFrom: '',
@@ -110,44 +108,6 @@ class RequestInformation extends Component {
       }
     });
     return count;
-  };
-
-  // GENERATE LEAVE DATES FOR API
-  generateLeaveDates = (from, to, leaveTimeLists) => {
-    const dateLists = this.getDateLists(from, to);
-    let result = [];
-    if (leaveTimeLists.length === 0) {
-      // type C,D
-      result = dateLists.map((value) => {
-        return {
-          date: value,
-          timeOfDay: 'WHOLE-DAY',
-        };
-      });
-    } else {
-      result = dateLists.map((value, index) => {
-        if (leaveTimeLists[index] !== 'WORK') {
-          return {
-            date: value,
-            timeOfDay: leaveTimeLists[index],
-          };
-        }
-        return {};
-      });
-    }
-    result = result.filter(
-      (value) =>
-        moment(value.date).weekday() !== 6 &&
-        moment(value.date).weekday() !== 0 &&
-        Object.keys(value).length !== 0,
-    );
-
-    return result;
-  };
-
-  onValuesChange = (value) => {
-    // eslint-disable-next-line no-console
-    console.log('Success:', value);
   };
 
   // ON FINISH
@@ -391,6 +351,61 @@ class RequestInformation extends Component {
                   <span className={styles.normalText}>{secondNotice}</span>
                 </div>
               )}
+            </Col>
+          </Row>
+
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Extra time spent</span>
+            </Col>
+            <Col span={12}>
+              <div className={styles.extraTimeSpent}>
+                <Row className={styles.header}>
+                  <Col span={6}>Date</Col>
+                  <Col span={6}>Day</Col>
+                  <Col span={12}>Time Spent (In Hrs)</Col>
+                </Row>
+                <div className={styles.content}>
+                  <div className={styles.emptyContent}>
+                    <span>Selected duration will show as days</span>
+                  </div>
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div className={styles.smallNotice}>
+                <span className={styles.normalText}>Allowed input: 1- 9 hrs/day</span>
+              </div>
+            </Col>
+          </Row>
+
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6} />
+            <Col span={12}>
+              <div className={styles.extraTimeSpent}>
+                <div className={styles.content}>
+                  <Row justify="center" align="center" className={styles.nonEmptyContent}>
+                    <Col span={6}>13.08.2020</Col>
+                    <Col span={6}>Sunday</Col>
+                    <Col span={9}>
+                      <Form.Item name="each">
+                        <Input suffix="Hrs" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={1} />
+                    <Col span={2}>
+                      <div className={styles.removeIcon}>
+                        <CloseOutlined />
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            </Col>
+            <Col span={6}>
+              <div className={styles.smallNotice}>
+                <span className={styles.normalText}>Total extra time spent</span>
+              </div>
             </Col>
           </Row>
 

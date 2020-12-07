@@ -45,73 +45,74 @@
           text-decoration: underline;
         }
       }
-      .timeOffTypeOptions {
-        // CONFIG INLINE CSS
-        // .name {
-        //   font-size: 13px;
-        // }
-        // .days {
-        //   float: right;
-        //   font-size: 12px;
-        //   font-weight: bold;
-        //   .totals {
-        //     color: #6f7076;
-        //     font-size: 12px;
-        //   }
-        // }
-        position: relative;
-        .runOutOfRemainingDayNotice {
-          position: absolute;
-          top: 0;
-          right: 0;
-          display: flex;
-          background: #ffffff;
-          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
-          border-radius: 4px;
-          width: 200px;
+
+      .extraTimeSpent {
+        margin-bottom: 24px;
+        font-size: 13px;
+        .header {
+          background-color: #e1e9fa;
+          border-radius: 5px;
+          color: #00000083;
+          font-weight: bold;
+          padding: 7px 10px;
+          font-size: 13px;
         }
-      }
-      .leaveDaysContainer {
-        background-color: #f6ffed;
-        border: 1px solid #b7eb8f;
-        border-radius: 5px;
-        padding: 15px 15px 5px 15px;
-        margin-bottom: 20px;
-        max-height: 300px;
-        overflow-y: scroll;
-        .eachDay {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 10px;
-          .day {
-            width: 50%;
-            text-align: right;
-            margin-right: 10px;
-            padding-top: 4px;
-          }
-          .daySelectionBox {
-            width: 50%;
-            :global {
-              .ant-form-item {
-                margin: 0;
-              }
+        .content {
+          width: 100%;
+          .emptyContent {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            margin: 3px 0;
+            background-color: #fbfbfb;
+            border-radius: 5px;
+            text-align: center;
+            span {
+              color: #70717787;
             }
           }
-        }
-        .hr {
-          border-bottom: 1px solid #b7eb8f;
-          margin-bottom: 10px;
-        }
-        :global {
-          .ant-select-selector {
-            height: 30px !important;
-            font-size: 11px;
-            padding-top: 0px !important;
-          }
-          // text area
-          .ant-form-item-control-input-content {
-            textarea {
-              padding-top: 0px !important;
+
+          .nonEmptyContent {
+            border: 1px solid #d6dce4;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            :global {
+              .ant-col {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+              }
+              .ant-form-item {
+                margin-bottom: 0 !important;
+              }
+              .ant-input-affix-wrapper > input.ant-input {
+                background-color: #c4c4c433;
+              }
+              .ant-input-affix-wrapper {
+                background-color: #c4c4c433;
+              }
+              .ant-input {
+                background-color: rgba(0, 0, 0, 0) !important;
+                min-height: 20px !important;
+              }
+            }
+            .removeIcon {
+              color: #161c29;
+              border-radius: 50%;
+              height: 26px;
+              width: 26px;
+              background: rgba(44, 109, 249, 0.08);
+              font-weight: bold;
+              font-size: 13px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              &:hover {
+                opacity: 0.8;
+              }
             }
           }
         }
