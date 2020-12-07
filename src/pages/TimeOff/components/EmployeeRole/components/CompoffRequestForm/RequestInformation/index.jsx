@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, Tooltip } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import { connect, history } from 'umi';
-import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import ExtraTimeSpentRow from './ExtraTimeSpentRow';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -24,8 +24,16 @@ class RequestInformation extends Component {
       secondNotice: '',
       durationFrom: '',
       durationTo: '',
+      dateLists: [],
     };
   }
+
+  // SET DATE List
+  setDateList = (list) => {
+    this.setState({
+      dateLists: list,
+    });
+  };
 
   fetchEmailsListByCompany = () => {
     const {
@@ -133,18 +141,11 @@ class RequestInformation extends Component {
       });
     }
 
-    // const { selectedShortType, selectedType } = this.state;
-    // this.autoValueForToDate(selectedType, selectedShortType, value);
-    // if (selectedType === 'A' || selectedType === 'B')
-    //   this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    //
-    // // initial value for leave dates list
-    // const { durationTo } = this.state;
-    // const dateLists = this.getDateLists(value, durationTo);
-    // const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-    // this.formRef.current.setFieldsValue({
-    //   leaveTimeLists: initialValuesForLeaveTimesList,
-    // });
+    const { durationTo } = this.state;
+    if (durationTo !== '') {
+      const list = this.getDateLists(value, durationTo);
+      this.setDateList(list);
+    }
   };
 
   toDateOnChange = (value) => {
@@ -157,17 +158,11 @@ class RequestInformation extends Component {
         durationTo: value,
       });
     }
-    // const { selectedShortType, selectedType } = this.state;
-    // if (selectedType === 'A' || selectedType === 'B')
-    //   this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    //
-    // // initial value for leave dates list
-    // const { durationFrom } = this.state;
-    // const dateLists = this.getDateLists(durationFrom, value);
-    // const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-    // this.formRef.current.setFieldsValue({
-    //   leaveTimeLists: initialValuesForLeaveTimesList,
-    // });
+    const { durationFrom } = this.state;
+    if (durationFrom !== '') {
+      const list = this.getDateLists(durationFrom, value);
+      this.setDateList(list);
+    }
   };
 
   // ON SAVE DRAFT CLICKED
@@ -226,6 +221,14 @@ class RequestInformation extends Component {
     return 0;
   };
 
+  // ON DATE onRemove
+  onDateRemove = (indexToRemove) => {
+    const { dateLists } = this.state;
+    const originalList = JSON.parse(JSON.stringify(dateLists));
+    const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
+    this.setDateList(modifiedList);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -238,10 +241,7 @@ class RequestInformation extends Component {
 
     const dateFormat = 'MM/DD/YYYY';
 
-    const { showSuccessModal, secondNotice, durationFrom, durationTo } = this.state;
-
-    // DYNAMIC ROW OF DATE LISTS
-    // const dateLists = this.getDateLists(durationFrom, durationTo);
+    const { showSuccessModal, secondNotice, durationFrom, durationTo, dateLists } = this.state;
     // const numberOfDays = 0;
 
     return (
@@ -365,11 +365,13 @@ class RequestInformation extends Component {
                   <Col span={6}>Day</Col>
                   <Col span={12}>Time Spent (In Hrs)</Col>
                 </Row>
-                <div className={styles.content}>
-                  <div className={styles.emptyContent}>
-                    <span>Selected duration will show as days</span>
+                {(durationFrom === '' || durationTo === '') && (
+                  <div className={styles.content}>
+                    <div className={styles.emptyContent}>
+                      <span>Selected duration will show as days</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </Col>
             <Col span={6}>
@@ -379,36 +381,37 @@ class RequestInformation extends Component {
             </Col>
           </Row>
 
-          <Row className={styles.eachRow}>
-            <Col className={styles.label} span={6} />
-            <Col span={12}>
-              <div className={styles.extraTimeSpent}>
-                <div className={styles.content}>
-                  <Row justify="center" align="center" className={styles.nonEmptyContent}>
-                    <Col span={6}>13.08.2020</Col>
-                    <Col span={6}>Sunday</Col>
-                    <Col span={9}>
-                      <Form.Item name="each">
-                        <Input suffix="Hrs" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={1} />
-                    <Col span={2}>
-                      <div className={styles.removeIcon}>
-                        <CloseOutlined />
-                      </div>
-                    </Col>
-                  </Row>
+          {durationFrom !== '' && durationTo !== '' && (
+            <Row className={styles.eachRow}>
+              <Col className={styles.label} span={6} />
+              <Col span={12}>
+                <div className={styles.extraTimeSpent}>
+                  <div className={styles.content}>
+                    <Form.List name="extraTimeLists">
+                      {() => (
+                        <>
+                          {dateLists.map((date, index) => {
+                            return (
+                              <ExtraTimeSpentRow
+                                date={date}
+                                index={index}
+                                onRemove={this.onDateRemove}
+                              />
+                            );
+                          })}
+                        </>
+                      )}
+                    </Form.List>
+                  </div>
                 </div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div className={styles.smallNotice}>
-                <span className={styles.normalText}>Total extra time spent</span>
-              </div>
-            </Col>
-          </Row>
-
+              </Col>
+              <Col span={6}>
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>Total extra time spent</span>
+                </div>
+              </Col>
+            </Row>
+          )}
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
               <span>Description</span>
