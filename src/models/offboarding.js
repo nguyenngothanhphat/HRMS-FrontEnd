@@ -317,14 +317,15 @@ const offboarding = {
         dialog(errors);
       }
     },
-    *requestChangeLWD({ payload = {} }, { call, put }) {
+    *requestChangeLWD({ payload = {}, isUpdate = false }, { call, put }) {
       const { id = '' } = payload;
       let response = {};
+      const message = !isUpdate ? 'Request Change LWD Successfully' : 'Edit Comment Successfully';
       try {
         response = yield call(requestChangeLWD, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message: 'Request Change LWD Successfully' });
+        notification.success({ message });
         yield put({ type: 'fetchRequestById', payload: { id } });
       } catch (errors) {
         dialog(errors);

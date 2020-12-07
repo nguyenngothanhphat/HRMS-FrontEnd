@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import { Row, Col, DatePicker, Button } from 'antd';
+import { Row, Col, DatePicker, Button, Input } from 'antd';
 import ModalRequestChangeLWD from '@/components/ModalRequestChangeLWD';
 import { connect } from 'umi';
 import moment from 'moment';
+import editIcon from '@/assets/edit-off-boarding.svg';
 import styles from './index.less';
 
 const dateFormat = 'YYYY/MM/DD';
+const { TextArea } = Input;
 
 @connect(({ offboarding: { myRequest = {} } = {}, loading }) => ({
   myRequest,
@@ -17,7 +19,16 @@ class RequestChangeLWD extends Component {
     this.state = {
       visible: false,
       keyModal: '',
+      q: '',
+      isEdit: false,
     };
+  }
+
+  componentDidMount() {
+    const { myRequest: { commentRequestLastDate: q = '' } = {} } = this.props;
+    this.setState({
+      q,
+    });
   }
 
   handleModal = () => {
@@ -25,6 +36,21 @@ class RequestChangeLWD extends Component {
     this.setState({
       visible: !visible,
       keyModal: !visible ? '' : Date.now(),
+    });
+  };
+
+  handleOpenEdit = () => {
+    this.setState({ isEdit: true });
+  };
+
+  handleCloseEdit = () => {
+    const { myRequest: { commentRequestLastDate: q = '' } = {} } = this.props;
+    this.setState({ isEdit: false, q });
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      q: e.target.value,
     });
   };
 
@@ -41,9 +67,24 @@ class RequestChangeLWD extends Component {
     });
   };
 
+  saveComment = () => {
+    const { q: commentRequestLastDate = '' } = this.state;
+    const { dispatch, myRequest: { _id: id = '', requestLastDate = '' } = {} } = this.props;
+    const payload = { id, requestLastDate, commentRequestLastDate };
+    dispatch({
+      type: 'offboarding/requestChangeLWD',
+      payload,
+      isUpdate: true,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({ isEdit: false });
+      }
+    });
+  };
+
   render() {
-    const { myRequest: { lastWorkingDate = '' } = {}, loading } = this.props;
-    const { visible, keyModal } = this.state;
+    const { myRequest: { lastWorkingDate = '', requestLastDate = '' } = {}, loading } = this.props;
+    const { visible, keyModal, isEdit, q } = this.state;
     const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
     return (
       <Fragment>
@@ -78,10 +119,61 @@ class RequestChangeLWD extends Component {
               </span>
             </Col>
           </Row>
-          <Button onClick={this.handleModal} className={styles.viewChangeLastWorkingDay__button}>
-            Extend or shorten LWD
-          </Button>
+          {!requestLastDate ? (
+            <Button onClick={this.handleModal} className={styles.viewChangeLastWorkingDay__button}>
+              Extend or shorten LWD
+            </Button>
+          ) : (
+            <div className={styles.viewChangeLastWorkingDay__textMessage}>
+              <span className={styles.viewChangeLastWorkingDay__textMessage__bold}>
+                Extend and shorten LWD is sent to HR Manager
+              </span>
+              <span className={styles.viewChangeLastWorkingDay__textMessage__date}>
+                {requestLastDate && moment(requestLastDate).format('YYYY/MM/DD')}
+              </span>
+            </div>
+          )}
         </div>
+        {requestLastDate && (
+          <div className={styles.viewComment}>
+            <div className={styles.viewTop}>
+              <div className={styles.viewTop__name}>
+                Reporting manager’s comments extend or shorten LWD
+              </div>
+              <div className={styles.viewTop__right}>
+                {!isEdit && (
+                  <div className={styles.viewTop__right__edit} onClick={this.handleOpenEdit}>
+                    <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
+                    <span>Edit</span>
+                  </div>
+                )}
+                {/* <div className={styles.viewTop__right__time}>22.05.20 | 12PM</div> */}
+              </div>
+            </div>
+            <TextArea
+              className={styles.boxComment}
+              value={q}
+              onChange={this.handleChange}
+              disabled={!isEdit}
+            />
+            {isEdit && (
+              <div className={styles.viewBottom}>
+                <Button className={styles.btnCancel} onClick={this.handleCloseEdit}>
+                  Cancel
+                </Button>
+                <Button
+                  loading={loading}
+                  disabled={!q}
+                  className={styles.btnSubmit}
+                  onClick={this.saveComment}
+                >
+                  Submit
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
         <ModalRequestChangeLWD
           loading={loading}
           visible={visible}
