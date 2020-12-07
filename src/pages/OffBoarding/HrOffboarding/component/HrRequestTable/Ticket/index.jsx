@@ -130,8 +130,6 @@ class HRDetailTicket extends Component {
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
-    console.log('listScheduleMeeting', listScheduleMeeting);
-    console.log('listComment', listComment);
     return (
       <PageContainer>
         <div className={styles.hrDetailTicket}>
