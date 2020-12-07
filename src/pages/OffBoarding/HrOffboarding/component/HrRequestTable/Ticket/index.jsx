@@ -1,13 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col } from 'antd';
+import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import EditComment from '@/components/EditComment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
-// import LastWorkingDay from './components/LastWorkingDay';
-import CommentsFromHR from './components/CommentFromHr';
+// import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
 import styles from './index.less';
@@ -24,6 +23,7 @@ import styles from './index.less';
     user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
   }) => ({
     loading: loading.effects['offboarding/create1On1'],
+    loadingGetById: loading.effects['offboarding/fetchRequestById'],
     myRequest,
     list1On1,
     listProjectByEmployee,
@@ -116,17 +116,25 @@ class HRDetailTicket extends Component {
       list1On1 = [],
       listProjectByEmployee = [],
       listMeetingTime,
+      loadingGetById,
     } = this.props;
     const {
       reasonForLeaving = '',
       requestDate = '',
-      lastWorkingDate,
+      // lastWorkingDate,
       employee: {
         employeeId,
         generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
         title: { name: jobTitle = '' } = {},
       } = {},
     } = myRequest;
+    if (loadingGetById) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
+    }
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
@@ -154,7 +162,7 @@ class HRDetailTicket extends Component {
                 date={requestDate}
                 name={nameFrist}
               />
-              {lastWorkingDate && <CommentsFromHR />}
+              {/* {lastWorkingDate && <CommentsFromHR />} */}
               {listComment.length !== 0 && (
                 <div className={styles.viewListComment}>
                   {listComment.map((item) => {
@@ -174,13 +182,6 @@ class HRDetailTicket extends Component {
                   </Fragment>
                 );
               })}
-              {/* <LastWorkingDay
-                list1On1={list1On1}
-                handleRemoveToServer={this.handleChange}
-                code={code}
-                visible={visible}
-                lastWorkingDate={lastWorkingDate}
-              /> */}
             </Col>
             <Col span={7}>
               <InfoEmployee />

@@ -1,6 +1,5 @@
-// import React, { Component } from 'react';
-import { Row, Col } from 'antd';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { Link } from 'umi';
 import styles from './index.less';
 
 const array = [
@@ -19,22 +18,7 @@ const array = [
   },
 ];
 
-export default class InfoEmployee extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  renderItem = (render) => {
-    return (
-      <Row gutter={[10, 17]}>
-        <Col>
-          <div className={styles.textData}>{render.info} </div>
-        </Col>
-      </Row>
-    );
-  };
-
+export default class InfoEmployee extends PureComponent {
   render() {
     return (
       <div className={styles.rightContent}>
@@ -43,10 +27,10 @@ export default class InfoEmployee extends Component {
         </div>
         <div className={styles.straightLine} />
         <div className={styles.bodyContent}>
-          <div>{array.map((render) => this.renderItem(render))}</div>
-          <div>
-            <span className={styles.viewDetail}>View Aditya’s Career graph</span>
-          </div>
+          {array.map(({ info }) => (
+            <div className={styles.textData}>{info}</div>
+          ))}
+          <Link style={{ textDecoration: 'underline' }}>View Aditya’s Career graph</Link>
         </div>
       </div>
     );
