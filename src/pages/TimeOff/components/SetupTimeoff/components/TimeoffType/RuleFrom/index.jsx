@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import addIcon from '@/assets/addTicket.svg';
+// import addIcon from '@/assets/addTicket.svg';
 import icon from '@/assets/delete.svg';
 import styles from './index.less';
 
@@ -16,7 +16,6 @@ class RuleFrom extends Component {
             <div className={styles.flex}>
               <div className={styles.title}>{render.type}</div>
               <div className={styles.buttonRequest}>
-                <img src={addIcon} alt="" style={{ margin: '5px' }} />
                 <span>{render.button}</span>
               </div>
             </div>

@@ -89,7 +89,7 @@ class WorkShedule extends Component {
     const { value1, value2 } = this.state;
     return (
       <div className={s.root}>
-        <Form onFinish={this.onFinish}>
+        <Form onFinish={this.onFinish} requiredMark={false}>
           <div className={s.title}>Setup the employee work schedule</div>
           <div className={s.description}>
             How many hours does a regular work day consists of for an employee? How may days does an
@@ -106,45 +106,59 @@ class WorkShedule extends Component {
                 schedule will be deducted from the total leave balance.
               </div>
               <div className={s.form}>
-                <Form.Item label="Total Hours in a workday" name="totalHour">
-                  <InputNumber min={0} placeholder="hours/day" />
-                </Form.Item>
-                <Row>
-                  <Col>
-                    <Form.Item label="Workday end at" name="startAt">
-                      <TimePicker format={format} />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <Form.Item label=" " name="amPM">
-                      <Radio.Group
-                        options={options}
-                        onChange={this.onChange2}
-                        value={value1}
-                        optionType="button"
-                        buttonStyle="solid"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Item label="Workday end at">
-                      <TimePicker format={format} />
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    <Form.Item label=" ">
-                      <Radio.Group
-                        options={options}
-                        onChange={this.onChange2}
-                        value={value2}
-                        optionType="button"
-                        buttonStyle="solid"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
+                <div>
+                  <div>Total Hours in a workday</div>
+                  <Form.Item name="totalHour">
+                    <InputNumber
+                      min={0}
+                      placeholder="hours/day"
+                      formatter={(value) => `${value}days`}
+                      parser={(value) => value.replace('days', '')}
+                    />
+                  </Form.Item>
+                </div>
+                <div>
+                  <div>Workday end at</div>
+                  <Row>
+                    <Col>
+                      <Form.Item name="startAt">
+                        <TimePicker format={format} />
+                      </Form.Item>
+                    </Col>
+                    <Col>
+                      <Form.Item name="amPM">
+                        <Radio.Group
+                          options={options}
+                          onChange={this.onChange2}
+                          value={value1}
+                          optionType="button"
+                          buttonStyle="solid"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </div>
+                <div>
+                  <div>Workday end at</div>
+                  <Row>
+                    <Col>
+                      <Form.Item>
+                        <TimePicker format={format} />
+                      </Form.Item>
+                    </Col>
+                    <Col>
+                      <Form.Item label=" ">
+                        <Radio.Group
+                          options={options}
+                          onChange={this.onChange2}
+                          value={value2}
+                          optionType="button"
+                          buttonStyle="solid"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </div>
               </div>
               <div className={s.workHour}>Work days</div>
               <div className={`${s.description} ${s.pb17}`}>

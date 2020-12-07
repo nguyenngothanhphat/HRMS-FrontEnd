@@ -17,6 +17,7 @@ class Configure extends Component {
     super(props);
     this.state = {
       select: 'baseAccrual',
+      baseAccual: {},
     };
   }
 
@@ -30,11 +31,17 @@ class Configure extends Component {
 
   listenToScroll = () => {
     const position = window.pageYOffset;
-    if (position < 500) {
+    if (position < 200) {
       this.setState({ select: 'baseAccrual' });
-    } else if (position > 500 && position < 1000) {
+    } else if (position > 200 && position < 400) {
       this.setState({ select: 'tenuaAccrua' });
     }
+  };
+
+  handleClick = (item) => {
+    const { id, ref } = item;
+    this.setState({ select: id });
+    ref.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   onChange = () => {};
@@ -42,97 +49,49 @@ class Configure extends Component {
   renderItem = (item) => {
     const { select } = this.state;
 
-    return <div className={select === item.id && styles.itemMenuActive}>{item.title}</div>;
+    return (
+      <div
+        className={select === item.id ? styles.itemMenuActive : styles.itemMenu}
+        onClick={() => this.handleClick(item)}
+      >
+        {item.title}
+      </div>
+    );
   };
 
   renderComponent = (item) => {
-    return <div>{item.componnet}</div>;
+    return <div ref={item.ref}>{item.componnet}</div>;
+  };
+
+  onChangeBaseAccual = (value = {}) => {
+    this.setState({ baseAccual: value });
   };
 
   render() {
     // const { tabKey = '' } = this.props;
-    const { select } = this.state;
-    console.log(select);
+    const { baseAccual } = this.state;
+    console.log(baseAccual, 'baseAccual');
     const list = [
       {
         id: 'baseAccrual',
         title: 'Base  accrual',
-        componnet: <BaseAccual />,
+        ref: React.createRef(),
+        componnet: <BaseAccual onChangeValue={this.onChangeBaseAccual} />,
       },
       {
         id: 'tenuaAccrua',
         title: 'Tenua Accrua',
+        ref: React.createRef(),
         componnet: <TenuaAccrua />,
-      },
-      {
-        id: 'baseAccrual',
-        title: 'Base  accrual',
-        componnet: <BaseAccual />,
-      },
-      {
-        id: 'baseAccrual',
-        title: 'Base  accrual',
-        componnet: <BaseAccual />,
-      },
-      {
-        id: 'tenuaAccrua',
-        title: 'Base  accrual',
-        componnet: <BaseAccual />,
-      },
-      {
-        id: 'tenuaAccrua',
-        title: 'Base  accrual',
-        componnet: <BaseAccual />,
-      },
-      {
-        id: 'tenuaAccrua',
-        title: 'Base  accrual',
-        componnet: <BaseAccual />,
       },
     ];
 
     return (
-      // <div className={styles.content}>
-      //   <Tabs defaultActiveKey={tabKey}>
-      //     <TabPane tab="Base accrual" key="Base">
-      //       <BaseAccual />
-      //     </TabPane>
-      //     <TabPane tab="Tenua Accrua" key="Tenua">
-      //       <TenuaAccrua />
-      //     </TabPane>
-      //     <TabPane tab="Accrual schedule" key="Accrual">
-      //       <AccrualSchedule />
-      //     </TabPane>
-      //     <TabPane tab="Balance" key="Balance">
-      //       <Balance />
-      //     </TabPane>
-      //     <TabPane tab="Annual reset" key="Annual">
-      //       <AnnualReset />
-      //     </TabPane>
-      //     <TabPane tab="Carryover cap" key="Carryover">
-      //       <CarryoverCap />
-      //     </TabPane>
-      //     <TabPane tab="Waiting period" key="Waiting">
-      //       <WaitingPeriod />
-      //     </TabPane>
-      //     <TabPane tab="Increaments" key="Increaments">
-      //       <Increaments />
-      //     </TabPane>
-      //     <TabPane tab="Hire Probation" key="Hire">
-      //       <HireProbation />
-      //     </TabPane>
-      //   </Tabs>
-      // </div>
-      <Row>
-        <Col>{list.map((item) => this.renderItem(item))}</Col>
-        <Col>{list.map((item) => this.renderComponent(item))}</Col>
-        {/* <BaseAccual />
-        <TenuaAccrua />
-        <AccrualSchedule />
-        <Balance />
-        <AnnualReset />
-        <CarryoverCap /> */}
-      </Row>
+      <div className={styles.content}>
+        <div className={styles.tabSelect}>{list.map((item) => this.renderItem(item))}</div>
+        <div className={styles.borderStyles} />
+        <div>{list.map((item) => this.renderComponent(item))}</div>
+      </div>
     );
   }
 }

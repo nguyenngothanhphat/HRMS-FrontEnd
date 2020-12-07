@@ -3,9 +3,43 @@ import { Radio, Checkbox, Row, Col, InputNumber } from 'antd';
 import styles from './index.less';
 
 class BaseAccual extends Component {
-  onChange = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      accrualRate: '',
+      select: 'day',
+    };
+  }
+
+  onChangeRadio = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { accrualRate } = this.state;
+    this.setState({
+      select: e.target.value,
+    });
+    const data = {
+      select: e.target.value,
+      accrualRate,
+    };
+    onChangeValue(data);
+  };
+
+  onChange = (value) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { select } = this.state;
+    this.setState({
+      accrualRate: value,
+    });
+    const data = {
+      select,
+      accrualRate: value,
+    };
+    onChangeValue(data);
+  };
 
   render() {
+    const { accrualRate, select } = this.state;
+    console.log(accrualRate);
     return (
       <div className={styles.content}>
         <div className={styles.title}>Base accrual rate</div>
@@ -25,11 +59,11 @@ class BaseAccual extends Component {
                   max={10}
                   formatter={(value) => `${value}days`}
                   parser={(value) => value.replace('days', '')}
-                  defaultValue={3}
+                  onChange={this.onChange}
                 />
-                <Radio.Group defaultValue="a" buttonStyle="solid">
-                  <Radio.Button value="a">Day</Radio.Button>
-                  <Radio.Button value="d">Hours</Radio.Button>
+                <Radio.Group onChange={this.onChangeRadio} value={select} buttonStyle="solid">
+                  <Radio.Button value="day">Day</Radio.Button>
+                  <Radio.Button value="hour">Hours</Radio.Button>
                 </Radio.Group>
               </div>
             </Col>
