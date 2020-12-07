@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -9,7 +9,7 @@ import UploadImage from '../UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
-class CollapseField extends PureComponent {
+class CollapseField extends Component {
   // uploadText = (status) => {
   //   if(status === 'VERIFIED') {
   //     return 'Uploaded';
@@ -17,12 +17,63 @@ class CollapseField extends PureComponent {
   //   return 'Reupload'
   // }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      allDocs: [],
+      selectedFile: { outerIndex: '', innerIndex: '' },
+    };
+  }
+
+  componentDidMount() {
+    const { docList } = this.props;
+    const allDoc = [];
+    // let outerIndex = 0;
+    docList.map((list, outerIndex) => {
+      const { data = [] } = list;
+      // let innerIndex = 0;
+      data.map((dataItem, innerIndex) => {
+        allDoc.push({ ...dataItem, outerIndex, innerIndex });
+        // innerIndex++;
+        return null;
+      });
+      // outerIndex++;
+      return null;
+    });
+    this.setState({
+      allDocs: allDoc,
+    });
+  }
+
   getActionContent = (status) => {
-    console.log(status);
     if (status === 'INELIGIBLE' || status === 'PENDING') {
       return 'Choose file';
     }
     return 'Resubmit';
+  };
+
+  handleSelectedFile = (outerIndex, innerIndex) => {
+    this.setState({
+      selectedFile: {
+        outerIndex,
+        innerIndex,
+      },
+    });
+  };
+
+  resetSelectedIndex = () => {
+    this.setState({
+      selectedFile: {
+        outerIndex: '',
+        innerIndex: '',
+      },
+    });
+  };
+
+  getResponse = async (res, index, id, docList) => {
+    const { handleFile } = this.props;
+    handleFile(res, index, id, docList);
+    this.resetSelectedIndex();
   };
 
   render() {
@@ -30,16 +81,16 @@ class CollapseField extends PureComponent {
       item = {},
       loading,
       index,
-      handleFile,
+      // handleFile,
       docList,
       handleCanCelIcon: handleCancelIcon,
       onValuesChange,
       employerName,
       checkLength,
-      processStatus,
     } = this.props;
 
-    const { data, type } = item;
+    const { selectedFile } = this.state;
+
     return (
       <div className={styles.CollapseField}>
         {item.data.length > 0 || item.type === 'D' ? (
@@ -83,12 +134,16 @@ class CollapseField extends PureComponent {
                             )}
                             <UploadImage
                               content={this.getActionContent(file.candidateDocumentStatus)}
-                              getResponse={(res) => handleFile(res, index, id, docList)}
+                              getResponse={(res) => this.getResponse(res, index, id, docList)}
                               loading={loading}
                               hideValidation
                               typeIndex={index}
                               nestedIndex={id}
                               getIndexFailed={this.getIndexFailed}
+                              selectedInner={selectedFile.innerIndex}
+                              selectedOuter={selectedFile.outerIndex}
+                              handleSelectedFile={this.handleSelectedFile}
+                              resetSelectedIndex={this.resetSelectedIndex}
                             />
                           </Col>
                         </Row>
@@ -113,12 +168,16 @@ class CollapseField extends PureComponent {
                                 {/* <p className={styles.viewUpLoadDataText}>Uploaded</p> */}
                                 <UploadImage
                                   content={this.getActionContent(file.candidateDocumentStatus)}
-                                  getResponse={(res) => handleFile(res, index, id, docList)}
+                                  getResponse={(res) => this.getResponse(res, index, id, docList)}
                                   loading={loading}
                                   hideValidation
                                   typeIndex={index}
                                   nestedIndex={id}
                                   getIndexFailed={this.getIndexFailed}
+                                  selectedInner={selectedFile.innerIndex}
+                                  selectedOuter={selectedFile.outerIndex}
+                                  handleSelectedFile={this.handleSelectedFile}
+                                  resetSelectedIndex={this.resetSelectedIndex}
                                 />
                               </Col>
                               <Col span={1} className={styles.textAlignCenter}>

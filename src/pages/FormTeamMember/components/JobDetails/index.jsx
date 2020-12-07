@@ -408,7 +408,7 @@ class JobDetails extends PureComponent {
         title: 'department',
         name: formatMessage({ id: 'component.jobDetail.department' }),
         id: 2,
-        placeholder: 'Select a job title',
+        placeholder: 'Select a department',
       },
       {
         title: 'title',
@@ -420,7 +420,7 @@ class JobDetails extends PureComponent {
         title: 'reportingManager',
         name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
         id: 4,
-        placeholder: 'Select',
+        placeholder: 'Select a reporting manager',
       },
     ];
     const candidateField = [

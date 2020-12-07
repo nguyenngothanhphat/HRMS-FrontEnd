@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, Checkbox } from 'antd';
-import RedCautionIcon from '@/assets/redcaution.svg';
+import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
-import { ObjectFlags } from 'typescript';
 import styles from './index.less';
 
 const { Option, OptGroup } = Select;
@@ -170,31 +168,36 @@ class RequestInformation extends Component {
 
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // console.log('leaveDates', leaveDates);
-    // generate data for API
-    const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-    const data = {
-      type: timeOffType,
-      status: 'IN-PROGRESS',
-      employee: employeeId,
-      subject,
-      fromDate: durationFrom,
-      toDate: durationTo,
-      duration,
-      leaveDates,
-      onDate: moment(),
-      description,
-      approvalManager: managerId, // id
-      cc: personCC,
-    };
+    if (leaveDates.length === 0) {
+      message.error('Please select valid dates!');
+    } else {
+      // generate data for API
+      const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-    dispatch({
-      type: 'timeOff/addLeaveRequest',
-      payload: data,
-    }).then((res) => {
-      const { statusCode } = res;
-      if (statusCode === 200) this.setShowSuccessModal(true);
-    });
+      const data = {
+        type: timeOffType,
+        status: 'IN-PROGRESS',
+        employee: employeeId,
+        subject,
+        fromDate: durationFrom,
+        toDate: durationTo,
+        duration,
+        leaveDates,
+        onDate: moment(),
+        description,
+        approvalManager: managerId, // id
+        cc: personCC,
+      };
+
+      dispatch({
+        type: 'timeOff/addLeaveRequest',
+        payload: data,
+      }).then((res) => {
+        const { statusCode } = res;
+        if (statusCode === 200) this.setShowSuccessModal(true);
+      });
+    }
   };
 
   onFinishFailed = (errorInfo) => {
@@ -357,7 +360,7 @@ class RequestInformation extends Component {
         fontWeight: 'bold',
       };
       return (
-        <Option value={_id}>
+        <Option key={_id} value={_id}>
           <div className={styles.timeOffTypeOptions}>
             {/* I don't knew why I could not CSS this block in styles.less file
           So I tried inline CSS. 
@@ -414,7 +417,7 @@ class RequestInformation extends Component {
     return data.map((value) => {
       const { name = '', shortName = '', _id = '' } = value;
       return (
-        <Option value={_id}>
+        <Option key={_id} value={_id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
               {`${name} (${shortName})`}
@@ -465,6 +468,14 @@ class RequestInformation extends Component {
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
+  };
+
+  // COMPARE TWO DAYS
+  compareTwoDates = (from, to) => {
+    // moment object
+    if (from < to) return -1;
+    if (from > to) return 1;
+    return 0;
   };
 
   render() {
@@ -645,7 +656,7 @@ class RequestInformation extends Component {
             selectedType !== 'D' && ( // Type D: Working out of office
               <Form.List name="leaveTimeLists">
                 {() => (
-                  <Row className={styles.eachRow}>
+                  <Row key={1} className={styles.eachRow}>
                     <Col className={styles.label} span={6}>
                       <span />
                     </Col>
@@ -710,8 +721,21 @@ class RequestInformation extends Component {
                                 )}
                             </>
                           );
-                        return '';
+                        return null;
                       })}
+                      {moment(durationFrom).weekday() === 6 &&
+                        (this.compareTwoDates(
+                          moment(durationFrom).add(1, 'day').format('DD/MM/YYYY'),
+                          moment(durationTo).format('DD/MM/YYYY'),
+                        ) === 0 ||
+                          this.compareTwoDates(
+                            moment(durationFrom).format('DD/MM/YYYY'),
+                            moment(durationTo).format('DD/MM/YYYY'),
+                          ) === 0) && (
+                          <div className={styles.eachDay}>
+                            <span>Please select valid dates!</span>
+                          </div>
+                        )}
                     </Col>
                     <Col span={6}>
                       {/* <div className={styles.smallNotice}>
@@ -762,7 +786,7 @@ class RequestInformation extends Component {
                   {this.renderEmailsList().map((value) => {
                     const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
                     return (
-                      <Option value={_id} key={workEmail}>
+                      <Option key={_id} value={_id}>
                         <span style={{ fontSize: 13 }}>
                           {firstName} {lastName}
                         </span>

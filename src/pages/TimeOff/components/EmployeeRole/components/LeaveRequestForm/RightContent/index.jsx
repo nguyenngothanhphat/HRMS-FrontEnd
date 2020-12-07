@@ -56,9 +56,9 @@ class RightContent extends Component {
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
           <Steps current={0} labelPlacement="vertical">
-            {people.map((value) => {
+            {people.map((value, index) => {
               const { avatar = '', text = '' } = value;
-              return <Step icon={this.renderIcon(avatar)} title={text} />;
+              return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={text} />;
             })}
           </Steps>
         </div>
