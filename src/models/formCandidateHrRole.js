@@ -1044,6 +1044,16 @@ const candidateInfo = {
         },
       };
     },
+    saveFilledSalaryStructure(state, action) {
+      const { data, checkMandatory } = state;
+      return {
+        ...state,
+        checkMandatory: {
+          ...checkMandatory,
+          ...action.payload,
+        },
+      };
+    },
     saveSalaryStructure(state, action) {
       const { data, salaryStructure } = state;
       return {
