@@ -178,10 +178,18 @@ class RequestInformation extends Component {
 
     const now = start;
     const dates = [];
-
-    while (now.isBefore(end) || now.isSame(end)) {
-      dates.push(now.format('YYYY-MM-DD'));
-      now.add(1, 'days');
+    const { dateLists } = this.state;
+    if (dateLists.length === 0) {
+      while (now.isBefore(end) || now.isSame(end)) {
+        const obj = {
+          date: now.format('YYYY-MM-DD'),
+          value: 0,
+        };
+        dates.push(obj);
+        now.add(1, 'days');
+      }
+    } else {
+      // something here
     }
     return dates;
   };
@@ -226,7 +234,24 @@ class RequestInformation extends Component {
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
+    const listValue = modifiedList.map((data) => data.value);
     this.setDateList(modifiedList);
+    this.formRef.current.setFieldsValue({
+      extraTimeLists: listValue,
+    });
+  };
+
+  // ON DATE onDataChange
+  onDataChange = (e, indexToChange) => {
+    const { value } = e.target;
+    const { dateLists } = this.state;
+    const originalList = JSON.parse(JSON.stringify(dateLists));
+    originalList[indexToChange].value = parseFloat(value);
+
+    console.log('modifiedList', originalList);
+    this.setState({
+      dateLists: originalList,
+    });
   };
 
   render() {
@@ -244,6 +269,7 @@ class RequestInformation extends Component {
     const { showSuccessModal, secondNotice, durationFrom, durationTo, dateLists } = this.state;
     // const numberOfDays = 0;
 
+    console.log('dateLists', dateLists);
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
@@ -393,10 +419,11 @@ class RequestInformation extends Component {
                           {dateLists.map((date, index) => {
                             return (
                               <ExtraTimeSpentRow
-                                date={date}
+                                eachDate={date}
                                 index={index}
                                 onRemove={this.onDateRemove}
                                 listLength={dateLists.length}
+                                onChange={this.onDataChange}
                               />
                             );
                           })}
@@ -413,6 +440,7 @@ class RequestInformation extends Component {
               </Col>
             </Row>
           )}
+
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
               <span>Description</span>

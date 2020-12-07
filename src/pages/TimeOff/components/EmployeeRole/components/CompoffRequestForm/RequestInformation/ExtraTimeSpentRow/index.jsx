@@ -6,7 +6,14 @@ import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
   render() {
-    const { date = '', index = 0, onRemove = () => {}, listLength = 0 } = this.props;
+    const {
+      eachDate = {},
+      index = 0,
+      onRemove = () => {},
+      onChange = () => {},
+      listLength = 0,
+    } = this.props;
+    const { date = '' } = eachDate;
     return (
       <Row
         key={`${index + 1}`}
@@ -18,7 +25,7 @@ class ExtraTimeSpentRow extends PureComponent {
         <Col span={6}>{moment(date).locale('en').format('dddd')}</Col>
         <Col span={9}>
           <Form.Item name={[index]} fieldKey={[index]}>
-            <Input placeholder="0" suffix="Hrs" />
+            <Input onChange={(e) => onChange(e, index)} placeholder="0" suffix="Hrs" />
           </Form.Item>
         </Col>
         <Col span={1} />
