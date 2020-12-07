@@ -4,7 +4,7 @@ import styles from './index.less';
 
 export default class WithdrawModal extends PureComponent {
   render() {
-    const { visible, onClose = () => {} } = this.props;
+    const { visible, onClose = () => {}, onProceed = () => {} } = this.props;
     return (
       <Modal
         className={styles.WithdrawModal}
@@ -22,7 +22,7 @@ export default class WithdrawModal extends PureComponent {
             Both your Manager and HR will be notified of this change.
           </p>
           <div className={styles.operationButtons}>
-            <Button className={styles.proceedBtn} onClick={() => onClose(false)}>
+            <Button className={styles.proceedBtn} onClick={() => onProceed(false)}>
               Proceed
             </Button>
             <Button className={styles.cancelBtn} onClick={() => onClose(false)}>

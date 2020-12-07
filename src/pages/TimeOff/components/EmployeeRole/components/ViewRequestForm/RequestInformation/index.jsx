@@ -54,6 +54,11 @@ class RequestInformation extends Component {
     this.setShowWithdrawModal(true);
   };
 
+  // ON PROCEED withDraw
+  onProceed = () => {
+    alert('Proceed');
+  };
+
   render() {
     const { showWithdrawModal } = this.state;
     const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
@@ -137,7 +142,11 @@ class RequestInformation extends Component {
             )}
           </>
         )}
-        <WithdrawModal visible={showWithdrawModal} onClose={this.setShowWithdrawModal} />
+        <WithdrawModal
+          visible={showWithdrawModal}
+          onProceed={this.onProceed}
+          onClose={this.setShowWithdrawModal}
+        />
       </div>
     );
   }
