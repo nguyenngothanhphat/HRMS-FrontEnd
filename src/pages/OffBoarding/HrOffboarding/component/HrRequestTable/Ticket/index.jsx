@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
+import EditComment from '@/components/EditComment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
+import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 // import LastWorkingDay from './components/LastWorkingDay';
 import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
@@ -110,12 +112,10 @@ class HRDetailTicket extends Component {
     const { openModal, keyModal = '' } = this.state;
     const {
       loading,
-      // visible,
       myRequest,
       list1On1 = [],
       listProjectByEmployee = [],
       listMeetingTime,
-      // match: { params: { id: code = '' } = {} },
     } = this.props;
     const {
       reasonForLeaving = '',
@@ -130,7 +130,8 @@ class HRDetailTicket extends Component {
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
-
+    console.log('listScheduleMeeting', listScheduleMeeting);
+    console.log('listComment', listComment);
     return (
       <PageContainer>
         <div className={styles.hrDetailTicket}>
@@ -156,6 +157,25 @@ class HRDetailTicket extends Component {
                 name={nameFrist}
               />
               {lastWorkingDate && <CommentsFromHR />}
+              {listComment.length !== 0 && (
+                <div className={styles.viewListComment}>
+                  {listComment.map((item) => {
+                    const { _id } = item;
+                    return (
+                      <Fragment key={_id}>
+                        <EditComment itemComment={item} />
+                      </Fragment>
+                    );
+                  })}
+                </div>
+              )}
+              {listScheduleMeeting.map((item) => {
+                return (
+                  <Fragment key={item._id}>
+                    <ScheduleMeeting data={item} />
+                  </Fragment>
+                );
+              })}
               {/* <LastWorkingDay
                 list1On1={list1On1}
                 handleRemoveToServer={this.handleChange}
