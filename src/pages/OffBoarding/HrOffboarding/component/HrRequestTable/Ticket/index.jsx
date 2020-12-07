@@ -6,6 +6,7 @@ import EditComment from '@/components/EditComment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
+import LastWorkingDate from './components/LWD';
 // import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
@@ -182,6 +183,7 @@ class HRDetailTicket extends Component {
                   </Fragment>
                 );
               })}
+              <LastWorkingDate />
             </Col>
             <Col span={7}>
               <InfoEmployee />
