@@ -671,8 +671,9 @@ const candidateInfo = {
     },
 
     *fetchTableData({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTableDataByTitle, payload);
+        response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
         if (statusCode !== 200) throw response;
@@ -683,6 +684,7 @@ const candidateInfo = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *closeCandidate({ payload }, { call, put }) {

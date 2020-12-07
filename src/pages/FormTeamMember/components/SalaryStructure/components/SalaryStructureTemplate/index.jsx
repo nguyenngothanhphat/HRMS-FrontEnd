@@ -116,32 +116,66 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, _id, checkMandatory, processStatus, settings, listTitle } = this.props;
-
+    const { dispatch, _id, processStatus, settings, listTitle } = this.props;
     const tempTableData = [...settings];
-    // const isFilled = tempTableData.map((data) => data.value !== '').every((data) => data === true);
-    let check = false;
+    const isFilled = tempTableData.filter((item) => item.value === '');
 
-    const isFilled = tempTableData.filter((e) => e.value !== '');
-    if (isFilled.length > 0 && tempTableData.length > 0) {
-      check = true;
-    }
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        checkMandatory: {
-          ...checkMandatory,
-          filledSalaryStructure: check,
-        },
-      },
-    });
     if (processStatus === 'DRAFT' && listTitle.length === 0) {
       dispatch({
         type: 'candidateInfo/fetchTitleListByCompany',
         payload: { company: _id },
       });
     }
+
+    if (isFilled.length === 0 && tempTableData.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: false,
+        },
+      });
+    }
   };
+
+  // componentWillUnmount = () => {
+  //   const {
+  //     dispatch,
+  //     currentStep,
+  //     settings,
+  //     // salaryPosition,
+  //     data: {
+  //       _id,
+  //       salaryStructure: { title },
+  //     },
+  //   } = this.props;
+  //   dispatch({
+  //     type: 'candidateInfo/updateByHR',
+  //     payload: {
+  //       salaryStructure: {
+  //         title,
+  //         settings,
+  //       },
+  //       candidate: _id,
+  //       currentStep,
+  //     },
+  //   }).then(({ data: data1, statusCode }) => {
+  //     if (statusCode === 200) {
+  //       dispatch({
+  //         type: 'candidateInfo/save',
+  //         payload: {
+  //           currentStep: data1.currentStep,
+  //         },
+  //       });
+  //     }
+  //   });
+  // };
 
   onClickPrev = () => {
     const { dispatch, currentStep } = this.props;
@@ -224,9 +258,8 @@ class SalaryStructureTemplate extends PureComponent {
     const index = tempTableData.findIndex((data) => data.key === name);
 
     tempTableData[index].value = value;
-
     const isFilled = tempTableData.filter((item) => item.value === '');
-    if (isFilled.length === 0) {
+    if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
         type: 'candidateInfo/saveFilledSalaryStructure',
         payload: {
@@ -241,36 +274,18 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
-    dispatch({
-      type: 'candidateInfo/saveSalaryStructure',
-      payload: {
-        settings: tempTableData,
-      },
-    });
+    // dispatch({
+    //   type: 'candidateInfo/saveSalaryStructure',
+    //   payload: {
+    //     settings: tempTableData,
+    //   },
+    // });
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch, checkMandatory, settings = [] } = this.props;
-    const tempTableData = [...settings];
-
+    const { dispatch } = this.props;
+    // const tempTableData = [];
     // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
-
-    const isFilled = tempTableData.filter((item) => item.value === '');
-    if (isFilled.length === 0) {
-      dispatch({
-        type: 'candidateInfo/saveFilledSalaryStructure',
-        payload: {
-          filledSalaryStructure: true,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'candidateInfo/saveFilledSalaryStructure',
-        payload: {
-          filledSalaryStructure: false,
-        },
-      });
-    }
 
     dispatch({
       type: 'candidateInfo/saveOrigin',
@@ -283,14 +298,40 @@ class SalaryStructureTemplate extends PureComponent {
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/saveFilledSalaryStructure',
+          payload: {
+            filledSalaryStructure: true,
+          },
+        });
+      }
     });
 
-    dispatch({
-      type: 'candidateInfo/saveSalaryStructure',
-      payload: {
-        settings: tempTableData,
-      },
-    });
+    // const isFilled = tempTableData.filter((item) => item.value === '');
+    // if (isFilled.length === 0 && tempTableData.length > 0) {
+    //   dispatch({
+    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     payload: {
+    //       filledSalaryStructure: true,
+    //     },
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     payload: {
+    //       filledSalaryStructure: false,
+    //     },
+    //   });
+    // }
+
+    // dispatch({
+    //   type: 'candidateInfo/saveSalaryStructure',
+    //   payload: {
+    //     settings: tempTableData,
+    //   },
+    // });
   };
 
   _renderTableTitle = (order) => {
