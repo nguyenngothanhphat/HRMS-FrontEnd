@@ -68,7 +68,8 @@ class RequestInformation extends Component {
       subject = '',
       fromDate = '',
       toDate = '',
-      onDate = '',
+      duration = '',
+      // onDate = '',
       description = '',
       type: { name = '', shortType = '' } = {},
     } = viewingLeaveRequest;
@@ -114,7 +115,14 @@ class RequestInformation extends Component {
               <Row>
                 <Col span={6}>Duration</Col>
                 <Col span={18} className={styles.detailColumn}>
-                  <span>{formatDurationTime}</span>
+                  <span>{formatDurationTime}</span>{' '}
+                  <span
+                    style={{
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    [{duration <= 1 ? `${duration} day` : `${duration} days`}]
+                  </span>
                 </Col>
               </Row>
               <Row>

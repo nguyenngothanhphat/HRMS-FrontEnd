@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
-import LeftMenu from './LeftMenu';
+import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
@@ -14,17 +14,17 @@ class CompoffRequestForm extends PureComponent {
   render() {
     return (
       <PageContainer>
-        <div className={styles.compoffRequest}>
+        <div className={styles.CompoffRequestForm}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Request for Compoff</p>
             </div>
           </Affix>
-          <Row className={styles.compoffRequest__content} gutter={[24, 0]}>
-            <Col span={17}>
-              <LeftMenu />
+          <Row className={styles.container} gutter={[20, 20]}>
+            <Col xs={24} lg={16}>
+              <RequestInformation />
             </Col>
-            <Col span={7}>
+            <Col xs={24} lg={8}>
               <RightContent />
             </Col>
           </Row>
