@@ -238,6 +238,12 @@ class RequestInformation extends Component {
           if (selectedType === 'D') {
             this.setSecondNotice(`${shortType} applied for: ${time} days`);
           }
+          if (selectedType === 'C') {
+            this.setSecondNotice(
+              `A 'To date' will be set automatically as per a duration of ${time} days from the selected 'From date'`,
+            );
+          }
+
           autoToDate = moment(durationFrom).add(time, 'day');
         }
       });
@@ -363,7 +369,7 @@ class RequestInformation extends Component {
         <Option key={_id} value={_id}>
           <div className={styles.timeOffTypeOptions}>
             {/* I don't knew why I could not CSS this block in styles.less file
-          So I tried inline CSS. 
+          So I tried inline CSS.
           Amazing! It worked :D. (Tuan - Lewis Nguyen) */}
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>

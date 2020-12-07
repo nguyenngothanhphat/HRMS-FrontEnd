@@ -3,6 +3,8 @@ import { Button, Row, Col, Spin } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect } from 'umi';
 import moment from 'moment';
+import WithdrawModal from '../WithdrawModal';
+
 import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
@@ -15,7 +17,7 @@ class RequestInformation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSuccessModal: false,
+      showWithdrawModal: false,
     };
   }
 
@@ -35,9 +37,9 @@ class RequestInformation extends Component {
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
-  setShowSuccessModal = (value) => {
+  setShowWithdrawModal = (value) => {
     this.setState({
-      showSuccessModal: value,
+      showWithdrawModal: value,
     });
   };
 
@@ -49,12 +51,11 @@ class RequestInformation extends Component {
 
   // WITHDRAW CLICKED
   withDraw = () => {
-    // eslint-disable-next-line no-alert
-    alert('WITHDRAW');
+    this.setShowWithdrawModal(true);
   };
 
   render() {
-    const { showSuccessModal } = this.state;
+    const { showWithdrawModal } = this.state;
     const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
     const {
       status = '',
@@ -118,28 +119,25 @@ class RequestInformation extends Component {
                 </Col>
               </Row>
             </div>
-            <div className={styles.footer}>
-              <span className={styles.note}>
-                By default notifications will be sent to HR, your manager and recursively loop to
-                your department head.
-              </span>
-              <div className={styles.formButtons}>
-                <Button
-                  // loading={loadingAddLeaveRequest}
-                  onClick={this.withDraw}
-                >
-                  Withdraw
-                </Button>
+            {status !== 'REJECTED' && (
+              <div className={styles.footer}>
+                <span className={styles.note}>
+                  By default notifications will be sent to HR, your manager and recursively loop to
+                  your department head.
+                </span>
+                <div className={styles.formButtons}>
+                  <Button
+                    // loading={loadingAddLeaveRequest}
+                    onClick={this.withDraw}
+                  >
+                    Withdraw
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </>
         )}
-        {/* <TimeOffModal
-          visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
-          content={`${selectedTypeName} request submitted to the HR and your manager.`}
-          submitText="OK"
-        /> */}
+        <WithdrawModal visible={showWithdrawModal} onClose={this.setShowWithdrawModal} />
       </div>
     );
   }
