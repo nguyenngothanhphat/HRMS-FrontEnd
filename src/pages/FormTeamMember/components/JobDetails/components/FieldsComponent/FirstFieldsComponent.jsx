@@ -107,7 +107,9 @@ class FirstFieldsComponent extends PureComponent {
                       ? managerList.map((data, index) => (
                           <Option value={data.generalInfo.firstName} key={index}>
                             <Typography.Text>
-                              {data.generalInfo && data.generalInfo.firstName}
+                              {data.generalInfo && data.generalInfo.firstName
+                                ? `${data.generalInfo.firstName} (${data.generalInfo.workEmail})`
+                                : ''}
                             </Typography.Text>
                           </Option>
                         ))
