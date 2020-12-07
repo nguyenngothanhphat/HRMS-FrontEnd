@@ -73,3 +73,21 @@ export async function getLocationList() {
     method: 'POST',
   });
 }
+
+export async function getDepartmentList() {
+  return request('/api/department/list', {
+    method: 'POST',
+  });
+}
+
+export async function getTitleList() {
+  return request('/api/title/list', {
+    method: 'POST',
+  });
+}
+
+export async function getEmployeeTypeList() {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+  });
+}

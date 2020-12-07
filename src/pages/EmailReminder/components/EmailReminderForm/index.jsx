@@ -23,9 +23,23 @@ const hashValues = [
   { id: 4, value: 'Tan Binh TP HCM' },
 ];
 
-@connect(({ employeeSetting: { triggerEventList = [] } = {} }) => ({
-  triggerEventList,
-}))
+@connect(
+  ({
+    employeeSetting: {
+      triggerEventList = [],
+      departmentList = [],
+      locationList = [],
+      titleList = [],
+      employeeTypeList = [],
+    } = {},
+  }) => ({
+    triggerEventList,
+    locationList,
+    departmentList,
+    titleList,
+    employeeTypeList,
+  }),
+)
 class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -166,32 +180,7 @@ class EmailReminderForm extends PureComponent {
             value: 'is in',
           },
         ],
-        departments: [
-          {
-            name: 'UX & Research',
-            value: 'UX & Research',
-          },
-          {
-            name: 'Visual Design',
-            value: 'Visual Design',
-          },
-          {
-            name: 'Sales & Marketing',
-            value: 'Sales & Marketing',
-          },
-          {
-            name: 'Business Development',
-            value: 'Business Development',
-          },
-          {
-            name: 'Front end',
-            value: 'Front end',
-          },
-          {
-            name: 'Engineering',
-            value: 'Engineering',
-          },
-        ],
+        departments: [],
       },
     };
   }
@@ -218,11 +207,67 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeCondition = (index, name, value) => {
-    const { conditionsData } = this.state;
-    // console.log(index, name, value);
+    const { conditionsData, conditions } = this.state;
+    const { dispatch } = this.props;
+
+    if (name === 'unit') {
+      if (value === 'Department') {
+        dispatch({
+          type: 'employeeSetting/fetchDepartmentList',
+          payload: {},
+        }).then((data) => {
+          console.log('Department reducer: ', data);
+          this.setState((prevState) => ({
+            conditions: {
+              ...prevState.conditions,
+              departments: data,
+            },
+          }));
+        });
+      } else if (value === 'Location') {
+        dispatch({
+          type: 'employeeSetting/fetchLocationList',
+          payload: {},
+        }).then((data) => {
+          console.log('Location reducer: ', data);
+          this.setState((prevState) => ({
+            conditions: {
+              ...prevState.conditions,
+              departments: data,
+            },
+          }));
+        });
+      } else if (value === 'Title') {
+        dispatch({
+          type: 'employeeSetting/fetchTitleList',
+          payload: {},
+        }).then((data) => {
+          console.log('Title reducer: ', data);
+          this.setState((prevState) => ({
+            conditions: {
+              ...prevState.conditions,
+              departments: data,
+            },
+          }));
+        });
+      } else {
+        dispatch({
+          type: 'employeeSetting/fetchEmployeeTypeList',
+          payload: {},
+        }).then((data) => {
+          console.log('empType reducer: ', data);
+          this.setState((prevState) => ({
+            conditions: {
+              ...prevState.conditions,
+              departments: data,
+            },
+          }));
+        });
+      }
+    }
+
     const newConditionsData = [...conditionsData];
     newConditionsData[index][name] = value;
-    // console.log(newConditionsData);
     this.setState({
       conditionsData: newConditionsData,
     });
@@ -321,8 +366,12 @@ class EmailReminderForm extends PureComponent {
                     placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'department', value)}
                   >
-                    {departments.map((department) => {
-                      return <Option value={department.value}>{department.name}</Option>;
+                    {departments.map((department, index) => {
+                      return (
+                        <Option value={department.id} key={index}>
+                          {department.name}
+                        </Option>
+                      );
                     })}
                   </Select>
                 </Col>
