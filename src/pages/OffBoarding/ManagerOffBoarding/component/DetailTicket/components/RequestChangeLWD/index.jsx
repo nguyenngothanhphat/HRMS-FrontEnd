@@ -75,10 +75,6 @@ class RequestChangeLWD extends Component {
       type: 'offboarding/requestChangeLWD',
       payload,
       isUpdate: true,
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        this.setState({ isEdit: false });
-      }
     });
   };
 
