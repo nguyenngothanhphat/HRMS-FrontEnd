@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
   render() {
-    const { date = '', index = 0, onRemove = () => {} } = this.props;
+    const { date = '', index = 0, onRemove = () => {}, listLength = 0 } = this.props;
     return (
       <Row
         key={`${index + 1}`}
@@ -14,17 +15,19 @@ class ExtraTimeSpentRow extends PureComponent {
         className={styles.ExtraTimeSpentRow}
       >
         <Col span={6}>{date}</Col>
-        <Col span={6}>Sunday</Col>
+        <Col span={6}>{moment(date).locale('en').format('dddd')}</Col>
         <Col span={9}>
           <Form.Item name={[index]} fieldKey={[index]}>
-            <Input suffix="Hrs" />
+            <Input placeholder="0" suffix="Hrs" />
           </Form.Item>
         </Col>
         <Col span={1} />
         <Col span={2}>
-          <div onClick={() => onRemove(index)} className={styles.removeIcon}>
-            <CloseOutlined />
-          </div>
+          {listLength > 1 && (
+            <div onClick={() => onRemove(index)} className={styles.removeIcon}>
+              <CloseOutlined />
+            </div>
+          )}
         </Col>
       </Row>
     );

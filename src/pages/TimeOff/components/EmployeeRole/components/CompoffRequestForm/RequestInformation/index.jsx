@@ -396,6 +396,7 @@ class RequestInformation extends Component {
                                 date={date}
                                 index={index}
                                 onRemove={this.onDateRemove}
+                                listLength={dateLists.length}
                               />
                             );
                           })}
