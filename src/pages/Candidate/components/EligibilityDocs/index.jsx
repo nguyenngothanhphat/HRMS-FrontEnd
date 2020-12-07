@@ -258,6 +258,7 @@ class EligibilityDocs extends PureComponent {
               <Title />
               {documentListToRender.length > 0 &&
                 documentListToRender.map((item, index) => {
+                  // console.log(index);
                   return (
                     <CollapseFields
                       onValuesChange={this.onValuesChange}

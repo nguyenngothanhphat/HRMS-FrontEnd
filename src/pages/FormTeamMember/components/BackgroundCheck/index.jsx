@@ -298,13 +298,30 @@ class BackgroundCheck extends Component {
         },
       });
     } else {
+      console.log({
+        candidate: _id,
+        fullName,
+        position,
+        employeeType: employeeType._id,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 1,
+      });
       dispatch({
         type: 'candidateInfo/submitPhase1Effect',
         payload: {
           candidate: _id,
           fullName,
           position,
-          employeeType: employeeType._id,
+          employeeType,
           department: department._id,
           title: title._id,
           workLocation: workLocation._id,
@@ -396,7 +413,7 @@ class BackgroundCheck extends Component {
         candidate: _id,
         fullName,
         position,
-        employeeType: employeeType._id,
+        employeeType,
         department: department._id,
         title: title._id,
         workLocation: workLocation._id,
