@@ -134,3 +134,24 @@ export async function searchListRelieving(payload) {
     data: payload,
   });
 }
+
+export async function requestChangeLWD(payload) {
+  return request('/api/offboardingrequest/request-lwd', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function handleRequestChangeLWD(payload) {
+  return request('/api/offboardingrequest/approval-lwd', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function handleWithdraw(payload) {
+  return request('/api/offboardingrequest/withdraw', {
+    method: 'POST',
+    data: payload,
+  });
+}

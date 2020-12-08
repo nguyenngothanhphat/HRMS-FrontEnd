@@ -69,6 +69,12 @@ export default class RejectTable extends PureComponent {
         count: this.getCount('REJECTED'),
         renderTab: this.renderTab('REJECTED'),
       },
+      {
+        value: '5',
+        title: 'Withdraw',
+        count: this.getCount('WITHDRAW'),
+        renderTab: this.renderTab('WITHDRAW'),
+      },
     ];
 
     return (

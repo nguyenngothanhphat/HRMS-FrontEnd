@@ -3,6 +3,22 @@
   padding: 40px;
   margin-top: 20px;
   border-radius: 5px;
+  .viewTop {
+    display: flex;
+    justify-content: space-between;
+  }
+  .textEdit {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: #ffa100;
+  }
+  .textClose {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: #f81d22;
+  }
   &__title {
     margin-bottom: 17px;
     font-weight: bold;
@@ -47,26 +63,6 @@
       }
     }
   }
-  &__button {
-    width: 200px;
-    height: 35px;
-    background: #ffa100;
-    border-radius: 25px;
-    color: #fff;
-    font-weight: bold;
-    margin-top: 10px;
-    &:hover,
-    &:active,
-    &:focus {
-      width: 200px;
-      height: 35px;
-      background: #ffa100;
-      border-radius: 25px;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-    }
-  }
   &__textMessage {
     margin-top: 20px;
     &__bold {
@@ -87,8 +83,6 @@
 
 .viewComment {
   margin-top: 20px;
-  min-height: 170px;
-  padding: 26px 40px;
   background-color: #fff;
   border-radius: 5px;
   .viewTop {
@@ -146,6 +140,50 @@
       color: #ffffff;
       background: #ffa100;
       border: none;
+    }
+  }
+}
+
+.containerButton {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  .contentViewButton {
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .btnApprove {
+      color: #0b8235;
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+    .btnReject {
+      color: #f81d22;
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+    .btnSubmit {
+      width: 100px;
+      height: 35px;
+      background: #ffa100;
+      border-radius: 25px;
+      color: #fff;
+      font-weight: bold;
+      &:disabled {
+        opacity: 0.5;
+      }
+      &:hover,
+      &:active,
+      &:focus {
+        background: #ffa100;
+        border-radius: 25px;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+      }
     }
   }
 }

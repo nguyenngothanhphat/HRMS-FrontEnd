@@ -48,7 +48,7 @@ export class Step3 extends Component {
         id: 1,
         noteStep: approvalStep > 1,
         status: approvalStep > 1 ? 'Success' : 'done',
-        text: 'Manager name',
+        text: 'HR Manager',
       },
     ];
 

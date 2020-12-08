@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Row, Col, Input } from 'antd';
 import moment from 'moment';
-import { formatMessage, connect } from 'umi';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
