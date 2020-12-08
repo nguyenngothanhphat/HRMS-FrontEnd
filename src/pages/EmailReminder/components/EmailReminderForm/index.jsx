@@ -216,7 +216,6 @@ class EmailReminderForm extends PureComponent {
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
         }).then((data) => {
-          console.log('Department reducer: ', data);
           this.setState((prevState) => ({
             conditions: {
               ...prevState.conditions,
@@ -229,7 +228,6 @@ class EmailReminderForm extends PureComponent {
           type: 'employeeSetting/fetchLocationList',
           payload: {},
         }).then((data) => {
-          console.log('Location reducer: ', data);
           this.setState((prevState) => ({
             conditions: {
               ...prevState.conditions,
@@ -242,7 +240,6 @@ class EmailReminderForm extends PureComponent {
           type: 'employeeSetting/fetchTitleList',
           payload: {},
         }).then((data) => {
-          console.log('Title reducer: ', data);
           this.setState((prevState) => ({
             conditions: {
               ...prevState.conditions,
@@ -255,7 +252,6 @@ class EmailReminderForm extends PureComponent {
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
         }).then((data) => {
-          console.log('empType reducer: ', data);
           this.setState((prevState) => ({
             conditions: {
               ...prevState.conditions,
