@@ -5,16 +5,11 @@ import moment from 'moment';
 import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
-  // validator = (rule, value, callback) => {
-  //   try {
-  //     if (value < 10) {
-  //       throw new Error('Something wrong!');
-  //     }
-  //     callback();
-  //   } catch (err) {
-  //     callback(err);
-  //   }
-  // };
+  validator = (rule, value, callback) => {
+    if (value >= 1 && value <= 9) {
+      callback();
+    } else callback('Invalid input');
+  };
 
   render() {
     const {
@@ -35,7 +30,11 @@ class ExtraTimeSpentRow extends PureComponent {
             <Col span={6}>{date}</Col>
             <Col span={6}>{moment(date).locale('en').format('dddd')}</Col>
             <Col span={9}>
-              <Form.Item name={[index]} fieldKey={[index]}>
+              <Form.Item
+                name={[index]}
+                fieldKey={[index]}
+                rules={[{}, { validator: this.validator }]}
+              >
                 <Input onChange={(e) => onChange(e, index)} placeholder="0" suffix="Hrs" />
               </Form.Item>
             </Col>

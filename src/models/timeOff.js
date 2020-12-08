@@ -55,7 +55,7 @@ const timeOff = {
         if (employee !== '') {
           const response = yield call(getLeaveRequestOfEmployee, { employee });
           const { statusCode, data: leaveRequests = [] } = response;
-          console.log('response', response);
+          // console.log('response', response);
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',

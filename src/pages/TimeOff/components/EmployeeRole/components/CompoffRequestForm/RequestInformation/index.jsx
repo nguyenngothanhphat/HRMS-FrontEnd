@@ -21,10 +21,11 @@ class RequestInformation extends Component {
     super(props);
     this.state = {
       showSuccessModal: false,
-      secondNotice: '',
       durationFrom: '',
       durationTo: '',
       dateLists: [],
+      projectManagerId: '',
+      projectManagerName: '',
     };
   }
 
@@ -59,30 +60,10 @@ class RequestInformation extends Component {
   };
 
   // GET TIME OFF TYPE BY ID
-  onEnterProjectNameChange = (id) => {
-    // const { durationFrom } = this.state;
-    // const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    // timeOffTypes.forEach((eachType) => {
-    //   const { _id = '', name = '', shortType = '', type = '' } = eachType;
-    //   if (id === _id) {
-    //     this.autoValueForToDate(type, shortType, durationFrom);
-    //     if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
-    //       this.setSecondNotice(`${shortType}s gets credited each month.`);
-    //     }
-    //
-    //     this.setState({
-    //       selectedShortType: shortType,
-    //       selectedType: type,
-    //       selectedTypeName: name,
-    //     });
-    //   }
-    // });
-  };
-
-  // SHOW BELOW NOTICE (BESIDE DURATION FIELD)
-  setSecondNotice = (value) => {
+  onEnterProjectNameChange = () => {
     this.setState({
-      secondNotice: value,
+      projectManagerId: 'PSI- 1221',
+      projectManagerName: 'Rose Mary Mali',
     });
   };
 
@@ -259,7 +240,14 @@ class RequestInformation extends Component {
 
     const dateFormat = 'MM/DD/YYYY';
 
-    const { showSuccessModal, secondNotice, durationFrom, durationTo, dateLists } = this.state;
+    const {
+      showSuccessModal,
+      durationFrom,
+      durationTo,
+      dateLists,
+      projectManagerId,
+      projectManagerName,
+    } = this.state;
     // const numberOfDays = 0;
 
     // count total days and total hours
@@ -305,18 +293,20 @@ class RequestInformation extends Component {
                   }}
                   placeholder="Enter Project"
                 >
-                  <Option value="A">A</Option>
+                  <Option value="HRMS Projekt">HRMS Projekt</Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={6}>
-              <div className={styles.smallNotice}>
-                <span className={styles.normalText}>
-                  Managed by [PSI- 1221]
-                  <br />
-                  Rose Mary Mali
-                </span>
-              </div>
+              {projectManagerId !== '' && projectManagerName !== '' && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>
+                    Managed by [{projectManagerId}]
+                    <br />
+                    {projectManagerName}
+                  </span>
+                </div>
+              )}
             </Col>
           </Row>
 
@@ -368,13 +358,7 @@ class RequestInformation extends Component {
                 </Col>
               </Row>
             </Col>
-            <Col span={6}>
-              {secondNotice !== '' && (
-                <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>{secondNotice}</span>
-                </div>
-              )}
-            </Col>
+            <Col span={6} />
           </Row>
 
           <Row className={styles.eachRow}>
