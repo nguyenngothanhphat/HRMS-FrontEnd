@@ -55,7 +55,7 @@ class EmailReminderForm extends PureComponent {
       conditionsData: [
         {
           id: 0,
-          unit: '',
+          key: '',
           tobeVerb: '',
           department: '',
         },
@@ -99,10 +99,10 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       receipients: [],
-      conditions: {
+      conditionsTrigger: {
         units: [
           {
-            name: 'Department',
+            name: 'Departmentsss',
             value: 'Department',
           },
           {
@@ -134,6 +134,12 @@ class EmailReminderForm extends PureComponent {
         ],
         departments: [],
       },
+      conditions: [
+        {
+          key: '',
+          value: '',
+        },
+      ],
     };
   }
 
@@ -175,18 +181,21 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeCondition = (index, name, value) => {
-    const { conditionsData, conditions } = this.state;
+    const { conditionsData, conditionsTrigger, conditions } = this.state;
     const { dispatch } = this.props;
 
-    if (name === 'unit') {
+    const newConditionsData = [...conditionsData];
+    const newConditions = [...conditions];
+
+    if (name === 'key') {
       if (value === 'Department') {
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
         }).then((data) => {
           this.setState((prevState) => ({
-            conditions: {
-              ...prevState.conditions,
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
               departments: data,
             },
           }));
@@ -197,8 +206,8 @@ class EmailReminderForm extends PureComponent {
           payload: {},
         }).then((data) => {
           this.setState((prevState) => ({
-            conditions: {
-              ...prevState.conditions,
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
               departments: data,
             },
           }));
@@ -209,8 +218,8 @@ class EmailReminderForm extends PureComponent {
           payload: {},
         }).then((data) => {
           this.setState((prevState) => ({
-            conditions: {
-              ...prevState.conditions,
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
               departments: data,
             },
           }));
@@ -221,49 +230,67 @@ class EmailReminderForm extends PureComponent {
           payload: {},
         }).then((data) => {
           this.setState((prevState) => ({
-            conditions: {
-              ...prevState.conditions,
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
               departments: data,
             },
           }));
         });
       }
+      newConditions[index][name] = value;
+    }
+    if (name === 'value') {
+      newConditions[index][name] = value;
     }
 
-    const newConditionsData = [...conditionsData];
     newConditionsData[index][name] = value;
+
     this.setState({
       conditionsData: newConditionsData,
+      conditions: newConditions,
     });
   };
 
   onRemoveCondition = (index) => {
-    const { conditionsData } = this.state;
+    const { conditionsData, conditions } = this.state;
     const newConditionsData = [...conditionsData];
-    console.log(index);
+    const newConditions = [...conditions];
+
     newConditionsData.splice(index, 1);
+    newConditions.splice(index, 1);
+
     console.log(newConditionsData);
+    console.log(newConditions);
 
     this.setState({
       conditionsData: newConditionsData,
+      conditions: newConditions,
     });
   };
 
   onAddCondition = () => {
-    const { conditionsData } = this.state;
+    const { conditionsData, conditions } = this.state;
     const newConditionsData = [...conditionsData];
-    const newCondition = { id: conditionsData.length, unit: '', tobeVerb: '', department: '' };
+    const newConditions = [...conditions];
+
+    const newCondition = { id: conditionsData.length, key: '', tobeVerb: '', value: '' };
+    const condition = {
+      key: '',
+      value: '',
+    };
 
     newConditionsData.push(newCondition);
+    newConditions.push(condition);
 
     this.setState({
       conditionsData: newConditionsData,
+      conditions: newConditions,
     });
   };
 
   onFinish = (values) => {
     const { triggerEventList } = this.props;
-    const { message = '', conditionsData = [], appliesToData } = this.state;
+    const { message = '', appliesToData, conditions = [] } = this.state;
     let payload = {};
 
     const newValue = { ...values };
@@ -276,7 +303,7 @@ class EmailReminderForm extends PureComponent {
       payload = { ...newValue, sendingDate, appliesToData, message };
     }
     if (appliesToData === 'condition') {
-      payload = { ...newValue, sendingDate, conditionsData, message };
+      payload = { ...newValue, sendingDate, conditions, message };
     }
 
     console.log('Success:', payload);
@@ -286,7 +313,7 @@ class EmailReminderForm extends PureComponent {
     const { Option } = Select;
     const {
       conditionsData,
-      conditions: { units = [], toBeVerbs = [], departments = [] },
+      conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
     return (
       <Col span={24}>
@@ -298,9 +325,9 @@ class EmailReminderForm extends PureComponent {
                 <Col span={9}>
                   <Select
                     size="large"
-                    value={data.unit}
+                    value={data.key}
                     placeholder="Please select a choice"
-                    onChange={(value) => this.onChangeCondition(index, 'unit', value)}
+                    onChange={(value) => this.onChangeCondition(index, 'key', value)}
                   >
                     {units.map((unit) => {
                       return <Option value={unit.value}>{unit.name}</Option>;
@@ -326,9 +353,9 @@ class EmailReminderForm extends PureComponent {
                 <Col span={10}>
                   <Select
                     size="large"
-                    value={data.department}
+                    value={data.value}
                     placeholder="Please select a choice"
-                    onChange={(value) => this.onChangeCondition(index, 'department', value)}
+                    onChange={(value) => this.onChangeCondition(index, 'value', value)}
                   >
                     {departments.map((department, index) => {
                       return (
