@@ -6,6 +6,7 @@ import StatusRequest from '@/components/StatusRequest';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
+import WithDraw from './WithDraw';
 import styles from './index.less';
 
 @connect(
@@ -99,6 +100,7 @@ class ResignationRequest extends Component {
         </div>
       );
     }
+    const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD'];
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -113,6 +115,11 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason />
+              {arrStatus.indexOf(status) > -1 && (
+                <div className={styles.viewWithDraw}>
+                  <WithDraw />
+                </div>
+              )}
             </Col>
             <Col span={8}>
               <WorkFlow approvalStep={approvalStep} nameManager={nameManager} />

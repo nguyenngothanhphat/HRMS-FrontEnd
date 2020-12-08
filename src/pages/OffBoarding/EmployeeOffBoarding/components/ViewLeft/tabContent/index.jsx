@@ -69,17 +69,13 @@ class TabContent extends Component {
   };
 
   render() {
-    const { selectedFilterTab } = this.state;
     const { data = [], countTable = [] } = this.props;
 
     return (
       <div>
         <RejectTable setSelectedTab={this.setSelectedTab} totallist={countTable} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '3' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '4' ? <TableEmployee data={data} /> : ''}
+          <TableEmployee data={data} />
         </div>
       </div>
     );

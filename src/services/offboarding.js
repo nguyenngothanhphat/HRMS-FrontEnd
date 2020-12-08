@@ -148,3 +148,10 @@ export async function handleRequestChangeLWD(payload) {
     data: payload,
   });
 }
+
+export async function handleWithdraw(payload) {
+  return request('/api/offboardingrequest/withdraw', {
+    method: 'POST',
+    data: payload,
+  });
+}

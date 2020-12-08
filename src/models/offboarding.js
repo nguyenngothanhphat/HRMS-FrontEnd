@@ -22,6 +22,7 @@ import {
   getListAssignee,
   requestChangeLWD,
   handleRequestChangeLWD,
+  handleWithdraw,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -343,6 +344,18 @@ const offboarding = {
         dialog(errors);
       }
       return response;
+    },
+    *handleWithdraw({ payload, isNotStatusAccepted = false }, { call, put }) {
+      try {
+        const response = yield call(handleWithdraw, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        if (isNotStatusAccepted) {
+          yield put({ type: 'fetchRequestById', payload });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {
