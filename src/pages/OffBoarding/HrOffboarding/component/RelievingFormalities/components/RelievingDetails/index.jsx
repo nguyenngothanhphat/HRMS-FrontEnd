@@ -27,20 +27,15 @@ class RelievingDetails extends PureComponent {
       type: 'offboarding/fetchRelievingDetailsById',
       payload: {
         id,
-      },
-    });
-    dispatch({
-      type: 'offboarding/getDefaultExitPackage',
-      payload: {
-        company: company._id,
-        type: 'OFF_BOARDING-EXIT_PACKAGE',
+        company,
+        packageType: 'EXIT-PACKAGE',
       },
     });
   };
 
   render() {
     const {
-      offboarding: { relievingDetails = {}, exitPackageDummy = {} },
+      offboarding: { relievingDetails = {} },
       currentUser = {},
     } = this.props;
     return (
@@ -59,7 +54,7 @@ class RelievingDetails extends PureComponent {
               <ResignationOverview relievingDetails={relievingDetails} />
             </Col>
             <Col md={24} lg={14}>
-              <MailExit exitPackageTemplates={exitPackageDummy} />
+              <MailExit />
               <ConductExit employeeDetails={relievingDetails} currentUser={currentUser} />
               <Feedback />
               <ClosePackage />

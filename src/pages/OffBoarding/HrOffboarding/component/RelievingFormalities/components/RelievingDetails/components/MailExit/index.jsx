@@ -32,12 +32,12 @@ const mailInterviewPackage = [
   },
 ];
 
-@connect(() => ({}))
+@connect(({ offboarding: { relievingDetails: { exitPackage = {} } } }) => ({ exitPackage }))
 class MailExit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSend: false,
+      isSent: false,
       template: {},
       isOpenModalEdit: false,
       exitPackageTemplates: [],
@@ -46,9 +46,9 @@ class MailExit extends Component {
   }
 
   componentDidMount() {
-    const { exitPackageTemplates } = this.props;
+    const { exitPackage } = this.props;
     this.setState({
-      exitPackageTemplates,
+      exitPackageTemplates: exitPackage.waitList,
     });
   }
 
@@ -83,7 +83,7 @@ class MailExit extends Component {
 
   sendMailPackage = () => {
     this.setState({
-      isSend: true,
+      isSent: true,
     });
   };
 
@@ -127,7 +127,7 @@ class MailExit extends Component {
   };
 
   render() {
-    const { isSend = false, exitPackageTemplates } = this.state;
+    const { isSent = false, exitPackageTemplates } = this.state;
     return (
       <div className={styles.mailExit}>
         <Card
@@ -135,7 +135,7 @@ class MailExit extends Component {
           title={formatMessage({ id: 'pages.relieving.mailExit' })}
           extra={this.renderExtraContent()}
         >
-          {isSend ? (
+          {isSent ? (
             <Row gutter={[10, 20]}>
               {mailInterviewPackage.map((template, index) => {
                 const { attachment } = template;
@@ -157,17 +157,17 @@ class MailExit extends Component {
             </Row>
           ) : (
             <Row gutter={[10, 20]}>
-              {exitPackageTemplates.map((template, index) => {
-                const { title } = template;
+              {exitPackageTemplates?.map((template, index) => {
+                const { packageName } = template;
                 return (
-                  <Col span={this.renderSpanColumn(title)} key={`${index + 1}`}>
+                  <Col span={this.renderSpanColumn(packageName)} key={`${index + 1}`}>
                     <div className={styles.template}>
                       <div
                         className={styles.template__content}
                         onClick={() => this.handleClickEdit(template, 'View')}
                       >
                         <img src={templateIcon} alt="template-icon" />
-                        <span>{title}</span>
+                        <span>{packageName}</span>
                       </div>
                       <div className={styles.template__action}>
                         <img

@@ -80,29 +80,22 @@ export async function reviewRequest(payload) {
   });
 }
 
-export async function getDefaultTemplates(payload) {
-  return request('/api/template/get-default', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function getCustomTemplates(payload) {
-  return request('/api/template/get-custom', {
+export async function getOffBoardingPackages(payload) {
+  return request('/api/templaterelieving/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/template/get-by-id', {
+  return request('/api/templaterelieving/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/template/add', {
+  return request('/api/templaterelieving/add', {
     method: 'POST',
     data: payload,
   });

@@ -16,7 +16,7 @@ import styles from './index.less';
       customExitPackage = [],
       customClosingPackage = [],
     } = {},
-    user: { currentuser: { company: { _id = '' } = {} } = {} } = {},
+    user: { currentUser: { company: { _id = '' } = {} } = {} } = {},
   }) => ({
     _id,
     defaultExitPackage,
@@ -37,24 +37,35 @@ class RelievingFormalities extends Component {
   componentDidMount = () => {
     const { dispatch, _id } = this.props;
     dispatch({
-      type: 'offboarding/getDefaulClosingPackage',
+      type: 'offboarding/getOffBoardingPackages',
       payload: {
         company: _id,
-        type: 'OFF_BOARDING-CLOSING_PACKAGE',
+        packageType: 'CLOSING-PACKAGE',
+        templateType: 'DEFAULT',
       },
     });
     dispatch({
-      type: 'offboarding/getCustomExitPackage',
+      type: 'offboarding/getOffBoardingPackages',
       payload: {
         company: _id,
-        type: 'OFF_BOARDING-EXIT_PACKAGE',
+        packageType: 'EXIT-PACKAGE',
+        templateType: 'DEFAULT',
       },
     });
     dispatch({
-      type: 'offboarding/getCustomClosingPackage',
+      type: 'offboarding/getOffBoardingPackages',
       payload: {
         company: _id,
-        type: 'OFF_BOARDING-CLOSING_PACKAGE',
+        packageType: 'EXIT-PACKAGE',
+        templateType: 'CUSTOM',
+      },
+    });
+    dispatch({
+      type: 'offboarding/getOffBoardingPackages',
+      payload: {
+        company: _id,
+        packageType: 'CLOSING-PACKAGE',
+        templateType: 'CUSTOM',
       },
     });
   };
@@ -96,7 +107,7 @@ class RelievingFormalities extends Component {
         });
         break;
       default:
-        return null;
+        break;
     }
   };
 

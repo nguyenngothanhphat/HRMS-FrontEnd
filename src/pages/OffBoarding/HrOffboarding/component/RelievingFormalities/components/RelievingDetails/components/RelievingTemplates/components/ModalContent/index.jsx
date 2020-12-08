@@ -56,12 +56,10 @@ class ModalContent extends Component {
           onFinish={(values) => this.handleSaveTemplate(values)}
           id="relievingTemplates"
         >
-          {settings?.map((item) => {
+          {settings?.map((item, index) => {
             return (
               <Form.Item
-                label={item.description}
-                name={item.key}
-                initialValue={item.value}
+                label={`Question ${index + 1}`}
                 rules={[
                   {
                     required: true,
@@ -69,7 +67,7 @@ class ModalContent extends Component {
                   },
                 ]}
               >
-                <TextArea />
+                <TextArea defaultValue={item.question} />
               </Form.Item>
             );
           })}

@@ -7,8 +7,6 @@ import {
   getapprovalflowList,
   getRequestById,
   getMeetingTime,
-  getDefaultTemplates,
-  getCustomTemplates,
   getTemplateById,
   addCustomTemplate,
   getListRelieving,
@@ -18,7 +16,8 @@ import {
   getListProjectByEmployee,
   complete1On1,
   reviewRequest,
-  sendMailExitPackage,
+  // sendMailExitPackage,
+  getOffBoardingPackages,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -46,293 +45,6 @@ const offboarding = {
     inQueuesList: [],
     closeRecordsList: [],
     itemCreateScheduleInterview: {},
-    exitPackageDummy: [
-      {
-        attachment: {
-          category: 'attachments',
-          createdAt: '2020-11-25T10:09:32.117Z',
-          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
-          id: '5fbe2d5c91a5331e2ca60565',
-          name: 'Exit Interview.pdf',
-          size: 23084,
-          status: 0,
-          type: 'application/pdf',
-          updatedAt: '2020-11-25T10:09:32.117Z',
-          url:
-            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
-          user: '5f57544e899f4743e8fdb3f0',
-        },
-        createdAt: '2020-11-25T10:09:32.129Z',
-        default: true,
-        settings: [
-          {
-            description: 'Question 1',
-            isEdited: false,
-            key: 'q1',
-            value:
-              'Please describe your general feelings about working here. If possible, please tell us why you are leaving.',
-          },
-          {
-            description: 'Question 2',
-            isEdited: false,
-            key: 'q2',
-            value: 'What did you enjoy most about working here?',
-          },
-          {
-            description: 'Question 3',
-            isEdited: false,
-            key: 'q3',
-            value: 'If you could change three things, what would they be?',
-          },
-          {
-            description: 'Question 4',
-            isEdited: false,
-            key: 'q4',
-            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
-          },
-          {
-            description: 'Question 5',
-            isEdited: false,
-            key: 'q5',
-            value: 'How well do you believe your work was recognized and appreciated?',
-          },
-          {
-            description: 'Question 6',
-            isEdited: false,
-            key: 'q6',
-            value: 'Do you feel you were given adequate training and assistance?',
-          },
-          {
-            description: 'Question 7',
-            isEdited: false,
-            key: 'q7',
-            value: 'Are there things you wish you had known earlier?',
-          },
-          {
-            description: 'Question 8',
-            isEdited: false,
-            key: 'q8',
-            value: 'Do you think your work was aligned with your personal goals?',
-          },
-          {
-            description: 'Question 9',
-            isEdited: false,
-            key: 'q9',
-            value: 'What can we do to make this company a better place to work?',
-          },
-          {
-            description: 'Question 10',
-            isEdited: false,
-            key: 'q10',
-            value:
-              'What kind of tools, resources, or training would have helped you perform better?',
-          },
-          {
-            description: 'Question 11',
-            isEdited: false,
-            key: 'q11',
-            value:
-              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
-          },
-        ],
-        thumbnail:
-          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
-        title: 'Exit Interview',
-        type: 'OFF_BOARDING-EXIT_PACKAGE',
-        updatedAt: '2020-11-25T10:09:32.129Z',
-        _id: '5fbe2d5c91a5331e2ca60566',
-      },
-      {
-        attachment: {
-          category: 'attachments',
-          createdAt: '2020-11-25T10:09:32.117Z',
-          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
-          id: '5fbe2d5c91a5331e2ca60565',
-          name: 'Exit Interview.pdf',
-          size: 23084,
-          status: 0,
-          type: 'application/pdf',
-          updatedAt: '2020-11-25T10:09:32.117Z',
-          url:
-            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
-          user: '5f57544e899f4743e8fdb3f0',
-        },
-        createdAt: '2020-11-25T10:09:32.129Z',
-        default: true,
-        settings: [
-          {
-            description: 'Question 1',
-            isEdited: false,
-            key: 'q1',
-            value:
-              'NOC form Please describe your general feelings about working here. If possible, please tell us why you are leaving.',
-          },
-          {
-            description: 'Question 2',
-            isEdited: false,
-            key: 'q2',
-            value: 'What did you enjoy most about working here?',
-          },
-          {
-            description: 'Question 3',
-            isEdited: false,
-            key: 'q3',
-            value: 'If you could change three things, what would they be?',
-          },
-          {
-            description: 'Question 4',
-            isEdited: false,
-            key: 'q4',
-            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
-          },
-          {
-            description: 'Question 5',
-            isEdited: false,
-            key: 'q5',
-            value: 'How well do you believe your work was recognized and appreciated?',
-          },
-          {
-            description: 'Question 6',
-            isEdited: false,
-            key: 'q6',
-            value: 'Do you feel you were given adequate training and assistance?',
-          },
-          {
-            description: 'Question 7',
-            isEdited: false,
-            key: 'q7',
-            value: 'Are there things you wish you had known earlier?',
-          },
-          {
-            description: 'Question 8',
-            isEdited: false,
-            key: 'q8',
-            value: 'Do you think your work was aligned with your personal goals?',
-          },
-          {
-            description: 'Question 9',
-            isEdited: false,
-            key: 'q9',
-            value: 'What can we do to make this company a better place to work?',
-          },
-          {
-            description: 'Question 10',
-            isEdited: false,
-            key: 'q10',
-            value:
-              'What kind of tools, resources, or training would have helped you perform better?',
-          },
-          {
-            description: 'Question 11',
-            isEdited: false,
-            key: 'q11',
-            value:
-              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
-          },
-        ],
-        thumbnail:
-          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
-        title: 'NOC form',
-        type: 'OFF_BOARDING-EXIT_PACKAGE',
-        updatedAt: '2020-11-25T10:09:32.129Z',
-        _id: '5fbe2d5c91a5331e2ca60567',
-      },
-      {
-        attachment: {
-          category: 'attachments',
-          createdAt: '2020-11-25T10:09:32.117Z',
-          fileName: '1482c4c8-257a-4f3f-8050-e1f0e4d7cf62.pdf',
-          id: '5fbe2d5c91a5331e2ca60565',
-          name: 'Exit Interview.pdf',
-          size: 23084,
-          status: 0,
-          type: 'application/pdf',
-          updatedAt: '2020-11-25T10:09:32.117Z',
-          url:
-            'http://api-stghrms.paxanimi.ai/api/attachments/5fbe2d5c91a5331e2ca60565/Exit%20Interview.pdf',
-          user: '5f57544e899f4743e8fdb3f0',
-        },
-        createdAt: '2020-11-25T10:09:32.129Z',
-        default: true,
-        settings: [
-          {
-            description: 'Question 1',
-            isEdited: false,
-            key: 'q1',
-            value:
-              'Checklist please describe your general feelings about working here. If possible, please tell us why you are leaving.',
-          },
-          {
-            description: 'Question 2',
-            isEdited: false,
-            key: 'q2',
-            value: 'What did you enjoy most about working here?',
-          },
-          {
-            description: 'Question 3',
-            isEdited: false,
-            key: 'q3',
-            value: 'If you could change three things, what would they be?',
-          },
-          {
-            description: 'Question 4',
-            isEdited: false,
-            key: 'q4',
-            value: 'How do you feel you were treated by your supervisor and your coworkers? ',
-          },
-          {
-            description: 'Question 5',
-            isEdited: false,
-            key: 'q5',
-            value: 'How well do you believe your work was recognized and appreciated?',
-          },
-          {
-            description: 'Question 6',
-            isEdited: false,
-            key: 'q6',
-            value: 'Do you feel you were given adequate training and assistance?',
-          },
-          {
-            description: 'Question 7',
-            isEdited: false,
-            key: 'q7',
-            value: 'Are there things you wish you had known earlier?',
-          },
-          {
-            description: 'Question 8',
-            isEdited: false,
-            key: 'q8',
-            value: 'Do you think your work was aligned with your personal goals?',
-          },
-          {
-            description: 'Question 9',
-            isEdited: false,
-            key: 'q9',
-            value: 'What can we do to make this company a better place to work?',
-          },
-          {
-            description: 'Question 10',
-            isEdited: false,
-            key: 'q10',
-            value:
-              'What kind of tools, resources, or training would have helped you perform better?',
-          },
-          {
-            description: 'Question 11',
-            isEdited: false,
-            key: 'q11',
-            value:
-              'Would you recommend our company to friends of yours who’re looking for a job? Why or why not? ',
-          },
-        ],
-        thumbnail:
-          'http://api-stghrms.paxanimi.ai/api/attachments/5fa37887edc16635fad0051c/NoPath%20-%20Copy%20(12)@3x.png',
-        title: 'Off boarding checklist',
-        type: 'OFF_BOARDING-EXIT_PACKAGE',
-        updatedAt: '2020-11-25T10:09:32.129Z',
-        _id: '5fbe2d5c91a5331e2ca60568',
-      },
-    ],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -471,6 +183,14 @@ const offboarding = {
     // Relieving Formalities
     *fetchRelievingDetailsById({ payload }, { call, put }) {
       try {
+        const templateRes = yield call(getOffBoardingPackages, {
+          offBoardingId: payload.id,
+          company: payload.company._id,
+          templateType: 'DEFAULT',
+          packageType: payload.packageType,
+        });
+        const { statusCode: templateStat } = templateRes;
+        if (templateStat !== 200) throw templateRes;
         const response = yield call(getRequestById, payload);
         const { statusCode, data: relievingDetails = {} } = response;
         if (statusCode !== 200) throw response;
@@ -479,44 +199,38 @@ const offboarding = {
         dialog(errors);
       }
     },
-    *getDefaultExitPackage({ payload }, { call, put }) {
+    *getOffBoardingPackages({ payload }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplates, payload);
-        const { statusCode, data = [] } = response;
+        const response = yield call(getOffBoardingPackages, payload);
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { defaultExitPackage: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getDefaultClosingPackage({ payload }, { call, put }) {
-      try {
-        const response = yield call(getDefaultTemplates, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { defaultClosingPackage: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCustomExitPackage({ payload }, { call, put }) {
-      try {
-        const response = yield call(getCustomTemplates, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { customExitPackage: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCustomClosingPackage({ payload }, { call, put }) {
-      try {
-        const response = yield call(getCustomTemplates, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { customClosingPackage: data } });
-      } catch (errors) {
-        dialog(errors);
+        switch (payload.packageType) {
+          case 'EXIT-PACKAGE':
+            if (payload.templateType === 'DEFAULT') {
+              yield put({ type: 'save', payload: { defaultExitPackage: data } });
+            } else {
+              yield put({ type: 'save', payload: { customExitPackage: data } });
+            }
+            break;
+          case 'CLOSING-PACKAGE':
+            if (payload.templateType === 'DEFAULT') {
+              yield put({ type: 'save', payload: { defaultClosingPackage: data } });
+            } else {
+              yield put({ type: 'save', payload: { customClosingPackage: data } });
+            }
+            break;
+          // case 'EXIT-INTERVIEW-FEEDBACKS':
+          //   if (payload.templateType === 'DEFAULT') {
+          //     yield put({ type: 'save', payload: { defaultClosingPackage: data } });
+          //   } else {
+          //     yield put({ type: 'save', payload: { customClosingPackage: data } });
+          //   }
+          //   break;
+          default:
+            break;
+        }
+      } catch (error) {
+        dialog(error);
       }
     },
     *fetchTemplateById({ payload = {} }, { call, put }) {
@@ -548,11 +262,9 @@ const offboarding = {
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        console.log(data.result);
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
             yield put({ type: 'save', payload: { closeRecordsList: data.result } });
-            console.log('ye');
             break;
           case 'IN-QUEUES':
             yield put({ type: 'save', payload: { inQueuesList: data.result } });

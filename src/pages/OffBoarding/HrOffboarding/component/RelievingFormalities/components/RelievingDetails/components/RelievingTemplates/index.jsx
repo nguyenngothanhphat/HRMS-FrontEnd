@@ -23,10 +23,10 @@ class RelievingTemplates extends Component {
   };
 
   renderHeaderModal = (template) => {
-    const { title = '' } = template;
+    const { packageName = '' } = template;
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>Questions for {title}</p>
+        <p className={styles.header__text}>Questions for {packageName}</p>
       </div>
     );
   };

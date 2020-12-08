@@ -23,7 +23,7 @@ class RelievingTemplates extends PureComponent {
     }
     return (
       <div className={styles.templateList} style={{ paddingTop: '30px' }}>
-        <p className={styles.title}>
+        <div className={styles.title}>
           <Row gutter={24} align="middle">
             <Col span={2}>
               {' '}
@@ -31,7 +31,7 @@ class RelievingTemplates extends PureComponent {
             </Col>
             <Col span={22}>Exit interview package (System Defaults)</Col>
           </Row>
-        </p>
+        </div>
         <div className={styles.list}>
           <Row gutter={24} justify="center">
             <Col span={22} offset={2}>
@@ -41,11 +41,11 @@ class RelievingTemplates extends PureComponent {
                     <Row justify="space-between">
                       <Col span={18}>
                         <a
-                          href={template.attachment.url}
-                          target="_blank"
+                          // href={template.attachment.url}
+                          // target="_blank"
                           className={styles.templateName}
                         >
-                          {template.title}
+                          {template.name}
                         </a>
                       </Col>
                       <Col className={styles.icons} align="right" span={6}>
@@ -76,7 +76,7 @@ class RelievingTemplates extends PureComponent {
       <>
         <hr />
         <div className={styles.templateList}>
-          <p className={styles.title}>
+          <div className={styles.title}>
             <Row gutter={24} align="middle">
               <Col span={2}>
                 {' '}
@@ -84,7 +84,7 @@ class RelievingTemplates extends PureComponent {
               </Col>
               <Col span={22}>Closing package (System Defaults)</Col>
             </Row>
-          </p>
+          </div>
           <div className={styles.list}>
             <Row gutter={24} justify="center">
               <Col span={22} offset={2}>
@@ -94,11 +94,11 @@ class RelievingTemplates extends PureComponent {
                       <Row justify="space-between">
                         <Col span={18}>
                           <a
-                            href={template.attachment.url}
-                            target="_blank"
+                            // href={template.attachment.url}
+                            // target="_blank"
                             className={styles.templateName}
                           >
-                            {template.title}
+                            {template.name}
                           </a>
                         </Col>
                         <Col className={styles.icons} align="right" span={6}>
