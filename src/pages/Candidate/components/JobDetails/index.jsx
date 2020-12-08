@@ -167,22 +167,22 @@ class JobDetails extends PureComponent {
     const HRField = [
       {
         title: 'workLocation',
-        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
+        name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
         id: 1,
       },
       {
         title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
+        name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
         id: 2,
       },
       {
         title: 'title',
-        name: 'Job Title',
+        name: 'Job Title*',
         id: 3,
       },
       {
         title: 'reportingManager',
-        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
+        name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
         id: 4,
       },
     ];
