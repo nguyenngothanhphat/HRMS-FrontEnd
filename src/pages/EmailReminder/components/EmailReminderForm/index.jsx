@@ -25,7 +25,6 @@ const hashValues = [
 
 @connect(
   ({
-    loading,
     employeeSetting: {
       triggerEventList = [],
       departmentList = [],
@@ -42,9 +41,7 @@ const hashValues = [
     titleList,
     employeeTypeList,
     departmentListByCompanyId,
-    /*currentUser,*/
     _id,
-    loadingFetchLeaveRequests: loading.effects['employeeSetting/fetchDepartmentListByCompanyId'],
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -102,7 +99,7 @@ class EmailReminderForm extends PureComponent {
       conditionsTrigger: {
         units: [
           {
-            name: 'Departmentsss',
+            name: 'Department',
             value: 'Department',
           },
           {
@@ -153,7 +150,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeApply = (value) => {
-    const { dispatch, _id, departmentListByCompanyId, loadingFetchLeaveRequests } = this.props;
+    const { dispatch, _id, departmentListByCompanyId } = this.props;
     const { receipients } = this.state;
 
     this.setState({
@@ -258,9 +255,6 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData.splice(index, 1);
     newConditions.splice(index, 1);
-
-    console.log(newConditionsData);
-    console.log(newConditions);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -392,15 +386,6 @@ class EmailReminderForm extends PureComponent {
 
   onChangeAnyPerson = (value) => {
     console.log('Department list by company: ');
-    // const { receipients } = this.state;
-    // const { dispatch } = this.props;
-
-    // dispatch({
-    //   type: 'employeeSetting/fetchDepartmentListByCompanyId',
-    //   payload: {},
-    // }).then(() => {
-    //   console.log('Department list by company: ', departmentListByCompanyId);
-    // });
   };
 
   _renderApplyToOptions = () => {
@@ -415,7 +400,6 @@ class EmailReminderForm extends PureComponent {
               <Select
                 size="large"
                 placeholder="Please select a choice"
-                // onChange={(value) => this.onChangeAnyPerson(value)}
               >
                 {receipients.map((option, index) => {
                   return (
@@ -469,14 +453,12 @@ class EmailReminderForm extends PureComponent {
     const { Option } = Select;
     const { triggerEventList } = this.props;
     const {
-      // formData,
       frequencyItem,
       sendingDate,
       applyTo,
       sendToWorker,
       message,
     } = this.state;
-    // const { message } = formData;
     return (
       <Form onFinish={this.onFinish}>
         <Row gutter={[36, 24]}>
