@@ -3,6 +3,7 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import LeaveTimeRow from './LeaveTimeRow';
 import styles from './index.less';
 
 const { Option, OptGroup } = Select;
@@ -656,6 +657,29 @@ class RequestInformation extends Component {
             </Col>
           </Row>
 
+          <Row className={styles.eachRow}>
+            <Col className={styles.label} span={6}>
+              <span>Leave time</span>
+            </Col>
+            <Col span={12}>
+              <div className={styles.extraTimeSpent}>
+                <Row className={styles.header}>
+                  <Col span={7}>Date</Col>
+                  <Col span={7}>Day</Col>
+                  <Col span={10}>Count/Q.ty</Col>
+                </Row>
+                {(durationFrom === '' || durationTo === '') && (
+                  <div className={styles.content}>
+                    <div className={styles.emptyContent}>
+                      <span>Selected duration will show as days</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Col>
+            <Col span={6} />
+          </Row>
+
           {durationFrom !== '' &&
             durationTo !== '' &&
             selectedType !== 'C' && // Type C: Special Leaves
@@ -668,80 +692,16 @@ class RequestInformation extends Component {
                     </Col>
                     <Col span={12} className={styles.leaveDaysContainer}>
                       {dateLists.map((date, index) => {
-                        // NO RENDER SATURDAY AND SUNDAY
-                        if (moment(date).weekday() !== 6 && moment(date).weekday() !== 0)
-                          return (
-                            <>
-                              <div key={`${index + 1}`} className={styles.eachDay}>
-                                <div className={styles.day}>
-                                  <span>
-                                    {moment(date).locale('en').format('dddd')},{' '}
-                                    {moment(date).locale('en').format('MM/DD/YYYY')}
-                                  </span>
-                                </div>
-                                <div className={styles.daySelectionBox}>
-                                  <Form.Item
-                                    // name={`leaveDaysDetail${index}`}
-                                    name={[index]}
-                                    fieldKey={[index]}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: 'Please select!',
-                                      },
-                                    ]}
-                                  >
-                                    <Select placeholder="">
-                                      <OptGroup label="Count/Q.ty">
-                                        <Option value="WHOLE-DAY">
-                                          <span style={{ fontSize: 13 }}>Whole day</span>
-                                        </Option>
-                                        <Option value="MORNING">
-                                          <span style={{ fontSize: 13 }}>Morning</span>
-                                        </Option>
-                                        <Option value="AFTERNOON">
-                                          <span style={{ fontSize: 13 }}>Afternoon</span>
-                                        </Option>
-                                      </OptGroup>
-                                      <OptGroup label="Other">
-                                        <Option value="WORK">
-                                          <span
-                                            style={{
-                                              fontSize: 13,
-                                              color: '#00C598',
-                                              fontWeight: 'bold',
-                                            }}
-                                          >
-                                            Go to work
-                                          </span>
-                                        </Option>
-                                      </OptGroup>
-                                    </Select>
-                                  </Form.Item>
-                                </div>
-                              </div>
-                              {/* DATE IS FRIDAY AND IS NOT END OF LIST => SHOW HR LINE */}
-                              {moment(date).weekday() === 5 &&
-                                moment(date).add(3, 'day') < moment(durationTo) && (
-                                  <div className={styles.hr} />
-                                )}
-                            </>
-                          );
-                        return null;
+                        return (
+                          <LeaveTimeRow
+                            eachDate={date}
+                            index={index}
+                            onRemove={this.onDateRemove}
+                            listLength={dateLists.length}
+                            onChange={this.onDataChange}
+                          />
+                        );
                       })}
-                      {moment(durationFrom).weekday() === 6 &&
-                        (this.compareTwoDates(
-                          moment(durationFrom).add(1, 'day').format('DD/MM/YYYY'),
-                          moment(durationTo).format('DD/MM/YYYY'),
-                        ) === 0 ||
-                          this.compareTwoDates(
-                            moment(durationFrom).format('DD/MM/YYYY'),
-                            moment(durationTo).format('DD/MM/YYYY'),
-                          ) === 0) && (
-                          <div className={styles.eachDay}>
-                            <span>Please select valid dates!</span>
-                          </div>
-                        )}
                     </Col>
                     <Col span={6}>
                       {/* <div className={styles.smallNotice}>
