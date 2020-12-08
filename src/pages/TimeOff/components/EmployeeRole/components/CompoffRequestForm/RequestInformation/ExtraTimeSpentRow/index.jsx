@@ -5,6 +5,17 @@ import moment from 'moment';
 import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
+  // validator = (rule, value, callback) => {
+  //   try {
+  //     if (value < 10) {
+  //       throw new Error('Something wrong!');
+  //     }
+  //     callback();
+  //   } catch (err) {
+  //     callback(err);
+  //   }
+  // };
+
   render() {
     const {
       eachDate = {},

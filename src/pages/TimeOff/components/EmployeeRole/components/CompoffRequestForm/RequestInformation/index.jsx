@@ -398,9 +398,11 @@ class RequestInformation extends Component {
               </div>
             </Col>
             <Col span={6}>
-              <div className={styles.smallNotice}>
-                <span className={styles.normalText}>Allowed input: 1- 9 hrs/day</span>
-              </div>
+              {durationFrom !== '' && durationTo !== '' && (
+                <div className={styles.smallNotice}>
+                  <span className={styles.normalText}>Allowed input: 1- 9 hrs/day</span>
+                </div>
+              )}
             </Col>
           </Row>
 
