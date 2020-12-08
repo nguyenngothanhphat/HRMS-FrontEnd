@@ -145,6 +145,9 @@ class RequestInformation extends Component {
     if (durationTo !== '') {
       const list = this.getDateLists(value, durationTo);
       this.setDateList(list);
+      this.formRef.current.setFieldsValue({
+        extraTimeLists: [],
+      });
     }
   };
 
@@ -162,6 +165,9 @@ class RequestInformation extends Component {
     if (durationFrom !== '') {
       const list = this.getDateLists(durationFrom, value);
       this.setDateList(list);
+      this.formRef.current.setFieldsValue({
+        extraTimeLists: [],
+      });
     }
   };
 
@@ -178,18 +184,13 @@ class RequestInformation extends Component {
 
     const now = start;
     const dates = [];
-    const { dateLists } = this.state;
-    if (dateLists.length === 0) {
-      while (now.isBefore(end) || now.isSame(end)) {
-        const obj = {
-          date: now.format('YYYY-MM-DD'),
-          value: 0,
-        };
-        dates.push(obj);
-        now.add(1, 'days');
-      }
-    } else {
-      // something here
+    while (now.isBefore(end) || now.isSame(end)) {
+      const obj = {
+        date: now.format('YYYY-MM-DD'),
+        value: null,
+      };
+      dates.push(obj);
+      now.add(1, 'days');
     }
     return dates;
   };
@@ -221,20 +222,13 @@ class RequestInformation extends Component {
     return list;
   };
 
-  // COMPARE TWO DAYS
-  compareTwoDates = (from, to) => {
-    // moment object
-    if (from < to) return -1;
-    if (from > to) return 1;
-    return 0;
-  };
-
   // ON DATE onRemove
   onDateRemove = (indexToRemove) => {
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
     const listValue = modifiedList.map((data) => data.value);
+
     this.setDateList(modifiedList);
     this.formRef.current.setFieldsValue({
       extraTimeLists: listValue,
@@ -248,7 +242,6 @@ class RequestInformation extends Component {
     const originalList = JSON.parse(JSON.stringify(dateLists));
     originalList[indexToChange].value = parseFloat(value);
 
-    console.log('modifiedList', originalList);
     this.setState({
       dateLists: originalList,
     });
@@ -269,7 +262,11 @@ class RequestInformation extends Component {
     const { showSuccessModal, secondNotice, durationFrom, durationTo, dateLists } = this.state;
     // const numberOfDays = 0;
 
-    console.log('dateLists', dateLists);
+    // count total days and total hours
+    const listValue = dateLists.map((data) => data.value);
+    const totalHours = listValue.reduce((a, b) => a + b, 0);
+    const totalDays = dateLists.length;
+
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
@@ -410,7 +407,7 @@ class RequestInformation extends Component {
           {durationFrom !== '' && durationTo !== '' && (
             <Row className={styles.eachRow}>
               <Col className={styles.label} span={6} />
-              <Col span={12}>
+              <Col span={18}>
                 <div className={styles.extraTimeSpent}>
                   <div className={styles.content}>
                     <Form.List name="extraTimeLists">
@@ -424,6 +421,8 @@ class RequestInformation extends Component {
                                 onRemove={this.onDateRemove}
                                 listLength={dateLists.length}
                                 onChange={this.onDataChange}
+                                totalDays={totalDays}
+                                totalHours={totalHours}
                               />
                             );
                           })}
@@ -431,11 +430,6 @@ class RequestInformation extends Component {
                       )}
                     </Form.List>
                   </div>
-                </div>
-              </Col>
-              <Col span={6}>
-                <div className={styles.smallNotice}>
-                  <span className={styles.normalText}>Total extra time spent</span>
                 </div>
               </Col>
             </Row>
