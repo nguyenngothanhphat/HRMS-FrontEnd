@@ -21,11 +21,11 @@ class TableContainer extends PureComponent {
     });
   };
 
-  getDataTable = () => {
+  getDataTable = (filterData) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'offBoardingManagement/fetchListOffBoarding',
-      payload: {},
+      payload: filterData,
     });
   };
 

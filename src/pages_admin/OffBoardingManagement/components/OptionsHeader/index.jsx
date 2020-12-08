@@ -6,9 +6,15 @@ const { Option } = Select;
 export default class OptionsHeader extends PureComponent {
   onFinish = (values) => {
     // eslint-disable-next-line no-console
-    console.log('values', values);
+    // console.log('values', values);
+    const { status = [], fromDate = '', toDate = '' } = values;
+    const filterData = {
+      status,
+      fromDate,
+      toDate,
+    };
     const { reloadData = () => {} } = this.props;
-    reloadData();
+    reloadData(filterData);
   };
 
   render() {
@@ -33,13 +39,13 @@ export default class OptionsHeader extends PureComponent {
                 <div>
                   <Row gutter={['20', '20']}>
                     <Col xs={12}>
-                      <Form.Item name="durationFrom">
+                      <Form.Item name="fromDate">
                         <DatePicker placeholder="From Date" format={dateFormat} />
                       </Form.Item>
                     </Col>
                     <Col xs={12}>
                       <span />
-                      <Form.Item name="durationTo">
+                      <Form.Item name="toDate">
                         <DatePicker placeholder="To Date" format={dateFormat} />
                       </Form.Item>
                     </Col>
@@ -55,13 +61,13 @@ export default class OptionsHeader extends PureComponent {
             </Row>
             <Row>
               <Col className={styles.statusFilter}>
-                <Form.Item name="status">
-                  <span className={styles.itemLabel}>Status</span>
+                <span className={styles.itemLabel}>Status</span>
+                <Form.Item name="status" className={styles.filterItem}>
                   <Checkbox.Group>
-                    <Checkbox value="Approved">Approved</Checkbox>
-                    <Checkbox value="Cancel">Cancel</Checkbox>
-                    <Checkbox value="Rejected">Rejected</Checkbox>
-                    <Checkbox value="Waiting for approve">Waiting for approve</Checkbox>
+                    <Checkbox value="ACCEPTED">Approved</Checkbox>
+                    <Checkbox value="DELETED">Cancel</Checkbox>
+                    <Checkbox value="REJECTED">Rejected</Checkbox>
+                    <Checkbox value="ON-HOLD">Waiting for approve</Checkbox>
                   </Checkbox.Group>
                 </Form.Item>
               </Col>
@@ -72,3 +78,13 @@ export default class OptionsHeader extends PureComponent {
     );
   }
 }
+
+// inProgress: 'IN-PROGRESS',
+// draft: 'DRAFT',
+// completed: 'COMPLETED',
+// deleted: 'DELETED',
+// done: 'DONE',
+// onHold: 'ON-HOLD',
+// accepted: 'ACCEPTED',
+// rejected: 'REJECTED',
+// },
