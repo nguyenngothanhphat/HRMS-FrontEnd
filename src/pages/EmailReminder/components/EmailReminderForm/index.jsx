@@ -55,24 +55,6 @@ class EmailReminderForm extends PureComponent {
       ],
       appliesToData: '',
       message: '',
-      // triggerEventItem: [
-      //   {
-      //     name: 'Person starts work',
-      //     value: 'Person starts work',
-      //   },
-      //   {
-      //     name: 'Person leaves work',
-      //     value: 'Person leaves work',
-      //   },
-      //   {
-      //     name: 'Person’s work anniversary',
-      //     value: 'Person’s work anniversary',
-      //   },
-      //   {
-      //     name: 'Annual event',
-      //     value: 'Annual event',
-      //   },
-      // ],
       frequencyItem: [
         {
           name: 'Premium only',
