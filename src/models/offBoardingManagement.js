@@ -7,9 +7,9 @@ const offBoardingManagement = {
     listOffBoarding: [],
   },
   effects: {
-    *fetchListOffBoarding({ data = {} }, { call, put }) {
+    *fetchListOffBoarding({ payload }, { call, put }) {
       try {
-        const response = yield call(getListOffBoarding, { data });
+        const response = yield call(getListOffBoarding, payload);
         const { statusCode, data: listOffBoarding = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

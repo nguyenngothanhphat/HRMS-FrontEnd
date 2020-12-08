@@ -17,6 +17,7 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'offBoardingManagement/fetchListOffBoarding',
+      payload: {},
     });
   };
 
@@ -24,6 +25,7 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'offBoardingManagement/fetchListOffBoarding',
+      payload: {},
     });
   };
 
