@@ -1,12 +1,13 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
+import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheck';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -42,8 +43,9 @@ const PROCESS_STATUS = {
       displayComponent = {},
       data: { processStatus = '' } = {},
       tempData: {
-        valueToFinalOffer = 0,
+        skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
+        hidePreviewOffer,
       } = {},
     } = {},
   }) => ({
@@ -51,8 +53,9 @@ const PROCESS_STATUS = {
     currentStep,
     displayComponent,
     processStatus,
-    valueToFinalOffer,
+    skip,
     allDocumentVerified,
+    hidePreviewOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -70,16 +73,63 @@ class CommonLayout extends Component {
 
   static getDerivedStateFromProps(props) {
     const { listMenu, currentStep, processStatus = '' } = props;
-    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
+    const {
+      SENT_PROVISIONAL_OFFERS,
+      SENT_FOR_APPROVAL,
+      PENDING,
+      ELIGIBLE_CANDIDATES,
+      INELIGIBLE_CANDIDATES,
+    } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
+
+    // console.log(processStatus);
+    // console.log(currentStep);
+
+    // console.log(processStatus);
+
     if (currentStep !== null) {
+      // if (processStatus === PROVISIONAL_OFFER_DRAFT && currentStep === 0) {
+      //   console.log('HEEERE');
+      //   return {
+      //     selectedItemId: listMenu[0].id,
+      //     displayComponent: <BasicInformation />,
+      //   };
+      // }
+      if (
+        (processStatus === PENDING ||
+          processStatus === ELIGIBLE_CANDIDATES ||
+          processStatus === INELIGIBLE_CANDIDATES) &&
+        currentStep === 3
+      ) {
+        // console.log('HERE 1');
+        return {
+          selectedItemId: listMenu[3].id,
+          displayComponent: <BackgroundRecheck />,
+        };
+      }
+      if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
+        // console.log('Right here');
+        return {
+          selectedItemId: listMenu[3].id,
+          displayComponent: <BackgroundCheck />,
+        };
+      }
       if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
+        // console.log('HERE 2');
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
+      if (currentStep === 7) {
+        // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
       if (currentStep !== 7) {
+        // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
           displayComponent: listMenu[currentStep].component,
@@ -87,40 +137,25 @@ class CommonLayout extends Component {
       }
     }
 
+    // console.log('HERE 4');
     return {
-      selectedItemId: '',
-      displayComponent: <PreviewOffer />,
+      selectedItemId: listMenu[0].id,
+      displayComponent: <BasicInformation />,
     };
   }
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    const {
-      SENT_FOR_APPROVAL,
-      PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-      DRAFT,
-    } = PROCESS_STATUS;
-    if (
-      processStatus === PENDING ||
-      processStatus === ELIGIBLE_CANDIDATES ||
-      processStatus === INELIGIBLE_CANDIDATES
-    ) {
-      // console.log('HERE 1');
+    const { SENT_FOR_APPROVAL, PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    if (processStatus === PROVISIONAL_OFFER_DRAFT) {
       return {
-        selectedItemId: '',
-        displayComponent: <BackgroundRecheck />,
+        selectedItemId: listMenu[0].id,
+        displayComponent: <BasicInformation />,
       };
     }
-    // if (processStatus === DRAFT) {
-    //   return {
-    //     selectedItemId: '',
-    //     displayComponent: <BasicInformation />,
-    //   };
-    // }
+
     if (processStatus === SENT_FOR_APPROVAL) {
-      // console.log('HERE 2');
+      // console.log('HERE 6');
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -129,11 +164,41 @@ class CommonLayout extends Component {
     if (!listMenu[currentStep]) {
       return null;
     }
-    // console.log('HERE 3');
+
+    // if (
+    //   processStatus === PENDING ||
+    //   processStatus === ELIGIBLE_CANDIDATES ||
+    //   processStatus === INELIGIBLE_CANDIDATES
+    // ) {
+    //   console.log(listMenu[3].id);
+    //   this.setState({
+    //     selectedItemId: listMenu[3].id,
+    //     displayComponent: <BackgroundRecheck />,
+    //   });
+    // }
+    // if (processStatus === DRAFT) {
+    //   return {
+    //     selectedItemId: '',
+    //     displayComponent: <BasicInformation />,
+    //   };
+    // }
+    // console.log('HERE 7');
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
     });
+  }
+
+  componentWillUnmount() {
+    // const { dispatch } = this.props;
+    // console.log('UNMOUNT');
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     a: 2,
+    //     data: {},
+    //   },
+    // });
   }
 
   _handlePreviewOffer = () => {
@@ -141,7 +206,7 @@ class CommonLayout extends Component {
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        currentStep: null,
+        currentStep: 7,
         displayComponent: <PreviewOffer />,
       },
     });
@@ -149,6 +214,7 @@ class CommonLayout extends Component {
 
   _handleClick = (item) => {
     const { dispatch } = this.props;
+    // console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -163,37 +229,22 @@ class CommonLayout extends Component {
   };
 
   disablePhase2 = () => {
-    const { processStatus, valueToFinalOffer } = this.props;
-    return processStatus === 'DRAFT' && valueToFinalOffer === 0;
+    const { processStatus, skip } = this.props;
+    return processStatus === 'DRAFT' && skip === 0;
   };
 
   isDisabled = (index) => {
     const {
       PROVISIONAL_OFFER_DRAFT,
-      FINAL_OFFERS_DRAFT,
 
       SENT_PROVISIONAL_OFFERS,
-      ACCEPTED_PROVISIONAL_OFFERS,
-      RENEGOTIATE_PROVISIONAL_OFFERS,
 
       PENDING,
-      ELIGIBLE_CANDIDATES,
-      INELIGIBLE_CANDIDATES,
-
-      SENT_FOR_APPROVAL,
-      APPROVED_OFFERS,
-
-      SENT_FINAL_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
-
-      PROVISIONAL_OFFERS,
-      FINAL_OFFERS,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, valueToFinalOffer } = this.props;
+    const { allDocumentVerified, processStatus, skip } = this.props;
 
-    if (valueToFinalOffer === 1) {
+    if (skip === 1) {
       return false;
     }
 
@@ -232,7 +283,7 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '' } = this.props;
+    const { listMenu = [], currentPage = '', hidePreviewOffer = false } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>
@@ -248,13 +299,13 @@ class CommonLayout extends Component {
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
-              {currentPage !== 'settings' && (
+              {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
-                  className={this.isDisabled(7) ? s.disabled : ''}
+                  className={this.isDisabled(8) ? s.disabled : ''}
                   ghost
                   onClick={() => {
-                    if (this.isDisabled(7)) {
+                    if (this.isDisabled(8)) {
                       return;
                     }
                     this._handlePreviewOffer();
@@ -269,17 +320,6 @@ class CommonLayout extends Component {
         </div>
         <div className={s.viewRight} style={currentPage === 'settings' ? { padding: '0' } : {}}>
           {displayComponent}
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-              {/* {currentPage !== 'settings' && (
-                <BottomBar
-                  onClickPrev={this.handlePrev}
-                  onClickNext={this.handleNext}
-                  currentPage={selectedItemId}
-                />
-              )} */}
-            </Col>
-          </Row>
         </div>
       </div>
     );

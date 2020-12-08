@@ -13,10 +13,12 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 // import SendEmail from '../BackgroundCheck/components/SendEmail';
 import ModalContent from './components/ModalContent';
+import PROCESS_STATUS from '../utils';
+
 import styles from './index.less';
 
 const PreviewOffer = (props) => {
-  const { dispatch, tempData = {}, data = {}, candidate } = props;
+  const { dispatch, tempData = {}, data = {}, candidate, loading1 } = props;
 
   const {
     hrSignature: hrSignatureProp,
@@ -24,6 +26,7 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
+    offerLetter: offerLetterProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -34,6 +37,11 @@ const PreviewOffer = (props) => {
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
+  const [offerLetter, setOfferLetter] = useState(
+    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
+      ? offerLetterProp.attachment.url
+      : '',
+  );
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   // eslint-disable-next-line no-unused-vars
@@ -51,6 +59,12 @@ const PreviewOffer = (props) => {
   // const resetForm = () => {
   //   mailForm.resetFields();
   // };
+
+  const disableCandidateSubmit = () => {
+    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+    const { processStatus = '' } = data;
+    return processStatus === ACCEPTED_FINAL_OFFERS;
+  };
 
   const resetImg = () => {
     setCandidateSignature({});
@@ -181,7 +195,7 @@ const PreviewOffer = (props) => {
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
-        <FileContent url="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff" />
+        <FileContent url={offerLetter} />
       </div>
 
       <div className={styles.right}>
@@ -215,32 +229,7 @@ const PreviewOffer = (props) => {
             ) : (
               <img className={styles.signatureImg} src={hrSignature.url} alt="" />
             )}
-
-            {/* <button
-              type="submit"
-              onClick={() => {
-                setUploadVisible1(true);
-              }}
-            >
-              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-            </button>
-
-            <CancelIcon resetImg={() => resetImg('hr')} /> */}
           </div>
-
-          {/* <div className={styles.submitContainer}>
-            <Button
-              type="primary"
-              onClick={handleHrSignatureSubmit}
-              className={`${hrSignature.url ? styles.active : styles.disable}`}
-            >
-              {formatMessage({ id: 'component.previewOffer.submit' })}
-            </Button>
-
-            <span className={styles.submitMessage}>
-              {hrSignature.url ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
-            </span>
-          </div> */}
         </div>
 
         {/* HR Manager signature */}
@@ -275,23 +264,6 @@ const PreviewOffer = (props) => {
                 <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
               )}
             </div>
-
-            {/* <div className={styles.submitContainer}>
-              <Button
-                type="primary"
-                disabled={!hrManagerSignature.url}
-                onClick={handleHrManagerSignatureSubmit}
-                className={`${hrManagerSignature.url ? styles.active : styles.disable}`}
-              >
-                {formatMessage({ id: 'component.previewOffer.submit' })}
-              </Button>
-
-              <span className={styles.submitMessage}>
-                {hrManagerSignature.url
-                  ? formatMessage({ id: 'component.previewOffer.submitted' })
-                  : ''}
-              </span>
-            </div> */}
           </div>
         )}
 
@@ -319,27 +291,34 @@ const PreviewOffer = (props) => {
               <img className={styles.signatureImg} src={whiteImg} alt="" />
             )}
 
-            <button
-              type="submit"
-              onClick={() => {
-                setUploadVisible1(true);
-              }}
-            >
-              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-            </button>
+            {!disableCandidateSubmit() && (
+              <>
+                <button
+                  type="submit"
+                  onClick={() => {
+                    setUploadVisible1(true);
+                  }}
+                >
+                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                </button>
 
-            <CancelIcon resetImg={() => resetImg()} />
+                <CancelIcon resetImg={() => resetImg()} />
+              </>
+            )}
           </div>
 
           {/* <div className={styles.submitContainer} /> */}
           <Button
             type="primary"
-            disabled={!candidateSignature.url && !hrManagerSignature.url}
+            disabled={
+              !(candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit())
+            }
             className={
-              candidateSignature.url && hrManagerSignature.url
+              candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit()
                 ? `${styles.proceed}`
                 : `${styles.proceed} ${styles.disabled}`
             }
+            loading={loading1}
             onClick={() => handleFinalSubmit()}
           >
             Submit & Proceed
@@ -394,5 +373,6 @@ export default connect(
     data,
     candidate,
     // rookieId,
+    loading1: loading.effects['candidateProfile/submitCandidateFinalOffer'],
   }),
 )(PreviewOffer);

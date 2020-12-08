@@ -20,7 +20,7 @@ class RadioComponent extends PureComponent {
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
           <>
-            <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>
+            <Typography.Title level={5}>{`${Tab.positionTab.title}*`}</Typography.Title>
             <Radio.Group
               className={styles.Padding}
               defaultValue={position !== 'EMPLOYEE' ? test.position : position}
@@ -42,7 +42,7 @@ class RadioComponent extends PureComponent {
               </Row>
             </Radio.Group>
             <Typography.Title level={5} className={styles.paddingBotTitle}>
-              {Tab.classificationTab.title}
+              {`${Tab.classificationTab.title}*`}
             </Typography.Title>
 
             <Radio.Group

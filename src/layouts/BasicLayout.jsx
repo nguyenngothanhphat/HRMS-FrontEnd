@@ -26,9 +26,6 @@ const noMatch = (
   />
 );
 
-/**
- * use Authorized check all menu item
- */
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
     const localItem = {
@@ -46,21 +43,11 @@ const BasicLayout = (props) => {
     location = {
       pathname: '/',
     },
-    collapsed,
     route: { routes } = {},
   } = props;
   /**
    * init variables
    */
-
-  const handleCollapse = () => {
-    if (!collapsed) {
-      dispatch({
-        type: 'global/changeLayoutCollapsed',
-        payload: true,
-      });
-    }
-  };
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -69,25 +56,16 @@ const BasicLayout = (props) => {
         payload: !payload,
       });
     }
-  }; // get children authority
-  const _renderBtnToggle = (
-    <div className={styles.titleHeader}>
-      <div onClick={() => handleMenuCollapse(collapsed)} className={styles.buttonToggle}>
-        <img
-          src="/assets/images/menu.svg"
-          alt="toggle-menu"
-          style={{ width: '45px', height: '20px' }}
-        />
-      </div>
-    </div>
-  );
+  };
 
   const _renderLogo = (
-    <img
-      src="/assets/images/terralogic-logo.png"
-      alt="logo"
-      style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
-    />
+    <Link to="/">
+      <img
+        src="/assets/images/terralogic-logo.png"
+        alt="logo"
+        style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
+      />
+    </Link>
   );
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
@@ -107,7 +85,7 @@ const BasicLayout = (props) => {
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
         headerContentRender={() => _renderLogo}
-        menuHeaderRender={() => _renderBtnToggle}
+        menuHeaderRender={false}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
             return defaultDom;
@@ -143,13 +121,12 @@ const BasicLayout = (props) => {
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
+        disableMobile
         {...props}
         {...settings}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
-          <div onMouseOver={() => handleCollapse()} onFocus={() => handleCollapse()}>
-            {children}
-          </div>
+          {children}
         </Authorized>
       </ProLayout>
     </div>

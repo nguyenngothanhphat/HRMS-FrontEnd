@@ -29,16 +29,13 @@ const note = {
   ),
 };
 
-@connect(
-  ({ candidateInfo: { tempData, checkMandatory, data, tableData, currentStep }, loading }) => ({
-    tempData,
-    data,
-    tableData,
-    currentStep,
-    checkMandatory,
-    loading4: loading.effects['candidateInfo/submitPhase1Effect'],
-  }),
-)
+@connect(({ candidateInfo: { tempData, checkMandatory, data, currentStep }, loading }) => ({
+  tempData,
+  data,
+  currentStep,
+  checkMandatory,
+  loading4: loading.effects['candidateInfo/submitPhase1Effect'],
+}))
 class BackgroundCheck extends Component {
   constructor(props) {
     super(props);
@@ -171,8 +168,11 @@ class BackgroundCheck extends Component {
         },
       });
     }
-    this.handleUpdateByHR();
-    // console.log('1');
+    const { cancelCandidate = false } = tempData;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
+
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -186,17 +186,11 @@ class BackgroundCheck extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    console.log(processStatus);
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
-    if (
-      processStatus === PROVISIONAL_OFFER_DRAFT ||
-      processStatus === FINAL_OFFERS_DRAFT ||
-      processStatus === SENT_PROVISIONAL_OFFERS
-    ) {
-      console.log('false');
-      return false;
+    const { FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === FINAL_OFFERS_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
+      return true;
     }
-    return true;
+    return false;
   };
 
   handleUpdateByHR = () => {
@@ -220,21 +214,30 @@ class BackgroundCheck extends Component {
   };
 
   closeModal = () => {
+    const { data = {}, dispatch } = this.props;
+    const { ticketID = '' } = data;
     this.setState({
       openModal: false,
+    });
+    dispatch({
+      type: 'candidateInfo/redirectToCandidateList',
+      payload: {
+        rookieId: ticketID,
+      },
     });
   };
 
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory } = this.props;
-    // console.log('e', e.target.value);
     if (e.target.value === 1) {
+      console.log(e.target.value);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           tempData: {
             ...tempData,
             valueToFinalOffer: 1,
+            skip: 1,
           },
           checkMandatory: {
             ...checkMandatory,
@@ -249,6 +252,7 @@ class BackgroundCheck extends Component {
           tempData: {
             ...tempData,
             valueToFinalOffer: 0,
+            skip: 0,
           },
           checkMandatory: {
             ...checkMandatory,
@@ -294,6 +298,23 @@ class BackgroundCheck extends Component {
         },
       });
     } else {
+      console.log({
+        candidate: _id,
+        fullName,
+        position,
+        employeeType: employeeType._id,
+        department: department._id,
+        title: title._id,
+        workLocation: workLocation._id,
+        reportingManager: reportingManager._id,
+        privateEmail,
+        workEmail,
+        previousExperience,
+        salaryStructure,
+        documentChecklistSetting: newArrToAdjust,
+        action: 'submit',
+        options: 1,
+      });
       dispatch({
         type: 'candidateInfo/submitPhase1Effect',
         payload: {
@@ -730,6 +751,7 @@ class BackgroundCheck extends Component {
       data: { privateEmail, documentChecklistSetting },
     } = this.state;
     const { loading, processStatus, loading4 } = this.props;
+
     return (
       <>
         {loading ? (
@@ -758,6 +780,7 @@ class BackgroundCheck extends Component {
                           documentChecklistSetting={documentChecklistSetting}
                           processStatus={processStatus}
                           handleValidation={this.handleValidation}
+                          disabled={this.disableEdit()}
                         />
                       );
                     })}

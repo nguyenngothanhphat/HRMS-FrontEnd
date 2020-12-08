@@ -21,7 +21,7 @@ import {
   getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 import {
   addTeamMember,
@@ -32,6 +32,7 @@ import {
   createFinalOffer,
   checkDocument,
   sendDocumentStatus,
+  getAdditionalQuestion,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
@@ -45,6 +46,7 @@ const candidateInfo = {
       filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
+      filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
     currentStep: 0,
@@ -74,6 +76,7 @@ const candidateInfo = {
       title: null,
       reportingManager: null,
       valueToFinalOffer: 0,
+      skip: 0,
       // Background Recheck
       backgroundRecheck: {
         documentList: [],
@@ -81,7 +84,7 @@ const candidateInfo = {
       },
       // Offer details
       template: '',
-      includeOffer: false,
+      includeOffer: 1,
       compensationType: '',
       amountIn: '',
       timeOffPolicy: '',
@@ -132,7 +135,14 @@ const candidateInfo = {
         addSchedule,
       },
 
-      candidateSignature: null,
+      candidateSignature: {
+        url: '',
+        fileName: '',
+        name: '',
+        user: '',
+        id: '',
+        _id: '',
+      },
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -156,6 +166,46 @@ const candidateInfo = {
         name: '',
         url: '',
       },
+      staticOfferLetter: {
+        id: '',
+        name: '',
+        url: '',
+      },
+      hidePreviewOffer: false,
+      additionalQuestion: {
+        opportunity: '',
+        payment: '',
+        shirt: '',
+        dietary: '',
+      },
+      additionalQuestions: [
+        {
+          type: 'text',
+          name: 'opportunity',
+          question: 'Equal employee opportunity',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'payment',
+          question: 'Preferred payment method',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'shirt',
+          question: 'T-shirt size',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'dietary',
+          question: 'Dietary restriction',
+          answer: '',
+        },
+      ],
+
+      cancelCandidate: false,
     },
     data: {
       fullName: null,
@@ -334,7 +384,6 @@ const candidateInfo = {
       documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
-      tableData: [],
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -612,7 +661,7 @@ const candidateInfo = {
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
+          type: 'saveOrigin',
           payload: { listTitle: data },
         });
       } catch (error) {
@@ -622,18 +671,20 @@ const candidateInfo = {
     },
 
     *fetchTableData({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTableDataByTitle, payload);
+        response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
-          payload: { tableData: setting },
+          type: 'saveSalaryStructure',
+          payload: { settings: setting },
         });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *closeCandidate({ payload }, { call, put }) {
@@ -748,6 +799,7 @@ const candidateInfo = {
             },
           },
         });
+
         yield put({
           type: 'saveTemp',
           payload: {
@@ -755,8 +807,19 @@ const candidateInfo = {
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,
+            candidateSignature: data.candidateSignature || {},
+            amountIn: data.amountIn || '',
+            timeOffPolicy: data.timeOffPolicy || '',
+            compensationType: data.compensationType || '',
+            hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
+            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
+
+        // yield put({
+        //   type: 'upadateAdditionalQuestion',
+        //   payload: formatAdditionalQuestion(data.additionalQuestions),
+        // });
         yield put({
           type: 'updateSignature',
           payload: data,
@@ -820,7 +883,6 @@ const candidateInfo = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
-        console.log(response);
         yield put({
           type: 'updateOfferLetter',
           payload: {
@@ -854,12 +916,48 @@ const candidateInfo = {
           type: 'saveOrigin',
           payload: { documentsByCandidate: data },
         });
-        // yield put({
-        //   type: 'saveTemp',
-        //   payload: {
-        //     ...data,
-        //   },
-        // });
+
+        // Group data
+        const groupA = [];
+        const groupB = [];
+        const groupC = [];
+        const groupD = [];
+        data.map((item) => {
+          const { candidateGroup } = item;
+          switch (candidateGroup) {
+            case 'A':
+              groupA.push(item);
+              break;
+            case 'B':
+              groupB.push(item);
+              break;
+            case 'C':
+              groupC.push(item);
+              break;
+            case 'D':
+              groupD.push(item);
+              break;
+            default:
+              break;
+          }
+          return null;
+        });
+
+        const documentsCandidateList = [
+          { type: 'A', name: 'Identity Proof', data: [...groupA] },
+          { type: 'B', name: 'Address Proof', data: [...groupB] },
+          { type: 'C', name: 'Educational', data: [...groupC] },
+          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+        ];
+
+        yield put({
+          type: 'saveTemp',
+          payload: { documentsByCandidate: data, documentsByCandidateRD: documentsCandidateList },
+        });
+        yield put({
+          type: 'updateBackgroundRecheck',
+          payload: documentsCandidateList,
+        });
       } catch (error) {
         dialog(error);
       }
@@ -884,6 +982,36 @@ const candidateInfo = {
         response = yield call(sendDocumentStatus, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *redirectToCandidateList({ payload }) {
+      try {
+        const { rookieId = '' } = payload;
+        history.push({
+          pathname: `/employee-onboarding/review/${rookieId}`,
+          state: { isAddNew: true },
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *fetchAdditionalQuestion({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(getAdditionalQuestion, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        console.log(response);
+        // put({
+        //   type: 'updateAdditionalQuestion',
+        //   payload: data
+        // })
       } catch (error) {
         dialog(error);
       }
@@ -915,6 +1043,29 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    saveFilledSalaryStructure(state, action) {
+      const { data, checkMandatory } = state;
+      return {
+        ...state,
+        checkMandatory: {
+          ...checkMandatory,
+          ...action.payload,
+        },
+      };
+    },
+    saveSalaryStructure(state, action) {
+      const { data, salaryStructure } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          salaryStructure: {
+            ...salaryStructure,
+            ...action.payload,
+          },
         },
       };
     },
@@ -1082,6 +1233,31 @@ const candidateInfo = {
         tempData: {
           ...tempData,
           offerLetter: action.payload,
+        },
+      };
+    },
+
+    // DRAFT
+    updateAdditionalQuestion(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestion: action.payload,
+        },
+      };
+    },
+
+    updateAdditionalQuestions(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestions: action.payload,
         },
       };
     },

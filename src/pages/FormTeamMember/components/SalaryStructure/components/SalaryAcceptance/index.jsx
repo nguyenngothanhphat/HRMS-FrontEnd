@@ -16,15 +16,20 @@ import styles from './index.less';
   ({
     loading,
     candidateInfo: {
-      tableData = [],
-      data: { _id = '', fullName = '', processStatus = '', privateEmail = '' },
+      data: {
+        _id = '',
+        fullName = '',
+        processStatus = '',
+        privateEmail = '',
+        salaryStructure: { settings = [] },
+      },
     } = {},
   }) => ({
     processStatus,
     privateEmail,
     _id,
     fullName,
-    tableData,
+    settings,
     loadingCloseCandidate: loading.effects['candidateInfo/closeCandidate'],
   }),
 )
@@ -82,23 +87,23 @@ class SalaryAcceptance extends PureComponent {
   };
 
   onSendFormAgain = () => {
-    const { dispatch, _id, tableData } = this.props;
+    const { dispatch, _id, settings } = this.props;
     dispatch({
       type: 'candidateInfo/editSalaryStructure',
       payload: {
         candidate: _id,
-        setting: tableData,
+        setting: settings,
       },
     });
   };
 
   handleSendEmail = () => {
-    const { dispatch, _id, tableData } = this.props;
+    const { dispatch, _id, settings } = this.props;
     dispatch({
       type: 'candidateInfo/editSalaryStructure',
       payload: {
         candidate: _id,
-        settings: tableData,
+        settings,
       },
     }).then((res) => {
       if (res?.statusCode === 200) {
@@ -169,6 +174,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderNegotiationForm = () => {
+    const { privateEmail = '' } = this.props;
     return (
       <>
         <div className={styles.salaryAcceptanceWrapper}>

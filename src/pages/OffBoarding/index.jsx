@@ -1,29 +1,22 @@
-// import React, { PureComponent } from 'react';
-// import { connect } from 'umi';
-// import ManagerOffBoading from './ManagerOffBoarding';
-// import EmployeeOffBoading from './EmployeeOffBoarding';
+import React, { PureComponent } from 'react';
+import EmployeeOffBoading from './EmployeeOffBoarding';
+import ManagerOffBoading from './ManagerOffBoarding';
+import HrOffboarding from './HrOffboarding';
 
-// @connect(({ user: { currentUser: { roles = [] } = {} } }) => ({
-//   roles,
-// }))
-// class Overall extends PureComponent {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       // role: true,
-//       // role: false,
-//     };
-//   }
+class OffBoarding extends PureComponent {
+  render() {
+    const renderComponent = {
+      'hr-manager': <HrOffboarding />,
+      manager: <ManagerOffBoading />,
+      employee: <EmployeeOffBoading />,
+    };
+    const listRole = localStorage.getItem('antd-pro-authority');
+    const role =
+      JSON.parse(listRole).find(
+        (item) => item === 'hr-manager' || item === 'manager' || item === 'employee',
+      ) || 'employee';
+    return renderComponent[role];
+  }
+}
 
-//   render() {
-//     const { roles } = this.props;
-
-//     const mapRoles = roles.map((x) => x._id);
-
-//     return (
-//       <div>{mapRoles.includes('HR') === true ? <ManagerOffBoading /> : <EmployeeOffBoading />}</div>
-//     );
-//   }
-// }
-
-// export default Overall;
+export default OffBoarding;

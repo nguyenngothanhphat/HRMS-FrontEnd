@@ -7,7 +7,8 @@ import {
   sendEmailByCandidateModel,
   candidateFinalOffer,
 } from '@/services/candidate';
-import { dialog } from '@/utils/utils';
+import { history } from 'umi';
+import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
@@ -63,6 +64,32 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
+      additionalQuestions: [
+        {
+          type: 'text',
+          name: 'opportunity',
+          question: 'Equal employee opportunity',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'payment',
+          question: 'Preferred payment method',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'shirt',
+          question: 'T-shirt size',
+          answer: '',
+        },
+        {
+          type: 'text',
+          name: 'dietary',
+          question: 'Dietary restriction',
+          answer: '',
+        },
+      ],
     },
     salaryStructure: [],
     jobDetails: {
@@ -125,6 +152,7 @@ const candidateProfile = {
       filledCandidateCustomField: false,
       filledOfferDetails: false,
       filledBenefits: false,
+      filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
   },
@@ -147,6 +175,7 @@ const candidateProfile = {
           type: 'saveTemp',
           payload: {
             candidateSignature: data.candidateSignature,
+            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
         yield put({
@@ -179,13 +208,15 @@ const candidateProfile = {
     },
 
     *updateByCandidateEffect({ payload }, { call }) {
+      let response;
       try {
-        const response = yield call(updateByCandidate, payload);
+        response = yield call(updateByCandidate, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *addAttachmentCandidate({ payload }, { call, put }) {
@@ -241,6 +272,15 @@ const candidateProfile = {
       }
       return response;
     },
+
+    *refreshPage(_) {
+      try {
+        history.push('/candidate');
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -282,6 +322,139 @@ const candidateProfile = {
     },
     saveCurrentUser(state, action) {
       return { ...state, currentUser: action.payload || {} };
+    },
+
+    clearAll(state) {
+      // const {}
+      return {
+        candidate: '',
+        ticketId: '',
+        // currentStep: 1,
+        localStep: 1,
+        rookieId: '',
+        checkMandatory: {
+          filledBasicInformation: true,
+          filledJobDetail: false,
+        },
+        data: {
+          _id: '',
+          candidate: '',
+          fullName: '',
+          privateEmail: '',
+          workEmail: '',
+          previousExperience: '',
+          noticePeriod: '',
+          dateOfJoining: '',
+          processStatus: '',
+          documentList: [],
+          attachments: {},
+          documentListToRender: [],
+          workLocation: '',
+          candidateSignature: {
+            fileName: '',
+            _id: '',
+            url: '',
+          },
+          finalOfferCandidateSignature: {
+            fileName: '',
+            _id: '',
+            url: '',
+          },
+        },
+        tempData: {
+          checkStatus: {},
+          fullName: '',
+          privateEmail: '',
+          experienceYear: '',
+          workLocation: '',
+          options: 1,
+          candidateSignature: {
+            fileName: '',
+            _id: '',
+            url: '',
+          },
+          finalOfferCandidateSignature: {
+            fileName: '',
+            _id: '',
+            url: '',
+          },
+        },
+        salaryStructure: [],
+        jobDetails: {
+          position: 'EMPLOYEE',
+          employeeType: '5f50c2541513a742582206f9',
+          department: '',
+          title: '',
+          workLocation: '',
+          reportingManager: '',
+          candidatesNoticePeriod: '',
+          prefferedDateOfJoining: '',
+        },
+        eligibilityDocs: [
+          {
+            type: 'A',
+            name: 'Identity Proof',
+            data: [
+              { name: 'Aahar Card', value: false },
+              { name: 'PAN Card', value: false },
+              { name: 'Passport', value: false },
+              { name: 'Driving License', value: false },
+              { name: 'Voter Card', value: false },
+            ],
+          },
+          {
+            type: 'B',
+            name: 'Address Proof',
+            data: [
+              { name: 'Rental Aggreement', value: false },
+              { name: 'Electricity & Utility Bills', value: false },
+              { name: 'Telephone Bills', value: false },
+            ],
+          },
+          {
+            type: 'C',
+            name: 'Educational',
+            data: [
+              { name: 'SSLC', value: false },
+              { name: 'Intermediate/Diploma', value: false },
+              { name: 'Graduation', value: false },
+              { name: 'Post Graduate', value: false },
+              { name: 'PHP/Doctorate', value: false },
+            ],
+          },
+          {
+            type: 'D',
+            name: 'Technical Certifications',
+            data: [
+              { name: 'Offer letter', value: false },
+              { name: 'Appraisal letter', value: false },
+              { name: 'Paystubs', value: false },
+              { name: 'Form 16', value: false },
+              { name: 'Relieving Letter', value: false },
+            ],
+          },
+        ],
+        checkCandidateMandatory: {
+          filledCandidateBasicInformation: false,
+          filledCandidateJobDetails: false,
+          filledCandidateCustomField: false,
+          filledOfferDetails: false,
+          filledBenefits: false,
+          salaryStatus: 2,
+        },
+      };
+    },
+
+    updateAdditionalQuestions(state, action) {
+      const { tempData } = state;
+
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          additionalQuestions: action.payload,
+        },
+      };
     },
   },
 };

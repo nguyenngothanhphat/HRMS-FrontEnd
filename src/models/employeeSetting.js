@@ -4,6 +4,10 @@ import {
   getDefaultTemplateList,
   getCustomTemplateList,
   getTemplateById,
+  getOptionalQuestions,
+  saveOptionalQuestions,
+  updateOptionalQuestions,
+  getTriggerEventList,
   uploadSignature,
   addCustomTemplate,
   removeTemplate,
@@ -12,6 +16,8 @@ import {
 const employeeSetting = {
   namespace: 'employeeSetting',
   state: {
+    triggerEventList: [],
+    optionalQuestions: [],
     isAbleToSubmit: false,
     defaultTemplateList: [],
     customTemplateList: [],
@@ -113,6 +119,60 @@ const employeeSetting = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchOptionalQuestions(_, { call, put }) {
+      try {
+        const response = yield call(getOptionalQuestions);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { optionalQuestions: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateOptionalQuestions({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateOptionalQuestions, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *saveOptionalQuestions({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(saveOptionalQuestions, payload);
+        const { statusCode } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchTriggerEventList(_, { call, put }) {
+      try {
+        const response = yield call(getTriggerEventList);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { triggerEventList: data } });
       } catch (errors) {
         dialog(errors);
       }

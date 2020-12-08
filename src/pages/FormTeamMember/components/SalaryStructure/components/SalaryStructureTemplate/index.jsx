@@ -8,85 +8,91 @@ import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({
+    loading,
     candidateInfo: {
-      listTitle = [],
       checkMandatory = {},
       currentStep = {},
-      data: { title = {}, processStatus = '', salaryStructure: { salaryPosition = '' } = {} } = {},
+      data: {
+        listTitle = [],
+        title = {},
+        processStatus = '',
+        salaryStructure: {
+          settings = [
+            {
+              key: 'basic',
+              title: 'Basic',
+              value: '',
+              order: 'A',
+            },
+            {
+              key: 'hra',
+              title: 'HRA',
+              value: '',
+              order: 'B',
+            },
+            {
+              title: 'Other allowances',
+              key: 'otherAllowances',
+              value: 'Balance amount',
+              order: 'C',
+            },
+            {
+              key: 'totalEarning',
+              title: 'Total earning (Gross)',
+              order: 'D',
+              value: 'A + B + C',
+            },
+            {
+              key: 'deduction',
+              title: 'Deduction',
+              order: 'E',
+              value: ' ',
+            },
+            {
+              key: 'employeesPF',
+              title: "Employee's PF",
+              value: '',
+              order: 'G',
+            },
+            {
+              key: 'employeesESI',
+              title: "Employee's ESI",
+              value: '',
+              order: 'H',
+            },
+            {
+              key: 'professionalTax',
+              title: 'Professional Tax',
+              value: 'Rs.200',
+              order: 'I',
+            },
+            {
+              key: 'tds',
+              title: 'TDS',
+              value: 'As per IT rules',
+              order: 'J',
+            },
+            {
+              key: 'netPayment',
+              title: 'Net Payment',
+              value: 'F - (G + H + I + J)',
+              order: ' ',
+            },
+          ],
+        } = {},
+      } = {},
       data,
-      tableData = [
-        {
-          key: 'basic',
-          title: 'Basic',
-          value: '',
-          order: 'A',
-        },
-        {
-          key: 'hra',
-          title: 'HRA',
-          value: '',
-          order: 'B',
-        },
-        {
-          title: 'Other allowances',
-          key: 'otherAllowances',
-          value: 'Balance amount',
-          order: 'C',
-        },
-        {
-          key: 'totalEarning',
-          title: 'Total earning (Gross)',
-          order: 'D',
-          value: 'A + B + C',
-        },
-        {
-          key: 'deduction',
-          title: 'Deduction',
-          order: 'E',
-          value: ' ',
-        },
-        {
-          key: 'employeesPF',
-          title: "Employee's PF",
-          value: '',
-          order: 'G',
-        },
-        {
-          key: 'employeesESI',
-          title: "Employee's ESI",
-          value: '',
-          order: 'H',
-        },
-        {
-          key: 'professionalTax',
-          title: 'Professional Tax',
-          value: 'Rs.200',
-          order: 'I',
-        },
-        {
-          key: 'tds',
-          title: 'TDS',
-          value: 'As per IT rules',
-          order: 'J',
-        },
-        {
-          key: 'netPayment',
-          title: 'Net Payment',
-          value: 'F - (G + H + I + J)',
-          order: ' ',
-        },
-      ],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
+    loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     listTitle,
     checkMandatory,
     currentStep,
     processStatus,
     _id,
     data,
-    tableData,
-    salaryPosition,
+    settings,
     title,
   }),
 )
@@ -110,49 +116,66 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const {
-      dispatch,
-      _id,
-      title,
-      checkMandatory,
-      data: { salaryStructure },
-    } = this.props;
-    const idTitle = title?._id;
-    const check = idTitle !== undefined;
+    const { dispatch, _id, processStatus, settings, listTitle } = this.props;
+    const tempTableData = [...settings];
+    const isFilled = tempTableData.filter((item) => item.value === '');
 
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        checkMandatory: {
-          ...checkMandatory,
-          filledSalaryStructure: check,
-        },
-      },
-    });
-    dispatch({
-      type: 'candidateInfo/fetchTitleListByCompany',
-      payload: { company: _id },
-    });
-    if (idTitle !== undefined) {
+    if (processStatus === 'DRAFT' && listTitle.length === 0) {
       dispatch({
-        type: 'candidateInfo/fetchTableData',
-        payload: { title: idTitle },
+        type: 'candidateInfo/fetchTitleListByCompany',
+        payload: { company: _id },
       });
+    }
+
+    if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
-        type: 'candidateInfo/saveOrigin',
+        type: 'candidateInfo/saveFilledSalaryStructure',
         payload: {
-          salaryStructure: {
-            ...salaryStructure,
-            title: title._id,
-          },
+          filledSalaryStructure: true,
         },
       });
     } else {
       dispatch({
-        type: 'candidateInfo/setDefaultTable',
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: false,
+        },
       });
     }
   };
+
+  // componentWillUnmount = () => {
+  //   const {
+  //     dispatch,
+  //     currentStep,
+  //     settings,
+  //     // salaryPosition,
+  //     data: {
+  //       _id,
+  //       salaryStructure: { title },
+  //     },
+  //   } = this.props;
+  //   dispatch({
+  //     type: 'candidateInfo/updateByHR',
+  //     payload: {
+  //       salaryStructure: {
+  //         title,
+  //         settings,
+  //       },
+  //       candidate: _id,
+  //       currentStep,
+  //     },
+  //   }).then(({ data: data1, statusCode }) => {
+  //     if (statusCode === 200) {
+  //       dispatch({
+  //         type: 'candidateInfo/save',
+  //         payload: {
+  //           currentStep: data1.currentStep,
+  //         },
+  //       });
+  //     }
+  //   });
+  // };
 
   onClickPrev = () => {
     const { dispatch, currentStep } = this.props;
@@ -168,21 +191,19 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       currentStep,
-      tableData,
+      settings,
       // salaryPosition,
       data: {
         _id,
         salaryStructure: { title },
       },
-      data,
     } = this.props;
-    console.log('data', data);
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
           title,
-          settings: tableData,
+          settings,
         },
         candidate: _id,
         currentStep: currentStep + 1,
@@ -228,69 +249,95 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e) => {
-    const { dispatch, checkMandatory, tableData } = this.props;
-    // const { filledSalaryStructure } = checkMandatory;
+    const { dispatch, settings } = this.props;
+
     const { target } = e;
     const { name, value } = target;
 
-    const tempTableData = [...tableData];
+    const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
 
     tempTableData[index].value = value;
-
-    const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
-    // const check = tempTableData.forEach((item) => {
-    //   item.value = !!item.value;
-    // });
-    // const filledSalaryStructure = check.every((data) => data === true);
-    // dispatch;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        tableData: tempTableData,
-        checkMandatory: {
-          ...checkMandatory,
-          filledSalaryStructure: check,
+    const isFilled = tempTableData.filter((item) => item.value === '');
+    if (isFilled.length === 0 && tempTableData.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: true,
         },
-      },
-    });
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: false,
+        },
+      });
+    }
+    // dispatch({
+    //   type: 'candidateInfo/saveSalaryStructure',
+    //   payload: {
+    //     settings: tempTableData,
+    //   },
+    // });
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch, checkMandatory, tableData } = this.props;
-    const tempTableData = [...tableData];
+    const { dispatch } = this.props;
+    // const tempTableData = [];
+    // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
 
-    const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
-    dispatch({
-      type: 'candidateInfo/saveOrigin',
-      payload: {
-        data: {
-          title: {
-            _id: value,
-          },
-        },
-      },
-    });
+    // dispatch({
+    //   type: 'candidateInfo/saveOrigin',
+    //   payload: {
+    //     title: {
+    //       _id: value,
+    //     },
+    //   },
+    // });
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateInfo/saveFilledSalaryStructure',
+          payload: {
+            filledSalaryStructure: true,
+          },
+        });
+      }
     });
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        tableData: tempTableData,
-        checkMandatory: {
-          ...checkMandatory,
-          filledSalaryStructure: check,
-        },
-      },
-    });
+
+    // const isFilled = tempTableData.filter((item) => item.value === '');
+    // if (isFilled.length === 0 && tempTableData.length > 0) {
+    //   dispatch({
+    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     payload: {
+    //       filledSalaryStructure: true,
+    //     },
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     payload: {
+    //       filledSalaryStructure: false,
+    //     },
+    //   });
+    // }
+
+    // dispatch({
+    //   type: 'candidateInfo/saveSalaryStructure',
+    //   payload: {
+    //     settings: tempTableData,
+    //   },
+    // });
   };
 
   _renderTableTitle = (order) => {
-    const { tableData } = this.props;
-    const data = tableData.find((item) => item.order === order);
-    const { title } = data;
+    const { settings } = this.props;
+    const data = settings?.find((item) => item.order === order);
+    const { title = '' } = data;
     return (
       <span
         className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
@@ -304,9 +351,9 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { tableData } = this.props;
-    const data = tableData.find((item) => item.order === order);
-    const { value, key } = data;
+    const { settings = [] } = this.props;
+    const data = settings?.find((item) => item.order === order);
+    const { value = '', key } = data;
     if (this.isEditted(order) && isEditted) {
       return (
         <Form.Item name={key} className={styles.formInput}>
@@ -386,11 +433,12 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderButtons = () => {
     const { isEditted } = this.state;
-    const { processStatus } = this.props;
+    const { processStatus, settings } = this.props;
     if (
-      processStatus === 'DRAFT' ||
-      processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
-      processStatus === 'SENT-PROVISIONAL-OFFER'
+      (processStatus === 'DRAFT' ||
+        processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
+        processStatus === 'SENT-PROVISIONAL-OFFER') &&
+      settings.length !== 0
     ) {
       return (
         <Form.Item className={styles.buttons}>
@@ -472,9 +520,15 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { tableData, title } = this.props;
+    const { settings = [], title, loadingTable } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     const idTitle = title?._id;
+    const titleName = listTitle.filter((item) => {
+      if (item._id === idTitle) {
+        return item.name;
+      }
+      return null;
+    });
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -499,7 +553,7 @@ class SalaryStructureTemplate extends PureComponent {
                 </Select>
               )} */}
               <Select
-                defaultValue={idTitle ?? undefined}
+                defaultValue={titleName}
                 onChange={this.handleChangeSelect}
                 placeholder="Please select a choice!"
                 size="large"
@@ -519,7 +573,8 @@ class SalaryStructureTemplate extends PureComponent {
           {this._renderButtons()}
           <div className={styles.salaryStructureTemplate_table}>
             <Table
-              dataSource={tableData}
+              loading={loadingTable}
+              dataSource={settings}
               columns={this._renderColumns()}
               // size="large"
               pagination={false}

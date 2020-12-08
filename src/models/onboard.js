@@ -1,5 +1,11 @@
-import { getOnboardingList, deleteDraft, inititateBackgroundCheck } from '@/services/onboard';
+import {
+  getOnboardingList,
+  deleteDraft,
+  inititateBackgroundCheck,
+  createProfile,
+} from '@/services/onboard';
 import _ from 'lodash';
+import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 
 // const employeeList = rookieList.filter(
@@ -102,6 +108,8 @@ const PROCESS_STATUS = {
 
   PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
   FINAL_OFFERS: 'FINAL-OFFERS',
+  FINAL_OFFERS_HR: 'REJECT-FINAL-OFFER-HR',
+  FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
 };
 
 const formatMonth = (month) => {
@@ -419,17 +427,6 @@ const onboard = {
 
     *fetchOnboardList({ payload }, { call, put }) {
       try {
-        const { processStatus = '' } = payload;
-        const req = {
-          processStatus: [processStatus],
-          page: 1,
-        };
-        const response = yield call(getOnboardingList, req);
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        // const returnedData = formatData(response.data[0].paginatedResults);
-        const returnedData = formatData(response.data);
-
         const {
           PROVISIONAL_OFFER_DRAFT,
           FINAL_OFFERS_DRAFT,
@@ -451,7 +448,28 @@ const onboard = {
 
           PROVISIONAL_OFFERS,
           FINAL_OFFERS,
+          FINAL_OFFERS_HR,
+          FINAL_OFFERS_CANDIDATE,
         } = PROCESS_STATUS;
+
+        const { processStatus = '' } = payload;
+        let req;
+        if (processStatus === FINAL_OFFERS) {
+          req = {
+            processStatus: [FINAL_OFFERS_HR, FINAL_OFFERS_CANDIDATE],
+            page: 1,
+          };
+        } else {
+          req = {
+            processStatus: [processStatus],
+            page: 1,
+          };
+        }
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
 
         // Fetch data
         switch (processStatus) {
@@ -658,12 +676,13 @@ const onboard = {
     },
 
     *deleteTicketDraft({ payload }, { call, put }) {
+      let response;
       try {
         const { id = '' } = payload;
         const req = {
           rookieID: id,
         };
-        const response = yield call(deleteDraft, req);
+        response = yield call(deleteDraft, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
@@ -685,6 +704,7 @@ const onboard = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *inititateBackgroundCheckEffect({ payload }, { call, put }) {
@@ -713,6 +733,32 @@ const onboard = {
       } catch (error) {
         dialog(error);
       }
+    },
+
+    *redirectToReview({ payload }, { call, put }) {
+      try {
+        const { id } = payload;
+        console.log(history);
+        history.push(`/employee-onboarding/review/${id}`);
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *createProfileEffect({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(createProfile, payload);
+        const { statusCode, data } = response;
+        console.log(data[0].defaultMessage);
+        if (statusCode === 400) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {

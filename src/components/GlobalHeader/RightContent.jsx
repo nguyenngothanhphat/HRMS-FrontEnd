@@ -1,20 +1,42 @@
-import { Tooltip, Tag } from 'antd';
+// import { Tooltip, Tag } from 'antd';
 import { CalendarOutlined, BellOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'umi';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
+import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
 import styles from './index.less';
 
-const ENVTagColor = {
-  dev: 'orange',
-  test: 'green',
-  pre: '#87d068',
-};
+// const ENVTagColor = {
+//   dev: 'orange',
+//   test: 'green',
+//   pre: '#87d068',
+// };
 
 const GlobalHeaderRight = (props) => {
-  const { theme, layout } = props;
+  const {
+    theme,
+    layout,
+    dispatch,
+    employeesManagement: { searchEmployeesList = [] },
+    loadingList,
+  } = props;
+  const [visible, setVisible] = useState(false);
   let className = styles.right;
+
+  const handleCancel = () => {
+    setVisible(!visible);
+  };
+
+  const handleSearch = (value) => {
+    setVisible(!visible);
+    dispatch({
+      type: 'employeesManagement/fetchSearchEmployeesList',
+      payload: {
+        query: value,
+      },
+    });
+  };
 
   if (theme === 'dark' && layout === 'top') {
     className = `${styles.right}  ${styles.dark}`;
@@ -24,28 +46,12 @@ const GlobalHeaderRight = (props) => {
     <div className={className}>
       <HeaderSearch
         className={`${styles.action} ${styles.search}`}
-        placeholder="站内搜索"
-        defaultValue="umi ui"
-        options={[
-          {
-            label: <a href="https://umijs.org/zh/guide/umi-ui.html">umi ui</a>,
-            value: 'umi ui',
-          },
-          {
-            label: <a href="next.ant.design">Ant Design</a>,
-            value: 'Ant Design',
-          },
-          {
-            label: <a href="https://protable.ant.design/">Pro Table</a>,
-            value: 'Pro Table',
-          },
-          {
-            label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
-            value: 'Pro Layout',
-          },
-        ]}
+        placeholder="Search"
+        visible={visible}
         onSearch={(value) => {
-          console.log('input', value);
+          if (value) {
+            handleSearch(value);
+          }
         }}
       />
       <div className={`${styles.action} ${styles.calendar}`}>
@@ -68,11 +74,20 @@ const GlobalHeaderRight = (props) => {
         </a>
       </Tooltip> */}
       <Avatar />
+      <GlobalEmployeeSearch
+        titleModal="GLOBAL EMPLOYEE SEARCH"
+        visible={visible}
+        handleCancel={handleCancel}
+        employeesList={searchEmployeesList}
+        loading={loadingList}
+      />
     </div>
   );
 };
 
-export default connect(({ settings }) => ({
+export default connect(({ settings, employeesManagement, loading }) => ({
   theme: settings.navTheme,
   layout: settings.layout,
+  employeesManagement,
+  loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
 }))(GlobalHeaderRight);

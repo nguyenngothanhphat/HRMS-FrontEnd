@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
+import { checkPermissions } from '@/utils/permissions';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -18,8 +19,9 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
+  currentUser,
 }))
 class EmploymentTab extends Component {
   constructor(props) {
@@ -28,7 +30,7 @@ class EmploymentTab extends Component {
 
     const { title, location } = employeeProfile.originData.employmentData;
     const { firstName, legalName } = employeeProfile.originData.generalData;
-    const { currentAnnualCTC } = employeeProfile.originData.compensationData;
+    const { compensationType } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
@@ -37,7 +39,7 @@ class EmploymentTab extends Component {
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
-        annualSalary: currentAnnualCTC || 0,
+        compensationType: compensationType || null,
         location: location?.name || null,
       },
     };
@@ -56,16 +58,6 @@ class EmploymentTab extends Component {
 
     return null;
   }
-
-  checkRoleEmployee = (roles) => {
-    let flag = false;
-    const { roles: rolesConst } = this.state;
-    const checkRole = (obj) => obj._id === rolesConst.employee;
-    if (roles.length === 1 && roles.some(checkRole)) {
-      flag = true;
-    }
-    return flag;
-  };
 
   handleMakeChanges = async () => {
     const { isChanging } = this.state;
@@ -94,11 +86,12 @@ class EmploymentTab extends Component {
       const payload = {
         title: data.stepTwo.title || null,
         manager: data.stepThree.reportTo || null,
-        currentAnnualCTC: Number(data.stepTwo.salary) || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
         department: data.stepThree.department || null,
-        compensationType: data.stepTwo.compensation || null,
+        compensationType: `${data.stepTwo.compensation || null} - ${
+          data.stepTwo.compensationType || null
+        }`,
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,
@@ -133,19 +126,29 @@ class EmploymentTab extends Component {
 
   render() {
     const { isChanging, current, currentData, isEdit } = this.state;
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      currentUser: { roles = [] },
+    } = this.props;
+    const permissions = checkPermissions(roles);
     return (
       <div>
         <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title}>
+          <div className={styles.employmentTab__title}>
             <div>Employment & Compensation</div>
             {isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
-              <div onClick={this.handleEditCurrentInfo} style={{ display: 'flex' }}>
-                <img alt="" src={edit} />
-                <div>Edit</div>
-              </div>
+              permissions.editEmployment !== -1 && (
+                <div
+                  className={styles.employmentTab__action}
+                  onClick={this.handleEditCurrentInfo}
+                  style={{ display: 'flex' }}
+                >
+                  <img alt="" src={edit} />
+                  <div>Edit</div>
+                </div>
+              )
             )}
           </div>
           {isEdit ? (
@@ -155,7 +158,7 @@ class EmploymentTab extends Component {
           )}
         </div>
         <div className={styles.employmentTab}>
-          <div className={styles.employmentTab_title} align="middle">
+          <div className={styles.employmentTab__title} align="middle">
             <div>
               {isChanging
                 ? `Employment & Compensation - ${steps[current].title}`
@@ -167,10 +170,16 @@ class EmploymentTab extends Component {
                 <div>Cancel & Return</div>
               </div>
             ) : (
-              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
-                <img alt="" src={edit} />
-                <div>Make changes</div>
-              </div>
+              permissions.makeChangesHistory !== -1 && (
+                <div
+                  className={styles.employmentTab__action}
+                  onClick={this.handleMakeChanges}
+                  style={{ display: 'flex' }}
+                >
+                  <img alt="" src={edit} />
+                  <div>Make changes</div>
+                </div>
+              )
             )}
           </div>
           {isChanging ? (

@@ -1,0 +1,57 @@
+.relievingTemplates {
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  margin-bottom: 30px;
+  .header {
+    p {
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 21px;
+      color: #464646;
+      margin-bottom: 15px;
+    }
+  }
+  .border {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    border-top: 1px solid #d6dce0;
+    border-bottom: none;
+  }
+  hr {
+    border-top: 1px solid #d6dce0;
+    border-bottom: none;
+  }
+  .templateList {
+    padding-top: 20px;
+
+    .title {
+      font-size: 14px;
+      line-height: 16px;
+      color: #464646;
+      align-items: baseline;
+    }
+    .list {
+      .template {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        .templateName {
+          text-decoration: underline;
+        }
+        .icons {
+          display: grid;
+          grid-template-columns: 50% 50%;
+          align-items: center;
+          img {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

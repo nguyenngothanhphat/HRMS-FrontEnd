@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import { history } from 'umi';
@@ -9,15 +10,25 @@ import styles from './index.less';
 class TableEmployee extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageNavigation: '1',
+    };
   }
 
-  push = () => {
-    history.push('/employee-offboarding/ManagerRequest/16001288');
+  push = (id) => {
+    history.push(`/offboarding/review/${id}`);
+  };
+
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageNavigation: pageNumber,
+    });
   };
 
   render() {
     const { data = [] } = this.props;
+    const { pageNavigation } = this.state;
+    const rowSize = 10;
 
     const pagination = {
       position: ['bottomLeft'],
@@ -31,27 +42,40 @@ class TableEmployee extends PureComponent {
           total
         </span>
       ),
-      // pageSize: rowSize,
-      // current: pageSelected,
-      // onChange: this.onChangePagination,
+      pageSize: rowSize,
+      current: pageNavigation,
+      onChange: this.onChangePagination,
     };
 
     const columns = [
       {
         title: <span className={styles.title}>Ticket ID </span>,
-        dataIndex: 'ticketId',
+        dataIndex: 'ticketID',
+        render: (ticketID) => {
+          return <p>{ticketID}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: 'employeeId',
+        dataIndex: 'employee',
+        render: (employee) => {
+          return <p>{employee.employeeId}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
+        dataIndex: 'requestDate',
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: 'name',
+        dataIndex: 'employee',
+        render: (employee) => {
+          const { generalInfo = {} } = employee;
+          return <p>{generalInfo.firstName}</p>;
+        },
       },
       {
         title: <span className={styles.title}>Current Project </span>,
@@ -83,11 +107,11 @@ class TableEmployee extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: 'Action',
-        render: () => (
+        dataIndex: '_id',
+        render: (_id) => (
           <div className={styles.rowAction}>
-            <span>Set 1-on-1</span>
-            <span onClick={this.push}>View Request</span>
+            {/* <span>Set 1-on-1</span> */}
+            <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
       },
@@ -106,10 +130,7 @@ class TableEmployee extends PureComponent {
           }}
           columns={columns}
           dataSource={data}
-          // pagination={{
-          //   ...pagination,
-          //   total: data.length,
-          // }}
+          hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}

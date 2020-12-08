@@ -20,3 +20,10 @@ export async function inititateBackgroundCheck(payload) {
     data: payload, // candidate: id
   });
 }
+
+export async function createProfile(payload) {
+  return request('/api/candidate/create-profile', {
+    method: 'POST',
+    data: payload, // rookieID: id, employeeId: id
+  });
+}

@@ -55,6 +55,11 @@ const steps = [
   {
     id: 6,
     title: 'Benefits',
+    content: 'Sixth-content',
+  },
+  {
+    id: 7,
+    title: 'Additional Questions',
     content: 'Last-content',
   },
 ];
@@ -98,9 +103,15 @@ const CandidateLayout = (props) => {
     setCurrent(localStep);
   }, [localStep]);
 
-  // useEffect(() => {
-  //   console.log('candidate layout');
-  // }, []);
+  useEffect(() => {
+    console.log('candidate layout');
+    return () => {
+      dispatch({
+        type: 'candidateProfile/clearAll',
+      });
+      console.log('OUT');
+    };
+  }, []);
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -123,7 +134,7 @@ const CandidateLayout = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        localStep: 7,
+        localStep: 8,
       },
     });
   };
@@ -145,7 +156,6 @@ const CandidateLayout = (props) => {
     //   }
     // }
 
-    console.log(id);
     if (valid) {
       dispatch({
         type: 'candidateProfile/save',
@@ -163,10 +173,8 @@ const CandidateLayout = (props) => {
       processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
       processStatus === 'PENDING-BACKGROUND-CHECK'
     ) {
-      console.log('Phase 1');
       return steps.slice(0, 4);
     }
-    console.log('Phase 2');
     return steps;
   };
 
@@ -175,8 +183,6 @@ const CandidateLayout = (props) => {
   };
 
   const newSteps = getSteps();
-
-  console.log(processStatus);
 
   return (
     <div className={s.candidate}>
@@ -218,7 +224,11 @@ const CandidateLayout = (props) => {
                   </Steps>
 
                   {!isPhase1(newSteps) && (
-                    <button type="submit" className={s.btn} onClick={renderPreviewOffer}>
+                    <button
+                      type="submit"
+                      className={localStep === 8 ? `${s.btn} ${s.active}` : `${s.btn}`}
+                      onClick={renderPreviewOffer}
+                    >
                       Preview offer letter
                     </button>
                   )}

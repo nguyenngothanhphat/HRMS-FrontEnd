@@ -14,7 +14,8 @@ import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
 // import PROCESS_STATUS from '../utils';
 import styles from './index.less';
-
+// import { PROCESS_STATUS } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
+import PROCESS_STATUS from '../utils';
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 const ROLE = {
@@ -24,16 +25,25 @@ const ROLE = {
 };
 
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {} } = props;
+  const {
+    dispatch,
+    currentUser = {},
+    tempData = {},
+    data = {},
+    loading1,
+    loading2,
+    loading3,
+  } = props;
 
   const {
     // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
     offerLetter: offerLetterProp,
+    staticOfferLetter: staticOfferLetterProp,
+    candidateSignature: candidateSignatureProp,
   } = tempData;
   const {
-    candidateSignature: candidateSignatureProp = {},
     // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
@@ -46,9 +56,7 @@ const PreviewOffer = (props) => {
 
   const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
-  const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(
-    hrManagerSignatureProp || '',
-  );
+  const [hrManagerSignatureSubmit, setHrManagerSignatureSubmit] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
@@ -63,12 +71,18 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
+  const getOfferLetterProp = () => {
+    if (staticOfferLetterProp && staticOfferLetterProp.url) {
+      return staticOfferLetterProp.url;
+    }
+    if (offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url) {
+      return offerLetterProp.attachment.url;
+    }
+    return '';
+  };
+
   // eslint-disable-next-line no-unused-vars
-  const [offerLetter, setOfferLetter] = useState(
-    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
-      ? offerLetterProp.attachment.url
-      : '',
-  );
+  const [offerLetter, setOfferLetter] = useState(getOfferLetterProp());
 
   const resetImg = (type) => {
     if (type === 'hr') {
@@ -177,7 +191,7 @@ const PreviewOffer = (props) => {
 
     const { id } = hrSignature;
     const { candidate } = data;
-    const { valueToFinalOffer = 0 } = tempData;
+    const { skip = 0 } = tempData;
     // let option = 1;
     // if (valueToFinalOffer === 1) {
     //   option = 2;
@@ -187,7 +201,7 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate, options: valueToFinalOffer },
+      payload: { hrSignature: id, candidate, options: skip },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal2(true);
@@ -300,6 +314,15 @@ const PreviewOffer = (props) => {
     setOpenModal2(false);
   };
 
+  // const disableHrSubmitActions = () => {
+  //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+  // };
+
+  const isOfferAccepted = () => {
+    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+    return processStatus === ACCEPTED_FINAL_OFFERS;
+  };
+
   // useEffect(() => {
   //   dispatch({
   //     type: 'candidateInfo/saveTemp',
@@ -308,6 +331,21 @@ const PreviewOffer = (props) => {
   //     },
   //   });
   // }, [offerLetterProp]);
+
+  const isHr = role.indexOf(ROLE.HR) > -1;
+  const isHrManager = role.indexOf(ROLE.HRMANAGER) > -1;
+
+  const renderCandidateSignature = () => {
+    return candidateSignature && candidateSignature.url;
+  };
+
+  const renderHRManagerSignature = () => {
+    return (
+      isHrManager &&
+      (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
+        processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS)
+    );
+  };
 
   return (
     <div className={styles.previewContainer}>
@@ -344,27 +382,33 @@ const PreviewOffer = (props) => {
               // Default image
               <>
                 <img className={styles.signatureImg} src={whiteImg} alt="" />
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setUploadVisible1(true);
-                  }}
-                >
-                  {formatMessage({ id: 'component.previewOffer.upload' })}
-                </button>
+                {!isOfferAccepted() && (
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      setUploadVisible1(true);
+                    }}
+                  >
+                    {formatMessage({ id: 'component.previewOffer.upload' })}
+                  </button>
+                )}
               </>
             ) : (
               <>
                 <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setUploadVisible1(true);
-                  }}
-                >
-                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                </button>
-                <CancelIcon resetImg={() => resetImg('hr')} />
+                {!isOfferAccepted() && (
+                  <>
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        setUploadVisible1(true);
+                      }}
+                    >
+                      {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                    </button>
+                    <CancelIcon resetImg={() => resetImg('hr')} />
+                  </>
+                )}
               </>
             )}
           </div>
@@ -373,7 +417,11 @@ const PreviewOffer = (props) => {
             <Button
               type="primary"
               onClick={handleHrSignatureSubmit}
-              className={`${hrSignature.url ? styles.active : styles.disable}`}
+              disabled={isOfferAccepted()}
+              className={`${
+                hrSignature.url && !isOfferAccepted() ? styles.active : styles.disable
+              }`}
+              loading={loading3}
             >
               {formatMessage({ id: 'component.previewOffer.submit' })}
             </Button>
@@ -384,61 +432,64 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {role.indexOf(ROLE.HR) > -1 && processStatus !== 'PENDING-APPROVAL-FINAL-OFFER' && (
-          <div className={styles.send}>
-            <header>
-              <div className={styles.icon}>
-                <div className={styles.bigGlow}>
-                  <div className={styles.smallGlow}>
-                    <SendOutlined />
+        {isHr &&
+          processStatus !== PROCESS_STATUS.SENT_FOR_APPROVAL &&
+          processStatus !== PROCESS_STATUS.ACCEPTED_FINAL_OFFERS && (
+            <div className={styles.send}>
+              <header>
+                <div className={styles.icon}>
+                  <div className={styles.bigGlow}>
+                    <div className={styles.smallGlow}>
+                      <SendOutlined />
+                    </div>
                   </div>
                 </div>
+                <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
+              </header>
+
+              <p>
+                {formatMessage({ id: 'component.previewOffer.note1' })}
+                <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
+                {formatMessage({ id: 'component.previewOffer.note3' })}
+              </p>
+
+              <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
+
+              <div className={styles.mail}>
+                <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
+
+                <Form form={mailForm} name="myForm" value={mail}>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      {
+                        type: 'email',
+                        message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
+                      },
+                      {
+                        required: true,
+                        message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
+                      },
+                    ]}
+                  >
+                    <Input
+                      required={false}
+                      value={mail}
+                      placeholder="address@terraminds.com"
+                      onChange={(e) => setMail(e.target.value)}
+                    />
+                  </Form.Item>
+
+                  <Button type="primary" loading={loading1} onClick={() => handleSentForApproval()}>
+                    {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
+                  </Button>
+                </Form>
               </div>
-              <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
-            </header>
-
-            <p>
-              {formatMessage({ id: 'component.previewOffer.note1' })}
-              <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
-              {formatMessage({ id: 'component.previewOffer.note3' })}
-            </p>
-
-            <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
-
-            <div className={styles.mail}>
-              <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
-
-              <Form form={mailForm} name="myForm" value={mail}>
-                <Form.Item
-                  name="email"
-                  rules={[
-                    {
-                      type: 'email',
-                      message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
-                    },
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
-                    },
-                  ]}
-                >
-                  <Input
-                    required={false}
-                    value={mail}
-                    placeholder="address@terraminds.com"
-                    onChange={(e) => setMail(e.target.value)}
-                  />
-                </Form.Item>
-
-                <Button type="primary" onClick={() => handleSentForApproval()}>
-                  {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
-                </Button>
-              </Form>
             </div>
-          </div>
-        )}
+          )}
+
         {/* HR Manager signature */}
-        {role.indexOf(ROLE.HRMANAGER) > -1 && processStatus === 'PENDING-APPROVAL-FINAL-OFFER' && (
+        {renderHRManagerSignature() && (
           <>
             <div className={styles.signature}>
               <header>
@@ -451,7 +502,6 @@ const PreviewOffer = (props) => {
                 </div>
                 <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
               </header>
-
               {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
               {hrManagerSignature.user ? (
                 <p>
@@ -461,7 +511,6 @@ const PreviewOffer = (props) => {
               ) : (
                 <p>Undersigned</p>
               )}
-
               <div className={styles.upload}>
                 {!hrManagerSignature.url ? (
                   // Default image
@@ -470,24 +519,30 @@ const PreviewOffer = (props) => {
                   <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
                 )}
 
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setUploadVisible2(true);
-                  }}
-                >
-                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                </button>
+                {!isOfferAccepted() && (
+                  <>
+                    <button
+                      type="submit"
+                      onClick={() => {
+                        setUploadVisible2(true);
+                      }}
+                    >
+                      {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                    </button>
 
-                <CancelIcon resetImg={() => resetImg('hrManager')} />
+                    <CancelIcon resetImg={() => resetImg('hrManager')} />
+                  </>
+                )}
               </div>
 
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"
-                  disabled={!hrManagerSignature.url}
+                  disabled={!hrManagerSignature.url && isOfferAccepted()}
                   onClick={handleHrManagerSignatureSubmit}
-                  className={`${hrManagerSignature.url ? styles.active : styles.disable}`}
+                  className={`${
+                    hrManagerSignature.url && !isOfferAccepted() ? styles.active : styles.disable
+                  }`}
                 >
                   {formatMessage({ id: 'component.previewOffer.submit' })}
                 </Button>
@@ -501,7 +556,7 @@ const PreviewOffer = (props) => {
             </div>
 
             {/* Candidate Signature */}
-            {candidateSignature && candidateSignature.url && (
+            {renderCandidateSignature() && (
               <div className={styles.signature}>
                 <header>
                   <div className={styles.icon}>
@@ -531,15 +586,18 @@ const PreviewOffer = (props) => {
             )}
 
             {/* Send final offer */}
-            <div style={{ marginBottom: '16px' }}>
-              <SendEmail
-                title="Send final offer to the candidate"
-                formatMessage={formatMessage}
-                handleSendEmail={handleSendFinalOffer}
-                isSentEmail={false}
-                privateEmail={candidateEmailProp}
-              />
-            </div>
+            {!isOfferAccepted() && (
+              <div style={{ marginBottom: '16px' }}>
+                <SendEmail
+                  title="Send final offer to the candidate"
+                  formatMessage={formatMessage}
+                  handleSendEmail={handleSendFinalOffer}
+                  loading={loading2}
+                  isSentEmail={false}
+                  privateEmail={candidateEmailProp}
+                />
+              </div>
+            )}
           </>
         )}
 
@@ -617,5 +675,8 @@ export default connect(
     tempData,
     data,
     rookieId,
+    loading1: loading.effects['candidateInfo/sentForApprovalEffect'],
+    loading2: loading.effects['candidateInfo/approveFinalOfferEffect'],
+    loading3: loading.effects['candidateInfo/updateByHR'],
   }),
 )(PreviewOffer);

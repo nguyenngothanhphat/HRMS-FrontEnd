@@ -13,6 +13,7 @@ import SalaryStructure from './components/SalaryStructure';
 import BackgroundCheck from './components/BackgroundCheck';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
+// import AdditionalQuestion from './components/AdditionalQuestion';
 import PROCESS_STATUS from './components/utils';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
@@ -218,8 +219,7 @@ class FormTeamMember extends PureComponent {
         ],
         salaryPosition: '',
         listTitle: [],
-        tableData: [],
-        candidateSignature: null,
+        candidateSignature: {},
         hrManagerSignature: {},
         hrSignature: {},
         hiringAgreements: null,
@@ -240,6 +240,45 @@ class FormTeamMember extends PureComponent {
       payload: [],
     });
   }
+
+  handleCancel = async () => {
+    const { dispatch, history, candidateInfo: { data: { ticketID = '' } = {} } = {} } = this.props;
+    if (!dispatch) {
+      return;
+    }
+
+    const response = await dispatch({
+      type: 'onboard/deleteTicketDraft',
+      payload: {
+        id: ticketID,
+      },
+    });
+    const { statusCode = 1 } = response;
+    if (statusCode === 200) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          cancelCandidate: true,
+        },
+      });
+      history.push('/employee-onboarding');
+    }
+  };
+
+  handleFinishLater = async () => {
+    const { candidateInfo: { data } = {}, dispatch, history } = this.props;
+    const response = await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        ...data,
+        // candidate: data.id
+      },
+    });
+    const { statusCode = 1 } = response;
+    if (statusCode === 200) {
+      history.push('/employee-onboarding');
+    }
+  };
 
   render() {
     const {
@@ -291,10 +330,9 @@ class FormTeamMember extends PureComponent {
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component:
-          processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ? (
-            !checkDocument ? null : (
-              <BackgroundRecheck />
-            )
+          processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
+          processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFER ? (
+            <BackgroundRecheck />
           ) : (
             <BackgroundCheck
               documentList={documentList}
@@ -303,6 +341,21 @@ class FormTeamMember extends PureComponent {
               processStatus={processStatus}
             />
           ),
+
+        // component:
+        //   processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
+        //   processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
+        //     !checkDocument ? null : (
+        //       <BackgroundRecheck />
+        //     )
+        //   ) : (
+        //     <BackgroundCheck
+        //       documentList={documentList}
+        //       loading={loading1}
+        //       reId={reId}
+        //       processStatus={processStatus}
+        //     />
+        //   ),
       },
       {
         id: 5,
@@ -324,6 +377,12 @@ class FormTeamMember extends PureComponent {
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
       },
+      // {
+      //   id: 8,
+      //   name: 'Additional Question',
+      //   key: 'additionalQuestion',
+      //   component: <AdditionalQuestion processStatus={processStatus} reId={reId} />,
+      // },
       // { id: 8, name: 'Custom Fields', key: 'customFields', component: <CustomField /> },
       // {
       //   id: 9,
@@ -342,6 +401,7 @@ class FormTeamMember extends PureComponent {
       offerDetails: false,
       payrollSettings: false,
       benefits: false,
+      additionalQuestion: false,
       // customFields: false,
       // additionalOptions: false,
     };
@@ -363,10 +423,12 @@ class FormTeamMember extends PureComponent {
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'add' && (
                 <div className={styles.titlePage__viewBtn}>
-                  <Button type="primary" ghost>
+                  <Button type="primary" ghost onClick={this.handleFinishLater}>
                     Finish Later
                   </Button>
-                  <Button danger>Cancel</Button>
+                  <Button danger onClick={this.handleCancel}>
+                    Cancel
+                  </Button>
                 </div>
               )}
             </div>

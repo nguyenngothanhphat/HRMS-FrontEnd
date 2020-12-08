@@ -9,34 +9,25 @@ import CollapseField from './components/CollapseField';
 import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
+import PROCESS_STATUS from '../utils';
 
-@connect(
-  ({
-    candidateInfo: {
-      tempData,
-      data: {
-        documentsByCandidate = [],
-        documentsByCandidateRD = [],
-        privateEmail = '',
-        candidate = '',
-      },
-    },
-  }) => ({
-    tempData,
-    documentsByCandidate,
-    documentsByCandidateRD,
-    privateEmail,
-    candidate,
-  }),
-)
+@connect(({ candidateInfo: { tempData, data: { // documentsByCandidate = [],
+      // documentsByCandidateRD = [],
+      privateEmail = '', candidate = '', processStatus } }, loading }) => ({
+  tempData,
+  privateEmail,
+  candidate,
+  processStatus,
+  loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
+}))
 class BackgroundRecheck extends Component {
   constructor(props) {
     super(props);
-    const {
-      tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
-    } = this.props;
+    // const {
+    //   tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
+    // } = this.props;
     this.state = {
-      docsList: docsListProp,
+      docsList: [],
       feedbackStatus: '',
       resubmitDocs: [],
       ineligibleDocs: [],
@@ -47,20 +38,49 @@ class BackgroundRecheck extends Component {
   }
 
   componentDidMount() {
-    const { tempData: { backgroundRecheck: { documentList = [] } = {} } = {} } = this.props;
-    if (documentList.length === 0) {
-      this.processDocumentData();
+    const { dispatch, candidate, processStatus = '' } = this.props;
+    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+    const {
+      tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
+    } = this.props;
+
+    this.setState({
+      docsList: docsListProp,
+    });
+
+    // this.processDocumentData(docsListProp);
+
+    if (
+      processStatus === PROVISIONAL_OFFER_DRAFT ||
+      processStatus === SENT_PROVISIONAL_OFFERS ||
+      processStatus === PENDING
+    ) {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate,
+          currentStep: 3,
+        },
+      });
     }
   }
 
-  processDocumentData = () => {
-    const { documentsByCandidate, dispatch } = this.props;
-    console.log('RUN', documentsByCandidate);
+  componentDidUpdate(prevProps) {
+    // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
+    if (this.state.docsList.length === 0 && this.props.tempData.documentsByCandidateRD) {
+      this.setState({
+        docsList: this.props.tempData.documentsByCandidateRD,
+      });
+    }
+  }
+
+  processDocumentData = (documentArr) => {
+    const { dispatch } = this.props;
     const groupA = [];
     const groupB = [];
     const groupC = [];
     const groupD = [];
-    documentsByCandidate.map((item) => {
+    documentArr.map((item) => {
       const { candidateGroup } = item;
       switch (candidateGroup) {
         case 'A':
@@ -181,7 +201,9 @@ class BackgroundRecheck extends Component {
   };
 
   handleCheckDocument = (event, indexGroupDoc, document) => {
-    const { documentsByCandidateRD, dispatch } = this.props;
+    const { tempData, dispatch } = this.props;
+    const { documentsByCandidateRD } = tempData;
+    // const { documentsByCandidateRD, dispatch } = this.props;
     const candidateDocumentStatus = event.target.value;
     const docsByCandidateRDCheck = documentsByCandidateRD;
     const checkedDocument = {
@@ -236,7 +258,6 @@ class BackgroundRecheck extends Component {
 
       // -------------------  END MODIFY
 
-      // console.log('setState all');
       this.setState({
         docsList: docsByCandidateRDCheck,
         feedbackStatus: status,
@@ -244,10 +265,6 @@ class BackgroundRecheck extends Component {
         resubmitDocs: newResubmitDocs,
         ineligibleDocs: newIneligibleDocs,
       });
-
-      // console.log(this.state.verifiedDocs);
-      // console.log(this.state.resubmitDocs);
-      // console.log(this.state.ineligibleDocs);
 
       dispatch({
         type: 'candidateInfo/saveOrigin',
@@ -258,7 +275,8 @@ class BackgroundRecheck extends Component {
     }
   };
 
-  renderCollapseFields = (documentsCandidateList) => {
+  renderCollapseFields = () => {
+    const { docsList: documentsCandidateList = [] } = this.state;
     if (documentsCandidateList.length === 0) {
       return <Skeleton active />;
     }
@@ -283,7 +301,7 @@ class BackgroundRecheck extends Component {
 
   render() {
     const { docsList, feedbackStatus, openModal, modalTitle } = this.state;
-    const { privateEmail } = this.props;
+    const { privateEmail, loading1 } = this.props;
     const Note = {
       title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
@@ -296,6 +314,7 @@ class BackgroundRecheck extends Component {
         </Typography.Text>
       ),
     };
+
     return (
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>
@@ -305,7 +324,7 @@ class BackgroundRecheck extends Component {
               All documents supporting candidate's employment eligibility will be displayed here
             </p>
             <div className={styles.backgroundRecheck__left}>
-              <>{docsList.length > 0 && this.renderCollapseFields(docsList)}</>
+              <>{this.renderCollapseFields()}</>
             </div>
           </Col>
           <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>
@@ -323,6 +342,7 @@ class BackgroundRecheck extends Component {
                   handleSendEmail={this.handleSendEmail}
                   isSentEmail={false}
                   privateEmail={privateEmail}
+                  loading={loading1}
                   // email={privateEmail}
                 />
               </Row>

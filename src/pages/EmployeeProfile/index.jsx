@@ -12,8 +12,10 @@ import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({
+@connect(({ employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
   employeeProfile,
+  currentUser,
+  permissions,
 }))
 class EmployeeProfile extends Component {
   constructor(props) {
@@ -22,6 +24,17 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location } = this.props;
+    if (prevProps.location.pathname !== location.pathname) {
+      this.fetchData();
+    }
+  }
+
+  fetchData = () => {
     const {
       employeeProfile,
       match: { params: { reId: employee = '' } = {} },
@@ -82,33 +95,67 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
-  }
+  };
 
-  render() {
-    const listMenu = [
-      {
-        id: 1,
-        name: 'General Info',
+  checkProfileOwner = (currentUserID, employeeID) => {
+    if (currentUserID === employeeID) {
+      return true;
+    }
+    return false;
+  };
 
-        component: <GeneralInfo />,
-      },
-      {
+  renderListMenu = (employee, _id) => {
+    const listMenu = [];
+    const profileOwner = this.checkProfileOwner(_id, employee);
+    const { permissions } = this.props;
+    listMenu.push({
+      id: 1,
+      name: 'General Info',
+      component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
+    });
+    if (permissions.viewTabEmployment !== -1 || profileOwner) {
+      listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
         component: <EmploymentTab />,
-      },
-      {
+      });
+    }
+    if (permissions.viewTabPerformance !== -1 || profileOwner) {
+      listMenu.push({
         id: 3,
         name: 'Performance History',
         component: <PerformanceHistory />,
-      },
-      { id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> },
-      { id: 5, name: 'Documents', component: <Documents /> },
-      // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
-      { id: 7, name: 'Time & Scheduling', component: <Test /> },
-      { id: 8, name: 'Benefit Plans', component: <BenefitTab /> },
-    ];
-    const { location: { state: { location = '' } = {} } = {} } = this.props;
+      });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+    }
+    if (permissions.viewTabDocument !== -1 || profileOwner) {
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
+    }
+    // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
+    if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
+      listMenu.push({ id: 7, name: 'Time & Scheduling', component: <Test /> });
+    }
+    if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
+      listMenu.push({ id: 8, name: 'Benefit Plans', component: <BenefitTab /> });
+    }
+
+    return listMenu;
+  };
+
+  render() {
+    const {
+      match: { params: { reId: employee = '' } = {} },
+      currentUser: { employee: currentEmployee = {} },
+      permissions = {},
+      location: { state: { location = '' } = {} } = {},
+    } = this.props;
+
+    const listMenu = this.renderListMenu(employee, currentEmployee._id);
+
+    const profileOwner = this.checkProfileOwner(currentEmployee._id, employee);
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
@@ -117,7 +164,12 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          <LayoutEmployeeProfile listMenu={listMenu} employeeLocation={location} />
+          <LayoutEmployeeProfile
+            listMenu={listMenu}
+            employeeLocation={location}
+            permissions={permissions}
+            profileOwner={profileOwner}
+          />
         </div>
       </PageContainer>
     );

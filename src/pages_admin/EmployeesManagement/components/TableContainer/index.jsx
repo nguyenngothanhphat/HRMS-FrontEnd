@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
+import exportToCsv from '@/utils/exportToCsv';
+import iconDownload from '@/assets/download-icon-yellow.svg';
 import TableEmployees from '../TableEmployees';
 import TabFilter from '../TabFilter';
 import AddEmployeeForm from './components/AddEmployeeForm';
@@ -102,6 +104,13 @@ class TableContainer extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/ClearFilter',
+    });
+  }
+
   initDataTable = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -171,6 +180,12 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
+        <div className={styles.buttonAddImport} onClick={this.downloadTemplate}>
+          <img src={iconDownload} alt="Download Template" />
+          <p className={styles.buttonAddImport_text}>
+            {formatMessage({ id: 'pages_admin.employees.table.downloadTemplate' })}
+          </p>
+        </div>
         <div className={styles.buttonAddImport} onClick={this.importEmployees}>
           <img
             className={styles.buttonAddImport_imgImport}
@@ -219,6 +234,59 @@ class TableContainer extends PureComponent {
     this.setState({
       visible: true,
     });
+  };
+
+  processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      return {
+        'Employee Id': item.employeeId,
+        'First Name': item.firstName,
+        'Last Name': item.lastName,
+        'Joined Date': item.joinDate,
+        Location: item.location,
+        Department: item.department,
+        Title: item.title,
+        'Work Email': item.workEmail,
+        'Personal Email': item.personalEmail,
+        'Manager Work Email': item.managerWorkEmail,
+        'Personal Number': item.personalNumber,
+      };
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+
+    return dataExport;
+  };
+
+  // Download template to import employees
+  downloadTemplate = () => {
+    const exportData = [
+      {
+        employeeId: 'PSI 0000',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        joinDate: '11/30/2020',
+        location: 'Vietnam',
+        department: 'Develop',
+        title: 'Junior Frontend',
+        workEmail: 'template@terralogic.com',
+        personalEmail: 'template@gmail.com',
+        managerWorkEmail: 'manager@terralogic.com',
+        personalNumber: '0123456789',
+      },
+    ];
+    exportToCsv('Template_Import_Employees.csv', this.processData(exportData));
   };
 
   handleCancel = () => {

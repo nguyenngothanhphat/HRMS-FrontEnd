@@ -56,7 +56,10 @@ class JobDetails extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.handleUpdateByHR();
+    const { tempData: { cancelCandidate = false } = {} } = this.props;
+    if (!cancelCandidate) {
+      this.handleUpdateByHR();
+    }
     // window.removeEventListener('unload', this.handleUnload, false);
   }
 
@@ -184,12 +187,22 @@ class JobDetails extends PureComponent {
             company: _id,
           },
         });
-        dispatch({
-          type: 'candidateInfo/fetchTitleList',
-          payload: {
-            company: _id,
-          },
-        });
+
+        // dispatch({
+        //   type: 'candidateInfo/fetchTitleList',
+        //   payload: {
+        //     company: _id,
+        //   },
+        // });
+
+        // if (!isEmpty(department)) {
+        //   dispatch({
+        //     type: 'candidateInfo/fetchTitleList',
+        //     payload: {
+        //       department: department._id,
+        //     },
+        //   });
+        // }
       }
     } else if (name === 'title') {
       const {
@@ -219,14 +232,21 @@ class JobDetails extends PureComponent {
           },
         },
       });
+
       if (!isEmpty(department)) {
-        const departmentTemp = [department._id];
+        const departmentTemp = [department];
         const locationTemp = [location._id];
         dispatch({
           type: 'candidateInfo/fetchManagerList',
           payload: {
-            departmentTemp,
-            locationTemp,
+            department: departmentTemp,
+            // locationTemp,
+          },
+        });
+        dispatch({
+          type: 'candidateInfo/fetchTitleList',
+          payload: {
+            department,
           },
         });
       }
@@ -234,7 +254,10 @@ class JobDetails extends PureComponent {
     if (name === 'reportingManager') {
       const { managerList } = tempData;
       const changedManagerList = JSON.parse(JSON.stringify(managerList));
-      const selectedManager = changedManagerList.find((data) => data._id === value);
+      // const selectedManager = changedManagerList.find((data) => data._id === value);
+      const selectedManager = changedManagerList.find(
+        (data) => data.generalInfo.firstName === value,
+      );
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -377,27 +400,27 @@ class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'workLocation',
-        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
+        name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
         id: 1,
         placeholder: 'Select a work location',
       },
       {
         title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
+        name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
         id: 2,
-        placeholder: 'Select a job title',
+        placeholder: 'Select a department',
       },
       {
         title: 'title',
-        name: 'Job Title',
+        name: 'Job Title*',
         id: 3,
         placeholder: 'Select a job title',
       },
       {
         title: 'reportingManager',
-        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
+        name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
         id: 4,
-        placeholder: 'Select',
+        placeholder: 'Select a reporting manager',
       },
     ];
     const candidateField = [

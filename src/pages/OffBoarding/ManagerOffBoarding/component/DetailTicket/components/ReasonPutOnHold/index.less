@@ -1,0 +1,81 @@
+.reasonPutOnHold {
+  background-color: #ffffff;
+  min-height: 220px;
+  padding: 30px;
+  margin-top: 20px;
+  &__title {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  &__action {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    &__text {
+      font-size: 11px;
+      color: #707177;
+    }
+    &__btn {
+      .btn {
+        width: 100px;
+        height: 35px;
+        border-radius: 25px;
+        font-weight: 500;
+        border: none;
+      }
+      .btn__cancel {
+        .btn;
+        margin-right: 30px;
+        border: 1px solid #de0e0e;
+        box-sizing: border-box;
+        border-radius: 25px;
+        width: 100px;
+        height: 35px;
+        color: #de0e0e;
+      }
+      .btn__submit {
+        .btn;
+        color: #ffffff;
+        background: #ffa100;
+      }
+    }
+  }
+
+  &__dateTime {
+    span {
+      font-weight: 500;
+      color: #464646;
+      span {
+        font-weight: normal;
+      }
+    }
+  }
+  &__content {
+    &__text {
+      font-size: 14px;
+      min-height: 66px;
+      border: 1px solid #d6dce0;
+      padding: 14px 10px;
+      color: #464646;
+    }
+    &__note {
+      margin-left: 4px;
+      margin-top: 6px;
+      font-size: 11px;
+      color: #707177;
+    }
+  }
+  :global {
+    .ant-input {
+      border: 1px solid #d6dce0;
+      padding-right: 140px;
+    }
+    textarea.ant-input {
+      min-height: 66px;
+    }
+    .ant-input:placeholder-shown {
+      text-overflow: ellipsis;
+      font-style: italic;
+    }
+  }
+}

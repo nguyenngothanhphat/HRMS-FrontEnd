@@ -27,6 +27,7 @@ const Note = {
   localStep,
   tempData,
   loading: loading.effects['upload/uploadFile'],
+  loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
 }))
 class EligibilityDocs extends PureComponent {
   constructor(props) {
@@ -145,6 +146,12 @@ class EligibilityDocs extends PureComponent {
     } = this.props;
     const { user } = generatedBy;
     const { email } = user;
+
+    this.setState({
+      openModal: true,
+      isSentEmail: true,
+    });
+
     dispatch({
       type: 'candidateProfile/sendEmailByCandidate',
       payload: {
@@ -204,8 +211,12 @@ class EligibilityDocs extends PureComponent {
   };
 
   closeModal = () => {
+    const { dispatch } = this.props;
     this.setState({
       openModal: false,
+    });
+    dispatch({
+      type: 'candidateProfile/refreshPage',
     });
   };
 
@@ -224,6 +235,7 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
+      loading1,
       data: {
         attachments,
         documentListToRender,
@@ -246,6 +258,7 @@ class EligibilityDocs extends PureComponent {
               <Title />
               {documentListToRender.length > 0 &&
                 documentListToRender.map((item, index) => {
+                  // console.log(index);
                   return (
                     <CollapseFields
                       onValuesChange={this.onValuesChange}
@@ -276,6 +289,7 @@ class EligibilityDocs extends PureComponent {
             workDuration !== 0 &&
             !isUndefined(workDuration) ? (
               <SendEmail
+                loading={loading1}
                 handleSendEmail={this.handleSendEmail}
                 email={email}
                 onValuesChangeEmail={this.onValuesChangeEmail}
