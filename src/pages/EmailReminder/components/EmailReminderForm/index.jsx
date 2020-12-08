@@ -25,19 +25,26 @@ const hashValues = [
 
 @connect(
   ({
+    loading,
     employeeSetting: {
       triggerEventList = [],
       departmentList = [],
       locationList = [],
       titleList = [],
       employeeTypeList = [],
+      departmentListByCompanyId = [],
     } = {},
+    user: { currentUser: { company: { _id = '' } = {} } = {} } = {},
   }) => ({
     triggerEventList,
     locationList,
     departmentList,
     titleList,
     employeeTypeList,
+    departmentListByCompanyId,
+    /*currentUser,*/
+    _id,
+    loadingFetchLeaveRequests: loading.effects['employeeSetting/fetchDepartmentListByCompanyId'],
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -91,44 +98,7 @@ class EmailReminderForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
-      receipients: [
-        {
-          name: 'The person (The triggering person)',
-          value: 'The person (The triggering person)',
-        },
-        {
-          name: 'Manager (The person’s manager)',
-          value: 'Manager (The person’s manager)',
-        },
-        {
-          name: 'Admin (All admins)',
-          value: 'Admin (All admins)',
-        },
-        {
-          name: 'UX & Research (everyone)',
-          value: 'UX & Research (everyone)',
-        },
-        {
-          name: 'Visual Design (everyone)',
-          value: 'Visual Design (everyone)',
-        },
-        {
-          name: 'Sales & Marketing (everyone)',
-          value: 'Sales & Marketing (everyone)',
-        },
-        {
-          name: 'Business Development (everyone)',
-          value: 'Business Development (everyone)',
-        },
-        {
-          name: 'Front end (everyone)',
-          value: 'Front end (everyone)',
-        },
-        {
-          name: 'Engineering (everyone)',
-          value: 'Engineering (everyone)',
-        },
-      ],
+      receipients: [],
       conditions: {
         units: [
           {
@@ -177,9 +147,25 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeApply = (value) => {
+    const { dispatch, _id, departmentListByCompanyId, loadingFetchLeaveRequests } = this.props;
+    const { receipients } = this.state;
+
     this.setState({
       appliesToData: value,
     });
+
+    if (value === 'any') {
+      dispatch({
+        type: 'employeeSetting/fetchDepartmentListByCompanyId',
+        payload: {
+          company: _id,
+        },
+      }).then((data) => {
+        this.setState({
+          receipients: data,
+        });
+      });
+    }
   };
 
   handleChangeEmail = (value) => {
@@ -377,6 +363,19 @@ class EmailReminderForm extends PureComponent {
     history.goBack();
   };
 
+  onChangeAnyPerson = (value) => {
+    console.log('Department list by company: ');
+    // const { receipients } = this.state;
+    // const { dispatch } = this.props;
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchDepartmentListByCompanyId',
+    //   payload: {},
+    // }).then(() => {
+    //   console.log('Department list by company: ', departmentListByCompanyId);
+    // });
+  };
+
   _renderApplyToOptions = () => {
     const { Option } = Select;
     const { appliesToData, receipients } = this.state;
@@ -386,9 +385,17 @@ class EmailReminderForm extends PureComponent {
         <>
           <Col span={12}>
             <Form.Item label="Receipients" name="receipients">
-              <Select size="large" placeholder="Please select a choice">
-                {receipients.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
+              <Select
+                size="large"
+                placeholder="Please select a choice"
+                // onChange={(value) => this.onChangeAnyPerson(value)}
+              >
+                {receipients.map((option, index) => {
+                  return (
+                    <Option value={option.value} key={index}>
+                      {option.name}
+                    </Option>
+                  );
                 })}
               </Select>
             </Form.Item>

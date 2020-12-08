@@ -91,3 +91,10 @@ export async function getEmployeeTypeList() {
     method: 'POST',
   });
 }
+
+export async function getDepartmentListByCompanyId(payload) {
+  return request('/api/department/list-by-company', {
+    method: 'POST',
+    data: payload,
+  });
+}

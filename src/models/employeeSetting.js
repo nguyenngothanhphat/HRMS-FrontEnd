@@ -15,6 +15,7 @@ import {
   uploadSignature,
   addCustomTemplate,
   removeTemplate,
+  getDepartmentListByCompanyId,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -38,6 +39,7 @@ const employeeSetting = {
     departmentList: [],
     titleList: [],
     employeeTypeList: [],
+    departmentListByCompanyId: [],
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -240,6 +242,22 @@ const employeeSetting = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchDepartmentListByCompanyId({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getDepartmentListByCompanyId, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { departmentListByCompanyId: data },
+        });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {
