@@ -64,14 +64,14 @@ class RequestInformation extends Component {
     const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
     const {
       status = '',
-      _id = '',
+      // _id = '',
       subject = '',
       fromDate = '',
       toDate = '',
       duration = '',
       // onDate = '',
       description = '',
-      type: { name = '', shortType = '' } = {},
+      type: { name = '', type = '', shortType = '' } = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -79,7 +79,7 @@ class RequestInformation extends Component {
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
-          <span className={styles.title}>{`[Ticket ID : ${_id}]: ${subject}`}</span>
+          <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
           <div className={styles.editButton} onClick={this.handleEdit}>
             <img src={EditIcon} className={styles.icon} alt="edit-icon" />
             <span className={styles.label}>Edit</span>
@@ -104,6 +104,12 @@ class RequestInformation extends Component {
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{`${name} (${shortType})`}</span>
+                  <span className={styles.smallNotice}>
+                    <span className={styles.normalText}>
+                      {shortType}s are covered under{' '}
+                      <span className={styles.link}>Standard Policy</span>
+                    </span>
+                  </span>
                 </Col>
               </Row>
               <Row>
@@ -123,6 +129,11 @@ class RequestInformation extends Component {
                   >
                     [{duration <= 1 ? `${duration} day` : `${duration} days`}]
                   </span>
+                  {type === 'A' && (
+                    <span className={styles.smallNotice}>
+                      <span className={styles.normalText}>{name}s gets credited each month.</span>
+                    </span>
+                  )}
                 </Col>
               </Row>
               <Row>

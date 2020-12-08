@@ -69,7 +69,7 @@ class ViewRequestForm extends PureComponent {
         <div className={styles.ViewRequestForm}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>[Ticket ID : 16003134]</p>
+              <p className={styles.titlePage__text}>[Ticket ID: 123456]</p>
               <div className={this.getColorOfStatus(status)}>
                 <span className={styles.dot} />
                 <span className={styles.statusText}>{this.getNameOfStatus(status)}</span>

@@ -6,7 +6,7 @@ import TimeOffModal from '@/components/TimeOffModal';
 import LeaveTimeRow from './LeaveTimeRow';
 import styles from './index.less';
 
-const { Option, OptGroup } = Select;
+const { Option } = Select;
 const { TextArea } = Input;
 
 @connect(({ timeOff, user, loading }) => ({
@@ -703,13 +703,7 @@ class RequestInformation extends Component {
                         );
                       })}
                     </Col>
-                    <Col span={6}>
-                      {/* <div className={styles.smallNotice}>
-                        <span className={styles.normalText}>
-                          Number of days: {numberOfDays} day(s)
-                        </span>
-                      </div> */}
-                    </Col>
+                    <Col span={6} />
                   </Row>
                 )}
               </Form.List>
