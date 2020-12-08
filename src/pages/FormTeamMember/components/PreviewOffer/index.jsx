@@ -25,7 +25,15 @@ const ROLE = {
 };
 
 const PreviewOffer = (props) => {
-  const { dispatch, currentUser = {}, tempData = {}, data = {}, loading1, loading2 } = props;
+  const {
+    dispatch,
+    currentUser = {},
+    tempData = {},
+    data = {},
+    loading1,
+    loading2,
+    loading3,
+  } = props;
 
   const {
     // email: mailProp,
@@ -306,9 +314,9 @@ const PreviewOffer = (props) => {
     setOpenModal2(false);
   };
 
-  const disableHrSubmitActions = () => {
-    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-  };
+  // const disableHrSubmitActions = () => {
+  //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+  // };
 
   const isOfferAccepted = () => {
     const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
@@ -413,6 +421,7 @@ const PreviewOffer = (props) => {
               className={`${
                 hrSignature.url && !isOfferAccepted() ? styles.active : styles.disable
               }`}
+              loading={loading3}
             >
               {formatMessage({ id: 'component.previewOffer.submit' })}
             </Button>
@@ -668,5 +677,6 @@ export default connect(
     rookieId,
     loading1: loading.effects['candidateInfo/sentForApprovalEffect'],
     loading2: loading.effects['candidateInfo/approveFinalOfferEffect'],
+    loading3: loading.effects['candidateInfo/updateByHR'],
   }),
 )(PreviewOffer);
