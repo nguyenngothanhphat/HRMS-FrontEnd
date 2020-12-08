@@ -75,7 +75,16 @@ class WorkShedule extends Component {
   };
 
   onFinish = (values) => {
-    console.log('Success:', values);
+    const { array } = this.state;
+    const arrayActive = array.filter((item) => item.check === true).map((data) => data.name);
+    const { endAmPM, endAt, startAmPM, startAt, totalHour } = values;
+    const payload = {
+      startWorkDay: { start: startAt, amPM: startAmPM },
+      endWorkDay: { start: endAt, amPM: endAmPM },
+      totalHour,
+      workday: arrayActive,
+    };
+    console.log(payload);
   };
 
   render() {
@@ -83,13 +92,20 @@ class WorkShedule extends Component {
     const format = 'HH:mm';
 
     const options = [
-      { label: 'AM', value: 'am' },
-      { label: 'PM', value: 'pm' },
+      { label: 'AM', value: 'AM' },
+      { label: 'PM', value: 'PM' },
     ];
     const { value1, value2 } = this.state;
     return (
       <div className={s.root}>
-        <Form onFinish={this.onFinish} requiredMark={false}>
+        <Form
+          onFinish={this.onFinish}
+          requiredMark={false}
+          initialValues={{
+            startAmPM: 'AM',
+            endAmPM: 'AM',
+          }}
+        >
           <div className={s.title}>Setup the employee work schedule</div>
           <div className={s.description}>
             How many hours does a regular work day consists of for an employee? How may days does an
@@ -105,31 +121,33 @@ class WorkShedule extends Component {
                 For each day the employee takes off, the number of hours as per the standard work
                 schedule will be deducted from the total leave balance.
               </div>
-              <div className={s.form}>
-                <div>
-                  <div>Total Hours in a workday</div>
+              <Row justify="space-between">
+                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                  <div className={s.content}>Total Hours in a workday</div>
                   <Form.Item name="totalHour">
                     <InputNumber
                       min={0}
+                      max={12}
+                      defaultValue={0}
                       placeholder="hours/day"
-                      formatter={(value) => `${value}days`}
+                      formatter={(value) => `${value} hours/day`}
                       parser={(value) => value.replace('days', '')}
                     />
                   </Form.Item>
-                </div>
-                <div>
-                  <div>Workday end at</div>
-                  <Row>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                  <div className={s.content}>Workday start at</div>
+                  <Row gutter={[16, 0]}>
                     <Col>
                       <Form.Item name="startAt">
                         <TimePicker format={format} />
                       </Form.Item>
                     </Col>
-                    <Col>
-                      <Form.Item name="amPM">
+                    <Col style={{ padding: '5px' }}>
+                      <Form.Item name="startAmPM">
                         <Radio.Group
                           options={options}
-                          onChange={this.onChange2}
+                          onChange={this.onChange1}
                           value={value1}
                           optionType="button"
                           buttonStyle="solid"
@@ -137,17 +155,17 @@ class WorkShedule extends Component {
                       </Form.Item>
                     </Col>
                   </Row>
-                </div>
-                <div>
-                  <div>Workday end at</div>
-                  <Row>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                  <div className={s.content}>Workday end at</div>
+                  <Row gutter={[13, 0]}>
                     <Col>
-                      <Form.Item>
+                      <Form.Item name="endAt">
                         <TimePicker format={format} />
                       </Form.Item>
                     </Col>
-                    <Col>
-                      <Form.Item label=" ">
+                    <Col style={{ padding: '5px' }}>
+                      <Form.Item name="endAmPM">
                         <Radio.Group
                           options={options}
                           onChange={this.onChange2}
@@ -158,21 +176,22 @@ class WorkShedule extends Component {
                       </Form.Item>
                     </Col>
                   </Row>
+                </Col>
+              </Row>
+              <div className={s.bottom}>
+                <div className={s.workHour}>Work days</div>
+                <div className={`${s.description} ${s.pb17}`}>
+                  For each day the employee takes off, the number of hours as per the standard work
+                  schedule will be deducted from the total leave balance.
                 </div>
+                <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
               </div>
-              <div className={s.workHour}>Work days</div>
-              <div className={`${s.description} ${s.pb17}`}>
-                For each day the employee takes off, the number of hours as per the standard work
-                schedule will be deducted from the total leave balance.
+              <div className={s.straight} />
+              <div className={s.flex}>
+                <Button className={s.btnSave} htmlType="submit">
+                  Save
+                </Button>
               </div>
-              <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
-            </div>
-            <div className={s.straight} />
-            <div className={s.flex}>
-              <Button className={s.btnSave} type="primary" htmlType="submit">
-                Next
-              </Button>
-              <Button className={s.btnSave}>Next</Button>
             </div>
           </div>
         </Form>

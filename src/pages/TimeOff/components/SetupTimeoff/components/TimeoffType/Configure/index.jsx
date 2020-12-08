@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+// import { Row, Col } from 'antd';
 import BaseAccual from './BaseAccual';
 import TenuaAccrua from './TenuaAccrua';
 // import AccrualSchedule from './AccrualSchedule';
@@ -41,6 +41,7 @@ class Configure extends Component {
   handleClick = (item) => {
     const { id, ref } = item;
     this.setState({ select: id });
+    console.log(item);
     ref.current.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -70,7 +71,6 @@ class Configure extends Component {
   render() {
     // const { tabKey = '' } = this.props;
     const { baseAccual } = this.state;
-    console.log(baseAccual, 'baseAccual');
     const list = [
       {
         id: 'baseAccrual',

@@ -28,15 +28,33 @@ class AssignPolicy extends Component {
   render() {
     const { visible } = this.state;
     return (
-      <div className={styles.balance}>
+      <Row className={styles.balance} span={24}>
         <div className={styles.balanceFrom}>
           <div className={styles.header}>Standard Holiday calendar</div>
           <Divider />
-          <Form>
+          <Form requiredMark={false} onFinish={this.onFinish} colon={false}>
             <div className={styles.fromBody}>
+              <Row gutter={[90, 0]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
+                  <Form.Item
+                    label="Assign to"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="All employees" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
+                  <Form.Item
+                    label="Excluding"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="None" />
+                  </Form.Item>
+                </Col>
+              </Row>
               <div className={styles.textContent}>Standard Holiday calendar</div>
-              <Row>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+              <Row gutter={[90, 0]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Assign to"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -44,7 +62,7 @@ class AssignPolicy extends Component {
                     <Select className={styles.select} placeholder="All employees" />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Excluding"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -54,8 +72,8 @@ class AssignPolicy extends Component {
                 </Col>
               </Row>
               <div className={styles.textContent}>Standard Workhours and days</div>
-              <Row>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+              <Row gutter={[90, 0]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Assign to"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -63,7 +81,7 @@ class AssignPolicy extends Component {
                     <Select className={styles.select} placeholder="All employees" />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Excluding"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -72,9 +90,9 @@ class AssignPolicy extends Component {
                   </Form.Item>
                 </Col>
               </Row>
-              <div className={styles.textContent}>Standard Workhours and days</div>
-              <Row>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+              <div className={styles.textContent}>Casual Leave policy</div>
+              <Row gutter={[90, 0]}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Assign to"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -82,7 +100,7 @@ class AssignPolicy extends Component {
                     <Select className={styles.select} placeholder="All employees" />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={10} xl={10}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Excluding"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -91,14 +109,34 @@ class AssignPolicy extends Component {
                   </Form.Item>
                 </Col>
               </Row>
-              <Row className={styles.footer}>
-                <Col xs={24} sm={24} md={24} lg={10} xl={5}>
-                  <Button className={styles.btnSubmit} onClick={this.handleClick}>
-                    Finish
-                  </Button>
+              <div className={styles.textContent}>Sick Leave policy</div>
+              <Row gutter={[90, 0]}>
+                <Col xs={24} sm={24} md={24} lg={10} xl={11}>
+                  <Form.Item
+                    label="Assign to"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="All employees" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={10} xl={11}>
+                  <Form.Item
+                    label="Excluding"
+                    rules={[{ required: true, message: 'Please select' }]}
+                  >
+                    <Select className={styles.select} placeholder="None" />
+                  </Form.Item>
                 </Col>
               </Row>
             </div>
+            <div className={styles.straightLine} />
+            <Row className={styles.footer}>
+              <Col xs={24} sm={24} md={24} lg={10} xl={3}>
+                <Button className={styles.btnSubmit} onClick={this.handleClick}>
+                  Finish
+                </Button>
+              </Col>
+            </Row>
           </Form>
           <ModalNotice
             modalContent="Syncing all data and setting up your Timeoff app."
@@ -106,7 +144,7 @@ class AssignPolicy extends Component {
             handleCancel={this.handleCandelSchedule}
           />
         </div>
-      </div>
+      </Row>
     );
   }
 }
