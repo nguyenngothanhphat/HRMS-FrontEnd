@@ -30,6 +30,11 @@ export default class DataTable extends PureComponent {
       dataIndex: 'onDate',
       align: 'left',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Duration',
