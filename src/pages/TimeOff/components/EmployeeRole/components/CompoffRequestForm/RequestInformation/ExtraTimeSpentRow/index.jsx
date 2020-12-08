@@ -27,9 +27,9 @@ class ExtraTimeSpentRow extends PureComponent {
       <Row className={styles.ExtraTimeSpentRow}>
         <Col span={16}>
           <Row key={`${index + 1}`} justify="center" align="center" className={styles.rowContainer}>
-            <Col span={6}>{date}</Col>
-            <Col span={6}>{moment(date).locale('en').format('dddd')}</Col>
-            <Col span={9}>
+            <Col span={7}>{date}</Col>
+            <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
+            <Col span={7}>
               <Form.Item
                 name={[index]}
                 fieldKey={[index]}

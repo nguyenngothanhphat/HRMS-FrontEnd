@@ -293,7 +293,9 @@ class RequestInformation extends Component {
                   }}
                   placeholder="Enter Project"
                 >
-                  <Option value="HRMS Projekt">HRMS Projekt</Option>
+                  <Option value="HRMS Projekt">
+                    <span style={{ fontSize: '13px' }}>HRMS Projekt</span>
+                  </Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -368,9 +370,9 @@ class RequestInformation extends Component {
             <Col span={12}>
               <div className={styles.extraTimeSpent}>
                 <Row className={styles.header}>
-                  <Col span={6}>Date</Col>
-                  <Col span={6}>Day</Col>
-                  <Col span={12}>Time Spent (In Hrs)</Col>
+                  <Col span={7}>Date</Col>
+                  <Col span={7}>Day</Col>
+                  <Col span={10}>Time Spent (In Hrs)</Col>
                 </Row>
                 {(durationFrom === '' || durationTo === '') && (
                   <div className={styles.content}>
@@ -435,7 +437,7 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <TextArea placeholder="The reason I am taking timeoff is …" />
+                <TextArea rows={3} placeholder="The reason I am taking timeoff is …" />
               </Form.Item>
             </Col>
             <Col span={6} />

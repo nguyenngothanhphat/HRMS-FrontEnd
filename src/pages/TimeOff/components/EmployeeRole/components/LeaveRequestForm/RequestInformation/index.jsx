@@ -769,7 +769,7 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <TextArea placeholder="The reason I am taking timeoff is …" />
+                <TextArea rows={3} placeholder="The reason I am taking timeoff is …" />
               </Form.Item>
             </Col>
             <Col span={6} />
