@@ -10,6 +10,7 @@ import LastWorkingDate from './components/LWD';
 // import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
+import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
 import styles from './index.less';
 
 @connect(
@@ -20,6 +21,7 @@ import styles from './index.less';
       list1On1 = [],
       listProjectByEmployee = [],
       listMeetingTime = [],
+      showModalSuccessfully = false,
     } = {},
     user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
   }) => ({
@@ -30,6 +32,7 @@ import styles from './index.less';
     listProjectByEmployee,
     listMeetingTime,
     myId,
+    showModalSuccessfully,
   }),
 )
 class HRDetailTicket extends Component {
@@ -74,6 +77,16 @@ class HRDetailTicket extends Component {
       },
     });
   }
+
+  hideModal = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        showModalSuccessfully: false,
+      },
+    });
+  };
 
   handleSaveSchedule = ({ meetingTime, meetingDate }) => {
     const {
@@ -130,6 +143,7 @@ class HRDetailTicket extends Component {
       listProjectByEmployee = [],
       listMeetingTime,
       loadingGetById,
+      showModalSuccessfully,
     } = this.props;
     const {
       reasonForLeaving = '',
@@ -152,66 +166,73 @@ class HRDetailTicket extends Component {
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
     return (
-      <PageContainer>
-        <div className={styles.hrDetailTicket}>
-          <Affix offsetTop={40}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>
-                Terminate work relationship with {nameFrist} [{employeeId}]
-              </p>
-            </div>
-          </Affix>
-          <Row className={styles.detailTicket__content} gutter={[30, 30]}>
-            <Col span={17}>
-              <RequesteeDetail
-                id={employeeId}
-                avatar={avatar}
-                name={nameFrist}
-                jobTitle={jobTitle}
-                listProject={listProjectByEmployee}
-              />
-              <ResignationRequestDetail
-                reason={reasonForLeaving}
-                date={requestDate}
-                name={nameFrist}
-              />
-              {/* {lastWorkingDate && <CommentsFromHR />} */}
-              {listComment.length !== 0 && (
-                <div className={styles.viewListComment}>
-                  {listComment.map((item) => {
-                    const { _id } = item;
-                    return (
-                      <Fragment key={_id}>
-                        <EditComment itemComment={item} />
-                      </Fragment>
-                    );
-                  })}
-                </div>
-              )}
-              {listScheduleMeeting.map((item) => {
-                return (
-                  <Fragment key={item._id}>
-                    <ScheduleMeeting data={item} />
-                  </Fragment>
-                );
-              })}
-              <LastWorkingDate />
-            </Col>
-            <Col span={7}>
-              <InfoEmployee />
-              <ButtonSet1On1
-                loading={loading}
-                visible={openModal}
-                handleclick={this.handleclick}
-                handleSubmit={this.handleSaveSchedule}
-                listMeetingTime={listMeetingTime}
-                handleCandelSchedule={this.handleCandelSchedule}
-                keyModal={keyModal}
-              />
-            </Col>
-          </Row>
-        </div>
-      </PageContainer>
+      <>
+        <PageContainer>
+          <div className={styles.hrDetailTicket}>
+            <Affix offsetTop={40}>
+              <div className={styles.titlePage}>
+                <p className={styles.titlePage__text}>
+                  Terminate work relationship with {nameFrist} [{employeeId}]
+                </p>
+              </div>
+            </Affix>
+            <Row className={styles.detailTicket__content} gutter={[30, 30]}>
+              <Col span={17}>
+                <RequesteeDetail
+                  id={employeeId}
+                  avatar={avatar}
+                  name={nameFrist}
+                  jobTitle={jobTitle}
+                  listProject={listProjectByEmployee}
+                />
+                <ResignationRequestDetail
+                  reason={reasonForLeaving}
+                  date={requestDate}
+                  name={nameFrist}
+                />
+                {/* {lastWorkingDate && <CommentsFromHR />} */}
+                {listComment.length !== 0 && (
+                  <div className={styles.viewListComment}>
+                    {listComment.map((item) => {
+                      const { _id } = item;
+                      return (
+                        <Fragment key={_id}>
+                          <EditComment itemComment={item} />
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                )}
+                {listScheduleMeeting.map((item) => {
+                  return (
+                    <Fragment key={item._id}>
+                      <ScheduleMeeting data={item} />
+                    </Fragment>
+                  );
+                })}
+                <LastWorkingDate />
+              </Col>
+              <Col span={7}>
+                <InfoEmployee />
+                <ButtonSet1On1
+                  loading={loading}
+                  visible={openModal}
+                  handleclick={this.handleclick}
+                  handleSubmit={this.handleSaveSchedule}
+                  listMeetingTime={listMeetingTime}
+                  handleCandelSchedule={this.handleCandelSchedule}
+                  keyModal={keyModal}
+                />
+              </Col>
+            </Row>
+          </div>
+        </PageContainer>
+        <ModalNotice
+          visible={showModalSuccessfully}
+          type="ACCEPTED"
+          handleCancel={this.hideModal}
+        />
+      </>
     );
   }
 }
