@@ -287,14 +287,14 @@ class SalaryStructureTemplate extends PureComponent {
     // const tempTableData = [];
     // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
 
-    dispatch({
-      type: 'candidateInfo/saveOrigin',
-      payload: {
-        title: {
-          _id: value,
-        },
-      },
-    });
+    // dispatch({
+    //   type: 'candidateInfo/saveOrigin',
+    //   payload: {
+    //     title: {
+    //       _id: value,
+    //     },
+    //   },
+    // });
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
