@@ -141,3 +141,10 @@ export async function requestChangeLWD(payload) {
     data: payload,
   });
 }
+
+export async function handleRequestChangeLWD(payload) {
+  return request('/api/offboardingrequest/approval-lwd', {
+    method: 'POST',
+    data: payload,
+  });
+}

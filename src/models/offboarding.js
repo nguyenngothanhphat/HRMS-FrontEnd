@@ -21,6 +21,7 @@ import {
   getListAssigned,
   getListAssignee,
   requestChangeLWD,
+  handleRequestChangeLWD,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -327,6 +328,17 @@ const offboarding = {
         if (statusCode !== 200) throw response;
         notification.success({ message });
         yield put({ type: 'fetchRequestById', payload: { id } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *handleRequestChangeLWD({ payload = {} }, { call }) {
+      let response = {};
+      try {
+        response = yield call(handleRequestChangeLWD, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
       } catch (errors) {
         dialog(errors);
       }

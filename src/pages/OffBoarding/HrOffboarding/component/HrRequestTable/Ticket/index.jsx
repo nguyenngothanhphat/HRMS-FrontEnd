@@ -63,6 +63,18 @@ class HRDetailTicket extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        itemNewCreate1On1: {},
+        myRequest: {},
+        showModalSuccessfully: false,
+      },
+    });
+  }
+
   handleSaveSchedule = ({ meetingTime, meetingDate }) => {
     const {
       dispatch,
