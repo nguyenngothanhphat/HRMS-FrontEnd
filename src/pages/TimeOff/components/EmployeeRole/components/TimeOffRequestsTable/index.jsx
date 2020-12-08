@@ -47,7 +47,7 @@ class TimeOffRequestsTable extends PureComponent {
     const leaveRequestsData = this.renderData(leaveRequests);
     const specialRequestsData = this.renderData(leaveRequests);
     const lwpRequestsData = this.renderData(leaveRequests);
-    const compoffRequestsData = this.renderData(leaveRequests);
+    // const compoffRequestsData = this.renderData(leaveRequests);
 
     return (
       <div className={styles.TimeOffRequestsTable}>
@@ -71,19 +71,19 @@ class TimeOffRequestsTable extends PureComponent {
           >
             <>
               <TabPane tab="Leave Request" key="1">
-                <TimeOffRequestTab data={leaveRequestsData} />
+                <TimeOffRequestTab data={leaveRequestsData} type={1} />
               </TabPane>
               <TabPane tab="Special Leave Request" key="2">
-                <TimeOffRequestTab data={specialRequestsData} />
+                <TimeOffRequestTab data={specialRequestsData} type={1} />
               </TabPane>
               <TabPane tab="LWP Request" key="3">
-                <TimeOffRequestTab data={lwpRequestsData} />
+                <TimeOffRequestTab data={lwpRequestsData} type={1} />
               </TabPane>
               <TabPane tab="WFH/CP Requests" key="4">
-                <TimeOffRequestTab data={emptyData} />
+                <TimeOffRequestTab data={emptyData} type={1} />
               </TabPane>
               <TabPane tab="Compoff Request" key="5">
-                <TimeOffRequestTab data={compoffRequestsData} />
+                <TimeOffRequestTab data={emptyData} type={2} />
               </TabPane>
             </>
           </Tabs>

@@ -125,6 +125,7 @@ class RequestInformation extends Component {
                   <span
                     style={{
                       fontWeight: 'bold',
+                      fontSize: '12px',
                     }}
                   >
                     [{duration <= 1 ? `${duration} day` : `${duration} days`}]

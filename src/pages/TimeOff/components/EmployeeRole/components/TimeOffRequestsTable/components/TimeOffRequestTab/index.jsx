@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import DataTable from '../DataTable';
+import CompoffTable from '../CompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
@@ -66,7 +67,7 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
 
   render() {
     const { selectedFilterTab, inProgressData, approvedData, rejectedData, draftData } = this.state;
-    const { data = [] } = this.props;
+    const { data = [], type = 0 } = this.props;
 
     const dataNumber = {
       inProgressNumber: inProgressData.length,
@@ -90,10 +91,22 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
             </div>
           ) : (
             <div>
-              {selectedFilterTab === '1' ? <DataTable data={inProgressData} /> : ''}
-              {selectedFilterTab === '2' ? <DataTable data={approvedData} /> : ''}
-              {selectedFilterTab === '3' ? <DataTable data={rejectedData} /> : ''}
-              {selectedFilterTab === '4' ? <DataTable data={draftData} /> : ''}
+              {type === 1 && (
+                <>
+                  {selectedFilterTab === '1' ? <DataTable data={inProgressData} /> : ''}
+                  {selectedFilterTab === '2' ? <DataTable data={approvedData} /> : ''}
+                  {selectedFilterTab === '3' ? <DataTable data={rejectedData} /> : ''}
+                  {selectedFilterTab === '4' ? <DataTable data={draftData} /> : ''}
+                </>
+              )}
+              {type === 2 && (
+                <>
+                  {selectedFilterTab === '1' ? <CompoffTable data={inProgressData} /> : ''}
+                  {selectedFilterTab === '2' ? <CompoffTable data={approvedData} /> : ''}
+                  {selectedFilterTab === '3' ? <CompoffTable data={rejectedData} /> : ''}
+                  {selectedFilterTab === '4' ? <CompoffTable data={draftData} /> : ''}
+                </>
+              )}
             </div>
           )}
         </div>
