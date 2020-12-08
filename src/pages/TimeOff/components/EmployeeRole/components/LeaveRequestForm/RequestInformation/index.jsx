@@ -662,7 +662,10 @@ class RequestInformation extends Component {
               <span>Leave time</span>
             </Col>
             <Col span={12}>
-              <div className={styles.extraTimeSpent}>
+              <div
+                className={styles.extraTimeSpent}
+                style={selectedType === 'C' || selectedType === 'D' ? { marginBottom: '24px' } : {}}
+              >
                 <Row className={styles.header}>
                   <Col span={7}>Date</Col>
                   <Col span={7}>Day</Col>
@@ -675,6 +678,15 @@ class RequestInformation extends Component {
                     </div>
                   </div>
                 )}
+                {durationFrom !== '' &&
+                  durationTo !== '' &&
+                  (selectedType === 'C' || selectedType === 'D') && (
+                    <div className={styles.content}>
+                      <div className={styles.emptyContent}>
+                        <span>Selected days are automatically set to whole-day leave</span>
+                      </div>
+                    </div>
+                  )}
               </div>
             </Col>
             <Col span={6} />

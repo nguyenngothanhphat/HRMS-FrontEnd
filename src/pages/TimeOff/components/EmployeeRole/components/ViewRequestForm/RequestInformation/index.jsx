@@ -129,7 +129,7 @@ class RequestInformation extends Component {
                   >
                     [{duration <= 1 ? `${duration} day` : `${duration} days`}]
                   </span>
-                  {type === 'A' && (
+                  {(type === 'A' || type === 'B') && (
                     <span className={styles.smallNotice}>
                       <span className={styles.normalText}>{name}s gets credited each month.</span>
                     </span>
