@@ -37,7 +37,7 @@ const FileInfo = [
 ];
 
 const OfferDetails = (props) => {
-  const { dispatch, checkCandidateMandatory, localStep, tempData, data } = props;
+  const { dispatch, checkCandidateMandatory, localStep, tempData, data, loading1 } = props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
   const { candidateSignature: candidateSignatureProp = {} } = data;
 
@@ -284,6 +284,7 @@ const OfferDetails = (props) => {
                         onClick={handleSubmit}
                         className={`${signature.url ? s.active : s.disable}`}
                         disabled={!signature.url}
+                        loading={loading1}
                       >
                         {formatMessage({ id: 'component.previewOffer.submit' })}
                       </Button>
@@ -361,10 +362,12 @@ export default connect(
       tempData = {},
       data = {},
     } = {},
+    loading,
   }) => ({
     checkCandidateMandatory,
     localStep,
     tempData,
     data,
+    loading1: loading.effects['candidateProfile/updateByCandidateEffect'],
   }),
 )(OfferDetails);

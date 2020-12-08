@@ -400,25 +400,25 @@ class JobDetails extends PureComponent {
     const dropdownField = [
       {
         title: 'workLocation',
-        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
+        name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
         id: 1,
         placeholder: 'Select a work location',
       },
       {
         title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
+        name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
         id: 2,
         placeholder: 'Select a department',
       },
       {
         title: 'title',
-        name: 'Job Title',
+        name: 'Job Title*',
         id: 3,
         placeholder: 'Select a job title',
       },
       {
         title: 'reportingManager',
-        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
+        name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
         id: 4,
         placeholder: 'Select a reporting manager',
       },
