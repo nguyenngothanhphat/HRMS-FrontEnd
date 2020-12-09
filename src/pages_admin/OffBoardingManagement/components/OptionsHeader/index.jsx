@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -8,10 +9,12 @@ export default class OptionsHeader extends PureComponent {
     // eslint-disable-next-line no-console
     // console.log('values', values);
     const { status = [], fromDate = '', toDate = '' } = values;
+    const from = moment(fromDate).locale('en').format('YYYY-MM-DD');
+    const to = moment(toDate).locale('en').format('YYYY-MM-DD');
     const filterData = {
       status,
-      fromDate,
-      toDate,
+      fromDate: fromDate !== '' && fromDate !== null ? from : '',
+      toDate: toDate !== '' && toDate !== null ? to : '',
     };
     const { reloadData = () => {} } = this.props;
     reloadData(filterData);
