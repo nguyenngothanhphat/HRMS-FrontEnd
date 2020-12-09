@@ -263,18 +263,37 @@ class EmailReminderForm extends PureComponent {
   onAddConditionDepartment = (id) => {
     alert(id);
     const { conditionsData } = this.state;
-    const newConditionsData = [...conditionsData];
-    console.log('newConditionsData: ', newConditionsData);
+    const newData = [...conditionsData];
 
-    // array chua gia tri cua value cu + 123
-    // 1 object moi { id: id, key,,tobeverb, value: array}
+    const newValue = '';
+    let originalValue = '';
+    let originalKey = '';
+    let originalToBeVerb = '';
 
-    const value = { value: '123' };
-    newConditionsData.push(value);
+    newData.map((data) => {
+      originalKey = data.key;
+      originalToBeVerb = data.tobeVerb;
+      originalValue = data.value;
+    })
 
-    console.log('newConditionsData after push : ', newConditionsData);
-    console.log('data: ', value);
-  };
+    const arr = [originalValue, newValue];
+
+    const newObj = {
+      id: id,
+      key: originalKey,
+      tobeVerb: originalToBeVerb,
+      value: arr,
+    }
+
+    const index = newData.findIndex((item) => item.id === id);
+
+    newData[index] = newObj;
+
+    this.setState({
+      conditionsData: newData,
+    });
+
+  }
 
   onAddCondition = () => {
     const { conditionsData, conditions } = this.state;
@@ -322,8 +341,16 @@ class EmailReminderForm extends PureComponent {
     const { Option } = Select;
     const {
       conditionsData,
+      conditionsData: {value = []},
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
+
+    console.log('conditionsData: ', conditionsData );
+
+    const valueData = conditionsData.map(data => data.value);
+    console.log('value data 0: ', valueData[0][0] );
+    console.log('value data 1: ', valueData[0][1] );
+  
     return (
       <Col span={24}>
         <Form.Item label="Conditions: Trigger for someone if">
@@ -360,7 +387,35 @@ class EmailReminderForm extends PureComponent {
 
                 {/* Departments  */}
                 <Col span={10} className={styles.departmentCondition}>
-                  <Select
+                  {
+                    valueData.length > 0 ? (
+                      <>
+                        {
+                          valueData[0].map((item, index) => {
+                            return (
+                              <>
+                                <Select
+                                  key={index}
+                                  size="large"
+                                  value={item}
+                                  placeholder="Please select a choice"
+                                  onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                                >
+                                  {departments.map((department) => {
+                                    return (
+                                      <Option value={department._id} key={department._id}>
+                                        {department.name}
+                                      </Option>
+                                    );
+                                  })}
+                                </Select>
+                              </>
+                            )
+                          })
+                        }
+                      </>
+                    ) : (
+                      <Select
                     size="large"
                     value={data.value}
                     placeholder="Please select a choice"
@@ -374,6 +429,8 @@ class EmailReminderForm extends PureComponent {
                       );
                     })}
                   </Select>
+                    )
+                  }
                   <Col span={1}>
                     <img
                       className={styles.onAddConditionBtn}
