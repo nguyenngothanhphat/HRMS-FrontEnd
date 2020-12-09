@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
 import t from './index.less';
 
+@connect(({ loading }) => ({
+  loading: loading.effects['offboarding/fetchList'],
+}))
 class TableEmployee extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +28,7 @@ class TableEmployee extends Component {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], textEmpty = 'No resignation request is submitted', loading } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -105,12 +108,13 @@ class TableEmployee extends Component {
         <Table
           locale={{
             emptyText: (
-              <span>
+              <div className={t.viewEmpty}>
                 <img src={empty} alt="" />
-                <p className={t.textEmpty}>No resignation request is submitted</p>
-              </span>
+                <p className={t.textEmpty}>{textEmpty}</p>
+              </div>
             ),
           }}
+          loading={loading}
           columns={columns}
           dataSource={data}
           hideOnSinglePage

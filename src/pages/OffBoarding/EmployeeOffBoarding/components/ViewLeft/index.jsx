@@ -3,7 +3,7 @@ import { Button, Tabs } from 'antd';
 import { Link, connect } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
 import TableAssigned from '@/components/TableAssigned';
-import TabContent from './tabContent';
+import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
 import styles from './index.less';
 
@@ -90,11 +90,11 @@ class ViewLeft extends Component {
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
             <TabPane tab="Send Request" key="1">
-              <TabContent data={data} countTable={countdata} />
+              <ViewTable data={data} countTable={countdata} />
             </TabPane>
             <TabPane tab="Drafts" key="2">
               <div className={styles.marrinTop}>
-                <TabDrafts data={data} />
+                <TabDrafts data={data} textEmpty="No draft saved" />
               </div>
             </TabPane>
             <TabPane tab="Assigned" key="3">
