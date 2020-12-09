@@ -208,9 +208,11 @@ const candidateProfile = {
     },
 
     *updateByCandidateEffect({ payload }, { call }) {
+      console.log(payload);
       let response;
       try {
         response = yield call(updateByCandidate, payload);
+
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {

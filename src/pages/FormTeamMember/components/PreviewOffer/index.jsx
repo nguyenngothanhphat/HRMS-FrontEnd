@@ -417,7 +417,7 @@ const PreviewOffer = (props) => {
             <Button
               type="primary"
               onClick={handleHrSignatureSubmit}
-              disabled={isOfferAccepted()}
+              disabled={!hrSignature.url && isOfferAccepted()}
               className={`${
                 hrSignature.url && !isOfferAccepted() ? styles.active : styles.disable
               }`}
