@@ -1,16 +1,89 @@
 import { dialog } from '@/utils/utils';
-import { getHolidaysList, getLeavingListByEmployee } from '../services/timeOff';
+import {
+  getHolidaysList,
+  getLeaveBalanceOfUser,
+  getLeaveRequestOfEmployee,
+  addLeaveRequest,
+  getTimeOffTypes,
+  getEmailsListByCompany,
+  getLeaveRequestById,
+} from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
     holidaysList: [],
     leavingList: [],
+    totalLeaveBalance: {},
+    leaveRequests: [],
+    timeOffTypes: [],
+    employeeInfo: {},
+    emailsList: [],
+    viewingLeaveRequest: {},
   },
   effects: {
-    *fetchHolidaysList(_, { call, put }) {
+    *fetchTimeOffTypes(_, { call, put }) {
       try {
-        const response = yield call(getHolidaysList);
+        const response = yield call(getTimeOffTypes);
+        const { statusCode, data: timeOffTypes = {} } = response;
+        // console.log('timeOffTypes', timeOffTypes);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypes },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeaveBalanceOfUser(_, { call, put }) {
+      try {
+        const response = yield call(getLeaveBalanceOfUser);
+        const { statusCode, data: totalLeaveBalance = {} } = response;
+        // console.log('totalLeaveBalance', totalLeaveBalance);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { totalLeaveBalance },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeaveRequestOfEmployee({ employee = '' }, { call, put }) {
+      try {
+        if (employee !== '') {
+          const response = yield call(getLeaveRequestOfEmployee, { employee });
+          const { statusCode, data: leaveRequests = [] } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { leaveRequests },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchLeaveRequestById({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(getLeaveRequestById, { id });
+          const { statusCode, data: viewingLeaveRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { viewingLeaveRequest },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getHolidaysList, { year, month });
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -21,14 +94,34 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchLeavingList(_, { call, put }) {
+    *addLeaveRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getLeavingListByEmployee);
-        const { statusCode, data: leavingList = [] } = response;
+        console.log('payload', payload);
+        const response = yield call(addLeaveRequest, payload);
+        const { statusCode, data: addedLeaveRequest = {} } = response;
+        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { leavingList },
+          payload: { addedLeaveRequest },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+      try {
+        const response = yield call(getEmailsListByCompany, {
+          company,
+        });
+        // console.log('email res', response);
+        const { statusCode, data: emailsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { emailsList },
         });
       } catch (errors) {
         dialog(errors);

@@ -1,8 +1,7 @@
 .EventDetailBox {
-  background-color: #568afa12;
-  border-radius: 5px;
+  background-color: #fafafa;
   align-items: center;
-  padding: 10px;
+  padding: 7px 24px;
   margin-bottom: 10px;
   cursor: pointer;
   :global {
@@ -13,15 +12,33 @@
   }
   .eventOfDay {
     padding-left: 5px;
+    color: #161c29;
   }
   .dateAndMonth {
+    border-radius: 5px;
+    background-color: #f4f4f6;
+    padding: 5px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    span {
-      font-size: 11px;
+    .subtractSymbol {
       font-weight: bold;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      span {
+        font-weight: bold;
+        color: #161c29;
+      }
+      .day {
+        font-size: 13px;
+      }
+      .month {
+        font-size: 11px;
+      }
     }
   }
   .dayInWeek {

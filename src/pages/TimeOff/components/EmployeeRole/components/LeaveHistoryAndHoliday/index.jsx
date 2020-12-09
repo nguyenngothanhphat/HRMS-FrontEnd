@@ -3,6 +3,7 @@ import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
 import { connect } from 'umi';
+import moment from 'moment';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
@@ -23,9 +24,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
+      payload: { year: moment().format('YYYY'), month: '' },
     });
     dispatch({
-      type: 'timeOff/fetchLeavingList',
+      type: 'timeOff/fetchLeaveRequestOfEmployee',
     });
   };
 
@@ -59,17 +61,68 @@ class LeaveHistoryAndHoliday extends PureComponent {
     );
   };
 
+  // SORT BY DATE
+  compareDates = (a, b) => {
+    if (moment(a.fromDate).isBefore(moment(b.fromDate))) {
+      return 1;
+    }
+    if (moment(a.fromDate).isAfter(moment(b.fromDate))) {
+      return -1;
+    }
+    return 0;
+  };
+
+  formatHolidayLists = (holidaysList) => {
+    let result = holidaysList.map((value) => {
+      const { name = '', date = '' } = value;
+      const fromDate = moment(date).locale('en').format('MM/DD/YYYY');
+      return {
+        name,
+        fromDate,
+      };
+    });
+    result = result.sort(this.compareDates);
+    return result;
+  };
+
+  formatLeavingList = (leaveRequests) => {
+    let result = leaveRequests.map((each) => {
+      const {
+        duration = 0,
+        fromDate: from = '',
+        toDate: to = '',
+        subject = '',
+        type: { shortType = '' } = {},
+      } = each;
+
+      const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+      const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+      return {
+        name: subject,
+        fromDate,
+        toDate,
+        duration,
+        type: shortType,
+      };
+    });
+    result = result.sort(this.compareDates);
+    return result;
+  };
+
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [], leavingList = [] } = {} } = this.props;
+    const { timeOff: { holidaysList = [], leaveRequests = [] } = {} } = this.props;
+    const formatHolidayLists = this.formatHolidayLists(holidaysList);
+    const formatLeavingList = this.formatLeavingList(leaveRequests);
+
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Request History" key="1">
-            <LeaveHistory leavingList={leavingList} activeShowType={activeShowType} />
+            <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holiday" key="2">
-            <Holiday holidaysList={holidaysList} activeShowType={activeShowType} />
+            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>

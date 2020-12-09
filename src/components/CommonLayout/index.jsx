@@ -79,7 +79,6 @@ class CommonLayout extends Component {
       PENDING,
       ELIGIBLE_CANDIDATES,
       INELIGIBLE_CANDIDATES,
-      PROVISIONAL_OFFER_DRAFT,
     } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
 
@@ -122,6 +121,13 @@ class CommonLayout extends Component {
           displayComponent: <PreviewOffer />,
         };
       }
+      if (currentStep === 7) {
+        // console.log('HERE 2');
+        return {
+          selectedItemId: '',
+          displayComponent: <PreviewOffer />,
+        };
+      }
       if (currentStep !== 7) {
         // console.log('HERE 3');
         return {
@@ -140,10 +146,8 @@ class CommonLayout extends Component {
 
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
-    console.log(processStatus);
     const { SENT_FOR_APPROVAL, PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
     if (processStatus === PROVISIONAL_OFFER_DRAFT) {
-      console.log('HEEERE');
       return {
         selectedItemId: listMenu[0].id,
         displayComponent: <BasicInformation />,
@@ -199,11 +203,10 @@ class CommonLayout extends Component {
 
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
-
     dispatch({
       type: 'candidateInfo/save',
       payload: {
-        currentStep: null,
+        currentStep: 7,
         displayComponent: <PreviewOffer />,
       },
     });
