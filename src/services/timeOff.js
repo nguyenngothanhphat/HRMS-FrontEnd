@@ -35,8 +35,22 @@ export async function addLeaveRequest(payload) {
   });
 }
 
+export async function addCompoffRequest(payload) {
+  return request('/api/compoffrequest/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getEmailsListByCompany(payload) {
   return request('/api/employee/admin-list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getProjectsListByCompany(payload) {
+  return request('/api/project/list', {
     method: 'POST',
     data: payload,
   });

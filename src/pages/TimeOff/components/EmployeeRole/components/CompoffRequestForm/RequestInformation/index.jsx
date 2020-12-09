@@ -12,7 +12,7 @@ const { TextArea } = Input;
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
-  loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
+  loadingAddCompoffRequest: loading.effects['timeOff/addCompoffRequest'],
 }))
 class RequestInformation extends Component {
   formRef = React.createRef();
@@ -36,6 +36,7 @@ class RequestInformation extends Component {
     });
   };
 
+  // FETCH EMAIL LIST AND PROJECT LIST OF COMPANY
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
@@ -44,6 +45,22 @@ class RequestInformation extends Component {
     dispatch({
       type: 'timeOff/fetchEmailsListByCompany',
       payload: [company],
+    });
+  };
+
+  fetchProjectsListByCompany = () => {
+    const {
+      dispatch,
+      user: {
+        currentUser: {
+          company: { _id: company = '' } = {},
+          location: { _id: location = '' } = {},
+        } = {},
+      } = {},
+    } = this.props;
+    dispatch({
+      type: 'timeOff/fetchProjectsListByCompany',
+      payload: { company, location },
     });
   };
 
@@ -57,13 +74,42 @@ class RequestInformation extends Component {
       type: 'timeOff/fetchTimeOffTypes',
     });
     this.fetchEmailsListByCompany();
+    this.fetchProjectsListByCompany();
   };
 
-  // GET TIME OFF TYPE BY ID
-  onEnterProjectNameChange = () => {
+  // GENERATE PROJECT LIST DATA
+  generateProjectsList = () => {
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    return projectsList.map((project) => {
+      const { _id = '', name = '' } = project;
+      return {
+        _id,
+        name,
+      };
+    });
+  };
+
+  // GET MANAGER ID & NAME OF SELECTED PROJECT
+  onEnterProjectNameChange = (value) => {
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    let projectManagerId = '';
+    let projectManagerName = '';
+
+    projectsList.forEach((project) => {
+      const {
+        _id = '',
+        manager: { generalInfo: { employeeId = '', lastName = '', firstName = '' } = {} } = {},
+      } = project;
+
+      if (_id === value) {
+        projectManagerId = employeeId;
+        projectManagerName = `${firstName} ${lastName}`;
+      }
+    });
+
     this.setState({
-      projectManagerId: 'PSI- 1221',
-      projectManagerName: 'Rose Mary Mali',
+      projectManagerId,
+      projectManagerName,
     });
   };
 
@@ -77,32 +123,34 @@ class RequestInformation extends Component {
     }
   };
 
-  // CACULATE DURATION FOR API
-  calculateNumberOfLeaveDay = (list) => {
-    let count = 0;
-    list.forEach((value) => {
-      const { timeOfDay = '' } = value;
-      switch (timeOfDay) {
-        case 'MORNING':
-          count += 0.5;
-          break;
-        case 'AFTERNOON':
-          count += 0.5;
-          break;
-        case 'WHOLE-DAY':
-          count += 1;
-          break;
-        default:
-          break;
-      }
-    });
-    return count;
-  };
-
   // ON FINISH
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
+    const { projectId = '', description = '', personCC = [] } = values;
+
+    const { dateLists } = this.state;
+
+    const sendData = {
+      project: projectId,
+      extraTime: dateLists,
+      description,
+      action: 'submit',
+      approvalFlow: '5fb37597daeffc0c68763d8b',
+      cc: personCC,
+    };
+
+    // eslint-disable-next-line no-console
+    console.log('sendData', sendData);
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/addCompoffRequest',
+      payload: sendData,
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) this.setShowSuccessModal(true);
+    });
   };
 
   onFinishFailed = (errorInfo) => {
@@ -168,7 +216,7 @@ class RequestInformation extends Component {
     while (now.isBefore(end) || now.isSame(end)) {
       const obj = {
         date: now.format('YYYY-MM-DD'),
-        value: null,
+        timeSpend: null,
       };
       dates.push(obj);
       now.add(1, 'days');
@@ -208,7 +256,7 @@ class RequestInformation extends Component {
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
-    const listValue = modifiedList.map((data) => data.value);
+    const listValue = modifiedList.map((data) => data.timeSpend);
 
     this.setDateList(modifiedList);
     this.formRef.current.setFieldsValue({
@@ -221,7 +269,7 @@ class RequestInformation extends Component {
     const { value } = e.target;
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
-    originalList[indexToChange].value = parseFloat(value);
+    originalList[indexToChange].timeSpend = parseFloat(value);
 
     this.setState({
       dateLists: originalList,
@@ -248,12 +296,16 @@ class RequestInformation extends Component {
       projectManagerId,
       projectManagerName,
     } = this.state;
-    // const numberOfDays = 0;
+
+    const { loadingAddCompoffRequest } = this.props;
 
     // count total days and total hours
-    const listValue = dateLists.map((data) => data.value);
+    const listValue = dateLists.map((data) => data.timeSpend);
     const totalHours = listValue.reduce((a, b) => a + b, 0);
     const totalDays = dateLists.length;
+
+    // generate project list
+    const projectsList = this.generateProjectsList();
 
     return (
       <div className={styles.RequestInformation}>
@@ -279,7 +331,7 @@ class RequestInformation extends Component {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="projectName"
+                name="projectId"
                 rules={[
                   {
                     required: true,
@@ -293,9 +345,14 @@ class RequestInformation extends Component {
                   }}
                   placeholder="Enter Project"
                 >
-                  <Option value="HRMS Projekt">
-                    <span style={{ fontSize: '13px' }}>HRMS Projekt</span>
-                  </Option>
+                  {projectsList.map((project) => {
+                    const { _id = '', name = '' } = project;
+                    return (
+                      <Option value={_id}>
+                        <span style={{ fontSize: '13px' }}>{name}</span>
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
@@ -484,7 +541,7 @@ class RequestInformation extends Component {
               Save to Draft
             </Button>
             <Button
-              // loading={loadingAddLeaveRequest}
+              loading={loadingAddCompoffRequest}
               key="submit"
               type="primary"
               form="myForm"
@@ -497,7 +554,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          // content={`${selectedTypeName} request submitted to the HR and your manager.`}
+          content="Compoff request submitted to the HR and your manager."
           submitText="OK"
         />
       </div>

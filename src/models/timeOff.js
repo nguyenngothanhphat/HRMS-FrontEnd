@@ -4,8 +4,10 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
+  addCompoffRequest,
   getTimeOffTypes,
   getEmailsListByCompany,
+  getProjectsListByCompany,
   getLeaveRequestById,
 } from '../services/timeOff';
 
@@ -19,6 +21,7 @@ const timeOff = {
     timeOffTypes: [],
     employeeInfo: {},
     emailsList: [],
+    projectsList: [],
     viewingLeaveRequest: {},
   },
   effects: {
@@ -111,6 +114,23 @@ const timeOff = {
         return {};
       }
     },
+    *addCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        console.log('payload', payload);
+        const response = yield call(addCompoffRequest, payload);
+        const { statusCode, data: addedCompoffRequest = {} } = response;
+        console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { addedCompoffRequest },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
       try {
         const response = yield call(getEmailsListByCompany, {
@@ -122,6 +142,23 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { emailsList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchProjectsListByCompany({ payload: { company = '', location = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getProjectsListByCompany, {
+          company,
+          location,
+        });
+        // console.log('email res', response);
+        const { statusCode, data: projectsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { projectsList },
         });
       } catch (errors) {
         dialog(errors);
