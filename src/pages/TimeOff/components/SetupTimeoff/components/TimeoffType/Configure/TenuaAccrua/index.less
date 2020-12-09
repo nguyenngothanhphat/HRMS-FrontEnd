@@ -1,17 +1,46 @@
 .contentTenua {
   :global {
-    .ant-select-single:not(.ant-select-customize-input)
-      .ant-select-selector
-      .ant-select-selection-search-input {
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      height: 42px;
+      padding: 5px 20px;
+      width: 445px;
+    }
+    .ant-input-number {
+      width: 83px;
+      padding: 3px;
+      height: 42px;
+      border: 1px solid #d6dce4;
+      box-sizing: border-box;
+      border-radius: 5px;
+    }
+    .ant-picker {
+      width: 83px;
       height: 42px;
     }
   }
   background-color: #fff;
-  height: 352px;
+  height: auto;
   .flex {
     padding: 30px 24px;
     display: flex;
     justify-content: space-between;
+    .titleText {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      color: #161c29;
+    }
+    .btnAdd {
+      width: 211px;
+      height: 34px;
+      background: rgba(86, 138, 250, 0.12);
+      border-radius: 5px;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 9px;
+      line-height: 16px;
+      color: #2c6df9;
+    }
   }
   .form {
     padding: 24px;
@@ -22,10 +51,6 @@
       box-sizing: border-box;
       border-radius: 12px;
     }
-  }
-  input {
-    width: 52px;
-    margin: 0 10px;
   }
   .effectFrom {
     .text {
@@ -39,10 +64,13 @@
     padding-bottom: 31px;
   }
   .select {
-    width: 445px;
     border: 1px solid #d6dce0;
     box-sizing: border-box;
     border-radius: 5px;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 16px;
+    color: #161c29;
   }
   .btnAdd {
     width: 259px;
@@ -53,6 +81,14 @@
     color: #fff;
     background: #ffa100;
     border-radius: 25px;
+  }
+  .radioGroup {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 15px;
+    padding: 3px;
+    color: #707177;
   }
   .borderStyles {
     width: 100%;

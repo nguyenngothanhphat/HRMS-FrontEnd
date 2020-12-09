@@ -111,7 +111,7 @@ class AssignPolicy extends Component {
               </Row>
               <div className={styles.textContent}>Sick Leave policy</div>
               <Row gutter={[90, 0]}>
-                <Col xs={24} sm={24} md={24} lg={10} xl={11}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Assign to"
                     rules={[{ required: true, message: 'Please select' }]}
@@ -119,7 +119,7 @@ class AssignPolicy extends Component {
                     <Select className={styles.select} placeholder="All employees" />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={10} xl={11}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={11}>
                   <Form.Item
                     label="Excluding"
                     rules={[{ required: true, message: 'Please select' }]}

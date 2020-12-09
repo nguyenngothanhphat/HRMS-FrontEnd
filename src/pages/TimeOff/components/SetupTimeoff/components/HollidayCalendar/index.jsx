@@ -222,10 +222,10 @@ class HollidayCalendar extends Component {
                     <Col>
                       <Checkbox />
                     </Col>
-                    <Col span={4}>{name}</Col>
+                    <Col span={6}>{name}</Col>
                     <Col span={4}>{date}</Col>
                     <Col span={4}>{day}</Col>
-                    <Col span={4}>{type}</Col>
+                    <Col span={6}>{type}</Col>
                   </Row>
                   <div className={s.straight} />
                 </div>
@@ -251,11 +251,11 @@ class HollidayCalendar extends Component {
           </div>
         </div>
         <Row className={s.listHoliday}>
-          <Row span={24}>
-            <Col span={12}>
+          <Col span={24} className={s.flex}>
+            <div>
               <Checkbox>Select All</Checkbox>
-            </Col>
-            <Col span={12}>
+            </div>
+            <div>
               <Row gutter={[24, 0]}>
                 <Col>
                   <Button className={s.btnHoliday}>Add a holiday</Button>
@@ -270,11 +270,11 @@ class HollidayCalendar extends Component {
                   </Select>
                 </Col>
               </Row>
-            </Col>
-          </Row>
+            </div>
+          </Col>
           <Row>
             {data.map((render) => (
-              <Col span={22}>{this.renderItem(render)}</Col>
+              <Col span={20}>{this.renderItem(render)}</Col>
             ))}
           </Row>
         </Row>

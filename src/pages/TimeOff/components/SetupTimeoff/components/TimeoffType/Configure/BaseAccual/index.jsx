@@ -44,7 +44,7 @@ class BaseAccual extends Component {
       <div className={styles.content}>
         <div className={styles.title}>Base accrual rate</div>
         <div className={styles.borderStyles} />
-        <div className={styles.title}>
+        <div className={styles.formBody}>
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <div className={styles.titleText}>
@@ -53,19 +53,30 @@ class BaseAccual extends Component {
               <Checkbox className={styles.checkbox}>Unlimited causal leave</Checkbox>
             </Col>
             <Col span={12}>
-              <div className={styles.inputText}>
-                <InputNumber
-                  min={1}
-                  max={10}
-                  formatter={(value) => `${value}days`}
-                  parser={(value) => value.replace('days', '')}
-                  onChange={this.onChange}
-                />
-                <Radio.Group onChange={this.onChangeRadio} value={select} buttonStyle="solid">
-                  <Radio.Button value="day">Day</Radio.Button>
-                  <Radio.Button value="hour">Hours</Radio.Button>
-                </Radio.Group>
-              </div>
+              <Row className={styles.inputText} gutter={[24, 0]}>
+                <Col>
+                  <InputNumber
+                    min={0}
+                    max={12}
+                    defaultValue={0}
+                    placeholder="day"
+                    formatter={(value) => `${value} day`}
+                    parser={(value) => value.replace('days', '')}
+                    onChange={this.onChange}
+                  />
+                </Col>
+                <Col>
+                  <Radio.Group
+                    onChange={this.onChangeRadio}
+                    value={select}
+                    buttonStyle="solid"
+                    className={styles.radioGroup}
+                  >
+                    <Radio.Button value="day">Days</Radio.Button>
+                    <Radio.Button value="hour">Hours</Radio.Button>
+                  </Radio.Group>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </div>

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 // import { Row, Col } from 'antd';
 import BaseAccual from './BaseAccual';
 import TenuaAccrua from './TenuaAccrua';
-// import AccrualSchedule from './AccrualSchedule';
-// import Balance from './Balance';
-// import AnnualReset from './AnnualReset';
-// import CarryoverCap from './CarryoverCap';
+import AccrualSchedule from './AccrualSchedule';
+import Balance from './Balance';
+import AnnualReset from './AnnualReset';
+import CarryoverCap from './CarryoverCap';
 // import WaitingPeriod from './WaitingPeriod';
 // import Increaments from './Increaments';
 // import HireProbation from './HireProbation';
@@ -18,6 +18,8 @@ class Configure extends Component {
     this.state = {
       select: 'baseAccrual',
       baseAccual: {},
+      tenuaAccrua: {},
+      balance: {},
     };
   }
 
@@ -68,9 +70,18 @@ class Configure extends Component {
     this.setState({ baseAccual: value });
   };
 
+  onChangetenuaAccrua = (value = {}) => {
+    this.setState({ tenuaAccrua: value });
+  };
+
+  onChangeBalance = (value = {}) => {
+    this.setState({ balance: value });
+  };
+
   render() {
     // const { tabKey = '' } = this.props;
-    const { baseAccual } = this.state;
+    const { baseAccual, tenuaAccrua, balance } = this.state;
+    console.log(balance);
     const list = [
       {
         id: 'baseAccrual',
@@ -82,7 +93,31 @@ class Configure extends Component {
         id: 'tenuaAccrua',
         title: 'Tenua Accrua',
         ref: React.createRef(),
-        componnet: <TenuaAccrua />,
+        componnet: <TenuaAccrua onChangeValue={this.onChangetenuaAccrua} />,
+      },
+      {
+        id: 'accrualSchedule',
+        title: 'Accrual Schedule',
+        ref: React.createRef(),
+        componnet: <AccrualSchedule onChangeValue={this.onChangetenuaAccrua} />,
+      },
+      {
+        id: 'balance',
+        title: 'Maximum balance',
+        ref: React.createRef(),
+        componnet: <Balance onChangeValue={this.onChangeBalance} />,
+      },
+      {
+        id: 'annualReset',
+        title: 'Annual Reset',
+        ref: React.createRef(),
+        componnet: <AnnualReset onChangeValue={this.onChangeBalance} />,
+      },
+      {
+        id: 'carryoverCap',
+        title: 'Carryover Cap',
+        ref: React.createRef(),
+        componnet: <CarryoverCap onChangeValue={this.onChangeBalance} />,
       },
     ];
 
