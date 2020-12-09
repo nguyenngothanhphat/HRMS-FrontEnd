@@ -81,6 +81,11 @@ class ManagerOffBoading extends Component {
       </div>
     );
 
+    const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
+
+    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+
     return (
       <PageContainer>
         <div className={styles.managerContainer}>
@@ -94,7 +99,7 @@ class ManagerOffBoading extends Component {
               <Tabs
                 defaultActiveKey="1"
                 className={styles.tabComponent}
-                tabBarExtraContent={resignationRequest}
+                tabBarExtraContent={!checkSendRequest && resignationRequest}
               >
                 <TabPane tab="Team Request" key="1">
                   <div className={styles.tableTab}>
