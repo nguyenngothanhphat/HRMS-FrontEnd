@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import TableEmployee from '../TableEmployee';
-import RejectTable from '../RejectTable';
+import Summary from '../Summary';
 import styles from './index.less';
 
 @connect()
-class TabContent extends Component {
+class ViewTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,6 +60,14 @@ class TabContent extends Component {
         },
       });
     }
+    if (tabId === '5') {
+      dispatch({
+        type: 'offboarding/fetchList',
+        payload: {
+          status: 'WITHDRAW',
+        },
+      });
+    }
   };
 
   setSelectedTab = (id) => {
@@ -72,14 +80,14 @@ class TabContent extends Component {
     const { data = [], countTable = [] } = this.props;
 
     return (
-      <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} totallist={countTable} />
+      <Fragment>
+        <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} />
         <div className={styles.tableContainer}>
           <TableEmployee data={data} />
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
 
-export default TabContent;
+export default ViewTable;
