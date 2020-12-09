@@ -10,6 +10,7 @@ import s from './index.less';
 @connect(({ loading, offboarding: { listAssigned = [] } = {} }) => ({
   listAssigned,
   loading: loading.effects['offboarding/complete1On1'],
+  loadingGetList: loading.effects['offboarding/getListAssigned'],
 }))
 class TableAssigned extends Component {
   constructor(props) {
@@ -75,7 +76,7 @@ class TableAssigned extends Component {
   };
 
   render() {
-    const { listAssigned: data = [], loading } = this.props;
+    const { listAssigned: data = [], loading, loadingGetList } = this.props;
     const { pageNavigation, itemSet1On1 = {}, openModal, keyModal = '' } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -165,10 +166,10 @@ class TableAssigned extends Component {
           <Table
             locale={{
               emptyText: (
-                <span>
+                <div className={s.viewEmpty}>
                   <img src={empty} alt="" />
-                  <p className={s.textEmpty}>No Result</p>
-                </span>
+                  <p className={s.textEmpty}>No resignation request is assigned</p>
+                </div>
               ),
             }}
             columns={columns}
@@ -180,7 +181,7 @@ class TableAssigned extends Component {
             }}
             rowKey="id"
             scroll={{ x: 'max-content' }}
-            onChange={this.handleChangeTable}
+            loading={loadingGetList}
           />
         </div>
         <ModalAddComment1On1

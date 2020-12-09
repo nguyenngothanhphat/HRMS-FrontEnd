@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col, notification } from 'antd';
+import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import EditComment from '@/components/EditComment';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
-import LastWorkingDay from './components/LastWorkingDay';
-import CommentsFromHR from './components/CommentFromHr';
-import ScheduleMetting from './components/SheduleMetting';
-import AddContent from './components/AddContent';
-import ActionSchedule from './components/ActionSchedule';
+import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
+import LastWorkingDate from './components/LWD';
+// import CommentsFromHR from './components/CommentFromHr';
+import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
+import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
 import styles from './index.less';
 
 @connect(
@@ -20,26 +21,25 @@ import styles from './index.less';
       list1On1 = [],
       listProjectByEmployee = [],
       listMeetingTime = [],
+      showModalSuccessfully = false,
     } = {},
+    user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
   }) => ({
     loading: loading.effects['offboarding/create1On1'],
+    loadingGetById: loading.effects['offboarding/fetchRequestById'],
     myRequest,
     list1On1,
     listProjectByEmployee,
     listMeetingTime,
+    myId,
+    showModalSuccessfully,
   }),
 )
 class HRDetailTicket extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // editLWD: false,
-      // data: false,
       openModal: false,
-      // saveSchedule: false,
-      onCloseSchedule: false,
-      addContent: false,
-      itemSet1On1: {},
       keyModal: '',
     };
   }
@@ -66,59 +66,56 @@ class HRDetailTicket extends Component {
     });
   }
 
-  handleChange = () => {};
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        itemNewCreate1On1: {},
+        myRequest: {},
+        showModalSuccessfully: false,
+      },
+    });
+  }
 
-  handleSaveSchedule = (date) => {
+  hideModal = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        showModalSuccessfully: false,
+      },
+    });
+  };
+
+  handleSaveSchedule = ({ meetingTime, meetingDate }) => {
     const {
       dispatch,
       myRequest,
       match: { params: { id: code = '' } = {} },
+      myId,
     } = this.props;
-    const { employee: { _id } = {} } = myRequest;
-    const { meetingTime, meetingDate } = date;
+    const { employee: { _id: meetingWith = '' } = {} } = myRequest;
+    const payload = {
+      meetingDate,
+      meetingTime,
+      meetingWith,
+      offBoardingRequest: code,
+      ownerComment: myId,
+    };
     dispatch({
       type: 'offboarding/create1On1',
-      payload: {
-        meetingDate,
-        meetingTime,
-        meetingWith: _id,
-        offBoardingRequest: code,
-      },
-    }).then((response) => {
-      const { statusCode, data = {} } = response;
+      payload,
+      isEmployee: true,
+    }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        this.setState({
-          openModal: false,
-          onCloseSchedule: true,
-          itemSet1On1: data,
-        });
+        this.handleCandelSchedule();
         dispatch({
           type: 'offboarding/getList1On1',
           payload: {
             offBoardingRequest: code,
           },
         });
-      }
-    });
-  };
-
-  handleSaveContent = (value) => {
-    const { dispatch } = this.props;
-    const { itemSet1On1: { _id: id = '' } = {} } = this.state;
-
-    dispatch({
-      type: 'offboarding/complete1On1',
-      payload: {
-        content: value,
-        id,
-      },
-    }).then((response) => {
-      const { statusCode } = response;
-      if (statusCode === 200) {
-        this.setState({
-          addContent: false,
-        });
-        notification.success({ message: `Add Content successfully!` });
       }
     });
   };
@@ -130,20 +127,6 @@ class HRDetailTicket extends Component {
     });
   };
 
-  onClose = () => {
-    this.setState({
-      onCloseSchedule: false,
-      itemSet1On1: {},
-      addContent: false,
-    });
-  };
-
-  handleEdit = () => {
-    this.setState({
-      addContent: true,
-    });
-  };
-
   handleCandelSchedule = () => {
     this.setState({
       openModal: false,
@@ -152,88 +135,104 @@ class HRDetailTicket extends Component {
   };
 
   render() {
-    const { onCloseSchedule, openModal, addContent, itemSet1On1 = {}, keyModal = '' } = this.state;
+    const { openModal, keyModal = '' } = this.state;
     const {
       loading,
-      visible,
       myRequest,
       list1On1 = [],
       listProjectByEmployee = [],
       listMeetingTime,
-      match: { params: { id: code = '' } = {} },
+      loadingGetById,
+      showModalSuccessfully,
     } = this.props;
-
     const {
       reasonForLeaving = '',
       requestDate = '',
-      lastWorkingDate,
+      // lastWorkingDate,
       employee: {
         employeeId,
         generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
         title: { name: jobTitle = '' } = {},
       } = {},
     } = myRequest;
+    if (loadingGetById) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
+    }
 
+    const listScheduleMeeting = list1On1.filter((item) => item.content === '');
+    const listComment = list1On1.filter((item) => item.content !== '');
     return (
-      <PageContainer>
-        <div className={styles.hrDetailTicket}>
-          <Affix offsetTop={40}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>
-                Terminate work relationship with {nameFrist} [{employeeId}]
-              </p>
-            </div>
-          </Affix>
-          <Row className={styles.detailTicket__content} gutter={[30, 30]}>
-            <Col span={17}>
-              <RequesteeDetail
-                id={employeeId}
-                avatar={avatar}
-                name={nameFrist}
-                jobTitle={jobTitle}
-                listProject={listProjectByEmployee}
-              />
-              <ResignationRequestDetail
-                reason={reasonForLeaving}
-                date={requestDate}
-                name={nameFrist}
-              />
-              {lastWorkingDate && <CommentsFromHR />}
-              {addContent && <AddContent addcontent={(value) => this.handleSaveContent(value)} />}
-              <LastWorkingDay
-                list1On1={list1On1}
-                handleRemoveToServer={this.handleChange}
-                code={code}
-                visible={visible}
-                lastWorkingDate={lastWorkingDate}
-              />
-            </Col>
-            <Col span={7}>
-              <InfoEmployee />
-              {lastWorkingDate && (
-                <ScheduleMetting
+      <>
+        <PageContainer>
+          <div className={styles.hrDetailTicket}>
+            <Affix offsetTop={40}>
+              <div className={styles.titlePage}>
+                <p className={styles.titlePage__text}>
+                  Terminate work relationship with {nameFrist} [{employeeId}]
+                </p>
+              </div>
+            </Affix>
+            <Row className={styles.detailTicket__content} gutter={[30, 30]}>
+              <Col span={17}>
+                <RequesteeDetail
+                  id={employeeId}
+                  avatar={avatar}
+                  name={nameFrist}
+                  jobTitle={jobTitle}
+                  listProject={listProjectByEmployee}
+                />
+                <ResignationRequestDetail
+                  reason={reasonForLeaving}
+                  date={requestDate}
+                  name={nameFrist}
+                />
+                {/* {lastWorkingDate && <CommentsFromHR />} */}
+                {listComment.length !== 0 && (
+                  <div className={styles.viewListComment}>
+                    {listComment.map((item) => {
+                      const { _id } = item;
+                      return (
+                        <Fragment key={_id}>
+                          <EditComment itemComment={item} />
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                )}
+                {listScheduleMeeting.map((item) => {
+                  return (
+                    <Fragment key={item._id}>
+                      <ScheduleMeeting data={item} />
+                    </Fragment>
+                  );
+                })}
+                <LastWorkingDate />
+              </Col>
+              <Col span={7}>
+                <InfoEmployee />
+                <ButtonSet1On1
                   loading={loading}
                   visible={openModal}
                   handleclick={this.handleclick}
-                  handleSubmit={(date) => this.handleSaveSchedule(date)}
+                  handleSubmit={this.handleSaveSchedule}
                   listMeetingTime={listMeetingTime}
                   handleCandelSchedule={this.handleCandelSchedule}
                   keyModal={keyModal}
                 />
-              )}
-              {onCloseSchedule && (
-                <ActionSchedule
-                  itemSet1On1={itemSet1On1}
-                  // list1On1={list1On1}
-                  nameFrist={nameFrist}
-                  onclose={this.onClose}
-                  handleEdit={this.handleEdit}
-                />
-              )}
-            </Col>
-          </Row>
-        </div>
-      </PageContainer>
+              </Col>
+            </Row>
+          </div>
+        </PageContainer>
+        <ModalNotice
+          visible={showModalSuccessfully}
+          type="ACCEPTED"
+          handleCancel={this.hideModal}
+        />
+      </>
     );
   }
 }
