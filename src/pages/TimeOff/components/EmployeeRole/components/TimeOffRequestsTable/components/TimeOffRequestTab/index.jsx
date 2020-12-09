@@ -78,7 +78,6 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
 
     return (
       <div className={styles.TimeOffRequestTab}>
-        <span className={styles.title}>Leave Request</span>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
           {data.length === 0 ? (

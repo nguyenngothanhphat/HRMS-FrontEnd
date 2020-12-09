@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Steps } from 'antd';
+import NoteIcon from '@/assets/NoteIcon.svg';
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -46,7 +47,10 @@ class RightContent extends Component {
     return (
       <div className={styles.RightContent}>
         <div className={styles.header}>
-          <span className={styles.title}>Note</span>
+          <div className={styles.titleWithIcon}>
+            <img src={NoteIcon} alt="note" />
+            <span className={styles.title}>Note</span>
+          </div>
           <span className={styles.description}>
             Timeoff requests requires approvals.
             <br />
