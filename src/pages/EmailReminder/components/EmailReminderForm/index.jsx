@@ -290,13 +290,14 @@ class EmailReminderForm extends PureComponent {
 
     const newValue = { ...values };
     delete newValue.sendToWorker;
+    delete newValue.frequency;
 
     const triggerEventValue = values.triggerEvent;
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
     if (appliesToData === 'any') {
-      payload = { ...newValue, appliesToData, message, sendToExistingWorker };
+      payload = { ...newValue, message, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
       payload = { ...newValue, conditions, message, sendToExistingWorker };
