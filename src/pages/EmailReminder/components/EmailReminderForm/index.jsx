@@ -95,6 +95,7 @@ class EmailReminderForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
+      sendToExistingWorker: false,
       receipients: [],
       conditionsTrigger: {
         units: [
@@ -284,20 +285,21 @@ class EmailReminderForm extends PureComponent {
 
   onFinish = (values) => {
     const { triggerEventList } = this.props;
-    const { message = '', appliesToData, conditions = [] } = this.state;
+    const { message = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     let payload = {};
 
     const newValue = { ...values };
+    delete newValue.sendToWorker;
+
     const triggerEventValue = values.triggerEvent;
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
-    const sendingDate = 'sendingDate';
 
     if (appliesToData === 'any') {
-      payload = { ...newValue, sendingDate, appliesToData, message };
+      payload = { ...newValue, appliesToData, message, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
-      payload = { ...newValue, sendingDate, conditions, message };
+      payload = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
     console.log('Success:', payload);
@@ -384,8 +386,10 @@ class EmailReminderForm extends PureComponent {
     history.goBack();
   };
 
-  onChangeAnyPerson = (value) => {
-    console.log('Department list by company: ');
+  handleChangeChckBox = (value) => {
+    const { sendToExistingWorker } = this.state;
+    const { checked } = value.target;
+    this.setState({ sendToExistingWorker: checked });
   };
 
   _renderApplyToOptions = () => {
@@ -397,10 +401,7 @@ class EmailReminderForm extends PureComponent {
         <>
           <Col span={12}>
             <Form.Item label="Receipients" name="receipients">
-              <Select
-                size="large"
-                placeholder="Please select a choice"
-              >
+              <Select size="large" placeholder="Please select a choice">
                 {receipients.map((option, index) => {
                   return (
                     <Option value={option.value} key={index}>
@@ -452,13 +453,7 @@ class EmailReminderForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { triggerEventList } = this.props;
-    const {
-      frequencyItem,
-      sendingDate,
-      applyTo,
-      sendToWorker,
-      message,
-    } = this.state;
+    const { frequencyItem, sendingDate, applyTo, sendToWorker, message } = this.state;
     return (
       <Form onFinish={this.onFinish}>
         <Row gutter={[36, 24]}>
@@ -530,7 +525,14 @@ class EmailReminderForm extends PureComponent {
             <Form.Item name="sendToWorker" label="Send to existing workers">
               <Checkbox.Group>
                 {sendToWorker.map((option) => {
-                  return <Checkbox value={option.value}>{option.name}</Checkbox>;
+                  return (
+                    <Checkbox
+                      value={option.value}
+                      onChange={(value) => this.handleChangeChckBox(value)}
+                    >
+                      {option.name}
+                    </Checkbox>
+                  );
                 })}
               </Checkbox.Group>
             </Form.Item>
