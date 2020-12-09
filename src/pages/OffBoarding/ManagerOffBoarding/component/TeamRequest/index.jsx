@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
-import TableEmployee from '../TableManager';
-import RejectTable from '../RejectTable';
+import TableManager from '../TableManager';
+import Summary from '../Summary';
 import styles from './index.less';
 
-@connect()
-class TabContent extends Component {
+@connect(({ loading }) => ({
+  loading: loading.effects['offboarding/fetchListTeamRequest'],
+}))
+class TeamRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,21 +71,17 @@ class TabContent extends Component {
   };
 
   render() {
-    const { selectedFilterTab } = this.state;
-    const { data = [], countdata = [] } = this.props;
+    const { data = [], countdata = [], loading } = this.props;
 
     return (
-      <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} countdata={countdata} />
+      <Fragment>
+        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '3' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '4' ? <TableEmployee data={data} /> : ''}
+          <TableManager data={data} loading={loading} />
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
 
-export default TabContent;
+export default TeamRequest;
