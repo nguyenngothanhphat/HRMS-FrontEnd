@@ -33,13 +33,13 @@ class ModalContent extends Component {
     if (mode === 'View') {
       return (
         <>
-          {settings?.map((item) => {
+          {settings?.map((item, index) => {
             return (
               <Row gutter={[8, 12]}>
                 <Col span={6}>
-                  <span className={styles.template__label}>{item.description} : </span>
+                  <span className={styles.template__label}>Question {index + 1} : </span>
                 </Col>
-                <Col span={18}>{item.value}</Col>
+                <Col span={18}>{item.question}</Col>
               </Row>
             );
           })}
