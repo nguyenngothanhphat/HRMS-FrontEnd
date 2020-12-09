@@ -85,7 +85,12 @@ class CollapseField extends Component {
                       </Col>
                       <Col span={8} className={styles.collapseField__row__file}>
                         <div
-                          onClick={() => this.openViewDocument(document.displayName, attachment)}
+                          onClick={() => {
+                            if (!fileName) {
+                              return;
+                            }
+                            this.openViewDocument(document.displayName, attachment);
+                          }}
                           className={this.renderClassnameOfFile(candidateDocumentStatus)}
                         >
                           <span>{fileName}</span>

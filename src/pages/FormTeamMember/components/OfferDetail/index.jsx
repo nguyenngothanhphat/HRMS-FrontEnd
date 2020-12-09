@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Radio, Select, Checkbox, Form, Row, Col, Button, Typography } from 'antd';
 
 import { connect, formatMessage } from 'umi';
-import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
+// import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
+import UploadImage from '@/components/UploadImage';
 import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';

@@ -48,19 +48,18 @@ const AdditionalQuestion = (props) => {
     checkCandidateMandatory,
     dispatch,
     localStep,
-    hidePreviewOffer,
-    additionalQuestion: additionalQuestionProp,
+    // additionalQuestion: additionalQuestionProp,
     additionalQuestions: additionalQuestionsProp,
     candidate,
     loading1,
   } = props;
 
-  const {
-    opportunity: opportunityProp,
-    payment: paymentProp,
-    shirt: shirtProp,
-    dietary: dietaryProp,
-  } = additionalQuestionProp;
+  // const {
+  //   opportunity: opportunityProp,
+  //   payment: paymentProp,
+  //   shirt: shirtProp,
+  //   dietary: dietaryProp,
+  // } = additionalQuestionProp;
 
   const [form] = Form.useForm();
 
@@ -108,7 +107,6 @@ const AdditionalQuestion = (props) => {
   };
 
   const _renderStatus = () => {
-    const { checkCandidateMandatory } = props;
     const { filledAdditionalQuestion } = checkCandidateMandatory;
     return !filledAdditionalQuestion ? (
       <div className={s.normalText}>
@@ -123,7 +121,7 @@ const AdditionalQuestion = (props) => {
   };
 
   const _renderBottomBar = () => {
-    const { checkCandidateMandatory } = props;
+    // const { checkCandidateMandatory } = props;
     const { filledAdditionalQuestion } = checkCandidateMandatory;
 
     return (
@@ -254,7 +252,10 @@ const AdditionalQuestion = (props) => {
                   <Row>
                     <Col md={12}>
                       {additionalQuestionsProp.map((item) => {
-                        const { name = '', type = '', question = '', answer = '' } = item;
+                        const { name = '', question = '', defaultAnswer = [] } = item;
+                        if (defaultAnswer.length === 0) {
+                          return null;
+                        }
                         return (
                           <Form.Item name={name} label={question}>
                             {getInput(item)}
