@@ -1,49 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Collapse, Tooltip } from 'antd';
+import { Collapse, Tooltip, Modal } from 'antd';
 import { CloseOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-export default class LeaveBalanceInfo extends PureComponent {
-  renderMockData = () => {
-    const sampleContent = (
-      <p>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-        Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-        diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
-        gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-        <br />
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea.
-        <br />
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea.Lorem ipsum dolor sit
-        amet, consetetur sadipscing elitr.
-      </p>
-    );
-    return [
-      {
-        title: 'Casual Leave (CL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Sick Leave (SL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Compensation Leave (CL)',
-        content: sampleContent,
-      },
-      {
-        title: 'Malternity Leave (ML)',
-        content: sampleContent,
-      },
-    ];
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class LeaveBalanceInfo extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchTimeOffTypes',
+    });
+  };
+
+  renderData = () => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    return timeOffTypes;
   };
 
   renderExpandIcon = (isActive) =>
@@ -54,33 +34,58 @@ export default class LeaveBalanceInfo extends PureComponent {
     );
 
   render() {
-    const { onClose = () => {} } = this.props;
+    const { onClose = () => {}, visible } = this.props;
     return (
-      <div className={styles.LeaveBalanceInfo}>
-        <div className={styles.title}>
-          <span>All you need to know about Leave balances</span>
-          <Tooltip title="Close">
-            <CloseOutlined className={styles.closeIcon} onClick={onClose} />
-          </Tooltip>
-        </div>
-        <div className={styles.collapseInfoContainer}>
-          <Collapse
-            bordered={false}
-            expandIconPosition="right"
-            expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
-            defaultActiveKey={['1']}
-          >
-            {this.renderMockData().map((data, index) => {
-              const { title = '', content = '' } = data;
-              return (
-                <Panel className={styles.eachCollapse} header={title} key={`${index + 1}`}>
-                  <p>{content}</p>
-                </Panel>
-              );
-            })}
-          </Collapse>
-        </div>
+      <div>
+        <Modal
+          className={styles.LeaveBalanceInfo}
+          centered
+          visible={visible}
+          footer={null}
+          width={700}
+          onCancel={onClose}
+        >
+          <div className={styles.container}>
+            <div className={styles.title}>
+              <span>All you need to know about Leave balances</span>
+              <Tooltip title="Close">
+                <div onClick={onClose} className={styles.closeIcon}>
+                  <CloseOutlined />
+                </div>
+              </Tooltip>
+            </div>
+            <p className={styles.description}>
+              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+              invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+              accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+              sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
+              sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.
+            </p>
+            <p className={styles.collapseInfoContainer}>
+              <Collapse
+                bordered={false}
+                expandIconPosition="right"
+                expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
+              >
+                {this.renderData().map((data, index) => {
+                  const { name = '', description = '', shortType = '' } = data;
+                  return (
+                    <Panel
+                      className={styles.eachCollapse}
+                      header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
+                      key={`${index + 1}`}
+                    >
+                      <p>{description}</p>
+                    </Panel>
+                  );
+                })}
+              </Collapse>
+            </p>
+          </div>
+        </Modal>
       </div>
     );
   }
 }
+
+export default LeaveBalanceInfo;

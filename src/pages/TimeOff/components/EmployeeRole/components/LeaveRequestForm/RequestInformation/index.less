@@ -1,0 +1,250 @@
+.RequestInformation {
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+  width: 100%;
+  background-color: white;
+
+  .formTitle {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e4e8;
+    span {
+      font-size: 16px;
+      color: #464646;
+      font-weight: bold;
+    }
+  }
+
+  .form {
+    padding: 24px;
+    .eachRow {
+      margin-bottom: 5px;
+      .extraTimeSpent {
+        font-size: 13px;
+        color: #707177;
+        .header {
+          background-color: #e1e9fa;
+          border-radius: 5px;
+          color: #00000083;
+          font-weight: bold;
+          padding: 7px 10px;
+          font-size: 13px;
+        }
+        .content {
+          width: 100%;
+          margin-bottom: 24px;
+          .emptyContent {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            margin: 3px 0;
+            background-color: #fbfbfb;
+            border-radius: 5px;
+            text-align: center;
+            span {
+              color: #70717787;
+            }
+          }
+        }
+      }
+      .label {
+        padding-top: 8px;
+        padding-right: 10px;
+        color: #161c29;
+      }
+      .smallNotice {
+        height: 42px;
+        width: fit-content;
+        margin-left: 10px;
+        // margin-right: 20px;
+        padding: 0 6px;
+        background: #ffa1001f; // alpha 0.12
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        .normalText {
+          color: #707177;
+          font-size: 10px;
+        }
+        .link {
+          cursor: pointer;
+          font-size: 10px;
+          color: #ffa100;
+          font-weight: bold;
+          text-decoration: underline;
+        }
+      }
+      .timeOffTypeOptions {
+        position: relative;
+        .runOutOfRemainingDayNotice {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          background: #ffffff;
+          box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+          border-radius: 4px;
+          width: 200px;
+        }
+      }
+      .leaveDaysContainer {
+        font-size: 13px;
+        color: #707177;
+        margin-bottom: 24px;
+        .header {
+          background-color: #e1e9fa;
+          border-radius: 5px;
+          color: #00000083;
+          font-weight: bold;
+          padding: 7px 10px;
+          font-size: 13px;
+        }
+        .content {
+          width: 100%;
+          margin-bottom: 24px;
+          .emptyContent {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            margin: 3px 0;
+            background-color: #fbfbfb;
+            border-radius: 5px;
+            text-align: center;
+            span {
+              color: #70717787;
+            }
+          }
+        }
+      }
+
+      // cc selection
+      .ccSelection {
+        :global {
+          .ant-select-selector {
+            padding-top: 4px !important;
+            padding-bottom: 2px !important;
+            height: auto !important;
+          }
+          // .ant-select-selection-item {
+          //   margin-top: -3px !important;
+          // }
+        }
+      }
+    }
+    :global {
+      .ant-form-item-explain {
+        padding-top: 3px;
+        font-size: 13px;
+      }
+    }
+  }
+
+  :global {
+    .ant-select-selection-item {
+      margin-top: 0px;
+    }
+    .ant-col {
+      max-width: 100%;
+      span {
+        font-size: 13px;
+      }
+    }
+    .ant-picker {
+      width: 100%;
+    }
+
+    // .ant-input
+    .ant-picker-input {
+      input {
+        font-size: 13px;
+      }
+    }
+
+    .ant-select-selection-search {
+      align-content: center;
+    }
+    .ant-picker,
+    .ant-input {
+      border-radius: 5px !important;
+      min-height: 42px !important;
+      font-size: 13px;
+    }
+
+    .ant-select-selector {
+      border-radius: 5px !important;
+      height: 42px !important;
+      font-size: 13px;
+      padding-top: 5px !important;
+    }
+
+    // text area
+    .ant-form-item-control-input-content {
+      textarea {
+        padding-top: 9px;
+      }
+    }
+  }
+
+  .footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e4e8;
+    display: flex;
+    justify-content: space-between;
+    .note {
+      font-size: 12px;
+      padding-right: 100px;
+      display: flex;
+      align-items: center;
+      color: #161c2980; // hex with alpha 0.5
+    }
+    .formButtons {
+      display: flex;
+      justify-content: flex-end;
+      :global {
+        .ant-btn-link {
+          background-color: white !important;
+          span {
+            font-weight: bold !important;
+            color: #ffa100 !important;
+          }
+        }
+        .ant-btn {
+          background-color: #ffa100;
+          border: none;
+          border-radius: 30px;
+          height: 40px;
+          width: 108px;
+          margin-left: 20px;
+          span {
+            color: white;
+            font-weight: bold;
+          }
+          &:hover {
+            background-color: #ffa100cc; // hex with alpha 0.8
+          }
+        }
+      }
+    }
+  }
+  // CUSTOM SCROLLBAR
+  /* width */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgba(136, 136, 136, 0.274);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(85, 85, 85, 0.432);
+  }
+}

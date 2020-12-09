@@ -18,6 +18,11 @@ import {
   reviewRequest,
   // sendMailExitPackage,
   getOffBoardingPackages,
+  getListAssigned,
+  getListAssignee,
+  requestChangeLWD,
+  handleRequestChangeLWD,
+  handleWithdraw,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -45,6 +50,8 @@ const offboarding = {
     inQueuesList: [],
     closeRecordsList: [],
     itemCreateScheduleInterview: {},
+    listAssigned: [],
+    listAssignee: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -324,20 +331,72 @@ const offboarding = {
       }
       return response;
     },
-    *createScheduleInterview({ payload, isEmployee = false }, { call, put }) {
-      let response = {};
+    *getListAssigned(_, { call, put }) {
       try {
-        response = yield call(create1On1, payload);
-        const { statusCode, data: itemCreateScheduleInterview = {} } = response;
+        const response = yield call(getListAssigned);
+        const { statusCode, data: { items: listAssigned = [] } = {} } = response;
         if (statusCode !== 200) throw response;
-        if (isEmployee) {
-          notification.success({ message: `Set schedule interview successfully!` });
-        }
-        yield put({ type: 'save', payload: { itemCreateScheduleInterview } });
+        yield put({ type: 'save', payload: { listAssigned } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListAssignee({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListAssignee, payload);
+        const { statusCode, data = [] } = response;
+        const listAssignee = data.map((item = {}) => {
+          const { _id = '', generalInfo: { firstName = '', workEmail = '' } = {} } = item;
+          return {
+            _id,
+            name: firstName,
+            email: workEmail,
+          };
+        });
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAssignee } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *requestChangeLWD({ payload = {}, isUpdate = false }, { call, put }) {
+      const { id = '' } = payload;
+      let response = {};
+      const message = !isUpdate ? 'Request Change LWD Successfully' : 'Edit Comment Successfully';
+      try {
+        response = yield call(requestChangeLWD, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({ type: 'fetchRequestById', payload: { id } });
       } catch (errors) {
         dialog(errors);
       }
       return response;
+    },
+    *handleRequestChangeLWD({ payload = {} }, { call }) {
+      let response = {};
+      try {
+        response = yield call(handleRequestChangeLWD, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *handleWithdraw({ payload, isNotStatusAccepted = false }, { call, put }) {
+      try {
+        const response = yield call(handleWithdraw, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: 'Withdraw Successfully' });
+        if (isNotStatusAccepted) {
+          yield put({ type: 'fetchRequestById', payload });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {

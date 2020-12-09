@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Button, Tabs } from 'antd';
 import { Link, connect } from 'umi';
 import icon from '@/assets/offboarding-flow.svg';
-import TabContent from './tabContent';
+import TableAssigned from '@/components/TableAssigned';
+import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
 import styles from './index.less';
 
@@ -63,37 +64,41 @@ class ViewLeft extends Component {
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     return (
       <div className={styles.Contanner}>
-        {!checkSendRequest && (
-          <div>
-            <div className={styles.title_Box}>
-              <div>
-                <img src={icon} alt="iconCheck" className={styles.icon} />
-              </div>
-              <span className={styles.title_Text}>
-                Super six years with us. Thank you. We are indebted by your contribution to our
-                company and clients all this while.
-                <p>
-                  This is not the end we like to see.{' '}
-                  <span style={{ color: 'blue' }}> Request for feedback?</span>
-                </p>
-              </span>
+        <div className={styles.title_Box}>
+          <img src={icon} alt="iconCheck" className={styles.icon} />
+          <span className={styles.title_Text}>
+            Super six years with us. Thank you. We are indebted by your contribution to our company
+            and clients all this while.
+            <div>
+              This is not the end we like to see.{' '}
+              <span style={{ color: 'blue' }}> Request for feedback?</span>
             </div>
+          </span>
+        </div>
+        {!checkSendRequest && (
+          <Fragment>
             <div className={styles.subTitle_Text}>
               But, if you have made your mind then lets get to it.
             </div>
             <Button className={styles.submitButton}>
               <Link to="/offboarding/resignation-request">Set a resgination request </Link>
             </Button>
-          </div>
+          </Fragment>
         )}
+
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
             <TabPane tab="Send Request" key="1">
-              <TabContent data={data} countTable={countdata} />
+              <ViewTable data={data} countTable={countdata} />
             </TabPane>
             <TabPane tab="Drafts" key="2">
               <div className={styles.marrinTop}>
-                <TabDrafts data={data} />
+                <TabDrafts data={data} textEmpty="No draft saved" />
+              </div>
+            </TabPane>
+            <TabPane tab="Assigned" key="3">
+              <div className={styles.marrinTop}>
+                <TableAssigned />
               </div>
             </TabPane>
           </Tabs>

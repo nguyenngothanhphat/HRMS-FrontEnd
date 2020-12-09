@@ -63,15 +63,13 @@ class ResigationLeft extends Component {
     return (
       <div className={styles.resignationLeft}>
         <div className={styles.title_Box}>
-          <div>
-            <img src={icon} alt="iconCheck" className={styles.icon} />
-          </div>
+          <img src={icon} alt="iconCheck" className={styles.icon} />
           <span className={styles.title_Text}>
             A last working date (LWD) will generated after your request is approved by your manager
             and the HR.
-            <p>
+            <div>
               The Last Working Day (LWD) will be generated as per our Standard Offboarding Policy.
-            </p>
+            </div>
           </span>
         </div>
         <div className={styles.titleBody}>

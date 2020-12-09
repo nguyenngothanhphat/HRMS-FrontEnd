@@ -29,21 +29,59 @@ class JobDetails extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    const {
+      data: { dateOfJoining = '', noticePeriod = '' },
+      dispatch,
+      checkMandatory,
+    } = this.props;
+
+    if (dateOfJoining && noticePeriod) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: true,
+          },
+        },
+      });
+    }
+  }
+
   _handleSelect = (value, name) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, data } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+    console.log(name, value);
+    // const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+    const { dateOfJoining, noticePeriod } = data;
 
-    if ((candidatesNoticePeriod !== '', prefferedDateOfJoining !== '')) {
+    let newNoticePeriod = noticePeriod;
+    let newDateOfJoining = dateOfJoining;
+
+    if (newNoticePeriod && newDateOfJoining) {
       checkMandatory.filledJobDetail = true;
     } else {
       checkMandatory.filledJobDetail = false;
     }
+
+    if (name === 'candidatesNoticePeriod') {
+      newNoticePeriod = value;
+    }
+    if (name === 'prefferedDateOfJoining') {
+      newDateOfJoining = value;
+    }
+
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        jobDetails,
+        // jobDetails,
+        data: {
+          ...data,
+          dateOfJoining: newDateOfJoining,
+          noticePeriod: newNoticePeriod,
+        },
         checkMandatory: {
           ...checkMandatory,
         },
@@ -167,22 +205,22 @@ class JobDetails extends PureComponent {
     const HRField = [
       {
         title: 'workLocation',
-        name: formatMessage({ id: 'component.jobDetail.workLocation' }),
+        name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
         id: 1,
       },
       {
         title: 'department',
-        name: formatMessage({ id: 'component.jobDetail.department' }),
+        name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
         id: 2,
       },
       {
         title: 'title',
-        name: 'Job Title',
+        name: 'Job Title*',
         id: 3,
       },
       {
         title: 'reportingManager',
-        name: formatMessage({ id: 'component.jobDetail.reportingManager' }),
+        name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
         id: 4,
       },
     ];

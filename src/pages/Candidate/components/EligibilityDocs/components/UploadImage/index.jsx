@@ -6,8 +6,24 @@ import styles from './index.less';
 @connect(({ candidateProfile: { data } = {}, loading }) => ({
   data,
   loading: loading.effects['upload/uploadFile'],
+
+  // loading: false,
 }))
 class UploadImage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      file: null,
+    };
+  }
+
+  componentDidUpdate() {
+    const { file } = this.state;
+    if (file) {
+      this.uploadFile();
+    }
+  }
+
   beforeUpload = (file) => {
     const {
       setSizeImageMatch = () => {},
@@ -37,23 +53,46 @@ class UploadImage extends Component {
     return checkType && isLt5M;
   };
 
-  handleUpload = (file) => {
-    const { dispatch, getResponse = () => {} } = this.props;
+  handleUpload = async () => {
+    const { handleSelectedFile } = this.props;
+
+    const { typeIndex, nestedIndex } = this.props;
+    await handleSelectedFile(typeIndex, nestedIndex);
+  };
+
+  uploadFile = () => {
+    const { file } = this.state;
+    const { dispatch, getResponse } = this.props;
+
     const formData = new FormData();
     formData.append('uri', file);
+
+    this.setState({
+      file: null,
+    });
+
     dispatch({
       type: 'upload/uploadFile',
       payload: formData,
-    }).then((resp) => {
-      getResponse(resp);
+    }).then((res) => {
+      getResponse(res);
     });
   };
 
   render() {
-    const { content = 'Your content', loading = false } = this.props;
-    if (loading) {
+    const {
+      content = 'Your content',
+      loading = false,
+      typeIndex,
+      nestedIndex,
+      selectedInner = '',
+      selectedOuter = '',
+    } = this.props;
+
+    if (loading && typeIndex === selectedOuter && nestedIndex === selectedInner) {
       return <Spin loading={loading} active="true" />;
     }
+
     const props = {
       name: 'file',
       multiple: false,
@@ -63,7 +102,12 @@ class UploadImage extends Component {
       <Upload
         {...props}
         beforeUpload={this.beforeUpload}
-        action={(file) => this.handleUpload(file)}
+        action={(fileData) => {
+          this.handleUpload();
+          this.setState({
+            file: fileData,
+          });
+        }}
         className={styles.UploadImageFile}
       >
         {content}

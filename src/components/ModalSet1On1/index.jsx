@@ -11,6 +11,7 @@ class ModalSet1On1 extends Component {
     this.state = {
       meetingOn: '',
       meetingAt: '',
+      assignee: undefined,
     };
   }
 
@@ -20,19 +21,25 @@ class ModalSet1On1 extends Component {
       {
         meetingOn: '',
         meetingAt: '',
+        assignee: undefined,
       },
       () => handleCancel(),
     );
   };
 
+  selectAssignee = (assignee) => {
+    this.setState({
+      assignee,
+    });
+  };
+
   handleSubmit = () => {
     const { handleSubmit = () => {} } = this.props;
-    const { meetingOn: meetingDate, meetingAt: meetingTime } = this.state;
-    const values = { meetingDate, meetingTime };
+    const { meetingOn: meetingDate, meetingAt: meetingTime, assignee } = this.state;
+    const values = { meetingDate, meetingTime, assignee };
     handleSubmit(values);
   };
 
-  // eslint-disable-next-line no-unused-vars
   changeDate = (_, meetingOn) => {
     this.setState({
       meetingOn,
@@ -54,6 +61,7 @@ class ModalSet1On1 extends Component {
       hideMeetingWith = false,
       textSubmit = 'Send mail',
       listMeetingTime = [],
+      listAssignee = [],
       key = '',
       loading = false,
     } = this.props;
@@ -98,14 +106,37 @@ class ModalSet1On1 extends Component {
               </Select>
             </div>
           </div>
-          {!hideMeetingWith && <div className={styles.subText}>Meeting with</div>}
+          {!hideMeetingWith && (
+            <div className={styles.subText} style={{ marginTop: '30px' }}>
+              Assignee
+            </div>
+          )}
 
           <div
             className={styles.flexContent}
             style={hideMeetingWith ? { justifyContent: 'center' } : {}}
           >
-            {!hideMeetingWith && <Select className={styles.selectPicker} />}
+            {!hideMeetingWith && (
+              <Select
+                showSearch
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                className={styles.selectPicker}
+                onChange={this.selectAssignee}
+              >
+                {listAssignee.map((item = {}) => {
+                  const { _id = '', email = '' } = item;
+                  return (
+                    <Option key={_id} value={_id}>
+                      {email}
+                    </Option>
+                  );
+                })}
+              </Select>
+            )}
             <Button
+              style={hideMeetingWith ? { marginTop: '20px' } : {}}
               loading={loading}
               className={styles.btnSubmit}
               onClick={this.handleSubmit}

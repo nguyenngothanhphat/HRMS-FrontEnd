@@ -48,6 +48,7 @@ const candidateInfo = {
       filledSalaryStructure: false,
       filledAdditionalQuestion: false,
       salaryStatus: 2,
+      calledListTitle: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -384,7 +385,6 @@ const candidateInfo = {
       documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
-      tableData: [],
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -657,13 +657,14 @@ const candidateInfo = {
 
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
+
       try {
         response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'save',
-          payload: { listTitle: data },
+          type: 'saveOrigin',
+          payload: { ...data, listTitle: data },
         });
       } catch (error) {
         dialog(error);
@@ -672,8 +673,9 @@ const candidateInfo = {
     },
 
     *fetchTableData({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTableDataByTitle, payload);
+        response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
         if (statusCode !== 200) throw response;
@@ -684,6 +686,7 @@ const candidateInfo = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
 
     *closeCandidate({ payload }, { call, put }) {
@@ -838,13 +841,18 @@ const candidateInfo = {
     },
 
     *fetchTemplate(_, { call, put }) {
+      const OFFBOARD_TEMPLATE_TYPE = 'OFF_BOARDING-EXIT_PACKAGE';
       try {
         const response = yield call(getTemplates);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        const templateList = data;
+        const onboardTemplates = templateList.filter(
+          (template) => template.type !== OFFBOARD_TEMPLATE_TYPE,
+        );
         yield put({
           type: 'updateTemplate',
-          payload: data,
+          payload: onboardTemplates,
         });
       } catch (error) {
         dialog(error);
@@ -1041,6 +1049,16 @@ const candidateInfo = {
         ...state,
         data: {
           ...data,
+          ...action.payload,
+        },
+      };
+    },
+    saveFilledSalaryStructure(state, action) {
+      const { data, checkMandatory } = state;
+      return {
+        ...state,
+        checkMandatory: {
+          ...checkMandatory,
           ...action.payload,
         },
       };

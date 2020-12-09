@@ -114,8 +114,42 @@ export async function sendMailExitPackage(payload) {
     data: payload,
   });
 }
+export async function getListAssigned() {
+  return request('/api/offboardingrequest/list-assigned', {
+    method: 'POST',
+  });
+}
+
+export async function getListAssignee(payload) {
+  return request('/api/employee/list-active', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function searchListRelieving(payload) {
   return request('/api/offboardingrequest/search-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function requestChangeLWD(payload) {
+  return request('/api/offboardingrequest/request-lwd', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function handleRequestChangeLWD(payload) {
+  return request('/api/offboardingrequest/approval-lwd', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function handleWithdraw(payload) {
+  return request('/api/offboardingrequest/withdraw', {
     method: 'POST',
     data: payload,
   });

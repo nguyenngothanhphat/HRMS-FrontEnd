@@ -41,7 +41,7 @@ const SendEmail = ({
 
   const handleGenerate = () => {
     message.success('Copied');
-    navigator.clipboard.writeText(initialGenerateLink);
+    navigator.clipboard.writeText(initialGenerateLink || '');
   };
 
   const renderBody = () => {

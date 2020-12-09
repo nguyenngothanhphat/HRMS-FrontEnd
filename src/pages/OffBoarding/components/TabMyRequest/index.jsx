@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
-import TableEmployee from './ManagerMyTable';
-import RejectTable from './RenderTableTab';
-import styles from './index.less';
+import MyRequestTable from './MyRequestTable';
+import Summary from './Summary';
+// import styles from './index.less';
 
-@connect()
+@connect(({ loading }) => ({
+  loading: loading.effects['offboarding/fetchList'],
+}))
 class RenderRequest extends Component {
   constructor(props) {
     super(props);
@@ -69,6 +71,14 @@ class RenderRequest extends Component {
           },
         });
         break;
+      case '6':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'WITHDRAW',
+          },
+        });
+        break;
 
       default:
         break;
@@ -82,20 +92,13 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { selectedFilterTab } = this.state;
-    const { data = [], countdata = [] } = this.props;
+    const { data = [], countdata = [], loading } = this.props;
 
     return (
-      <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '2' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '3' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '4' ? <TableEmployee data={data} /> : ''}
-          {selectedFilterTab === '5' ? <TableEmployee data={data} /> : ''}
-        </div>
-      </div>
+      <Fragment>
+        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <MyRequestTable data={data} loading={loading} />
+      </Fragment>
     );
   }
 }
