@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -258,6 +260,7 @@ const employeeSetting = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/sort-comp */
 /* eslint-disable no-bitwise */
@@ -151,8 +152,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeApply = (value) => {
-    const { dispatch, _id, departmentListByCompanyId } = this.props;
-    const { receipients } = this.state;
+    const { dispatch, _id } = this.props;
 
     this.setState({
       appliesToData: value,
@@ -179,7 +179,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeCondition = (index, name, value) => {
-    const { conditionsData, conditionsTrigger, conditions } = this.state;
+    const { conditionsData, conditions } = this.state;
     const { dispatch } = this.props;
 
     const newConditionsData = [...conditionsData];
@@ -353,9 +353,9 @@ class EmailReminderForm extends PureComponent {
                     placeholder="Please select a choice"
                     onChange={(value) => this.onChangeCondition(index, 'value', value)}
                   >
-                    {departments.map((department, index) => {
+                    {departments.map((department) => {
                       return (
-                        <Option value={department.id} key={index}>
+                        <Option value={department._id} key={department._id}>
                           {department.name}
                         </Option>
                       );
@@ -387,8 +387,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeChckBox = (value) => {
-    const { sendToExistingWorker } = this.state;
-    const { checked } = value.target;
+    const { target: { checked = '' } = {} } = value;
     this.setState({ sendToExistingWorker: checked });
   };
 
@@ -402,9 +401,9 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <Form.Item label="Receipients" name="receipients">
               <Select size="large" placeholder="Please select a choice">
-                {receipients.map((option, index) => {
+                {receipients.map((option) => {
                   return (
-                    <Option value={option.value} key={index}>
+                    <Option value={option.value} key={option._id}>
                       {option.name}
                     </Option>
                   );
