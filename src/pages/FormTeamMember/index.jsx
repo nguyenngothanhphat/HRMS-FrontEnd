@@ -77,10 +77,12 @@ class FormTeamMember extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { dispatch } = this.props;
+    const { dispatch, candidateInfo } = this.props;
+    const { listTitle } = candidateInfo;
     dispatch({
       type: 'candidateInfo/saveOrigin',
       payload: {
+        listTitle,
         fullName: null,
         privateEmail: null,
         workEmail: null,

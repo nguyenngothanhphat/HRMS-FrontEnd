@@ -4,7 +4,7 @@ import { Col, Tabs, Row } from 'antd';
 // import Icon from '@ant-design/icons';
 import { Link, connect } from 'umi';
 import addIcon from '@/assets/addTicket.svg';
-import TabContent from './tabContent';
+import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import styles from './index.less';
 
@@ -85,7 +85,7 @@ class HRrequestTable extends Component {
           >
             <TabPane tab="Team request" key="1">
               <div className={styles.tableTab}>
-                <TabContent data={listTeamRequest} countdata={totalListTeamRequest} />
+                <TeamRequest data={listTeamRequest} countdata={totalListTeamRequest} />
               </div>
             </TabPane>
             <TabPane tab="My Request" key="2">

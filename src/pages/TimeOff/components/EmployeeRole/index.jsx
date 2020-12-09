@@ -5,7 +5,7 @@ import LeaveInformation from './components/LeaveInformation';
 import ApplyRequest from './components/ApplyRequest';
 import LeaveHistoryAndHoliday from './components/LeaveHistoryAndHoliday';
 import QuickLinks from './components/QuickLinks';
-import TimeOffRequests from './components/TimeOffRequests';
+import TimeOffRequestsTable from './components/TimeOffRequestsTable';
 import FeedbackBar from './components/FeedbackBar';
 import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
@@ -75,48 +75,42 @@ export default class EmployeeRole extends PureComponent {
                 </Col>
               </Row>
             </Col>
-            {!viewInformation && (
-              <Col xs={24} md={18}>
-                <Row gutter={[20, 20]}>
-                  <Col xs={24} lg={15}>
-                    <ApplyRequest
-                      title="Apply for Timeoff from Office"
-                      describe={describeText[0]}
-                      buttonText="Request Time Off"
-                      onClick={this.buttonOnClickLeave}
-                      type={1}
-                    />
-                  </Col>
-                  <Col xs={24} lg={9}>
-                    <ApplyRequest
-                      title="Apply for Compoff"
-                      describe={describeText[1]}
-                      onClick={this.buttonOnClick}
-                      buttonText="Request Compoff"
-                      type={2}
-                    />
-                  </Col>
-                </Row>
+
+            <Col xs={24} md={18}>
+              <Row gutter={[20, 20]}>
+                <Col xs={24} lg={15}>
+                  <ApplyRequest
+                    title="Apply for Timeoff from Office"
+                    describe={describeText[0]}
+                    buttonText="Request Time Off"
+                    onClick={this.buttonOnClickLeave}
+                    type={1}
+                  />
+                </Col>
+                <Col xs={24} lg={9}>
+                  <ApplyRequest
+                    title="Apply for Compoff"
+                    describe={describeText[1]}
+                    onClick={this.buttonOnClick}
+                    buttonText="Request Compoff"
+                    type={2}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={[20, 20]}>
+                <Col span={24}>
+                  <TimeOffRequestsTable />
+                </Col>
+              </Row>
+              {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
-                    <TimeOffRequests />
+                    <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-                {!closeFeedbackBar && (
-                  <Row gutter={[20, 20]}>
-                    <Col span={24}>
-                      <FeedbackBar onClose={this.onCloseFeedbackBar} />
-                    </Col>
-                  </Row>
-                )}
-              </Col>
-            )}
-
-            {viewInformation && (
-              <Col xs={24} md={18}>
-                <LeaveBalanceInfo onClose={this.onInformationCLick} />
-              </Col>
-            )}
+              )}
+              <LeaveBalanceInfo onClose={this.onInformationCLick} visible={viewInformation} />
+            </Col>
           </Row>
         </div>
       </>
