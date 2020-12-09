@@ -6,6 +6,7 @@ import StatusRequest from '@/components/StatusRequest';
 import { connect } from 'umi';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
+import WithDraw from './WithDraw';
 import styles from './index.less';
 
 @connect(
@@ -57,7 +58,11 @@ class ResignationRequest extends Component {
   };
 
   handleSubmit = (values) => {
-    const { dispatch, myRequest = {} } = this.props;
+    const {
+      dispatch,
+      myRequest = {},
+      match: { params: { id: code = '' } = {} },
+    } = this.props;
     const { manager: { _id: meetingWith } = {}, _id: offBoardingRequest } = myRequest;
     const payload = { meetingWith, offBoardingRequest, ownerComment: meetingWith, ...values };
     dispatch({
@@ -67,6 +72,12 @@ class ResignationRequest extends Component {
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         this.handleModalSet1On1();
+        dispatch({
+          type: 'offboarding/getList1On1',
+          payload: {
+            offBoardingRequest: code,
+          },
+        });
       }
     });
   };
@@ -89,6 +100,7 @@ class ResignationRequest extends Component {
         </div>
       );
     }
+    const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD'];
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -103,6 +115,11 @@ class ResignationRequest extends Component {
           <Row className={styles.content} gutter={[40, 40]}>
             <Col span={16}>
               <Reason />
+              {arrStatus.indexOf(status) > -1 && (
+                <div className={styles.viewWithDraw}>
+                  <WithDraw />
+                </div>
+              )}
             </Col>
             <Col span={8}>
               <WorkFlow approvalStep={approvalStep} nameManager={nameManager} />
