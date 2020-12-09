@@ -1,107 +1,121 @@
 import React, { PureComponent } from 'react';
-import { Row, Collapse, Tooltip } from 'antd';
+import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
+import { connect, history } from 'umi';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
-import DonutChart from './components/DonutChart';
 
 import styles from './index.less';
 
 const { Panel } = Collapse;
-
-const mockData = {
-  totalLeaveDay: 25,
-  remainingLeaveDay: 23,
-  casualLeave: {
-    stepNumber: 12,
-    limitNumber: 12,
-  },
-  sickLeave: {
-    stepNumber: 4,
-    limitNumber: 6,
-  },
-  compensationLeave: {
-    stepNumber: 1,
-    limitNumber: 1,
-  },
-  maternityLeaveNumber: 90,
-  bereavementLeaveNumber: 7,
-  restrictedHolidayNumber: 1,
-};
+const colorsList = ['#2C6DF9', '#FD4546', '#6236FF'];
 
 const CollapseInformation = (props) => {
-  const { data = {} } = props;
+  const {
+    typesOfCommonLeaves = [],
+    typesOfSpecialLeaves = [],
+    policyCommonLeaves = {},
+    policySpecialLeaves = {},
+  } = props;
+
+  const renderPolicyLink = (policy) => {
+    if (policy !== null) {
+      if (Object.keys(policy).length !== 0) {
+        const { key = '', _id = '' } = policy;
+        return <a onClick={() => history.push(`/view-document/${_id}`)}>{key}</a>;
+      }
+    }
+    return <a>Unknown file</a>;
+  };
+
   return (
     <div className={styles.CollapseInformation}>
-      <div className={styles.secondTitle}>
-        <span className={styles.secondTitle__left}>Common Leaves</span>
-        <div className={styles.secondTitle__right}>
-          <span>Under </span>
-          <a>Standard Policy</a>
+      <div className={styles.container}>
+        <div className={styles.secondTitle}>
+          <span className={styles.secondTitle__left}>Common Leaves</span>
+          <div className={styles.secondTitle__right}>
+            <span>Under </span>
+            {renderPolicyLink(policyCommonLeaves)}
+          </div>
+        </div>
+        <div className={styles.leaveProgressBars}>
+          {typesOfCommonLeaves.map((type, index) => {
+            const { currentAllowance = 0, defaultSettings = {} } = type;
+            if (defaultSettings !== null) {
+              const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+              const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
+              return (
+                <div>
+                  <LeaveProgressBar
+                    color={colorsList[index % 3]}
+                    title={name}
+                    shortType={shortType}
+                    stepNumber={currentAllowance}
+                    limitNumber={time}
+                    moreContent={moreContentMock[index % 3]}
+                  />
+                  {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
+                </div>
+              );
+            }
+            return '';
+          })}
         </div>
       </div>
-      <div className={styles.leaveProgressBars}>
-        <LeaveProgressBar
-          color="#FF3397"
-          title="Casual Leave"
-          shorten="CL"
-          stepNumber={data.casualLeave.stepNumber}
-          limitNumber={data.casualLeave.limitNumber}
-        />
-        <LeaveProgressBar
-          color="#2C6DF9"
-          title="Sick Leave"
-          shorten="SL"
-          stepNumber={data.sickLeave.stepNumber}
-          limitNumber={data.sickLeave.limitNumber}
-        />
-        <LeaveProgressBar
-          color="#FFA100"
-          title="Compensation Leave"
-          shorten="CO"
-          stepNumber={data.compensationLeave.stepNumber}
-          limitNumber={data.compensationLeave.limitNumber}
-        />
-      </div>
-
-      <div className={styles.secondTitle}>
-        <span className={styles.secondTitle__left}>Special Leaves</span>
-        <div className={styles.secondTitle__right}>
-          <span>Under </span>
-          <a>Terralogic Fulltime Policy</a>
+      <div className={styles.container}>
+        <div className={styles.secondTitle}>
+          <span className={styles.secondTitle__left}>Special Leaves</span>
+          <div className={styles.secondTitle__right}>
+            <span>Under </span>
+            {renderPolicyLink(policySpecialLeaves)}
+          </div>
         </div>
+        <Row className={styles.leaveProgressBars}>
+          {typesOfSpecialLeaves.map((type, index) => {
+            const { currentAllowance = 0, defaultSettings = {} } = type;
+            if (defaultSettings !== null) {
+              const { name = '', shortType = '' } = defaultSettings;
+              return (
+                <Col span={24}>
+                  <SpecialLeaveBox
+                    color={colorsList[index % 3]}
+                    title={name}
+                    shortType={shortType}
+                    days={currentAllowance}
+                  />
+                  {index + 1 !== typesOfSpecialLeaves.length && <div className={styles.hr} />}
+                </Col>
+              );
+            }
+            return '';
+          })}
+        </Row>
       </div>
-      <Row>
-        <SpecialLeaveBox
-          color="#FFA100"
-          title="Maternity Leave"
-          shorten="ML"
-          days={data.maternityLeaveNumber}
-        />
-        <SpecialLeaveBox
-          color="#FF3397"
-          title="Bereavement Leave"
-          shorten="BL"
-          days={data.bereavementLeaveNumber}
-        />
-        <SpecialLeaveBox
-          color="#2C6DF9"
-          title="Restricted Holiday"
-          shorten="RH"
-          days={data.restrictedHolidayNumber}
-        />
-      </Row>
     </div>
   );
 };
-export default class LeaveInformation extends PureComponent {
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class LeaveInformation extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
+      remaining: 0,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchLeaveBalanceOfUser',
+    });
+    dispatch({
+      type: 'timeOff/fetchLeaveRequestOfEmployee',
+    });
+  };
 
   handleShow = () => {
     const { show } = this.state;
@@ -124,25 +138,77 @@ export default class LeaveInformation extends PureComponent {
     );
   };
 
+  renderCircleProgress = (percentVal, value) => (
+    <div className={styles.circleProgress}>
+      <span className={styles.percentValue}>{value}</span>
+      <p className={styles.remainingText}>Remaining</p>
+    </div>
+  );
+
+  calculateValueForCircleProgress = (typesOfCommonLeaves) => {
+    let remaining = 0;
+    let total = 0;
+    let result = 0;
+
+    typesOfCommonLeaves.forEach((type) => {
+      const { currentAllowance = 0, defaultSettings = {} } = type;
+      if (defaultSettings !== null) {
+        const { baseAccrual: { time = 0 } = {} } = defaultSettings;
+        remaining += currentAllowance;
+        total += time;
+        this.setState({
+          remaining,
+        });
+        result = Math.round((remaining / total) * 100);
+      }
+    });
+    return result;
+  };
+
   render() {
-    const { onInformationCLick = () => {} } = this.props;
-    const total = 35;
-    const value = 12;
-    const percent = Math.round(((total - value) / total) * 100);
+    const { remaining } = this.state;
+    const {
+      onInformationCLick = () => {},
+      timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+    } = this.props;
+    const {
+      timeOffTypes: typesOfCommonLeaves = [],
+      policy: policyCommonLeaves = {},
+    } = commonLeaves;
+    const {
+      timeOffTypes: typesOfSpecialLeaves = [],
+      policy: policySpecialLeaves = {},
+    } = specialLeaves;
+
+    const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
+
     return (
       <div className={styles.LeaveInformation}>
         <div className={styles.totalLeaveBalance}>
-          <span className={styles.title}>Total Leave Balance</span>
-          <div className={styles.leaveBalanceBox}>
-            <DonutChart value={12} percent={percent} />
+          <div className={styles.aboveContainer}>
+            <span className={styles.title}>Total Leave Balance</span>
+            <div className={styles.leaveBalanceBox}>
+              <Progress
+                type="circle"
+                strokeColor="#FFA100"
+                trailColor="#EAE7E3"
+                percent={percent}
+                format={(percentVal) => this.renderCircleProgress(percentVal, remaining)}
+              />
+            </div>
           </div>
           <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">
-              <CollapseInformation data={mockData} />
+              <CollapseInformation
+                typesOfCommonLeaves={typesOfCommonLeaves}
+                typesOfSpecialLeaves={typesOfSpecialLeaves}
+                policyCommonLeaves={policyCommonLeaves}
+                policySpecialLeaves={policySpecialLeaves}
+              />
             </Panel>
           </Collapse>
         </div>
-        <Tooltip title="More information">
+        <Tooltip title="Leave balances detail">
           <div onClick={onInformationCLick} className={styles.infoIcon}>
             <InfoCircleOutlined />
           </div>
@@ -151,3 +217,5 @@ export default class LeaveInformation extends PureComponent {
     );
   }
 }
+
+export default LeaveInformation;
