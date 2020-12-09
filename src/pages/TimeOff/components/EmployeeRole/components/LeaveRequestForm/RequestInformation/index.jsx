@@ -146,9 +146,14 @@ class RequestInformation extends Component {
     return result;
   };
 
-  onValuesChange = (value) => {
-    // eslint-disable-next-line no-console
-    console.log('Success:', value);
+  checkLeaveDatesValid = (list) => {
+    let countWork = 0;
+    list.forEach((value) => {
+      const { timeOfDay = '' } = value;
+      if (timeOfDay === 'WORK') countWork += 1;
+    });
+    if (countWork === list.length) return false;
+    return true;
   };
 
   // ON FINISH
@@ -170,8 +175,10 @@ class RequestInformation extends Component {
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // console.log('leaveDates', leaveDates);
 
-    if (leaveDates.length === 0) {
-      message.error('Please select valid dates!');
+    if (!this.checkLeaveDatesValid(leaveDates)) {
+      message.error('Please select valid leave time!');
+    } else if (leaveDates.length === 0) {
+      message.error('Please select valid leave time dates!');
     } else {
       // generate data for API
       const duration = this.calculateNumberOfLeaveDay(leaveDates);
