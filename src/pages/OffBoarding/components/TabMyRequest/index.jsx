@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import MyRequestTable from './MyRequestTable';
 import Summary from './Summary';
-import styles from './index.less';
+// import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading: loading.effects['offboarding/fetchList'],
@@ -97,9 +97,7 @@ class RenderRequest extends Component {
     return (
       <Fragment>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <div className={styles.tableContainer}>
-          <MyRequestTable data={data} loading={loading} />
-        </div>
+        <MyRequestTable data={data} loading={loading} />
       </Fragment>
     );
   }

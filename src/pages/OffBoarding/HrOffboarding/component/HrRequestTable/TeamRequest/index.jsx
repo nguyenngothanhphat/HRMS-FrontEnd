@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import HrTable from '../TableHRManager';
 import Summary from '../Summary';
-import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
@@ -76,9 +75,7 @@ class TabContent extends Component {
     return (
       <Fragment>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <div className={styles.tableContainer}>
-          <HrTable data={data} loading={loading} />
-        </div>
+        <HrTable data={data} loading={loading} />
       </Fragment>
     );
   }
