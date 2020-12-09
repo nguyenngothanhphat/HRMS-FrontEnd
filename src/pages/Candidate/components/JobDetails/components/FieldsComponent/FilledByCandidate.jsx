@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, InputNumber, DatePicker, Typography } from 'antd';
 import { formatMessage } from 'umi';
+import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
 class FilledByCandidate extends PureComponent {
@@ -15,6 +16,11 @@ class FilledByCandidate extends PureComponent {
     this.setState((prevState) => ({
       isHidden: !prevState.isHidden,
     }));
+  };
+
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().startOf('day');
   };
 
   render() {
@@ -43,6 +49,7 @@ class FilledByCandidate extends PureComponent {
             <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
             <DatePicker
               className={styles}
+              disabledDate={this.disabledDate}
               placeholder=""
               picker="date"
               format="MM/DD/YYYY"
