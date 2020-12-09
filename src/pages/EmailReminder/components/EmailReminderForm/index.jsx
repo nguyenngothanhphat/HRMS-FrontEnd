@@ -9,6 +9,7 @@ import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 import 'react-quill/dist/quill.snow.css';
 
+import addIcon from '@/assets/add-symbols.svg';
 import removeIcon from './assets/removeIcon.svg';
 
 import styles from './index.less';
@@ -55,7 +56,7 @@ class EmailReminderForm extends PureComponent {
           id: 0,
           key: '',
           tobeVerb: '',
-          department: '',
+          value: [],
         },
       ],
       appliesToData: '',
@@ -102,23 +103,19 @@ class EmailReminderForm extends PureComponent {
         units: [
           {
             name: 'Department',
-            value: 'Department',
+            value: 'department',
           },
           {
             name: 'Location',
-            value: 'Location',
+            value: 'location',
           },
           {
             name: 'Employment type',
-            value: 'Employment type',
+            value: 'employment_type',
           },
           {
             name: 'Title',
-            value: 'Title',
-          },
-          {
-            name: 'Salary',
-            value: 'Salary',
+            value: 'title',
           },
         ],
         toBeVerbs: [
@@ -136,7 +133,7 @@ class EmailReminderForm extends PureComponent {
       conditions: [
         {
           key: '',
-          value: '',
+          value: [],
         },
       ],
     };
@@ -186,7 +183,7 @@ class EmailReminderForm extends PureComponent {
     const newConditions = [...conditions];
 
     if (name === 'key') {
-      if (value === 'Department') {
+      if (value === 'department') {
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -198,7 +195,7 @@ class EmailReminderForm extends PureComponent {
             },
           }));
         });
-      } else if (value === 'Location') {
+      } else if (value === 'location') {
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -210,7 +207,7 @@ class EmailReminderForm extends PureComponent {
             },
           }));
         });
-      } else if (value === 'Title') {
+      } else if (value === 'title') {
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -263,17 +260,32 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
+  onAddConditionDepartment = (id) => {
+    alert(id);
+    const { conditionsData } = this.state;
+    const newConditionsData = [...conditionsData];
+    console.log('newConditionsData: ', newConditionsData);
+
+    // array chua gia tri cua value cu + 123
+    // 1 object moi { id: id, key,,tobeverb, value: array}
+
+    const value = { value: '123' };
+    newConditionsData.push(value);
+
+    console.log('newConditionsData after push : ', newConditionsData);
+    console.log('data: ', value);
+  };
+
   onAddCondition = () => {
     const { conditionsData, conditions } = this.state;
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
 
-    const newCondition = { id: conditionsData.length, key: '', tobeVerb: '', value: '' };
+    const newCondition = { id: conditionsData.length, key: '', tobeVerb: '', value: [] };
     const condition = {
       key: '',
-      value: '',
+      value: [],
     };
-
     newConditionsData.push(newCondition);
     newConditions.push(condition);
 
@@ -347,7 +359,7 @@ class EmailReminderForm extends PureComponent {
                 </Col>
 
                 {/* Departments  */}
-                <Col span={10}>
+                <Col span={10} className={styles.departmentCondition}>
                   <Select
                     size="large"
                     value={data.value}
@@ -362,6 +374,14 @@ class EmailReminderForm extends PureComponent {
                       );
                     })}
                   </Select>
+                  <Col span={1}>
+                    <img
+                      className={styles.onAddConditionBtn}
+                      onClick={() => this.onAddConditionDepartment(data.id)}
+                      src={addIcon}
+                      alt="add"
+                    />
+                  </Col>
                 </Col>
                 <Col span={1}>
                   <img
@@ -424,7 +444,7 @@ class EmailReminderForm extends PureComponent {
 
   mentionModule = {
     allowedChars: /^[A-Za-z\s]*$/,
-    mentionDenotationChars: ['_', '#'],
+    mentionDenotationChars: ['@', ''],
     showDenotationChar: false,
     renderItem: (item) => {
       return item.value;
@@ -432,7 +452,7 @@ class EmailReminderForm extends PureComponent {
     source(searchTerm, renderList, mentionChar) {
       let values;
 
-      if (mentionChar === '_') {
+      if (mentionChar === '@') {
         values = atValues;
       } else {
         values = hashValues;
