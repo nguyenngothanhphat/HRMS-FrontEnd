@@ -32,20 +32,20 @@ import styles from './index.less';
   }),
 )
 class SalaryStructure extends PureComponent {
-  componentDidMount() {
-    const { candidate = '', dispatch, currentStep, processStatus } = this.props;
-    if (processStatus === 'DRAFT') {
-      if (dispatch && candidate) {
-        dispatch({
-          type: 'candidateInfo/updateByHR',
-          payload: {
-            candidate,
-            currentStep: 2,
-          },
-        });
-      }
-    }
-  }
+  // componentDidMount() {
+  //   const { candidate = '', dispatch, currentStep, processStatus } = this.props;
+  //   if (processStatus === 'DRAFT') {
+  //     if (dispatch && candidate) {
+  //       dispatch({
+  //         type: 'candidateInfo/updateByHR',
+  //         payload: {
+  //           candidate,
+  //           currentStep: 2,
+  //         },
+  //       });
+  //     }
+  //   }
+  // }
 
   _renderTable = () => {
     return (

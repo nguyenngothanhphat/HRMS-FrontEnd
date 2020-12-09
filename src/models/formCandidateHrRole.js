@@ -48,6 +48,7 @@ const candidateInfo = {
       filledSalaryStructure: false,
       filledAdditionalQuestion: false,
       salaryStatus: 2,
+      calledListTitle: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -656,13 +657,14 @@ const candidateInfo = {
 
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
+
       try {
         response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { listTitle: data },
+          payload: { ...data, listTitle: data },
         });
       } catch (error) {
         dialog(error);
