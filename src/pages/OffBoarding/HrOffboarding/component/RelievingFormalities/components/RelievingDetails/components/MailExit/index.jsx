@@ -167,7 +167,16 @@ class MailExit extends Component {
                         onClick={() => this.handleClickEdit(template, 'View')}
                       >
                         <img src={templateIcon} alt="template-icon" />
-                        <span>{packageName}</span>
+                        <span
+                          style={{
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            width: '130px',
+                          }}
+                        >
+                          {packageName}
+                        </span>
                       </div>
                       <div className={styles.template__action}>
                         <img

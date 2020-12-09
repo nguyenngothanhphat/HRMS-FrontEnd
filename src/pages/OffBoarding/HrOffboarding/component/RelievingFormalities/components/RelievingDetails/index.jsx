@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col, Button } from 'antd';
+import { Affix, Row, Col, Button, Spin } from 'antd';
 import { connect } from 'umi';
 // import exclamationIcon from '@/assets/exclamation-custom-icon.svg';
 import EmployeeDetail from './components/EmployeeDetail';
@@ -11,7 +11,11 @@ import Feedback from './components/Feedback';
 import ClosePackage from './components/ClosingPackage';
 import styles from './index.less';
 
-@connect(({ offboarding, user: { currentUser = {} } }) => ({ offboarding, currentUser }))
+@connect(({ loading, offboarding, user: { currentUser = {} } }) => ({
+  offboarding,
+  currentUser,
+  loading: loading.effects['offboarding/fetchRelievingDetailsById'],
+}))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
     this.fetchRelievingDetails();
@@ -28,7 +32,7 @@ class RelievingDetails extends PureComponent {
       payload: {
         id,
         company,
-        packageType: 'EXIT-PACKAGE',
+        packageType: '',
       },
     });
   };
@@ -37,7 +41,9 @@ class RelievingDetails extends PureComponent {
     const {
       offboarding: { relievingDetails = {} },
       currentUser = {},
+      loading,
     } = this.props;
+    if (loading) return <Spin size="large" className={styles.loading} />;
     return (
       <PageContainer>
         <div className={styles.relievingDetail}>

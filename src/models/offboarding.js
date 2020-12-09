@@ -182,22 +182,47 @@ const offboarding = {
     },
     // Relieving Formalities
     *fetchRelievingDetailsById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const templateRes = yield call(getOffBoardingPackages, {
-          offBoardingId: payload.id,
-          company: payload.company._id,
-          templateType: 'DEFAULT',
-          packageType: payload.packageType,
-        });
-        const { statusCode: templateStat } = templateRes;
-        if (templateStat !== 200) throw templateRes;
-        const response = yield call(getRequestById, payload);
+        if (!payload.packageType || payload.packageType === '') {
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'EXIT-PACKAGE',
+          });
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'CLOSING-PACKAGE',
+          });
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'EXIT-INTERVIEW-FEEDBACKS',
+          });
+        } else {
+          const templateRes = yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: payload.packageType,
+          });
+          const { statusCode: templateStat } = templateRes;
+          if (templateStat !== 200) throw templateRes;
+        }
+
+        response = yield call(getRequestById, payload);
         const { statusCode, data: relievingDetails = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails } });
+        return response;
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *getOffBoardingPackages({ payload }, { call, put }) {
       try {
