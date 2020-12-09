@@ -4,6 +4,8 @@ import { Radio, Typography, Row, Col } from 'antd';
 import { isObject } from 'lodash';
 import styles from './index.less';
 
+const INTERN_TYPE = '5f50c2541513a742582206f9';
+
 class RadioComponent extends PureComponent {
   render() {
     const {
@@ -47,7 +49,7 @@ class RadioComponent extends PureComponent {
 
             <Radio.Group
               className={styles.paddingRadio}
-              defaultValue={isObject(employeeType) ? employeeType._id : employeeType}
+              defaultValue={isObject(employeeType) ? employeeType._id : INTERN_TYPE}
               onChange={(e) => handleRadio(e)}
               name={Tab.classificationTab.name}
             >
