@@ -839,13 +839,18 @@ const candidateInfo = {
     },
 
     *fetchTemplate(_, { call, put }) {
+      const OFFBOARD_TEMPLATE_TYPE = 'OFF_BOARDING-EXIT_PACKAGE';
       try {
         const response = yield call(getTemplates);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        const templateList = data;
+        const onboardTemplates = templateList.filter(
+          (template) => template.type !== OFFBOARD_TEMPLATE_TYPE,
+        );
         yield put({
           type: 'updateTemplate',
-          payload: data,
+          payload: onboardTemplates,
         });
       } catch (error) {
         dialog(error);

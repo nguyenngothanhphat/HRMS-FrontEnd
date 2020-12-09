@@ -170,26 +170,36 @@ class BasicInformation extends Component {
     const { data } = this.state;
     const { dispatch, currentStep } = this.props;
     const { _id } = data;
-    dispatch({
-      type: 'candidateInfo/submitBasicInfo',
-      payload: {
-        fullName: values.fullName,
-        privateEmail: values.privateEmail,
-        workEmail: values.workEmail,
-        previousExperience: values.previousExperience,
-        candidate: _id,
-        currentStep: currentStep + 1,
-      },
-    }).then(({ data: data1, statusCode }) => {
-      if (statusCode === 200) {
-        dispatch({
-          type: 'candidateInfo/save',
-          payload: {
-            currentStep: data1.currentStep,
-          },
-        });
-      }
-    });
+    if (this.disableEdit()) {
+      const nextStep = currentStep + 1;
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          currentStep: nextStep,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/submitBasicInfo',
+        payload: {
+          fullName: values.fullName,
+          privateEmail: values.privateEmail,
+          workEmail: values.workEmail,
+          previousExperience: values.previousExperience,
+          candidate: _id,
+          currentStep: currentStep + 1,
+        },
+      }).then(({ data: data1, statusCode }) => {
+        if (statusCode === 200) {
+          dispatch({
+            type: 'candidateInfo/save',
+            payload: {
+              currentStep: data1.currentStep,
+            },
+          });
+        }
+      });
+    }
   };
 
   onClickClose = () => {
