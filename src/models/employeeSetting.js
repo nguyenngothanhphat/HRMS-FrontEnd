@@ -182,7 +182,6 @@ const employeeSetting = {
       try {
         const response = yield call(getTriggerEventList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { triggerEventList: data } });
       } catch (errors) {
@@ -194,7 +193,6 @@ const employeeSetting = {
       try {
         response = yield call(getLocationList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList: data } });
         return data;
@@ -208,7 +206,6 @@ const employeeSetting = {
       try {
         response = yield call(getDepartmentList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList: data } });
         return data;
@@ -222,7 +219,6 @@ const employeeSetting = {
       try {
         response = yield call(getTitleList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { titleList: data } });
         return data;
@@ -236,7 +232,6 @@ const employeeSetting = {
       try {
         response = yield call(getEmployeeTypeList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeTypeList: data } });
         return data;
@@ -250,7 +245,6 @@ const employeeSetting = {
       try {
         response = yield call(getDepartmentListByCompanyId, payload);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',

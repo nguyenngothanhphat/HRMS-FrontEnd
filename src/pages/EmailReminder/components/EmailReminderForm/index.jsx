@@ -60,6 +60,7 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       checkCondition: false,
+      isLocation: false,
       appliesToData: '',
       message: '',
       frequencyItem: [
@@ -177,7 +178,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeCondition = (index, name, value) => {
-    const { conditionsData, conditions } = this.state;
+    const { conditionsData, conditions, isLocation } = this.state;
     const { dispatch } = this.props;
 
     const newConditionsData = [...conditionsData];
@@ -197,6 +198,7 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else if (value === 'location') {
+        this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -208,7 +210,6 @@ class EmailReminderForm extends PureComponent {
             },
           }));
         });
-        this.setState({ checkCondition: true });
       } else if (value === 'title') {
         dispatch({
           type: 'employeeSetting/fetchTitleList',
@@ -236,6 +237,15 @@ class EmailReminderForm extends PureComponent {
       }
       newConditions[index][name] = value;
     }
+
+    if (name === 'tobeVerb' && isLocation === true) {
+      if (value === 'is in') {
+        this.setState({ checkCondition: true });
+      } else {
+        this.setState({ checkCondition: false });
+      }
+    }
+
     if (name === 'value') {
       newConditions[index][name] = value;
     }
