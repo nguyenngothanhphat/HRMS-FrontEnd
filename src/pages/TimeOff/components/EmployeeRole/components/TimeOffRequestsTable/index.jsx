@@ -37,16 +37,41 @@ class TimeOffRequestsTable extends PureComponent {
     ),
   };
 
-  renderData = (data) => {
-    return data;
+  renderData = (leaveRequests, key) => {
+    if (key === 1)
+      return leaveRequests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'A' || type === 'B';
+      });
+
+    if (key === 2)
+      return leaveRequests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
+      });
+
+    if (key === 3)
+      return leaveRequests.filter((req) => {
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType === 'LWP';
+      });
+
+    if (key === 4)
+      return leaveRequests.filter((req) => {
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'D';
+      });
+
+    return [];
   };
 
   render() {
     const { timeOff: { leaveRequests = [] } = {}, loadingFetchLeaveRequests } = this.props;
     const emptyData = [];
-    const leaveRequestsData = this.renderData(leaveRequests);
-    const specialRequestsData = this.renderData(leaveRequests);
-    const lwpRequestsData = this.renderData(leaveRequests);
+    const leaveRequestsData = this.renderData(leaveRequests, 1);
+    const specialRequestsData = this.renderData(leaveRequests, 2);
+    const lwpRequestsData = this.renderData(leaveRequests, 3);
+    const wfhRequestsData = this.renderData(leaveRequests, 4);
     // const compoffRequestsData = this.renderData(leaveRequests);
 
     return (
@@ -80,7 +105,7 @@ class TimeOffRequestsTable extends PureComponent {
                 <TimeOffRequestTab data={lwpRequestsData} type={1} />
               </TabPane>
               <TabPane tab="WFH/CP Requests" key="4">
-                <TimeOffRequestTab data={emptyData} type={1} />
+                <TimeOffRequestTab data={wfhRequestsData} type={1} />
               </TabPane>
               <TabPane tab="Compoff Request" key="5">
                 <TimeOffRequestTab data={emptyData} type={2} />

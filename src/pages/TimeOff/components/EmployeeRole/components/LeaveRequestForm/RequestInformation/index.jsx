@@ -28,6 +28,7 @@ class RequestInformation extends Component {
       durationFrom: '',
       durationTo: '',
       buttonState: 0, // save draft or submit
+      viewingLeaveRequestId: '',
     };
   }
 
@@ -58,14 +59,19 @@ class RequestInformation extends Component {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
-        type: { _id = '', shortType = '', type = '', name = '' } = {},
+        type: { _id: typeId = '', shortType = '', type = '', name = '' } = {},
         subject = '',
         fromDate = '',
         toDate = '',
         leaveDates = [],
         description = '',
         cc = [],
+        _id = '',
       } = viewingLeaveRequest;
+
+      this.setState({
+        viewingLeaveRequestId: _id,
+      });
 
       this.setState({
         durationFrom: moment(fromDate),
@@ -79,7 +85,7 @@ class RequestInformation extends Component {
       const leaveTimeLists = leaveDates.map((date) => (date ? date.timeOfDay : null));
 
       this.formRef.current.setFieldsValue({
-        timeOffType: _id,
+        timeOffType: typeId,
         subject,
         durationFrom: moment(fromDate),
         durationTo: moment(toDate),
@@ -547,6 +553,12 @@ class RequestInformation extends Component {
     return 0;
   };
 
+  // ON CANCEL EDIT
+  onCancelEdit = () => {
+    const { viewingLeaveRequestId: id } = this.state;
+    history.push(`/time-off/view-request/${id}`);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -843,7 +855,7 @@ class RequestInformation extends Component {
           </span>
           <div className={styles.formButtons}>
             {action === 'edit-leave-request' && (
-              <Button type="link" htmlType="button" onClick={this.saveDraft}>
+              <Button type="link" htmlType="button" onClick={this.onCancelEdit}>
                 <span style={{ color: 'black !important' }}>Cancel</span>
               </Button>
             )}
