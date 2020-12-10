@@ -32,8 +32,10 @@ export default class EmployeeRole extends PureComponent {
   };
 
   buttonOnClickLeave = () => {
-    // eslint-disable-next-line no-alert
-    history.push(`/time-off/new-leave-request`);
+    history.push({
+      pathname: `/time-off/new-leave-request`,
+      state: { action: 'NEW-REQUEST' },
+    });
   };
 
   onInformationCLick = () => {

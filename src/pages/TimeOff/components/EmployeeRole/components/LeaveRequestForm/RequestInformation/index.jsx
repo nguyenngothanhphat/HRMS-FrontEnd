@@ -43,7 +43,7 @@ class RequestInformation extends Component {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
-    const { dispatch } = this.props;
+    const { dispatch, action = '' } = this.props;
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
     });
@@ -51,6 +51,39 @@ class RequestInformation extends Component {
       type: 'timeOff/fetchTimeOffTypes',
     });
     this.fetchEmailsListByCompany();
+
+    // console.log('action', action);
+    if (action === 'EDIT-REQUEST') {
+      const { viewingLeaveRequest = {} } = this.props;
+      // console.log('viewingLeaveRequest', viewingLeaveRequest);
+      const {
+        type: { _id = '', shortType = '', type = '', name = '' } = {},
+        subject = '',
+        fromDate = '',
+        toDate = '',
+        // leaveDates = [],
+        description = '',
+        cc = [],
+      } = viewingLeaveRequest;
+
+      this.setState({
+        durationFrom: moment(fromDate),
+        durationTo: moment(toDate),
+        selectedShortType: shortType,
+        selectedTypeName: name,
+        selectedType: type,
+      });
+
+      const personCC = cc.map((person) => (person ? person._id : ''));
+      this.formRef.current.setFieldsValue({
+        timeOffType: _id,
+        subject,
+        durationFrom: moment(fromDate),
+        durationTo: moment(toDate),
+        description,
+        personCC,
+      });
+    }
   };
 
   // GET TIME OFF TYPE BY ID

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Row, Col, Spin } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import WithdrawModal from '../WithdrawModal';
 
@@ -31,9 +31,11 @@ class RequestInformation extends Component {
   };
 
   // EDIT BUTTON
-  handleEdit = () => {
-    // eslint-disable-next-line no-alert
-    alert('EDIT');
+  handleEdit = (_id, status) => {
+    history.push({
+      pathname: `/time-off/edit-request/${_id}`,
+      state: { action: 'EDIT-REQUEST', status },
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -64,7 +66,7 @@ class RequestInformation extends Component {
     const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
     const {
       status = '',
-      // _id = '',
+      _id = '',
       subject = '',
       fromDate = '',
       toDate = '',
@@ -80,7 +82,7 @@ class RequestInformation extends Component {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
-          <div className={styles.editButton} onClick={this.handleEdit}>
+          <div className={styles.editButton} onClick={() => this.handleEdit(_id, status)}>
             <img src={EditIcon} className={styles.icon} alt="edit-icon" />
             <span className={styles.label}>Edit</span>
           </div>
