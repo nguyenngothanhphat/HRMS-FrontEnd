@@ -187,9 +187,6 @@ class EmailReminderForm extends PureComponent {
     const newArr = newConditionsData[index][name];
     newArr[1] = value;
 
-    console.log('newConditions: ', newConditions);
-    console.log('newConditionsData: ', newConditionsData);
-
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
@@ -297,8 +294,6 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
-    console.log('newConditionsData: ', newConditionsData);
-
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
@@ -333,11 +328,13 @@ class EmailReminderForm extends PureComponent {
     let originalValue = '';
     let originalKey = '';
     let originalToBeVerb = '';
+    // const originalIsChecked = false;
 
     newData.map((data) => {
       originalKey = data.key;
       originalToBeVerb = data.tobeVerb;
       originalValue = data.value;
+      // originalIsChecked = data.isChecked;
       return data;
     });
 
@@ -348,6 +345,7 @@ class EmailReminderForm extends PureComponent {
       key: originalKey,
       tobeVerb: originalToBeVerb,
       value: arr,
+      isChecked: false,
     };
 
     const condition = {
@@ -386,8 +384,6 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData.push(newCondition);
     newConditions.push(condition);
-
-    console.log('newConditionsData: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -428,13 +424,17 @@ class EmailReminderForm extends PureComponent {
     } = this.state;
 
     let valueArr = [];
+    let newINDEX = '';
 
-    conditionsData.forEach((item) => {
+    conditionsData.forEach((item, index) => {
       const { value = [] } = item;
       valueArr = value;
+      newINDEX = index;
     });
 
     const newIndex = valueArr.length - 1;
+    console.log('newINDEX: ', newINDEX);
+    console.log('conditionsData: ', conditionsData);
 
     const renderSelectOption = (index) => {
       return (
@@ -536,7 +536,7 @@ class EmailReminderForm extends PureComponent {
                   <Col span={13} />
                   <Col span={10}>{newIndex === 1 ? renderSelectOption(index) : null}</Col>
                   <Col span={1}>
-                    {newIndex === 1 ? (
+                    {newIndex === 1 && data.isChecked ? (
                       <img
                         onClick={() => this.onRemoveConditionDepartment(index)}
                         src={removeIcon}
