@@ -355,7 +355,6 @@ class EmailReminderForm extends PureComponent {
     const renderSelectOption = (index) => {
       return (
         <Select
-          // className={styles.selectOptionCo}
           size="large"
           value={valueArr[newIndex]}
           placeholder="Please select a choice"
@@ -377,72 +376,77 @@ class EmailReminderForm extends PureComponent {
         <Form.Item label="Conditions: Trigger for someone if">
           {conditionsData.map((data, index) => {
             return (
-              <Row gutter={[24, 12]} align="middle" key={data.id}>
-                {/* Units  */}
-                <Col span={9}>
-                  <Select
-                    size="large"
-                    value={data.key}
-                    placeholder="Please select a choice"
-                    onChange={(value) => this.onChangeCondition(index, 'key', value)}
-                  >
-                    {units.map((unit) => {
-                      return <Option value={unit.value}>{unit.name}</Option>;
-                    })}
-                  </Select>
-                </Col>
-
-                {/* To be verbs  */}
-                <Col span={4}>
-                  <Select
-                    size="large"
-                    value={data.toBeVerb}
-                    placeholder="Please select a choice"
-                    onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
-                  >
-                    {toBeVerbs.map((toBeVerb) => {
-                      return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
-                    })}
-                  </Select>
-                </Col>
-
-                {/* Departments  */}
-                <Col span={10} className={styles.departmentCondition}>
-                  <Row>
+              <div>
+                <Row gutter={[24, 12]} align="middle" key={data.id}>
+                  {/* Units  */}
+                  <Col span={9}>
                     <Select
-                      // className={styles.selectOptionCo}
                       size="large"
-                      value={data.value}
+                      value={data.key}
                       placeholder="Please select a choice"
-                      onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                      onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
-                      {departments.map((department) => {
-                        return (
-                          <Option value={department._id} key={department._id}>
-                            {department.name}
-                          </Option>
-                        );
+                      {units.map((unit) => {
+                        return <Option value={unit.value}>{unit.name}</Option>;
                       })}
                     </Select>
-                    {newIndex === 1 ? renderSelectOption(index) : null}
-                    <Col span={1}>
-                      <img
-                        className={styles.onAddConditionBtn}
-                        onClick={() => this.onAddConditionDepartment(data.id)}
-                        src={addIcon}
-                        alt="add"
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={1}>
-                  <img
-                    onClick={() => this.onRemoveCondition(index)}
-                    src={removeIcon}
-                    alt="remove"
-                  />
-                </Col>
-              </Row>
+                  </Col>
+
+                  {/* To be verbs  */}
+                  <Col span={4}>
+                    <Select
+                      size="large"
+                      value={data.toBeVerb}
+                      placeholder="Please select a choice"
+                      onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
+                    >
+                      {toBeVerbs.map((toBeVerb) => {
+                        return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
+                      })}
+                    </Select>
+                  </Col>
+
+                  {/* Departments  */}
+                  <Col span={10} className={styles.departmentCondition}>
+                    <Row>
+                      <Select
+                        size="large"
+                        value={data.value}
+                        placeholder="Please select a choice"
+                        onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                      >
+                        {departments.map((department) => {
+                          return (
+                            <Option value={department._id} key={department._id}>
+                              {department.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                      <Col span={1}>
+                        <img
+                          className={styles.onAddConditionBtn}
+                          onClick={() => this.onAddConditionDepartment(data.id)}
+                          src={addIcon}
+                          alt="add"
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={1}>
+                    <img
+                      onClick={() => this.onRemoveCondition(index)}
+                      src={removeIcon}
+                      alt="remove"
+                    />
+                  </Col>
+                </Row>
+                <Row gutter={[24, 12]} align="middle">
+                  <Col span={13} />
+                  <Col span={10}>{newIndex === 1 ? renderSelectOption(index) : null}</Col>
+                  <Col span={1} />
+                </Row>
+              </div>
             );
           })}
         </Form.Item>
