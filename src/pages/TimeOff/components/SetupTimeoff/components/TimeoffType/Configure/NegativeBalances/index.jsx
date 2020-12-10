@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Radio, Row, Col, InputNumber, Select, Checkbox } from 'antd';
+import { Radio, Checkbox, Row, Col, InputNumber } from 'antd';
 import styles from './index.less';
 
-class CarryoverCap extends Component {
+class BaseAccual extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,14 +41,15 @@ class CarryoverCap extends Component {
     const { accrualRate, select } = this.state;
     return (
       <div className={styles.content}>
-        <div className={styles.title}>Carryover cap</div>
+        <div className={styles.title}>Negative balances</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <div className={styles.titleText}>
-                Employees can carryover casual leaves from one year to next uptown
+                Employees can apply for casual leaves that make their balances negative unto
               </div>
+              <Checkbox className={styles.checkbox}>Unlimited negative balances</Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
@@ -77,25 +78,10 @@ class CarryoverCap extends Component {
               </Row>
             </Col>
           </Row>
-          <Row gutter={[20, 0]}>
-            <Col span={10}>
-              <div className={styles.titleText}>effective from</div>
-            </Col>
-            <Col span={12}>
-              <Select className={styles.select} placeholder="Select a carryover date" />
-            </Col>
-          </Row>
-          <Row gutter={[20, 0]}>
-            <Col span={10}>
-              <Checkbox className={styles.checkbox}>
-                Do not limit number of hours/days employee carryover
-              </Checkbox>
-            </Col>
-          </Row>
         </div>
       </div>
     );
   }
 }
 
-export default CarryoverCap;
+export default BaseAccual;

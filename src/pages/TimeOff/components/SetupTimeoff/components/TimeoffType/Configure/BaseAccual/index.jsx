@@ -39,7 +39,6 @@ class BaseAccual extends Component {
 
   render() {
     const { accrualRate, select } = this.state;
-    console.log(accrualRate);
     return (
       <div className={styles.content}>
         <div className={styles.title}>Base accrual rate</div>
