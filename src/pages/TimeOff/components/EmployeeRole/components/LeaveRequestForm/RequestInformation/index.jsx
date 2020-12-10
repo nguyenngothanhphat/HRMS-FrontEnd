@@ -83,8 +83,25 @@ class RequestInformation extends Component {
       });
 
       const personCC = cc.map((person) => (person ? person._id : null));
-      const leaveTimeLists = leaveDates.map((date) => (date ? date.timeOfDay : null));
 
+      // generate date lists and leave time
+      const dateLists = this.getDateLists(fromDate, toDate);
+      const resultDates = [];
+      let check = false;
+      dateLists.forEach((val1) => {
+        check = false;
+        leaveDates.forEach((val2) => {
+          const { date = '' } = val2;
+          if (moment(date).locale('en').format('YYYY-MM-DD') === val1) {
+            resultDates.push(val2);
+            check = true;
+          }
+        });
+        if (!check) resultDates.push(null);
+      });
+      const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
+
+      // set values from server to fields
       this.formRef.current.setFieldsValue({
         timeOffType: typeId,
         subject,
