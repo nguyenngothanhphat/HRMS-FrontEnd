@@ -57,6 +57,7 @@ class EmailReminderForm extends PureComponent {
           key: '',
           tobeVerb: '',
           value: [],
+          isChecked: false,
         },
       ],
       checkCondition: false,
@@ -201,9 +202,14 @@ class EmailReminderForm extends PureComponent {
 
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
+    let checked = false;
+    let originalValue = '';
+    let originalKey = '';
+    let originalToBeVerb = '';
 
     if (name === 'key') {
       if (value === 'department') {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -229,6 +235,7 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else if (value === 'title') {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -241,6 +248,7 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
@@ -256,11 +264,29 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
+    newConditionsData.map((data) => {
+      originalKey = data.key;
+      originalToBeVerb = data.tobeVerb;
+      originalValue = data.value;
+      return data;
+    });
+
+    const newObj = {
+      id: index,
+      key: originalKey,
+      tobeVerb: originalToBeVerb,
+      value: originalValue,
+      isChecked: true,
+    };
+
+    const newIndex = newConditionsData.findIndex((item) => item.id === index);
+
     if (name === 'tobeVerb' && isLocation === true) {
       if (value === 'is in') {
-        this.setState({ checkCondition: true });
+        checked = true;
+        newConditionsData[newIndex] = newObj;
       } else {
-        this.setState({ checkCondition: false });
+        checked = false;
       }
     }
 
@@ -270,9 +296,12 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
+    console.log('newConditionsData: ', newConditionsData);
+
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
+      checkCondition: checked,
     });
   };
 
@@ -342,7 +371,13 @@ class EmailReminderForm extends PureComponent {
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
 
-    const newCondition = { id: conditionsData.length, key: '', tobeVerb: '', value: [] };
+    const newCondition = {
+      id: conditionsData.length,
+      key: '',
+      tobeVerb: '',
+      value: [],
+      isChecked: false,
+    };
     const condition = {
       key: '',
       value: [],
@@ -351,9 +386,12 @@ class EmailReminderForm extends PureComponent {
     newConditionsData.push(newCondition);
     newConditions.push(condition);
 
+    console.log('newConditionsData: ', newConditionsData);
+
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
+      // checkCondition: false,
     });
   };
 
@@ -396,12 +434,12 @@ class EmailReminderForm extends PureComponent {
     });
 
     const newIndex = valueArr.length - 1;
+
     const renderSelectOption = (index) => {
       return (
         <>
           <Select
             size="large"
-            // value={valueArr[newIndex]}
             placeholder="Please select a choice"
             onChange={(value) => this.onChangeConditionDepartment(index, 'value', value)}
           >
@@ -481,7 +519,7 @@ class EmailReminderForm extends PureComponent {
                 </Row>
                 <Row gutter={[24, 12]} align="middle">
                   <Col span={13} />
-                  {checkCondition ? (
+                  {data.isChecked ? (
                     <Col>
                       <img
                         className={styles.onAddConditionBtn}
