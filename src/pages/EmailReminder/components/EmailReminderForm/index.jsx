@@ -59,6 +59,7 @@ class EmailReminderForm extends PureComponent {
           value: [],
         },
       ],
+      checkCondition: false,
       appliesToData: '',
       message: '',
       frequencyItem: [
@@ -207,6 +208,7 @@ class EmailReminderForm extends PureComponent {
             },
           }));
         });
+        this.setState({ checkCondition: true });
       } else if (value === 'title') {
         dispatch({
           type: 'employeeSetting/fetchTitleList',
@@ -291,6 +293,7 @@ class EmailReminderForm extends PureComponent {
 
     this.setState({
       conditionsData: newData,
+      checkCondition: false,
     });
   };
 
@@ -342,6 +345,7 @@ class EmailReminderForm extends PureComponent {
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
+      checkCondition,
     } = this.state;
 
     let valueArr = [];
@@ -423,14 +427,6 @@ class EmailReminderForm extends PureComponent {
                           );
                         })}
                       </Select>
-                      <Col span={1}>
-                        <img
-                          className={styles.onAddConditionBtn}
-                          onClick={() => this.onAddConditionDepartment(data.id)}
-                          src={addIcon}
-                          alt="add"
-                        />
-                      </Col>
                     </Row>
                   </Col>
                   <Col span={1}>
@@ -440,6 +436,20 @@ class EmailReminderForm extends PureComponent {
                       alt="remove"
                     />
                   </Col>
+                </Row>
+                <Row gutter={[24, 12]} align="middle">
+                  <Col span={13} />
+                  {checkCondition ? (
+                    <Col>
+                      <img
+                        className={styles.onAddConditionBtn}
+                        onClick={() => this.onAddConditionDepartment(data.id)}
+                        src={addIcon}
+                        alt="add"
+                      />
+                    </Col>
+                  ) : null}
+                  <Col span={1} />
                 </Row>
                 <Row gutter={[24, 12]} align="middle">
                   <Col span={13} />
