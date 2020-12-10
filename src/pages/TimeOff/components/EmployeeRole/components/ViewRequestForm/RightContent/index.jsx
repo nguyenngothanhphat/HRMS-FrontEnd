@@ -51,15 +51,17 @@ class RightContent extends Component {
           </span>
         </div>
 
-        <div className={styles.content}>
-          <span className={styles.title}>Chain of approval</span>
-          <Steps current={0} labelPlacement="vertical">
-            {people.map((value, index) => {
-              const { avatar = '', text = '' } = value;
-              return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={text} />;
-            })}
-          </Steps>
-        </div>
+        {
+          // <div className={styles.content}>
+          //   <span className={styles.title}>Chain of approval</span>
+          //   <Steps current={0} labelPlacement="vertical">
+          //     {people.map((value, index) => {
+          //       const { avatar = '', text = '' } = value;
+          //       return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={text} />;
+          //     })}
+          //   </Steps>
+          // </div>
+        }
       </div>
     );
   }

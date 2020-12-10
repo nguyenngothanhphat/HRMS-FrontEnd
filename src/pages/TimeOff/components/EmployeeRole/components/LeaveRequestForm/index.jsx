@@ -15,25 +15,23 @@ class LeaveRequestForm extends PureComponent {
     super(props);
     this.state = {
       action: '',
-      status: '',
     };
   }
 
   componentDidMount = () => {
-    const { location: { state: { action = '', status = '' } = {} } = {} } = this.props;
+    const {
+      dispatch,
+      match: { params: { action = '', reId = '' } = {} },
+    } = this.props;
+
     this.setState({
       action,
-      status,
     });
 
-    if (action === 'EDIT-REQUEST') {
-      const {
-        dispatch,
-        match: { params: { reId: id = '' } = {} },
-      } = this.props;
+    if (action === 'edit-leave-request') {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
-        id,
+        id: reId,
       });
     }
   };
@@ -69,19 +67,22 @@ class LeaveRequestForm extends PureComponent {
   };
 
   render() {
-    const { action, status } = this.state;
-    const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
+    const { action } = this.state;
+    const {
+      timeOff: { viewingLeaveRequest = {}, viewingLeaveRequest: { status = '' } = {} } = {},
+      loadingFetchLeaveRequestById,
+    } = this.props;
     return (
       <PageContainer>
         <div className={styles.leaveRequest}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
-              {action === 'NEW-REQUEST' && (
+              {action === 'new-leave-request' && (
                 <>
                   <p className={styles.titlePage__text}>Request for Timeoff</p>
                 </>
               )}
-              {action === 'EDIT-REQUEST' && (
+              {action === 'edit-leave-request' && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: 16003134]</p>
 

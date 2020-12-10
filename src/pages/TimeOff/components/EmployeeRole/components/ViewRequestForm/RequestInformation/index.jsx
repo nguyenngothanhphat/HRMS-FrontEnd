@@ -31,10 +31,9 @@ class RequestInformation extends Component {
   };
 
   // EDIT BUTTON
-  handleEdit = (_id, status) => {
+  handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/edit-request/${_id}`,
-      state: { action: 'EDIT-REQUEST', status },
+      pathname: `/time-off/edit-leave-request/${_id}`,
     });
   };
 
@@ -82,7 +81,7 @@ class RequestInformation extends Component {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
-          <div className={styles.editButton} onClick={() => this.handleEdit(_id, status)}>
+          <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
             <img src={EditIcon} className={styles.icon} alt="edit-icon" />
             <span className={styles.label}>Edit</span>
           </div>
@@ -105,7 +104,7 @@ class RequestInformation extends Component {
               <Row>
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
-                  <span>{`${name} (${shortType})`}</span>
+                  <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
                   <span className={styles.smallNotice}>
                     <span className={styles.normalText}>
                       {shortType}s are covered under{' '}
@@ -129,6 +128,7 @@ class RequestInformation extends Component {
                       fontWeight: 'bold',
                       fontSize: '12px',
                     }}
+                    className={styles.fieldValue}
                   >
                     [{duration <= 1 ? `${duration} day` : `${duration} days`}]
                   </span>

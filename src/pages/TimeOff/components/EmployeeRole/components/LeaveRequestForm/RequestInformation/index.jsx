@@ -45,6 +45,7 @@ class RequestInformation extends Component {
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
     const { dispatch, action = '' } = this.props;
+
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
     });
@@ -53,8 +54,7 @@ class RequestInformation extends Component {
     });
     this.fetchEmailsListByCompany();
 
-    // console.log('action', action);
-    if (action === 'EDIT-REQUEST') {
+    if (action === 'edit-leave-request') {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
@@ -842,12 +842,12 @@ class RequestInformation extends Component {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === 'EDIT-REQUEST' && (
+            {action === 'edit-leave-request' && (
               <Button type="link" htmlType="button" onClick={this.saveDraft}>
                 <span style={{ color: 'black !important' }}>Cancel</span>
               </Button>
             )}
-            {action === 'NEW-REQUEST' && (
+            {action === 'new-leave-request' && (
               <Button
                 type="link"
                 form="myForm"
@@ -874,10 +874,15 @@ class RequestInformation extends Component {
             </Button>
           </div>
         </div>
+
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content={`${selectedTypeName} request submitted to the HR and your manager.`}
+          content={
+            action === 'edit-leave-request'
+              ? `${selectedTypeName} request submitted to the HR and your manager.`
+              : `Edits to ticket id: 160012 submitted to HR and manager`
+          }
           submitText="OK"
         />
       </div>

@@ -228,14 +228,16 @@ const routes = [
             // authority: ['employee'],
           },
           {
-            path: '/time-off/new-leave-request',
+            // path: '/time-off/new-leave-request',
+            path: '/time-off/:action(new-leave-request)',
             name: 'Request for Timeoff',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],
           },
           {
-            path: '/time-off/edit-request/:reId',
+            // path: '/time-off/edit-request/:reId',
+            path: '/time-off/:action(edit-leave-request)/:reId',
             name: 'Time Off [Ticket Id: 123456]',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
