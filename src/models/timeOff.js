@@ -4,6 +4,7 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
+  withdrawLeaveRequest,
   addCompoffRequest,
   getTimeOffTypes,
   getEmailsListByCompany,
@@ -113,6 +114,23 @@ const timeOff = {
         dialog(errors);
         return {};
       }
+    },
+    *withdrawLeaveRequest({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(withdrawLeaveRequest, { id });
+          const { statusCode, data: withdrawnLeaveRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { withdrawnLeaveRequest },
+          });
+          return statusCode;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
     },
     *addCompoffRequest({ payload = {} }, { call, put }) {
       try {

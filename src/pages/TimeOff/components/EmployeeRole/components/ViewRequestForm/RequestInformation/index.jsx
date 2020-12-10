@@ -10,6 +10,7 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
+  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
 }))
 class RequestInformation extends Component {
   formRef = React.createRef();
@@ -56,13 +57,30 @@ class RequestInformation extends Component {
   };
 
   // ON PROCEED withDraw
-  onProceed = () => {
-    alert('Proceed');
+  onProceed = async () => {
+    const {
+      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/withdrawLeaveRequest',
+      id,
+    });
+    if (statusCode === 200) {
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
+      });
+    }
   };
 
   render() {
     const { showWithdrawModal } = this.state;
-    const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
+    const {
+      timeOff: { viewingLeaveRequest = {} } = {},
+      loadingFetchLeaveRequestById,
+      loadingWithdrawLeaveRequest,
+    } = this.props;
     const {
       status = '',
       _id = '',
@@ -153,18 +171,14 @@ class RequestInformation extends Component {
                   your department head.
                 </span>
                 <div className={styles.formButtons}>
-                  <Button
-                    // loading={loadingAddLeaveRequest}
-                    onClick={this.withDraw}
-                  >
-                    Withdraw
-                  </Button>
+                  <Button onClick={() => this.withDraw()}>Withdraw</Button>
                 </div>
               </div>
             )}
           </>
         )}
         <WithdrawModal
+          loading={loadingWithdrawLeaveRequest}
           visible={showWithdrawModal}
           onProceed={this.onProceed}
           onClose={this.setShowWithdrawModal}

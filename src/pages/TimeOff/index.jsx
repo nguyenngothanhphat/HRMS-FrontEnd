@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import EmployeeRole from './components/EmployeeRole';
 import SetupTimeoff from './components/SetupTimeoff';
+import { history } from 'umi';
 
 import styles from './index.less';
 
@@ -11,6 +12,19 @@ export default class TimeOff extends PureComponent {
   viewActivityLog = () => {
     // eslint-disable-next-line no-alert
     alert('View activity logs');
+  };
+
+  componentDidMount = () => {
+    const {
+      location: { state: { status = '', tickedId = '', typeName = '' } = {} } = {},
+    } = this.props;
+    if (status === 'WITHDRAW') {
+      notification.success({
+        message: 'Time off request',
+        description: `Time off request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+      });
+      history.replace();
+    }
   };
 
   options = () => {

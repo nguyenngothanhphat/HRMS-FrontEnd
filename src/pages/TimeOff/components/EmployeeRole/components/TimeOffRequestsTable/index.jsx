@@ -80,8 +80,8 @@ class TimeOffRequestsTable extends PureComponent {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          // padding: '100px 0',
-          height: '310px',
+          padding: '150px 0',
+          // height: '310px',
         }}
       >
         <Spin size="medium" />

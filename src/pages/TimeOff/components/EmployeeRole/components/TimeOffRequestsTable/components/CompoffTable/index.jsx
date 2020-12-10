@@ -8,9 +8,14 @@ export default class CompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: 'ticketId',
+      dataIndex: '_id',
       align: 'left',
-      render: () => <span>ID</span>,
+      fixed: 'left',
+      render: (_id) => (
+        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          ID
+        </span>
+      ),
     },
     {
       title: 'Project',
@@ -55,6 +60,7 @@ export default class CompoffTable extends PureComponent {
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
                     <Avatar
+                      size="small"
                       style={
                         approvalManagerEmail === workEmail
                           ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
@@ -190,7 +196,7 @@ export default class CompoffTable extends PureComponent {
     return (
       <div className={styles.DataTable}>
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           rowSelection={rowSelection}
           // pagination={{ ...pagination, total: data.length }}

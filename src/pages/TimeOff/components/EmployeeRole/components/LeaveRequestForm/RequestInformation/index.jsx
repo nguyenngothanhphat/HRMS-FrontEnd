@@ -811,7 +811,10 @@ class RequestInformation extends Component {
                   },
                 ]}
               >
-                <TextArea rows={3} placeholder="The reason I am taking timeoff is …" />
+                <TextArea
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  placeholder="The reason I am taking timeoff is …"
+                />
               </Form.Item>
             </Col>
             <Col span={6} />
