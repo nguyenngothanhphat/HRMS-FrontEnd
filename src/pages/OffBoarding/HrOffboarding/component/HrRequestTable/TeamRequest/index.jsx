@@ -63,6 +63,14 @@ class TabContent extends Component {
     }
   };
 
+  moveToRelieving = (payload) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/updateRelieving',
+      payload,
+    });
+  };
+
   setSelectedTab = (id) => {
     this.setState({
       selectedFilterTab: id,
@@ -71,11 +79,17 @@ class TabContent extends Component {
 
   render() {
     const { data = [], countdata, loading } = this.props;
-
+    const { selectedFilterTab = '1' } = this.state;
+    const isTabAccept = selectedFilterTab === '3';
     return (
       <Fragment>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <HrTable data={data} loading={loading} />
+        <HrTable
+          data={data}
+          loading={loading}
+          isTabAccept={isTabAccept}
+          moveToRelieving={this.moveToRelieving}
+        />
       </Fragment>
     );
   }

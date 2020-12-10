@@ -155,3 +155,10 @@ export async function handleWithdraw(payload) {
     data: payload,
   });
 }
+
+export async function updateRelieving(payload) {
+  return request('/api/offboardingrequest/update-relieving', {
+    method: 'POST',
+    data: payload,
+  });
+}
