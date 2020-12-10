@@ -61,7 +61,7 @@ class RequestInformation extends Component {
         subject = '',
         fromDate = '',
         toDate = '',
-        // leaveDates = [],
+        leaveDates = [],
         description = '',
         cc = [],
       } = viewingLeaveRequest;
@@ -74,7 +74,9 @@ class RequestInformation extends Component {
         selectedType: type,
       });
 
-      const personCC = cc.map((person) => (person ? person._id : ''));
+      const personCC = cc.map((person) => (person ? person._id : null));
+      const leaveTimeLists = leaveDates.map((date) => (date ? date.timeOfDay : null));
+
       this.formRef.current.setFieldsValue({
         timeOffType: _id,
         subject,
@@ -82,7 +84,14 @@ class RequestInformation extends Component {
         durationTo: moment(toDate),
         description,
         personCC,
+        leaveTimeLists,
       });
+
+      // set notice
+      this.autoValueForToDate(type, shortType, moment(fromDate));
+      if ((type === 'A' || type === 'B') && moment(fromDate) !== null && moment(fromDate) !== '') {
+        this.setSecondNotice(`${shortType}s gets credited each month.`);
+      }
     }
   };
 
