@@ -10,6 +10,7 @@ import {
   getEmailsListByCompany,
   getProjectsListByCompany,
   getLeaveRequestById,
+  updateLeaveRequestById,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -84,6 +85,17 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *updateLeaveRequestById({ payload = {} }, { call }) {
+      try {
+        const response = yield call(updateLeaveRequestById, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
     },
     *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
       try {

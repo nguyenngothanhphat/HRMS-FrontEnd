@@ -28,6 +28,13 @@ export async function getLeaveRequestById(payload) {
   });
 }
 
+export async function updateLeaveRequestById(payload) {
+  return request('/api/leaverequest/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addLeaveRequest(payload) {
   return request('/api/leaverequest/add', {
     method: 'POST',

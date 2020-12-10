@@ -13,6 +13,7 @@ const { TextArea } = Input;
   timeOff,
   user,
   loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
+  loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
 }))
 class RequestInformation extends Component {
   formRef = React.createRef();
@@ -136,7 +137,9 @@ class RequestInformation extends Component {
       showSuccessModal: value,
     });
     if (!value) {
-      history.push('/time-off');
+      setTimeout(() => {
+        history.goBack();
+      }, 200);
     }
   };
 
@@ -209,8 +212,43 @@ class RequestInformation extends Component {
   onSaveDraft = (values) => {
     const { buttonState } = this.state;
     if (buttonState === 1) {
-      // eslint-disable-next-line no-alert
-      alert('Save drafts', values);
+      const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+      const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
+      const {
+        timeOffType = '',
+        subject = '',
+        description = '',
+        durationFrom = '',
+        durationTo = '',
+        personCC = [],
+        leaveTimeLists = [],
+      } = values;
+
+      const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
+
+      const duration = this.calculateNumberOfLeaveDay(leaveDates);
+
+      const data = {
+        type: timeOffType,
+        employee: employeeId,
+        subject,
+        fromDate: durationFrom,
+        toDate: durationTo,
+        duration,
+        leaveDates,
+        onDate: moment(),
+        description,
+        approvalManager: managerId, // id
+        cc: personCC,
+      };
+
+      console.log('draft data', data);
+      // dispatch({
+      //   type: 'timeOff/updateLeaveRequestById',
+      //   payload: data,
+      // }).then((statusCode) => {
+      //   if (statusCode === 200) this.setShowSuccessModal(true);
+      // });
     }
   };
 
@@ -218,8 +256,13 @@ class RequestInformation extends Component {
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
-    const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+    const {
+      dispatch,
+      action = '',
+      user: { currentUser: { employee = {} } = {} } = {},
+    } = this.props;
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
+    const { viewingLeaveRequestId } = this.state;
     const {
       timeOffType = '',
       subject = '',
@@ -245,7 +288,7 @@ class RequestInformation extends Component {
         // generate data for API
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        const data = {
+        let data = {
           type: timeOffType,
           status: 'IN-PROGRESS',
           employee: employeeId,
@@ -260,13 +303,23 @@ class RequestInformation extends Component {
           cc: personCC,
         };
 
-        dispatch({
-          type: 'timeOff/addLeaveRequest',
-          payload: data,
-        }).then((res) => {
-          const { statusCode } = res;
-          if (statusCode === 200) this.setShowSuccessModal(true);
-        });
+        if (action === 'new-leave-request') {
+          dispatch({
+            type: 'timeOff/addLeaveRequest',
+            payload: data,
+          }).then((res) => {
+            const { statusCode } = res;
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
+        } else if (action === 'edit-leave-request') {
+          data._id = viewingLeaveRequestId;
+          dispatch({
+            type: 'timeOff/updateLeaveRequestById',
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
+        }
       }
     } else if (buttonState === 1) {
       this.onSaveDraft(values);
@@ -579,6 +632,7 @@ class RequestInformation extends Component {
       durationTo,
       selectedTypeName,
       selectedType,
+      buttonState,
     } = this.state;
 
     const {
@@ -894,9 +948,15 @@ class RequestInformation extends Component {
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
           content={
-            action === 'edit-leave-request'
-              ? `${selectedTypeName} request submitted to the HR and your manager.`
-              : `Edits to ticket id: 160012 submitted to HR and manager`
+            action === 'edit-leave-request' ? (
+              `Edits to ticket id: 160012 submitted to HR and manager`
+            ) : (
+              <>
+                {buttonState === 1
+                  ? `Draft saved`
+                  : `${selectedTypeName} request submitted to the HR and your manager.`}
+              </>
+            )
           }
           submitText="OK"
         />
