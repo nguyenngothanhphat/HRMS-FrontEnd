@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import HrTable from '../TableHRManager';
-import RejectTable from '../RejectTable';
-import styles from './index.less';
+import Summary from '../Summary';
 
-@connect()
+@connect(({ loading }) => ({
+  loading: loading.effects['offboarding/fetchListTeamRequest'],
+}))
 class TabContent extends Component {
   constructor(props) {
     super(props);
@@ -69,19 +70,13 @@ class TabContent extends Component {
   };
 
   render() {
-    const { selectedFilterTab } = this.state;
-    const { data = [], countdata } = this.props;
+    const { data = [], countdata, loading } = this.props;
 
     return (
-      <div>
-        <RejectTable setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <div className={styles.tableContainer}>
-          {selectedFilterTab === '1' ? <HrTable data={data} /> : ''}
-          {selectedFilterTab === '2' ? <HrTable data={data} /> : ''}
-          {selectedFilterTab === '3' ? <HrTable data={data} /> : ''}
-          {selectedFilterTab === '4' ? <HrTable data={data} /> : ''}
-        </div>
-      </div>
+      <Fragment>
+        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <HrTable data={data} loading={loading} />
+      </Fragment>
     );
   }
 }

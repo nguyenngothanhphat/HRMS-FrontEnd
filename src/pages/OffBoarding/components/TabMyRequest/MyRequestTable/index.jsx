@@ -23,7 +23,7 @@ class TableManager extends PureComponent {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -85,6 +85,7 @@ class TableManager extends PureComponent {
       {
         title: <span className={t.title}>Reason of leaving</span>,
         dataIndex: 'reasonForLeaving',
+        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
       },
       {
         title: <span className={t.title}>Action</span>,
@@ -102,12 +103,13 @@ class TableManager extends PureComponent {
         <Table
           locale={{
             emptyText: (
-              <span>
+              <div className={t.viewEmpty}>
                 <img src={empty} alt="" />
-                <p className={t.textEmpty}>No resignation request is submitted</p>
-              </span>
+                <p className={t.textEmpty}>{textEmpty}</p>
+              </div>
             ),
           }}
+          loading={loading}
           columns={columns}
           dataSource={data}
           hideOnSinglePage
@@ -117,7 +119,6 @@ class TableManager extends PureComponent {
           }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
-          onChange={this.handleChangeTable}
         />
       </div>
     );

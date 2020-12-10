@@ -27,7 +27,7 @@ class HrTable extends PureComponent {
 
   render() {
     const { pageNavigation } = this.state;
-    const { data = [] } = this.props;
+    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const pagination = {
@@ -125,10 +125,10 @@ class HrTable extends PureComponent {
         <Table
           locale={{
             emptyText: (
-              <span>
+              <div className={styles.viewEmpty}>
                 <img src={empty} alt="" />
-                <p className={styles.textEmpty}>No resignation request is submitted</p>
-              </span>
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
             ),
           }}
           columns={columns}
@@ -137,7 +137,7 @@ class HrTable extends PureComponent {
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
-          onChange={this.handleChangeTable}
+          loading={loading}
         />
       </div>
     );

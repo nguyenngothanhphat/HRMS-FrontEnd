@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
 import { formatMessage, connect } from 'umi';
+import { dialog } from '@/utils/utils';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
+
 import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({
     loading,
     candidateInfo: {
+      cancelCandidate,
       checkMandatory = {},
       currentStep = {},
       data: {
@@ -87,6 +90,7 @@ import PROCESS_STATUS from '../../../utils';
   }) => ({
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     listTitle,
+    cancelCandidate,
     checkMandatory,
     currentStep,
     processStatus,
@@ -101,6 +105,8 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
+      error: '',
+      errorInfo: '',
       isEditted: false,
       footerData: [
         {
@@ -115,17 +121,46 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  componentDidMount = () => {
-    const { dispatch, _id, processStatus, settings, listTitle } = this.props;
-    const tempTableData = [...settings];
-    const isFilled = tempTableData.filter((item) => item.value === '');
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    console.log(error);
+    console.log(errorInfo);
+    // You can also log error messages to an error reporting service here
+  }
 
-    if (processStatus === 'DRAFT' && listTitle.length === 0) {
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveOrigin',
+      payload: {
+        listTitle: [],
+      },
+    });
+  };
+
+  onFocusSelect = () => {
+    const { dispatch, _id, settings, processStatus } = this.props;
+    const tempTableData = [...settings];
+
+    if (processStatus === 'DRAFT') {
       dispatch({
         type: 'candidateInfo/fetchTitleListByCompany',
         payload: { company: _id },
       });
     }
+  };
+
+  componentDidMount = () => {
+    const { dispatch, _id, settings, processStatus } = this.props;
+    const tempTableData = [...settings];
+    const isFilled = tempTableData.filter((item) => item.value === '');
+
+    // if (processStatus !== 'DRAFT') {
+    //   dispatch({
+    //     type: 'candidateInfo/fetchTitleListByCompany',
+    //     payload: { company: _id },
+    //   });
+    // }
 
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -193,16 +228,12 @@ class SalaryStructureTemplate extends PureComponent {
       currentStep,
       settings,
       // salaryPosition,
-      data: {
-        _id,
-        salaryStructure: { title },
-      },
+      data: { _id },
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
-          title,
           settings,
         },
         candidate: _id,
@@ -555,6 +586,7 @@ class SalaryStructureTemplate extends PureComponent {
               <Select
                 defaultValue={titleName}
                 onChange={this.handleChangeSelect}
+                onFocus={this.onFocusSelect}
                 placeholder="Please select a choice!"
                 size="large"
                 style={{ width: 280 }}

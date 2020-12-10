@@ -7,7 +7,7 @@ import { history } from 'umi';
 // import persion from '@/assets/people.svg';
 import styles from './index.less';
 
-class TableEmployee extends PureComponent {
+class TableManager extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +26,7 @@ class TableEmployee extends PureComponent {
   };
 
   render() {
-    const { data = [] } = this.props;
+    const { data = [], textEmpty = 'No resignation request is submitted', loading } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
 
@@ -73,8 +73,8 @@ class TableEmployee extends PureComponent {
         title: <span className={styles.title}>Requ’tee Name </span>,
         dataIndex: 'employee',
         render: (employee) => {
-          const { generalInfo = {} } = employee;
-          return <p>{generalInfo.firstName}</p>;
+          const { generalInfo: { firstName = '' } = {} } = employee;
+          return <p>{firstName}</p>;
         },
       },
       {
@@ -110,7 +110,6 @@ class TableEmployee extends PureComponent {
         dataIndex: '_id',
         render: (_id) => (
           <div className={styles.rowAction}>
-            {/* <span>Set 1-on-1</span> */}
             <span onClick={() => this.push(_id)}>View Request</span>
           </div>
         ),
@@ -122,12 +121,13 @@ class TableEmployee extends PureComponent {
         <Table
           locale={{
             emptyText: (
-              <span>
+              <div className={styles.viewEmpty}>
                 <img src={empty} alt="" />
-                <p className={styles.textEmpty}>No resignation request is submitted</p>
-              </span>
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
             ),
           }}
+          loading={loading}
           columns={columns}
           dataSource={data}
           hideOnSinglePage
@@ -140,4 +140,4 @@ class TableEmployee extends PureComponent {
     );
   }
 }
-export default TableEmployee;
+export default TableManager;

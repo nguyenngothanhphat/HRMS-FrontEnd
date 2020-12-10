@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import TableEmployee from '../TableEmployee';
 import Summary from '../Summary';
-import styles from './index.less';
 
 @connect()
 class ViewTable extends Component {
@@ -82,9 +81,7 @@ class ViewTable extends Component {
     return (
       <Fragment>
         <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} />
-        <div className={styles.tableContainer}>
-          <TableEmployee data={data} />
-        </div>
+        <TableEmployee data={data} />
       </Fragment>
     );
   }

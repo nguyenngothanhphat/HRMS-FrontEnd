@@ -106,7 +106,11 @@ class ModalSet1On1 extends Component {
               </Select>
             </div>
           </div>
-          {!hideMeetingWith && <div className={styles.subText}>Assignee</div>}
+          {!hideMeetingWith && (
+            <div className={styles.subText} style={{ marginTop: '30px' }}>
+              Assignee
+            </div>
+          )}
 
           <div
             className={styles.flexContent}
@@ -132,6 +136,7 @@ class ModalSet1On1 extends Component {
               </Select>
             )}
             <Button
+              style={hideMeetingWith ? { marginTop: '20px' } : {}}
               loading={loading}
               className={styles.btnSubmit}
               onClick={this.handleSubmit}
