@@ -276,7 +276,7 @@ class EmailReminderForm extends PureComponent {
       key: originalKey,
       tobeVerb: originalToBeVerb,
       value: originalValue,
-      isChecked: true,
+      isChecked: checked,
     };
 
     const newIndex = newConditionsData.findIndex((item) => item.id === index);
@@ -284,9 +284,10 @@ class EmailReminderForm extends PureComponent {
     if (name === 'tobeVerb' && isLocation === true) {
       if (value === 'is in') {
         checked = true;
+        newObj.isChecked = checked;
         newConditionsData[newIndex] = newObj;
       } else {
-        checked = false;
+        newConditionsData[newIndex] = newObj;
       }
     }
 
@@ -301,7 +302,7 @@ class EmailReminderForm extends PureComponent {
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
-      checkCondition: checked,
+      // checkCondition: checked,
     });
   };
 
@@ -361,7 +362,7 @@ class EmailReminderForm extends PureComponent {
 
     this.setState({
       conditionsData: newData,
-      checkCondition: false,
+      // checkCondition: false,
       conditions: newConditions,
     });
   };
@@ -423,7 +424,7 @@ class EmailReminderForm extends PureComponent {
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
-      checkCondition,
+      // checkCondition,
     } = this.state;
 
     let valueArr = [];
