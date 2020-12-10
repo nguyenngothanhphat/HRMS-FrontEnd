@@ -177,6 +177,20 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
+  onChangeConditionDepartment = (index, name, value) => {
+    const { conditionsData } = this.state;
+
+    const newConditionsData = [...conditionsData];
+    const newArr = newConditionsData[index][name];
+    newArr[1] = value;
+
+    console.log('newConditionsData: ', newConditionsData);
+
+    this.setState({
+      conditionsData: newConditionsData,
+    });
+  };
+
   onChangeCondition = (index, name, value) => {
     const { conditionsData, conditions, isLocation } = this.state;
     const { dispatch } = this.props;
@@ -270,6 +284,10 @@ class EmailReminderForm extends PureComponent {
       conditionsData: newConditionsData,
       conditions: newConditions,
     });
+  };
+
+  onRemoveConditionDepartment = (index) => {
+    console.log('delete department');
   };
 
   onAddConditionDepartment = (id) => {
@@ -368,20 +386,22 @@ class EmailReminderForm extends PureComponent {
     const newIndex = valueArr.length - 1;
     const renderSelectOption = (index) => {
       return (
-        <Select
-          size="large"
-          value={valueArr[newIndex]}
-          placeholder="Please select a choice"
-          onChange={(value) => this.onChangeCondition(index, 'value', value)}
-        >
-          {departments.map((department) => {
-            return (
-              <Option value={department._id} key={department._id}>
-                {department.name}
-              </Option>
-            );
-          })}
-        </Select>
+        <>
+          <Select
+            size="large"
+            // value={valueArr[newIndex]}
+            placeholder="Please select a choice"
+            onChange={(value) => this.onChangeConditionDepartment(index, 'value', value)}
+          >
+            {departments.map((department) => {
+              return (
+                <Option value={department._id} key={department._id}>
+                  {department.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </>
       );
     };
 
@@ -464,7 +484,15 @@ class EmailReminderForm extends PureComponent {
                 <Row gutter={[24, 12]} align="middle">
                   <Col span={13} />
                   <Col span={10}>{newIndex === 1 ? renderSelectOption(index) : null}</Col>
-                  <Col span={1} />
+                  <Col span={1}>
+                    {newIndex === 1 ? (
+                      <img
+                        onClick={() => this.onRemoveConditionDepartment(index)}
+                        src={removeIcon}
+                        alt="remove"
+                      />
+                    ) : null}
+                  </Col>
                 </Row>
               </div>
             );
