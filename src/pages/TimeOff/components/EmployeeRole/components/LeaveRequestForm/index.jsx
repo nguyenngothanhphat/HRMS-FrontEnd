@@ -31,7 +31,6 @@ class LeaveRequestForm extends PureComponent {
         dispatch,
         match: { params: { reId: id = '' } = {} },
       } = this.props;
-      console.log('id', id);
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
         id,
@@ -72,7 +71,6 @@ class LeaveRequestForm extends PureComponent {
   render() {
     const { action, status } = this.state;
     const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
-    console.log('action1', action);
     return (
       <PageContainer>
         <div className={styles.leaveRequest}>

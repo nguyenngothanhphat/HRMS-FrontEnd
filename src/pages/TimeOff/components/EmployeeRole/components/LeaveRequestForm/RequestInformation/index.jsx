@@ -27,6 +27,7 @@ class RequestInformation extends Component {
       secondNotice: '',
       durationFrom: '',
       durationTo: '',
+      buttonState: 0, // save draft or submit
     };
   }
 
@@ -198,6 +199,15 @@ class RequestInformation extends Component {
     return true;
   };
 
+  // ON SAVE DRAFT
+  onSaveDraft = (values) => {
+    const { buttonState } = this.state;
+    if (buttonState === 1) {
+      // eslint-disable-next-line no-alert
+      alert('Save drafts', values);
+    }
+  };
+
   // ON FINISH
   onFinish = (values) => {
     // eslint-disable-next-line no-console
@@ -217,42 +227,51 @@ class RequestInformation extends Component {
     const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
     // console.log('leaveDates', leaveDates);
 
-    if (!this.checkLeaveDatesValid(leaveDates)) {
-      message.error('Please select valid leave time!');
-    } else if (leaveDates.length === 0) {
-      message.error('Please select valid leave time dates!');
-    } else {
-      // generate data for API
-      const duration = this.calculateNumberOfLeaveDay(leaveDates);
+    const { buttonState } = this.state;
 
-      const data = {
-        type: timeOffType,
-        status: 'IN-PROGRESS',
-        employee: employeeId,
-        subject,
-        fromDate: durationFrom,
-        toDate: durationTo,
-        duration,
-        leaveDates,
-        onDate: moment(),
-        description,
-        approvalManager: managerId, // id
-        cc: personCC,
-      };
+    // ON SUBMIT
+    if (buttonState === 2) {
+      if (!this.checkLeaveDatesValid(leaveDates)) {
+        message.error('Please select valid leave time!');
+      } else if (leaveDates.length === 0) {
+        message.error('Please select valid leave time dates!');
+      } else {
+        // generate data for API
+        const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-      dispatch({
-        type: 'timeOff/addLeaveRequest',
-        payload: data,
-      }).then((res) => {
-        const { statusCode } = res;
-        if (statusCode === 200) this.setShowSuccessModal(true);
-      });
+        const data = {
+          type: timeOffType,
+          status: 'IN-PROGRESS',
+          employee: employeeId,
+          subject,
+          fromDate: durationFrom,
+          toDate: durationTo,
+          duration,
+          leaveDates,
+          onDate: moment(),
+          description,
+          approvalManager: managerId, // id
+          cc: personCC,
+        };
+
+        dispatch({
+          type: 'timeOff/addLeaveRequest',
+          payload: data,
+        }).then((res) => {
+          const { statusCode } = res;
+          if (statusCode === 200) this.setShowSuccessModal(true);
+        });
+      }
+    } else if (buttonState === 1) {
+      this.onSaveDraft(values);
     }
   };
 
   onFinishFailed = (errorInfo) => {
     // eslint-disable-next-line no-console
     console.log('Failed:', errorInfo);
+    const { values = {} } = errorInfo;
+    this.onSaveDraft(values);
   };
 
   // AUTO VALUE FOR TODATE DATEPICKER DEPENDING ON SELECTED TYPE
@@ -351,12 +370,6 @@ class RequestInformation extends Component {
     this.formRef.current.setFieldsValue({
       leaveTimeLists: initialValuesForLeaveTimesList,
     });
-  };
-
-  // ON SAVE DRAFT CLICKED
-  saveDraft = () => {
-    // eslint-disable-next-line no-alert
-    alert('Save Draft');
   };
 
   // RENDER SELECT BOX
@@ -562,6 +575,7 @@ class RequestInformation extends Component {
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
       } = {},
       loadingAddLeaveRequest,
+      action = '',
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
@@ -688,6 +702,7 @@ class RequestInformation extends Component {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
+                      disabled={selectedType === 'C' || selectedType === 'D'}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -827,15 +842,33 @@ class RequestInformation extends Component {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button type="link" htmlType="button" onClick={this.saveDraft}>
-              Save to Draft
-            </Button>
+            {action === 'EDIT-REQUEST' && (
+              <Button type="link" htmlType="button" onClick={this.saveDraft}>
+                <span style={{ color: 'black !important' }}>Cancel</span>
+              </Button>
+            )}
+            {action === 'NEW-REQUEST' && (
+              <Button
+                type="link"
+                form="myForm"
+                htmlType="submit"
+                onClick={() => {
+                  this.setState({ buttonState: 1 });
+                }}
+              >
+                Save to Draft
+              </Button>
+            )}
+
             <Button
               loading={loadingAddLeaveRequest}
               key="submit"
               type="primary"
               form="myForm"
               htmlType="submit"
+              onClick={() => {
+                this.setState({ buttonState: 2 });
+              }}
             >
               Submit
             </Button>
