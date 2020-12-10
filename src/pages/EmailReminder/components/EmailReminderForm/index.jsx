@@ -178,16 +178,20 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeConditionDepartment = (index, name, value) => {
-    const { conditionsData } = this.state;
+    const { conditionsData, conditions } = this.state;
 
     const newConditionsData = [...conditionsData];
+    const newConditions = [...conditions];
+
     const newArr = newConditionsData[index][name];
     newArr[1] = value;
 
+    console.log('newConditions: ', newConditions);
     console.log('newConditionsData: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
+      conditions: newConditions,
     });
   };
 
@@ -291,8 +295,9 @@ class EmailReminderForm extends PureComponent {
   };
 
   onAddConditionDepartment = (id) => {
-    const { conditionsData } = this.state;
+    const { conditionsData, conditions } = this.state;
     const newData = [...conditionsData];
+    const newConditions = [...conditions];
 
     const newValue = '';
     let originalValue = '';
@@ -315,13 +320,20 @@ class EmailReminderForm extends PureComponent {
       value: arr,
     };
 
+    const condition = {
+      key: originalKey,
+      value: arr,
+    };
+
     const index = newData.findIndex((item) => item.id === id);
 
     newData[index] = newObj;
+    newConditions[index] = condition;
 
     this.setState({
       conditionsData: newData,
       checkCondition: false,
+      conditions: newConditions,
     });
   };
 
@@ -548,7 +560,7 @@ class EmailReminderForm extends PureComponent {
 
   mentionModule = {
     allowedChars: /^[A-Za-z\s]*$/,
-    mentionDenotationChars: ['@', ''],
+    mentionDenotationChars: ['#', '@'],
     showDenotationChar: false,
     renderItem: (item) => {
       return item.value;
