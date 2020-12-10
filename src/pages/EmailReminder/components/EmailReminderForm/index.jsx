@@ -355,6 +355,7 @@ class EmailReminderForm extends PureComponent {
     const renderSelectOption = (index) => {
       return (
         <Select
+          // className={styles.selectOptionCo}
           size="large"
           value={valueArr[newIndex]}
           placeholder="Please select a choice"
@@ -407,29 +408,32 @@ class EmailReminderForm extends PureComponent {
 
                 {/* Departments  */}
                 <Col span={10} className={styles.departmentCondition}>
-                  <Select
-                    size="large"
-                    value={data.value}
-                    placeholder="Please select a choice"
-                    onChange={(value) => this.onChangeCondition(index, 'value', value)}
-                  >
-                    {departments.map((department) => {
-                      return (
-                        <Option value={department._id} key={department._id}>
-                          {department.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                  {newIndex === 1 ? renderSelectOption(index) : null}
-                  <Col span={1}>
-                    <img
-                      className={styles.onAddConditionBtn}
-                      onClick={() => this.onAddConditionDepartment(data.id)}
-                      src={addIcon}
-                      alt="add"
-                    />
-                  </Col>
+                  <Row>
+                    <Select
+                      // className={styles.selectOptionCo}
+                      size="large"
+                      value={data.value}
+                      placeholder="Please select a choice"
+                      onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                    >
+                      {departments.map((department) => {
+                        return (
+                          <Option value={department._id} key={department._id}>
+                            {department.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                    {newIndex === 1 ? renderSelectOption(index) : null}
+                    <Col span={1}>
+                      <img
+                        className={styles.onAddConditionBtn}
+                        onClick={() => this.onAddConditionDepartment(data.id)}
+                        src={addIcon}
+                        alt="add"
+                      />
+                    </Col>
+                  </Row>
                 </Col>
                 <Col span={1}>
                   <img
