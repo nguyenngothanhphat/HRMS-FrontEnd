@@ -23,6 +23,7 @@ import {
   requestChangeLWD,
   handleRequestChangeLWD,
   handleWithdraw,
+  handleRelievingTemplateDraft,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -396,6 +397,16 @@ const offboarding = {
         }
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *saveOffBoardingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(handleRelievingTemplateDraft, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { relievingDetails: data } });
+      } catch (error) {
+        dialog(error);
       }
     },
   },

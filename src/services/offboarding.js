@@ -154,3 +154,10 @@ export async function handleWithdraw(payload) {
     data: payload,
   });
 }
+
+export async function handleRelievingTemplateDraft(payload) {
+  return request('/api/offboardingrequest/save-package-draft', {
+    method: 'POST',
+    data: payload,
+  });
+}

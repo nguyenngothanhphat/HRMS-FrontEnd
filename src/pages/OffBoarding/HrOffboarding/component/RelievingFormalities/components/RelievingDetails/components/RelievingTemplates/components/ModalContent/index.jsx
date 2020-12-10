@@ -1,24 +1,50 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Row, Col } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
+@connect(({ offboarding: { relievingDetails: { _id = '' } }, offboarding }) => ({
+  _id,
+  offboarding,
+}))
 class ModalContent extends Component {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {};
+    const {
+      template: { settings = [] },
+    } = this.props;
+    this.state = {
+      settings,
+    };
   }
 
   componentDidMount = () => {};
 
-  handleSaveTemplate = (values) => {
-    console.log('values', values);
+  handleSaveTemplate = () => {
+    const { settings } = this.state;
+    const { dispatch, _id, packageType, template } = this.props;
+    dispatch({
+      type: 'offboarding/saveOffBoardingPackage',
+      payload: {
+        settings,
+        ticketId: _id,
+        packageType,
+        templateId: template.templateRelieving,
+      },
+    });
   };
 
-  renderContentModal = (mode, template) => {
-    const { settings } = template;
+  renderContentModal = (mode) => {
+    const { settings } = this.state;
+    const onEditChange = (value, index) => {
+      const items = [...settings];
+      const setting = { ...items[index], question: value };
+      items[index] = setting;
+      this.setState({ settings: items });
+    };
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -53,7 +79,7 @@ class ModalContent extends Component {
           {...formItemLayout}
           labelAlign="left"
           ref={this.formRef}
-          onFinish={(values) => this.handleSaveTemplate(values)}
+          onFinish={() => this.handleSaveTemplate()}
           id="relievingTemplates"
         >
           {settings?.map((item, index) => {
@@ -67,7 +93,10 @@ class ModalContent extends Component {
                   },
                 ]}
               >
-                <TextArea defaultValue={item.question} />
+                <TextArea
+                  onChange={(e) => onEditChange(e.target.value, index)}
+                  defaultValue={item.question}
+                />
               </Form.Item>
             );
           })}
@@ -78,14 +107,10 @@ class ModalContent extends Component {
   };
 
   render() {
-    const { loadingTemplate, mode, template } = this.props;
+    const { loadingTemplate, mode } = this.props;
     return (
       <div className={styles.modalContent}>
-        {loadingTemplate ? (
-          <Skeleton className={styles.spin} />
-        ) : (
-          this.renderContentModal(mode, template)
-        )}
+        {loadingTemplate ? <Skeleton className={styles.spin} /> : this.renderContentModal(mode)}
       </div>
     );
   }

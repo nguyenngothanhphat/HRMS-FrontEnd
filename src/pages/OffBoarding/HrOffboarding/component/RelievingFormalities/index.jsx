@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import { connect, history } from 'umi';
+import { connect, NavLink } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 import RelievingTables from './components/RelievingTables';
 import RelievingTemplates from './components/RelievingTemplates';
@@ -129,22 +129,6 @@ class RelievingFormalities extends Component {
     );
   };
 
-  handleViewingRelieving = async (id) => {
-    const { dispatch, company } = this.props;
-    const res = await dispatch({
-      type: 'offboarding/fetchRelievingDetailsById',
-      payload: {
-        id,
-        company,
-        packageType: '',
-      },
-    });
-    if (res) {
-      // console.log(res);
-      history.push(`/offboarding/relieving-detail/${id}`);
-    }
-  };
-
   render() {
     const {
       defaultExitPackage,
@@ -154,12 +138,12 @@ class RelievingFormalities extends Component {
     } = this.props;
     return (
       <div className={styles.relievingFormalities}>
-        <a
+        <NavLink
           style={{ padding: '24px' }}
-          onClick={() => this.handleViewingRelieving('5fc8b69a3b0978eb36da231d')}
+          to="/offboarding/relieving-detail/5fc8b69a3b0978eb36da231d"
         >
           Relieving Details
-        </a>
+        </NavLink>
         {this._renderModal()}
         {/* <p style={{ padding: '24px' }}>Content Relieving Formalities</p> */}
         <Row gutter={[24, 24]}>

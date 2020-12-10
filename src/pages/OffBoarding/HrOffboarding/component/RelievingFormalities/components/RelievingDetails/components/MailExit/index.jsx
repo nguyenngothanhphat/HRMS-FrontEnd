@@ -46,9 +46,12 @@ class MailExit extends Component {
   }
 
   componentDidMount() {
-    const { exitPackage } = this.props;
+    const {
+      exitPackage: { waitList = [], isSent },
+    } = this.props;
     this.setState({
-      exitPackageTemplates: exitPackage.waitList,
+      exitPackageTemplates: waitList,
+      isSent,
     });
   }
 
@@ -120,7 +123,7 @@ class MailExit extends Component {
         mode={mode}
         visible={isOpenModalEdit}
         template={template}
-        content={<ModalContent template={template} mode={mode} />}
+        content={<ModalContent packageType="EXIT-PACKAGE" template={template} mode={mode} />}
         handleCancelEdit={this.handleCancelEdit}
       />
     );
