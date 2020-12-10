@@ -1,34 +1,43 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-export default class DataTable extends PureComponent {
+@connect(({ loading }) => ({
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+}))
+class DataTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: 'ticketId',
+      dataIndex: '_id',
       align: 'left',
-      render: () => <span>ID</span>,
+      fixed: 'left',
+      render: (_id) => (
+        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          ID
+        </span>
+      ),
     },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      align: 'left',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-    },
-    {
-      title: 'Leave date',
-      width: '20%',
-      dataIndex: 'leaveTimes',
-      align: 'left',
-    },
+    // {
+    //   title: 'Type',
+    //   dataIndex: 'type',
+    //   align: 'left',
+    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
+    //   // sortDirections: ['ascend', 'descend', 'ascend'],
+    // },
+    // {
+    //   title: 'Leave date',
+    //   width: '20%',
+    //   dataIndex: 'leaveTimes',
+    //   align: 'left',
+    // },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
-      align: 'left',
+      align: 'center',
+      width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -36,20 +45,21 @@ export default class DataTable extends PureComponent {
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      align: 'left',
-    },
+    // {
+    //   title: 'Duration',
+    //   dataIndex: 'duration',
+    //   align: 'left',
+    // },
     {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'assigned',
+      width: '25%',
       render: (assigned) => {
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
-              maxCount={2}
+              maxCount={3}
               maxStyle={{
                 color: '#FFA100',
                 backgroundColor: '#EAF0FF',
@@ -61,6 +71,7 @@ export default class DataTable extends PureComponent {
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
                     <Avatar
+                      size="small"
                       style={
                         approvalManagerEmail === workEmail
                           ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
@@ -80,6 +91,7 @@ export default class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
+      width: '25%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -161,7 +173,7 @@ export default class DataTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loadingFetchLeaveRequests } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     // const rowSize = 20;
 
@@ -196,8 +208,8 @@ export default class DataTable extends PureComponent {
     return (
       <div className={styles.DataTable}>
         <Table
-          size="small"
-          loading={loading}
+          size="middle"
+          loading={loadingFetchLeaveRequests}
           rowSelection={rowSelection}
           // pagination={{ ...pagination, total: data.length }}
           columns={this.columns}
@@ -209,3 +221,5 @@ export default class DataTable extends PureComponent {
     );
   }
 }
+
+export default DataTable;

@@ -5,7 +5,7 @@ import CompoffTable from '../CompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
-export default class mockDataTimeOffRequestTab extends PureComponent {
+export default class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

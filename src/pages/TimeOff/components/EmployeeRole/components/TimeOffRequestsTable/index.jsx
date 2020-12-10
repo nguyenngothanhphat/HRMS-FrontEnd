@@ -17,7 +17,7 @@ class TimeOffRequestsTable extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount = () => {
+  getDataFromServer = () => {
     const {
       dispatch,
       user: { currentUser: { employee: { _id = '' } = {} } = {} } = {},
@@ -29,12 +29,20 @@ class TimeOffRequestsTable extends PureComponent {
     });
   };
 
+  componentDidMount = () => {
+    this.getDataFromServer();
+  };
+
   renderTableTitle = {
     left: (
       <div className={styles.renderTableTitle}>
         <span>Timeoff Requests</span>
       </div>
     ),
+  };
+
+  onTabClick = () => {
+    this.getDataFromServer();
   };
 
   renderData = (leaveRequests, key) => {
@@ -58,11 +66,27 @@ class TimeOffRequestsTable extends PureComponent {
 
     if (key === 4)
       return leaveRequests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
+        const { type: { type = '' } = {} } = req;
         return type === 'D';
       });
 
     return [];
+  };
+
+  renderLoading = () => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          // padding: '100px 0',
+          height: '310px',
+        }}
+      >
+        <Spin size="medium" />
+      </div>
+    );
   };
 
   render() {
@@ -76,43 +100,51 @@ class TimeOffRequestsTable extends PureComponent {
 
     return (
       <div className={styles.TimeOffRequestsTable}>
-        {loadingFetchLeaveRequests && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '100px 0',
-            }}
-          >
-            <Spin size="medium" />
-          </div>
-        )}
-        {!loadingFetchLeaveRequests && (
-          <Tabs
-            tabPosition="left"
-            tabBarGutter={40}
-            defaultActiveKey="1"
-            tabBarExtraContent={this.renderTableTitle}
-          >
-            <>
-              <TabPane tab="Leave Request" key="1">
+        <Tabs
+          tabPosition="left"
+          tabBarGutter={40}
+          defaultActiveKey="1"
+          tabBarExtraContent={this.renderTableTitle}
+          onTabClick={this.onTabClick}
+        >
+          <>
+            <TabPane tab="Leave Request" key="1">
+              {!loadingFetchLeaveRequests ? (
                 <TimeOffRequestTab data={leaveRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="Special Leave Request" key="2">
+              ) : (
+                this.renderLoading()
+              )}
+            </TabPane>
+            <TabPane tab="Special Leave Request" key="2">
+              {!loadingFetchLeaveRequests ? (
                 <TimeOffRequestTab data={specialRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="LWP Request" key="3">
+              ) : (
+                this.renderLoading()
+              )}
+            </TabPane>
+            <TabPane tab="LWP Request" key="3">
+              {!loadingFetchLeaveRequests ? (
                 <TimeOffRequestTab data={lwpRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="WFH/CP Requests" key="4">
+              ) : (
+                this.renderLoading()
+              )}
+            </TabPane>
+            <TabPane tab="WFH/CP Requests" key="4">
+              {!loadingFetchLeaveRequests ? (
                 <TimeOffRequestTab data={wfhRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="Compoff Request" key="5">
+              ) : (
+                this.renderLoading()
+              )}
+            </TabPane>
+            <TabPane tab="Compoff Request" key="5">
+              {!loadingFetchLeaveRequests ? (
                 <TimeOffRequestTab data={emptyData} type={2} />
-              </TabPane>
-            </>
-          </Tabs>
-        )}
+              ) : (
+                this.renderLoading()
+              )}
+            </TabPane>
+          </>
+        </Tabs>
       </div>
     );
   }
