@@ -304,6 +304,7 @@ class EmailReminderForm extends PureComponent {
       key: '',
       value: [],
     };
+
     newConditionsData.push(newCondition);
     newConditions.push(condition);
 
@@ -343,9 +344,32 @@ class EmailReminderForm extends PureComponent {
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
 
-    console.log('conditionsData: ', conditionsData);
+    let valueArr = [];
 
-    const valueData = conditionsData.map((data) => data.value);
+    conditionsData.forEach((item) => {
+      const { value = [] } = item;
+      valueArr = value;
+    });
+
+    const newIndex = valueArr.length - 1;
+    const renderSelectOption = (index) => {
+      return (
+        <Select
+          size="large"
+          value={valueArr[newIndex]}
+          placeholder="Please select a choice"
+          onChange={(value) => this.onChangeCondition(index, 'value', value)}
+        >
+          {departments.map((department) => {
+            return (
+              <Option value={department._id} key={department._id}>
+                {department.name}
+              </Option>
+            );
+          })}
+        </Select>
+      );
+    };
 
     return (
       <Col span={24}>
@@ -383,45 +407,21 @@ class EmailReminderForm extends PureComponent {
 
                 {/* Departments  */}
                 <Col span={10} className={styles.departmentCondition}>
-                  {valueData.length > 0 ? (
-                    <>
-                      {valueData[0].map((item) => {
-                        return (
-                          <>
-                            <Select
-                              size="large"
-                              value={item}
-                              placeholder="Please select a choice"
-                              onChange={(value) => this.onChangeCondition(index, 'value', value)}
-                            >
-                              {departments.map((department) => {
-                                return (
-                                  <Option value={department._id} key={department._id}>
-                                    {department.name}
-                                  </Option>
-                                );
-                              })}
-                            </Select>
-                          </>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <Select
-                      size="large"
-                      value={data.value}
-                      placeholder="Please select a choice"
-                      onChange={(value) => this.onChangeCondition(index, 'value', value)}
-                    >
-                      {departments.map((department) => {
-                        return (
-                          <Option value={department._id} key={department._id}>
-                            {department.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  )}
+                  <Select
+                    size="large"
+                    value={data.value}
+                    placeholder="Please select a choice"
+                    onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                  >
+                    {departments.map((department) => {
+                      return (
+                        <Option value={department._id} key={department._id}>
+                          {department.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                  {newIndex === 1 ? renderSelectOption(index) : null}
                   <Col span={1}>
                     <img
                       className={styles.onAddConditionBtn}
