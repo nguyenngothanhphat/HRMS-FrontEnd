@@ -7,7 +7,7 @@ const { OptGroup, Option } = Select;
 
 class LeaveTimeRow extends PureComponent {
   render() {
-    const { eachDate = '', index = 0 } = this.props;
+    const { eachDate = '', index = 0, needValidate } = this.props;
 
     return (
       <>
@@ -21,7 +21,7 @@ class LeaveTimeRow extends PureComponent {
                 fieldKey={[index]}
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please select!',
                   },
                 ]}

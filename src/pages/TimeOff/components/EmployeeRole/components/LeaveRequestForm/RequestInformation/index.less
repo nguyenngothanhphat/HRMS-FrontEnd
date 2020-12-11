@@ -201,13 +201,24 @@
     .formButtons {
       display: flex;
       justify-content: flex-end;
+      .cancelButton {
+        span {
+          color: rgb(93, 93, 93) !important;
+        }
+      }
+      .saveDraftButton {
+        span {
+          color: #ffa100 !important;
+        }
+      }
       :global {
         .ant-btn-link {
           background-color: white !important;
           span {
             font-weight: bold !important;
-            color: #ffa100 !important;
           }
+          margin-left: 0px !important;
+          // margin-right: 5px !important;
         }
         .ant-btn {
           background-color: #ffa100;
@@ -215,7 +226,7 @@
           border-radius: 30px;
           height: 40px;
           width: 108px;
-          margin-left: 20px;
+          margin-left: 30px;
           span {
             color: white;
             font-weight: bold;

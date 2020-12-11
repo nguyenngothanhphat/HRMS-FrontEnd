@@ -253,40 +253,44 @@ class RequestInformation extends Component {
         leaveTimeLists = [],
       } = values;
 
-      const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
-
-      const duration = this.calculateNumberOfLeaveDay(leaveDates);
-
-      const data = {
-        type: timeOffType,
-        employee: employeeId,
-        subject,
-        fromDate: durationFrom,
-        toDate: durationTo,
-        duration,
-        leaveDates,
-        onDate: moment(),
-        description,
-        approvalManager: managerId, // id
-        cc: personCC,
-      };
-
-      // console.log('draft data', data);
-      if (!isEditingDrafts) {
-        dispatch({
-          type: 'timeOff/saveDraftLeaveRequest',
-          payload: data,
-        }).then((statusCode) => {
-          if (statusCode === 200) this.setShowSuccessModal(true);
-        });
+      if (timeOffType === '') {
+        message.error('Nothing to save as draft!');
       } else {
-        data._id = viewingLeaveRequestId;
-        dispatch({
-          type: 'timeOff/updateDraftLeaveRequest',
-          payload: data,
-        }).then((statusCode) => {
-          if (statusCode === 200) this.setShowSuccessModal(true);
-        });
+        const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
+
+        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+
+        const data = {
+          type: timeOffType,
+          employee: employeeId,
+          subject,
+          fromDate: durationFrom,
+          toDate: durationTo,
+          duration,
+          leaveDates,
+          onDate: moment(),
+          description,
+          approvalManager: managerId, // id
+          cc: personCC,
+        };
+
+        // console.log('draft data', data);
+        if (!isEditingDrafts) {
+          dispatch({
+            type: 'timeOff/saveDraftLeaveRequest',
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
+        } else {
+          data._id = viewingLeaveRequestId;
+          dispatch({
+            type: 'timeOff/updateDraftLeaveRequest',
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
+        }
       }
     }
   };
@@ -655,18 +659,21 @@ class RequestInformation extends Component {
     const { action = '' } = this.props;
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
+
     if (action === 'edit-leave-request') {
       if (buttonState === 1) {
         if (isEditingDrafts) {
-          content = 'Draft saved';
+          content = `${selectedTypeName} request saved as draft.`;
         } else {
           content = `Edits to ticket id: 160012 submitted to HR and manager`;
         }
       } else if (buttonState === 2)
         content = `${selectedTypeName} request submitted to the HR and your manager.`;
-    } else if (action === 'new-leave-request') {
+    }
+
+    if (action === 'new-leave-request') {
       if (buttonState === 1) {
-        content = 'Draft saved';
+        content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
         content = `${selectedTypeName} request submitted to the HR and your manager.`;
     }
@@ -693,6 +700,7 @@ class RequestInformation extends Component {
       durationTo,
       selectedType,
       isEditingDrafts,
+      buttonState,
     } = this.state;
 
     const {
@@ -716,6 +724,9 @@ class RequestInformation extends Component {
     // DYNAMIC ROW OF DATE LISTS
     const dateLists = this.getDateLists(durationFrom, durationTo);
     // const numberOfDays = 0;
+
+    // if save as draft, no need to validate forms
+    const needValidate = buttonState === 2;
 
     return (
       <div className={styles.RequestInformation}>
@@ -782,7 +793,7 @@ class RequestInformation extends Component {
                 name="subject"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please input subject!',
                   },
                 ]}
@@ -803,7 +814,7 @@ class RequestInformation extends Component {
                     name="durationFrom"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -823,7 +834,7 @@ class RequestInformation extends Component {
                     name="durationTo"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -904,6 +915,7 @@ class RequestInformation extends Component {
                             onRemove={this.onDateRemove}
                             listLength={dateLists.length}
                             onChange={this.onDataChange}
+                            needValidate={needValidate}
                           />
                         );
                       })}
@@ -923,7 +935,7 @@ class RequestInformation extends Component {
                 name="description"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please input description!',
                   },
                 ]}
@@ -975,8 +987,13 @@ class RequestInformation extends Component {
           </span>
           <div className={styles.formButtons}>
             {action === 'edit-leave-request' && (
-              <Button type="link" htmlType="button" onClick={this.onCancelEdit}>
-                <span style={{ color: 'black !important' }}>Cancel</span>
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={this.onCancelEdit}
+              >
+                <span>Cancel</span>
               </Button>
             )}
             {(action === 'new-leave-request' ||
@@ -985,6 +1002,7 @@ class RequestInformation extends Component {
                 loading={loadingUpdatingLeaveRequest || loadingSaveDraft || loadingUpdateDraft}
                 type="link"
                 form="myForm"
+                className={styles.saveDraftButton}
                 htmlType="submit"
                 onClick={() => {
                   this.setState({ buttonState: 1 });

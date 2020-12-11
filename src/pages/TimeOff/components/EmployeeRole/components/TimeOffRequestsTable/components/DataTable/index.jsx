@@ -154,9 +154,12 @@ class DataTable extends PureComponent {
         approvalManagerEmail: workEmail,
       });
 
-      const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
-        .locale('en')
-        .format('MM.DD.YYYY')}`;
+      let leaveTimes = '';
+      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+          .locale('en')
+          .format('MM.DD.YYYY')}`;
+      }
 
       const employeeFromCC = cc.map((each) => {
         const { generalInfo = {} } = each;

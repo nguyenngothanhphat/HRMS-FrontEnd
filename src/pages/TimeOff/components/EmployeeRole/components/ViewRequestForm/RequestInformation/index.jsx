@@ -45,10 +45,14 @@ class RequestInformation extends Component {
     });
   };
 
-  formatDurationTime = (from, to) => {
-    return `${moment(from).locale('en').format('MM.DD.YYYY')} - ${moment(to)
-      .locale('en')
-      .format('MM.DD.YYYY')}`;
+  formatDurationTime = (fromDate, toDate) => {
+    let leaveTimes = '';
+    if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+        .locale('en')
+        .format('MM.DD.YYYY')}`;
+    }
+    return leaveTimes;
   };
 
   // WITHDRAW CLICKED
@@ -139,23 +143,29 @@ class RequestInformation extends Component {
               </Row>
               <Row>
                 <Col span={6}>Duration</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span>{formatDurationTime}</span>{' '}
-                  <span
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: '12px',
-                    }}
-                    className={styles.fieldValue}
-                  >
-                    [{duration <= 1 ? `${duration} day` : `${duration} days`}]
-                  </span>
-                  {(type === 'A' || type === 'B') && (
-                    <span className={styles.smallNotice}>
-                      <span className={styles.normalText}>{name}s gets credited each month.</span>
-                    </span>
-                  )}
-                </Col>
+                {formatDurationTime !== '' && (
+                  <>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{formatDurationTime}</span>{' '}
+                      <span
+                        style={{
+                          fontWeight: 'bold',
+                          fontSize: '12px',
+                        }}
+                        className={styles.fieldValue}
+                      >
+                        [{duration <= 1 ? `${duration} day` : `${duration} days`}]
+                      </span>
+                      {(type === 'A' || type === 'B') && (
+                        <span className={styles.smallNotice}>
+                          <span className={styles.normalText}>
+                            {name}s gets credited each month.
+                          </span>
+                        </span>
+                      )}
+                    </Col>
+                  </>
+                )}
               </Row>
               <Row>
                 <Col span={6}>Description</Col>
