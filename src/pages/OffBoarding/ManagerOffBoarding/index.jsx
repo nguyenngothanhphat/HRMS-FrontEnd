@@ -4,9 +4,8 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
 import TableAssigned from '@/components/TableAssigned';
 import addIcon from '@/assets/addTicket.svg';
-import TabContent from './component/tabContent';
+import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
-
 import styles from './index.less';
 
 @connect(
@@ -82,6 +81,11 @@ class ManagerOffBoading extends Component {
       </div>
     );
 
+    const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
+
+    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+
     return (
       <PageContainer>
         <div className={styles.managerContainer}>
@@ -95,11 +99,11 @@ class ManagerOffBoading extends Component {
               <Tabs
                 defaultActiveKey="1"
                 className={styles.tabComponent}
-                tabBarExtraContent={resignationRequest}
+                tabBarExtraContent={!checkSendRequest && resignationRequest}
               >
                 <TabPane tab="Team Request" key="1">
                   <div className={styles.tableTab}>
-                    <TabContent data={listTeamRequest} countdata={totalListTeamRequest} />
+                    <TeamRequest data={listTeamRequest} countdata={totalListTeamRequest} />
                   </div>
                 </TabPane>
                 <TabPane tab="My Request" key="2">
@@ -108,7 +112,7 @@ class ManagerOffBoading extends Component {
                   </div>
                 </TabPane>
                 <TabPane tab="Assigned" key="3">
-                  <div style={{ marginTop: '25px' }}>
+                  <div style={{ padding: '10px 18px' }}>
                     <TableAssigned />
                   </div>
                 </TabPane>

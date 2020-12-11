@@ -20,7 +20,6 @@ export async function getTemplateById(payload) {
 }
 
 export async function addCustomTemplate(payload) {
-  console.log(payload);
   return request('/api/template/add', {
     method: 'POST',
     data: payload,
@@ -71,5 +70,30 @@ export async function getTriggerEventList() {
 export async function getLocationList() {
   return request('/api/location/list', {
     method: 'POST',
+  });
+}
+
+export async function getDepartmentList() {
+  return request('/api/department/list', {
+    method: 'POST',
+  });
+}
+
+export async function getTitleList() {
+  return request('/api/title/list', {
+    method: 'POST',
+  });
+}
+
+export async function getEmployeeTypeList() {
+  return request('/api/employeetype/list', {
+    method: 'POST',
+  });
+}
+
+export async function getDepartmentListByCompanyId(payload) {
+  return request('/api/department/list-by-company', {
+    method: 'POST',
+    data: payload,
   });
 }

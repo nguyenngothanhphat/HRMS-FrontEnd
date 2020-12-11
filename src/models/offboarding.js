@@ -23,6 +23,7 @@ import {
   requestChangeLWD,
   handleRequestChangeLWD,
   handleWithdraw,
+  updateRelieving,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -350,9 +351,21 @@ const offboarding = {
         const response = yield call(handleWithdraw, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        notification.success({ message: 'Withdraw Successfully' });
         if (isNotStatusAccepted) {
           yield put({ type: 'fetchRequestById', payload });
         }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateRelieving({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateRelieving, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: `Move to relieving formalities successfully!` });
+        yield put({ type: 'fetchListTeamRequest', payload: { status: 'ACCEPTED' } });
       } catch (errors) {
         dialog(errors);
       }

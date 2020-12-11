@@ -37,8 +37,10 @@
     border-radius: 5px;
     width: 100%;
     padding: 17px;
-    background-color: #fff;
     display: flex;
+    align-items: center;
+    background: #fffdf7;
+    border: 1px solid #ffc65a;
   }
 
   .boxReason {
@@ -111,16 +113,22 @@
       font-weight: 400;
       line-height: 19px;
       font-size: 11px;
+      color: #707177;
     }
 
     .buttonSubmit {
-      width: 106px;
+      width: 140px;
       height: 40px;
       background-color: #ffa100;
       color: #fff;
       border-radius: 40px;
       &:disabled {
         opacity: 0.5;
+      }
+      &:hover,
+      &:active,
+      &:focus {
+        border: none;
       }
     }
   }

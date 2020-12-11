@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Popover, notification } from 'antd';
 import moment from 'moment';
 import empty from '@/assets/empty.svg';
 import persion from '@/assets/people.svg';
@@ -15,6 +15,36 @@ class HrTable extends PureComponent {
     };
   }
 
+  renderContent = (row) => {
+    const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
+    return (
+      <div
+        style={{ textDecoration: 'underline', cursor: 'pointer', color: '#2C6DF9' }}
+        onClick={() => this.checkFunction(_id, approvalStep, relievingStatus)}
+      >
+        Move to relieving formalities
+      </div>
+    );
+  };
+
+  checkFunction = (id, approvalStep, relievingStatus) => {
+    const { moveToRelieving = () => {} } = this.props;
+    const payload = { id, relievingStatus: 'IN-QUEUES' };
+    if (approvalStep === 2 && !relievingStatus) {
+      moveToRelieving(payload);
+    } else {
+      this.openNotificationWithIcon(approvalStep);
+    }
+  };
+
+  openNotificationWithIcon = (approvalStep) => {
+    const description = approvalStep === 1 ? 'Please submit LWD' : 'Moved to relieving formalities';
+    notification.warning({
+      message: 'Notification',
+      description,
+    });
+  };
+
   push = (data) => {
     history.push(`/offboarding/review/${data}`);
   };
@@ -27,7 +57,12 @@ class HrTable extends PureComponent {
 
   render() {
     const { pageNavigation } = this.state;
-    const { data = [] } = this.props;
+    const {
+      data = [],
+      loading,
+      textEmpty = 'No resignation request is submitted',
+      isTabAccept = false,
+    } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const pagination = {
@@ -112,11 +147,27 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Action</span>,
         dataIndex: '_id',
         align: 'left',
-        render: (_id) => (
-          <div className={styles.rowAction}>
-            <span onClick={() => this.push(_id)}>View Request</span>
-          </div>
-        ),
+        render: (_id, row) => {
+          return (
+            <div className={styles.viewAction}>
+              <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
+                View Request
+              </p>
+              {isTabAccept && (
+                <div className={styles.viewAction__popOver}>
+                  <Popover
+                    content={this.renderContent(row)}
+                    title={false}
+                    trigger="hover"
+                    placement="bottomRight"
+                  >
+                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                  </Popover>
+                </div>
+              )}
+            </div>
+          );
+        },
       },
     ];
 
@@ -125,10 +176,10 @@ class HrTable extends PureComponent {
         <Table
           locale={{
             emptyText: (
-              <span>
+              <div className={styles.viewEmpty}>
                 <img src={empty} alt="" />
-                <p className={styles.textEmpty}>No resignation request is submitted</p>
-              </span>
+                <p className={styles.textEmpty}>{textEmpty}</p>
+              </div>
             ),
           }}
           columns={columns}
@@ -137,7 +188,7 @@ class HrTable extends PureComponent {
           pagination={{ ...pagination, total: data.length }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
-          onChange={this.handleChangeTable}
+          loading={loading}
         />
       </div>
     );
