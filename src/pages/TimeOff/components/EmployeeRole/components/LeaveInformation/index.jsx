@@ -31,6 +31,7 @@ const CollapseInformation = (props) => {
 
   return (
     <div className={styles.CollapseInformation}>
+      <div className={styles.hrLine} />
       <div className={styles.container}>
         <div className={styles.secondTitle}>
           <span className={styles.secondTitle__left}>Common Leaves</span>
@@ -63,6 +64,7 @@ const CollapseInformation = (props) => {
           })}
         </div>
       </div>
+      <div className={styles.hrLine} />
       <div className={styles.container}>
         <div className={styles.secondTitle}>
           <span className={styles.secondTitle__left}>Special Leaves</span>

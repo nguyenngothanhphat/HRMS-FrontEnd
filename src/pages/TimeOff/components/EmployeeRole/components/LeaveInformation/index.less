@@ -1,15 +1,22 @@
-.LeaveInformation {
+.borderLeaveBalanceInfoBox {
   border: 1px solid #ebeff2;
   border-radius: 5px;
-  background: white;
+}
+.LeaveInformation {
   width: 100%;
   position: relative;
   z-index: 3;
   .totalLeaveBalance {
+    background: white;
     display: flex;
     // align-items: center;
     flex-direction: column;
     .aboveContainer {
+      border-top: 1px solid #ebeff2;
+      border-left: 1px solid #ebeff2;
+      border-right: 1px solid #ebeff2;
+      border-radius: 5px 5px 0 0;
+
       padding: 24px 24px 0 24px;
       .title {
         font-weight: bold;
@@ -48,6 +55,10 @@
       }
       .ant-collapse-header {
         text-align: center;
+        border-bottom: 1px solid #ebeff2;
+        border-left: 1px solid #ebeff2;
+        border-right: 1px solid #ebeff2;
+        border-radius: 0 0 5px 5px !important;
       }
       .ant-collapse-content > .ant-collapse-content-box {
         padding: 0;
@@ -92,7 +103,14 @@
   }
 
   .CollapseInformation {
+    background-color: #f6f7f9;
+    .hrLine {
+      height: 20px;
+      background-color: rgb(246, 247, 249);
+    }
     .container {
+      .borderLeaveBalanceInfoBox();
+      background-color: white;
       padding: 20px 20px 5px 20px;
       border-top: 1px solid #e2e4e8;
       .secondTitle {
