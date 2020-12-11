@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import ReactQuill from 'react-quill';
 import PageContainer from '@/layouts/layout/src/PageContainer';
 import EmailReminderHeader from './components/EmailReminderHeader';
 import EmailReminderForm from './components/EmailReminderForm';
