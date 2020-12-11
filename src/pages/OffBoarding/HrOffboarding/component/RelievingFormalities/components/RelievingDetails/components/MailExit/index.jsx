@@ -11,8 +11,9 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { relievingDetails: { exitPackage = {} } } }) => ({
+@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } } }) => ({
   exitPackage,
+  ticketId: _id,
 }))
 class MailExit extends Component {
   constructor(props) {
@@ -66,8 +67,13 @@ class MailExit extends Component {
   };
 
   sendMailPackage = () => {
-    this.setState({
-      isSent: true,
+    const { dispatch, ticketId } = this.props;
+    dispatch({
+      type: 'offboarding/sendOffBoardingPackage',
+      payload: {
+        packageType: 'EXIT-PACKAGE',
+        ticketId,
+      },
     });
   };
 

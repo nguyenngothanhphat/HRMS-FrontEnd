@@ -167,3 +167,10 @@ export async function updateRelieving(payload) {
     data: payload,
   });
 }
+
+export async function sendOffBoardingPackage(payload) {
+  return request('/api/offboardingrequest/send-package', {
+    method: 'POST',
+    data: payload,
+  });
+}
