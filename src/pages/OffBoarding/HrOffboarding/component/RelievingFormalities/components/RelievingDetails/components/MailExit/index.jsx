@@ -116,6 +116,8 @@ class MailExit extends Component {
     });
   };
 
+  handleEditSave = () => {};
+
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, template, mode } = this.state;
     return (
@@ -123,7 +125,14 @@ class MailExit extends Component {
         mode={mode}
         visible={isOpenModalEdit}
         template={template}
-        content={<ModalContent packageType="EXIT-PACKAGE" template={template} mode={mode} />}
+        content={
+          <ModalContent
+            handleEditSave={this.handleEditSave}
+            packageType="EXIT-PACKAGE"
+            template={template}
+            mode={mode}
+          />
+        }
         handleCancelEdit={this.handleCancelEdit}
       />
     );
