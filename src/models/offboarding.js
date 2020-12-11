@@ -25,6 +25,8 @@ import {
   handleWithdraw,
   handleRelievingTemplateDraft,
   updateRelieving,
+  sendOffBoardingPackage,
+  removeOffBoardingPackage,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -419,6 +421,35 @@ const offboarding = {
         yield put({ type: 'fetchListTeamRequest', payload: { status: 'ACCEPTED' } });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *sendOffBoardingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(sendOffBoardingPackage, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        const newRequest = yield call(getRequestById, { id: payload.ticketId });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        if (newRequestStat !== 200) throw newRequest;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *removeOffBoardingPackage({ payload }, { call }) {
+      try {
+        const response = yield call(removeOffBoardingPackage, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const newRequest = yield call(getRequestById, { id: payload.ticketId });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        if (newRequestStat !== 200) throw newRequest;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
       }
     },
   },
