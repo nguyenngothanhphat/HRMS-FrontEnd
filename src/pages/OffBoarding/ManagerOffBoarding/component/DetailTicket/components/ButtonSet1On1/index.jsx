@@ -66,7 +66,7 @@ class ButtonSet1On1 extends Component {
     return (
       <div className={styles.actionDetailTicket__btn}>
         <Button className={styles.btn__setMeeting} onClick={this.handleModalSet1On1}>
-          Set 1-on-1 with {nameEmployee}
+          <div className={styles.btn__setMeeting__text}>Set 1-on-1 with {nameEmployee}</div>
         </Button>
       </div>
     );

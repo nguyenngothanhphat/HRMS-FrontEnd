@@ -25,7 +25,7 @@ class ModalContent extends Component {
 
   handleSaveTemplate = () => {
     const { settings } = this.state;
-    const { dispatch, _id, packageType, template } = this.props;
+    const { dispatch, _id, packageType, template, handleEditSave } = this.props;
     dispatch({
       type: 'offboarding/saveOffBoardingPackage',
       payload: {
@@ -35,6 +35,7 @@ class ModalContent extends Component {
         templateId: template.templateRelieving,
       },
     });
+    handleEditSave();
   };
 
   renderContentModal = (mode) => {

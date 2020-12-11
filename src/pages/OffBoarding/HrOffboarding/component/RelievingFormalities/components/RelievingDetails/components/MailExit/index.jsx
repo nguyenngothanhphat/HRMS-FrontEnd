@@ -11,28 +11,9 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-const mailInterviewPackage = [
-  {
-    id: 1,
-    attachment: {
-      name: 'Exit interview form',
-    },
-  },
-  {
-    id: 2,
-    attachment: {
-      name: 'NOC form',
-    },
-  },
-  {
-    id: 3,
-    attachment: {
-      name: 'Off boarding checklist',
-    },
-  },
-];
-
-@connect(({ offboarding: { relievingDetails: { exitPackage = {} } } }) => ({ exitPackage }))
+@connect(({ offboarding: { relievingDetails: { exitPackage = {} } } }) => ({
+  exitPackage,
+}))
 class MailExit extends Component {
   constructor(props) {
     super(props);
@@ -116,7 +97,17 @@ class MailExit extends Component {
     });
   };
 
-  handleEditSave = () => {};
+  handleEditSave = () => {
+    const {
+      exitPackage: { waitList = [] },
+    } = this.props;
+    const { isOpenModalEdit } = this.state;
+    this.setState({
+      isOpenModalEdit: !isOpenModalEdit,
+      template: {},
+      exitPackageTemplates: waitList,
+    });
+  };
 
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, template, mode } = this.state;
@@ -147,49 +138,31 @@ class MailExit extends Component {
           title={formatMessage({ id: 'pages.relieving.mailExit' })}
           extra={this.renderExtraContent()}
         >
-          {isSent ? (
-            <Row gutter={[10, 20]}>
-              {mailInterviewPackage.map((template, index) => {
-                const { attachment } = template;
-                return (
-                  <Col span={this.renderSpanColumn(attachment.name)} key={`${index + 1}`}>
-                    <div className={styles.template}>
-                      <div className={styles.template__content}>
-                        <img src={templateIcon} alt="template-icon" />
-                        <span>{attachment.name}</span>
-                      </div>
-                      <div className={styles.template__action}>
-                        {/* <img className={styles.edit__icon} src={editIcon} alt="edit-icon" /> */}
-                        <img src={checkTemplateIcon} alt="check-icon" />
-                      </div>
-                    </div>
-                  </Col>
-                );
-              })}
-            </Row>
-          ) : (
-            <Row gutter={[10, 20]}>
-              {exitPackageTemplates?.map((template, index) => {
-                const { packageName } = template;
-                return (
-                  <Col span={this.renderSpanColumn(packageName)} key={`${index + 1}`}>
-                    <div className={styles.template}>
-                      <div
-                        className={styles.template__content}
-                        onClick={() => this.handleClickEdit(template, 'View')}
+          <Row gutter={[10, 20]}>
+            {exitPackageTemplates?.map((template, index) => {
+              const { packageName } = template;
+              return (
+                <Col span={this.renderSpanColumn(packageName)} key={`${index + 1}`}>
+                  <div className={styles.template}>
+                    <div
+                      className={styles.template__content}
+                      onClick={() => this.handleClickEdit(template, 'View')}
+                    >
+                      <img src={templateIcon} alt="template-icon" />
+                      <span
+                        style={{
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                          width: '130px',
+                        }}
                       >
-                        <img src={templateIcon} alt="template-icon" />
-                        <span
-                          style={{
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            width: '130px',
-                          }}
-                        >
-                          {packageName}
-                        </span>
-                      </div>
+                        {packageName}
+                      </span>
+                    </div>
+                    {isSent ? (
+                      <img src={checkTemplateIcon} alt="check-icon" />
+                    ) : (
                       <div className={styles.template__action}>
                         <img
                           onClick={() => this.handleClickEdit(template, 'Edit')}
@@ -207,12 +180,12 @@ class MailExit extends Component {
                           <img src={removeIcon} alt="remove-icon" />
                         </Popconfirm>
                       </div>
-                    </div>
-                  </Col>
-                );
-              })}
-            </Row>
-          )}
+                    )}
+                  </div>
+                </Col>
+              );
+            })}
+          </Row>
         </Card>
         {this.renderModalEditTemplate()}
       </div>
