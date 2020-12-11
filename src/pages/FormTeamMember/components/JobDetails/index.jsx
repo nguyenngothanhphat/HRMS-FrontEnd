@@ -144,7 +144,10 @@ class JobDetails extends PureComponent {
     const { name, value } = target;
     const { dispatch } = this.props;
     const { tempData = {} } = this.state;
-    tempData[name] = value;
+    console.log(name, value);
+    tempData[name] = {
+      _id: value,
+    };
 
     dispatch({
       type: 'candidateInfo/save',
@@ -482,7 +485,6 @@ class JobDetails extends PureComponent {
             </div>
           ) : (
             <>
-              {' '}
               <Col xs={24} sm={24} md={24} lg={16} xl={16}>
                 <div className={styles.JobDetailsComponent}>
                   <Header />
