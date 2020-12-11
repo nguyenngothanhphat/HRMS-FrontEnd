@@ -6,20 +6,23 @@ import editIcon from '@/assets/edit-template-icon.svg';
 import viewTemplateIcon from '@/assets/view-template-icon.svg';
 import externalLinkIcon from '@/assets/external-link.svg';
 import removeIcon from '@/assets/remove-off-boarding.svg';
-import ScheduleInterview from './components/ScheduleInterview';
+import ModalSet1On1 from '@/components/ModalSet1On1';
+import moment from 'moment';
 import FeedbackForm from './components/FeedbackForm';
 import FeedbackFormContent from './components/FeedbackFormContent';
 import styles from './index.less';
 
-@connect(({ loading, offboarding: { listMeetingTime = [] } = {} }) => ({
+@connect(({ loading, offboarding: { listMeetingTime = [], relievingDetails = {} } = {} }) => ({
   listMeetingTime,
-  loadingCreateSchedule: loading.effects['offboarding/createScheduleInterview'],
+  relievingDetails,
+  loading: loading.effects['offboarding/create1On1'],
 }))
 class ConductExit extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      keyModal: '',
       isOpenFeedbackForm: false,
     };
   }
@@ -31,16 +34,8 @@ class ConductExit extends PureComponent {
     });
   }
 
-  handleModalScheduleInterview = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
   handleCancel = () => {
     this.setState({
-      visible: false,
       isOpenFeedbackForm: false,
     });
   };
@@ -62,25 +57,57 @@ class ConductExit extends PureComponent {
     );
   };
 
-  handleSendSchedule = (values) => {
-    const { dispatch, employeeDetails = {}, currentUser } = this.props;
-    const { employee: { _id: meetingWith } = {}, _id: offBoardingRequest } = employeeDetails;
-    const createdBy = currentUser?.employee?._id;
-    const payload = { createdBy, meetingWith, offBoardingRequest, ...values };
+  handleSendSchedule = ({ meetingDate, meetingTime }) => {
+    const {
+      dispatch,
+      currentUser: { employee: { _id: myId = '' } = {} } = {},
+      relievingDetails: {
+        _id: offBoardingRequest = '',
+        employee: { _id: meetingWith = '' } = {},
+      } = {},
+    } = this.props;
+    const payload = {
+      meetingDate,
+      meetingTime,
+      meetingWith,
+      offBoardingRequest,
+      ownerComment: myId,
+      isRelieving: true,
+    };
     dispatch({
-      type: 'offboarding/createScheduleInterview',
+      type: 'offboarding/create1On1',
       payload,
       isEmployee: true,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        this.handleModalScheduleInterview();
+        this.handleModalSet1On1();
+        dispatch({
+          type: 'offboarding/getList1On1',
+          payload: {
+            offBoardingRequest,
+          },
+        });
       }
     });
   };
 
-  render() {
+  handleModalSet1On1 = () => {
     const { visible } = this.state;
-    const { listMeetingTime, loadingCreateSchedule } = this.props;
+    this.setState({
+      visible: !visible,
+      keyModal: !visible ? '' : Date.now(),
+    });
+  };
+
+  render() {
+    const { visible, keyModal } = this.state;
+    const { listMeetingTime = [], loading, itemSchedule = {} } = this.props;
+    const {
+      _id: idSchedule = '',
+      meetingWith: { generalInfo: { firstName = '' } = {} } = {},
+      meetingDate = '',
+      meetingTime = '',
+    } = itemSchedule;
     return (
       <>
         <div className={styles.conductExit}>
@@ -100,40 +127,49 @@ class ConductExit extends PureComponent {
             </div>
             <Button
               className={styles.conductExit__btnSchedule}
-              onClick={this.handleModalScheduleInterview}
+              onClick={this.handleModalSet1On1}
+              disabled={idSchedule}
             >
               {formatMessage({ id: 'pages.relieving.scheduleInterview' })}
             </Button>
           </div>
-          <ScheduleInterview
-            loadingCreateSchedule={loadingCreateSchedule}
-            listMeetingTime={listMeetingTime}
-            modalContent={formatMessage({ id: 'pages.relieving.scheduleInterview' })}
-            visible={visible}
-            handleCancel={this.handleCancel}
-            handleSendSchedule={this.handleSendSchedule}
-          />
         </div>
-        <div className={styles.conductExit}>
-          <div className={styles.conductExit__head}>
-            <span className={styles.conductExit__head__title}>
-              {formatMessage({ id: 'pages.relieving.exitInterviewScheduledWith' })} Venkat
-            </span>
-            <div className={styles.conductExit__head__action}>
-              <img
-                src={viewTemplateIcon}
-                alt="view-template-icon"
-                onClick={() => this.handleOpenFeedbackForm()}
-              />
-              <img src={externalLinkIcon} alt="external-link-icon" />
-              <img src={removeIcon} alt="view-template-icon" />
+        {idSchedule && (
+          <div className={styles.conductExit}>
+            <div className={styles.conductExit__head}>
+              <span className={styles.conductExit__head__title}>
+                {formatMessage({ id: 'pages.relieving.exitInterviewScheduledWith' })} {firstName}
+              </span>
+              <div className={styles.conductExit__head__action}>
+                <img
+                  src={viewTemplateIcon}
+                  alt="view-template-icon"
+                  onClick={() => this.handleOpenFeedbackForm()}
+                />
+                <img src={externalLinkIcon} alt="external-link-icon" />
+                <img src={removeIcon} alt="view-template-icon" />
+              </div>
+            </div>
+            <div>
+              <span className={styles.conductExit__schedule}>
+                Scheduled on : {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp;{' '}
+                <span>{meetingTime}</span>
+              </span>
             </div>
           </div>
-          <div>
-            <span className={styles.conductExit__schedule}>Scheduled on : 22.05.20 | 12PM</span>
-          </div>
-        </div>
+        )}
+
         {this.renderFeedbackForm()}
+        <ModalSet1On1
+          visible={visible}
+          handleCancel={this.handleModalSet1On1}
+          handleSubmit={this.handleSendSchedule}
+          listMeetingTime={listMeetingTime}
+          title={formatMessage({ id: 'pages.relieving.scheduleInterview' })}
+          hideMeetingWith
+          key={keyModal}
+          loading={loading}
+        />
       </>
     );
   }
