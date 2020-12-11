@@ -239,7 +239,7 @@ class RequestInformation extends Component {
 
   // ON SAVE DRAFT
   onSaveDraft = (values) => {
-    const { buttonState } = this.state;
+    const { buttonState, isEditingDrafts, viewingLeaveRequestId } = this.state;
     if (buttonState === 1) {
       const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
       const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
@@ -271,13 +271,23 @@ class RequestInformation extends Component {
         cc: personCC,
       };
 
-      console.log('draft data', data);
-      dispatch({
-        type: 'timeOff/saveDraftLeaveRequest',
-        payload: data,
-      }).then((statusCode) => {
-        if (statusCode === 200) this.setShowSuccessModal(true);
-      });
+      // console.log('draft data', data);
+      if (!isEditingDrafts) {
+        dispatch({
+          type: 'timeOff/saveDraftLeaveRequest',
+          payload: data,
+        }).then((statusCode) => {
+          if (statusCode === 200) this.setShowSuccessModal(true);
+        });
+      } else {
+        data._id = viewingLeaveRequestId;
+        dispatch({
+          type: 'timeOff/updateDraftLeaveRequest',
+          payload: data,
+        }).then((statusCode) => {
+          if (statusCode === 200) this.setShowSuccessModal(true);
+        });
+      }
     }
   };
 
@@ -640,6 +650,29 @@ class RequestInformation extends Component {
     history.push(`/time-off/view-request/${id}`);
   };
 
+  // RENDER MODAL content
+  renderModalContent = () => {
+    const { action = '' } = this.props;
+    const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
+    let content = '';
+    if (action === 'edit-leave-request') {
+      if (buttonState === 1) {
+        if (isEditingDrafts) {
+          content = 'Draft saved';
+        } else {
+          content = `Edits to ticket id: 160012 submitted to HR and manager`;
+        }
+      } else if (buttonState === 2)
+        content = `${selectedTypeName} request submitted to the HR and your manager.`;
+    } else if (action === 'new-leave-request') {
+      if (buttonState === 1) {
+        content = 'Draft saved';
+      } else if (buttonState === 2)
+        content = `${selectedTypeName} request submitted to the HR and your manager.`;
+    }
+    return content;
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -658,9 +691,7 @@ class RequestInformation extends Component {
       secondNotice,
       durationFrom,
       durationTo,
-      selectedTypeName,
       selectedType,
-      buttonState,
       isEditingDrafts,
     } = this.state;
 
@@ -977,7 +1008,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content={() => this.renderModalContent()}
+          content={this.renderModalContent()}
           submitText="OK"
         />
       </div>
