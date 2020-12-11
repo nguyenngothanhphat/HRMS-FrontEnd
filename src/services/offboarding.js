@@ -161,3 +161,9 @@ export async function handleRelievingTemplateDraft(payload) {
     data: payload,
   });
 }
+export async function updateRelieving(payload) {
+  return request('/api/offboardingrequest/update-relieving', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -24,6 +24,7 @@ import {
   handleRequestChangeLWD,
   handleWithdraw,
   handleRelievingTemplateDraft,
+  updateRelieving,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -407,6 +408,17 @@ const offboarding = {
         yield put({ type: 'save', payload: { relievingDetails: data } });
       } catch (error) {
         dialog(error);
+      }
+    },
+    *updateRelieving({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateRelieving, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message: `Move to relieving formalities successfully!` });
+        yield put({ type: 'fetchListTeamRequest', payload: { status: 'ACCEPTED' } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

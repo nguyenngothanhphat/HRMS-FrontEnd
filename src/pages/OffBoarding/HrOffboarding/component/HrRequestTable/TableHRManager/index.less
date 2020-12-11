@@ -52,4 +52,23 @@
     cursor: pointer;
     color: blue;
   }
+  .viewAction {
+    display: flex;
+    justify-content: space-between;
+    width: 115px;
+    &__text {
+      cursor: pointer;
+      color: #2c6df9;
+    }
+    &__popOver {
+      &__dots {
+        display: flex;
+        height: fit-content;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: -4px;
+        font-weight: 700;
+      }
+    }
+  }
 }
