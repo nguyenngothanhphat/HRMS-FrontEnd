@@ -97,3 +97,9 @@ export async function getDepartmentListByCompanyId(payload) {
     data: payload,
   });
 }
+
+export async function getListAutoField() {
+  return request('/api/customemail/list-auto-field', {
+    method: 'POST',
+  });
+}

@@ -18,6 +18,7 @@ import {
   addCustomTemplate,
   removeTemplate,
   getDepartmentListByCompanyId,
+  getListAutoField,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -42,6 +43,7 @@ const employeeSetting = {
     titleList: [],
     employeeTypeList: [],
     departmentListByCompanyId: [],
+    listAutoField: [],
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -251,6 +253,20 @@ const employeeSetting = {
           payload: { departmentListByCompanyId: data },
         });
         return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchListAutoField(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListAutoField);
+        const { statusCode, data } = response;
+        console.log('List auto field: ', response);
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAutoField: data } });
+        // return data;
       } catch (errors) {
         dialog(errors);
       }

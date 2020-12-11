@@ -24,7 +24,6 @@ const hashValues = [
   { id: 3, value: '385 Cong Hoa' },
   { id: 4, value: 'Tan Binh TP HCM' },
 ];
-
 @connect(
   ({
     employeeSetting: {
@@ -34,6 +33,7 @@ const hashValues = [
       titleList = [],
       employeeTypeList = [],
       departmentListByCompanyId = [],
+      listAutoField = [],
     } = {},
     user: { currentUser: { company: { _id = '' } = {} } = {} } = {},
   }) => ({
@@ -44,6 +44,7 @@ const hashValues = [
     employeeTypeList,
     departmentListByCompanyId,
     _id,
+    listAutoField,
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -146,6 +147,10 @@ class EmailReminderForm extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/fetchTriggerEventList',
+      payload: {},
+    });
+    dispatch({
+      type: 'employeeSetting/fetchListAutoField',
       payload: {},
     });
   };
@@ -578,6 +583,11 @@ class EmailReminderForm extends PureComponent {
     return null;
   };
 
+  dataAutoField = () => {
+    const { listAutoField } = this.props;
+    return listAutoField;
+  };
+
   mentionModule = {
     allowedChars: /^[A-Za-z\s]*$/,
     mentionDenotationChars: ['#', '@'],
@@ -587,9 +597,10 @@ class EmailReminderForm extends PureComponent {
     },
     source(searchTerm, renderList, mentionChar) {
       let values;
+      const { listAutoField } = this.props;
 
       if (mentionChar === '@') {
-        values = atValues;
+        values = listAutoField;
       } else {
         values = hashValues;
       }
