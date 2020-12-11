@@ -701,6 +701,9 @@ class RequestInformation extends Component {
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
       } = {},
       loadingAddLeaveRequest,
+      loadingUpdatingLeaveRequest,
+      loadingSaveDraft,
+      loadingUpdateDraft,
       action = '',
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
@@ -979,6 +982,7 @@ class RequestInformation extends Component {
             {(action === 'new-leave-request' ||
               (action === 'edit-leave-request' && isEditingDrafts)) && (
               <Button
+                loading={loadingUpdatingLeaveRequest || loadingSaveDraft || loadingUpdateDraft}
                 type="link"
                 form="myForm"
                 htmlType="submit"
