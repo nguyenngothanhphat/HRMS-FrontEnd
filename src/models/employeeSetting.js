@@ -19,6 +19,7 @@ import {
   removeTemplate,
   getDepartmentListByCompanyId,
   getListAutoField,
+  addCustomEmail,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -44,6 +45,7 @@ const employeeSetting = {
     employeeTypeList: [],
     departmentListByCompanyId: [],
     listAutoField: [],
+    dataSubmit: {},
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -263,10 +265,29 @@ const employeeSetting = {
       try {
         response = yield call(getListAutoField);
         const { statusCode, data } = response;
-        console.log('List auto field: ', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listAutoField: data } });
-        // return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addCustomEmail({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addCustomEmail, payload);
+        const { statusCode, data } = response;
+        console.log('Success: ', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.status,
+          description: response.message,
+        });
+        yield put({
+          type: 'save',
+          payload: { dataSubmit: data },
+        });
+        return data;
       } catch (errors) {
         dialog(errors);
       }

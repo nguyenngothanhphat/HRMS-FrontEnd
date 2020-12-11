@@ -15,15 +15,6 @@ import removeIcon from './assets/removeIcon.svg';
 import styles from './index.less';
 
 Quill.register('modules/mentions', QuillMention);
-
-const atValues = [
-  { id: 1, value: '@name' },
-  { id: 2, value: '@Terralogic' },
-];
-const hashValues = [
-  { id: 3, value: '385 Cong Hoa' },
-  { id: 4, value: 'Tan Binh TP HCM' },
-];
 @connect(
   ({
     employeeSetting: {
@@ -393,9 +384,9 @@ class EmailReminderForm extends PureComponent {
   };
 
   onFinish = (values) => {
-    const { triggerEventList } = this.props;
+    const { triggerEventList, dispatch } = this.props;
     const { message = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
-    let payload = {};
+    let dataSubmit = {};
 
     const newValue = { ...values };
     delete newValue.sendToWorker;
@@ -406,13 +397,18 @@ class EmailReminderForm extends PureComponent {
     newValue.triggerEvent = triggerEvent;
 
     if (appliesToData === 'any') {
-      payload = { ...newValue, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, message, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
-      payload = { ...newValue, conditions, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    console.log('Success:', payload);
+    dispatch({
+      type: 'employeeSetting/addCustomEmail',
+      payload: { dataSubmit },
+    }).then((data) => {
+      console.log('dataSubmit: ', data);
+    });
   };
 
   _renderConditions = () => {
@@ -422,7 +418,6 @@ class EmailReminderForm extends PureComponent {
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
 
-    console.log('conditionsData: ', conditionsData);
     const renderSelectOption = (index) => {
       return (
         <>
@@ -625,7 +620,7 @@ class EmailReminderForm extends PureComponent {
 
   _renderForm = () => {
     const { Option } = Select;
-    const { triggerEventList, listAutoField } = this.props;
+    const { triggerEventList } = this.props;
     const { frequencyItem, sendingDate, applyTo, sendToWorker, message } = this.state;
 
     return (

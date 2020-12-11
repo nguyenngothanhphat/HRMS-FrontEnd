@@ -103,3 +103,10 @@ export async function getListAutoField() {
     method: 'POST',
   });
 }
+
+export async function addCustomEmail(payload) {
+  return request('/api/customemail/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
