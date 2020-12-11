@@ -6,6 +6,7 @@ import {
   addLeaveRequest,
   withdrawLeaveRequest,
   addCompoffRequest,
+  getMyCompoffRequests,
   getTimeOffTypes,
   getEmailsListByCompany,
   getProjectsListByCompany,
@@ -22,6 +23,7 @@ const timeOff = {
     leavingList: [],
     totalLeaveBalance: {},
     leaveRequests: [],
+    compoffRequests: {},
     timeOffTypes: [],
     employeeInfo: {},
     emailsList: [],
@@ -196,6 +198,20 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+    *fetchMyCompoffRequests(_, { call, put }) {
+      try {
+        const response = yield call(getMyCompoffRequests, {});
+        const { statusCode, data: compoffRequests = {} } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { compoffRequests },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {

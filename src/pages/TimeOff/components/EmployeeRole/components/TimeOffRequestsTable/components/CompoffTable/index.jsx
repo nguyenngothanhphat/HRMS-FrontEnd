@@ -21,7 +21,7 @@ export default class CompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      // render: (type) => <span>{type ? type.project : ''}</span>,
+      render: (project) => <span>{project ? project.name : ''}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
@@ -128,12 +128,7 @@ export default class CompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        fromDate = '',
-        toDate = '',
-        approvalManager: {
-          generalInfo: { workEmail = '' } = {},
-          generalInfo: generalInfoA = {},
-        } = {},
+        manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
         cc = [],
       } = value;
 
@@ -141,10 +136,6 @@ export default class CompoffTable extends PureComponent {
       this.setState({
         approvalManagerEmail: workEmail,
       });
-
-      const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
-        .locale('en')
-        .format('MM.DD.YYYY')}`;
 
       const employeeFromCC = cc.map((each) => {
         const { generalInfo = {} } = each;
@@ -154,7 +145,6 @@ export default class CompoffTable extends PureComponent {
 
       return {
         ...value,
-        leaveTimes,
         assigned,
       };
     });
@@ -194,7 +184,7 @@ export default class CompoffTable extends PureComponent {
       onChange: this.onSelectChange,
     };
     return (
-      <div className={styles.DataTable}>
+      <div className={styles.CompoffTable}>
         <Table
           size="middle"
           loading={loading}

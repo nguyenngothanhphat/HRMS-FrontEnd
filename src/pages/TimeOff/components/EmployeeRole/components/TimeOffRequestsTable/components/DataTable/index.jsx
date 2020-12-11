@@ -27,12 +27,12 @@ class DataTable extends PureComponent {
       render: (type) => <span>{type ? type.shortType : ''}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    {
-      title: 'Leave date',
-      width: '20%',
-      dataIndex: 'leaveTimes',
-      align: 'left',
-    },
+    // {
+    //   title: 'Leave date',
+    //   width: '20%',
+    //   dataIndex: 'leaveTimes',
+    //   align: 'left',
+    // },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',

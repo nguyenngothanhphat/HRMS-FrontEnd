@@ -27,6 +27,10 @@ class TimeOffRequestsTable extends PureComponent {
       type: 'timeOff/fetchLeaveRequestOfEmployee',
       employee: _id,
     });
+
+    dispatch({
+      type: 'timeOff/fetchMyCompoffRequests',
+    });
   };
 
   componentDidMount = () => {
@@ -45,30 +49,35 @@ class TimeOffRequestsTable extends PureComponent {
     this.getDataFromServer();
   };
 
-  renderData = (leaveRequests, key) => {
+  renderData = (requests, key) => {
     if (key === 1)
-      return leaveRequests.filter((req) => {
+      return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
         return type === 'A' || type === 'B';
       });
 
     if (key === 2)
-      return leaveRequests.filter((req) => {
+      return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
         return type === 'C';
       });
 
     if (key === 3)
-      return leaveRequests.filter((req) => {
+      return requests.filter((req) => {
         const { type: { type = '', shortType = '' } = {} } = req;
         return type === 'C' && shortType === 'LWP';
       });
 
     if (key === 4)
-      return leaveRequests.filter((req) => {
+      return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
         return type === 'D';
       });
+
+    // compoff requests
+    if (key === 5) {
+      return requests;
+    }
 
     return [];
   };
@@ -90,13 +99,17 @@ class TimeOffRequestsTable extends PureComponent {
   };
 
   render() {
-    const { timeOff: { leaveRequests = [] } = {}, loadingFetchLeaveRequests } = this.props;
+    const {
+      timeOff: { leaveRequests = [], compoffRequests: { items = [] } = {} } = {},
+      loadingFetchLeaveRequests,
+    } = this.props;
+    console.log('compoffRequests', items);
     const emptyData = [];
     const leaveRequestsData = this.renderData(leaveRequests, 1);
     const specialRequestsData = this.renderData(leaveRequests, 2);
     const lwpRequestsData = this.renderData(leaveRequests, 3);
     const wfhRequestsData = this.renderData(leaveRequests, 4);
-    // const compoffRequestsData = this.renderData(leaveRequests);
+    const compoffRequestsData = this.renderData(items, 5);
 
     return (
       <div className={styles.TimeOffRequestsTable}>
@@ -138,7 +151,7 @@ class TimeOffRequestsTable extends PureComponent {
             </TabPane>
             <TabPane tab="Compoff Request" key="5">
               {!loadingFetchLeaveRequests ? (
-                <TimeOffRequestTab data={emptyData} type={2} />
+                <TimeOffRequestTab data={compoffRequestsData} type={2} />
               ) : (
                 this.renderLoading()
               )}

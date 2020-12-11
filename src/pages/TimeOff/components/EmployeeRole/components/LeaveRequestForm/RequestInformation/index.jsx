@@ -33,6 +33,7 @@ class RequestInformation extends Component {
       buttonState: 0, // save draft or submit
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
+      remainingDayOfSelectedType: 0,
     };
   }
 
@@ -132,6 +133,12 @@ class RequestInformation extends Component {
     }
   };
 
+  // SET REMAINING DAY OF SELECTED TYPE
+  setRemainingDay = (value) => {
+    this.setState({
+      remainingDayOfSelectedType: value,
+    });
+  };
   // GET TIME OFF TYPE BY ID
   onSelectTimeOffTypeChange = (id) => {
     const { durationFrom } = this.state;
