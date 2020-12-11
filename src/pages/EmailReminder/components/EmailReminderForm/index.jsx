@@ -131,8 +131,42 @@ class EmailReminderForm extends PureComponent {
           value: [],
         },
       ],
+      disabled: true,
+      triggerEvent: '',
+      frequency: '',
+      _sendingDate: '',
+      receipient: '',
+      emailSubject: '',
     };
   }
+
+  checkFields = () => {
+    const {
+      triggerEvent,
+      frequency,
+      _sendingDate,
+      appliesToData,
+      receipient,
+      emailSubject,
+      message,
+    } = this.state;
+
+    if (
+      triggerEvent.trim() !== '' &&
+      frequency.trim() !== '' &&
+      _sendingDate.trim() !== '' &&
+      appliesToData.trim() !== '' &&
+      receipient.trim() !== '' &&
+      emailSubject.trim() !== '' &&
+      message.trim() !== '' &&
+      message.trim() !== '<p></p>' &&
+      message.trim() !== '<p><br></p>'
+    ) {
+      this.setState({ disabled: false });
+    } else {
+      this.setState({ disabled: true });
+    }
+  };
 
   componentDidMount = () => {
     const { dispatch } = this.props;
@@ -174,7 +208,27 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
-  onChangeConditionDepartment = (index, name, value) => {
+  onChangeTriggerEvent = (value) => {
+    this.setState({ triggerEvent: value });
+  };
+
+  onChangeFrequency = (value) => {
+    this.setState({ frequency: value.target.value });
+  };
+
+  onChangeSendingDate = (value) => {
+    this.setState({ _sendingDate: value.target.value });
+  };
+
+  onChangeReceipients = (value) => {
+    this.setState({ receipient: value });
+  };
+
+  onChangeEmailSubject = (value) => {
+    this.setState({ emailSubject: value });
+  };
+
+  onChangeConditionLocation = (index, name, value) => {
     const { conditionsData, conditions } = this.state;
 
     const newConditionsData = [...conditionsData];
@@ -285,13 +339,10 @@ class EmailReminderForm extends PureComponent {
     }
 
     if (name === 'value') {
-      newConditions[index][name] = value;
+      newConditions[index][name].push(value);
     }
 
     newConditionsData[index][name] = value;
-
-    // console.log('conditionsData: ', newConditionsData);
-    // console.log('conditions: ', newConditions);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -427,7 +478,7 @@ class EmailReminderForm extends PureComponent {
           <Select
             size="large"
             placeholder="Please select a choice"
-            onChange={(value) => this.onChangeConditionDepartment(index, 'value', value)}
+            onChange={(value) => this.onChangeConditionLocation(index, 'value', value)}
           >
             {departments.map((department) => {
               return (
@@ -561,7 +612,13 @@ class EmailReminderForm extends PureComponent {
         <>
           <Col span={12}>
             <Form.Item label="Receipients" name="receipients">
-              <Select size="large" placeholder="Please select a choice">
+              <Select
+                size="large"
+                placeholder="Please select a choice"
+                onChange={(value) => {
+                  this.onChangeReceipients(value);
+                }}
+              >
                 {receipients.map((option) => {
                   return (
                     <Option value={option.value} key={option._id}>
@@ -624,7 +681,7 @@ class EmailReminderForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { triggerEventList } = this.props;
-    const { frequencyItem, sendingDate, applyTo, sendToWorker, message } = this.state;
+    const { frequencyItem, sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
 
     return (
       <Form onFinish={this.onFinish}>
@@ -632,7 +689,11 @@ class EmailReminderForm extends PureComponent {
           {/* Trigger Event */}
           <Col span={12}>
             <Form.Item label="Trigger event" name="triggerEvent">
-              <Select size="large" placeholder="Please select a choice">
+              <Select
+                size="large"
+                placeholder="Please select a choice"
+                onChange={(value) => this.onChangeTriggerEvent(value)}
+              >
                 {triggerEventList.map((option) => {
                   return <Option value={option.value}>{option.name}</Option>;
                 })}
@@ -654,7 +715,7 @@ class EmailReminderForm extends PureComponent {
           {/* Frequency */}
           <Col span={24}>
             <Form.Item name="frequency" label="Frequency">
-              <Radio.Group>
+              <Radio.Group onChange={(value) => this.onChangeFrequency(value)}>
                 {frequencyItem.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
@@ -665,7 +726,7 @@ class EmailReminderForm extends PureComponent {
           {/* Sending date */}
           <Col span={24}>
             <Form.Item name="sendingDate" label="Sending date">
-              <Radio.Group>
+              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
                 {sendingDate.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
@@ -713,7 +774,10 @@ class EmailReminderForm extends PureComponent {
           {/* Email subject */}
           <Col span={24}>
             <Form.Item name="subject" label="Email subject">
-              <Input placeholder="Eg:  Welcome to the company" />
+              <Input
+                placeholder="Eg:  Welcome to the company"
+                onChange={(e) => this.onChangeEmailSubject(e.target.value)}
+              />
             </Form.Item>
           </Col>
 
@@ -743,7 +807,7 @@ class EmailReminderForm extends PureComponent {
               </Button>
             </Link>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={disabled}>
                 {formatMessage({ id: 'component.emailReminderForm.submit' })}
               </Button>
             </Form.Item>
@@ -754,6 +818,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
+    this.checkFields();
     return (
       <div className={styles.EmailReminderForm}>
         <div className={styles.EmailReminderForm_title}>
