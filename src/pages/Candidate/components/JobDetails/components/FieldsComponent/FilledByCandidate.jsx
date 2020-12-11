@@ -32,14 +32,8 @@ class FilledByCandidate extends PureComponent {
       noticePeriod = '',
       dateOfJoining = '',
     } = this.props;
-    console.log(moment(dateOfJoining));
-    // console.log(moment(dateOfJoining).format('MM/DD/YYYY'));
+
     const dateJoin = dateOfJoining ? moment(dateOfJoining).locale('en').format(dateFormat) : '';
-    console.log(dateJoin);
-    // console.log(dateJoin);
-    // console.log(dateJoin || '');
-    // console.log(moment(dateJoin, dateFormat));
-    // console.log(moment(dateJoin, dateFormat) || '');
 
     const { isHidden } = this.state;
     return (
@@ -69,10 +63,7 @@ class FilledByCandidate extends PureComponent {
               picker="date"
               format="MM/DD/YYYY"
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              // defaultValue={moment(dateJoin, dateFormat)}
               defaultValue={dateJoin}
-              // defaultValue=""
-              // defaultValue={dateOfJoining}
             />
           </Col>
           <Col xs={16} sm={16} md={14} lg={10} xl={10}>
