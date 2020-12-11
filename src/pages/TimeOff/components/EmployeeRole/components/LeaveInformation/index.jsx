@@ -10,6 +10,7 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 const colorsList = ['#2C6DF9', '#FD4546', '#6236FF'];
+const colorsList1 = ['#2C6DF9', '#FFA100'];
 
 const CollapseInformation = (props) => {
   const {
@@ -81,7 +82,7 @@ const CollapseInformation = (props) => {
               return (
                 <Col span={24}>
                   <SpecialLeaveBox
-                    color={colorsList[index % 3]}
+                    color={colorsList1[index % 2]}
                     title={name}
                     shortType={shortType}
                     days={currentAllowance}

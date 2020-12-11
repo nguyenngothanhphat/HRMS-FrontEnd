@@ -222,7 +222,7 @@ const routes = [
           },
           {
             path: '/time-off/view-request/:reId',
-            name: 'View request',
+            name: 'View timeoff request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/ViewRequestForm',
             // authority: ['employee'],
@@ -236,9 +236,8 @@ const routes = [
             // authority: ['employee'],
           },
           {
-            // path: '/time-off/edit-request/:reId',
             path: '/time-off/:action(edit-leave-request)/:reId',
-            name: 'Time Off [Ticket Id: 123456]',
+            name: 'Edit timeoff request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],
