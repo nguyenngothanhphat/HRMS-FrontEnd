@@ -70,6 +70,13 @@ export async function getMyCompoffRequests(payload) {
   });
 }
 
+export async function getCompoffRequestById(payload) {
+  return request('/api/compoffrequest/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function withdrawLeaveRequest(payload) {
   return request('/api/leaverequest/remove', {
     method: 'POST',

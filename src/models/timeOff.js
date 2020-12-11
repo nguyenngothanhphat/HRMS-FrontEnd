@@ -7,6 +7,7 @@ import {
   withdrawLeaveRequest,
   addCompoffRequest,
   getMyCompoffRequests,
+  getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
   getProjectsListByCompany,
@@ -210,6 +211,21 @@ const timeOff = {
           type: 'save',
           payload: { compoffRequests },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCompoffRequestById({ id: _id = '' }, { call, put }) {
+      try {
+        if (_id !== '') {
+          const response = yield call(getCompoffRequestById, { _id });
+          const { statusCode, data: viewingCompoffRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { viewingCompoffRequest },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

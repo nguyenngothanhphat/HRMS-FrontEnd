@@ -100,7 +100,7 @@ export default class CompoffTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/view-compoff-request/${_id}`,
       // state: { location: name },
     });
   };
@@ -130,12 +130,22 @@ export default class CompoffTable extends PureComponent {
       const {
         manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
         cc = [],
+        // extraTime = [],
       } = value;
 
       // GET ID OF APPROVE MANAGER
       this.setState({
         approvalManagerEmail: workEmail,
       });
+
+      // let duration = {};
+      // if (extraTime.length !== 0) {
+      //   duration = {
+      //     fromDate: extraTime[0].date,
+      //     toDate: extraTime[extraTime.length - 1].date,
+      //   };
+      // }
+      // console.log('duration', duration);
 
       const employeeFromCC = cc.map((each) => {
         const { generalInfo = {} } = each;
@@ -145,6 +155,7 @@ export default class CompoffTable extends PureComponent {
 
       return {
         ...value,
+        // duration,
         assigned,
       };
     });
