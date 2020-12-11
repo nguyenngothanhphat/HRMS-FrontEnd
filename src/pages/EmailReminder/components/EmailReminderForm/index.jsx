@@ -50,6 +50,7 @@ const hashValues = [
 class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
+    this.modules = { mention: this.mentionModule(this) };
 
     this.state = {
       conditionsData: [
@@ -588,39 +589,45 @@ class EmailReminderForm extends PureComponent {
     return listAutoField;
   };
 
-  mentionModule = {
-    allowedChars: /^[A-Za-z\s]*$/,
-    mentionDenotationChars: ['#', '@'],
-    showDenotationChar: false,
-    renderItem: (item) => {
-      return item.value;
-    },
-    source(searchTerm, renderList, mentionChar) {
-      let values;
-      const { listAutoField } = this.props;
+  mentionModule = (t) => {
+    return {
+      allowedChars: /^[A-Za-z\s]*$/,
+      mentionDenotationChars: ['@'],
+      showDenotationChar: false,
+      renderItem: (item) => {
+        return item.value;
+      },
+      source(searchTerm, renderList, mentionChar) {
+        let values;
+        const { listAutoField } = t.props;
+        const list = listAutoField.map((item, index) => {
+          return {
+            id: index,
+            value: item,
+          };
+        });
+        if (mentionChar === '@') {
+          values = list;
+        }
 
-      if (mentionChar === '@') {
-        values = listAutoField;
-      } else {
-        values = hashValues;
-      }
-
-      if (searchTerm.length === 0) {
-        renderList(values, searchTerm);
-      } else {
-        const matches = [];
-        for (let i = 0; i < values.length; i++)
-          if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-            matches.push(values[i]);
-        renderList(matches, searchTerm);
-      }
-    },
+        if (searchTerm.length === 0) {
+          renderList(values, searchTerm);
+        } else {
+          const matches = [];
+          for (let i = 0; i < values.length; i++)
+            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+              matches.push(values[i]);
+          renderList(matches, searchTerm);
+        }
+      },
+    };
   };
 
   _renderForm = () => {
     const { Option } = Select;
-    const { triggerEventList } = this.props;
+    const { triggerEventList, listAutoField } = this.props;
     const { frequencyItem, sendingDate, applyTo, sendToWorker, message } = this.state;
+
     return (
       <Form onFinish={this.onFinish}>
         <Row gutter={[36, 24]}>
@@ -673,7 +680,7 @@ class EmailReminderForm extends PureComponent {
             <Form.Item name="applyTo" label="Applies to">
               <Select
                 size="large"
-                placeholder="Please select a choice"
+                placeholdementionModuler="Please select a choice"
                 onChange={this.handleChangeApply}
               >
                 {applyTo.map((option) => {
@@ -720,7 +727,7 @@ class EmailReminderForm extends PureComponent {
               className={styles.quill}
               value={message}
               onChange={this.handleChangeEmail}
-              modules={{ mention: this.mentionModule }}
+              modules={this.modules}
             />
             {/* </Form.Item> */}
           </Col>
