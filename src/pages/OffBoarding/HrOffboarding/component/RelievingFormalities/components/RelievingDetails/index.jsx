@@ -14,7 +14,9 @@ import styles from './index.less';
 @connect(({ loading, offboarding, user: { currentUser = {} } }) => ({
   offboarding,
   currentUser,
-  loading: loading.effects['offboarding/fetchRelievingDetailsById'],
+  loading:
+    loading.effects['offboarding/fetchRelievingDetailsById'] ||
+    loading.effects['offboarding/saveOffBoardingPackage'],
 }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
