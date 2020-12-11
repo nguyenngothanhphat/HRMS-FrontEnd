@@ -20,6 +20,10 @@ export default class EmployeeRole extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   onCloseFeedbackBar = () => {
     this.setState({
       closeFeedbackBar: true,

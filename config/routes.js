@@ -222,7 +222,7 @@ const routes = [
           },
           {
             path: '/time-off/view-request/:reId',
-            name: 'Time Off [Ticket Id: 123456]',
+            name: 'View request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/ViewRequestForm',
             // authority: ['employee'],

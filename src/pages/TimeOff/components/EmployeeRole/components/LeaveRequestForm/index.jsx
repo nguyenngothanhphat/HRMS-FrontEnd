@@ -1,3 +1,6 @@
+// this component is used for creating a new timeoff request
+// and for editing (updating) a exist one
+
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
@@ -34,6 +37,8 @@ class LeaveRequestForm extends PureComponent {
         id: reId,
       });
     }
+
+    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   getColorOfStatus = (status) => {
