@@ -290,6 +290,9 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
+    // console.log('conditionsData: ', newConditionsData);
+    // console.log('conditions: ', newConditions);
+
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
@@ -405,7 +408,7 @@ class EmailReminderForm extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/addCustomEmail',
-      payload: { dataSubmit },
+      payload: dataSubmit,
     }).then((data) => {
       console.log('dataSubmit: ', data);
     });
