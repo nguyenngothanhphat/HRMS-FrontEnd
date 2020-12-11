@@ -11,6 +11,8 @@ import {
   getProjectsListByCompany,
   getLeaveRequestById,
   updateLeaveRequestById,
+  saveDraftLeaveRequest,
+  updateDraftLeaveRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -25,6 +27,7 @@ const timeOff = {
     emailsList: [],
     projectsList: [],
     viewingLeaveRequest: {},
+    savedDraftLR: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -121,7 +124,7 @@ const timeOff = {
           type: 'save',
           payload: { addedLeaveRequest },
         });
-        return response;
+        return statusCode;
       } catch (errors) {
         dialog(errors);
         return {};
@@ -143,6 +146,40 @@ const timeOff = {
         dialog(errors);
       }
       return 0;
+    },
+    *saveDraftLeaveRequest({ payload = {} }, { call, put }) {
+      try {
+        console.log('payload saved draft', payload);
+        const response = yield call(saveDraftLeaveRequest, payload);
+        const { statusCode, data: savedDraftLR = {} } = response;
+        console.log('response saved draft', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { savedDraftLR },
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *updateDraftLeaveRequest({ payload = {} }, { call, put }) {
+      try {
+        console.log('payload update draft', payload);
+        const response = yield call(updateDraftLeaveRequest, payload);
+        const { statusCode, data: savedDraftLR = {} } = response;
+        console.log('response update draft', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { savedDraftLR },
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
     },
     *addCompoffRequest({ payload = {} }, { call, put }) {
       try {

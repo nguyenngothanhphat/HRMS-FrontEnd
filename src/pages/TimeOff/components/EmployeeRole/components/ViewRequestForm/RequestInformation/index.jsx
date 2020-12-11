@@ -164,7 +164,7 @@ class RequestInformation extends Component {
                 </Col>
               </Row>
             </div>
-            {status !== 'REJECTED' && (
+            {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to

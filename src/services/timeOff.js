@@ -42,6 +42,20 @@ export async function addLeaveRequest(payload) {
   });
 }
 
+export async function saveDraftLeaveRequest(payload) {
+  return request('/api/leaverequest/save-draft', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateDraftLeaveRequest(payload) {
+  return request('/api/leaverequest/update-draft', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addCompoffRequest(payload) {
   return request('/api/compoffrequest/add', {
     method: 'POST',

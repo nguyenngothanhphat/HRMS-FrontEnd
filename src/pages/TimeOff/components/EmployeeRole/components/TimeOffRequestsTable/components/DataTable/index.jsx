@@ -20,24 +20,24 @@ class DataTable extends PureComponent {
         </span>
       ),
     },
-    // {
-    //   title: 'Type',
-    //   dataIndex: 'type',
-    //   align: 'left',
-    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
-    //   // sortDirections: ['ascend', 'descend', 'ascend'],
-    // },
-    // {
-    //   title: 'Leave date',
-    //   width: '20%',
-    //   dataIndex: 'leaveTimes',
-    //   align: 'left',
-    // },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      align: 'center',
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+    {
+      title: 'Leave date',
+      width: '20%',
+      dataIndex: 'leaveTimes',
+      align: 'left',
+    },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'center',
-      width: '30%',
+      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -45,16 +45,16 @@ class DataTable extends PureComponent {
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    // {
-    //   title: 'Duration',
-    //   dataIndex: 'duration',
-    //   align: 'left',
-    // },
+    {
+      title: 'Duration',
+      dataIndex: 'duration',
+      align: 'center',
+    },
     {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'assigned',
-      width: '25%',
+      // width: '25%',
       render: (assigned) => {
         return (
           <div className={styles.rowAction}>
@@ -91,7 +91,7 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
-      width: '25%',
+      // width: '25%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>

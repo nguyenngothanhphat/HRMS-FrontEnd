@@ -14,6 +14,8 @@ const { TextArea } = Input;
   user,
   loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
   loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
+  loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
+  loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
 }))
 class RequestInformation extends Component {
   formRef = React.createRef();
@@ -30,6 +32,7 @@ class RequestInformation extends Component {
       durationTo: '',
       buttonState: 0, // save draft or submit
       viewingLeaveRequestId: '',
+      isEditingDrafts: false,
     };
   }
 
@@ -68,15 +71,22 @@ class RequestInformation extends Component {
         description = '',
         cc = [],
         _id = '',
+        status = '',
       } = viewingLeaveRequest;
+
+      if (status === 'DRAFTS') {
+        this.setState({
+          isEditingDrafts: true,
+        });
+      }
 
       this.setState({
         viewingLeaveRequestId: _id,
       });
 
       this.setState({
-        durationFrom: moment(fromDate),
-        durationTo: moment(toDate),
+        durationFrom: fromDate === null ? null : moment(fromDate),
+        durationTo: toDate === null ? null : moment(toDate),
         selectedShortType: shortType,
         selectedTypeName: name,
         selectedType: type,
@@ -84,6 +94,7 @@ class RequestInformation extends Component {
 
       const personCC = cc.map((person) => (person ? person._id : null));
 
+      // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       // generate date lists and leave time
       const dateLists = this.getDateLists(fromDate, toDate);
       const resultDates = [];
@@ -100,13 +111,14 @@ class RequestInformation extends Component {
         if (!check) resultDates.push(null);
       });
       const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
+      // }
 
       // set values from server to fields
       this.formRef.current.setFieldsValue({
         timeOffType: typeId,
         subject,
-        durationFrom: moment(fromDate),
-        durationTo: moment(toDate),
+        durationFrom: fromDate === null ? null : moment(fromDate),
+        durationTo: toDate === null ? null : moment(toDate),
         description,
         personCC,
         leaveTimeLists,
@@ -260,12 +272,12 @@ class RequestInformation extends Component {
       };
 
       console.log('draft data', data);
-      // dispatch({
-      //   type: 'timeOff/updateLeaveRequestById',
-      //   payload: data,
-      // }).then((statusCode) => {
-      //   if (statusCode === 200) this.setShowSuccessModal(true);
-      // });
+      dispatch({
+        type: 'timeOff/saveDraftLeaveRequest',
+        payload: data,
+      }).then((statusCode) => {
+        if (statusCode === 200) this.setShowSuccessModal(true);
+      });
     }
   };
 
@@ -305,7 +317,7 @@ class RequestInformation extends Component {
         // generate data for API
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        let data = {
+        const data = {
           type: timeOffType,
           status: 'IN-PROGRESS',
           employee: employeeId,
@@ -324,8 +336,7 @@ class RequestInformation extends Component {
           dispatch({
             type: 'timeOff/addLeaveRequest',
             payload: data,
-          }).then((res) => {
-            const { statusCode } = res;
+          }).then((statusCode) => {
             if (statusCode === 200) this.setShowSuccessModal(true);
           });
         } else if (action === 'edit-leave-request') {
@@ -650,6 +661,7 @@ class RequestInformation extends Component {
       selectedTypeName,
       selectedType,
       buttonState,
+      isEditingDrafts,
     } = this.state;
 
     const {
@@ -933,7 +945,8 @@ class RequestInformation extends Component {
                 <span style={{ color: 'black !important' }}>Cancel</span>
               </Button>
             )}
-            {action === 'new-leave-request' && (
+            {(action === 'new-leave-request' ||
+              (action === 'edit-leave-request' && isEditingDrafts)) && (
               <Button
                 type="link"
                 form="myForm"
@@ -964,17 +977,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content={
-            action === 'edit-leave-request' ? (
-              `Edits to ticket id: 160012 submitted to HR and manager`
-            ) : (
-              <>
-                {buttonState === 1
-                  ? `Draft saved`
-                  : `${selectedTypeName} request submitted to the HR and your manager.`}
-              </>
-            )
-          }
+          content={() => this.renderModalContent()}
           submitText="OK"
         />
       </div>
