@@ -82,8 +82,9 @@ const timeOff = {
       }
     },
     *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getHolidaysList, { year, month });
+        response = yield call(getHolidaysList, { year, month });
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -93,6 +94,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *addLeaveRequest({ payload = {} }, { call, put }) {
       try {

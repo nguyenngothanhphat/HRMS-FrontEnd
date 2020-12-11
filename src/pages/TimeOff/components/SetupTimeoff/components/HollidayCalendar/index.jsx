@@ -1,210 +1,107 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin } from 'antd';
 // import { array } from 'prop-types';
+import { connect } from 'umi';
+
 // import { listMonths } from './ListData';
 // import CalanderTable from '../CalanderTable';
+import moment from 'moment';
 import s from './index.less';
 
 const { Option } = Select;
-const data = [
-  {
-    mounth: 'Jan ,2020',
-    text: 'Jan',
-    ref: React.createRef(),
-    children: [
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-    ],
-  },
-  {
-    mounth: 'Feb ,2020',
-    text: 'Feb',
-    ref: React.createRef(),
-    children: [
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-    ],
-  },
-  {
-    mounth: 'Mar ,2020',
-    text: 'Mar',
-    ref: React.createRef(),
-    children: [
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-    ],
-  },
-  {
-    mounth: 'Apr ,2020',
-    text: 'Apr',
-    ref: React.createRef(),
-    children: [
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-      {
-        name: 'New Years Day',
-        day: 'Friday',
-        date: '1st Jan ',
-        type: 'Restricted Holiday',
-      },
-    ],
-  },
-];
+@connect(({ timeOff, loading }) => ({
+  timeOff,
+  loading: loading.effects['timeOff/fetchHolidaysList'],
+}))
 class HollidayCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       select: 'Jan',
+      data: [
+        {
+          text: 'Jan',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Feb',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Mar',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Apr',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'May',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Jun',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Jul',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Aug',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Sep',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Oct',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Nov',
+          ref: React.createRef(),
+          children: [],
+        },
+        {
+          text: 'Dec',
+          ref: React.createRef(),
+          children: [],
+        },
+      ],
     };
   }
 
-  // componentDidMount() {
-  //   window.addEventListener('scroll', this.listenToScroll);
-  // }
-
-  // componentWillUnmount() {
-  //   window.removeEventListener('scroll', this.listenToScroll);
-  // }
-
-  // listenToScroll = () => {
-  //   const position = window.pageYOffset;
-  //   console.log(position);
-  //   if (position < 400) {
-  //     this.setState({ select: 'Jan' });
-  //   } else if (position > 400 && position < 1000) {
-  //     this.setState({ select: 'Feb' });
-  //   } else if (position > 1000 && position < 1500) {
-  //     this.setState({ select: 'Feb' });
-  //   } else if (position > 1500 && position < 2000) {
-  //     this.setState({ select: 'Mar' });
-  //   } else if (position > 900 && position < 1200) {
-  //     this.setState({ select: 'Apr' });
-  //   }
-  // };
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchHolidaysList',
+      payload: { year: moment().format('YYYY'), month: '' },
+    }).then((response) => {
+      const { statusCode, data: holidaysList = [] } = response;
+      if (statusCode === 200) {
+        this.fomatDate(holidaysList);
+      }
+    });
+  };
 
   handleChange = (value) => {
+    const { data } = this.state;
     this.setState({ select: value });
     const refComponent = data.find((item) => item.text === value);
-    const { ref } = refComponent;
-    ref.current.scrollIntoView({ behavior: 'smooth' });
+    refComponent.ref.current.scrollIntoView(true);
+    window.scrollBy(0, -70);
   };
 
   renderItem = (item) => {
@@ -212,10 +109,12 @@ class HollidayCalendar extends Component {
     return (
       <div ref={item.ref}>
         <div key={item.text} className={s.formTable}>
-          <div className={s.title}>{item.mounth}</div>
+          <div className={s.title}>{item.month}</div>
           <div>
             {children.map((itemChildren) => {
-              const { date, name, day, type } = itemChildren;
+              const { date, name, type } = itemChildren;
+              const dateFormat = moment(date).format('MMM Do');
+              const day = moment(date).format('dddd');
               return (
                 <div>
                   <Row gutter={[30, 20]}>
@@ -223,7 +122,7 @@ class HollidayCalendar extends Component {
                       <Checkbox />
                     </Col>
                     <Col span={6}>{name}</Col>
-                    <Col span={4}>{date}</Col>
+                    <Col span={4}>{dateFormat}</Col>
                     <Col span={4}>{day}</Col>
                     <Col span={6}>{type}</Col>
                   </Row>
@@ -237,9 +136,26 @@ class HollidayCalendar extends Component {
     );
   };
 
+  fomatDate = (holidaysList = []) => {
+    const { data } = this.state;
+    let result = data;
+    holidaysList.forEach((item) => {
+      const monthItem = moment(item.date).format('MMM');
+      const fomatDataItem = moment(item.date).format('YYYY, MMM');
+      result = result.map((resultItem) => ({
+        ...resultItem,
+        month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
+        children:
+          resultItem.text === monthItem ? [...resultItem.children, item] : resultItem.children,
+      }));
+    });
+    result = result.filter((resultItem) => resultItem.children.length > 0);
+    this.setState({ data: result });
+  };
+
   render() {
-    const { select } = this.state;
-    console.log(select);
+    const { select, data } = this.state;
+    const { loading = false } = this.props;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -261,9 +177,9 @@ class HollidayCalendar extends Component {
                   <Button className={s.btnHoliday}>Add a holiday</Button>
                 </Col>
                 <Col>
-                  <Select style={{ width: 120 }} onChange={this.handleChange}>
+                  <Select style={{ width: 120 }} onChange={this.handleChange} value={select}>
                     {data.map((item) => (
-                      <Option key={item.mounth} value={item.text}>
+                      <Option key={item.month} value={item.text}>
                         {item.text}
                       </Option>
                     ))}
@@ -273,9 +189,13 @@ class HollidayCalendar extends Component {
             </div>
           </Col>
           <Row>
-            {data.map((render) => (
-              <Col span={20}>{this.renderItem(render)}</Col>
-            ))}
+            {loading ? (
+              <div className={s.center}>
+                <Spin />
+              </div>
+            ) : (
+              data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
+            )}
           </Row>
         </Row>
       </div>
