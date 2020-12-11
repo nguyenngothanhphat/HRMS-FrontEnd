@@ -26,6 +26,7 @@ import {
   handleRelievingTemplateDraft,
   updateRelieving,
   sendOffBoardingPackage,
+  removeOffBoardingPackage,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -425,12 +426,24 @@ const offboarding = {
     *sendOffBoardingPackage({ payload }, { call, put }) {
       try {
         const response = yield call(sendOffBoardingPackage, payload);
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
-        console.log(data);
         notification.success({
           message,
         });
+        const newRequest = yield call(getRequestById, { id: payload.ticketId });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        if (newRequestStat !== 200) throw newRequest;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *removeOffBoardingPackage({ payload }, { call }) {
+      try {
+        const response = yield call(removeOffBoardingPackage, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
         const newRequest = yield call(getRequestById, { id: payload.ticketId });
         const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
         if (newRequestStat !== 200) throw newRequest;

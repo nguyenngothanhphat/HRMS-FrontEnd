@@ -86,14 +86,23 @@ class MailExit extends Component {
   };
 
   handleRemoveTemplate = (template) => {
-    const { exitPackageTemplates } = this.state;
-    const findIndex = exitPackageTemplates.findIndex((temp) => temp._id === template._id);
-    if (findIndex > -1) {
-      exitPackageTemplates.splice(findIndex, 1);
-    }
-    this.setState({
-      exitPackageTemplates,
+    const { dispatch, ticketId } = this.props;
+    dispatch({
+      type: 'offboarding/removeOffBoardingPackage',
+      payload: {
+        offboardRequest: ticketId,
+        type: 'exitPackage',
+        templateRelieving: template.templateRelieving,
+      },
     });
+    // const { exitPackageTemplates } = this.state;
+    // const findIndex = exitPackageTemplates.findIndex((temp) => temp._id === template._id);
+    // if (findIndex > -1) {
+    //   exitPackageTemplates.splice(findIndex, 1);
+    // }
+    // this.setState({
+    //   exitPackageTemplates,
+    // });
   };
 
   handleCancelEdit = () => {

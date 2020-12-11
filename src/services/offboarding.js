@@ -174,3 +174,10 @@ export async function sendOffBoardingPackage(payload) {
     data: payload,
   });
 }
+
+export async function removeOffBoardingPackage(payload) {
+  return request('/api/offboardingrequest/remove-package', {
+    method: 'POST',
+    data: payload,
+  });
+}

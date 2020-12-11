@@ -17,7 +17,8 @@ import styles from './index.less';
   loading:
     loading.effects['offboarding/fetchRelievingDetailsById'] ||
     loading.effects['offboarding/saveOffBoardingPackage'] ||
-    loading.effects['offboarding/sendOffBoardingPackage'],
+    loading.effects['offboarding/sendOffBoardingPackage'] ||
+    loading.effects['offboarding/removeOffBoardingPackage'],
 }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
