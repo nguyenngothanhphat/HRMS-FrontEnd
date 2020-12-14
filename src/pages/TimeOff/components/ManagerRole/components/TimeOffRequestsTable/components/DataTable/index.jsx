@@ -107,7 +107,7 @@ class DataTable extends PureComponent {
         }
         return (
           <div className={styles.rowAction}>
-            <img src={OpenIcon} onClick={this.onOpenClick} alt="open" />
+            <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
             <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
             <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
           </div>
@@ -126,8 +126,11 @@ class DataTable extends PureComponent {
   }
 
   // HANDLE TEAM REQUESTS
-  onOpenClick = () => {
-    alert('Open');
+  onOpenClick = (_id) => {
+    history.push({
+      pathname: `/time-off/manager-view-request/${_id}`,
+      // state: { location: name },
+    });
   };
 
   onApproveClick = () => {
@@ -141,7 +144,7 @@ class DataTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      // pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/view-request/${_id}`,
       // state: { location: name },
     });
   };

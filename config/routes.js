@@ -228,6 +228,13 @@ const routes = [
             // authority: ['employee'],
           },
           {
+            path: '/time-off/manager-view-request/:reId',
+            name: 'View timeoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/ManagerRole/components/ManagerViewRequestForm',
+            // authority: ['employee'],
+          },
+          {
             path: '/time-off/view-compoff-request/:reId',
             name: 'View compoff request',
             hideInMenu: true,

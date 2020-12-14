@@ -150,7 +150,6 @@ class RequestInformation extends Component {
                       <span
                         style={{
                           fontWeight: 'bold',
-                          fontSize: '12px',
                         }}
                         className={styles.fieldValue}
                       >
