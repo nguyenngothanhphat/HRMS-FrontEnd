@@ -154,10 +154,6 @@ class EmailReminderForm extends PureComponent {
       return item;
     });
 
-    console.log('key: ', key);
-    console.log('toBeVerb: ', tobeVerb);
-    console.log('value: ', value);
-
     const {
       triggerEvent,
       frequency,
@@ -169,8 +165,6 @@ class EmailReminderForm extends PureComponent {
     } = this.state;
 
     if (
-      appliesToData.trim() === 'any' &&
-      receipient.trim() !== '' &&
       triggerEvent.trim() !== '' &&
       frequency.trim() !== '' &&
       _sendingDate.trim() !== '' &&
@@ -179,23 +173,21 @@ class EmailReminderForm extends PureComponent {
       message.trim() !== '<p></p>' &&
       message.trim() !== '<p><br></p>'
     ) {
-      this.setState({ disabled: false });
-    } else if (
-      appliesToData.trim() === 'condition' &&
-      value.length !== 0 &&
-      key.trim() !== '' &&
-      tobeVerb.trim() !== '' &&
-      triggerEvent.trim() !== '' &&
-      frequency.trim() !== '' &&
-      _sendingDate.trim() !== '' &&
-      emailSubject.trim() !== '' &&
-      message.trim() !== '' &&
-      message.trim() !== '<p></p>' &&
-      message.trim() !== '<p><br></p>'
-    ) {
-      this.setState({ disabled: false });
-      if (value[1] !== '') {
+      if (appliesToData.trim() === 'any' && receipient.trim() !== '') {
         this.setState({ disabled: false });
+      } else if (
+        appliesToData.trim() === 'condition' &&
+        key.trim() !== '' &&
+        tobeVerb.trim() !== '' &&
+        value.length !== 0
+      ) {
+        this.setState({ disabled: false });
+
+        if (value[1] !== '') {
+          this.setState({ disabled: false });
+        } else {
+          this.setState({ disabled: true });
+        }
       } else {
         this.setState({ disabled: true });
       }
