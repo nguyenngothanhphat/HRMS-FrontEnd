@@ -38,14 +38,20 @@ class FeedbackForm extends Component {
         visible={visible}
         style={{ top: '50px' }}
         title={this.renderHeaderModal()}
-        // onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         destroyOnClose
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
             Cancel
           </div>,
-          <Button key="submit" type="primary" loading={loading} className={styles.btnSubmit}>
+          <Button
+            key="submit"
+            htmlType="submit"
+            type="primary"
+            loading={loading}
+            className={styles.btnSubmit}
+            form="feedbackForm"
+          >
             Submit
           </Button>,
         ]}

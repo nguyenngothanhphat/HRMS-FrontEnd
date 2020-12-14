@@ -60,9 +60,18 @@ class ConductExit extends Component {
 
   renderFeedbackForm = () => {
     const { isOpenFeedbackForm } = this.state;
+    const {
+      relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
+    } = this.props;
+    let itemFeedBack = {};
+    if (waitList.length > 0) {
+      [itemFeedBack] = waitList;
+    }
     return (
       <FeedbackForm
-        content={<FeedbackFormContent />}
+        content={
+          <FeedbackFormContent itemFeedBack={itemFeedBack} handleCancelEdit={this.handleCancel} />
+        }
         visible={isOpenFeedbackForm}
         handleCancelEdit={this.handleCancel}
       />
