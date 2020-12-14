@@ -139,6 +139,7 @@ class RequestInformation extends Component {
       remainingDayOfSelectedType: value,
     });
   };
+
   // GET TIME OFF TYPE BY ID
   onSelectTimeOffTypeChange = (id) => {
     const { durationFrom } = this.state;
@@ -215,13 +216,10 @@ class RequestInformation extends Component {
       });
     } else {
       result = dateLists.map((value, index) => {
-        if (leaveTimeLists[index] !== 'WORK') {
-          return {
-            date: value,
-            timeOfDay: leaveTimeLists[index],
-          };
-        }
-        return {};
+        return {
+          date: value,
+          timeOfDay: leaveTimeLists[index],
+        };
       });
     }
     result = result.filter(
@@ -232,16 +230,6 @@ class RequestInformation extends Component {
     );
 
     return result;
-  };
-
-  checkLeaveDatesValid = (list) => {
-    let countWork = 0;
-    list.forEach((value) => {
-      const { timeOfDay = '' } = value;
-      if (timeOfDay === 'WORK') countWork += 1;
-    });
-    if (countWork === list.length) return false;
-    return true;
   };
 
   // ON SAVE DRAFT
@@ -330,9 +318,7 @@ class RequestInformation extends Component {
 
     // ON SUBMIT
     if (buttonState === 2) {
-      if (!this.checkLeaveDatesValid(leaveDates)) {
-        message.error('Please select valid leave time!');
-      } else if (leaveDates.length === 0) {
+      if (leaveDates.length === 0) {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
