@@ -138,11 +138,11 @@ class AssignPolicy extends Component {
               </Col>
             </Row>
           </Form>
-          <ModalNotice
+          {/* <ModalNotice
             modalContent="Syncing all data and setting up your Timeoff app."
             visible={visible}
             handleCancel={this.handleCandelSchedule}
-          />
+          /> */}
         </div>
       </Row>
     );

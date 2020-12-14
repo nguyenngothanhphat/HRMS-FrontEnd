@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin } from 'antd';
-// import { array } from 'prop-types';
 import { connect } from 'umi';
-
-// import { listMonths } from './ListData';
-// import CalanderTable from '../CalanderTable';
 import moment from 'moment';
 import s from './index.less';
 
@@ -188,11 +184,11 @@ class HollidayCalendar extends Component {
               </Row>
             </div>
           </Col>
-          <Row>
+          <Row style={{ width: '100%' }}>
             {loading ? (
-              <div className={s.center}>
+              <Col span={24} className={s.center}>
                 <Spin />
-              </div>
+              </Col>
             ) : (
               data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
             )}
