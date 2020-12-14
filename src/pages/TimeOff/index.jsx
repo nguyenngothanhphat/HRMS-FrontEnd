@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import EmployeeRole from './components/EmployeeRole';
-import SetupTimeoff from './components/SetupTimeoff';
 import { history } from 'umi';
+import EmployeeRole from './components/EmployeeRole';
+import ManagerRole from './components/ManagerRole';
+import SetupTimeoff from './components/SetupTimeoff';
 
 import styles from './index.less';
 
@@ -39,11 +40,14 @@ export default class TimeOff extends PureComponent {
     return (
       <div className={styles.TimeOff}>
         <PageContainer>
-          <Tabs defaultActiveKey="langdingPage" tabBarExtraContent={this.options()}>
-            <TabPane tab="Timeoff" key="langdingPage">
+          <Tabs defaultActiveKey="2" tabBarExtraContent={this.options()}>
+            <TabPane tab="Timeoff" key="1">
               <EmployeeRole />
             </TabPane>
-            <TabPane tab="Setup Timeoff policy" key="setupTimeOff">
+            <TabPane tab="Manager Timeoff" key="2">
+              <ManagerRole />
+            </TabPane>
+            <TabPane tab="Setup Timeoff policy" key="3">
               <SetupTimeoff />
             </TabPane>
           </Tabs>
