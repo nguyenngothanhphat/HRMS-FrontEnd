@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Row, Col, Spin, Progress, Input } from 'antd';
+import TimeOffModal from '@/components/TimeOffModal';
 import { connect, history } from 'umi';
 import moment from 'moment';
 
@@ -69,7 +70,8 @@ class RequestInformation extends Component {
 
   // APPROVE CLICKED
   onApproveClicked = () => {
-    alert('APPROVED');
+    console.log('APPROVED');
+    this.setShowModal(true);
   };
 
   // ON COMMENT CHANGE
@@ -89,7 +91,8 @@ class RequestInformation extends Component {
 
   // ON REJECT SUBMIT
   onRejectSubmit = () => {
-    alert('REJECTED');
+    console.log('REJECTED');
+    this.setShowModal(true);
   };
 
   // ON PROCEED withDraw
@@ -285,6 +288,17 @@ class RequestInformation extends Component {
             </div>
           </div>
         )}
+
+        <TimeOffModal
+          visible={showModal}
+          onClose={this.setShowModal}
+          content={
+            isReject
+              ? 'Timeoff request has been rejected from your end. All in loop will be notified.'
+              : 'Timeoff request has been approved from your end. All in loop will be notified.'
+          }
+          submitText="OK"
+        />
       </div>
     );
   }

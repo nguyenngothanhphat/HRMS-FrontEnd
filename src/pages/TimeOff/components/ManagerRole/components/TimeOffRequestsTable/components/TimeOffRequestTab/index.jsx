@@ -78,7 +78,11 @@ export default class TimeOffRequestTab extends PureComponent {
 
     return (
       <div className={styles.TimeOffRequestTab}>
-        <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
+        <FilterBar
+          dataNumber={dataNumber}
+          setSelectedFilterTab={this.setSelectedFilterTab}
+          category={category}
+        />
         <div className={styles.tableContainer}>
           {data.length === 0 ? (
             <div className={styles.emptyTable}>

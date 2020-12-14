@@ -23,6 +23,7 @@ export default class FilterBar extends PureComponent {
         rejectedNumber = '',
         draftNumber = '',
       } = {},
+      category = '',
     } = this.props;
 
     return (
@@ -51,10 +52,12 @@ export default class FilterBar extends PureComponent {
             } `}
             key="3"
           />
-          <TabPane
-            tab={`Drafts ${draftNumber !== 0 ? `(${this.addZeroToNumber(draftNumber)})` : ''} `}
-            key="4"
-          />
+          {category === 'MY' && (
+            <TabPane
+              tab={`Drafts ${draftNumber !== 0 ? `(${this.addZeroToNumber(draftNumber)})` : ''} `}
+              key="4"
+            />
+          )}
         </Tabs>
       </div>
     );
