@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import EditComment from '@/components/EditComment';
+import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
@@ -148,7 +149,7 @@ class HRDetailTicket extends Component {
     const {
       reasonForLeaving = '',
       requestDate = '',
-      // lastWorkingDate,
+      status = '',
       employee: {
         employeeId,
         generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
@@ -174,6 +175,7 @@ class HRDetailTicket extends Component {
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameFrist} [{employeeId}]
                 </p>
+                <StatusRequest status={status} />
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
@@ -210,7 +212,7 @@ class HRDetailTicket extends Component {
                     </Fragment>
                   );
                 })}
-                <LastWorkingDate />
+                {status !== 'REJECTED' && <LastWorkingDate />}
               </Col>
               <Col span={7}>
                 <InfoEmployee />

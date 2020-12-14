@@ -61,7 +61,7 @@ const candidateInfo = {
         filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
-      employeeType: '5f50c2541513a742582206f9',
+      employeeType: {},
       previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
@@ -505,6 +505,10 @@ const candidateInfo = {
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
+        });
+        yield put({
+          type: 'updateEmployeeType',
+          payload: employeeTypeList[0],
         });
       } catch (errors) {
         dialog(errors);
@@ -1267,6 +1271,22 @@ const candidateInfo = {
           additionalQuestions: action.payload,
         },
       };
+    },
+
+    updateEmployeeType(state, action) {
+      const { tempData = {} } = state;
+      const { employeeType = '' } = tempData;
+
+      if (Object.keys(employeeType).length === 0) {
+        return {
+          ...state,
+          tempData: {
+            ...tempData,
+            employeeType: action.payload,
+          },
+        };
+      }
+      return state;
     },
   },
 };
