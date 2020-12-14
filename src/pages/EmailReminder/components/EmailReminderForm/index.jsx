@@ -269,13 +269,9 @@ class EmailReminderForm extends PureComponent {
 
     newArr[lastIndex] = value;
 
-    console.log('newArr[lastIndex] = value : ', newArr);
-    console.log('index : ', index);
-
-    // if (lastIndex === 2) {
-    //   newConditionsData[index].isChecked = false;
-    // }
-    console.log('newConditionsData : ', newConditionsData);
+    if (lastIndex === 2) {
+      newConditionsData[index].isChecked = false;
+    }
 
     this.setState({
       conditionsData: newConditionsData,
@@ -379,8 +375,6 @@ class EmailReminderForm extends PureComponent {
     }
 
     newConditionsData[index][name] = value;
-
-    // console.log('newConditionsData: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
