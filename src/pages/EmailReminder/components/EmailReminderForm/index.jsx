@@ -357,13 +357,9 @@ class EmailReminderForm extends PureComponent {
     const newIndex = newConditionsData.findIndex((item) => item.id === index);
 
     if (name === 'tobeVerb' && isLocation === true) {
-      if (value === 'is in') {
-        checked = true;
-        newObj.isChecked = checked;
-        newConditionsData[newIndex] = newObj;
-      } else {
-        newConditionsData[newIndex] = newObj;
-      }
+      checked = true;
+      newObj.isChecked = checked;
+      newConditionsData[newIndex] = newObj;
     }
 
     if (name === 'value') {
@@ -371,6 +367,8 @@ class EmailReminderForm extends PureComponent {
     }
 
     newConditionsData[index][name] = value;
+
+    console.log('newConditionsData: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -420,7 +418,7 @@ class EmailReminderForm extends PureComponent {
       key: originalKey,
       tobeVerb: originalToBeVerb,
       value: arr,
-      isChecked: false,
+      isChecked: true,
     };
 
     const condition = {
@@ -582,6 +580,21 @@ class EmailReminderForm extends PureComponent {
                     />
                   </Col>
                 </Row>
+                {data.value.length === 2 ? (
+                  <Row gutter={[24, 12]} align="middle">
+                    <Col span={13} />
+                    <Col span={10}>{renderSelectOption(index)}</Col>
+                    <Col span={1}>
+                      {data.value.length === 2 && data.isChecked ? (
+                        <img
+                          onClick={() => this.onRemoveConditionDepartment(index)}
+                          src={removeIcon}
+                          alt="remove"
+                        />
+                      ) : null}
+                    </Col>
+                  </Row>
+                ) : null}
                 <Row gutter={[24, 12]} align="middle">
                   <Col span={13} />
                   {data.isChecked ? (
@@ -595,19 +608,6 @@ class EmailReminderForm extends PureComponent {
                     </Col>
                   ) : null}
                   <Col span={1} />
-                </Row>
-                <Row gutter={[24, 12]} align="middle">
-                  <Col span={13} />
-                  <Col span={10}>{data.value.length === 2 ? renderSelectOption(index) : null}</Col>
-                  <Col span={1}>
-                    {data.value.length === 2 && data.isChecked ? (
-                      <img
-                        onClick={() => this.onRemoveConditionDepartment(index)}
-                        src={removeIcon}
-                        alt="remove"
-                      />
-                    ) : null}
-                  </Col>
                 </Row>
               </div>
             );
