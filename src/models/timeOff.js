@@ -212,7 +212,7 @@ const timeOff = {
           payload: { compoffRequests },
         });
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
       }
     },
     *fetchCompoffRequestById({ id: _id = '' }, { call, put }) {
