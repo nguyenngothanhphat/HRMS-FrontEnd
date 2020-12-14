@@ -27,6 +27,7 @@ class DataTable extends PureComponent {
       render: (type) => <span>{type ? type.shortType : ''}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
+
     // {
     //   title: 'Leave date',
     //   width: '20%',
@@ -177,31 +178,14 @@ class DataTable extends PureComponent {
 
   render() {
     const { data = [], loadingFetchLeaveRequests } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
+    const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
     const parsedData = this.processData(data);
-    // const scroll = {
-    //   x: '',
-    //   y: 'max-content',
-    // };
-
-    // const pagination = {
-    //   position: ['bottomRight'],
-    //   total: data.length,
-    //   showTotal: (total, range) => (
-    //     <span>
-    //       Showing{' '}
-    //       <b>
-    //         {range[0]} - {range[1]}
-    //       </b>{' '}
-    //       total
-    //     </span>
-    //   ),
-    //   pageSize: rowSize,
-    //   current: pageSelected,
-    //   onChange: this.onChangePagination,
-    // };
+    const scroll = {
+      x: '40vw',
+      y: 'max-content',
+    };
 
     const rowSelection = {
       type: 'checkbox',
@@ -214,10 +198,10 @@ class DataTable extends PureComponent {
           size="middle"
           loading={loadingFetchLeaveRequests}
           rowSelection={rowSelection}
-          // pagination={{ ...pagination, total: data.length }}
+          pagination={false}
           columns={this.columns}
           dataSource={parsedData}
-          // scroll={scroll}
+          scroll={scroll}
           rowKey="_id"
         />
       </div>

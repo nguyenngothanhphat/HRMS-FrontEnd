@@ -52,9 +52,10 @@ class RightContent extends Component {
             <span className={styles.title}>Note</span>
           </div>
           <span className={styles.description}>
-            Timeoff requests requires approvals.
+            Compoff requests requires approvals.
             <br />
-            It takes anywhere around 2-4 standard working days for the entire process to complete.
+            Once the compoff request is approved, a compoff balance will be shown with you leave
+            balance. You can apply for compoff leave then.
           </span>
         </div>
         <div className={styles.content}>
