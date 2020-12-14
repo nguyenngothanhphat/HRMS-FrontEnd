@@ -54,7 +54,7 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       isLocation: false,
-      checkOption: '',
+      checkOption: [],
       appliesToData: '',
       message: '',
       frequencyItem: [
@@ -467,11 +467,17 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
-  checkOptionKey = (unitValue, value) => {
-    if (unitValue === value) {
-      return true;
-    }
-    return false;
+  checkOptionKey = (unitValue) => {
+    const { checkOption } = this.state;
+    let check = false;
+
+    checkOption.forEach((option) => {
+      if (option === unitValue) {
+        check = true;
+      }
+    });
+
+    return check;
   };
 
   onAddCondition = () => {
@@ -485,12 +491,11 @@ class EmailReminderForm extends PureComponent {
       checkData.splice(0, -1);
     }
 
-    console.log('checkData ADD:', checkData);
     checkData.forEach((item) => {
       arrKey.push(item.key);
-      this.setState({ checkOption: item.key });
     });
-    console.log('arrKey :', arrKey);
+
+    this.setState({ checkOption: arrKey });
 
     const newCondition = {
       id: conditionsData.length,
@@ -545,7 +550,6 @@ class EmailReminderForm extends PureComponent {
     const { Option } = Select;
     const {
       conditionsData,
-      checkOption,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
 
@@ -598,10 +602,7 @@ class EmailReminderForm extends PureComponent {
                     >
                       {units.map((unit) => {
                         return (
-                          <Option
-                            value={unit.value}
-                            disabled={this.checkOptionKey(unit.value, checkOption)}
-                          >
+                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)}>
                             {unit.name}
                           </Option>
                         );
