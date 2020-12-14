@@ -27,12 +27,12 @@ class OnboardingOverview extends Component {
       loading = true,
     } = this.props;
     const checkEmpty = !loading && listMenu.map((item) => item.quantity).reduce((a, b) => a + b, 0);
-    if (!checkEmpty)
-      return (
-        <div className={styles.loading}>
-          <Spin size="large" />
-        </div>
-      );
+    // if (!checkEmpty)
+    //   return (
+    //     <div className={styles.loading}>
+    //       <Spin size="large" />
+    //     </div>
+    //   );
     return checkEmpty === 0 ? <OnboardingEmpty /> : <OnboardingLayout listMenu={listMenu} />;
   }
 }
