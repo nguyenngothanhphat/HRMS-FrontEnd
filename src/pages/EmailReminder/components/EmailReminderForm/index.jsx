@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
 /* eslint-disable react/sort-comp */
@@ -394,6 +395,11 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData.splice(index, 1);
     newConditions.splice(index, 1);
+
+    newConditionsData.forEach((item, itemIndex) => {
+      item.id = itemIndex;
+    });
+    console.log('newConditionsData after splice: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
