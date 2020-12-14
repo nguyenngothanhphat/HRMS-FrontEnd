@@ -18,7 +18,7 @@ class DataTable extends PureComponent {
       align: 'left',
       fixed: 'left',
       render: (_id) => (
-        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+        <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
           ID
         </span>
       ),
@@ -131,6 +131,15 @@ class DataTable extends PureComponent {
       pathname: `/time-off/manager-view-request/${_id}`,
       // state: { location: name },
     });
+  };
+
+  onIdClick = (_id) => {
+    const { category = '' } = this.props;
+    if (category === 'MY') {
+      this.viewRequest(_id);
+    } else if (category === 'TEAM') {
+      this.onOpenClick(_id);
+    }
   };
 
   onApproveClick = () => {

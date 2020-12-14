@@ -15,6 +15,8 @@ import {
   updateLeaveRequestById,
   saveDraftLeaveRequest,
   updateDraftLeaveRequest,
+  getTeamCompoffRequests,
+  getTeamLeaveRequests,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -31,6 +33,8 @@ const timeOff = {
     projectsList: [],
     viewingLeaveRequest: {},
     savedDraftLR: {},
+    teamCompoffRequests: {},
+    teamLeaveRequests: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -261,6 +265,37 @@ const timeOff = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+
+    // MANAGER
+    *fetchTeamCompoffRequests(_, { call, put }) {
+      try {
+        const response = yield call(getTeamCompoffRequests, {});
+        const { statusCode, data: teamCompoffRequests = {} } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { teamCompoffRequests },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+
+    *fetchTeamLeaveRequests(_, { call, put }) {
+      try {
+        const response = yield call(getTeamLeaveRequests, {});
+        const { statusCode, data: teamLeaveRequests = {} } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { teamLeaveRequests },
+        });
+      } catch (errors) {
+        // dialog(errors);
       }
     },
   },

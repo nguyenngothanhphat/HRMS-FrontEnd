@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function getLeaveBalanceOfUser(payload) {
+export function getLeaveBalanceOfUser(payload) {
   return request('/api/leavebalance/get-by-user', {
     method: 'POST',
     data: payload,
@@ -100,6 +100,21 @@ export async function getProjectsListByCompany(payload) {
 
 export async function getHolidaysList(payload) {
   return request('/api/holidaycalendar/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+// MANAGER
+export async function getTeamCompoffRequests(payload) {
+  return request('/api/compoffrequest/get-team-request', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getTeamLeaveRequests(payload) {
+  return request('/api/leaverequest/get-team-request', {
     method: 'POST',
     data: payload,
   });

@@ -7,7 +7,13 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 @connect(({ timeOff, loading, user }) => ({
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading:
+    loading.effects[
+      'timeOff/fetchLeaveRequestOfEmployee' ||
+        'timeOff/fetchMyCompoffRequests' ||
+        'timeOff/fetchTeamLeaveRequests' ||
+        'timeOff/fetchTeamCompoffRequests'
+    ],
   timeOff,
   user,
 }))
@@ -30,6 +36,14 @@ class TimeOffRequestsTable extends PureComponent {
 
     dispatch({
       type: 'timeOff/fetchMyCompoffRequests',
+    });
+
+    dispatch({
+      type: 'timeOff/fetchTeamLeaveRequests',
+    });
+
+    dispatch({
+      type: 'timeOff/fetchTeamCompoffRequests',
     });
   };
 
@@ -134,7 +148,7 @@ class TimeOffRequestsTable extends PureComponent {
   render() {
     const {
       timeOff: { leaveRequests = [], compoffRequests: { items = [] } = {} } = {},
-      loadingFetchLeaveRequests,
+      loading,
     } = this.props;
 
     // console.log('compoffRequests', items);
@@ -162,14 +176,14 @@ class TimeOffRequestsTable extends PureComponent {
         >
           <>
             <TabPane tab="Leave Request" key="1">
-              {!loadingFetchLeaveRequests ? (
+              {!loading ? (
                 <MineOrTeamTabs data1={leaveRequestsData1} data2={leaveRequestsData2} type={1} />
               ) : (
                 this.renderLoading()
               )}
             </TabPane>
             <TabPane tab="Special Leave Request" key="2">
-              {!loadingFetchLeaveRequests ? (
+              {!loading ? (
                 <MineOrTeamTabs
                   data1={specialRequestsData1}
                   data2={specialRequestsData2}
@@ -180,21 +194,21 @@ class TimeOffRequestsTable extends PureComponent {
               )}
             </TabPane>
             <TabPane tab="LWP Request" key="3">
-              {!loadingFetchLeaveRequests ? (
+              {!loading ? (
                 <MineOrTeamTabs data1={lwpRequestsData1} data2={lwpRequestsData2} type={1} />
               ) : (
                 this.renderLoading()
               )}
             </TabPane>
             <TabPane tab="WFH/CP Requests" key="4">
-              {!loadingFetchLeaveRequests ? (
+              {!loading ? (
                 <MineOrTeamTabs data1={wfhRequestsData1} data2={wfhRequestsData2} type={1} />
               ) : (
                 this.renderLoading()
               )}
             </TabPane>
             <TabPane tab="Compoff Request" key="5">
-              {!loadingFetchLeaveRequests ? (
+              {!loading ? (
                 <MineOrTeamTabs
                   data1={compoffRequestsData1}
                   data2={compoffRequestsData2}
