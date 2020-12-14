@@ -23,16 +23,18 @@ class MailExit extends Component {
       template: {},
       isOpenModalEdit: false,
       exitPackageTemplates: [],
+      customDocuments: [],
       mode: '',
     };
   }
 
   componentDidMount() {
     const {
-      exitPackage: { waitList = [], isSent },
+      exitPackage: { waitList = [], isSent, packages = [] },
     } = this.props;
     this.setState({
       exitPackageTemplates: waitList,
+      customDocuments: packages,
       isSent,
     });
   }
@@ -56,15 +58,15 @@ class MailExit extends Component {
     );
   };
 
-  renderSpanColumn = (name) => {
-    if (name === 'NOC form') {
-      return 7;
-    }
-    if (name === 'Off boarding checklist') {
-      return 9;
-    }
-    return 8;
-  };
+  // renderSpanColumn = (name) => {
+  //   if (name === 'NOC form') {
+  //     return 9;
+  //   }
+  //   if (name === 'Off boarding checklist') {
+  //     return 11;
+  //   }
+  //   return 12;
+  // };
 
   sendMailPackage = () => {
     const { dispatch, ticketId } = this.props;
@@ -85,24 +87,32 @@ class MailExit extends Component {
     });
   };
 
-  handleRemoveTemplate = (template) => {
+  handleRemoveTemplate = (item, type) => {
     const { dispatch, ticketId } = this.props;
-    dispatch({
-      type: 'offboarding/removeOffBoardingPackage',
-      payload: {
-        offboardRequest: ticketId,
-        type: 'exitPackage',
-        templateRelieving: template.templateRelieving,
-      },
-    });
-    // const { exitPackageTemplates } = this.state;
-    // const findIndex = exitPackageTemplates.findIndex((temp) => temp._id === template._id);
-    // if (findIndex > -1) {
-    //   exitPackageTemplates.splice(findIndex, 1);
-    // }
-    // this.setState({
-    //   exitPackageTemplates,
-    // });
+    switch (type) {
+      case 'template':
+        dispatch({
+          type: 'offboarding/removeOffBoardingPackage',
+          payload: {
+            offboardRequest: ticketId,
+            type: 'exitPackage',
+            templateRelieving: item.templateRelieving,
+          },
+        });
+        break;
+      case 'doc':
+        dispatch({
+          type: 'offboarding/removeOffBoardingPackage',
+          payload: {
+            offboardRequest: ticketId,
+            type: 'exitPackage',
+            packageId: item._id,
+          },
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   handleCancelEdit = () => {
@@ -145,7 +155,7 @@ class MailExit extends Component {
   };
 
   render() {
-    const { isSent = false, exitPackageTemplates } = this.state;
+    const { isSent = false, exitPackageTemplates, customDocuments } = this.state;
     return (
       <div className={styles.mailExit}>
         <Card
@@ -157,7 +167,7 @@ class MailExit extends Component {
             {exitPackageTemplates?.map((template, index) => {
               const { packageName } = template;
               return (
-                <Col span={this.renderSpanColumn(packageName)} key={`${index + 1}`}>
+                <Col key={`${index + 1}`}>
                   <div className={styles.template}>
                     <div
                       className={styles.template__content}
@@ -187,7 +197,7 @@ class MailExit extends Component {
                         />
                         <Popconfirm
                           title="Are you sure?"
-                          onConfirm={() => this.handleRemoveTemplate(template)}
+                          onConfirm={() => this.handleRemoveTemplate(template, 'template')}
                           // onCancel={cancel}
                           okText="Yes"
                           cancelText="No"
@@ -199,6 +209,52 @@ class MailExit extends Component {
                   </div>
                 </Col>
               );
+            })}
+            {customDocuments?.map((doc, index) => {
+              if (typeof doc === 'object') {
+                const {
+                  key,
+                  attachment: { url = '' },
+                } = doc;
+                return (
+                  <Col key={`${index + 1}`}>
+                    <div className={styles.template}>
+                      <div
+                        className={styles.template__content}
+                        onClick={() => window.open(url, '_blank')}
+                      >
+                        <img src={templateIcon} alt="template-icon" />
+                        <span
+                          style={{
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            width: '130px',
+                          }}
+                        >
+                          {key}
+                        </span>
+                      </div>
+                      {isSent ? (
+                        <img src={checkTemplateIcon} alt="check-icon" />
+                      ) : (
+                        <div className={styles.template__action}>
+                          <Popconfirm
+                            title="Are you sure?"
+                            onConfirm={() => this.handleRemoveTemplate(doc, 'doc')}
+                            // onCancel={cancel}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <img src={removeIcon} alt="remove-icon" />
+                          </Popconfirm>
+                        </div>
+                      )}
+                    </div>
+                  </Col>
+                );
+              }
+              return null;
             })}
           </Row>
         </Card>

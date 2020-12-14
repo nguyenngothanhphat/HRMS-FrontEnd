@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Button } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 // import editIcon from '@/assets/edit-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
@@ -21,32 +21,42 @@ const closePackage = [
     },
   },
 ];
+
+@connect(({ offboarding: { relievingDetails: { closingPackage = {}, _id = '' } } }) => ({
+  closingPackage,
+  ticketId: _id,
+}))
 class ClosingPackage extends PureComponent {
   constructor(props) {
     super(props);
+    const {
+      closingPackage: { waitList = [] },
+    } = this.props;
     this.state = {
-      isSend: false,
+      isSent: false,
+      closingPackage: waitList,
     };
   }
 
   handleSendMail = () => {
     this.setState({
-      isSend: true,
+      isSent: true,
     });
   };
 
   renderBeforeSendMail = () => {
+    const { closingPackage } = this.state;
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closePackage.map((template, index) => {
-            const { attachment } = template;
+          {closingPackage.map((template, index) => {
+            const { packageName } = template;
             return (
               <Col span={10} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
                     <img src={templateIcon} alt="template-icon" />
-                    <span>{attachment.name}</span>
+                    <span>{packageName}</span>
                   </div>
                   <div className={styles.template__action}>
                     {/* <img className={styles.edit__icon} src={editIcon} alt="edit-icon" /> */}
@@ -115,13 +125,13 @@ class ClosingPackage extends PureComponent {
   };
 
   render() {
-    const { isSend } = this.state;
+    const { isSent } = this.state;
     return (
       <div className={styles.closingPackage}>
         <p className={styles.closingPackage__title}>
           {formatMessage({ id: 'pages.relieving.closePackage' })}
         </p>
-        {isSend ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
+        {isSent ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
       </div>
     );
   }
