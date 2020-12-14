@@ -54,6 +54,7 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       isLocation: false,
+      checkOption: '',
       appliesToData: '',
       message: '',
       frequencyItem: [
@@ -268,6 +269,7 @@ class EmailReminderForm extends PureComponent {
     newArr[lastIndex] = value;
 
     console.log('newArr[lastIndex] = value : ', newArr);
+    console.log('index : ', index);
 
     // if (lastIndex === 2) {
     //   newConditionsData[index].isChecked = false;
@@ -465,10 +467,30 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
+  checkOptionKey = (unitValue, value) => {
+    if (unitValue === value) {
+      return true;
+    }
+    return false;
+  };
+
   onAddCondition = () => {
     const { conditionsData, conditions } = this.state;
     const newConditionsData = [...conditionsData];
+    const checkData = [...conditionsData];
     const newConditions = [...conditions];
+    const arrKey = [];
+
+    if (checkData.length > 1) {
+      checkData.splice(0, -1);
+    }
+
+    console.log('checkData ADD:', checkData);
+    checkData.forEach((item) => {
+      arrKey.push(item.key);
+      this.setState({ checkOption: item.key });
+    });
+    console.log('arrKey :', arrKey);
 
     const newCondition = {
       id: conditionsData.length,
@@ -523,6 +545,7 @@ class EmailReminderForm extends PureComponent {
     const { Option } = Select;
     const {
       conditionsData,
+      checkOption,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
 
@@ -574,7 +597,14 @@ class EmailReminderForm extends PureComponent {
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
                       {units.map((unit) => {
-                        return <Option value={unit.value}>{unit.name}</Option>;
+                        return (
+                          <Option
+                            value={unit.value}
+                            disabled={this.checkOptionKey(unit.value, checkOption)}
+                          >
+                            {unit.name}
+                          </Option>
+                        );
                       })}
                     </Select>
                   </Col>
