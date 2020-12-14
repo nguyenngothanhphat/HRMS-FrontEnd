@@ -263,7 +263,16 @@ class EmailReminderForm extends PureComponent {
     const newConditions = [...conditions];
 
     const newArr = newConditionsData[index][name];
-    newArr[1] = value;
+    const lastIndex = newArr.length - 1;
+
+    newArr[lastIndex] = value;
+
+    console.log('newArr[lastIndex] = value : ', newArr);
+
+    // if (lastIndex === 2) {
+    //   newConditionsData[index].isChecked = false;
+    // }
+    console.log('newConditionsData : ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -368,7 +377,7 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
-    console.log('newConditionsData: ', newConditionsData);
+    // console.log('newConditionsData: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -390,9 +399,9 @@ class EmailReminderForm extends PureComponent {
     });
   };
 
-  onRemoveConditionDepartment = (index) => {
-    console.log('delete department');
-  };
+  // onRemoveConditionDepartment = (index) => {
+  //   console.log('delete department');
+  // };
 
   onAddConditionDepartment = (id) => {
     const { conditionsData, conditions } = this.state;
@@ -401,30 +410,49 @@ class EmailReminderForm extends PureComponent {
 
     const newValue = '';
     let originalValue = '';
+    let arrValue = [];
     let originalKey = '';
     let originalToBeVerb = '';
 
     newData.map((data) => {
       originalKey = data.key;
       originalToBeVerb = data.tobeVerb;
-      originalValue = data.value;
+
+      if (typeof data.value === 'string') {
+        originalValue = data.value;
+      } else {
+        arrValue = data.value;
+      }
+
       return data;
     });
 
-    const arr = [originalValue, newValue];
+    const arrFirst = [originalValue, newValue];
+
+    if (arrValue.length >= 2) {
+      arrValue.push(newValue);
+    }
 
     const newObj = {
       id,
       key: originalKey,
       tobeVerb: originalToBeVerb,
-      value: arr,
+      value: '',
       isChecked: true,
     };
 
     const condition = {
       key: originalKey,
-      value: arr,
+      value: arrFirst,
     };
+
+    if (originalValue !== '') {
+      newObj.value = arrFirst;
+      condition.value = arrFirst;
+    } else {
+      newObj.value = arrValue;
+      condition.value = arrValue;
+    }
 
     const index = newData.findIndex((item) => item.id === id);
 
@@ -498,22 +526,34 @@ class EmailReminderForm extends PureComponent {
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
 
-    const renderSelectOption = (index) => {
+    const renderSelectOption1 = (valueLocation, index) => {
+      const newArr = [...valueLocation];
+
+      if (valueLocation.length > 1) {
+        newArr.splice(0, 1);
+      }
+
       return (
         <>
-          <Select
-            size="large"
-            placeholder="Please select a choice"
-            onChange={(value) => this.onChangeConditionLocation(index, 'value', value)}
-          >
-            {departments.map((department) => {
-              return (
-                <Option value={department._id} key={department._id}>
-                  {department.name}
-                </Option>
-              );
-            })}
-          </Select>
+          {newArr.map((itemValue, indexValue) => {
+            return (
+              <Select
+                value={itemValue}
+                key={`${indexValue + 1}`}
+                size="large"
+                placeholder="Please select a choice"
+                onChange={(value) => this.onChangeConditionLocation(index, 'value', value)}
+              >
+                {departments.map((department) => {
+                  return (
+                    <Option value={department._id} key={department._id}>
+                      {department.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            );
+          })}
         </>
       );
     };
@@ -555,6 +595,7 @@ class EmailReminderForm extends PureComponent {
 
                   {/* Departments  */}
                   <Col span={10} className={styles.departmentCondition}>
+                    {/* {renderLocation(data, index)} */}
                     <Row>
                       <Select
                         size="large"
@@ -580,12 +621,14 @@ class EmailReminderForm extends PureComponent {
                     />
                   </Col>
                 </Row>
-                {data.value.length === 2 ? (
+                {typeof data.value !== 'string' ? (
                   <Row gutter={[24, 12]} align="middle">
                     <Col span={13} />
-                    <Col span={10}>{renderSelectOption(index)}</Col>
+
+                    <Col span={10}>{renderSelectOption1(data.value, index)}</Col>
+
                     <Col span={1}>
-                      {data.value.length === 2 && data.isChecked ? (
+                      {data.value.length >= 2 && data.isChecked ? (
                         <img
                           onClick={() => this.onRemoveConditionDepartment(index)}
                           src={removeIcon}
