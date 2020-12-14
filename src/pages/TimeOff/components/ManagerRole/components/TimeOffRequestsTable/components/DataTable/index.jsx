@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
 import { history, connect } from 'umi';
+import ApproveIcon from '@/assets/approveTR.svg';
+import OpenIcon from '@/assets/openTR.svg';
+import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -90,14 +93,26 @@ class DataTable extends PureComponent {
     },
     {
       title: 'Action',
-      align: 'left',
+      align: 'center',
       dataIndex: '_id',
       // width: '25%',
-      render: (_id) => (
-        <div className={styles.rowAction}>
-          <span onClick={() => this.viewRequest(_id)}>View Request</span>
-        </div>
-      ),
+      render: (_id) => {
+        const { category = '' } = this.props;
+        if (category === 'MY') {
+          return (
+            <div className={styles.rowAction}>
+              <span onClick={() => this.viewRequest(_id)}>View Request</span>
+            </div>
+          );
+        }
+        return (
+          <div className={styles.rowAction}>
+            <img src={OpenIcon} onClick={this.onOpenClick} alt="open" />
+            <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
+            <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
+          </div>
+        );
+      },
     },
   ];
 
@@ -110,10 +125,23 @@ class DataTable extends PureComponent {
     };
   }
 
+  // HANDLE TEAM REQUESTS
+  onOpenClick = () => {
+    alert('Open');
+  };
+
+  onApproveClick = () => {
+    alert('Approve');
+  };
+
+  onCancelClick = () => {
+    alert('Cancel');
+  };
+
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      // pathname: `/time-off/view-request/${_id}`,
       // state: { location: name },
     });
   };

@@ -16,11 +16,11 @@ class MineOrTeamTabs extends PureComponent {
           defaultActiveKey="1"
           // onTabClick={this.onTabClick}
         >
-          <TabPane tab="Team Request" key="1">
-            <TimeOffRequestTab data={data1} type={type} />
+          <TabPane tab="Team Leave Request" key="1">
+            <TimeOffRequestTab data={data1} type={type} category="TEAM" />
           </TabPane>
-          <TabPane tab="My Request" key="2">
-            <TimeOffRequestTab data={data2} type={type} />
+          <TabPane tab="My Leave Request" key="2">
+            <TimeOffRequestTab data={data2} type={type} category="MY" />
           </TabPane>
         </Tabs>
       </div>

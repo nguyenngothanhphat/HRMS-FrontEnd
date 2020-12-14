@@ -67,7 +67,7 @@ export default class TimeOffRequestTab extends PureComponent {
 
   render() {
     const { selectedFilterTab, inProgressData, approvedData, rejectedData, draftData } = this.state;
-    const { data = [], type = 0 } = this.props;
+    const { data = [], type = 0, category = '' } = this.props;
 
     const dataNumber = {
       inProgressNumber: inProgressData.length,
@@ -84,26 +84,68 @@ export default class TimeOffRequestTab extends PureComponent {
             <div className={styles.emptyTable}>
               <img src={EmptyIcon} alt="empty-table" />
               <p className={styles.describeTexts}>
-                You have not applied for any Leave requests. <br />
-                Submitted Casual, Sick & Compoff requests will be displayed here.
+                {category === 'MY' && (
+                  <>
+                    You have not applied for any Leave requests. <br />
+                    Submitted Casual, Sick & Compoff requests will be displayed here.
+                  </>
+                )}
+                {category === 'TEAM' && (
+                  <>
+                    No Leave requests received. <br />
+                    Submitted Casual, Sick & Compoff requests will be displayed here.
+                  </>
+                )}
               </p>
             </div>
           ) : (
             <div>
               {type === 1 && (
                 <>
-                  {selectedFilterTab === '1' ? <DataTable data={inProgressData} /> : ''}
-                  {selectedFilterTab === '2' ? <DataTable data={approvedData} /> : ''}
-                  {selectedFilterTab === '3' ? <DataTable data={rejectedData} /> : ''}
-                  {selectedFilterTab === '4' ? <DataTable data={draftData} /> : ''}
+                  {selectedFilterTab === '1' ? (
+                    <DataTable data={inProgressData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '2' ? (
+                    <DataTable data={approvedData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '3' ? (
+                    <DataTable data={rejectedData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '4' ? (
+                    <DataTable data={draftData} category={category} />
+                  ) : (
+                    ''
+                  )}
                 </>
               )}
               {type === 2 && (
                 <>
-                  {selectedFilterTab === '1' ? <CompoffTable data={inProgressData} /> : ''}
-                  {selectedFilterTab === '2' ? <CompoffTable data={approvedData} /> : ''}
-                  {selectedFilterTab === '3' ? <CompoffTable data={rejectedData} /> : ''}
-                  {selectedFilterTab === '4' ? <CompoffTable data={draftData} /> : ''}
+                  {selectedFilterTab === '1' ? (
+                    <CompoffTable data={inProgressData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '2' ? (
+                    <CompoffTable data={approvedData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '3' ? (
+                    <CompoffTable data={rejectedData} category={category} />
+                  ) : (
+                    ''
+                  )}
+                  {selectedFilterTab === '4' ? (
+                    <CompoffTable data={draftData} category={category} />
+                  ) : (
+                    ''
+                  )}
                 </>
               )}
             </div>
