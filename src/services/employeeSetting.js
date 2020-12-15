@@ -97,3 +97,16 @@ export async function getDepartmentListByCompanyId(payload) {
     data: payload,
   });
 }
+
+export async function getListAutoField() {
+  return request('/api/customemail/list-auto-field', {
+    method: 'POST',
+  });
+}
+
+export async function addCustomEmail(payload) {
+  return request('/api/customemail/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

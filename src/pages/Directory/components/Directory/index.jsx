@@ -461,26 +461,19 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderButtonFilter = (tabId, collapsed) => {
-    const { checkRoleEmployee } = this.props;
-    const {
-      tabList: { myTeam },
-    } = this.state;
-    if (!checkRoleEmployee && tabId !== myTeam) {
-      return (
-        <div className={styles.filterSider} onClick={this.handleToggle}>
-          {collapsed ? (
-            <div className={styles.filterBackgroundButton_isCollapsed} />
-          ) : (
-            <div className={styles.filterBackgroundButton} />
-          )}
-          <div className={styles.filterButton}>
-            <img src="/assets/images/iconFilter.svg" alt="filter" />
-            <p className={styles.textButtonFilter}>Filter</p>
-          </div>
+    return (
+      <div className={styles.filterSider} onClick={this.handleToggle}>
+        {collapsed ? (
+          <div className={styles.filterBackgroundButton_isCollapsed} />
+        ) : (
+          <div className={styles.filterBackgroundButton} />
+        )}
+        <div className={styles.filterButton}>
+          <img src="/assets/images/iconFilter.svg" alt="filter" />
+          <p className={styles.textButtonFilter}>Filter</p>
         </div>
-      );
-    }
-    return null;
+      </div>
+    );
   };
 
   renderTabPane = () => {
@@ -538,29 +531,22 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
-    const {
-      tabId,
-      collapsed,
-      changeTab,
-      tabList: { myTeam },
-    } = this.state;
+    const { tabId, collapsed, changeTab } = this.state;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
             <DirectoryTable loading={loading} list={this.renderListEmployee(key)} />
           </Content>
-          {key !== myTeam && (
-            <TableFilter
-              onToggle={this.handleToggle}
-              collapsed={collapsed}
-              onHandleChange={this.handleChange}
-              FormBox={this.handleFormBox}
-              changeTab={changeTab}
-              tabName={tabId}
-              checkLocation={indexShowLocation}
-            />
-          )}
+          <TableFilter
+            onToggle={this.handleToggle}
+            collapsed={collapsed}
+            onHandleChange={this.handleChange}
+            FormBox={this.handleFormBox}
+            changeTab={changeTab}
+            tabName={tabId}
+            checkLocation={indexShowLocation}
+          />
         </Layout>
       </TabPane>
     );
