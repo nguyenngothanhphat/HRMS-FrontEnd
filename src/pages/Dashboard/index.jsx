@@ -39,6 +39,14 @@ export default class Dashboard extends PureComponent {
             </Col>
             <Col span={17}>
               <Carousel />
+              <Row gutter={[12, 12]}>
+                <Col span={12}>
+                  <div style={{ width: '100%', backgroundColor: 'red' }}>AAAAA</div>
+                </Col>
+                <Col span={12}>
+                  <div style={{ width: '100%', backgroundColor: 'red' }}>AAAAA</div>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </div>
