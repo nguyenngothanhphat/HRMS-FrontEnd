@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix } from 'antd';
+import { Row, Col, Tabs, Button } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
 import RightDataTable from './components/RightContent';
+
+import RelievingFormalities from './RelievingFormalities';
 import styles from './index.less';
+
+const { TabPane } = Tabs;
 
 @connect(
   ({
@@ -42,29 +46,41 @@ class EmployeeOffBoading extends Component {
     });
   }
 
+  viewActivityLogs = () => {
+    return (
+      <Button className={styles.viewActivityLogs} type="secondary">
+        View Activity log (15)
+      </Button>
+    );
+  };
+
   render() {
     const { listOffboarding = [], totalList = [] } = this.props;
 
     return (
       <PageContainer>
-        <div className={styles.root}>
-          <Affix offsetTop={40}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>Terminate work relationship</p>
-              <div>
-                <span className={styles.textActivity}>View Activity Log</span>
-                <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
-                  (00)
-                </span>
-              </div>
-            </div>
-          </Affix>
-          <Row className={styles.content} gutter={[40, 0]}>
-            <Col span={18}>
-              <ViewLeft data={listOffboarding} countdata={totalList} />
-            </Col>
-            <Col span={6}>{listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}</Col>
-          </Row>
+        <div className={styles.EmployeeOffboarding}>
+          <div className={styles.tabs}>
+            <Tabs defaultActiveKey="1" tabBarExtraContent={this.viewActivityLogs()}>
+              <TabPane tab="Terminate work relationship" key="1">
+                <div className={styles.paddingHR}>
+                  <div className={styles.root}>
+                    <Row className={styles.content} gutter={[40, 0]}>
+                      <Col span={18}>
+                        <ViewLeft data={listOffboarding} countdata={totalList} />
+                      </Col>
+                      <Col span={6}>
+                        {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+              </TabPane>
+              <TabPane tab="Relieving Formalities" key="2">
+                <RelievingFormalities />
+              </TabPane>
+            </Tabs>
+          </div>
         </div>
       </PageContainer>
     );
