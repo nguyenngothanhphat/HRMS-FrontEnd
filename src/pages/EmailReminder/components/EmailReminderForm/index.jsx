@@ -489,7 +489,10 @@ class EmailReminderForm extends PureComponent {
                         value={data.value}
                         tagRender={this.tagRender}
                         mode="multiple"
-                        // showArrow
+                        showArrow
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                       >
