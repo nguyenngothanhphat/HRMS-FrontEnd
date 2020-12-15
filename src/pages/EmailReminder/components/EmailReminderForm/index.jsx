@@ -95,7 +95,7 @@ class EmailReminderForm extends PureComponent {
         },
       ],
       sendToExistingWorker: false,
-      receipients: [],
+      recipients: [],
       conditionsTrigger: {
         units: [
           {
@@ -226,7 +226,7 @@ class EmailReminderForm extends PureComponent {
         },
       }).then((data) => {
         this.setState({
-          receipients: data,
+          recipients: data,
         });
       });
     }
@@ -250,7 +250,7 @@ class EmailReminderForm extends PureComponent {
     this.setState({ _sendingDate: value.target.value });
   };
 
-  onChangeReceipients = (value) => {
+  onChangerecipients = (value) => {
     this.setState({ receipient: value });
   };
 
@@ -707,21 +707,21 @@ class EmailReminderForm extends PureComponent {
 
   _renderApplyToOptions = () => {
     const { Option } = Select;
-    const { appliesToData, receipients } = this.state;
+    const { appliesToData, recipients } = this.state;
     if (appliesToData === 'any') {
       return (
-        // Receipients
+        // recipients
         <>
           <Col span={12}>
-            <Form.Item label="Receipients" name="receipients">
+            <Form.Item label="recipients" name="recipients">
               <Select
                 size="large"
                 placeholder="Please select a choice"
                 onChange={(value) => {
-                  this.onChangeReceipients(value);
+                  this.onChangerecipients(value);
                 }}
               >
-                {receipients.map((option) => {
+                {recipients.map((option) => {
                   return (
                     <Option value={option.value} key={option._id}>
                       {option.name}
