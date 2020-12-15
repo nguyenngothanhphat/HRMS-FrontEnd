@@ -481,9 +481,10 @@ class EmailReminderForm extends PureComponent {
                   </Col>
 
                   {/* Departments  */}
-                  <Col span={10} className={styles.departmentCondition}>
+                  <Col span={10}>
                     <Row>
                       <Select
+                        className={styles.departmentCondition}
                         size="large"
                         value={data.value}
                         tagRender={this.tagRender}
