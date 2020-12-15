@@ -414,12 +414,12 @@ class EmailReminderForm extends PureComponent {
 
     console.log('dataSubmit: ', dataSubmit);
 
-    // dispatch({
-    //   type: 'employeeSetting/addCustomEmail',
-    //   payload: dataSubmit,
-    // }).then((data) => {
-    //   console.log('dataSubmit AFTER call api: ', data);
-    // });
+    dispatch({
+      type: 'employeeSetting/addCustomEmail',
+      payload: dataSubmit,
+    }).then((data) => {
+      console.log('dataSubmit AFTER call api: ', data);
+    });
   };
 
   tagRender = (props) => {
