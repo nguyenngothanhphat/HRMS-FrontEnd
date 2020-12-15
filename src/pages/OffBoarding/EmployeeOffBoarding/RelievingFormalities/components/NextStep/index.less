@@ -11,11 +11,10 @@
     span {
       margin-bottom: 10px;
     }
-  }
-  .title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #464646;
+    .title {
+      font-weight: bold;
+      color: #464646;
+    }
   }
   .stepBoxes {
     display: flex;
@@ -47,6 +46,49 @@
       .content1,
       .content2 {
         padding-left: 10px;
+        font-size: 13px;
+      }
+    }
+  }
+
+  .submitDocuments {
+    margin: 20px 0;
+    .abovePart {
+      .title {
+        font-weight: bold;
+        color: #464646;
+      }
+    }
+    .documentsRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .document:last-child {
+        margin-right: 0;
+      }
+      .document {
+        margin-right: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #ebeff2;
+        border-radius: 5px;
+        width: 100%;
+        padding: 10px 20px;
+        &:hover {
+          cursor: pointer;
+          border: 1px solid rgb(45, 120, 247);
+          transition: 0.3s;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
+        }
+        .left {
+          display: flex;
+          align-items: center;
+          .fileName {
+            margin-left: 10px;
+            font-size: 13px;
+          }
+        }
       }
     }
   }
