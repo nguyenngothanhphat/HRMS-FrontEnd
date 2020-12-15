@@ -33,37 +33,40 @@ export default class BidAdieu extends PureComponent {
   };
 
   render() {
-    const { isGoodbyeClick } = this.state;
-    const {
-      title = 'Bid Adieu',
-      describe = (
-        <p>
-          Do not forget to write a small message to all in the company. You might include your
-          contact information so people can connect with you.
-        </p>
-      ),
-      buttonText = 'Say Goodbye !',
-    } = this.props;
+    const { isGoodbyeClick, goodbyeContent } = this.state;
+    const { title = 'Bid Adieu', buttonText = 'Say Goodbye !' } = this.props;
     return (
       <div className={styles.BidAdieu}>
         <Row>
           <Col span={isGoodbyeClick ? 24 : 14}>
-            <div className={styles.abovePart}>
-              <span className={styles.title}>{title}</span>
-              <p className={styles.describe}>{describe}</p>
-            </div>
-
-            {!isGoodbyeClick && <Button onClick={this.onSayGoodbyeClick}>{buttonText}</Button>}
-            {isGoodbyeClick && (
-              <div>
-                <TextArea autoSize={{ minRows: 6, maxRows: 12 }} />
-                <div className={styles.submitButton}>
-                  <Button type="primary" onClick={this.sendMessage}>
-                    Send message
-                  </Button>
-                </div>
+            <div className={styles.leftContainer}>
+              <div className={styles.abovePart}>
+                <span className={styles.title}>{title}</span>
+                <p className={styles.describe}>
+                  Do not forget to write a small message to all in the company. You might include
+                  your contact information so people can connect with you.
+                </p>
               </div>
-            )}
+              {!isGoodbyeClick && <Button onClick={this.onSayGoodbyeClick}>{buttonText}</Button>}
+              {isGoodbyeClick && (
+                <div>
+                  <TextArea
+                    onChange={this.onGoodByeContentChange}
+                    autoSize={{ minRows: 6, maxRows: 12 }}
+                  />
+                  <div className={styles.submitButton}>
+                    <Button
+                      disabled={goodbyeContent === ''}
+                      className={goodbyeContent === '' ? styles.inactiveButton : ''}
+                      type="primary"
+                      onClick={this.sendMessage}
+                    >
+                      Send message
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </Col>
           {!isGoodbyeClick && (
             <Col className={styles.sideContainer} span={10}>

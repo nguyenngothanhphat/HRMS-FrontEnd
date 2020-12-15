@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import YourTimeline from './components/YourTimeline';
 import NextStep from './components/NextStep';
 import BidAdieu from './components/BidAdieu';
+import Sidebar from './components/Sidebar';
 import styles from './index.less';
 
 class RelievingFormalities extends PureComponent {
@@ -22,7 +23,7 @@ class RelievingFormalities extends PureComponent {
             </Row>
           </Col>
           <Col span={6}>
-            <h1>Something else</h1>
+            <Sidebar />
           </Col>
         </Row>
       </div>

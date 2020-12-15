@@ -15,12 +15,12 @@ export default class YourTimeline extends PureComponent {
         </p>
       ),
       buttonText = 'See timeline',
-      onClick = {},
+      onClick = () => {},
     } = this.props;
     return (
       <div className={styles.YourTimeline}>
         <Row>
-          <Col span={14}>
+          <Col span={14} className={styles.leftContainer}>
             <div className={styles.abovePart}>
               <span className={styles.title}>{title}</span>
               <p className={styles.describe}>{describe}</p>

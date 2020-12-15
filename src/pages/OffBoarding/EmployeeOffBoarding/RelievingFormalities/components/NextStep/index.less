@@ -17,15 +17,16 @@
     }
   }
   .stepBoxes {
+    margin-top: 10px;
     display: flex;
     justify-content: space-between;
     .divider {
       border-right: 1px solid #e8e8e8;
+      margin: 0 20px;
     }
     .eachBox {
       display: flex;
       justify-content: flex-start;
-      padding: 10px;
       flex: 4/7;
       &:nth-of-type(1) {
         flex: 3/7;
@@ -47,13 +48,22 @@
       .content2 {
         padding-left: 10px;
         font-size: 13px;
+        p {
+          margin-bottom: 0;
+        }
+      }
+      .content2 {
+        .scheduleTime {
+          margin-top: 10px;
+        }
       }
     }
   }
 
   .submitDocuments {
-    margin: 20px 0;
+    margin: 30px 0 20px 0;
     .abovePart {
+      margin-bottom: 10px;
       .title {
         font-weight: bold;
         color: #464646;
@@ -63,33 +73,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      .document:last-child {
-        margin-right: 0;
-      }
-      .document {
-        margin-right: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid #ebeff2;
-        border-radius: 5px;
-        width: 100%;
-        padding: 10px 20px;
-        &:hover {
-          cursor: pointer;
-          border: 1px solid rgb(45, 120, 247);
-          transition: 0.3s;
-          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.07);
-        }
-        .left {
-          display: flex;
-          align-items: center;
-          .fileName {
-            margin-left: 10px;
-            font-size: 13px;
-          }
-        }
-      }
     }
   }
 }
