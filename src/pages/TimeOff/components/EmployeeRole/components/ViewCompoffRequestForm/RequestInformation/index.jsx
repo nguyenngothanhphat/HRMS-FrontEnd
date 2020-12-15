@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
@@ -12,7 +12,7 @@ import styles from './index.less';
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {

@@ -100,7 +100,10 @@ class TimeOffRequestsTable extends PureComponent {
 
   render() {
     const {
-      timeOff: { leaveRequests: { items1 = [] } = {}, compoffRequests: { items2 = [] } = {} } = {},
+      timeOff: {
+        leaveRequests: { items: items1 = [] } = {},
+        compoffRequests: { items: items2 = [] } = {},
+      } = {},
       loadingFetchLeaveRequests,
     } = this.props;
 

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
 import styles from './index.less';
 
 const { Step } = Steps;
-class RightContent extends Component {
+class RightContent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};

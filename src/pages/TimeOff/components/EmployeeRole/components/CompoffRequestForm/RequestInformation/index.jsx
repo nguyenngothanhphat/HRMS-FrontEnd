@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -14,7 +14,7 @@ const { TextArea } = Input;
   user,
   loadingAddCompoffRequest: loading.effects['timeOff/addCompoffRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {

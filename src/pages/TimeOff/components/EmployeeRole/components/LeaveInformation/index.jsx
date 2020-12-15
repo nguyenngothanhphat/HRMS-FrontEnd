@@ -46,16 +46,14 @@ const CollapseInformation = (props) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
             if (defaultSettings !== null) {
               const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
-              const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
               return (
-                <div>
+                <div key={`${index + 1}`}>
                   <LeaveProgressBar
                     color={colorsList[index % 3]}
                     title={name}
                     shortType={shortType}
                     stepNumber={currentAllowance}
                     limitNumber={time}
-                    moreContent={moreContentMock[index % 3]}
                   />
                   {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
                 </div>
@@ -80,7 +78,7 @@ const CollapseInformation = (props) => {
             if (defaultSettings !== null) {
               const { name = '', shortType = '' } = defaultSettings;
               return (
-                <Col span={24}>
+                <Col key={`${index + 1}`} span={24}>
                   <SpecialLeaveBox
                     color={colorsList1[index % 2]}
                     title={name}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -17,7 +17,7 @@ const { TextArea } = Input;
   loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
   loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {

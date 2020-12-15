@@ -15,10 +15,14 @@ export default class LeaveHistoryList extends PureComponent {
     const { leavingList = [] } = this.props;
     return (
       <div className={styles.LeaveHistoryList}>
-        {leavingList.map((row) => {
+        {leavingList.map((row, index) => {
           const { fromDate = '', toDate = '', duration = '', type = '', name = '', _id } = row;
           return (
-            <Row className={styles.eachRow} onClick={() => this.goToLeaveRequest(_id)}>
+            <Row
+              key={`${index + 1}`}
+              className={styles.eachRow}
+              onClick={() => this.goToLeaveRequest(_id)}
+            >
               {fromDate === toDate && (
                 <>
                   <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>

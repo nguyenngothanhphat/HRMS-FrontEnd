@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Progress, Input } from 'antd';
 import TimeOffModal from '@/components/TimeOffModal';
 import { connect, history } from 'umi';
@@ -13,7 +13,7 @@ const { TextArea } = Input;
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
