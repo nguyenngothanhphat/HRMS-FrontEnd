@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
+import { ReactComponent as HomeIcon } from '@/assets/dashboard_home.svg';
+import Greeting from './components/Greeting';
+import ActivityLog from './components/ActivityLog';
+import MyApps from './components/MyApps';
+
 import styles from './index.less';
 
 export default class Dashboard extends PureComponent {
@@ -13,11 +18,26 @@ export default class Dashboard extends PureComponent {
               <p className={styles.titlePage__text}>Dashboard</p>
             </div>
           </Affix>
-          <Row gutter={[24, 24]} style={{ padding: '20px' }}>
-            <Col span={6}>
-              <div style={{ width: '100%', backgroundColor: 'red' }}>AAAA</div>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
+              {/* <div style={{ width: '100%', backgroundColor: 'red' }}>AAAA</div> */}
+              <button type="button" className={styles.homeIcon}>
+                <div>
+                  <HomeIcon />
+                  <span>Home</span>
+                </div>
+              </button>
+
+              <Greeting />
+
+              <div className={styles.leftContainer}>
+                <MyApps />
+                <div className={styles.divide} />
+                <ActivityLog />
+              </div>
             </Col>
-            <Col span={18}>
+
+            <Col span={17}>
               <div style={{ width: '100%', backgroundColor: 'cyan' }}>BBBBB</div>
             </Col>
           </Row>
