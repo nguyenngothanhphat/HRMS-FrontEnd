@@ -49,22 +49,38 @@ class JobDetails extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { dispatch, checkMandatory, data } = this.props;
+
+    const { dateOfJoining = '', noticePeriod = '' } = data;
+    let valid = false;
+    if (dateOfJoining && noticePeriod) {
+      valid = true;
+    } else {
+      valid = false;
+    }
+
+    if (prevProps.checkMandatory.filledJobDetail !== valid) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: valid,
+          },
+        },
+      });
+    }
+  }
+
   _handleSelect = (value, name) => {
     const { dispatch, checkMandatory, data } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
-    console.log(name, value);
-    // const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
     const { dateOfJoining, noticePeriod } = data;
 
     let newNoticePeriod = noticePeriod;
     let newDateOfJoining = dateOfJoining;
-
-    if (newNoticePeriod && newDateOfJoining) {
-      checkMandatory.filledJobDetail = true;
-    } else {
-      checkMandatory.filledJobDetail = false;
-    }
 
     if (name === 'candidatesNoticePeriod') {
       newNoticePeriod = value;
@@ -81,9 +97,6 @@ class JobDetails extends PureComponent {
           ...data,
           dateOfJoining: newDateOfJoining,
           noticePeriod: newNoticePeriod,
-        },
-        checkMandatory: {
-          ...checkMandatory,
         },
       },
     });
