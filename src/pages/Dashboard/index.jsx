@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
+import Carousel from './components/Carousel';
 import styles from './index.less';
 
 export default class Dashboard extends PureComponent {
@@ -18,7 +19,7 @@ export default class Dashboard extends PureComponent {
               <div style={{ width: '100%', backgroundColor: 'red' }}>AAAA</div>
             </Col>
             <Col span={18}>
-              <div style={{ width: '100%', backgroundColor: 'cyan' }}>BBBBB</div>
+              <Carousel />
             </Col>
           </Row>
         </div>
