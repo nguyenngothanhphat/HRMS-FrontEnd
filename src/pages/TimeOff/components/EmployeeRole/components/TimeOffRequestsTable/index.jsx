@@ -100,17 +100,17 @@ class TimeOffRequestsTable extends PureComponent {
 
   render() {
     const {
-      timeOff: { leaveRequests = [], compoffRequests: { items = [] } = {} } = {},
+      timeOff: { leaveRequests: { items1 = [] } = {}, compoffRequests: { items2 = [] } = {} } = {},
       loadingFetchLeaveRequests,
     } = this.props;
 
     // console.log('compoffRequests', items);
 
-    const leaveRequestsData = this.renderData(leaveRequests, 1);
-    const specialRequestsData = this.renderData(leaveRequests, 2);
-    const lwpRequestsData = this.renderData(leaveRequests, 3);
-    const wfhRequestsData = this.renderData(leaveRequests, 4);
-    const compoffRequestsData = this.renderData(items, 5);
+    const leaveRequestsData = this.renderData(items1, 1);
+    const specialRequestsData = this.renderData(items1, 2);
+    const lwpRequestsData = this.renderData(items1, 3);
+    const wfhRequestsData = this.renderData(items1, 4);
+    const compoffRequestsData = this.renderData(items2, 5);
 
     return (
       <div className={styles.TimeOffRequestsTable}>

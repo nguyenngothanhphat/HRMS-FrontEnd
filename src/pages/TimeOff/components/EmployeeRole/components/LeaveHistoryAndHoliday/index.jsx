@@ -118,9 +118,9 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [], leaveRequests = [] } = {} } = this.props;
+    const { timeOff: { holidaysList = [], leaveRequests: { items = [] } = {} } = {} } = this.props;
     const formatHolidayLists = this.formatHolidayLists(holidaysList);
-    const formatLeavingList = this.formatLeavingList(leaveRequests);
+    const formatLeavingList = this.formatLeavingList(items);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>

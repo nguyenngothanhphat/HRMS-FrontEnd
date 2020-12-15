@@ -129,41 +129,28 @@ class TimeOffRequestsTable extends PureComponent {
     return [];
   };
 
-  renderLoading = () => {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '180px 0',
-          // height: '310px',
-        }}
-      >
-        <Spin size="medium" />
-      </div>
-    );
-  };
-
   render() {
     const {
-      timeOff: { leaveRequests = [], compoffRequests: { items = [] } = {} } = {},
+      timeOff: {
+        leaveRequests: { items: items1 = [] } = {},
+        compoffRequests: { items: items2 = [] } = {},
+        teamCompoffRequests: { items: items3 = [] } = {},
+        teamLeaveRequests: { items: items4 = [] } = {},
+      } = {},
       loading,
     } = this.props;
 
-    // console.log('compoffRequests', items);
+    const leaveRequestsData1 = this.renderDataTeamRequests(items4, 1);
+    const specialRequestsData1 = this.renderDataTeamRequests(items4, 2);
+    const lwpRequestsData1 = this.renderDataTeamRequests(items4, 3);
+    const wfhRequestsData1 = this.renderDataTeamRequests(items4, 4);
+    const compoffRequestsData1 = this.renderDataTeamRequests(items3, 5);
 
-    const leaveRequestsData1 = this.renderDataTeamRequests(leaveRequests, 1);
-    const specialRequestsData1 = this.renderDataTeamRequests(leaveRequests, 2);
-    const lwpRequestsData1 = this.renderDataTeamRequests(leaveRequests, 3);
-    const wfhRequestsData1 = this.renderDataTeamRequests(leaveRequests, 4);
-    const compoffRequestsData1 = this.renderDataTeamRequests(items, 5);
-
-    const leaveRequestsData2 = this.renderDataMyRequests(leaveRequests, 1);
-    const specialRequestsData2 = this.renderDataMyRequests(leaveRequests, 2);
-    const lwpRequestsData2 = this.renderDataMyRequests(leaveRequests, 3);
-    const wfhRequestsData2 = this.renderDataMyRequests(leaveRequests, 4);
-    const compoffRequestsData2 = this.renderDataMyRequests(items, 5);
+    const leaveRequestsData2 = this.renderDataMyRequests(items1, 1);
+    const specialRequestsData2 = this.renderDataMyRequests(items1, 2);
+    const lwpRequestsData2 = this.renderDataMyRequests(items1, 3);
+    const wfhRequestsData2 = this.renderDataMyRequests(items1, 4);
+    const compoffRequestsData2 = this.renderDataMyRequests(items2, 5);
 
     return (
       <div className={styles.TimeOffRequestsTable}>
@@ -176,47 +163,44 @@ class TimeOffRequestsTable extends PureComponent {
         >
           <>
             <TabPane tab="Leave Request" key="1">
-              {!loading ? (
-                <MineOrTeamTabs data1={leaveRequestsData1} data2={leaveRequestsData2} type={1} />
-              ) : (
-                this.renderLoading()
-              )}
+              <MineOrTeamTabs
+                loadingData={loading}
+                data1={leaveRequestsData1}
+                data2={leaveRequestsData2}
+                type={1}
+              />
             </TabPane>
             <TabPane tab="Special Leave Request" key="2">
-              {!loading ? (
-                <MineOrTeamTabs
-                  data1={specialRequestsData1}
-                  data2={specialRequestsData2}
-                  type={1}
-                />
-              ) : (
-                this.renderLoading()
-              )}
+              <MineOrTeamTabs
+                loadingData={loading}
+                data1={specialRequestsData1}
+                data2={specialRequestsData2}
+                type={1}
+              />
             </TabPane>
             <TabPane tab="LWP Request" key="3">
-              {!loading ? (
-                <MineOrTeamTabs data1={lwpRequestsData1} data2={lwpRequestsData2} type={1} />
-              ) : (
-                this.renderLoading()
-              )}
+              <MineOrTeamTabs
+                loadingData={loading}
+                data1={lwpRequestsData1}
+                data2={lwpRequestsData2}
+                type={1}
+              />
             </TabPane>
             <TabPane tab="WFH/CP Requests" key="4">
-              {!loading ? (
-                <MineOrTeamTabs data1={wfhRequestsData1} data2={wfhRequestsData2} type={1} />
-              ) : (
-                this.renderLoading()
-              )}
+              <MineOrTeamTabs
+                loadingData={loading}
+                data1={wfhRequestsData1}
+                data2={wfhRequestsData2}
+                type={1}
+              />
             </TabPane>
             <TabPane tab="Compoff Request" key="5">
-              {!loading ? (
-                <MineOrTeamTabs
-                  data1={compoffRequestsData1}
-                  data2={compoffRequestsData2}
-                  type={2}
-                />
-              ) : (
-                this.renderLoading()
-              )}
+              <MineOrTeamTabs
+                loadingData={loading}
+                data1={compoffRequestsData1}
+                data2={compoffRequestsData2}
+                type={2}
+              />
             </TabPane>
           </>
         </Tabs>

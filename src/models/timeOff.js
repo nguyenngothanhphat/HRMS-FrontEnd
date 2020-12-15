@@ -25,7 +25,7 @@ const timeOff = {
     holidaysList: [],
     leavingList: [],
     totalLeaveBalance: {},
-    leaveRequests: [],
+    leaveRequests: {},
     compoffRequests: {},
     timeOffTypes: [],
     employeeInfo: {},

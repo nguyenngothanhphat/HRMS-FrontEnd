@@ -107,22 +107,22 @@ export default class TimeOffRequestTab extends PureComponent {
               {type === 1 && (
                 <>
                   {selectedFilterTab === '1' ? (
-                    <DataTable data={inProgressData} category={category} />
+                    <DataTable data={inProgressData} category={category} status="IN-PROGRESS" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '2' ? (
-                    <DataTable data={approvedData} category={category} />
+                    <DataTable data={approvedData} category={category} status="APPROVED" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '3' ? (
-                    <DataTable data={rejectedData} category={category} />
+                    <DataTable data={rejectedData} category={category} status="REJECTED" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '4' ? (
-                    <DataTable data={draftData} category={category} />
+                    <DataTable data={draftData} category={category} status="DRAFTS" />
                   ) : (
                     ''
                   )}
@@ -131,22 +131,22 @@ export default class TimeOffRequestTab extends PureComponent {
               {type === 2 && (
                 <>
                   {selectedFilterTab === '1' ? (
-                    <CompoffTable data={inProgressData} category={category} />
+                    <CompoffTable data={inProgressData} category={category} status="IN-PROGRESS" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '2' ? (
-                    <CompoffTable data={approvedData} category={category} />
+                    <CompoffTable data={approvedData} category={category} status="APPROVED" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '3' ? (
-                    <CompoffTable data={rejectedData} category={category} />
+                    <CompoffTable data={rejectedData} category={category} status="REJECTED" />
                   ) : (
                     ''
                   )}
                   {selectedFilterTab === '4' ? (
-                    <CompoffTable data={draftData} category={category} />
+                    <CompoffTable data={draftData} category={category} status="DRAFTS" />
                   ) : (
                     ''
                   )}

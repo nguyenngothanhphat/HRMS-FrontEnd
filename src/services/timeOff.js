@@ -15,7 +15,7 @@ export async function getTimeOffTypes(payload) {
 }
 
 export async function getLeaveRequestOfEmployee(payload) {
-  return request('/api/leaverequest/get-by-employee', {
+  return request('/api/leaverequest/get-my-request', {
     method: 'POST',
     data: payload,
   });
