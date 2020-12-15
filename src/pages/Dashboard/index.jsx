@@ -6,6 +6,7 @@ import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
 
+import Carousel from './components/Carousel';
 import styles from './index.less';
 
 export default class Dashboard extends PureComponent {
@@ -36,9 +37,8 @@ export default class Dashboard extends PureComponent {
                 <ActivityLog />
               </div>
             </Col>
-
             <Col span={17}>
-              <div style={{ width: '100%', backgroundColor: 'cyan' }}>BBBBB</div>
+              <Carousel />
             </Col>
           </Row>
         </div>
