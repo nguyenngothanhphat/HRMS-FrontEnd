@@ -74,8 +74,8 @@ const OfferDetail = (props) => {
     });
 
     const { includeOffer = 1 } = allFieldsValues;
-    console.log(includeOffer);
-    console.log(uploadedOffer);
+    // console.log(includeOffer);
+    // console.log(uploadedOffer);
     if (includeOffer === 2) {
       if (!uploadedOffer.url) {
         valid = false;
