@@ -153,7 +153,7 @@ const OfferDetail = (props) => {
           companyHandbook: handbook,
           template: file,
           candidate: _id,
-          hidePreviewOffer: includeOffer === 2,
+          hidePreviewOffer: includeOffer === 1,
         },
       },
     });
