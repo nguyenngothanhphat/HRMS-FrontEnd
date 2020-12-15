@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix } from 'antd';
+import { Affix, Row, Col } from 'antd';
 import styles from './index.less';
 
 export default class Dashboard extends PureComponent {
@@ -13,6 +13,14 @@ export default class Dashboard extends PureComponent {
               <p className={styles.titlePage__text}>Dashboard</p>
             </div>
           </Affix>
+          <Row gutter={[24, 24]} style={{ padding: '20px' }}>
+            <Col span={6}>
+              <div style={{ width: '100%', backgroundColor: 'red' }}>AAAA</div>
+            </Col>
+            <Col span={18}>
+              <div style={{ width: '100%', backgroundColor: 'cyan' }}>BBBBB</div>
+            </Col>
+          </Row>
         </div>
       </PageContainer>
     );
