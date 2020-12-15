@@ -5,12 +5,12 @@
 /* eslint-disable no-bitwise */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
-import { Form, Input, Row, Col, Button, Select, Radio, Checkbox } from 'antd';
+import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 import 'react-quill/dist/quill.snow.css';
 
-import addIcon from '@/assets/add-symbols.svg';
 import removeIcon from './assets/removeIcon.svg';
 
 import styles from './index.less';
@@ -51,23 +51,21 @@ class EmailReminderForm extends PureComponent {
           key: '',
           tobeVerb: '',
           value: [],
-          isChecked: false,
         },
       ],
-      isLocation: false,
       checkOption: [],
       appliesToData: '',
       message: '',
-      frequencyItem: [
-        {
-          name: 'Premium only',
-          value: 'Premium only',
-        },
-        {
-          name: 'Every year',
-          value: 'Every year',
-        },
-      ],
+      // frequencyItem: [
+      //   {
+      //     name: 'Premium only',
+      //     value: 'Premium only',
+      //   },
+      //   {
+      //     name: 'Every year',
+      //     value: 'Every year',
+      //   },
+      // ],
       sendingDate: [
         {
           name: 'On the event date',
@@ -135,9 +133,8 @@ class EmailReminderForm extends PureComponent {
       ],
       disabled: true,
       triggerEvent: '',
-      frequency: '',
       _sendingDate: '',
-      receipient: '',
+      recipient: '',
       emailSubject: '',
     };
   }
@@ -158,24 +155,22 @@ class EmailReminderForm extends PureComponent {
 
     const {
       triggerEvent,
-      frequency,
       _sendingDate,
       appliesToData,
-      receipient,
+      recipient,
       emailSubject,
       message,
     } = this.state;
 
     if (
       triggerEvent.trim() !== '' &&
-      frequency.trim() !== '' &&
       _sendingDate.trim() !== '' &&
       emailSubject.trim() !== '' &&
       message.trim() !== '' &&
       message.trim() !== '<p></p>' &&
       message.trim() !== '<p><br></p>'
     ) {
-      if (appliesToData.trim() === 'any' && receipient.trim() !== '') {
+      if (appliesToData.trim() === 'any' && recipient.trim() !== '') {
         this.setState({ disabled: false });
       } else if (
         appliesToData.trim() === 'condition' &&
@@ -242,57 +237,27 @@ class EmailReminderForm extends PureComponent {
     this.setState({ triggerEvent: value });
   };
 
-  onChangeFrequency = (value) => {
-    this.setState({ frequency: value.target.value });
-  };
-
   onChangeSendingDate = (value) => {
     this.setState({ _sendingDate: value.target.value });
   };
 
-  onChangerecipients = (value) => {
-    this.setState({ receipient: value });
+  onChangeRecipients = (value) => {
+    this.setState({ recipient: value });
   };
 
   onChangeEmailSubject = (value) => {
     this.setState({ emailSubject: value });
   };
 
-  onChangeConditionLocation = (index, name, value) => {
-    const { conditionsData, conditions } = this.state;
-
-    const newConditionsData = [...conditionsData];
-    const newConditions = [...conditions];
-
-    const newArr = newConditionsData[index][name];
-    const lastIndex = newArr.length - 1;
-
-    newArr[lastIndex] = value;
-
-    if (lastIndex === 2) {
-      newConditionsData[index].isChecked = false;
-    }
-
-    this.setState({
-      conditionsData: newConditionsData,
-      conditions: newConditions,
-    });
-  };
-
   onChangeCondition = (index, name, value) => {
-    const { conditionsData, conditions, isLocation } = this.state;
+    const { conditionsData, conditions } = this.state;
     const { dispatch } = this.props;
 
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
-    let checked = false;
-    let originalValue = '';
-    let originalKey = '';
-    let originalToBeVerb = '';
 
     if (name === 'key') {
       if (value === 'department') {
-        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -305,7 +270,6 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else if (value === 'location') {
-        this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -318,7 +282,6 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else if (value === 'title') {
-        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -331,7 +294,6 @@ class EmailReminderForm extends PureComponent {
           }));
         });
       } else {
-        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
@@ -347,34 +309,14 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
-    newConditionsData.map((data) => {
-      originalKey = data.key;
-      originalToBeVerb = data.tobeVerb;
-      originalValue = data.value;
-      return data;
-    });
-
-    const newObj = {
-      id: index,
-      key: originalKey,
-      tobeVerb: originalToBeVerb,
-      value: originalValue,
-      isChecked: checked,
-    };
-
-    const newIndex = newConditionsData.findIndex((item) => item.id === index);
-
-    if (name === 'tobeVerb' && isLocation === true) {
-      checked = true;
-      newObj.isChecked = checked;
-      newConditionsData[newIndex] = newObj;
-    }
-
     if (name === 'value') {
-      newConditions[index][name].push(value);
+      newConditions[index][name] = value;
     }
 
     newConditionsData[index][name] = value;
+
+    console.log('newConditionsData:', newConditionsData);
+    console.log('newConditions:', newConditions);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -393,76 +335,9 @@ class EmailReminderForm extends PureComponent {
     newConditionsData.forEach((item, itemIndex) => {
       item.id = itemIndex;
     });
-    console.log('newConditionsData after splice: ', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
-      conditions: newConditions,
-    });
-  };
-
-  // onRemoveConditionDepartment = (index) => {
-  //   console.log('delete department');
-  // };
-
-  onAddConditionDepartment = (id) => {
-    const { conditionsData, conditions } = this.state;
-    const newData = [...conditionsData];
-    const newConditions = [...conditions];
-
-    const newValue = '';
-    let originalValue = '';
-    let arrValue = [];
-    let originalKey = '';
-    let originalToBeVerb = '';
-
-    newData.map((data) => {
-      originalKey = data.key;
-      originalToBeVerb = data.tobeVerb;
-
-      if (typeof data.value === 'string') {
-        originalValue = data.value;
-      } else {
-        arrValue = data.value;
-      }
-
-      return data;
-    });
-
-    const arrFirst = [originalValue, newValue];
-
-    if (arrValue.length >= 2) {
-      arrValue.push(newValue);
-    }
-
-    const newObj = {
-      id,
-      key: originalKey,
-      tobeVerb: originalToBeVerb,
-      value: '',
-      isChecked: true,
-    };
-
-    const condition = {
-      key: originalKey,
-      value: arrFirst,
-    };
-
-    if (originalValue !== '') {
-      newObj.value = arrFirst;
-      condition.value = arrFirst;
-    } else {
-      newObj.value = arrValue;
-      condition.value = arrValue;
-    }
-
-    const index = newData.findIndex((item) => item.id === id);
-
-    newData[index] = newObj;
-    newConditions[index] = condition;
-
-    this.setState({
-      conditionsData: newData,
       conditions: newConditions,
     });
   };
@@ -502,7 +377,6 @@ class EmailReminderForm extends PureComponent {
       key: '',
       tobeVerb: '',
       value: [],
-      isChecked: false,
     };
     const condition = {
       key: '',
@@ -538,12 +412,26 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    dispatch({
-      type: 'employeeSetting/addCustomEmail',
-      payload: dataSubmit,
-    }).then((data) => {
-      console.log('dataSubmit AFTER call api: ', data);
-    });
+    console.log('dataSubmit: ', dataSubmit);
+
+    // dispatch({
+    //   type: 'employeeSetting/addCustomEmail',
+    //   payload: dataSubmit,
+    // }).then((data) => {
+    //   console.log('dataSubmit AFTER call api: ', data);
+    // });
+  };
+
+  tagRender = (props) => {
+    const { label, onClose } = props;
+    return (
+      <Tag
+        icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
+        color="red"
+      >
+        {label}
+      </Tag>
+    );
   };
 
   _renderConditions = () => {
@@ -552,38 +440,6 @@ class EmailReminderForm extends PureComponent {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
     } = this.state;
-
-    const renderSelectOption1 = (valueLocation, index) => {
-      const newArr = [...valueLocation];
-
-      if (valueLocation.length > 1) {
-        newArr.splice(0, 1);
-      }
-
-      return (
-        <>
-          {newArr.map((itemValue, indexValue) => {
-            return (
-              <Select
-                value={itemValue}
-                key={`${indexValue + 1}`}
-                size="large"
-                placeholder="Please select a choice"
-                onChange={(value) => this.onChangeConditionLocation(index, 'value', value)}
-              >
-                {departments.map((department) => {
-                  return (
-                    <Option value={department._id} key={department._id}>
-                      {department.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            );
-          })}
-        </>
-      );
-    };
 
     return (
       <Col span={24}>
@@ -626,11 +482,13 @@ class EmailReminderForm extends PureComponent {
 
                   {/* Departments  */}
                   <Col span={10} className={styles.departmentCondition}>
-                    {/* {renderLocation(data, index)} */}
                     <Row>
                       <Select
                         size="large"
                         value={data.value}
+                        tagRender={this.tagRender}
+                        mode="multiple"
+                        // showArrow
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                       >
@@ -651,37 +509,6 @@ class EmailReminderForm extends PureComponent {
                       alt="remove"
                     />
                   </Col>
-                </Row>
-                {typeof data.value !== 'string' ? (
-                  <Row gutter={[24, 12]} align="middle">
-                    <Col span={13} />
-
-                    <Col span={10}>{renderSelectOption1(data.value, index)}</Col>
-
-                    <Col span={1}>
-                      {data.value.length >= 2 && data.isChecked ? (
-                        <img
-                          onClick={() => this.onRemoveConditionDepartment(index)}
-                          src={removeIcon}
-                          alt="remove"
-                        />
-                      ) : null}
-                    </Col>
-                  </Row>
-                ) : null}
-                <Row gutter={[24, 12]} align="middle">
-                  <Col span={13} />
-                  {data.isChecked ? (
-                    <Col>
-                      <img
-                        className={styles.onAddConditionBtn}
-                        onClick={() => this.onAddConditionDepartment(data.id)}
-                        src={addIcon}
-                        alt="add"
-                      />
-                    </Col>
-                  ) : null}
-                  <Col span={1} />
                 </Row>
               </div>
             );
@@ -718,7 +545,7 @@ class EmailReminderForm extends PureComponent {
                 size="large"
                 placeholder="Please select a choice"
                 onChange={(value) => {
-                  this.onChangerecipients(value);
+                  this.onChangeRecipients(value);
                 }}
               >
                 {recipients.map((option) => {
@@ -783,7 +610,7 @@ class EmailReminderForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { triggerEventList } = this.props;
-    const { frequencyItem, sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
+    const { sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
 
     return (
       <Form onFinish={this.onFinish}>
@@ -815,7 +642,7 @@ class EmailReminderForm extends PureComponent {
           </Col>
 
           {/* Frequency */}
-          <Col span={24}>
+          {/* <Col span={24}>
             <Form.Item name="frequency" label="Frequency">
               <Radio.Group onChange={(value) => this.onChangeFrequency(value)}>
                 {frequencyItem.map((option) => {
@@ -823,7 +650,7 @@ class EmailReminderForm extends PureComponent {
                 })}
               </Radio.Group>
             </Form.Item>
-          </Col>
+          </Col> */}
 
           {/* Sending date */}
           <Col span={24}>
