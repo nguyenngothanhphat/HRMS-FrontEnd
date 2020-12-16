@@ -1,26 +1,28 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Input, Button } from 'antd';
+import { Row, Col, Input, Button, Popconfirm } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
-// import editIcon from '@/assets/edit-template-icon.svg';
+import editIcon from '@/assets/edit-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
+import RelievingTemplates from '../RelievingTemplates';
+import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-const closePackage = [
-  {
-    id: 1,
-    attachment: {
-      name: 'Relieving letter',
-    },
-  },
-  {
-    id: 2,
-    attachment: {
-      name: 'Experience letter',
-    },
-  },
-];
+// const closePackage = [
+//   {
+//     id: 1,
+//     attachment: {
+//       name: 'Relieving letter',
+//     },
+//   },
+//   {
+//     id: 2,
+//     attachment: {
+//       name: 'Experience letter',
+//     },
+//   },
+// ];
 
 @connect(({ offboarding: { relievingDetails: { closingPackage = {}, _id = '' } } }) => ({
   closingPackage,
@@ -30,22 +32,104 @@ class ClosingPackage extends PureComponent {
   constructor(props) {
     super(props);
     const {
-      closingPackage: { waitList = [] },
+      closingPackage: { waitList = [], packages = [], isSent },
     } = this.props;
     this.state = {
-      isSent: false,
+      isSent,
       closingPackage: waitList,
+      customDocuments: packages,
+      isOpenModalEdit: false,
+      template: {},
+      mode: '',
     };
   }
 
   handleSendMail = () => {
-    this.setState({
-      isSent: true,
+    const { dispatch, ticketId } = this.props;
+    dispatch({
+      type: 'offboarding/sendOffBoardingPackage',
+      payload: {
+        packageType: 'CLOSING-PACKAGE',
+        ticketId,
+      },
     });
   };
 
+  handleOnClick = (item, type) => {
+    switch (type) {
+      case 'template':
+        this.setState({
+          mode: 'View',
+          template: item,
+          isOpenModalEdit: true,
+        });
+        break;
+      case 'doc':
+        window.open(item.attachment?.url, '_blank');
+        break;
+      default:
+        break;
+    }
+  };
+
+  handleEdit = (template) => {
+    this.setState({
+      isOpenModalEdit: true,
+      template,
+      mode: 'Edit',
+    });
+  };
+
+  handleCancelEdit = () => {
+    this.setState({
+      template: {},
+      isOpenModalEdit: false,
+    });
+  };
+
+  handleRemoveTemplate = (item, type) => {
+    const { dispatch, ticketId } = this.props;
+    switch (type) {
+      case 'template':
+        dispatch({
+          type: 'offboarding/removeOffBoardingPackage',
+          payload: {
+            offboardRequest: ticketId,
+            type: 'closingPackage',
+            templateRelieving: item.templateRelieving,
+          },
+        });
+        break;
+      case 'doc':
+        dispatch({
+          type: 'offboarding/removeOffBoardingPackage',
+          payload: {
+            offboardRequest: ticketId,
+            type: 'closingPackage',
+            packageId: item._id,
+          },
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  renderModalEditTemplate = () => {
+    const { isOpenModalEdit, template, mode } = this.state;
+    return (
+      <RelievingTemplates
+        mode={mode}
+        visible={isOpenModalEdit}
+        template={template}
+        content={<ModalContent packageType="CLOSING-PACKAGE" template={template} mode={mode} />}
+        handleCancelEdit={this.handleCancelEdit}
+      />
+    );
+  };
+
   renderBeforeSendMail = () => {
-    const { closingPackage } = this.state;
+    const { closingPackage, customDocuments } = this.state;
     return (
       <>
         <Row gutter={[40, 15]}>
@@ -54,13 +138,75 @@ class ClosingPackage extends PureComponent {
             return (
               <Col span={10} key={`${index + 1}`}>
                 <div className={styles.template}>
-                  <div className={styles.template__content}>
+                  <div
+                    className={styles.template__content}
+                    onClick={() => this.handleOnClick(template, 'template')}
+                  >
                     <img src={templateIcon} alt="template-icon" />
-                    <span>{packageName}</span>
+                    <span
+                      style={{
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        width: '130px',
+                      }}
+                    >
+                      {packageName}
+                    </span>
                   </div>
                   <div className={styles.template__action}>
-                    {/* <img className={styles.edit__icon} src={editIcon} alt="edit-icon" /> */}
-                    <img src={removeIcon} alt="remove-icon" />
+                    <img
+                      className={styles.edit__icon}
+                      src={editIcon}
+                      onClick={() => this.handleEdit(template, 'Edit')}
+                      alt="edit-icon"
+                    />
+                    <Popconfirm
+                      title="Are you sure?"
+                      onConfirm={() => this.handleRemoveTemplate(template, 'template')}
+                      // onCancel={cancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <img src={removeIcon} alt="remove-icon" />
+                    </Popconfirm>
+                  </div>
+                </div>
+              </Col>
+            );
+          })}
+          {customDocuments.map((doc, index) => {
+            const { key } = doc;
+            return (
+              <Col span={10} key={`${index + 1}`}>
+                <div className={styles.template}>
+                  <div className={styles.template__content}>
+                    <img
+                      src={templateIcon}
+                      alt="template-icon"
+                      onClick={() => this.handleOnClick(doc, 'doc')}
+                    />
+                    <span
+                      style={{
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        width: '130px',
+                      }}
+                    >
+                      {key}
+                    </span>
+                  </div>
+                  <div className={styles.template__action}>
+                    <Popconfirm
+                      title="Are you sure?"
+                      onConfirm={() => this.handleRemoveTemplate(doc, 'doc')}
+                      // onCancel={cancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <img src={removeIcon} alt="remove-icon" />
+                    </Popconfirm>
                   </div>
                 </div>
               </Col>
@@ -89,17 +235,18 @@ class ClosingPackage extends PureComponent {
   };
 
   renderAfterSendMail = () => {
+    const { closingPackage } = this.props;
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closePackage.map((template) => {
-            const { attachment } = template;
+          {closingPackage.map((template, index) => {
+            const { packageName } = template;
             return (
-              <Col span={10}>
+              <Col span={10} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
                     <img src={templateIcon} alt="template-icon" />
-                    <span>{attachment.name}</span>
+                    <span>{packageName}</span>
                   </div>
                 </div>
               </Col>
@@ -132,6 +279,7 @@ class ClosingPackage extends PureComponent {
           {formatMessage({ id: 'pages.relieving.closePackage' })}
         </p>
         {isSent ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
+        {this.renderModalEditTemplate()}
       </div>
     );
   }

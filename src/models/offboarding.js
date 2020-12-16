@@ -439,7 +439,7 @@ const offboarding = {
         dialog(error);
       }
     },
-    *removeOffBoardingPackage({ payload }, { call }) {
+    *removeOffBoardingPackage({ payload }, { call, put }) {
       try {
         const response = yield call(removeOffBoardingPackage, payload);
         const { statusCode } = response;

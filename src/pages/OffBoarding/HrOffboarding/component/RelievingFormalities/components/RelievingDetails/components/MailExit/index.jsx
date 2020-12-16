@@ -58,16 +58,6 @@ class MailExit extends Component {
     );
   };
 
-  // renderSpanColumn = (name) => {
-  //   if (name === 'NOC form') {
-  //     return 9;
-  //   }
-  //   if (name === 'Off boarding checklist') {
-  //     return 11;
-  //   }
-  //   return 12;
-  // };
-
   sendMailPackage = () => {
     const { dispatch, ticketId } = this.props;
     dispatch({
@@ -122,18 +112,6 @@ class MailExit extends Component {
     });
   };
 
-  handleEditSave = () => {
-    const {
-      exitPackage: { waitList = [] },
-    } = this.props;
-    const { isOpenModalEdit } = this.state;
-    this.setState({
-      isOpenModalEdit: !isOpenModalEdit,
-      template: {},
-      exitPackageTemplates: waitList,
-    });
-  };
-
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, template, mode } = this.state;
     return (
@@ -141,14 +119,7 @@ class MailExit extends Component {
         mode={mode}
         visible={isOpenModalEdit}
         template={template}
-        content={
-          <ModalContent
-            handleEditSave={this.handleEditSave}
-            packageType="EXIT-PACKAGE"
-            template={template}
-            mode={mode}
-          />
-        }
+        content={<ModalContent packageType="EXIT-PACKAGE" template={template} mode={mode} />}
         handleCancelEdit={this.handleCancelEdit}
       />
     );
