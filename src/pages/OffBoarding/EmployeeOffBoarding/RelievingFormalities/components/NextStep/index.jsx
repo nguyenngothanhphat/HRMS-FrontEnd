@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin } from 'antd';
+import { Spin, Row, Col } from 'antd';
 import { connect } from 'umi';
 import Document from './Document';
 import AnswerModal from '../AnswerModal';
@@ -54,7 +54,11 @@ class NextStep extends PureComponent {
     const { waitList = [] } = this.props;
     return waitList.map((item, index) => {
       const { packageName = '' } = item;
-      return <Document name={packageName} onClick={() => this.onFileClick(index)} percent={30} />;
+      return (
+        <Col span={8}>
+          <Document name={packageName} onClick={() => this.onFileClick(index)} percent={30} />
+        </Col>
+      );
     });
   };
 
@@ -129,8 +133,8 @@ class NextStep extends PureComponent {
                   your exit interview.
                 </span>
               </div>
-              <div className={styles.documentsRow}>
-                {!loadingFetchPackage && this.renderPackageList()}
+              <div>
+                <Row gutter={['20', '0']}>{!loadingFetchPackage && this.renderPackageList()}</Row>
                 {loadingFetchPackage && (
                   <>
                     <div className={styles.loadingSpin}>
@@ -142,12 +146,12 @@ class NextStep extends PureComponent {
 
               {!loadingFetchPackage && (
                 <div className={styles.submitFiles}>
+                  <span className={styles.submitButton}>Submit to HR</span>
                   {submitted ? (
                     <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
                   ) : (
                     <span />
                   )}
-                  <span className={styles.submitButton}>Submit to HR</span>
                 </div>
               )}
             </div>
