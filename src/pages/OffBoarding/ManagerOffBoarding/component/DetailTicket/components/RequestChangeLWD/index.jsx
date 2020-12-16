@@ -83,7 +83,7 @@ class RequestChangeLWD extends Component {
     const { visible, keyModal, isEdit, q } = this.state;
     const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
     return (
-      <Fragment>
+      <>
         <div className={styles.viewChangeLastWorkingDay}>
           <p className={styles.viewChangeLastWorkingDay__title}>Resignation request details</p>
           <p className={styles.viewChangeLastWorkingDay__label}>
@@ -177,7 +177,7 @@ class RequestChangeLWD extends Component {
           handleCancel={this.handleModal}
           handleSubmit={this.submitRequest}
         />
-      </Fragment>
+      </>
     );
   }
 }
