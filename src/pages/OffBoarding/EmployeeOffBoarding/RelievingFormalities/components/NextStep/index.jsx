@@ -1,19 +1,87 @@
 import React, { PureComponent } from 'react';
+import { Spin } from 'antd';
+import { connect } from 'umi';
 import Document from './Document';
+import AnswerModal from '../AnswerModal';
 import styles from './index.less';
 
-export default class NextStep extends PureComponent {
+@connect(
+  ({
+    offboarding,
+    user: { currentUser: { company: { _id: companyId = '' } = {} } = {} } = {},
+    offboarding: {
+      listOffboarding = [],
+      relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {},
+    } = {},
+
+    loading,
+  }) => ({
+    offboarding,
+    listOffboarding,
+    companyId,
+    waitList,
+    isSent,
+    loadingFetchPackage: loading.effects['offboarding/fetchRelievingDetailsById'],
+  }),
+)
+class NextStep extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showAnswerModal: false,
+      selectedDocument: -1,
+    };
   }
+
+  componentDidMount = () => {
+    const { dispatch, listOffboarding = [], companyId = '' } = this.props;
+    if (listOffboarding.length > 0) {
+      const inProgress = listOffboarding[0]; // only one offboarding request
+      const { _id = '' } = inProgress;
+      dispatch({
+        type: 'offboarding/fetchRelievingDetailsById',
+        payload: {
+          id: _id,
+          company: companyId,
+          packageType: '',
+        },
+      });
+    }
+  };
+
+  // render package waitList
+  renderPackageList = () => {
+    const { waitList = [] } = this.props;
+    return waitList.map((item, index) => {
+      const { packageName = '' } = item;
+      return <Document name={packageName} onClick={() => this.onFileClick(index)} percent={30} />;
+    });
+  };
+
+  onFileClick = (index) => {
+    this.setState({
+      showAnswerModal: true,
+      selectedDocument: index,
+    });
+  };
+
+  onCloseModal = () => {
+    this.setState({
+      showAnswerModal: false,
+      // selectedDocument: -1,
+    });
+  };
 
   render() {
     const {
       isScheduled = true,
       scheduleTime = '24.09.2020 | 4:00 PM',
       submitted = false,
+      loadingFetchPackage,
     } = this.props;
+
+    const { showAnswerModal, selectedDocument } = this.state;
+
     return (
       <div className={styles.NextStep}>
         <div className={styles.aboveContainer}>
@@ -62,22 +130,40 @@ export default class NextStep extends PureComponent {
                 </span>
               </div>
               <div className={styles.documentsRow}>
-                <Document name="Exit interview form" onClick={this.onFileClick} percent={30} />
-                <Document name="NOC form" onClick={this.onFileClick} percent={100} />
-                <Document name="Offboarding checklist" onClick={this.onFileClick} percent={0} />
-              </div>
-              <div className={styles.submitFiles}>
-                {submitted ? (
-                  <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
-                ) : (
-                  <span />
+                {!loadingFetchPackage && this.renderPackageList()}
+                {loadingFetchPackage && (
+                  <>
+                    <div className={styles.loadingSpin}>
+                      <Spin />
+                    </div>
+                  </>
                 )}
-                <span className={styles.submitButton}>Submit to HR</span>
               </div>
+
+              {!loadingFetchPackage && (
+                <div className={styles.submitFiles}>
+                  {submitted ? (
+                    <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
+                  ) : (
+                    <span />
+                  )}
+                  <span className={styles.submitButton}>Submit to HR</span>
+                </div>
+              )}
             </div>
           )}
         </div>
+
+        {!loadingFetchPackage && selectedDocument !== -1 && (
+          <AnswerModal
+            visible={showAnswerModal}
+            onClose={this.onCloseModal}
+            submitText="Submit"
+            selectedDocument={selectedDocument}
+          />
+        )}
       </div>
     );
   }
 }
+export default NextStep;

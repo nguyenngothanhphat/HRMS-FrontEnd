@@ -20,11 +20,13 @@ const { TabPane } = Tabs;
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    loading,
   }) => ({
     totalList,
     locationID,
     companyID,
     listOffboarding,
+    loadingFetchList: loading.effects['offboarding/fetchList'],
   }),
 )
 class EmployeeOffBoading extends Component {
@@ -55,7 +57,8 @@ class EmployeeOffBoading extends Component {
   };
 
   render() {
-    const { listOffboarding = [], totalList = [] } = this.props;
+    const { listOffboarding = [], totalList = [], loadingFetchList } = this.props;
+    const openRelievingFormalitiesTab = !loadingFetchList && listOffboarding.length > 0;
 
     return (
       <PageContainer>
@@ -76,7 +79,7 @@ class EmployeeOffBoading extends Component {
                   </div>
                 </div>
               </TabPane>
-              <TabPane tab="Relieving Formalities" key="2">
+              <TabPane disabled={!openRelievingFormalitiesTab} tab="Relieving Formalities" key="2">
                 <RelievingFormalities />
               </TabPane>
             </Tabs>
