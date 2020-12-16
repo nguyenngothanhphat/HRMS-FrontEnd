@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col } from 'antd';
-import SideImage from '../../../../../../../public/assets/images/timeOffMan.svg';
+import SideImage from '@/assets/teamVectorImage.svg';
 import styles from './index.less';
 
 export default class YourTimeline extends PureComponent {
