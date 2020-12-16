@@ -9,7 +9,7 @@ export default class NextStep extends PureComponent {
   }
 
   render() {
-    const { isScheduled = false, scheduleTime = '24.09.2020 | 4:00 PM' } = this.props;
+    const { isScheduled = true, scheduleTime = '24.09.2020 | 4:00 PM' } = this.props;
     return (
       <div className={styles.NextStep}>
         <div className={styles.abovePart}>
@@ -58,6 +58,10 @@ export default class NextStep extends PureComponent {
               <Document name="Exit interview form" onClick={this.onFileClick} percent={30} />
               <Document name="NOC form" onClick={this.onFileClick} percent={100} />
               <Document name="Offboarding checklist" onClick={this.onFileClick} percent={0} />
+            </div>
+            <div className={styles.submitFiles}>
+              <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
+              <span className={styles.submitButton}>Submit to HR</span>
             </div>
           </div>
         )}
