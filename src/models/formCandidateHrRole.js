@@ -173,6 +173,7 @@ const candidateInfo = {
         url: '',
       },
       hidePreviewOffer: false,
+      disablePreviewOffer: true,
       additionalQuestion: {
         opportunity: '',
         payment: '',
@@ -599,14 +600,17 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+
         yield put({
           type: 'updateSignature',
           payload: data,
         });
+
         yield put({
           type: 'saveTemp',
           payload: { ...data },
         });
+
         history.push({
           pathname: `/employee-onboarding/add/${rookieId}`,
           state: { isAddNew: true },
@@ -769,8 +773,7 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
-        // console.log('data', data);
-        // console.log('currentStep', data.currentStep);
+
         if (statusCode !== 200) throw response;
         const { _id } = data;
         yield put({
@@ -818,9 +821,24 @@ const candidateInfo = {
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
             hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
+            // disablePreviewOffer:
+            //   (data.offerLetter && data.offerLetter.attachment) ||
+            //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
+
+        if (
+          (data.offerLetter && data.offerLetter.attachment) ||
+          (data.staticOfferLetter && data.staticOfferLetter.url)
+        ) {
+          yield put({
+            type: 'saveTemp',
+            payload: {
+              disablePreviewOffer: false,
+            },
+          });
+        }
 
         // yield put({
         //   type: 'upadateAdditionalQuestion',
@@ -1243,6 +1261,7 @@ const candidateInfo = {
         ...state,
         tempData: {
           ...tempData,
+          hidePreviewOffer: false,
           offerLetter: action.payload,
         },
       };

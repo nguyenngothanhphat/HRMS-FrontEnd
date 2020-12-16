@@ -334,6 +334,14 @@ const OfferDetail = (props) => {
           },
         });
 
+        // Enable preview offer
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            disablePreviewOffer: false,
+          },
+        });
+
         // Save offer letter
         dispatch({
           type: 'candidateInfo/updateOfferLetter',
@@ -459,6 +467,7 @@ const OfferDetail = (props) => {
         tempData: {
           ...tempData,
           staticOfferLetter: offerData,
+          disablePreviewOffer: false,
         },
       },
     });
