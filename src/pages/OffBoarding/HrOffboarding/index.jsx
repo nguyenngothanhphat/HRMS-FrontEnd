@@ -7,16 +7,28 @@ import RelievingFormalities from './component/RelievingFormalities';
 import styles from './index.less';
 
 class HROffboarding extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabKey: '1',
+    };
+  }
+
+  onChangeTab = (key) => {
+    this.setState({ tabKey: key });
+  };
+
   render() {
     const { TabPane } = Tabs;
+    const { tabKey } = this.state;
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOffboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey="1">
+            <Tabs onTabClick={(key) => this.onChangeTab(key)} activeKey={tabKey}>
               <TabPane tab="Terminate work relationship" key="1">
                 <div className={styles.paddingHR}>
-                  <HRrequestTable />
+                  <HRrequestTable onChangeTab={this.onChangeTab} />
                 </div>
               </TabPane>
               <TabPane tab="Relieving Formalities" key="2">
