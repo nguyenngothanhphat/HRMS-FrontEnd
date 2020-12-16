@@ -9,6 +9,7 @@ import removeIcon from '@/assets/remove-off-boarding.svg';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import moment from 'moment';
 import { checkTime } from '@/utils/utils';
+import ModalAddComment1On1 from '@/components/ModalAddComment1On1';
 import FeedbackForm from './components/FeedbackForm';
 import FeedbackFormContent from './components/FeedbackFormContent';
 import RelievingTemplates from '../RelievingTemplates';
@@ -25,6 +26,7 @@ import styles from './index.less';
     relievingDetails,
     loading: loading.effects['offboarding/create1On1'],
     myId,
+    loadingAddComment: loading.effects['offboarding/complete1On1'],
   }),
 )
 class ConductExit extends Component {
@@ -36,6 +38,8 @@ class ConductExit extends Component {
       isOpenFeedbackForm: false,
       isOpenModalEdit: false,
       mode: '',
+      openModalAddComment: false,
+      keyModalAddComment: '',
     };
   }
 
@@ -127,7 +131,29 @@ class ConductExit extends Component {
   };
 
   handleAddComment = () => {
-    console.log('Add comment');
+    const { openModalAddComment } = this.state;
+    this.setState({
+      openModalAddComment: !openModalAddComment,
+      keyModalAddComment: !openModalAddComment ? '' : Date.now(),
+    });
+  };
+
+  submitAddComment = (payload) => {
+    const { dispatch, relievingDetails: { _id: offBoardingRequest = '' } = {} } = this.props;
+    dispatch({
+      type: 'offboarding/complete1On1',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'offboarding/getList1On1',
+          payload: {
+            offBoardingRequest,
+          },
+        });
+        this.handleAddComment();
+      }
+    });
   };
 
   handleClickEdit = (mode) => {
@@ -172,13 +198,14 @@ class ConductExit extends Component {
   };
 
   render() {
-    const { visible, keyModal } = this.state;
+    const { visible, keyModal, keyModalAddComment, openModalAddComment } = this.state;
     const {
       listMeetingTime = [],
       loading,
       itemSchedule = {},
       myId = '',
       relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
+      loadingAddComment,
     } = this.props;
     const {
       _id: idSchedule = '',
@@ -269,6 +296,14 @@ class ConductExit extends Component {
           hideMeetingWith
           key={keyModal}
           loading={loading}
+        />
+        <ModalAddComment1On1
+          key={keyModalAddComment}
+          visible={openModalAddComment}
+          data={itemSchedule}
+          handleCancel={this.handleAddComment}
+          handleSubmit={this.submitAddComment}
+          loading={loadingAddComment}
         />
         {this.renderModalEditTemplate()}
       </>

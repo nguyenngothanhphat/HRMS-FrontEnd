@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 // import empty from '@/assets/empty.svg';
 // import persion from '@/assets/people.svg';
-import { history } from 'umi';
+import { Link } from 'umi';
 // import persion from '@/assets/people.svg';
 import styles from './index.less';
 
@@ -12,14 +12,10 @@ class TableComponent extends PureComponent {
     this.state = {};
   }
 
-  push = () => {
-    history.push('/hr-offboarding/HrRequest/1854545');
-  };
-
-  renderAction = () => {
+  renderAction = (id) => {
     return (
       <div className={styles.rowAction}>
-        <span onClick={this.push}>Start Relieving Formalities</span>
+        <Link to={`/offboarding/relieving-detail/${id}`}>Start Relieving Formalities</Link>
       </div>
     );
   };
@@ -95,9 +91,9 @@ class TableComponent extends PureComponent {
       },
       {
         title: !isClosedTable ? <span className={styles.title}>Action </span> : null,
-        dataIndex: 'Action',
+        dataIndex: '_id',
         align: 'left',
-        render: () => (!isClosedTable ? this.renderAction() : null),
+        render: (_id) => (!isClosedTable ? this.renderAction(_id) : null),
       },
     ];
 
