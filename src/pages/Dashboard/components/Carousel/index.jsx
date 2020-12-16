@@ -7,7 +7,7 @@ export default class Panner extends PureComponent {
   render() {
     return (
       <div className={s.root}>
-        <Carousel effect="fade" arrows prevArrow={<LeftOutlined />} nextArrow={<RightOutlined />}>
+        <Carousel arrows prevArrow={<LeftOutlined />} nextArrow={<RightOutlined />}>
           <div className={`${s.content} ${s.bg1}`}>
             <div className={s.content1}>
               <div className={s.content1__text1}>Welcome Jason!</div>
