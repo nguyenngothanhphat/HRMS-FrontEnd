@@ -32,10 +32,10 @@ class ClosingPackage extends PureComponent {
   constructor(props) {
     super(props);
     const {
-      closingPackage: { waitList = [], packages = [] },
+      closingPackage: { waitList = [], packages = [], isSent },
     } = this.props;
     this.state = {
-      isSent: false,
+      isSent,
       closingPackage: waitList,
       customDocuments: packages,
       isOpenModalEdit: false,
@@ -45,8 +45,13 @@ class ClosingPackage extends PureComponent {
   }
 
   handleSendMail = () => {
-    this.setState({
-      isSent: true,
+    const { dispatch, ticketId } = this.props;
+    dispatch({
+      type: 'offboarding/sendOffBoardingPackage',
+      payload: {
+        packageType: 'CLOSING-PACKAGE',
+        ticketId,
+      },
     });
   };
 
@@ -230,17 +235,18 @@ class ClosingPackage extends PureComponent {
   };
 
   renderAfterSendMail = () => {
+    const { closingPackage } = this.props;
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closePackage.map((template) => {
-            const { attachment } = template;
+          {closingPackage.map((template, index) => {
+            const { packageName } = template;
             return (
-              <Col span={10}>
+              <Col span={10} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
                     <img src={templateIcon} alt="template-icon" />
-                    <span>{attachment.name}</span>
+                    <span>{packageName}</span>
                   </div>
                 </div>
               </Col>

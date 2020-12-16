@@ -58,16 +58,6 @@ class MailExit extends Component {
     );
   };
 
-  // renderSpanColumn = (name) => {
-  //   if (name === 'NOC form') {
-  //     return 9;
-  //   }
-  //   if (name === 'Off boarding checklist') {
-  //     return 11;
-  //   }
-  //   return 12;
-  // };
-
   sendMailPackage = () => {
     const { dispatch, ticketId } = this.props;
     dispatch({
