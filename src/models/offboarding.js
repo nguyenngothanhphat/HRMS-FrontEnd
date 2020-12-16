@@ -7,8 +7,6 @@ import {
   getapprovalflowList,
   getRequestById,
   getMeetingTime,
-  getDefaultTemplates,
-  getCustomTemplates,
   getTemplateById,
   addCustomTemplate,
   getListRelieving,
@@ -18,12 +16,17 @@ import {
   getListProjectByEmployee,
   complete1On1,
   reviewRequest,
+  // sendMailExitPackage,
+  getOffBoardingPackages,
   getListAssigned,
   getListAssignee,
   requestChangeLWD,
   handleRequestChangeLWD,
   handleWithdraw,
+  handleRelievingTemplateDraft,
   updateRelieving,
+  sendOffBoardingPackage,
+  removeOffBoardingPackage,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -42,6 +45,7 @@ const offboarding = {
     totalList: [],
     totalListTeamRequest: [],
     showModalSuccessfully: false,
+    relievingDetails: {},
     defaultExitPackage: [],
     defaultClosingPackage: [],
     customExitPackage: [],
@@ -49,6 +53,7 @@ const offboarding = {
     currentTemplate: {},
     inQueuesList: [],
     closeRecordsList: [],
+    itemCreateScheduleInterview: {},
     listAssigned: [],
     listAssignee: [],
   },
@@ -186,44 +191,82 @@ const offboarding = {
       }
       return response;
     },
-    *getDefaultExitPackage({ payload }, { call, put }) {
+    // Relieving Formalities
+    *fetchRelievingDetailsById({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getDefaultTemplates, payload);
-        const { statusCode, data = [] } = response;
+        if (!payload.packageType || payload.packageType === '') {
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'EXIT-PACKAGE',
+          });
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'CLOSING-PACKAGE',
+          });
+          yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: 'EXIT-INTERVIEW-FEEDBACKS',
+          });
+        } else {
+          const templateRes = yield call(getOffBoardingPackages, {
+            offBoardingId: payload.id,
+            company: payload.company._id,
+            templateType: 'DEFAULT',
+            packageType: payload.packageType,
+          });
+          const { statusCode: templateStat } = templateRes;
+          if (templateStat !== 200) throw templateRes;
+        }
+
+        response = yield call(getRequestById, payload);
+        const { statusCode, data: relievingDetails = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { defaultExitPackage: data } });
+        yield put({ type: 'save', payload: { relievingDetails } });
+        return response;
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
-    *getDefaultClosingPackage({ payload }, { call, put }) {
+    *getOffBoardingPackages({ payload }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplates, payload);
-        const { statusCode, data = [] } = response;
+        const response = yield call(getOffBoardingPackages, payload);
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { defaultClosingPackage: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCustomExitPackage({ payload }, { call, put }) {
-      try {
-        const response = yield call(getCustomTemplates, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { customExitPackage: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getCustomClosingPackage({ payload }, { call, put }) {
-      try {
-        const response = yield call(getCustomTemplates, payload);
-        const { statusCode, data = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { customClosingPackage: data } });
-      } catch (errors) {
-        dialog(errors);
+        switch (payload.packageType) {
+          case 'EXIT-PACKAGE':
+            if (payload.templateType === 'DEFAULT') {
+              yield put({ type: 'save', payload: { defaultExitPackage: data } });
+            } else {
+              yield put({ type: 'save', payload: { customExitPackage: data } });
+            }
+            break;
+          case 'CLOSING-PACKAGE':
+            if (payload.templateType === 'DEFAULT') {
+              yield put({ type: 'save', payload: { defaultClosingPackage: data } });
+            } else {
+              yield put({ type: 'save', payload: { customClosingPackage: data } });
+            }
+            break;
+          // case 'EXIT-INTERVIEW-FEEDBACKS':
+          //   if (payload.templateType === 'DEFAULT') {
+          //     yield put({ type: 'save', payload: { defaultClosingPackage: data } });
+          //   } else {
+          //     yield put({ type: 'save', payload: { customClosingPackage: data } });
+          //   }
+          //   break;
+          default:
+            break;
+        }
+      } catch (error) {
+        dialog(error);
       }
     },
     *fetchTemplateById({ payload = {} }, { call, put }) {
@@ -359,6 +402,16 @@ const offboarding = {
         dialog(errors);
       }
     },
+    *saveOffBoardingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(handleRelievingTemplateDraft, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { relievingDetails: data } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *updateRelieving({ payload }, { call, put }) {
       try {
         const response = yield call(updateRelieving, payload);
@@ -368,6 +421,35 @@ const offboarding = {
         yield put({ type: 'fetchListTeamRequest', payload: { status: 'ACCEPTED' } });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *sendOffBoardingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(sendOffBoardingPackage, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        const newRequest = yield call(getRequestById, { id: payload.ticketId });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        if (newRequestStat !== 200) throw newRequest;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *removeOffBoardingPackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(removeOffBoardingPackage, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const newRequest = yield call(getRequestById, { id: payload.ticketId });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        if (newRequestStat !== 200) throw newRequest;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
       }
     },
   },

@@ -86,11 +86,11 @@ class ModalContent extends Component {
         >
           <h2>{`Questions for ${title}`}</h2>
 
-          {settings?.map((template) => {
+          {settings?.map((template, index) => {
             return (
               <Form.Item
-                label={template.description}
-                name={template.key}
+                label={`Question ${index + 1}`}
+                // name={template.key}
                 rules={[
                   {
                     required: true,
@@ -100,7 +100,7 @@ class ModalContent extends Component {
               >
                 <TextArea
                   onChange={(e) => this.handleChange(e, template)}
-                  defaultValue={template.value}
+                  defaultValue={template.question}
                   rows={2}
                 />
               </Form.Item>
