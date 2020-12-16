@@ -38,6 +38,7 @@ class FeedbackFormContent extends PureComponent {
   render() {
     const {
       itemFeedBack: { settings = [] },
+      disabled = false,
     } = this.props;
     const initialValues = {};
     settings.map((item, index) => {
@@ -66,7 +67,7 @@ class FeedbackFormContent extends PureComponent {
                 },
               ]}
             >
-              <TextArea placeholder="Input your answer" />
+              <TextArea placeholder="Input your answer" disabled={disabled} />
             </Form.Item>
           ))}
         </Form>

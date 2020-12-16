@@ -31,7 +31,7 @@ class FeedbackForm extends Component {
   };
 
   render() {
-    const { visible = false, loading, content } = this.props;
+    const { visible = false, loading, content, disabled = false } = this.props;
     return (
       <Modal
         className={styles.feedbackForm}
@@ -51,6 +51,7 @@ class FeedbackForm extends Component {
             loading={loading}
             className={styles.btnSubmit}
             form="feedbackForm"
+            disabled={disabled}
           >
             Submit
           </Button>,
