@@ -74,6 +74,11 @@ class ModalContent extends Component {
       );
     }
     if (mode === 'Edit') {
+      const initValues = {};
+      settings.map((item, index) => {
+        initValues[index] = item.question;
+        return null;
+      });
       return (
         <Form
           name="templateSetting"
@@ -82,10 +87,12 @@ class ModalContent extends Component {
           ref={this.formRef}
           onFinish={() => this.handleSaveTemplate()}
           id="relievingTemplates"
+          initialValues={initValues}
         >
           {settings?.map((item, index) => {
             return (
               <Form.Item
+                name={index}
                 label={`Question ${index + 1}`}
                 rules={[
                   {
