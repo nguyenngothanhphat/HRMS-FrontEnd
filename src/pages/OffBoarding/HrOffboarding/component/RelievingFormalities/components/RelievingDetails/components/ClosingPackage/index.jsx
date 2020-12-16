@@ -11,20 +11,20 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-const closePackage = [
-  {
-    id: 1,
-    attachment: {
-      name: 'Relieving letter',
-    },
-  },
-  {
-    id: 2,
-    attachment: {
-      name: 'Experience letter',
-    },
-  },
-];
+// const closePackage = [
+//   {
+//     id: 1,
+//     attachment: {
+//       name: 'Relieving letter',
+//     },
+//   },
+//   {
+//     id: 2,
+//     attachment: {
+//       name: 'Experience letter',
+//     },
+//   },
+// ];
 
 @connect(({ offboarding: { relievingDetails: { closingPackage = {}, _id = '' } } }) => ({
   closingPackage,

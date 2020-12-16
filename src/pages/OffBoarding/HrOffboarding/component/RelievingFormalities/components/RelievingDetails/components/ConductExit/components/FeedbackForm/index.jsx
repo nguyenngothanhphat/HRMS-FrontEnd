@@ -31,21 +31,28 @@ class FeedbackForm extends Component {
   };
 
   render() {
-    const { visible = false, loading, content } = this.props;
+    const { visible = false, loading, content, disabled = false } = this.props;
     return (
       <Modal
         className={styles.feedbackForm}
         visible={visible}
         style={{ top: '50px' }}
         title={this.renderHeaderModal()}
-        // onOk={this.handleRemoveToServer}
         onCancel={this.handleCancel}
         destroyOnClose
         footer={[
           <div key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
             Cancel
           </div>,
-          <Button key="submit" type="primary" loading={loading} className={styles.btnSubmit}>
+          <Button
+            key="submit"
+            htmlType="submit"
+            type="primary"
+            loading={loading}
+            className={styles.btnSubmit}
+            form="feedbackForm"
+            disabled={disabled}
+          >
             Submit
           </Button>,
         ]}

@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'umi';
 import styles from './index.less';
 
 const array = [
@@ -30,7 +29,7 @@ export default class InfoEmployee extends PureComponent {
           {array.map(({ info }) => (
             <div className={styles.textData}>{info}</div>
           ))}
-          <Link style={{ textDecoration: 'underline' }}>View Aditya’s Career graph</Link>
+          <div className={styles.viewDetail}>View Aditya’s Career graph</div>
         </div>
       </div>
     );

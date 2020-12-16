@@ -12,6 +12,7 @@ import RightContent from './components/RightContent';
 import ModalNotice from './components/ModalNotice';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
 import RequestChangeLWD from './components/RequestChangeLWD';
+import ClosingComment from './components/ClosingComment';
 import styles from './index.less';
 
 @connect(
@@ -218,6 +219,11 @@ class DetailTicket extends Component {
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
     const checkShowNotification = this.checkShowNotification();
+    const checkClosingComment =
+      list1On1.find(
+        ({ isRelieving, status: statusRelieving }) =>
+          isRelieving && statusRelieving === 'COMPLETED',
+      ) || {};
 
     return (
       <>
@@ -256,6 +262,7 @@ class DetailTicket extends Component {
                 })}
                 <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} />
                 {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
+                {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={6}>
