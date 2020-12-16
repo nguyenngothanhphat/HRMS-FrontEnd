@@ -17,7 +17,7 @@ class TableOffBoarding extends PureComponent {
       dataIndex: 'candidate',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      render: (candidate) => {
+      render: (candidate = {}) => {
         const { ticketID = '' } = candidate;
         return <span>{ticketID}</span>;
       },
