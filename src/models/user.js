@@ -1,7 +1,5 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
 import { checkPermissions } from '@/utils/permissions';
-import { dialog } from '@/utils/utils';
-import { setToken } from '@/utils/token';
 
 const UserModel = {
   namespace: 'user',
@@ -40,14 +38,7 @@ const UserModel = {
           },
         });
       } catch (errors) {
-        setToken('');
-        yield put({
-          type: 'saveCurrentUser',
-          payload: {
-            currentUser: {},
-          },
-        });
-        dialog(errors);
+        // error
       }
     },
   },
