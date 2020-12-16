@@ -73,10 +73,10 @@ class TeamRequest extends Component {
     const { data = [], countdata = [], loading } = this.props;
 
     return (
-      <Fragment>
+      <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <TableManager data={data} loading={loading} />
-      </Fragment>
+      </>
     );
   }
 }

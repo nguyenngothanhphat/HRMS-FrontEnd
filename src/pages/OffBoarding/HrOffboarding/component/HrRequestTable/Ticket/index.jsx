@@ -8,10 +8,10 @@ import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 import LastWorkingDate from './components/LWD';
-// import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
 import styles from './index.less';
 
 @connect(
@@ -166,6 +166,11 @@ class HRDetailTicket extends Component {
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
+    const checkClosingComment =
+      list1On1.find(
+        ({ isRelieving, status: statusRelieving }) =>
+          isRelieving && statusRelieving === 'COMPLETED',
+      ) || {};
     return (
       <>
         <PageContainer>
@@ -192,7 +197,6 @@ class HRDetailTicket extends Component {
                   date={requestDate}
                   name={nameFrist}
                 />
-                {/* {lastWorkingDate && <CommentsFromHR />} */}
                 {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
@@ -212,6 +216,7 @@ class HRDetailTicket extends Component {
                     </Fragment>
                   );
                 })}
+                {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {status !== 'REJECTED' && <LastWorkingDate />}
               </Col>
               <Col span={7}>
