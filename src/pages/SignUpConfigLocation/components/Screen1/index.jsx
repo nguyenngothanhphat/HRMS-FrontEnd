@@ -49,11 +49,23 @@ class Screen1 extends Component {
   };
 
   handleFormHeadquarter = (changedValues) => {
-    const { dispatch } = this.props;
+    const { dispatch, signup } = this.props;
+    const { checkLegalSameHeadQuarter = false } = signup;
     dispatch({
       type: 'signup/saveHeadQuarterAddress',
       payload: { ...changedValues },
     });
+
+    if (checkLegalSameHeadQuarter) {
+      // Update the same values for legal address
+      dispatch({
+        type: 'signup/saveLegalAddress',
+        payload: { ...changedValues },
+      });
+      this.formRefLegal.current.setFieldsValue({
+        ...changedValues,
+      });
+    }
   };
 
   handleFormLegal = (changedValues) => {
