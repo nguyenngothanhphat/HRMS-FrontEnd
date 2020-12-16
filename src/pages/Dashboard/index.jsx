@@ -1,7 +1,32 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix } from 'antd';
+import { Affix, Row, Col } from 'antd';
+import Greeting from './components/Greeting';
+import ActivityLog from './components/ActivityLog';
+import MyApps from './components/MyApps';
+import TabManageTeamWork from './components/TabManageTeamWork';
+import TimeSheet from './components/TimeSheet';
+import Links from './components/Links';
+import Carousel from './components/Carousel';
 import styles from './index.less';
+
+const listLinkFQAs = [
+  { name: 'I cannot access an app?', href: '' },
+  { name: 'How do I integrate google calendar with the portal?', href: '' },
+  { name: 'I cannot access an app?', href: '' },
+  { name: 'How do I integrate google calendar with the portal?', href: '' },
+  { name: 'How do I remove an app from the list of apps?', href: '' },
+  { name: 'How do I remove an app from the list of apps?', href: '' },
+];
+
+const listQuickLinks = [
+  { name: 'Coronavirus resources', href: '', isNew: true },
+  { name: 'Work From Home guidelines', href: '', isNew: true },
+  { name: 'Employee Handbook', href: '' },
+  { name: 'Annual Report 2020', href: '' },
+  { name: 'Training Program 2020', href: '' },
+  { name: 'Submit Commuter Claim', href: '' },
+];
 
 export default class Dashboard extends PureComponent {
   render() {
@@ -13,6 +38,33 @@ export default class Dashboard extends PureComponent {
               <p className={styles.titlePage__text}>Dashboard</p>
             </div>
           </Affix>
+          <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
+            <Col span={7}>
+              <Greeting />
+              <div className={styles.leftContainer}>
+                <MyApps />
+                <div className={styles.divide} />
+                <ActivityLog />
+              </div>
+            </Col>
+            <Col span={17}>
+              <Carousel />
+              <Row gutter={[12, 12]}>
+                <Col span={12}>
+                  <TabManageTeamWork />
+                </Col>
+                <Col span={12}>
+                  <TimeSheet />
+                </Col>
+                <Col span={12}>
+                  <Links title="FAQs" showButton listData={listLinkFQAs} />
+                </Col>
+                <Col span={12}>
+                  <Links title="Quick Links" listData={listQuickLinks} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
       </PageContainer>
     );

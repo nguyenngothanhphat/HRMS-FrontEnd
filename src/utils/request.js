@@ -29,18 +29,24 @@ const codeMessage = {
 
 const errorHandler = (error) => {
   const { response } = error;
+  const { status, statusText, url } = response;
+  if (status === 401) {
+    window.g_app._store.dispatch({
+      type: 'login/logout',
+    });
+    return { statusCode: 401 };
+  }
 
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+  if (status) {
+    const errorText = codeMessage[status] || statusText;
     notification.error({
-      message: `请求错误 ${status}: ${url}`,
+      message: `Request error ${status}: ${url}`,
       description: errorText,
     });
   } else if (!response) {
     notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
+      description: 'Your network is abnormal and cannot connect to the server',
+      message: 'Network anomaly',
     });
   }
 
