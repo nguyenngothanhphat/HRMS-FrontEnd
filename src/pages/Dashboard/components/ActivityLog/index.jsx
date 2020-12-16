@@ -49,7 +49,7 @@ const activityList = [
   {
     id: 4,
     day: 8,
-    month: 'Jule',
+    month: 'July',
     year: 2020,
     info: (
       <p>
@@ -102,7 +102,7 @@ const requireListData = activityList.splice(0, 5);
 const ActivityLog = () => {
   const [ascending, setAscending] = useState(false);
   const [allList, setAllList] = useState([]);
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState('1');
   const [requireList, setRequireList] = useState([]);
 
   const allCount = allList.length < 10 ? `0${allList.length}` : allList.length;
@@ -115,7 +115,7 @@ const ActivityLog = () => {
 
   const sort = () => {
     let currentList;
-    if (activeTab === 1) {
+    if (activeTab === '1') {
       currentList = [...allList];
     } else {
       currentList = [...requireList];
@@ -129,7 +129,6 @@ const ActivityLog = () => {
     const newList = currentList.sort((item1, item2) => {
       const date1 = new Date(`${item1.month} ${item1.day},${item1.year}`);
       const date2 = new Date(`${item2.month} ${item2.day},${item2.year}`);
-      console.log(date1.getTime() - date2.getTime());
       if (ascending) {
         return date2.getTime() - date1.getTime();
       }
@@ -137,7 +136,7 @@ const ActivityLog = () => {
     });
 
     // Update correspond list
-    if (activeTab === 1) {
+    if (activeTab === '1') {
       setAllList(newList);
     } else {
       setRequireList(newList);
