@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
@@ -5,8 +6,8 @@
 /* eslint-disable no-bitwise */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
-import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag } from 'antd';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
+import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 import 'react-quill/dist/quill.snow.css';
@@ -136,6 +137,8 @@ class EmailReminderForm extends PureComponent {
       _sendingDate: '',
       recipient: '',
       emailSubject: '',
+      load: false,
+      selectedSelectBox: 0,
     };
   }
 
@@ -249,6 +252,88 @@ class EmailReminderForm extends PureComponent {
     this.setState({ emailSubject: value });
   };
 
+  onClickCondition = (index) => {
+    const { conditionsData, selectedSelectBox } = this.state;
+    const newConditionsData = [...conditionsData];
+    const { dispatch } = this.props;
+
+    if (selectedSelectBox !== index) {
+      this.setState({
+        selectedSelectBox: index,
+      });
+
+      newConditionsData.forEach((item) => {
+        if (item.id === index) {
+          switch (item.key) {
+            case 'department':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchDepartmentList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            case 'location':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchLocationList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            case 'title':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchTitleList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            default:
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchEmployeeTypeList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+          }
+        }
+      });
+    }
+  };
+
   onChangeCondition = (index, name, value) => {
     const { conditionsData, conditions } = this.state;
     const { dispatch } = this.props;
@@ -268,6 +353,7 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else if (value === 'location') {
         dispatch({
@@ -280,6 +366,7 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else if (value === 'title') {
         dispatch({
@@ -292,6 +379,7 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else {
         dispatch({
@@ -304,6 +392,7 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       }
       newConditions[index][name] = value;
@@ -315,8 +404,7 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
-    console.log('newConditionsData:', newConditionsData);
-    console.log('newConditions:', newConditions);
+    // console.log('newConditionsData:', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -412,13 +500,9 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    console.log('dataSubmit: ', dataSubmit);
-
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,
-    }).then((data) => {
-      console.log('dataSubmit AFTER call api: ', data);
     });
   };
 
@@ -439,7 +523,10 @@ class EmailReminderForm extends PureComponent {
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
+      load,
     } = this.state;
+
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
       <Col span={24}>
@@ -489,17 +576,29 @@ class EmailReminderForm extends PureComponent {
                         value={data.value}
                         tagRender={this.tagRender}
                         mode="multiple"
-                        // showArrow
+                        showArrow
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                        onClick={() => this.onClickCondition(index)}
                       >
-                        {departments.map((department) => {
-                          return (
-                            <Option value={department._id} key={department._id}>
-                              {department.name}
-                            </Option>
-                          );
-                        })}
+                        {load ? (
+                          <>
+                            {departments.map((department) => {
+                              return (
+                                <Option value={department._id} key={department._id}>
+                                  {department.name}
+                                </Option>
+                              );
+                            })}
+                          </>
+                        ) : (
+                          <Option style={{ margin: 'auto', background: 'none' }}>
+                            <Spin indicator={antIcon} className={styles.iconSpin} />
+                          </Option>
+                        )}
                       </Select>
                     </Row>
                   </Col>

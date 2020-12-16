@@ -3,6 +3,8 @@ import { Row, Col, Input, Button, Popconfirm } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
+import sendTemplateIcon from '@/assets/send-template-icon.svg';
+import addTemplateIcon from '@/assets/add-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
 import RelievingTemplates from '../RelievingTemplates';
@@ -43,6 +45,25 @@ class ClosingPackage extends PureComponent {
       mode: '',
     };
   }
+
+  renderExtraContent = () => {
+    return (
+      <div>
+        <img
+          className={styles.closingPkg__card__iconExtra}
+          style={{ paddingRight: '20px' }}
+          src={addTemplateIcon}
+          alt="add-template-icon"
+        />
+        <img
+          onClick={this.sendMailPackage}
+          className={styles.closingPkg__card__iconExtra}
+          src={sendTemplateIcon}
+          alt="send-template-icon"
+        />
+      </div>
+    );
+  };
 
   handleSendMail = () => {
     const { dispatch, ticketId } = this.props;
@@ -275,9 +296,10 @@ class ClosingPackage extends PureComponent {
     const { isSent } = this.state;
     return (
       <div className={styles.closingPackage}>
-        <p className={styles.closingPackage__title}>
+        <div className={styles.closingPackage__title}>
           {formatMessage({ id: 'pages.relieving.closePackage' })}
-        </p>
+          {this.renderExtraContent()}
+        </div>
         {isSent ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
         {this.renderModalEditTemplate()}
       </div>
