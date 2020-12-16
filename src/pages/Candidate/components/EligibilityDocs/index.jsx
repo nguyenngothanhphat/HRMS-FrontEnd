@@ -147,10 +147,10 @@ class EligibilityDocs extends PureComponent {
     const { user } = generatedBy;
     const { email } = user;
 
-    this.setState({
-      openModal: true,
-      isSentEmail: true,
-    });
+    // this.setState({
+    //   openModal: true,
+    //   isSentEmail: true,
+    // });
 
     dispatch({
       type: 'candidateProfile/sendEmailByCandidate',

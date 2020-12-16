@@ -1,0 +1,60 @@
+.mailExit {
+  margin-bottom: 24px;
+  width: 100%;
+  :global {
+    .ant-card-bordered {
+      border: 1px solid #d6dce0;
+    }
+    .ant-card-head {
+      border-color: #d6dce0;
+    }
+    .ant-card-head-title {
+      height: 67px;
+      line-height: 67px;
+      padding: 0 !important;
+      font-weight: 700;
+    }
+  }
+
+  &__card {
+    border-radius: 5px;
+    &__iconExtra {
+      cursor: pointer;
+    }
+  }
+
+  .template {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 210px;
+    height: 42px;
+    border-radius: 5px;
+    border: 1px solid rgba(214, 220, 224, 1);
+    padding: 0 14px;
+    &__content {
+      display: flex;
+      cursor: pointer;
+    }
+    &__action {
+      img {
+        cursor: pointer;
+      }
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    span {
+      margin-left: 10px;
+    }
+    .edit__icon {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  }
+}
+
+.loading {
+  position: relative;
+  top: 50%;
+  left: 50%;
+}

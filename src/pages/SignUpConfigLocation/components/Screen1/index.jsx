@@ -49,11 +49,23 @@ class Screen1 extends Component {
   };
 
   handleFormHeadquarter = (changedValues) => {
-    const { dispatch } = this.props;
+    const { dispatch, signup } = this.props;
+    const { checkLegalSameHeadQuarter = false } = signup;
     dispatch({
       type: 'signup/saveHeadQuarterAddress',
       payload: { ...changedValues },
     });
+
+    if (checkLegalSameHeadQuarter) {
+      // Update the same values for legal address
+      dispatch({
+        type: 'signup/saveLegalAddress',
+        payload: { ...changedValues },
+      });
+      this.formRefLegal.current.setFieldsValue({
+        ...changedValues,
+      });
+    }
   };
 
   handleFormLegal = (changedValues) => {
@@ -120,17 +132,17 @@ class Screen1 extends Component {
     } = signup;
 
     const checkDisableBtnNext =
-      !name ||
-      !dba ||
-      !ein ||
-      !addressHead ||
-      !countryHead ||
-      !stateHead ||
-      !zipCodeHead ||
-      !addressLegal ||
-      !country ||
-      !stateLegal ||
-      !zipCodeLegal;
+      !name.trim() ||
+      !dba.trim() ||
+      !ein.trim() ||
+      !addressHead.trim() ||
+      !countryHead.trim() ||
+      !stateHead.trim() ||
+      !zipCodeHead.trim() ||
+      !addressLegal.trim() ||
+      !country.trim() ||
+      !stateLegal.trim() ||
+      !zipCodeLegal.trim();
 
     const listStateHead = this.findListState(countryHead) || [];
     const listStateLegal = this.findListState(country) || [];
@@ -150,7 +162,7 @@ class Screen1 extends Component {
             }}
             onValuesChange={this.handleFormCompanyChange}
           >
-            <Fragment>
+            <>
               <p className={s.root__form__title}>Enter company details</p>
               <p className={s.root__form__description}>
                 We need to collect some basic information so that we can identify your company and
@@ -166,7 +178,7 @@ class Screen1 extends Component {
               <Form.Item label="EIN*" name="ein">
                 <Input />
               </Form.Item>
-            </Fragment>
+            </>
           </Form>
         </div>
         <div className={s.root__form} style={{ marginTop: '41px' }}>
@@ -184,7 +196,7 @@ class Screen1 extends Component {
             }}
             onValuesChange={this.handleFormHeadquarter}
           >
-            <Fragment>
+            <>
               <p className={s.root__form__title}>Headquarter address</p>
               <Form.Item label="Address*" name="address">
                 <Input />
@@ -228,7 +240,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
               </Row>
-            </Fragment>
+            </>
           </Form>
         </div>
         <div className={s.root__form} style={{ marginTop: '41px' }}>
@@ -246,7 +258,7 @@ class Screen1 extends Component {
             }}
             onValuesChange={this.handleFormLegal}
           >
-            <Fragment>
+            <>
               <div className={s.viewRow}>
                 <p className={s.root__form__title}>Legal address</p>
                 <Checkbox
@@ -300,7 +312,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
               </Row>
-            </Fragment>
+            </>
           </Form>
         </div>
         <div className={s.root__viewBtnNext}>
