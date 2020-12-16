@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Input, Row, Col } from 'antd';
+import { Modal, Button, Form, Input, Row, Col, Radio } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -14,6 +14,8 @@ const { TextArea } = Input;
   }),
 )
 class AnswerModal extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -34,20 +36,44 @@ class AnswerModal extends PureComponent {
     }
   };
 
-  renderFormItem = (question, index) => {
+  renderFormItem = (answer, question, answerType, indexOfQuestion) => {
+    const radioStyle = {
+      display: 'block',
+      // height: '30px',
+      lineHeight: '30px',
+    };
+
     return (
       <>
-        <Row align="middle" gutter={['10', '10']}>
+        <Row key={`${indexOfQuestion + 1}`} align="top" gutter={['10', '10']}>
           <Col span={12}>
             <span>
-              <span style={{ fontWeight: 'bold' }}>Question {index + 1}: </span>
+              <span style={{ fontWeight: 'bold' }}>Question {indexOfQuestion + 1}: </span>
               {question}
             </span>
           </Col>
           <Col span={12}>
-            <Form.Item key={`${index + 1}`} name={`question${index}`}>
-              <TextArea />
-            </Form.Item>
+            {answerType === 'FIELD' && (
+              <>
+                <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
+                  <TextArea />
+                </Form.Item>
+              </>
+            )}
+
+            {answerType === 'BULLET' && (
+              <>
+                <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
+                  <Radio.Group>
+                    {answer.map((value, index) => (
+                      <Radio style={radioStyle} key={`${index + 1}`} value={value}>
+                        {value}
+                      </Radio>
+                    ))}
+                  </Radio.Group>
+                </Form.Item>
+              </>
+            )}
           </Col>
         </Row>
       </>
@@ -58,13 +84,19 @@ class AnswerModal extends PureComponent {
     const { questionList } = this.state;
     return (
       <>
-        <Form>
+        <Form
+          name="basic"
+          ref={this.formRef}
+          id="myForm"
+          onFinish={this.onFinish}
+          onFinishFailed={this.onFinishFailed}
+        >
           <Form.List name="questions">
             {() => (
               <>
                 {questionList.map((data, index) => {
                   const { answer = '', question = '', answerType = '' } = data;
-                  return this.renderFormItem(question, index);
+                  return this.renderFormItem(answer, question, answerType, index);
                 })}
               </>
             )}
@@ -72,6 +104,10 @@ class AnswerModal extends PureComponent {
         </Form>
       </>
     );
+  };
+
+  onFinish = (values) => {
+    console.log('values', values);
   };
 
   render() {
@@ -92,7 +128,9 @@ class AnswerModal extends PureComponent {
           <p className={styles.title}>{packageName}</p>
           <div className={styles.formContainer}>{this.renderForm()}</div>
           <div className={styles.footer}>
-            <Button onClick={() => onClose()}>{submitText}</Button>
+            <Button key="submit" type="primary" form="myForm" htmlType="submit">
+              {submitText}
+            </Button>
           </div>
         </div>
       </Modal>

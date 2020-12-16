@@ -68,7 +68,7 @@ class NextStep extends PureComponent {
   onCloseModal = () => {
     this.setState({
       showAnswerModal: false,
-      // selectedDocument: -1,
+      selectedDocument: -1,
     });
   };
 
