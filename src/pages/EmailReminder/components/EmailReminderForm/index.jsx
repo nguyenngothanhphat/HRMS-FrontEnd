@@ -598,7 +598,7 @@ class EmailReminderForm extends PureComponent {
                             })}
                           </>
                         ) : (
-                          <Option className={styles.optionSelect}>
+                          <Option style={{ margin: 'auto', background: 'none' }}>
                             <Spin indicator={antIcon} className={styles.iconSpin} />
                           </Option>
                         )}
