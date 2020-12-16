@@ -137,6 +137,7 @@ class EmailReminderForm extends PureComponent {
       recipient: '',
       emailSubject: '',
       load: false,
+      selectedSelectBox: 0,
     };
   }
 
@@ -251,79 +252,85 @@ class EmailReminderForm extends PureComponent {
   };
 
   onClickCondition = (index) => {
-    const { conditionsData } = this.state;
+    const { conditionsData, selectedSelectBox } = this.state;
     const newConditionsData = [...conditionsData];
     const { dispatch } = this.props;
 
-    newConditionsData.forEach((item) => {
-      if (item.id === index) {
-        switch (item.key) {
-          case 'department':
-            this.setState({ load: false });
-            dispatch({
-              type: 'employeeSetting/fetchDepartmentList',
-              payload: {},
-            }).then((data) => {
-              this.setState((prevState) => ({
-                conditionsTrigger: {
-                  ...prevState.conditionsTrigger,
-                  departments: data,
-                },
-              }));
-              this.setState({ load: true });
-            });
-            break;
+    if (selectedSelectBox !== index) {
+      this.setState({
+        selectedSelectBox: index,
+      });
 
-          case 'location':
-            this.setState({ load: false });
-            dispatch({
-              type: 'employeeSetting/fetchLocationList',
-              payload: {},
-            }).then((data) => {
-              this.setState((prevState) => ({
-                conditionsTrigger: {
-                  ...prevState.conditionsTrigger,
-                  departments: data,
-                },
-              }));
-              this.setState({ load: true });
-            });
-            break;
+      newConditionsData.forEach((item) => {
+        if (item.id === index) {
+          switch (item.key) {
+            case 'department':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchDepartmentList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
 
-          case 'title':
-            this.setState({ load: false });
-            dispatch({
-              type: 'employeeSetting/fetchTitleList',
-              payload: {},
-            }).then((data) => {
-              this.setState((prevState) => ({
-                conditionsTrigger: {
-                  ...prevState.conditionsTrigger,
-                  departments: data,
-                },
-              }));
-              this.setState({ load: true });
-            });
-            break;
+            case 'location':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchLocationList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
 
-          default:
-            this.setState({ load: false });
-            dispatch({
-              type: 'employeeSetting/fetchEmployeeTypeList',
-              payload: {},
-            }).then((data) => {
-              this.setState((prevState) => ({
-                conditionsTrigger: {
-                  ...prevState.conditionsTrigger,
-                  departments: data,
-                },
-              }));
-              this.setState({ load: true });
-            });
-            break;
+            case 'title':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchTitleList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            default:
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchEmployeeTypeList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   onChangeCondition = (index, name, value) => {
@@ -591,8 +598,8 @@ class EmailReminderForm extends PureComponent {
                             })}
                           </>
                         ) : (
-                          <Option>
-                            <Spin indicator={antIcon} />
+                          <Option className={styles.optionSelect}>
+                            <Spin indicator={antIcon} className={styles.iconSpin} />
                           </Option>
                         )}
                       </Select>
