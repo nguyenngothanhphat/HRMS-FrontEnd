@@ -38,7 +38,7 @@ const CustomToolbar = () => (
       departmentListByCompanyId = [],
       listAutoField = [],
     } = {},
-    user: { currentUser: { company: { _id = '' } = {}, title: { name: titleName = '' } = {}, location: { name: locationName = '' } = {} } = {} } = {},
+    user: { currentUser: { company: { _id = '' } = {}, roles = [], location: { name: locationName = '' } = {} } = {} } = {},
   }) => ({
     triggerEventList,
     locationList,
@@ -48,8 +48,8 @@ const CustomToolbar = () => (
     departmentListByCompanyId,
     _id,
     listAutoField,
-    titleName,
-    locationName
+    locationName,
+    roles
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -635,15 +635,30 @@ class EmailReminderForm extends PureComponent {
   };
 
   checkOptionDepartment = (departmentName) => {
-    const {titleName, locationName} = this.props;
+    const {locationName, roles} = this.props;
     const {isLocation} = this.state;
     let check = true;
 
+    let hrManager = '';
+    let glManager = '';
+
+    roles.forEach((item) => {
+      if(item._id === 'HR-GLOBAL')
+      {
+        glManager = 'HR-GLOBAL';
+      }
+      if(item._id === 'HR-MANAGER')
+      {
+        hrManager = 'HR-MANAGER';
+      }
+    });
+
+
     if(isLocation){
-      if (departmentName === locationName && titleName === 'HR Manager') {
+      if (hrManager && departmentName === locationName ) {
         check = false;
       } 
-      if (titleName !== 'HR Manager') {
+      if (glManager) {
         check = false;
       }
     }else {
