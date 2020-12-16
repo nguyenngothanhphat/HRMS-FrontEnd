@@ -38,7 +38,7 @@ const CustomToolbar = () => (
       departmentListByCompanyId = [],
       listAutoField = [],
     } = {},
-    user: { currentUser: { company: { _id = '' } = {}, title: { name = '' } = {} } = {} } = {},
+    user: { currentUser: { company: { _id = '' } = {}, title: { name: titleName = '' } = {}, location: { name: locationName = '' } = {} } = {} } = {},
   }) => ({
     triggerEventList,
     locationList,
@@ -48,6 +48,8 @@ const CustomToolbar = () => (
     departmentListByCompanyId,
     _id,
     listAutoField,
+    titleName,
+    locationName
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -140,6 +142,7 @@ class EmailReminderForm extends PureComponent {
       recipient: '',
       emailSubject: '',
       load: false,
+      isLocation: false,
       selectedSelectBox: 0,
     };
   }
@@ -527,6 +530,7 @@ class EmailReminderForm extends PureComponent {
 
     if (name === 'key') {
       if (value === 'department') {
+        this.setState({isLocation: false})
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -540,6 +544,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else if (value === 'location') {
+        this.setState({isLocation: true})
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -553,6 +558,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else if (value === 'title') {
+        this.setState({isLocation: false})
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -566,6 +572,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else {
+        this.setState({isLocation: false})
         dispatch({
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
@@ -628,12 +635,22 @@ class EmailReminderForm extends PureComponent {
   };
 
   checkOptionDepartment = (departmentName) => {
-    let location = '';
+    const {titleName, locationName} = this.props;
+    const {isLocation} = this.state;
+    let check = true;
 
-    if (departmentName === 'USA') {
-      location = departmentName;
-      console.log('location: ', location);
+    if(isLocation){
+      if (departmentName === locationName && titleName === 'HR Manager') {
+        check = false;
+      } 
+      if (titleName !== 'HR Manager') {
+        check = false;
+      }
+    }else {
+      check = false;
     }
+
+    return check;
   };
 
   onAddCondition = () => {
@@ -720,7 +737,6 @@ class EmailReminderForm extends PureComponent {
     } = this.state;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-    console.log('departments: ', departments);
 
     return (
       <Col span={24}>
@@ -772,8 +788,7 @@ class EmailReminderForm extends PureComponent {
                         mode="multiple"
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
