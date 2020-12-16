@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 
@@ -57,6 +58,12 @@ export default class RenderTable extends PureComponent {
         count: this.getCount('DRAFT'),
         renderTab: this.renderTab('DRAFT'),
       },
+      {
+        value: '6',
+        title: 'Withdraw',
+        count: this.getCount('WITHDRAW'),
+        renderTab: this.renderTab('WITHDRAW'),
+      },
     ];
 
     return (
@@ -65,7 +72,6 @@ export default class RenderTable extends PureComponent {
           tabBarGutter={35}
           defaultActiveKey="1"
           onChange={(activeKey) => this.onChangeTab(activeKey)}
-          tabBarExtraContent={this.renderTableTitle}
         >
           {data.map((item) => (
             <TabPane tab={`${item.title} (${item.count})`} key={item.value} />

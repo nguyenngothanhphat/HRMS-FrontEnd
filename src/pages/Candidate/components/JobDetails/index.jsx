@@ -29,23 +29,74 @@ class JobDetails extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    const {
+      data: { dateOfJoining = '', noticePeriod = '' },
+      dispatch,
+      checkMandatory,
+    } = this.props;
+
+    if (dateOfJoining && noticePeriod) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: true,
+          },
+        },
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { dispatch, checkMandatory, data } = this.props;
+
+    const { dateOfJoining = '', noticePeriod = '' } = data;
+    let valid = false;
+    if (dateOfJoining && noticePeriod) {
+      valid = true;
+    } else {
+      valid = false;
+    }
+
+    if (prevProps.checkMandatory.filledJobDetail !== valid) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: valid,
+          },
+        },
+      });
+    }
+  }
+
   _handleSelect = (value, name) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, data } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+    const { dateOfJoining, noticePeriod } = data;
 
-    if ((candidatesNoticePeriod !== '', prefferedDateOfJoining !== '')) {
-      checkMandatory.filledJobDetail = true;
-    } else {
-      checkMandatory.filledJobDetail = false;
+    let newNoticePeriod = noticePeriod;
+    let newDateOfJoining = dateOfJoining;
+
+    if (name === 'candidatesNoticePeriod') {
+      newNoticePeriod = value;
     }
+    if (name === 'prefferedDateOfJoining') {
+      newDateOfJoining = value;
+    }
+
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        jobDetails,
-        checkMandatory: {
-          ...checkMandatory,
+        // jobDetails,
+        data: {
+          ...data,
+          dateOfJoining: newDateOfJoining,
+          noticePeriod: newNoticePeriod,
         },
       },
     });

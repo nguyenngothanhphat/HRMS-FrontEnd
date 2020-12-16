@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -8,9 +10,16 @@ import {
   saveOptionalQuestions,
   updateOptionalQuestions,
   getTriggerEventList,
+  getLocationList,
+  getDepartmentList,
+  getTitleList,
+  getEmployeeTypeList,
   uploadSignature,
   addCustomTemplate,
   removeTemplate,
+  getDepartmentListByCompanyId,
+  getListAutoField,
+  addCustomEmail,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -30,6 +39,13 @@ const employeeSetting = {
       signature: '',
       designation: '',
     },
+    locationList: [],
+    departmentList: [],
+    titleList: [],
+    employeeTypeList: [],
+    departmentListByCompanyId: [],
+    listAutoField: [],
+    dataSubmit: {},
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -170,12 +186,111 @@ const employeeSetting = {
       try {
         const response = yield call(getTriggerEventList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { triggerEventList: data } });
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchLocationList(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getLocationList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationList: data } });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchDepartmentList(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getDepartmentList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { departmentList: data } });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchTitleList(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getTitleList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { titleList: data } });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmployeeTypeList(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getEmployeeTypeList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { employeeTypeList: data } });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchDepartmentListByCompanyId({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getDepartmentListByCompanyId, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { departmentListByCompanyId: data },
+        });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchListAutoField(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListAutoField);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAutoField: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addCustomEmail({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addCustomEmail, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.status,
+          description: response.message,
+        });
+        yield put({
+          type: 'save',
+          payload: { dataSubmit: data },
+        });
+        return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

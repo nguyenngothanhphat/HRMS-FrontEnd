@@ -6,6 +6,7 @@ import styles from './index.less';
 class FieldsComponent extends PureComponent {
   render() {
     const { Tab, HRField, candidateField, _handleSelect, data } = this.props;
+    const { dateOfJoining = '', noticePeriod = '' } = data;
     return (
       <div className={styles.FieldsComponent}>
         <FilledByHR styles={styles.Input} Tab={Tab} HRField={HRField} data={data} />
@@ -13,6 +14,8 @@ class FieldsComponent extends PureComponent {
           styles={styles.Input}
           candidateField={candidateField}
           _handleSelect={_handleSelect}
+          dateOfJoining={dateOfJoining}
+          noticePeriod={noticePeriod}
         />
       </div>
     );

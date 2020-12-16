@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Radio, Select, Checkbox, Form, Row, Col, Button, Typography } from 'antd';
 
 import { connect, formatMessage } from 'umi';
-import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
+// import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
+import UploadImage from '@/components/UploadImage';
 import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';
@@ -73,8 +74,8 @@ const OfferDetail = (props) => {
     });
 
     const { includeOffer = 1 } = allFieldsValues;
-    console.log(includeOffer);
-    console.log(uploadedOffer);
+    // console.log(includeOffer);
+    // console.log(uploadedOffer);
     if (includeOffer === 2) {
       if (!uploadedOffer.url) {
         valid = false;
@@ -152,7 +153,7 @@ const OfferDetail = (props) => {
           companyHandbook: handbook,
           template: file,
           candidate: _id,
-          hidePreviewOffer: includeOffer === 2,
+          hidePreviewOffer: includeOffer === 1,
         },
       },
     });

@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, InputNumber, DatePicker, Typography } from 'antd';
 import { formatMessage } from 'umi';
+import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
+const dateFormat = 'MM/DD/YYYY';
 class FilledByCandidate extends PureComponent {
   constructor(props) {
     super(props);
@@ -17,10 +19,23 @@ class FilledByCandidate extends PureComponent {
     }));
   };
 
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().startOf('day');
+  };
+
   render() {
-    const { styles, candidateField, _handleSelect = () => {}, jobDetail = {} } = this.props;
+    const {
+      styles,
+      candidateField,
+      _handleSelect = () => {},
+      noticePeriod = '',
+      dateOfJoining = '',
+    } = this.props;
+
+    const dateJoin = dateOfJoining ? moment(dateOfJoining).locale('en').format(dateFormat) : '';
+
     const { isHidden } = this.state;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetail;
     return (
       <div className={InternalStyle.CandidateFields}>
         <Typography.Title level={5} className={InternalStyle.title}>
@@ -34,20 +49,21 @@ class FilledByCandidate extends PureComponent {
               placeholder={candidateField[0].placeholder}
               className={styles}
               onChange={(value) => _handleSelect(value, candidateField[0].title)}
-              defaultValue={candidatesNoticePeriod}
+              defaultValue={noticePeriod}
             />
           </Col>
         </Row>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
+            <Typography.Title level={5}>{candidateField[1].name}*</Typography.Title>
             <DatePicker
               className={styles}
+              disabledDate={this.disabledDate}
               placeholder=""
               picker="date"
               format="MM/DD/YYYY"
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={prefferedDateOfJoining}
+              defaultValue={dateJoin}
             />
           </Col>
           <Col xs={16} sm={16} md={14} lg={10} xl={10}>

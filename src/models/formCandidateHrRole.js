@@ -48,6 +48,7 @@ const candidateInfo = {
       filledSalaryStructure: false,
       filledAdditionalQuestion: false,
       salaryStatus: 2,
+      calledListTitle: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -60,7 +61,7 @@ const candidateInfo = {
         filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
-      employeeType: '5f50c2541513a742582206f9',
+      employeeType: {},
       previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
@@ -505,6 +506,10 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: { employeeTypeList },
         });
+        yield put({
+          type: 'updateEmployeeType',
+          payload: employeeTypeList[0],
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -656,13 +661,14 @@ const candidateInfo = {
 
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
+
       try {
         response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { listTitle: data },
+          payload: { ...data, listTitle: data },
         });
       } catch (error) {
         dialog(error);
@@ -839,13 +845,18 @@ const candidateInfo = {
     },
 
     *fetchTemplate(_, { call, put }) {
+      const OFFBOARD_TEMPLATE_TYPE = 'OFF_BOARDING-EXIT_PACKAGE';
       try {
         const response = yield call(getTemplates);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
+        const templateList = data;
+        const onboardTemplates = templateList.filter(
+          (template) => template.type !== OFFBOARD_TEMPLATE_TYPE,
+        );
         yield put({
           type: 'updateTemplate',
-          payload: data,
+          payload: onboardTemplates,
         });
       } catch (error) {
         dialog(error);
@@ -1260,6 +1271,22 @@ const candidateInfo = {
           additionalQuestions: action.payload,
         },
       };
+    },
+
+    updateEmployeeType(state, action) {
+      const { tempData = {} } = state;
+      const { employeeType = '' } = tempData;
+
+      if (Object.keys(employeeType).length === 0) {
+        return {
+          ...state,
+          tempData: {
+            ...tempData,
+            employeeType: action.payload,
+          },
+        };
+      }
+      return state;
     },
   },
 };

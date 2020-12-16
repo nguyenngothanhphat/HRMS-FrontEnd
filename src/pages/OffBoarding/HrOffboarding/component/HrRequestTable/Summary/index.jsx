@@ -5,7 +5,7 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-export default class RejectTable extends PureComponent {
+export default class Summary extends PureComponent {
   onChangeTab = (activeKey) => {
     const { setSelectedTab } = this.props;
     setSelectedTab(activeKey);
