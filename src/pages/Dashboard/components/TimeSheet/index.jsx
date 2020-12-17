@@ -6,28 +6,54 @@ import s from './index.less';
 
 export default class TimeSheet extends PureComponent {
   getStatusDay = (value) => {
-    const disable = moment() > moment().subtract(1, 'day').endOf('day');
+    const disable = moment() < moment(value).subtract(1, 'day').endOf('day');
     const isWeekend =
       moment(value).locale('en').format('ddd') === 'Sat' ||
       moment(value).locale('en').format('ddd') === 'Sun';
-    const status = 'normal';
-    return status;
+    const isCurrent = moment().format('DD/MM/YYYY') === moment(value).format('DD/MM/YYYY');
+
+    if (isWeekend) {
+      return 'weekend';
+    }
+    if (disable) {
+      return 'disable';
+    }
+    if (isCurrent) {
+      return 'current';
+    }
+    return 'normal';
   };
 
   dateFullCellRender = (value) => {
-    this.getStatusDay(value);
     const date = value.date();
+    const status = this.getStatusDay(value);
+    return status === 'normal'
+      ? this.handeCheckTimeSheet(value, date)
+      : this.renderItemDay(status, date);
+  };
+
+  renderItemDay = (status, date) => {
+    return <div className={`${s.date} ${s[status]}`}>{date}</div>;
+  };
+
+  handeCheckTimeSheet = (value, date) => {
     const dummy = {
       '04/12/2020': true,
-      '05/12/2020': true,
-      '06/12/2020': true,
+      '08/12/2020': true,
+      '09/12/2020': true,
       '15/12/2020': true,
     };
     const key = moment(value).format('DD/MM/YYYY');
     const check = dummy[key] || false;
-    const className = check ? `${s.check}` : `${s.notCheck}`;
-    const content = check ? <CheckOutlined className={s.iconCheck} /> : date;
-    return <div className={`${s.date} ${className}`}>{content}</div>;
+    return check ? (
+      <div className={`${s.date} ${s.check}`} onClick={() => alert('unCheck')}>
+        <CheckOutlined className={s.iconCheck} />
+      </div>
+    ) : (
+      <div className={`${s.date} ${s.notCheck}`} onClick={() => alert('check')}>
+        {date}
+      </div>
+    );
   };
 
   render() {
