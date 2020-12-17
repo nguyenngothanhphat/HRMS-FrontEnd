@@ -123,3 +123,10 @@ export async function getCustomEmailInfo(payload) {
     data: payload,
   });
 }
+
+export async function deleteCustomEmailItem(payload) {
+  return request('/api/customemail/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}

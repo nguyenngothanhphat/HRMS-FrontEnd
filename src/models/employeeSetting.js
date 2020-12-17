@@ -22,6 +22,7 @@ import {
   addCustomEmail,
   getListCustomEmail,
   getCustomEmailInfo,
+  deleteCustomEmailItem,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -312,11 +313,42 @@ const employeeSetting = {
       try {
         const response = yield call(getCustomEmailInfo, { id });
         const { data, statusCode } = response;
-        yield put({ type: 'saveTemplate', payload: { emailCustomData: data } });
+        yield put({ type: 'saveEmployeeSetting', payload: { emailCustomData: data } });
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
       }
+    },
+    *deleteCustomEmailItem({ payload }, { call, put }) {
+      let response;
+      try {
+        const { _id = '' } = payload;
+        const req = {
+          id: _id,
+        };
+        response = yield call(deleteCustomEmailItem, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        // deleteTicket
+        yield put({
+          type: 'deleteCustomEmail',
+          payload: _id,
+        });
+        yield put({
+          type: 'updateMenuQuantity',
+          payload: {},
+        });
+        // yield put({
+        //   type: 'fetchOnboardList',
+        //   payload: {
+        //     processStatus: PROVISIONAL_OFFER_DRAFT,
+        //   },
+        // });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
@@ -357,6 +389,26 @@ const employeeSetting = {
         },
       };
     },
+    // deleteCustomEmail(state, action) {
+    //   const { payload } = action;
+    //   const {
+    //     onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
+    //   } = state;
+    //   const newList = provisionalOfferDrafts.filter((item) => {
+    //     const { rookieId } = item;
+    //     return rookieId !== `#${payload}`;
+    //   });
+    //   return {
+    //     ...state,
+    //     onboardingOverview: {
+    //       ...state.onboardingOverview,
+    //       allDrafts: {
+    //         ...state.onboardingOverview.allDrafts,
+    //         provisionalOfferDrafts: newList,
+    //       },
+    //     },
+    //   };
+    // },
   },
 };
 export default employeeSetting;

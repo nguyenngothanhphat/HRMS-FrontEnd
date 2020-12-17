@@ -60,7 +60,19 @@ class CustomEmailsTableField extends PureComponent {
     return newListCustomEmail;
   };
 
-  handleDeleteItem = (customEmailId) => {
+  handleActionDelete = (customEmailId) => {
+    const { dispatch } = this.props;
+    
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'employeeSetting/deleteCustomEmailItem',
+      payload: {
+        customEmailId,
+      },
+    });
     console.log('customEmailId: ', customEmailId);
   }
 
@@ -109,7 +121,7 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <img src={trashIcon} alt="trash" className={styles.trashIcon} onClick={this.handleDeleteItem(idCustomEmail)} />
+            <img src={trashIcon} alt="trash" className={styles.trashIcon} onClick={() => this.handleActionDelete(idCustomEmail)} />
           )
         },
       },
