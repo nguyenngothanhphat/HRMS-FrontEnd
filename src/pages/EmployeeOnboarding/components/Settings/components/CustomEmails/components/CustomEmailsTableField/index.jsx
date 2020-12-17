@@ -49,9 +49,9 @@ class CustomEmailsTableField extends PureComponent {
     cloneListEmail.forEach((item) => {
       newListCustomEmail.push({
         idCustomEmail: item._id,
-        emailSubject: item.subject !== undefined ? item.subject : '',
-        createdOn: item.createdAt !== undefined ? item.createdAt : '',
-        triggerEvent: item.triggerEvent.name !== undefined ? item.triggerEvent.name : '',
+        emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
+        createdOn: item.createdAt !== undefined ? item.createdAt : '24th August, 2020',
+        triggerEvent: item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
         frequency: 'None',
         action: 'name',
       });
