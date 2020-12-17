@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* eslint-disable compat/compat */
+=======
+/* eslint-disable react/jsx-curly-newline */
+>>>>>>> master
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */

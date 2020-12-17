@@ -25,7 +25,6 @@ class InQueueTable extends PureComponent {
     const { dispatch } = this.props;
     const { target } = e;
     const { value } = target;
-    console.log(value);
     dispatch({
       type: 'offboarding/searchListRelieving',
       payload: {

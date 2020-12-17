@@ -20,7 +20,7 @@ class OffBoarding extends PureComponent {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || employee;
+    const role = hrManager || manager || employee || 'employee';
     return role;
   };
 

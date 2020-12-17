@@ -46,6 +46,7 @@ const PROCESS_STATUS = {
         skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
         hidePreviewOffer,
+        disablePreviewOffer,
       } = {},
     } = {},
   }) => ({
@@ -56,6 +57,7 @@ const PROCESS_STATUS = {
     skip,
     allDocumentVerified,
     hidePreviewOffer,
+    disablePreviewOffer,
   }),
 )
 class CommonLayout extends Component {
@@ -283,7 +285,12 @@ class CommonLayout extends Component {
   };
 
   render() {
-    const { listMenu = [], currentPage = '', hidePreviewOffer = false } = this.props;
+    const {
+      listMenu = [],
+      currentPage = '',
+      hidePreviewOffer = false,
+      disablePreviewOffer = false,
+    } = this.props;
     const { displayComponent, selectedItemId } = this.state;
     return (
       <div className={s.containerCommonLayout}>
@@ -302,10 +309,10 @@ class CommonLayout extends Component {
               {currentPage !== 'settings' && !hidePreviewOffer && (
                 <Button
                   type="primary"
-                  className={this.isDisabled(8) ? s.disabled : ''}
+                  className={this.isDisabled(8) || disablePreviewOffer ? s.disabled : ''}
                   ghost
                   onClick={() => {
-                    if (this.isDisabled(8)) {
+                    if (this.isDisabled(8) || disablePreviewOffer) {
                       return;
                     }
                     this._handlePreviewOffer();
