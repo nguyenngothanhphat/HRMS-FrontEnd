@@ -97,4 +97,9 @@ export default {
   'component.customEmailsTableField.titleTable': 'Custom emails created',
   'component.customEmailsTableField.pagination.showing': 'Showing',
   'component.customEmailsTableField.pagination.of': 'of',
+  'component.customEmailsTableField.emailSubject': 'Email subject',
+  'component.customEmailsTableField.createdOn': 'Created On',
+  'component.customEmailsTableField.triggerEvent': 'Trigger Event',
+  'component.customEmailsTableField.frequency': 'Frequency',
+  'component.customEmailsTableField.actions': 'Actions',
 };

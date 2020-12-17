@@ -27,11 +27,6 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   handleClickCustomEmail = (row) => {
-    // const { _id = '', location: { name = '' } = {} } = row;
-    // history.push({
-    //   pathname: `/directory/employee-profile/${_id}`,
-    //   state: { location: name },
-    // });
     this.setState({
       currentRecord: row,
     });
@@ -73,27 +68,28 @@ class CustomEmailsTableField extends PureComponent {
   _renderColumns = () => {
     const columns = [
       {
-        title: 'Email subject',
+        title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
         dataIndex: 'emailSubject',
         key: 'emailSubject',
       },
       {
-        title: 'Created on',
+        title: formatMessage({ id: 'component.customEmailsTableField.createdOn' }),
         dataIndex: 'createdOn',
         key: 'createdOn',
       },
       {
-        title: 'Trigger event',
+        title: formatMessage({ id: 'component.customEmailsTableField.triggerEvent' }),
+        // title: 'Trigger event',
         dataIndex: 'triggerEvent',
         key: 'triggerEvent',
       },
       {
-        title: 'Frequency',
+        title: formatMessage({ id: 'component.customEmailsTableField.frequency' }),
         dataIndex: 'frequency',
         key: 'frequency',
       },
       {
-        title: 'Action',
+        title: formatMessage({ id: 'component.customEmailsTableField.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         render: () => {
