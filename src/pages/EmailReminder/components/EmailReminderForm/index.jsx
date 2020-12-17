@@ -10,7 +10,6 @@ import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
-import Dropzone from 'react-dropzone';
 import QuillMention from 'quill-mention';
 import uploadFile from '@/utils/upload';
 
@@ -63,6 +62,7 @@ class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
     // this.modules = { mention: this.mentionModule(this) };
+    this.onChangeContents = this.onChangeContents.bind(this);
 
     this.state = {
       workings: {},
@@ -158,8 +158,6 @@ class EmailReminderForm extends PureComponent {
   /* Custom React Quill module */
   quillRef = null;
 
-  dropzone = null;
-
   onKeyEvent = false;
 
   saveFile = (file) => {
@@ -188,27 +186,23 @@ class EmailReminderForm extends PureComponent {
     );
   };
 
-  onDrop = async (acceptedFiles) => {
-    try {
-      await acceptedFiles.reduce((pacc, _file, i) => {
-        return pacc.then(async () => {
-          const { url } = await this.saveFile(_file);
+  // onDrop = async (acceptedFiles) => {
+  //   try {
+  //     await acceptedFiles.reduce((pacc, _file) => {
+  //       return pacc.then(async () => {
+  //         const { url } = await this.saveFile(_file);
 
-          const quill = this.quillRef.getEditor();
-          const range = quill.getSelection();
-          quill.insertEmbed(range.index, 'image', url);
-          quill.setSelection(range.index + 1);
-          quill.focus();
-        });
-      }, Promise.resolve());
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  };
-
-  imageHandler = () => {
-    if (this.dropzone) this.dropzone.open();
-  };
+  //         const quill = this.quillRef.getEditor();
+  //         const range = quill.getSelection();
+  //         quill.insertEmbed(range.index, 'image', url);
+  //         quill.setSelection(range.index + 1);
+  //         quill.focus();
+  //       });
+  //     }, Promise.resolve());
+  //   } catch (error) {
+  //     console.log('error: ', error);
+  //   }
+  // };
 
   insertText = () => {
     const cursorPosition = this.quill.getSelection().index;
@@ -231,8 +225,7 @@ class EmailReminderForm extends PureComponent {
         ['link', 'image', 'video'],
         ['clean'],
       ],
-      // handlers: { image: this.imageHandler },
-      handlers: { insertTexts: this.insertText },
+      handlers: { insertText: this.insertText },
     },
     clipboard: { matchVisual: false },
   };
@@ -300,13 +293,6 @@ class EmailReminderForm extends PureComponent {
         document.documentElement.classList.toggle('edit-focus');
       }
       this.onKeyEvent = false;
-    }
-  };
-
-  onFocus = () => {
-    if (!this.onKeyEvent && document.documentElement.className.indexOf('edit-focus') === -1) {
-      document.documentElement.classList.toggle('edit-focus');
-      window.scrollTo(0, 0);
     }
   };
 
@@ -1013,22 +999,12 @@ class EmailReminderForm extends PureComponent {
                 // onChange={this.handleChangeEmail}
                 onChange={this.onChangeContents}
                 onKeyUp={this.onKeyUp}
-                onFocus={this.onFocus}
                 onBlur={this.onBlur}
                 theme="snow"
                 modules={this.modules}
                 formats={this.formats}
               />
             </div>
-            {/* <Dropzone
-              ref={(el) => {
-                this.dropzone = el;
-              }}
-              style={{ width: 0, height: 0 }}
-              onDrop={this.onDrop}
-              accept="image/*"
-            /> */}
-
             {/* <ReactQuill
               className={styles.quill}
               value={message}
