@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Input, Button, Popconfirm } from 'antd';
+import { Row, Col, Input, Button, Popconfirm, Form } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
-import sendTemplateIcon from '@/assets/send-template-icon.svg';
 import addTemplateIcon from '@/assets/add-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
@@ -11,25 +10,17 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-// const closePackage = [
-//   {
-//     id: 1,
-//     attachment: {
-//       name: 'Relieving letter',
-//     },
-//   },
-//   {
-//     id: 2,
-//     attachment: {
-//       name: 'Experience letter',
-//     },
-//   },
-// ];
-
-@connect(({ offboarding: { relievingDetails: { closingPackage = {}, _id = '' } } }) => ({
-  closingPackage,
-  ticketId: _id,
-}))
+@connect(
+  ({
+    offboarding: {
+      relievingDetails: { closingPackage = {}, _id = '', employee = {} },
+    },
+  }) => ({
+    closingPackage,
+    employee,
+    ticketId: _id,
+  }),
+)
 class ClosingPackage extends PureComponent {
   constructor(props) {
     super(props);
@@ -55,23 +46,19 @@ class ClosingPackage extends PureComponent {
           src={addTemplateIcon}
           alt="add-template-icon"
         />
-        <img
-          onClick={this.sendMailPackage}
-          className={styles.closingPkg__card__iconExtra}
-          src={sendTemplateIcon}
-          alt="send-template-icon"
-        />
       </div>
     );
   };
 
-  handleSendMail = () => {
+  handleSendMail = (value) => {
+    const { toEmail } = value;
     const { dispatch, ticketId } = this.props;
     dispatch({
       type: 'offboarding/sendOffBoardingPackage',
       payload: {
         packageType: 'CLOSING-PACKAGE',
         ticketId,
+        toEmail,
       },
     });
   };
@@ -197,6 +184,7 @@ class ClosingPackage extends PureComponent {
             );
           })}
           {customDocuments.map((doc, index) => {
+            if (typeof doc !== 'object') return null;
             const { key } = doc;
             return (
               <Col span={10} key={`${index + 1}`}>
@@ -234,33 +222,53 @@ class ClosingPackage extends PureComponent {
             );
           })}
         </Row>
-        <Row gutter={[40, 15]}>
-          <Col span={14}>
-            <Input
-              className={styles.closingPackage__input}
-              placeholder={formatMessage({ id: 'pages.relieving.placeholder.sendMail' })}
-            />
-          </Col>
-          <Col span={7}>
-            <Button
-              type="default"
-              className={styles.closingPackage__btn}
-              onClick={this.handleSendMail}
-            >
-              {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
-            </Button>
-          </Col>
-        </Row>
+        <Form id="packageToEmail" name="packageToEmail" onFinish={this.handleSendMail}>
+          <Row gutter={[40, 15]}>
+            <Col span={14}>
+              <Form.Item
+                name="toEmail"
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'Email is invalid',
+                  },
+                ]}
+              >
+                <Input
+                  placeholder={formatMessage({ id: 'pages.relieving.placeholder.sendMail' })}
+                  className={styles.closingPackage__input}
+                />
+              </Form.Item>
+            </Col>
+            <Form.Item>
+              <Col span={7}>
+                <Button
+                  type="default"
+                  htmlType="submit"
+                  className={styles.closingPackage__btn}
+                  form="packageToEmail"
+                >
+                  {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
+                </Button>
+              </Col>
+            </Form.Item>
+          </Row>
+        </Form>
       </>
     );
   };
 
   renderAfterSendMail = () => {
-    const { closingPackage } = this.props;
+    const {
+      closingPackage: { waitList = [], packages = [], toEmail = '' },
+      employee: {
+        generalInfo: { workEmail = '' },
+      },
+    } = this.props;
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closingPackage.map((template, index) => {
+          {waitList.map((template, index) => {
             const { packageName } = template;
             return (
               <Col span={10} key={`${index + 1}`}>
@@ -273,17 +281,31 @@ class ClosingPackage extends PureComponent {
               </Col>
             );
           })}
+          {packages.map((doc, index) => {
+            if (typeof doc !== 'object') return null;
+            const { key } = doc;
+            return (
+              <Col span={10} key={`${index + 1}`}>
+                <div className={styles.template}>
+                  <div className={styles.template__content}>
+                    <img src={templateIcon} alt="template-icon" />
+                    <span>{key}</span>
+                  </div>
+                </div>
+              </Col>
+            );
+          })}
         </Row>
         <Row gutter={[10, 15]} align="middle">
           <Col span={12}>
-            <div className={styles.template}>avvk.krisna@gmail.com</div>
+            <div className={styles.template}>{toEmail || workEmail || null}</div>
           </Col>
           <Col span={12}>
             <div className={styles.closingPackage__notification}>
               <img src={lightBulbIcon} alt="light-buld-icon" />
               <span>
                 {formatMessage({ id: 'pages.relieving.closePackage.notification' })}{' '}
-                avvk.krishna@gmail.com
+                {toEmail || workEmail || null}
               </span>
             </div>
           </Col>
