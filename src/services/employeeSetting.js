@@ -116,3 +116,10 @@ export async function getListCustomEmail() {
     method: 'POST',
   });
 }
+
+export async function getCustomEmailInfo(payload) {
+  return request('/api/customemail/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, Link } from 'umi';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
@@ -16,6 +16,7 @@ class CustomEmailsTableField extends PureComponent {
     super(props);
     this.state = {
       pageSelected: 1,
+      currentRecord: {}
     };
   }
 
@@ -31,7 +32,9 @@ class CustomEmailsTableField extends PureComponent {
     //   pathname: `/directory/employee-profile/${_id}`,
     //   state: { location: name },
     // });
-    console.log('row: ', row);
+    this.setState({
+      currentRecord: row,
+    });
   };
 
   componentDidMount = () => {
@@ -50,6 +53,7 @@ class CustomEmailsTableField extends PureComponent {
 
     cloneListEmail.forEach((item) => {
       newListCustomEmail.push({
+        idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : '',
         createdOn: item.createdAt !== undefined ? item.createdAt : '',
         triggerEvent: item.triggerEvent.name !== undefined ? item.triggerEvent.name : '',
@@ -61,8 +65,9 @@ class CustomEmailsTableField extends PureComponent {
     return newListCustomEmail;
   };
 
-  renderAction = () => {
+  onClickViewEmail = () => {
     // handle click action
+    console.log('OK');
   };
 
   _renderColumns = () => {
@@ -91,9 +96,16 @@ class CustomEmailsTableField extends PureComponent {
         title: 'Action',
         dataIndex: 'actions',
         key: 'actions',
-        render: () => (
-          <a href="#">{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</a>
-        ),
+        render: () => {
+          const { currentRecord = {} } = this.state;
+          const { idCustomEmail = '' } = currentRecord;
+
+          console.log('idCustomEmail: ', idCustomEmail)
+
+          return (
+            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`} onClick={() => this.onClickViewEmail}>{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</Link>
+          )
+        },
       },
       {
         title: '',
@@ -144,7 +156,7 @@ class CustomEmailsTableField extends PureComponent {
             size="middle"
             onRow={(record) => {
               return {
-                onClick: () => this.handleClickCustomEmail(record), // click row
+                onMouseEnter: () => this.handleClickCustomEmail(record), // click row
               };
             }}
             rowKey={(record) => record._id}

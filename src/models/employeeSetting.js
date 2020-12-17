@@ -21,6 +21,7 @@ import {
   getListAutoField,
   addCustomEmail,
   getListCustomEmail,
+  getCustomEmailInfo,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -48,6 +49,7 @@ const employeeSetting = {
     listAutoField: [],
     dataSubmit: {},
     listCustomEmail: [],
+    emailCustomData: {},
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -305,6 +307,16 @@ const employeeSetting = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchEmailCustomInfo({ payload: id = '' }, { call, put }) {
+      try {
+        const response = yield call(getCustomEmailInfo, { id });
+        const { data, statusCode } = response;
+        yield put({ type: 'saveTemplate', payload: { emailCustomData: data } });
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error.message);
+      }
     },
   },
   reducers: {
