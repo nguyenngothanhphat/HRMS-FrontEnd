@@ -25,6 +25,15 @@ class CustomEmailsTableField extends PureComponent {
     });
   };
 
+  handleClickCustomEmail = (row) => {
+    // const { _id = '', location: { name = '' } = {} } = row;
+    // history.push({
+    //   pathname: `/directory/employee-profile/${_id}`,
+    //   state: { location: name },
+    // });
+    console.log('row: ', row);
+  };
+
   componentDidMount = () => {
     const { dispatch } = this.props;
 
@@ -52,6 +61,10 @@ class CustomEmailsTableField extends PureComponent {
     return newListCustomEmail;
   };
 
+  renderAction = () => {
+    // handle click action
+  };
+
   _renderColumns = () => {
     const columns = [
       {
@@ -76,8 +89,8 @@ class CustomEmailsTableField extends PureComponent {
       },
       {
         title: 'Action',
-        dataIndex: 'action',
-        key: 'action',
+        dataIndex: 'actions',
+        key: 'actions',
         render: () => (
           <a href="#">{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</a>
         ),
@@ -131,7 +144,7 @@ class CustomEmailsTableField extends PureComponent {
             size="middle"
             onRow={(record) => {
               return {
-                onClick: () => this.handleProfileEmployee(record), // click row
+                onClick: () => this.handleClickCustomEmail(record), // click row
               };
             }}
             rowKey={(record) => record._id}
