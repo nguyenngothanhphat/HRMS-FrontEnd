@@ -320,7 +320,7 @@ class ClosingPackage extends PureComponent {
       <div className={styles.closingPackage}>
         <div className={styles.closingPackage__title}>
           {formatMessage({ id: 'pages.relieving.closePackage' })}
-          {this.renderExtraContent()}
+          {/* {this.renderExtraContent()} */}
         </div>
         {isSent ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
         {this.renderModalEditTemplate()}
