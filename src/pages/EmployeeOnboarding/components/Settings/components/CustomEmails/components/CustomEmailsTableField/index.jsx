@@ -107,7 +107,7 @@ class CustomEmailsTableField extends PureComponent {
         title: '',
         dataIndex: 'delete',
         key: 'delete',
-        render: () => <img src={trashIcon} alt="trash" />,
+        render: () => <img src={trashIcon} alt="trash" className={styles.trashIcon} />,
       },
     ];
     return columns;
