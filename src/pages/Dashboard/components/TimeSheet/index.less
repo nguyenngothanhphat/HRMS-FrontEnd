@@ -8,9 +8,20 @@
   overflow: hidden;
   padding: 31px;
   :global {
-    .ant-picker-calendar-full .ant-picker-panel .ant-picker-body th {
-      padding: 0 31px 9px 0;
+    .ant-picker-calendar-full .ant-picker-panel .ant-picker-body td {
+      padding: 0 18px;
     }
+    .ant-picker-cell-disabled {
+      pointer-events: none;
+      background: #ffffff;
+      opacity: 0.3;
+      box-sizing: border-box;
+    }
+  }
+  .iconCheck {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
   }
   .date {
     width: 28px;
@@ -21,6 +32,9 @@
     border-radius: 50%;
     margin-bottom: 13px;
     cursor: pointer;
+    &:disabled {
+      background-color: cyan;
+    }
   }
   .check {
     background: #00c598;
