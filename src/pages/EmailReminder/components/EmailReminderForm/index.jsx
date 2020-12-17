@@ -11,7 +11,6 @@ import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } fro
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
-import uploadFile from '@/utils/upload';
 
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
@@ -19,14 +18,6 @@ import styles from './index.less';
 
 Quill.register('modules/mentions', QuillMention);
 
-const __ISMSIE__ = !!navigator.userAgent.match(/Trident/i);
-const __ISIOS__ = !!navigator.userAgent.match(/iPad|iPhone|iPod/i);
-
-const CustomToolbar = () => (
-  <div id="toolbar">
-    <Button className="ql-insertHeart">AutoText</Button>
-  </div>
-);
 @connect(
   ({
     employeeSetting: {
@@ -61,12 +52,9 @@ const CustomToolbar = () => (
 class EmailReminderForm extends PureComponent {
   constructor(props) {
     super(props);
-    // this.modules = { mention: this.mentionModule(this) };
-    this.onChangeContents = this.onChangeContents.bind(this);
+    this.modules = { mention: this.mentionModule(this) };
 
     this.state = {
-      workings: {},
-      fileIds: [],
       conditionsData: [
         {
           id: 0,
@@ -77,7 +65,7 @@ class EmailReminderForm extends PureComponent {
       ],
       checkOption: [],
       appliesToData: '',
-      message: __ISMSIE__ ? '<p>&nbsp;</p>' : '',
+      message: '',
       sendingDate: [
         {
           name: 'On the event date',
@@ -154,173 +142,39 @@ class EmailReminderForm extends PureComponent {
     };
   }
 
-  /// ///////////////////////// START Custom React Quill module ///////////////////////////////////
-  /* Custom React Quill module */
-  quillRef = null;
-
-  onKeyEvent = false;
-
-  saveFile = (file) => {
-    console.log('file', file);
-
-    const { workings, fileIds } = this.state;
-
-    const nowDate = new Date().getTime();
-    const working = { ...workings, [nowDate]: true };
-    this.setState({ workings });
-
-    return uploadFile([file]).then(
-      (results) => {
-        const { sizeLargeUrl, objectId } = results[0];
-
-        working[nowDate] = false;
-        this.setState({ workings, fileIds: [...fileIds, objectId] });
-        return Promise.resolve({ url: sizeLargeUrl });
+  mentionModule = (t) => {
+    return {
+      allowedChars: /^[A-Za-z\s]*$/,
+      mentionDenotationChars: ['@'],
+      showDenotationChar: false,
+      renderItem: (item) => {
+        return item.value;
       },
-      (error) => {
-        console.error('saveFile error:', error);
-        workings[nowDate] = false;
-        this.setState({ workings });
-        return Promise.reject(error);
+      source(searchTerm, renderList, mentionChar) {
+        let values;
+        const { listAutoField } = t.props;
+        const list = listAutoField.map((item, index) => {
+          return {
+            id: index,
+            value: item,
+          };
+        });
+        if (mentionChar === '@') {
+          values = list;
+        }
+
+        if (searchTerm.length === 0) {
+          renderList(values, searchTerm);
+        } else {
+          const matches = [];
+          for (let i = 0; i < values.length; i++)
+            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+              matches.push(values[i]);
+          renderList(matches, searchTerm);
+        }
       },
-    );
+    };
   };
-
-  // onDrop = async (acceptedFiles) => {
-  //   try {
-  //     await acceptedFiles.reduce((pacc, _file) => {
-  //       return pacc.then(async () => {
-  //         const { url } = await this.saveFile(_file);
-
-  //         const quill = this.quillRef.getEditor();
-  //         const range = quill.getSelection();
-  //         quill.insertEmbed(range.index, 'image', url);
-  //         quill.setSelection(range.index + 1);
-  //         quill.focus();
-  //       });
-  //     }, Promise.resolve());
-  //   } catch (error) {
-  //     console.log('error: ', error);
-  //   }
-  // };
-
-  insertText = () => {
-    const cursorPosition = this.quill.getSelection().index;
-    this.quill.insertText(cursorPosition, 'OK');
-    this.quill.setSelection(cursorPosition + 1);
-  };
-
-  modules = {
-    toolbar: {
-      container: [
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ size: ['small', false, 'large', 'huge'] }, { color: [] }],
-        [
-          { list: 'ordered' },
-          { list: 'bullet' },
-          { indent: '-1' },
-          { indent: '+1' },
-          { align: [] },
-        ],
-        ['link', 'image', 'video'],
-        ['clean'],
-      ],
-      handlers: { insertText: this.insertText },
-    },
-    clipboard: { matchVisual: false },
-  };
-
-  // mentionModule = (t) => {
-  //   return {
-  //     allowedChars: /^[A-Za-z\s]*$/,
-  //     mentionDenotationChars: ['@'],
-  //     showDenotationChar: false,
-  //     renderItem: (item) => {
-  //       return item.value;
-  //     },
-  //     source(searchTerm, renderList, mentionChar) {
-  //       let values;
-  //       const { listAutoField } = t.props;
-  //       const list = listAutoField.map((item, index) => {
-  //         return {
-  //           id: index,
-  //           value: item,
-  //         };
-  //       });
-  //       if (mentionChar === '@') {
-  //         values = list;
-  //       }
-
-  //       if (searchTerm.length === 0) {
-  //         renderList(values, searchTerm);
-  //       } else {
-  //         const matches = [];
-  //         for (let i = 0; i < values.length; i++)
-  //           if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-  //             matches.push(values[i]);
-  //         renderList(matches, searchTerm);
-  //       }
-  //     },
-  //   };
-  // };
-
-  formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'size',
-    'color',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-    'video',
-    'align',
-  ];
-
-  onKeyUp = (event) => {
-    if (!__ISIOS__) return;
-    // enter
-    if (event.keyCode === 13) {
-      this.onKeyEvent = true;
-      this.quillRef.blur();
-      this.quillRef.focus();
-      if (document.documentElement.className.indexOf('edit-focus') === -1) {
-        document.documentElement.classList.toggle('edit-focus');
-      }
-      this.onKeyEvent = false;
-    }
-  };
-
-  onBlur = () => {
-    if (!this.onKeyEvent && document.documentElement.className.indexOf('edit-focus') !== -1) {
-      document.documentElement.classList.toggle('edit-focus');
-    }
-  };
-
-  doBlur = () => {
-    this.onKeyEvent = false;
-    this.quillRef.blur();
-    // force clean
-    if (document.documentElement.className.indexOf('edit-focus') !== -1) {
-      document.documentElement.classList.toggle('edit-focus');
-    }
-  };
-
-  onChangeContents = (contents) => {
-    let _contents = null;
-    if (__ISMSIE__) {
-      if (contents.indexOf('<p><br></p>') > -1) {
-        _contents = contents.replace(/<p><br><\/p>/gi, '<p>&nbsp;</p>');
-      }
-    }
-    this.setState({ message: _contents || contents });
-  };
-  /// ///////////////////////// END Custom React Quill module ///////////////////////////////////
 
   checkFields = () => {
     const { conditionsData } = this.state;
@@ -715,9 +569,13 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
+    console.log('dataSubmit: ', dataSubmit);
+
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,
+    }).then(() => {
+      this.back();
     });
   };
 
@@ -988,29 +846,13 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
-            <div className={styles.textEditor}>
-              <CustomToolbar />
-              <ReactQuill
-                className={styles.quill}
-                onRef={(el) => {
-                  this.quillRef = el;
-                }}
-                value={message}
-                // onChange={this.handleChangeEmail}
-                onChange={this.onChangeContents}
-                onKeyUp={this.onKeyUp}
-                onBlur={this.onBlur}
-                theme="snow"
-                modules={this.modules}
-                formats={this.formats}
-              />
-            </div>
-            {/* <ReactQuill
+
+            <ReactQuill
               className={styles.quill}
               value={message}
               onChange={this.handleChangeEmail}
               modules={this.modules}
-            /> */}
+            />
             {/* </Form.Item> */}
           </Col>
 
