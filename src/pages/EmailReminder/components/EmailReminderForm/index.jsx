@@ -36,6 +36,7 @@ Quill.register('modules/mentions', QuillMention);
         location: { name: locationName = '' } = {},
       } = {},
     } = {},
+    loading,
   }) => ({
     triggerEventList,
     locationList,
@@ -47,6 +48,7 @@ Quill.register('modules/mentions', QuillMention);
     listAutoField,
     locationName,
     roles,
+    loading: loading.effects['employeeSetting/addCustomEmail'],
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -569,13 +571,13 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    console.log('dataSubmit: ', dataSubmit);
-
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,
     }).then(() => {
-      this.back();
+      setTimeout(() => {
+        this.back();
+      }, 2000);
     });
   };
 
@@ -752,7 +754,7 @@ class EmailReminderForm extends PureComponent {
 
   _renderForm = () => {
     const { Option } = Select;
-    const { triggerEventList } = this.props;
+    const { triggerEventList, loading } = this.props;
     const { sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
 
     return (
@@ -869,7 +871,7 @@ class EmailReminderForm extends PureComponent {
               </Button>
             </Link>
             <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={disabled}>
+              <Button type="primary" htmlType="submit" disabled={disabled} loading={loading}>
                 {formatMessage({ id: 'component.emailReminderForm.submit' })}
               </Button>
             </Form.Item>
