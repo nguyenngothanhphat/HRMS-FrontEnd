@@ -139,7 +139,6 @@ class RelievingFormalities extends Component {
     return (
       <div className={styles.relievingFormalities}>
         {this._renderModal()}
-        {/* <p style={{ padding: '24px' }}>Content Relieving Formalities</p> */}
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={24} md={24} lg={17} xl={17}>
             <RelievingTables />
