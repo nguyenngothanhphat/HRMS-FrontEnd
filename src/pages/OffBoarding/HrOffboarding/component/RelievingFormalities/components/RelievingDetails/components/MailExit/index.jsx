@@ -43,12 +43,12 @@ class MailExit extends Component {
   renderExtraContent = () => {
     return (
       <div>
-        <img
+        {/* <img
           className={styles.mailExit__card__iconExtra}
           style={{ paddingRight: '20px' }}
           src={addTemplateIcon}
           alt="add-template-icon"
-        />
+        /> */}
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
