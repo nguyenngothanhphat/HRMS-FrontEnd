@@ -60,10 +60,9 @@ class CustomEmailsTableField extends PureComponent {
     return newListCustomEmail;
   };
 
-  onClickViewEmail = () => {
-    // handle click action
-    console.log('OK');
-  };
+  handleDeleteItem = (customEmailId) => {
+    console.log('customEmailId: ', customEmailId);
+  }
 
   _renderColumns = () => {
     const columns = [
@@ -96,10 +95,8 @@ class CustomEmailsTableField extends PureComponent {
           const { currentRecord = {} } = this.state;
           const { idCustomEmail = '' } = currentRecord;
 
-          console.log('idCustomEmail: ', idCustomEmail)
-
           return (
-            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`} onClick={() => this.onClickViewEmail}>{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</Link>
+            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`}>{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</Link>
           )
         },
       },
@@ -107,7 +104,14 @@ class CustomEmailsTableField extends PureComponent {
         title: '',
         dataIndex: 'delete',
         key: 'delete',
-        render: () => <img src={trashIcon} alt="trash" className={styles.trashIcon} />,
+        render: () => {
+          const { currentRecord = {} } = this.state;
+          const { idCustomEmail = '' } = currentRecord;
+
+          return (
+            <img src={trashIcon} alt="trash" className={styles.trashIcon} onClick={this.handleDeleteItem(idCustomEmail)} />
+          )
+        },
       },
     ];
     return columns;
