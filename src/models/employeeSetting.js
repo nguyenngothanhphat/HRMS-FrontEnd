@@ -20,6 +20,7 @@ import {
   getDepartmentListByCompanyId,
   getListAutoField,
   addCustomEmail,
+  getListCustomEmail,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -46,6 +47,7 @@ const employeeSetting = {
     departmentListByCompanyId: [],
     listAutoField: [],
     dataSubmit: {},
+    listCustomEmail: [],
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -287,6 +289,18 @@ const employeeSetting = {
           payload: { dataSubmit: data },
         });
         return data;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fecthListCustomEmail(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListCustomEmail);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listCustomEmail: data } });
       } catch (errors) {
         dialog(errors);
       }

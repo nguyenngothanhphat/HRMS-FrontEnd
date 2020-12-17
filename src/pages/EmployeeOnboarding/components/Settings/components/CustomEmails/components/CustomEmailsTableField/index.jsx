@@ -6,53 +6,50 @@ import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { dataSubmit = {} } = {}, loading }) => ({
+@connect(({ employeeSetting: { dataSubmit = {}, listCustomEmail = [] } = {}, loading }) => ({
   dataSubmit,
+  listCustomEmail,
   loading: loading.effects['employeeSetting/addCustomEmail'],
 }))
 class CustomEmailsTableField extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pageSelected: 1,
+    };
+  }
+
+  onChangePagination = (pageNumber) => {
+    this.setState({
+      pageSelected: pageNumber,
+    });
+  };
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'employeeSetting/fecthListCustomEmail',
+      payload: {},
+    });
+  };
+
   _renderData = () => {
-    const { dataSubmit } = this.props;
-    const {
-      subject = 'Onboarding email',
-      createdAt = '24th August, 2020',
-      triggerEvent: { name: triggerEventName = 'Person starts work' } = {},
-    } = dataSubmit;
+    const { listCustomEmail } = this.props;
+    const cloneListEmail = [...listCustomEmail];
+    const newListCustomEmail = [];
 
-    const newData = [
-      {
-        emailSubject: subject,
-        createdOn: createdAt,
-        triggerEvent: triggerEventName,
+    cloneListEmail.forEach((item) => {
+      newListCustomEmail.push({
+        emailSubject: item.subject !== undefined ? item.subject : '',
+        createdOn: item.createdAt !== undefined ? item.createdAt : '',
+        triggerEvent: item.triggerEvent.name !== undefined ? item.triggerEvent.name : '',
         frequency: 'None',
         action: 'name',
-      },
-      {
-        emailSubject: subject,
-        createdOn: createdAt,
-        triggerEvent: triggerEventName,
-        frequency: 'None',
-        action: 'name',
-      },
-    ];
+      });
+    });
 
-    // const data = [
-    //   {
-    //     emailSubject: 'Onboarding email',
-    //     createdOn: '24th August, 2020',
-    //     triggerEvent: 'Person starts work',
-    //     frequency: 'Once',
-    //     action: 'name',
-    //   },
-    //   {
-    //     emailSubject: 'Onboarding email',
-    //     createdOn: '24th August, 2020',
-    //     triggerEvent: 'Person starts work',
-    //     frequency: 'Once',
-    //     action: 'name',
-    //   },
-    // ];
-    return newData;
+    return newListCustomEmail;
   };
 
   _renderColumns = () => {
@@ -96,6 +93,32 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
+    const { listCustomEmail } = this.props;
+    const { pageSelected } = this.state;
+    const rowSize = 5;
+
+    // const scroll = {
+    //   x: '100vw',
+    //   y: 'max-content',
+    // };
+
+    const pagination = {
+      position: ['bottomRight'],
+      total: listCustomEmail.length,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          {formatMessage({ id: 'component.customEmailsTableField.pagination.showing' })}{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          {formatMessage({ id: 'component.customEmailsTableField.pagination.of' })} {total}{' '}
+        </span>
+      ),
+      pageSize: rowSize,
+      current: pageSelected,
+      onChange: this.onChangePagination,
+    };
     return (
       <div className={styles.CustomEmailsTableField}>
         <div className={styles.CustomEmailsTableField_title}>
@@ -106,7 +129,18 @@ class CustomEmailsTableField extends PureComponent {
             dataSource={this._renderData()}
             columns={this._renderColumns()}
             size="middle"
-            pagination={false}
+            onRow={(record) => {
+              return {
+                onClick: () => this.handleProfileEmployee(record), // click row
+              };
+            }}
+            rowKey={(record) => record._id}
+            pagination={
+              listCustomEmail.length > rowSize
+                ? { ...pagination, total: listCustomEmail.length }
+                : false
+            }
+            // scroll={scroll}
           />
         </div>
       </div>

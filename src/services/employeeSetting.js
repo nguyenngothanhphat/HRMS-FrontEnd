@@ -110,3 +110,9 @@ export async function addCustomEmail(payload) {
     data: payload,
   });
 }
+
+export async function getListCustomEmail() {
+  return request('/api/customemail/list-active', {
+    method: 'POST',
+  });
+}
