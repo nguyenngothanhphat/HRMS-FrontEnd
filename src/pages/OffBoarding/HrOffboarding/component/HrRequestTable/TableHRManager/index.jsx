@@ -131,6 +131,9 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Department</span>,
         dataIndex: 'department',
+        render: (department) => {
+          return <p>{department?.name}</p>;
+        },
       },
       {
         title: <span className={styles.title}>LWD</span>,
@@ -138,10 +141,6 @@ class HrTable extends PureComponent {
         render: (lastWorkingDate) => {
           return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
-      },
-      {
-        title: <span className={styles.title}>LWD Change</span>,
-        dataIndex: 'LwdChange',
       },
       {
         title: <span className={styles.title}>Action</span>,
