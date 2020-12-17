@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 /* eslint-disable compat/compat */
-=======
 /* eslint-disable react/jsx-curly-newline */
->>>>>>> master
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
@@ -42,7 +39,13 @@ const CustomToolbar = () => (
       departmentListByCompanyId = [],
       listAutoField = [],
     } = {},
-    user: { currentUser: { company: { _id = '' } = {}, roles = [], location: { name: locationName = '' } = {} } = {} } = {},
+    user: {
+      currentUser: {
+        company: { _id = '' } = {},
+        roles = [],
+        location: { name: locationName = '' } = {},
+      } = {},
+    } = {},
   }) => ({
     triggerEventList,
     locationList,
@@ -53,7 +56,7 @@ const CustomToolbar = () => (
     _id,
     listAutoField,
     locationName,
-    roles
+    roles,
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -534,7 +537,7 @@ class EmailReminderForm extends PureComponent {
 
     if (name === 'key') {
       if (value === 'department') {
-        this.setState({isLocation: false})
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -548,7 +551,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else if (value === 'location') {
-        this.setState({isLocation: true})
+        this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -562,7 +565,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else if (value === 'title') {
-        this.setState({isLocation: false})
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -576,7 +579,7 @@ class EmailReminderForm extends PureComponent {
           this.setState({ load: true });
         });
       } else {
-        this.setState({isLocation: false})
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
@@ -639,33 +642,30 @@ class EmailReminderForm extends PureComponent {
   };
 
   checkOptionDepartment = (departmentName) => {
-    const {locationName, roles} = this.props;
-    const {isLocation} = this.state;
+    const { locationName, roles } = this.props;
+    const { isLocation } = this.state;
     let check = true;
 
     let hrManager = '';
     let glManager = '';
 
     roles.forEach((item) => {
-      if(item._id === 'HR-GLOBAL')
-      {
+      if (item._id === 'HR-GLOBAL') {
         glManager = 'HR-GLOBAL';
       }
-      if(item._id === 'HR-MANAGER')
-      {
+      if (item._id === 'HR-MANAGER') {
         hrManager = 'HR-MANAGER';
       }
     });
 
-
-    if(isLocation){
-      if (hrManager && departmentName === locationName ) {
+    if (isLocation) {
+      if (hrManager && departmentName === locationName) {
         check = false;
-      } 
+      }
       if (glManager) {
         check = false;
       }
-    }else {
+    } else {
       check = false;
     }
 
@@ -807,7 +807,8 @@ class EmailReminderForm extends PureComponent {
                         mode="multiple"
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
