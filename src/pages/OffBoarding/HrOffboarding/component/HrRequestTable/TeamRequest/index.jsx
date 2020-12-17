@@ -78,19 +78,20 @@ class TabContent extends Component {
   };
 
   render() {
-    const { data = [], countdata, loading } = this.props;
+    const { data = [], countdata, loading, hrManager = {} } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
     return (
-      <Fragment>
+      <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
           loading={loading}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
+          hrManager={hrManager}
         />
-      </Fragment>
+      </>
     );
   }
 }
