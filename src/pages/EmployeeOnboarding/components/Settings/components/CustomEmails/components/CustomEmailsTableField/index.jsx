@@ -1,29 +1,58 @@
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
 
+@connect(({ employeeSetting: { dataSubmit = {} } = {}, loading }) => ({
+  dataSubmit,
+  loading: loading.effects['employeeSetting/addCustomEmail'],
+}))
 class CustomEmailsTableField extends PureComponent {
   _renderData = () => {
-    const data = [
+    const { dataSubmit } = this.props;
+    const {
+      subject = 'Onboarding email',
+      createdAt = '24th August, 2020',
+      triggerEvent: { name: triggerEventName = 'Person starts work' } = {},
+    } = dataSubmit;
+
+    const newData = [
       {
-        emailSubject: 'Onboarding email',
-        createdOn: '24th August, 2020',
-        triggerEvent: 'Person starts work',
-        frequency: 'Once',
+        emailSubject: subject,
+        createdOn: createdAt,
+        triggerEvent: triggerEventName,
+        frequency: 'None',
         action: 'name',
       },
       {
-        emailSubject: 'Onboarding email',
-        createdOn: '24th August, 2020',
-        triggerEvent: 'Person starts work',
-        frequency: 'Once',
+        emailSubject: subject,
+        createdOn: createdAt,
+        triggerEvent: triggerEventName,
+        frequency: 'None',
         action: 'name',
       },
     ];
-    return data;
+
+    // const data = [
+    //   {
+    //     emailSubject: 'Onboarding email',
+    //     createdOn: '24th August, 2020',
+    //     triggerEvent: 'Person starts work',
+    //     frequency: 'Once',
+    //     action: 'name',
+    //   },
+    //   {
+    //     emailSubject: 'Onboarding email',
+    //     createdOn: '24th August, 2020',
+    //     triggerEvent: 'Person starts work',
+    //     frequency: 'Once',
+    //     action: 'name',
+    //   },
+    // ];
+    return newData;
   };
 
   _renderColumns = () => {
