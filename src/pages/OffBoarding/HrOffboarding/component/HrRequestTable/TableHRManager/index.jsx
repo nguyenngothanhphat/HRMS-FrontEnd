@@ -116,11 +116,10 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: (_, row) => {
-          console.log('row', row);
           const {
-            manager: { generalInfo: { avatar: avtManager = '' } = {} } = {},
             hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = row;
+          } = this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
             <div className={styles.rowAction}>
