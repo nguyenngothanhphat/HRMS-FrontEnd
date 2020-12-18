@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Spin, Row, Col } from 'antd';
 import { connect } from 'umi';
+import moment from 'moment';
 import Document from './Document';
 import AnswerModal from '../AnswerModal';
 import styles from './index.less';
@@ -12,8 +13,8 @@ import styles from './index.less';
     offboarding: {
       inProgressRequest = [],
       relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {},
+      list1On1 = [],
     } = {},
-
     loading,
   }) => ({
     offboarding,
@@ -21,6 +22,7 @@ import styles from './index.less';
     companyId,
     waitList,
     isSent,
+    list1On1,
     loadingFetchPackage: loading.effects['offboarding/fetchRelievingDetailsById'],
   }),
 )
@@ -44,6 +46,13 @@ class NextStep extends PureComponent {
           id: _id,
           company: companyId,
           packageType: '',
+        },
+      });
+
+      dispatch({
+        type: 'offboarding/getList1On1',
+        payload: {
+          offBoardingRequest: _id,
         },
       });
     }
@@ -76,6 +85,20 @@ class NextStep extends PureComponent {
     });
   };
 
+  getNewest1On1 = () => {
+    const { list1On1 = [] } = this.props;
+    let activeList = list1On1.filter((req) => {
+      const { status = '' } = req;
+      if (status === 'ACTIVE') {
+        return req;
+      }
+      return null;
+    });
+    activeList = activeList.filter((req) => req !== null);
+    if (activeList.length > 0) return activeList[activeList.length - 1];
+    return [];
+  };
+
   render() {
     const {
       isScheduled = true,
@@ -86,6 +109,11 @@ class NextStep extends PureComponent {
     } = this.props;
 
     const { showAnswerModal, selectedDocument } = this.state;
+    const scheduled1On1 = this.getNewest1On1();
+    const { meetingDate = '', meetingTime = '' } = scheduled1On1;
+    const formattedMeetingTime = `${moment(meetingDate)
+      .locale('en')
+      .format('DD.MM.YYYY')} | ${meetingTime}`;
 
     return (
       <div className={styles.NextStep}>
@@ -111,13 +139,13 @@ class NextStep extends PureComponent {
                 <span>2</span>
               </div>
               <div className={styles.content2}>
-                {!isScheduled && (
+                {meetingDate === '' && meetingTime === '' && (
                   <p>The HR will soon send an invitation for your final exit interview.</p>
                 )}
-                {isScheduled && (
+                {meetingDate !== '' && meetingTime !== '' && (
                   <div className={styles.scheduledBox}>
                     <p style={{ fontWeight: 'bold' }}>Your exit interview has been scheduled</p>
-                    <p className={styles.scheduleTime}>{scheduleTime}</p>
+                    <p className={styles.scheduleTime}>{formattedMeetingTime}</p>
                   </div>
                 )}
               </div>
