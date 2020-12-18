@@ -95,4 +95,11 @@ export default {
   'component.customEmailsTableField.description':
     'Cras gravida bibendum dolor eu varius. Morbi fermentum velit nisl, eget vehicula lorem sodales eget. Donec quis volutpat orci. Sed ipsum felis, tristique id egestas et, convallis ac velit.',
   'component.customEmailsTableField.titleTable': 'Custom emails created',
+  'component.customEmailsTableField.pagination.showing': 'Showing',
+  'component.customEmailsTableField.pagination.of': 'of',
+  'component.customEmailsTableField.emailSubject': 'Email subject',
+  'component.customEmailsTableField.createdOn': 'Created On',
+  'component.customEmailsTableField.triggerEvent': 'Trigger Event',
+  'component.customEmailsTableField.frequency': 'Frequency',
+  'component.customEmailsTableField.actions': 'Actions',
 };

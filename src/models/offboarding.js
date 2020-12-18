@@ -56,6 +56,7 @@ const offboarding = {
     itemCreateScheduleInterview: {},
     listAssigned: [],
     listAssignee: [],
+    hrManager: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -63,10 +64,10 @@ const offboarding = {
         const response = yield call(getOffboardingList, payload);
         const {
           statusCode,
-          data: { items: listOffboarding = [], total: totalList = [] } = {},
+          data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList } });
+        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
       } catch (errors) {
         dialog(errors);
       }
@@ -76,10 +77,14 @@ const offboarding = {
         const response = yield call(teamRequestList, payload);
         const {
           statusCode,
-          data: { items: listTeamRequest = [], total: totalListTeamRequest = [] } = {},
+          data: {
+            items: listTeamRequest = [],
+            total: totalListTeamRequest = [],
+            hrManager = {},
+          } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest } });
+        yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
       } catch (errors) {
         dialog(errors);
       }

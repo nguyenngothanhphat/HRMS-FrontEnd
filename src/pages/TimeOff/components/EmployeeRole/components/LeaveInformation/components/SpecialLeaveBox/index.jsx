@@ -1,24 +1,34 @@
 import React, { PureComponent } from 'react';
-import { Col } from 'antd';
+import { Col, Progress } from 'antd';
 import styles from './index.less';
 
 export default class SpecialLeaveBox extends PureComponent {
+  renderCircle = (days, color) => {
+    return (
+      <span className={styles.smallCircle} style={{ color }}>
+        <span className={styles.dayNumber}>{`0${days}`.slice(-2)}</span>
+        <span className={styles.dayText}>days</span>
+      </span>
+    );
+  };
+
   render() {
-    const { title = '', shortType = '', days = 0 } = this.props;
+    const { title = '', shortType = '', days = 0, color = '#000' } = this.props;
     return (
       <Col className={styles.SpecialLeaveBox} span={24}>
+        <span className={styles.title}>
+          {title} <span> {shortType !== '' && `(${shortType})`}</span>
+        </span>
         <div className={styles.daysBox}>
-          <div className={styles.days}>
-            <span className={styles.activeDays}>{`0${days}`.slice(-2)}</span>
-            <span className={styles.daysText}>Days</span>
-          </div>
-          <div className={styles.circleBackground} />
+          <Progress
+            type="circle"
+            percent={100}
+            width={50}
+            strokeColor={color}
+            strokeWidth={2}
+            format={() => this.renderCircle(days, color)}
+          />
         </div>
-        <p className={styles.title}>
-          <p>
-            {title} <span> {shortType !== '' && `(${shortType})`}</span>
-          </p>
-        </p>
       </Col>
     );
   }

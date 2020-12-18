@@ -1,9 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Avatar } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
+import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
 
 class TableManager extends PureComponent {
@@ -52,6 +53,13 @@ class TableManager extends PureComponent {
         },
       },
       {
+        title: <span className={t.title}>Employee ID </span>,
+        dataIndex: 'employee',
+        render: (employee) => {
+          return <p>{employee.employeeId}</p>;
+        },
+      },
+      {
         title: <span className={t.title}>Requested on</span>,
         dataIndex: 'createdAt',
         render: (createdAt) => {
@@ -60,27 +68,33 @@ class TableManager extends PureComponent {
       },
       {
         title: <span className={t.title}>LWD</span>,
-        dataIndex: 'lwd',
+        dataIndex: 'lastWorkingDate',
+        render: (lastWorkingDate) => {
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+        },
       },
       {
-        title: <span className={t.title}>LWD Change</span>,
-        dataIndex: 'lwdChange',
-      },
-      {
-        title: <span className={t.title}>Assigned</span>,
-        dataIndex: 'assigned',
-        render: () => (
-          <div className={t.rowAction}>
-            <p>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-            </p>
-          </div>
-        ),
+        title: <span className={t.title}>Assigned </span>,
+        dataIndex: 'Assigned',
+        render: (_, row) => {
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          const arrAvt = [avtManager, avtHrManager];
+          return (
+            <div className={t.rowAction}>
+              {arrAvt.map(
+                (item, index) =>
+                  item && (
+                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+                      <Avatar src={item} size={20} icon={<UserOutlined />} />
+                    </div>
+                  ),
+              )}
+            </div>
+          );
+        },
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,

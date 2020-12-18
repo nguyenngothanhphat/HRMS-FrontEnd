@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import WithdrawModal from '../WithdrawModal';
 
@@ -10,8 +10,9 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
+  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -31,9 +32,10 @@ class RequestInformation extends Component {
   };
 
   // EDIT BUTTON
-  handleEdit = () => {
-    // eslint-disable-next-line no-alert
-    alert('EDIT');
+  handleEdit = (_id) => {
+    history.push({
+      pathname: `/time-off/edit-leave-request/${_id}`,
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -43,10 +45,14 @@ class RequestInformation extends Component {
     });
   };
 
-  formatDurationTime = (from, to) => {
-    return `${moment(from).locale('en').format('MM.DD.YYYY')} - ${moment(to)
-      .locale('en')
-      .format('MM.DD.YYYY')}`;
+  formatDurationTime = (fromDate, toDate) => {
+    let leaveTimes = '';
+    if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+        .locale('en')
+        .format('MM.DD.YYYY')}`;
+    }
+    return leaveTimes;
   };
 
   // WITHDRAW CLICKED
@@ -55,16 +61,33 @@ class RequestInformation extends Component {
   };
 
   // ON PROCEED withDraw
-  onProceed = () => {
-    alert('Proceed');
+  onProceed = async () => {
+    const {
+      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/withdrawLeaveRequest',
+      id,
+    });
+    if (statusCode === 200) {
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
+      });
+    }
   };
 
   render() {
     const { showWithdrawModal } = this.state;
-    const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
+    const {
+      timeOff: { viewingLeaveRequest = {} } = {},
+      loadingFetchLeaveRequestById,
+      loadingWithdrawLeaveRequest,
+    } = this.props;
     const {
       status = '',
-      // _id = '',
+      _id = '',
       subject = '',
       fromDate = '',
       toDate = '',
@@ -80,7 +103,7 @@ class RequestInformation extends Component {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
-          <div className={styles.editButton} onClick={this.handleEdit}>
+          <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
             <img src={EditIcon} className={styles.icon} alt="edit-icon" />
             <span className={styles.label}>Edit</span>
           </div>
@@ -103,7 +126,7 @@ class RequestInformation extends Component {
               <Row>
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
-                  <span>{`${name} (${shortType})`}</span>
+                  <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
                   <span className={styles.smallNotice}>
                     <span className={styles.normalText}>
                       {shortType}s are covered under{' '}
@@ -120,22 +143,28 @@ class RequestInformation extends Component {
               </Row>
               <Row>
                 <Col span={6}>Duration</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span>{formatDurationTime}</span>{' '}
-                  <span
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: '12px',
-                    }}
-                  >
-                    [{duration <= 1 ? `${duration} day` : `${duration} days`}]
-                  </span>
-                  {(type === 'A' || type === 'B') && (
-                    <span className={styles.smallNotice}>
-                      <span className={styles.normalText}>{name}s gets credited each month.</span>
-                    </span>
-                  )}
-                </Col>
+                {formatDurationTime !== '' && (
+                  <>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{formatDurationTime}</span>{' '}
+                      <span
+                        style={{
+                          fontWeight: 'bold',
+                        }}
+                        className={styles.fieldValue}
+                      >
+                        [{duration <= 1 ? `${duration} day` : `${duration} days`}]
+                      </span>
+                      {(type === 'A' || type === 'B') && (
+                        <span className={styles.smallNotice}>
+                          <span className={styles.normalText}>
+                            {name}s gets credited each month.
+                          </span>
+                        </span>
+                      )}
+                    </Col>
+                  </>
+                )}
               </Row>
               <Row>
                 <Col span={6}>Description</Col>
@@ -144,25 +173,21 @@ class RequestInformation extends Component {
                 </Col>
               </Row>
             </div>
-            {status !== 'REJECTED' && (
+            {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
                   your department head.
                 </span>
                 <div className={styles.formButtons}>
-                  <Button
-                    // loading={loadingAddLeaveRequest}
-                    onClick={this.withDraw}
-                  >
-                    Withdraw
-                  </Button>
+                  <Button onClick={() => this.withDraw()}>Withdraw</Button>
                 </div>
               </div>
             )}
           </>
         )}
         <WithdrawModal
+          loading={loadingWithdrawLeaveRequest}
           visible={showWithdrawModal}
           onProceed={this.onProceed}
           onClose={this.setShowWithdrawModal}
