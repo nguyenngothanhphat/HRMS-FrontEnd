@@ -62,7 +62,7 @@ class SignUpConfigLocation extends Component {
           <Steps
             className={styles.steps}
             current={currentStep}
-            onChange={this.onChangeStep}
+            // onChange={this.onChangeStep}
             direction="vertical"
           >
             <Step icon={this.customStep(0)} />

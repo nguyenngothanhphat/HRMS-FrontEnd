@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
+import { connect } from 'umi';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
@@ -8,6 +9,7 @@ import TabManageTeamWork from './components/TabManageTeamWork';
 import TimeSheet from './components/TimeSheet';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
+
 import styles from './index.less';
 
 const listLinkFQAs = [
@@ -28,8 +30,18 @@ const listQuickLinks = [
   { name: 'Submit Commuter Claim', href: '' },
 ];
 
-export default class Dashboard extends PureComponent {
+@connect(({ user }) => user)
+// @connect(({ candidateInfo = {}, user, loading }) => ({
+//   candidateInfo,
+//   user,
+//   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
+// }))
+class Dashboard extends PureComponent {
   render() {
+    console.log(this.props);
+    const { currentUser = {} } = this.props;
+    const { name = '' } = currentUser;
+    console.log(name);
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -40,15 +52,14 @@ export default class Dashboard extends PureComponent {
           </Affix>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={7}>
-              <Greeting />
+              <Greeting name={name} />
               <div className={styles.leftContainer}>
-                <MyApps />
-                <div className={styles.divide} />
                 <ActivityLog />
               </div>
             </Col>
             <Col span={17}>
               <Carousel />
+              <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={12}>
                   <TabManageTeamWork />
@@ -70,3 +81,5 @@ export default class Dashboard extends PureComponent {
     );
   }
 }
+
+export default Dashboard;
