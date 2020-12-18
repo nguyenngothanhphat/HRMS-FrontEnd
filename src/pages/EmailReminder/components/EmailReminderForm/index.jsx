@@ -266,10 +266,9 @@ class EmailReminderForm extends PureComponent {
     }
   };
 
-  handleChangeEmail = (value, delta, source, editor) => {
-    const text = editor.getText(value);
+  handleChangeEmail = (value) => {
     this.setState({
-      message: text,
+      message: value,
     });
   };
 
