@@ -1,7 +1,7 @@
 // import { Tooltip, Tag } from 'antd';
 import { CalendarOutlined, BellOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { connect } from 'umi';
+import { connect, Link } from 'umi';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
@@ -54,9 +54,12 @@ const GlobalHeaderRight = (props) => {
           }
         }}
       />
-      <div className={`${styles.action} ${styles.calendar}`}>
-        <CalendarOutlined />
-      </div>
+      <Link to="/time-off">
+        <div className={`${styles.action} ${styles.calendar}`}>
+          <CalendarOutlined />
+        </div>
+      </Link>
+
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>
