@@ -46,7 +46,7 @@ class CustomEmailsTableField extends PureComponent {
     const cloneListEmail = [...listCustomEmail];
     const newListCustomEmail = [];
 
-    cloneListEmail.forEach((item) => {
+    cloneListEmail.reverse().forEach((item) => {
       newListCustomEmail.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
