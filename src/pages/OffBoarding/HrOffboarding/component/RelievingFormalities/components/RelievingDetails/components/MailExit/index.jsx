@@ -7,6 +7,7 @@ import removeIcon from '@/assets/remove-template-icon.svg';
 import sendTemplateIcon from '@/assets/send-template-icon.svg';
 import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
+import { dialog } from '@/utils/utils';
 import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
@@ -42,12 +43,12 @@ class MailExit extends Component {
   renderExtraContent = () => {
     return (
       <div>
-        <img
+        {/* <img
           className={styles.mailExit__card__iconExtra}
           style={{ paddingRight: '20px' }}
           src={addTemplateIcon}
           alt="add-template-icon"
-        />
+        /> */}
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
@@ -60,6 +61,8 @@ class MailExit extends Component {
 
   sendMailPackage = () => {
     const { dispatch, ticketId } = this.props;
+    const { isSent } = this.state;
+    if (isSent) return dialog({ message: 'This package has already been sent successfully' });
     dispatch({
       type: 'offboarding/sendOffBoardingPackage',
       payload: {
@@ -67,6 +70,7 @@ class MailExit extends Component {
         ticketId,
       },
     });
+    return null;
   };
 
   handleClickEdit = (template, mode) => {
