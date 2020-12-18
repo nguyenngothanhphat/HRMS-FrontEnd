@@ -64,10 +64,10 @@ const offboarding = {
         const response = yield call(getOffboardingList, payload);
         const {
           statusCode,
-          data: { items: listOffboarding = [], total: totalList = [] } = {},
+          data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList } });
+        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
       } catch (errors) {
         dialog(errors);
       }
