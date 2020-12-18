@@ -228,6 +228,7 @@ const offboarding = {
           });
           const { statusCode: templateStat } = templateRes;
           if (templateStat !== 200) throw templateRes;
+          return templateRes;
         }
 
         response = yield call(getRequestById, payload);
@@ -437,7 +438,7 @@ const offboarding = {
           message,
         });
         const newRequest = yield call(getRequestById, { id: payload.ticketId });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
@@ -449,8 +450,8 @@ const offboarding = {
         const response = yield call(removeOffBoardingPackage, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const newRequest = yield call(getRequestById, { id: payload.ticketId });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        const newRequest = yield call(getRequestById, { id: payload.offboardRequest });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
