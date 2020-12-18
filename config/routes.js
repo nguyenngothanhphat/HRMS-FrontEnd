@@ -445,6 +445,12 @@ const routes = [
             component: './EmailReminder',
           },
           {
+            path: '/employee-onboarding/view-email/:reId',
+            name: 'View Email',
+            component: './EmailView',
+            hideInMenu: true,
+          },
+          {
             path: '/template-details/:templateId',
             name: 'templateDetails',
             hideInMenu: true,
