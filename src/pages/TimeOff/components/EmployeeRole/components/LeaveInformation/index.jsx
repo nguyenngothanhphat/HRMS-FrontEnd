@@ -10,6 +10,7 @@ import styles from './index.less';
 
 const { Panel } = Collapse;
 const colorsList = ['#2C6DF9', '#FD4546', '#6236FF'];
+const colorsList1 = ['#2C6DF9', '#FFA100'];
 
 const CollapseInformation = (props) => {
   const {
@@ -31,6 +32,7 @@ const CollapseInformation = (props) => {
 
   return (
     <div className={styles.CollapseInformation}>
+      <div className={styles.hrLine} />
       <div className={styles.container}>
         <div className={styles.secondTitle}>
           <span className={styles.secondTitle__left}>Common Leaves</span>
@@ -44,16 +46,14 @@ const CollapseInformation = (props) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
             if (defaultSettings !== null) {
               const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
-              const moreContentMock = ['', '+1 credited on Aug 1, 2020', ''];
               return (
-                <div>
+                <div key={`${index + 1}`}>
                   <LeaveProgressBar
                     color={colorsList[index % 3]}
                     title={name}
                     shortType={shortType}
                     stepNumber={currentAllowance}
                     limitNumber={time}
-                    moreContent={moreContentMock[index % 3]}
                   />
                   {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
                 </div>
@@ -63,6 +63,7 @@ const CollapseInformation = (props) => {
           })}
         </div>
       </div>
+      <div className={styles.hrLine} />
       <div className={styles.container}>
         <div className={styles.secondTitle}>
           <span className={styles.secondTitle__left}>Special Leaves</span>
@@ -77,9 +78,9 @@ const CollapseInformation = (props) => {
             if (defaultSettings !== null) {
               const { name = '', shortType = '' } = defaultSettings;
               return (
-                <Col span={24}>
+                <Col key={`${index + 1}`} span={24}>
                   <SpecialLeaveBox
-                    color={colorsList[index % 3]}
+                    color={colorsList1[index % 2]}
                     title={name}
                     shortType={shortType}
                     days={currentAllowance}

@@ -92,13 +92,13 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading } = this.props;
+    const { data = [], countdata = [], loading, hrManager = {} } = this.props;
 
     return (
-      <Fragment>
+      <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <MyRequestTable data={data} loading={loading} />
-      </Fragment>
+        <MyRequestTable data={data} loading={loading} hrManager={hrManager} />
+      </>
     );
   }
 }

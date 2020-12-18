@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Anchor } from 'antd';
+import { Tabs } from 'antd';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import styles from './index.less';
 
-const { Link } = Anchor;
 const { TabPane } = Tabs;
 
 const mockData = [
@@ -28,18 +28,37 @@ const mockData = [
   },
 ];
 export default class QuickLinks extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewPolicyModal: false,
+    };
+  }
+
+  setViewPolicyModal = (value) => {
+    this.setState({
+      viewPolicyModal: value,
+    });
+  };
+
+  onLinkClick = () => {
+    this.setViewPolicyModal(true);
+  };
+
   render() {
+    const { viewPolicyModal } = this.state;
     return (
       <div className={styles.QuickLinks}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Quick Links" key="1">
-            <Anchor affix={false}>
-              {mockData.map((row) => (
-                <Link key={row.id} href={row.link} title={row.text} />
-              ))}
-            </Anchor>
+            {mockData.map((row) => (
+              <span key={row.id} onClick={this.onLinkClick}>
+                {row.text}
+              </span>
+            ))}
           </TabPane>
         </Tabs>
+        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
       </div>
     );
   }
