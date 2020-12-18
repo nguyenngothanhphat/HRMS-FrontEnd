@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import PageContainer from '@/layouts/layout/src/PageContainer';
 
-@connect(({ employeeSetting }) => ({
-  employeeSetting,
+@connect(({ employeeSetting: { emailCustomData = {} } = {} }) => ({
+  emailCustomData,
 }))
 class EmailView extends PureComponent {
   constructor(props) {
@@ -17,17 +17,19 @@ class EmailView extends PureComponent {
 
   fetchData = () => {
     const {
-      match: { params: { reId: emailCustomId = '' } = {} },
+      match: { params: { reId: id = '' } = {} },
       dispatch,
     } = this.props;
 
     dispatch({
       type: 'employeeSetting/fetchEmailCustomInfo',
-      payload: emailCustomId,
+      payload: id,
     });
   };
 
   render() {
+    const { emailCustomData } = this.props;
+    console.log('emailCustomData: ', emailCustomData);
     return (
       <PageContainer>
         <div>HELLO</div>

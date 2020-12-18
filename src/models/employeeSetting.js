@@ -310,14 +310,17 @@ const employeeSetting = {
       return response;
     },
     *fetchEmailCustomInfo({ payload: id = '' }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getCustomEmailInfo, { id });
-        const { data, statusCode } = response;
-        yield put({ type: 'saveEmployeeSetting', payload: { emailCustomData: data } });
+        response = yield call(getCustomEmailInfo, { id });
+        const { data: emailCustomData, statusCode } = response;
+        console.log('response: ', response);
+        yield put({ type: 'saveEmployeeSetting', payload: { emailCustomData } });
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
       }
+      return response;
     },
     *deleteCustomEmailItem({ payload }, { call }) {
       let response;
