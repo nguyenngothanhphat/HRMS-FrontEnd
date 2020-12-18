@@ -1,7 +1,10 @@
 /* eslint-disable array-callback-return */
 import React from 'react';
 import { Row, Col } from 'antd';
-import { ReactComponent as MyIcon } from '@/assets/dashboard_date.svg';
+import { ReactComponent as DateIcon } from '@/assets/dashboard_date.svg';
+import { ReactComponent as NewsIcon } from '@/assets/newspaper.svg';
+import { ReactComponent as TimeIcon } from '@/assets/time.svg';
+import { ReactComponent as ReportIcon } from '@/assets/report.svg';
 import AppItem from '../AppItem';
 
 import s from './index.less';
@@ -10,29 +13,29 @@ const appList = [
   {
     id: 1,
     name: 'Timesheets',
-    icon: <MyIcon />,
+    icon: <DateIcon />,
   },
   {
     id: 2,
     name: 'Timeoff',
-    icon: <MyIcon />,
+    icon: <NewsIcon />,
     link: '/offboarding',
   },
   {
     id: 3,
     name: 'Directory',
-    icon: <MyIcon />,
+    icon: <DateIcon />,
     link: '/directory',
   },
   {
     id: 4,
     name: 'Expenso',
-    icon: <MyIcon />,
+    icon: <TimeIcon />,
   },
   {
     id: 5,
     name: 'Report',
-    icon: <MyIcon />,
+    icon: <ReportIcon />,
   },
   {
     id: 6,
@@ -42,88 +45,46 @@ const appList = [
 
 const renderAppRow = (list) => {
   return (
-    <Row style={{ marginBottom: '24px' }}>
+    <>
       {list.map((app) => {
         const { name = '', icon = '', add = false, link } = app;
         if (add) {
           return (
-            <Col span={6}>
+            <Col span={3}>
               <AppItem add />
             </Col>
           );
         }
         return (
-          <Col span={6}>
+          <Col span={3}>
             <AppItem Icon={icon} name={name} link={link} />
           </Col>
         );
       })}
-    </Row>
+    </>
   );
 };
 
-const renderApps = (list, amount) => {
-  const arr = [];
-  let subArr = [];
+// const renderApps = (list, amount) => {
+//   const arr = [];
+//   let subArr = [];
 
-  // Split array into smaller array
-  list.map((app, index) => {
-    subArr.push(app);
-    if (((index + 1) % amount === 0 && index !== 0) || index === list.length - 1) {
-      arr.push(subArr);
-      subArr = [];
-    }
-  });
-
-  return arr.map((arrItem) => renderAppRow(arrItem));
-  //   return arr;
-};
+//   // Split array into smaller array
+//   list.map((app, index) => {
+//     subArr.push(app);
+//     if (((index + 1) % amount === 0 && index !== 0) || index === list.length - 1) {
+//       arr.push(subArr);
+//       subArr = [];
+//     }
+//   });
+//   return arr.map((arrItem) => renderAppRow(arrItem));
+// };
 
 const MyApps = () => {
   return (
     <div className={s.container}>
       <h3>my apps</h3>
-
-      {renderApps(appList, 4)}
-
-      {/* <Row style={{ marginBottom: '24px' }}>
-        {appList.map((app) => {
-          const { name = '', icon = '', add = false } = app;
-          return (
-            <Col span={8}>
-              <AppItem Icon={icon} name={name} />
-            </Col>
-          );
-        })}
-      </Row> */}
-      {/* <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Timesheets" />
-        </Col>
-      </Row> */}
-
-      {/* <Row style={{ marginBottom: '24px' }}>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Timesheets" />
-        </Col>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Timeoff" />
-        </Col>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Directory" />
-        </Col>
-      </Row>
-
-      <Row style={{ marginBottom: '24px' }}>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Expenso" />
-        </Col>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Report" />
-        </Col>
-        <Col span={8}>
-          <AppItem Icon={<MyIcon />} name="Add an app" add />
-        </Col>
-      </Row> */}
+      <Row>{renderAppRow(appList)}</Row>
     </div>
   );
 };
