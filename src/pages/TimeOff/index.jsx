@@ -40,7 +40,7 @@ export default class TimeOff extends PureComponent {
     return (
       <div className={styles.TimeOff}>
         <PageContainer>
-          <Tabs defaultActiveKey="2" tabBarExtraContent={this.options()}>
+          <Tabs defaultActiveKey="1" tabBarExtraContent={this.options()}>
             <TabPane tab="Timeoff" key="1">
               <EmployeeRole />
             </TabPane>

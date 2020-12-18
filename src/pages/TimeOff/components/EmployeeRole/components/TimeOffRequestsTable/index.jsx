@@ -89,7 +89,7 @@ class TimeOffRequestsTable extends PureComponent {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '180px 0',
+          padding: '160px 0',
           // height: '310px',
         }}
       >
