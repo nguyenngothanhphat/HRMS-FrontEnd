@@ -1,9 +1,23 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col } from 'antd';
 import SideImage from '@/assets/teamVectorImage.svg';
+import ViewTimelineModal from '../ViewTimelineModal';
 import styles from './index.less';
 
 export default class YourTimeline extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showViewTimelineModal: false,
+    };
+  }
+
+  onViewTimelineClick = (value) => {
+    this.setState({
+      showViewTimelineModal: value,
+    });
+  };
+
   render() {
     const {
       title = 'Your timeline with us',
@@ -15,8 +29,10 @@ export default class YourTimeline extends PureComponent {
         </p>
       ),
       buttonText = 'See timeline',
-      onClick = () => {},
     } = this.props;
+
+    const { showViewTimelineModal } = this.state;
+
     return (
       <div className={styles.YourTimeline}>
         <Row>
@@ -25,7 +41,7 @@ export default class YourTimeline extends PureComponent {
               <span className={styles.title}>{title}</span>
               <p className={styles.describe}>{describe}</p>
             </div>
-            <Button onClick={onClick}>{buttonText}</Button>
+            <Button onClick={() => this.onViewTimelineClick(true)}>{buttonText}</Button>
           </Col>
           <Col className={styles.sideContainer} span={10}>
             <div className={styles.sideImage}>
@@ -33,6 +49,11 @@ export default class YourTimeline extends PureComponent {
             </div>
           </Col>
         </Row>
+        <ViewTimelineModal
+          visible={showViewTimelineModal}
+          onClose={() => this.onViewTimelineClick(false)}
+          submitText="OK"
+        />
       </div>
     );
   }
