@@ -5,7 +5,7 @@ import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
 import sendTemplateIcon from '@/assets/send-template-icon.svg';
-import addTemplateIcon from '@/assets/add-template-icon.svg';
+// import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
 import { dialog } from '@/utils/utils';
 import RelievingTemplates from '../RelievingTemplates';
@@ -129,8 +129,131 @@ class MailExit extends Component {
     );
   };
 
-  render() {
+  renderAfterSendMail = () => {
+    const {
+      exitPackage: { packages = [] },
+    } = this.props;
+    return (
+      <>
+        <Row gutter={[40, 15]}>
+          {packages?.map((doc, index) => {
+            if (typeof doc !== 'object') return null;
+            const { key } = doc;
+            return (
+              <Col span={10} key={`${index + 1}`}>
+                <div className={styles.template}>
+                  <div className={styles.template__content}>
+                    <img src={templateIcon} alt="template-icon" />
+                    <span>{key}</span>
+                  </div>
+                  <img src={checkTemplateIcon} alt="check-icon" />
+                </div>
+              </Col>
+            );
+          })}
+        </Row>
+      </>
+    );
+  };
+
+  renderBeforeSendMail = () => {
     const { isSent = false, exitPackageTemplates, customDocuments } = this.state;
+    return (
+      <Row gutter={[10, 20]}>
+        {exitPackageTemplates?.map((template, index) => {
+          const { packageName } = template;
+          return (
+            <Col key={`${index + 1}`}>
+              <div className={styles.template}>
+                <div
+                  className={styles.template__content}
+                  onClick={() => this.handleClickEdit(template, 'View')}
+                >
+                  <img src={templateIcon} alt="template-icon" />
+                  <span
+                    style={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      width: '130px',
+                    }}
+                  >
+                    {packageName}
+                  </span>
+                </div>
+                <div className={styles.template__action}>
+                  <img
+                    onClick={() => this.handleClickEdit(template, 'Edit')}
+                    className={styles.edit__icon}
+                    src={editIcon}
+                    alt="edit-icon"
+                  />
+                  <Popconfirm
+                    title="Are you sure?"
+                    onConfirm={() => this.handleRemoveTemplate(template, 'template')}
+                    // onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <img src={removeIcon} alt="remove-icon" />
+                  </Popconfirm>
+                </div>
+              </div>
+            </Col>
+          );
+        })}
+        {customDocuments?.map((doc, index) => {
+          if (typeof doc === 'object') {
+            const {
+              key,
+              attachment: { url = '' },
+            } = doc;
+            return (
+              <Col key={`${index + 1}`}>
+                <div className={styles.template}>
+                  <div
+                    className={styles.template__content}
+                    onClick={() => window.open(url, '_blank')}
+                  >
+                    <img src={templateIcon} alt="template-icon" />
+                    <span
+                      style={{
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        width: '130px',
+                      }}
+                    >
+                      {key}
+                    </span>
+                  </div>
+                  {isSent ? (
+                    <img src={checkTemplateIcon} alt="check-icon" />
+                  ) : (
+                    <div className={styles.template__action}>
+                      <Popconfirm
+                        title="Are you sure?"
+                        onConfirm={() => this.handleRemoveTemplate(doc, 'doc')}
+                        // onCancel={cancel}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <img src={removeIcon} alt="remove-icon" />
+                      </Popconfirm>
+                    </div>
+                  )}
+                </div>
+              </Col>
+            );
+          }
+          return null;
+        })}
+      </Row>
+    );
+  };
+
+  render() {
+    const { isSent } = this.state;
     return (
       <div className={styles.mailExit}>
         <Card
@@ -138,100 +261,7 @@ class MailExit extends Component {
           title={formatMessage({ id: 'pages.relieving.mailExit' })}
           extra={this.renderExtraContent()}
         >
-          <Row gutter={[10, 20]}>
-            {exitPackageTemplates?.map((template, index) => {
-              const { packageName } = template;
-              return (
-                <Col key={`${index + 1}`}>
-                  <div className={styles.template}>
-                    <div
-                      className={styles.template__content}
-                      onClick={() => this.handleClickEdit(template, 'View')}
-                    >
-                      <img src={templateIcon} alt="template-icon" />
-                      <span
-                        style={{
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                          whiteSpace: 'nowrap',
-                          width: '130px',
-                        }}
-                      >
-                        {packageName}
-                      </span>
-                    </div>
-                    {isSent ? (
-                      <img src={checkTemplateIcon} alt="check-icon" />
-                    ) : (
-                      <div className={styles.template__action}>
-                        <img
-                          onClick={() => this.handleClickEdit(template, 'Edit')}
-                          className={styles.edit__icon}
-                          src={editIcon}
-                          alt="edit-icon"
-                        />
-                        <Popconfirm
-                          title="Are you sure?"
-                          onConfirm={() => this.handleRemoveTemplate(template, 'template')}
-                          // onCancel={cancel}
-                          okText="Yes"
-                          cancelText="No"
-                        >
-                          <img src={removeIcon} alt="remove-icon" />
-                        </Popconfirm>
-                      </div>
-                    )}
-                  </div>
-                </Col>
-              );
-            })}
-            {customDocuments?.map((doc, index) => {
-              if (typeof doc === 'object') {
-                const {
-                  key,
-                  attachment: { url = '' },
-                } = doc;
-                return (
-                  <Col key={`${index + 1}`}>
-                    <div className={styles.template}>
-                      <div
-                        className={styles.template__content}
-                        onClick={() => window.open(url, '_blank')}
-                      >
-                        <img src={templateIcon} alt="template-icon" />
-                        <span
-                          style={{
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            width: '130px',
-                          }}
-                        >
-                          {key}
-                        </span>
-                      </div>
-                      {isSent ? (
-                        <img src={checkTemplateIcon} alt="check-icon" />
-                      ) : (
-                        <div className={styles.template__action}>
-                          <Popconfirm
-                            title="Are you sure?"
-                            onConfirm={() => this.handleRemoveTemplate(doc, 'doc')}
-                            // onCancel={cancel}
-                            okText="Yes"
-                            cancelText="No"
-                          >
-                            <img src={removeIcon} alt="remove-icon" />
-                          </Popconfirm>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                );
-              }
-              return null;
-            })}
-          </Row>
+          {isSent ? this.renderAfterSendMail() : this.renderBeforeSendMail()}
         </Card>
         {this.renderModalEditTemplate()}
       </div>
