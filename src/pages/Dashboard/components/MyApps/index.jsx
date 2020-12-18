@@ -16,16 +16,13 @@ const appList = [
     id: 2,
     name: 'Timeoff',
     icon: <MyIcon />,
+    link: '/offboarding',
   },
   {
     id: 3,
     name: 'Directory',
     icon: <MyIcon />,
-  },
-  {
-    id: 4,
-    name: 'Expenso',
-    icon: <MyIcon />,
+    link: '/directory',
   },
   {
     id: 4,
@@ -47,7 +44,7 @@ const renderAppRow = (list) => {
   return (
     <Row style={{ marginBottom: '24px' }}>
       {list.map((app) => {
-        const { name = '', icon = '', add = false } = app;
+        const { name = '', icon = '', add = false, link } = app;
         if (add) {
           return (
             <Col span={6}>
@@ -57,7 +54,7 @@ const renderAppRow = (list) => {
         }
         return (
           <Col span={6}>
-            <AppItem Icon={icon} name={name} />
+            <AppItem Icon={icon} name={name} link={link} />
           </Col>
         );
       })}
