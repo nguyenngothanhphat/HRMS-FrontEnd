@@ -17,7 +17,6 @@ class TimeoffType extends Component {
 
   render() {
     const { viewType } = this.state;
-    console.log(viewType);
     return (
       <div className={styles.TimeoffType}>
         <div className={styles.TimeoffContain}>

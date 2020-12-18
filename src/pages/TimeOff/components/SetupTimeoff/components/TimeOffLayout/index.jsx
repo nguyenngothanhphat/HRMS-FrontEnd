@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Progress } from 'antd';
 import s from './index.less';
 
 class TimeOffLayout extends Component {
@@ -34,7 +35,12 @@ class TimeOffLayout extends Component {
         style={tabTop ? { borderBottom: 'none' } : {}}
         key={item.key}
       >
-        {item.name}
+        {item.name}{' '}
+        <Progress
+          strokeColor={item.progress < 100 ? '#FFA100' : 'green'}
+          type="circle"
+          percent={item.progress}
+        />
       </div>
     );
   };

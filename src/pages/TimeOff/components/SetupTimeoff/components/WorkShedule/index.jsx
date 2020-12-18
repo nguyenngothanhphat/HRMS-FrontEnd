@@ -143,7 +143,7 @@ class WorkShedule extends Component {
                         <TimePicker format={format} />
                       </Form.Item>
                     </Col>
-                    <Col style={{ padding: '5px' }}>
+                    <Col style={{ padding: '2px' }}>
                       <Form.Item name="startAmPM">
                         <Radio.Group
                           options={options}
@@ -158,13 +158,13 @@ class WorkShedule extends Component {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
                   <div className={s.content}>Workday end at</div>
-                  <Row gutter={[13, 0]}>
+                  <Row gutter={[16, 0]}>
                     <Col>
                       <Form.Item name="endAt">
                         <TimePicker format={format} />
                       </Form.Item>
                     </Col>
-                    <Col style={{ padding: '5px' }}>
+                    <Col style={{ padding: '2px' }}>
                       <Form.Item name="endAmPM">
                         <Radio.Group
                           options={options}

@@ -18,8 +18,20 @@
     .ant-radio-button-wrapper:first-child {
       border-radius: 10px;
     }
+    .ant-radio-button-wrapper:last-child {
+      border-radius: 10px;
+    }
     .ant-radio-button-wrapper > .ant-radio-button {
       border-radius: 10px;
+    }
+    .ant-form-item {
+      margin-bottom: 0px;
+    }
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+      display: none;
+    }
+    .ant-radio-button-wrapper:not(:first-child)::before {
+      background-color: #fff;
     }
   }
   .formActive {
@@ -44,10 +56,12 @@
       padding-bottom: 11px;
     }
     .formInput {
-      padding: 24px 16px;
-      height: 115px;
+      padding: 24px;
+      width: 208px;
+      height: auto;
       background: #fafafa;
       border-radius: 13px;
+      margin-bottom: 20px;
     }
   }
   .bottom {

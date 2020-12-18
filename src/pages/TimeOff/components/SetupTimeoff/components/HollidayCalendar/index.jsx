@@ -113,12 +113,16 @@ class HollidayCalendar extends Component {
               const day = moment(date).format('dddd');
               return (
                 <div>
-                  <Row gutter={[30, 20]}>
+                  <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
                       <Checkbox />
                     </Col>
-                    <Col span={6}>{name}</Col>
-                    <Col span={4}>{dateFormat}</Col>
+                    <Col span={6} className={s.textHoliday}>
+                      {name}
+                    </Col>
+                    <Col span={4} className={s.textHoliday}>
+                      {dateFormat}
+                    </Col>
                     <Col span={4}>{day}</Col>
                     <Col span={6}>{type}</Col>
                   </Row>
@@ -165,7 +169,7 @@ class HollidayCalendar extends Component {
         <Row className={s.listHoliday}>
           <Col span={24} className={s.flex}>
             <div>
-              <Checkbox>Select All</Checkbox>
+              <Checkbox className={s.select}>Select All</Checkbox>
             </div>
             <div>
               <Row gutter={[24, 0]}>

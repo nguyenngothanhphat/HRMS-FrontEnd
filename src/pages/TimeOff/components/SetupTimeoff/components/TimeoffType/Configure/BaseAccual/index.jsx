@@ -40,7 +40,7 @@ class BaseAccual extends Component {
   render() {
     const { accrualRate, select } = this.state;
     return (
-      <div className={styles.content}>
+      <div className={styles.contentBaseAccrual}>
         <div className={styles.title}>Base accrual rate</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

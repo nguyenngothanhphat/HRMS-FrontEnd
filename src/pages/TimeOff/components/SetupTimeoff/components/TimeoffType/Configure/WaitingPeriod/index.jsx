@@ -40,7 +40,7 @@ class WaitingPeriod extends Component {
   render() {
     const { minimumIncrements, select } = this.state;
     return (
-      <div className={styles.content}>
+      <div className={styles.contentWaiting}>
         <div className={styles.title}>Waiting periods</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

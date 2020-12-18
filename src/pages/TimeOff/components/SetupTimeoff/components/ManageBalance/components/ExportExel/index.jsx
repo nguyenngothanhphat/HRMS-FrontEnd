@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from 'antd';
+// import { Button } from 'antd';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-// import styles from './index.less';
+import styles from './index.less';
 
 const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const fileExtension = '.xlsx';
@@ -17,9 +17,9 @@ const exportToCSV = (csvData, fileName) => {
 
 const ExportCSV = ({ csvData, fileName }) => {
   return (
-    <Button variant="warning" onClick={(e) => exportToCSV(csvData, fileName)}>
-      Export
-    </Button>
+    <div className={styles.dowload}>
+      <div onClick={() => exportToCSV(csvData, fileName)}>Download spreadsheet</div>
+    </div>
   );
 };
 

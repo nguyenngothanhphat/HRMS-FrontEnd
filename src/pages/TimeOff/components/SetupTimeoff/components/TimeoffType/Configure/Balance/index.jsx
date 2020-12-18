@@ -41,7 +41,7 @@ class Balance extends Component {
     const { accrualRate, select } = this.state;
     console.log(accrualRate);
     return (
-      <div className={styles.content}>
+      <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

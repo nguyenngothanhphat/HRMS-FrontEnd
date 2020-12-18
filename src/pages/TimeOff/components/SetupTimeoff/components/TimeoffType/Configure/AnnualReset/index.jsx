@@ -12,7 +12,7 @@ class AnnualReset extends Component {
 
   render() {
     return (
-      <div className={styles.content}>
+      <div className={styles.contentAnnual}>
         <div className={styles.title}>Annual reset</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

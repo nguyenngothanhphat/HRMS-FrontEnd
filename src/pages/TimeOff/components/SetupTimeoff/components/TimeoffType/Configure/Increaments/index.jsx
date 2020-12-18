@@ -40,7 +40,7 @@ class Increaments extends Component {
   render() {
     const { minimumIncrements, select } = this.state;
     return (
-      <div className={styles.content}>
+      <div className={styles.contentIncrements}>
         <div className={styles.title}>Minimum increments</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

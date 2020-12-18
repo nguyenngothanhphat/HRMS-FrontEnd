@@ -1,5 +1,7 @@
 import React from 'react';
+import { Button, DatePicker, Row, Col } from 'antd';
 import * as XLSX from 'xlsx';
+import styles from './index.less';
 
 class ExcelToJson extends React.Component {
   constructor(props) {
@@ -36,15 +38,17 @@ class ExcelToJson extends React.Component {
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
       /* Update state */
-      console.log(`Data>>>${data}`); // shows that excel data is read
+      console.log(data); // shows that excel data is read
       console.log(this.convertToJson(data)); // shows data in json format
     };
+
     reader.readAsBinaryString(f);
   };
 
   convertToJson = (csv) => {
+    console.log(csv, 'csv');
     const lines = csv.split('\n');
-
+    console.log(lines, 'line');
     const result = [];
 
     const headers = lines[0].split(',');
@@ -56,7 +60,7 @@ class ExcelToJson extends React.Component {
       for (let j = 0; j < headers.length; j += 1) {
         obj[headers[j]] = currentline[j];
       }
-
+      console.log(obj);
       result.push(obj);
     }
 
@@ -66,15 +70,32 @@ class ExcelToJson extends React.Component {
 
   render() {
     return (
-      <div>
-        <input type="file" id="file" ref="fileUploader" onChange={this.filePathset.bind(this)} />
-        <button
-          onClick={() => {
-            this.readFile();
-          }}
-        >
-          Read File
-        </button>
+      <div className={styles.root}>
+        <div className={styles.import}>
+          <input
+            type="file"
+            id="file"
+            ref="fileUploader"
+            onChange={this.filePathset.bind(this)}
+            accept=".xlsx"
+          />
+        </div>
+        <Row gutter={[50, 0]}>
+          <Col span={10}>As per any assigned new policies, their accrual will begin on:</Col>
+          <Col span={7}>
+            <DatePicker />
+          </Col>
+        </Row>
+        <div className={styles.save}>
+          <Button
+            className={styles.btnSave}
+            onClick={() => {
+              this.readFile();
+            }}
+          >
+            Read File
+          </Button>
+        </div>
       </div>
     );
   }

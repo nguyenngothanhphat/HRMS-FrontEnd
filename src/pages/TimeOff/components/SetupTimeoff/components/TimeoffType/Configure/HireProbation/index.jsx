@@ -40,7 +40,7 @@ class HireProbation extends Component {
   render() {
     const { minimumIncrements, select } = this.state;
     return (
-      <div className={styles.content}>
+      <div className={styles.contentHireProration}>
         <div className={styles.title}>New hire proration</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>

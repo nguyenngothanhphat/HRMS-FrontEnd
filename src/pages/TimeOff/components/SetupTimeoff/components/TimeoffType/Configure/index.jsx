@@ -13,6 +13,7 @@ import HireProbation from './HireProbation';
 import styles from './index.less';
 
 // const { TabPane } = Tabs;
+
 class Configure extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +23,78 @@ class Configure extends Component {
       baseAccual: {},
       tenuaAccrua: {},
       balance: {},
+      list: [
+        {
+          key: 1,
+          id: 'baseAccrual',
+          title: 'Base  accrual',
+          ref: React.createRef(),
+          componnet: <BaseAccual onChangeValue={this.onChangeBaseAccual} />,
+        },
+        {
+          key: 2,
+          id: 'tenuaAccrua',
+          title: 'Tenua Accrua',
+          ref: React.createRef(),
+          componnet: <TenuaAccrua onChangeValue={this.onChangetenuaAccrua} />,
+        },
+        {
+          key: 3,
+          id: 'accrualSchedule',
+          title: 'Accrual Schedule',
+          ref: React.createRef(),
+          componnet: <AccrualSchedule onChangeValue={this.onChangetenuaAccrua} />,
+        },
+        {
+          key: 4,
+          id: 'balance',
+          title: 'Maximum balance',
+          ref: React.createRef(),
+          componnet: <Balance onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 5,
+          id: 'annualReset',
+          title: 'Annual Reset',
+          ref: React.createRef(),
+          componnet: <AnnualReset onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 6,
+          id: 'negativeBalances',
+          title: 'Negative balances',
+          ref: React.createRef(),
+          componnet: <NegativeBalances onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 7,
+          id: 'carryoverCap',
+          title: 'Carryover Cap',
+          ref: React.createRef(),
+          componnet: <CarryoverCap onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 8,
+          id: 'minimumIncrements',
+          title: 'Minimum Increments',
+          ref: React.createRef(),
+          componnet: <Increaments onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 9,
+          id: 'waitingPeriods',
+          title: 'Waiting periods',
+          ref: React.createRef(),
+          componnet: <WaitingPeriod onChangeValue={this.onChangeBalance} />,
+        },
+        {
+          key: 10,
+          id: 'hireProbation',
+          title: 'New Hire proration',
+          ref: React.createRef(),
+          componnet: <HireProbation onChangeValue={this.onChangeBalance} />,
+        },
+      ],
     };
   }
 
@@ -49,11 +122,11 @@ class Configure extends Component {
       this.setState({ select: 'negativeBalances' });
     } else if (position > 1800 && position < 2000) {
       this.setState({ select: 'carryoverCap' });
-    } else if (position > 2000 && position < 2300) {
+    } else if (position > 2000 && position < 2200) {
       this.setState({ select: 'minimumIncrements' });
-    } else if (position > 2300 && position < 2500) {
+    } else if (position > 2220 && position < 2400) {
       this.setState({ select: 'waitingPeriods' });
-    } else if (position > 2500 && position < 3000) {
+    } else if (position > 2400 && position < 2600) {
       this.setState({ select: 'hireProbation' });
     }
   };
@@ -81,22 +154,7 @@ class Configure extends Component {
   };
 
   renderComponent = (item) => {
-    const { step } = this.state;
-    return (
-      <div ref={item.ref}>
-        {item.componnet}
-        {/* <Affix offsetBottom={0} style={{ bottom: '0px' }}>
-          <div className={styles.bottom}>
-            <Row className={styles.stepNode} gutter={[60, 0]}>
-              <Col>Prev</Col>
-              <Col>{`${step}/10 Steps `}</Col>
-              <Col onClick={this.nextStep}>Next</Col>
-            </Row>
-            <Button className={styles.btnSave}>Save</Button>
-          </div>
-        </Affix> */}
-      </div>
-    );
+    return <div ref={item.ref}>{item.componnet}</div>;
   };
 
   onChangeBaseAccual = (value = {}) => {
@@ -111,90 +169,65 @@ class Configure extends Component {
     this.setState({ balance: value });
   };
 
-  nextStep = () => {};
+  prevStep = (data) => {
+    if (data > 1) {
+      const dataPrev = data - 1;
+      const { list } = this.state;
+      const renderStep = list.find((item) => item.key === dataPrev);
+      const { ref } = renderStep;
+      ref.current.scrollIntoView(true);
+      window.scrollBy(0, -150);
+    }
+  };
+
+  nextStep = (data) => {
+    if (data <= 11) {
+      const dataAdd = data + 1;
+      const { list } = this.state;
+      const renderStep = list.find((item) => item.key === dataAdd);
+      const { ref } = renderStep;
+      ref.current.scrollIntoView(true);
+      window.scrollBy(0, -150);
+    } else return;
+  };
 
   render() {
     // const { tabKey = '' } = this.props;
-    const { select, tenuaAccrua, balance, step } = this.state;
-    console.log(select);
-    const list = [
-      {
-        key: 1,
-        id: 'baseAccrual',
-        title: 'Base  accrual',
-        ref: React.createRef(),
-        componnet: <BaseAccual onChangeValue={this.onChangeBaseAccual} />,
-      },
-      {
-        key: 2,
-        id: 'tenuaAccrua',
-        title: 'Tenua Accrua',
-        ref: React.createRef(),
-        componnet: <TenuaAccrua onChangeValue={this.onChangetenuaAccrua} />,
-      },
-      {
-        key: 3,
-        id: 'accrualSchedule',
-        title: 'Accrual Schedule',
-        ref: React.createRef(),
-        componnet: <AccrualSchedule onChangeValue={this.onChangetenuaAccrua} />,
-      },
-      {
-        key: 4,
-        id: 'balance',
-        title: 'Maximum balance',
-        ref: React.createRef(),
-        componnet: <Balance onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 5,
-        id: 'annualReset',
-        title: 'Annual Reset',
-        ref: React.createRef(),
-        componnet: <AnnualReset onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 6,
-        id: 'negativeBalances',
-        title: 'Negative balances',
-        ref: React.createRef(),
-        componnet: <NegativeBalances onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 7,
-        id: 'carryoverCap',
-        title: 'Carryover Cap',
-        ref: React.createRef(),
-        componnet: <CarryoverCap onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 8,
-        id: 'minimumIncrements',
-        title: 'Minimum Increments',
-        ref: React.createRef(),
-        componnet: <Increaments onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 9,
-        id: 'waitingPeriods',
-        title: 'Waiting periods',
-        ref: React.createRef(),
-        componnet: <WaitingPeriod onChangeValue={this.onChangeBalance} />,
-      },
-      {
-        key: 9,
-        id: 'hireProbation',
-        title: 'New Hire proration',
-        ref: React.createRef(),
-        componnet: <HireProbation onChangeValue={this.onChangeBalance} />,
-      },
-    ];
+    const { select, tenuaAccrua, balance, step, list, baseAccual } = this.state;
+    console.log(baseAccual);
+    const selectStep = list.find((item) => item.id === select).key;
 
     return (
-      <div className={styles.content}>
+      <div className={styles.contentConfigure}>
         <div className={styles.tabSelect}>{list.map((item) => this.renderItem(item))}</div>
         <div className={styles.borderStyles} />
         <div>{list.map((item) => this.renderComponent(item))}</div>
+        <Affix offsetBottom={0} style={{ bottom: '0px' }}>
+          <div className={styles.bottom}>
+            <Row className={styles.stepNode} gutter={[60, 0]}>
+              <Col>
+                <Button
+                  disabled={selectStep === 1}
+                  onClick={() => this.prevStep(selectStep)}
+                  className={selectStep > 1 ? styles.nextStep : styles.prevStep}
+                >
+                  Prev
+                </Button>
+              </Col>
+              <Col>{`${selectStep}/10 Steps `}</Col>
+              <Col>
+                <Button
+                  disabled={selectStep === 10}
+                  onClick={() => this.nextStep(selectStep)}
+                  className={styles.nextStep}
+                >
+                  Next &gt;
+                </Button>
+              </Col>
+            </Row>
+            <Button className={styles.btnSave}>Save</Button>
+          </div>
+        </Affix>
       </div>
     );
   }

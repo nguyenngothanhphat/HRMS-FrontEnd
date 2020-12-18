@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 // import icon from '@/assets/svgIcon.svg';
 import { Tabs } from 'antd';
 import SwitchTab from './components/Switch';
+import ImportData from './components/ImportData';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -16,7 +17,7 @@ class ManageBalance extends PureComponent {
             <SwitchTab />
           </TabPane>
           <TabPane tab="Import Data" key="2">
-            Content of Tab Pane 2
+            <ImportData />
           </TabPane>
         </Tabs>
       </div>

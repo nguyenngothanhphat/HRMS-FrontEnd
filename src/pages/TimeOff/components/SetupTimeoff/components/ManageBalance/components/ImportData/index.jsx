@@ -6,20 +6,20 @@ import ExportCSV from '../ExportExel';
 
 import styles from './index.less';
 
-class Switch extends PureComponent {
+class ImportData extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       fileName: 'DownloadExcel',
       customers: [
         {
-          name: 'minh',
-          age: '13',
+          name: 'ds',
+          ange: 'fd',
         },
         {
-          name: 'duc',
-          age: '17',
-          contact: '123',
+          name: 'ds',
+          ange: 'ffdfdsfdsd',
+          minh: 'dsfafsde',
         },
       ],
     };
@@ -29,10 +29,8 @@ class Switch extends PureComponent {
     const { customers, fileName } = this.state;
     return (
       <div className={styles.root}>
-        <div className={styles.title}>Switch</div>
-        <div className={styles.subText}>
-          Keep current employee timeoff balances, but move them to new policies
-        </div>
+        <div className={styles.title}>Import Data</div>
+        <div className={styles.subText}>Import new timeoff balances for employees.</div>
         <img src={icon} alt="" />
         <div>
           <ExportCSV csvData={customers} fileName={fileName} />
@@ -44,4 +42,4 @@ class Switch extends PureComponent {
     );
   }
 }
-export default Switch;
+export default ImportData;

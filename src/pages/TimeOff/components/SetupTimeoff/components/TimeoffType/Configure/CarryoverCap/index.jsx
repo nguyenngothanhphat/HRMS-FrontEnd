@@ -40,7 +40,7 @@ class CarryoverCap extends Component {
   render() {
     const { accrualRate, select } = this.state;
     return (
-      <div className={styles.content}>
+      <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>
