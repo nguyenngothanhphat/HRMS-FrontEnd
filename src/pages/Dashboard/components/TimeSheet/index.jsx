@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Calendar } from 'antd';
+import { Calendar, Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import s from './index.less';
@@ -46,20 +46,22 @@ export default class TimeSheet extends PureComponent {
     const key = moment(value).format('DD/MM/YYYY');
     const check = dummy[key] || false;
     return check ? (
-      <div className={`${s.date} ${s.check}`} onClick={() => alert('unCheck')}>
+      <div className={`${s.date} ${s.check}`}>
         <CheckOutlined className={s.iconCheck} />
       </div>
     ) : (
-      <div className={`${s.date} ${s.notCheck}`} onClick={() => alert('check')}>
-        {date}
-      </div>
+      <div className={`${s.date} ${s.notCheck}`}>{date}</div>
     );
   };
 
   render() {
     return (
       <div className={s.root}>
-        <Calendar dateFullCellRender={this.dateFullCellRender} />
+        <Calendar mode="month" dateFullCellRender={this.dateFullCellRender} />
+        <p className={s.text}>Do not forget to fill in your timesheet before you end the day.</p>
+        <Button type="primary" onClick={() => {}} className={s.btnFillTimeSheet}>
+          Fill timesheet
+        </Button>
       </div>
     );
   }
