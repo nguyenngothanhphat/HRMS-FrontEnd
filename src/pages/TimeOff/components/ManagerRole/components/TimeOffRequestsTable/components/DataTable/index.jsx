@@ -202,18 +202,19 @@ class DataTable extends PureComponent {
           .format('MM.DD.YYYY')}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      // let employeeFromCC = [];
+      // if (cc.length > 0) {
+      //   employeeFromCC = cc[0].map((each) => {
+      //     return each;
+      //   });
+      // }
+      // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
         leaveTimes,
-        assigned,
+        // assigned,
+        assigned: [generalInfoA],
       };
     });
   };

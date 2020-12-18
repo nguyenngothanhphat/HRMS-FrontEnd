@@ -168,12 +168,13 @@ class DataTable extends PureComponent {
           return each;
         });
       }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
         leaveTimes,
-        assigned,
+        // assigned,
+        assigned: [generalInfoA],
       };
     });
   };
