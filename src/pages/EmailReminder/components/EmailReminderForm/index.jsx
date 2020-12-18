@@ -564,6 +564,10 @@ class EmailReminderForm extends PureComponent {
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
+    const newMessage = message.replace(/<[^>]+>/g, '');
+    console.log('newText: ', newMessage);
+    console.log('TYPE OF : ', typeof newMessage);
+
     if (appliesToData === 'any') {
       dataSubmit = { ...newValue, message, sendToExistingWorker };
     }

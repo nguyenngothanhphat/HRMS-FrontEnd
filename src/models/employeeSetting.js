@@ -71,7 +71,6 @@ const employeeSetting = {
       try {
         const response = yield call(getCustomTemplateList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -314,8 +313,7 @@ const employeeSetting = {
       try {
         response = yield call(getCustomEmailInfo, { id });
         const { data: emailCustomData, statusCode } = response;
-        console.log('response: ', response);
-        yield put({ type: 'saveEmployeeSetting', payload: { emailCustomData } });
+        yield put({ type: 'save', payload: { emailCustomData } });
         if (statusCode !== 200) throw response;
       } catch (error) {
         dialog(error.message);
