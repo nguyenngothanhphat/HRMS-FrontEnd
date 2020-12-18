@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, connect, Link } from 'umi';
+import { formatMessage, connect, Link, history } from 'umi';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
@@ -16,7 +16,7 @@ class CustomEmailsTableField extends PureComponent {
     super(props);
     this.state = {
       pageSelected: 1,
-      currentRecord: {}
+      currentRecord: {},
     };
   }
 
@@ -51,7 +51,8 @@ class CustomEmailsTableField extends PureComponent {
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: item.createdAt !== undefined ? item.createdAt : '24th August, 2020',
-        triggerEvent: item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
+        triggerEvent:
+          item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
         frequency: 'None',
         action: 'name',
       });
@@ -60,21 +61,26 @@ class CustomEmailsTableField extends PureComponent {
     return newListCustomEmail;
   };
 
+  refreshPage = () => {
+    history.go(0);
+  };
+
   handleActionDelete = (customEmailId) => {
     const { dispatch } = this.props;
-    
+
     if (!dispatch) {
       return;
     }
 
     dispatch({
       type: 'employeeSetting/deleteCustomEmailItem',
-      payload: {
-        customEmailId,
-      },
+      payload: customEmailId,
+    }).then(() => {
+      setTimeout(() => {
+        this.refreshPage();
+      }, 2000);
     });
-    console.log('customEmailId: ', customEmailId);
-  }
+  };
 
   _renderColumns = () => {
     const columns = [
@@ -108,8 +114,10 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`}>{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</Link>
-          )
+            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`}>
+              {formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}
+            </Link>
+          );
         },
       },
       {
@@ -121,8 +129,13 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <img src={trashIcon} alt="trash" className={styles.trashIcon} onClick={() => this.handleActionDelete(idCustomEmail)} />
-          )
+            <img
+              src={trashIcon}
+              alt="trash"
+              className={styles.trashIcon}
+              onClick={() => this.handleActionDelete(idCustomEmail)}
+            />
+          );
         },
       },
     ];

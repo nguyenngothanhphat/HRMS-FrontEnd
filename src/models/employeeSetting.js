@@ -319,32 +319,24 @@ const employeeSetting = {
         dialog(error.message);
       }
     },
-    *deleteCustomEmailItem({ payload }, { call, put }) {
+    *deleteCustomEmailItem({ payload }, { call }) {
       let response;
       try {
-        const { _id = '' } = payload;
+        const _id = payload;
+
         const req = {
           id: _id,
         };
+
         response = yield call(deleteCustomEmailItem, req);
+
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
-        // deleteTicket
-        yield put({
-          type: 'deleteCustomEmail',
-          payload: _id,
+        notification.success({
+          message: response.status,
+          description: response.message,
         });
-        yield put({
-          type: 'updateMenuQuantity',
-          payload: {},
-        });
-        // yield put({
-        //   type: 'fetchOnboardList',
-        //   payload: {
-        //     processStatus: PROVISIONAL_OFFER_DRAFT,
-        //   },
-        // });
       } catch (error) {
         dialog(error);
       }
@@ -389,26 +381,6 @@ const employeeSetting = {
         },
       };
     },
-    // deleteCustomEmail(state, action) {
-    //   const { payload } = action;
-    //   const {
-    //     onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
-    //   } = state;
-    //   const newList = provisionalOfferDrafts.filter((item) => {
-    //     const { rookieId } = item;
-    //     return rookieId !== `#${payload}`;
-    //   });
-    //   return {
-    //     ...state,
-    //     onboardingOverview: {
-    //       ...state.onboardingOverview,
-    //       allDrafts: {
-    //         ...state.onboardingOverview.allDrafts,
-    //         provisionalOfferDrafts: newList,
-    //       },
-    //     },
-    //   };
-    // },
   },
 };
 export default employeeSetting;
