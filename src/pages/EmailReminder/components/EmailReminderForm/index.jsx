@@ -573,8 +573,6 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    console.log('dataSubmit: ', dataSubmit);
-
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,

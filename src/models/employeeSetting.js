@@ -281,8 +281,6 @@ const employeeSetting = {
       try {
         response = yield call(addCustomEmail, payload);
         const { statusCode, data } = response;
-        console.log('response: ', response);
-
         if (statusCode !== 200) throw response;
         notification.success({
           message: response.status,
