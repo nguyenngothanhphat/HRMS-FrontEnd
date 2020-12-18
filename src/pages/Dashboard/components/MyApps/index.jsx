@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React from 'react';
 import { Row, Col } from 'antd';
 import { ReactComponent as MyIcon } from '@/assets/dashboard_date.svg';
@@ -67,7 +68,6 @@ const renderAppRow = (list) => {
 const renderApps = (list, amount) => {
   const arr = [];
   let subArr = [];
-  console.log(list);
 
   // Split array into smaller array
   list.map((app, index) => {

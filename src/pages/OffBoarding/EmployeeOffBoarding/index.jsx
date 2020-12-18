@@ -13,7 +13,12 @@ const { TabPane } = Tabs;
 
 @connect(
   ({
-    offboarding: { listOffboarding = [], inProgressRequest = [], totalList = [] } = {},
+    offboarding: {
+      listOffboarding = [],
+      totalList = [],
+      hrManager = {},
+      inProgressRequest = [],
+    } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -29,6 +34,7 @@ const { TabPane } = Tabs;
     listOffboarding,
     loadingFetchList: loading.effects['offboarding/fetchList'],
     loadingFetchInProgressRequest: loading.effects['offboarding/fetchInProgressRequest'],
+    hrManager,
   }),
 )
 class EmployeeOffBoading extends Component {
@@ -70,7 +76,7 @@ class EmployeeOffBoading extends Component {
   };
 
   render() {
-    const { listOffboarding = [], totalList = [] } = this.props;
+    const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
     const openRelievingFormalitiesTab = this.checkIfExistingInprogressRequest();
 
     return (
@@ -83,7 +89,11 @@ class EmployeeOffBoading extends Component {
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[40, 0]}>
                       <Col span={18}>
-                        <ViewLeft data={listOffboarding} countdata={totalList} />
+                        <ViewLeft
+                          data={listOffboarding}
+                          countdata={totalList}
+                          hrManager={hrManager}
+                        />
                       </Col>
                       <Col span={6}>
                         {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}

@@ -48,6 +48,7 @@ class HRrequestTable extends Component {
       type: 'offboarding/fetchListTeamRequest',
       payload: {
         status: 'IN-PROGRESS',
+        location: [locationID],
       },
     });
     dispatch({
@@ -67,6 +68,7 @@ class HRrequestTable extends Component {
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      locationID = '',
     } = this.props;
 
     const resignationRequest = (
@@ -92,12 +94,17 @@ class HRrequestTable extends Component {
                   data={listTeamRequest}
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
+                  location={[locationID]}
                 />
               </div>
             </TabPane>
             <TabPane tab="My Request" key="2">
               <div className={styles.tableTab}>
-                <MyRequestContent data={listOffboarding} countdata={totalList} />
+                <MyRequestContent
+                  data={listOffboarding}
+                  countdata={totalList}
+                  hrManager={hrManager}
+                />
               </div>
             </TabPane>
           </Tabs>
