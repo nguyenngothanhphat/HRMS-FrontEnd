@@ -1,9 +1,68 @@
+@gray: #707177;
+
 .container {
   margin-top: 24px;
   font-family: 'Roboto', sans-serif;
+  position: relative;
 
   h3 {
     text-transform: capitalize;
+  }
+
+  .actionContainer {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    display: flex;
+    align-items: center;
+
+    .action {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      &:first-child {
+        margin-right: 20px;
+      }
+
+      span {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 14px;
+        color: @gray;
+        text-transform: capitalize;
+      }
+
+      svg {
+        margin-right: 6px;
+      }
+    }
+  }
+
+  .main {
+    margin: 4px 0;
+    max-height: 450px;
+    overflow-y: scroll;
+
+    /* width */
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: white;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #e0e4e9;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #bcbfc4;
+    }
   }
 
   :global {
