@@ -30,18 +30,26 @@ const listQuickLinks = [
   { name: 'Submit Commuter Claim', href: '' },
 ];
 
-@connect(({ user }) => user)
-// @connect(({ candidateInfo = {}, user, loading }) => ({
-//   candidateInfo,
-//   user,
-//   loading1: loading.effects['candidateInfo/fetchCandidateByRookie'],
-// }))
+@connect(
+  ({ loading, user: { currentUser = {} } = {}, employee: { listEmployeeMyTeam = [] } = {} }) => ({
+    fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+    currentUser,
+    listEmployeeMyTeam,
+  }),
+)
 class Dashboard extends PureComponent {
+  componentDidMount() {
+    const { dispatch, currentUser: { location: { _id: locationId } = {} } = {} } = this.props;
+    dispatch({
+      type: 'employee/fetchListEmployeeMyTeam',
+      payload: {
+        location: [locationId],
+      },
+    });
+  }
+
   render() {
-    console.log(this.props);
-    const { currentUser = {} } = this.props;
-    const { name = '' } = currentUser;
-    console.log(name);
+    const { listEmployeeMyTeam = [], fetchMyTeam, currentUser = {} } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -52,7 +60,7 @@ class Dashboard extends PureComponent {
           </Affix>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={7}>
-              <Greeting name={name} />
+              <Greeting name={currentUser?.generalInfo?.firstName} />
               <div className={styles.leftContainer}>
                 <ActivityLog />
               </div>
@@ -62,7 +70,7 @@ class Dashboard extends PureComponent {
               <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={12}>
-                  <TabManageTeamWork />
+                  <TabManageTeamWork listMyTeam={listEmployeeMyTeam} loadingMyTeam={fetchMyTeam} />
                 </Col>
                 <Col span={12}>
                   <TimeSheet />
