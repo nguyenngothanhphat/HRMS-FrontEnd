@@ -32,6 +32,7 @@ import {
 const offboarding = {
   namespace: 'offboarding',
   state: {
+    inProgressRequest: [],
     listOffboarding: [],
     listTeamRequest: [],
     request: [],
@@ -85,6 +86,16 @@ const offboarding = {
         } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchInProgressRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffboardingList, payload);
+        const { statusCode, data: { items: inProgressRequest = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { inProgressRequest } });
       } catch (errors) {
         dialog(errors);
       }

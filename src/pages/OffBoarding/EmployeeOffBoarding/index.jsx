@@ -13,7 +13,7 @@ const { TabPane } = Tabs;
 
 @connect(
   ({
-    offboarding: { listOffboarding = [], totalList = [] } = {},
+    offboarding: { listOffboarding = [], inProgressRequest = [], totalList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -22,11 +22,13 @@ const { TabPane } = Tabs;
     } = {},
     loading,
   }) => ({
+    inProgressRequest,
     totalList,
     locationID,
     companyID,
     listOffboarding,
     loadingFetchList: loading.effects['offboarding/fetchList'],
+    loadingFetchInProgressRequest: loading.effects['offboarding/fetchInProgressRequest'],
   }),
 )
 class EmployeeOffBoading extends Component {
@@ -46,6 +48,12 @@ class EmployeeOffBoading extends Component {
         status: 'IN-PROGRESS',
       },
     });
+    dispatch({
+      type: 'offboarding/fetchInProgressRequest',
+      payload: {
+        status: 'ACCEPTED',
+      },
+    });
   }
 
   viewActivityLogs = () => {
@@ -56,9 +64,14 @@ class EmployeeOffBoading extends Component {
     );
   };
 
+  checkIfExistingInprogressRequest = () => {
+    const { inProgressRequest = [], loadingFetchInProgressRequest } = this.props;
+    return inProgressRequest.length > 0 && !loadingFetchInProgressRequest;
+  };
+
   render() {
-    const { listOffboarding = [], totalList = [], loadingFetchList } = this.props;
-    const openRelievingFormalitiesTab = !loadingFetchList && listOffboarding.length > 0;
+    const { listOffboarding = [], totalList = [] } = this.props;
+    const openRelievingFormalitiesTab = this.checkIfExistingInprogressRequest();
 
     return (
       <PageContainer>
@@ -79,7 +92,19 @@ class EmployeeOffBoading extends Component {
                   </div>
                 </div>
               </TabPane>
-              <TabPane disabled={!openRelievingFormalitiesTab} tab="Relieving Formalities" key="2">
+              {
+                //     openRelievingFormalitiesTab && (
+                //   <TabPane
+                //     disabled={!openRelievingFormalitiesTab}
+                //     tab="Relieving Formalities"
+                //     key="2"
+                //   >
+                //     <RelievingFormalities />
+                //   </TabPane>
+                // )
+              }
+
+              <TabPane tab="Relieving Formalities" key="2">
                 <RelievingFormalities />
               </TabPane>
             </Tabs>

@@ -10,14 +10,14 @@ import styles from './index.less';
     offboarding,
     user: { currentUser: { company: { _id: companyId = '' } = {} } = {} } = {},
     offboarding: {
-      listOffboarding = [],
+      inProgressRequest = [],
       relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {},
     } = {},
 
     loading,
   }) => ({
     offboarding,
-    listOffboarding,
+    inProgressRequest,
     companyId,
     waitList,
     isSent,
@@ -34,9 +34,9 @@ class NextStep extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, listOffboarding = [], companyId = '' } = this.props;
-    if (listOffboarding.length > 0) {
-      const inProgress = listOffboarding[0]; // only one offboarding request
+    const { dispatch, inProgressRequest = [], companyId = '' } = this.props;
+    if (inProgressRequest.length > 0) {
+      const inProgress = inProgressRequest[0]; // only one offboarding request
       const { _id = '' } = inProgress;
       dispatch({
         type: 'offboarding/fetchRelievingDetailsById',
@@ -82,6 +82,7 @@ class NextStep extends PureComponent {
       scheduleTime = '24.09.2020 | 4:00 PM',
       submitted = false,
       loadingFetchPackage,
+      waitList = [],
     } = this.props;
 
     const { showAnswerModal, selectedDocument } = this.state;
@@ -134,24 +135,24 @@ class NextStep extends PureComponent {
                 </span>
               </div>
               <div>
-                <Row gutter={['20', '0']}>{!loadingFetchPackage && this.renderPackageList()}</Row>
+                <Row justify="end" gutter={['20', '0']}>
+                  {!loadingFetchPackage && this.renderPackageList()}
+                </Row>
                 {loadingFetchPackage && (
-                  <>
-                    <div className={styles.loadingSpin}>
-                      <Spin />
-                    </div>
-                  </>
+                  <div className={styles.loadingSpin}>
+                    <Spin />
+                  </div>
                 )}
               </div>
 
-              {!loadingFetchPackage && (
+              {!loadingFetchPackage && waitList.length > 0 && (
                 <div className={styles.submitFiles}>
-                  <span className={styles.submitButton}>Submit to HR</span>
                   {submitted ? (
                     <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
                   ) : (
                     <span />
                   )}
+                  <span className={styles.submitButton}>Submit to HR</span>
                 </div>
               )}
             </div>
