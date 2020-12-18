@@ -577,7 +577,7 @@ class EmailReminderForm extends PureComponent {
     }).then(() => {
       setTimeout(() => {
         this.back();
-      }, 2000);
+      }, 1000);
     });
   };
 
@@ -882,15 +882,24 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
+    const { loading } = this.props;
     this.checkFields();
     return (
-      <div className={styles.EmailReminderForm}>
-        <div className={styles.EmailReminderForm_title}>
-          {formatMessage({ id: 'component.emailReminderForm.title' })}
-          <hr />
-        </div>
-        <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
-      </div>
+      <>
+        {loading ? (
+          <div className={styles.EmailReminderForm_loading}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div className={styles.EmailReminderForm}>
+            <div className={styles.EmailReminderForm_title}>
+              {formatMessage({ id: 'component.emailReminderForm.title' })}
+              <hr />
+            </div>
+            <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
+          </div>
+        )}
+      </>
     );
   }
 }

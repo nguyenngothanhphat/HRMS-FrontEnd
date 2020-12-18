@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import PageContainer from '@/layouts/layout/src/PageContainer';
 
 @connect(({ employeeSetting }) => ({
   employeeSetting,
@@ -27,7 +28,11 @@ class EmailView extends PureComponent {
   };
 
   render() {
-    return <div>HELLO</div>;
+    return (
+      <PageContainer>
+        <div>HELLO</div>
+      </PageContainer>
+    );
   }
 }
 
