@@ -64,69 +64,69 @@ class TimeOffRequestsTable extends PureComponent {
   };
 
   renderDataMyRequests = (requests, key) => {
-    // if (key === 1)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'A' || type === 'B';
-    //   });
-    //
-    // if (key === 2)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'C';
-    //   });
-    //
-    // if (key === 3)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '', shortType = '' } = {} } = req;
-    //     return type === 'C' && shortType === 'LWP';
-    //   });
-    //
-    // if (key === 4)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'D';
-    //   });
+    if (key === 1)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'A' || type === 'B';
+      });
+
+    if (key === 2)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
+      });
+
+    if (key === 3)
+      return requests.filter((req) => {
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType === 'LWP';
+      });
+
+    if (key === 4)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'D';
+      });
 
     // compoff requests
     if (key === 5) {
       return requests;
     }
 
-    return requests;
+    return [];
   };
 
   renderDataTeamRequests = (requests, key) => {
-    // if (key === 1)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'A' || type === 'B';
-    //   });
-    //
-    // if (key === 2)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'C';
-    //   });
-    //
-    // if (key === 3)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '', shortType = '' } = {} } = req;
-    //     return type === 'C' && shortType === 'LWP';
-    //   });
-    //
-    // if (key === 4)
-    //   return requests.filter((req) => {
-    //     const { type: { type = '' } = {} } = req;
-    //     return type === 'D';
-    //   });
+    if (key === 1)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'A' || type === 'B';
+      });
+
+    if (key === 2)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
+      });
+
+    if (key === 3)
+      return requests.filter((req) => {
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType === 'LWP';
+      });
+
+    if (key === 4)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'D';
+      });
 
     // compoff requests
     if (key === 5) {
       return requests;
     }
 
-    return requests;
+    return [];
   };
 
   render() {

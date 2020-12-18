@@ -147,10 +147,12 @@ export default class CompoffTable extends PureComponent {
       // }
       // console.log('duration', duration);
 
-      const employeeFromCC = cc.map((each) => {
-        const { generalInfo = {} } = each;
-        return generalInfo;
-      });
+      let employeeFromCC = [];
+      if (cc.length > 0) {
+        employeeFromCC = cc[0].map((each) => {
+          return each;
+        });
+      }
       const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
