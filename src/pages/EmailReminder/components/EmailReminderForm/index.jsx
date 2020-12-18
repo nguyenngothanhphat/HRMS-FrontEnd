@@ -67,7 +67,7 @@ class EmailReminderForm extends PureComponent {
       ],
       checkOption: [],
       appliesToData: '',
-      message: '',
+      messages: '',
       sendingDate: [
         {
           name: 'On the event date',
@@ -198,16 +198,16 @@ class EmailReminderForm extends PureComponent {
       appliesToData,
       recipient,
       emailSubject,
-      message,
+      messages,
     } = this.state;
 
     if (
       triggerEvent.trim() !== '' &&
       _sendingDate.trim() !== '' &&
       emailSubject.trim() !== '' &&
-      message.trim() !== '' &&
-      message.trim() !== '<p></p>' &&
-      message.trim() !== '<p><br></p>'
+      messages.trim() !== '' &&
+      messages.trim() !== '<p></p>' &&
+      messages.trim() !== '<p><br></p>'
     ) {
       if (appliesToData.trim() === 'any' && recipient.trim() !== '') {
         this.setState({ disabled: false });
@@ -268,7 +268,7 @@ class EmailReminderForm extends PureComponent {
 
   handleChangeEmail = (value) => {
     this.setState({
-      message: value,
+      messages: value,
     });
   };
 
@@ -553,7 +553,7 @@ class EmailReminderForm extends PureComponent {
 
   onFinish = (values) => {
     const { triggerEventList, dispatch } = this.props;
-    const { message = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
+    const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     let dataSubmit = {};
 
     const newValue = { ...values };
@@ -564,9 +564,7 @@ class EmailReminderForm extends PureComponent {
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
-    const newMessage = message.replace(/<[^>]+>/g, '');
-    console.log('newText: ', newMessage);
-    console.log('TYPE OF : ', typeof newMessage);
+    const message = messages.replace(/<[^>]+>/g, '');
 
     if (appliesToData === 'any') {
       dataSubmit = { ...newValue, message, sendToExistingWorker };
@@ -759,7 +757,7 @@ class EmailReminderForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { triggerEventList, loading } = this.props;
-    const { sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
 
     return (
       <Form onFinish={this.onFinish}>
@@ -855,7 +853,7 @@ class EmailReminderForm extends PureComponent {
 
             <ReactQuill
               className={styles.quill}
-              value={message}
+              value={messages}
               onChange={this.handleChangeEmail}
               modules={this.modules}
             />

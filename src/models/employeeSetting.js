@@ -320,7 +320,7 @@ const employeeSetting = {
       }
       return response;
     },
-    *deleteCustomEmailItem({ payload }, { call }) {
+    *deleteCustomEmailItem({ payload }, { call, put }) {
       let response;
       try {
         const _id = payload;
@@ -330,10 +330,9 @@ const employeeSetting = {
         };
 
         response = yield call(deleteCustomEmailItem, req);
-
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-
+        yield put({ type: 'fecthListCustomEmail' });
         notification.success({
           message: response.status,
           description: response.message,

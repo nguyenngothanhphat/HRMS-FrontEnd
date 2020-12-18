@@ -75,10 +75,6 @@ class CustomEmailsTableField extends PureComponent {
     dispatch({
       type: 'employeeSetting/deleteCustomEmailItem',
       payload: customEmailId,
-    }).then(() => {
-      setTimeout(() => {
-        this.refreshPage();
-      }, 1000);
     });
   };
 
