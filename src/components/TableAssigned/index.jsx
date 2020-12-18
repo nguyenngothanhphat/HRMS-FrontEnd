@@ -161,7 +161,7 @@ class TableAssigned extends Component {
     ];
 
     return (
-      <Fragment>
+      <>
         <div className={s.tableAssigned}>
           <Table
             locale={{
@@ -192,7 +192,7 @@ class TableAssigned extends Component {
           handleSubmit={this.handleSubmit}
           loading={loading}
         />
-      </Fragment>
+      </>
     );
   }
 }

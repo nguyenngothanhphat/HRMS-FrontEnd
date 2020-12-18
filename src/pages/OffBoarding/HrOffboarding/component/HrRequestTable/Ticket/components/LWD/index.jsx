@@ -128,7 +128,7 @@ class RequestChangeLWD extends Component {
           </Col>
         </Row>
         {requestLastDate && (
-          <Fragment>
+          <>
             <div className={styles.viewChangeLastWorkingDay__textMessage}>
               <span className={styles.viewChangeLastWorkingDay__textMessage__bold}>
                 Extend and shorten LWD is sent to HR Manager
@@ -150,7 +150,7 @@ class RequestChangeLWD extends Component {
                 disabled
               />
             </div>
-          </Fragment>
+          </>
         )}
         <div className={styles.containerButton}>
           <div
@@ -158,7 +158,7 @@ class RequestChangeLWD extends Component {
             style={!requestLastDate ? { justifyContent: 'flex-end' } : {}}
           >
             {requestLastDate && (
-              <Fragment>
+              <>
                 <Button
                   type="link"
                   disabled={checkDisable}
@@ -175,7 +175,7 @@ class RequestChangeLWD extends Component {
                 >
                   Reject
                 </Button>
-              </Fragment>
+              </>
             )}
             <Button
               className={styles.btnSubmit}

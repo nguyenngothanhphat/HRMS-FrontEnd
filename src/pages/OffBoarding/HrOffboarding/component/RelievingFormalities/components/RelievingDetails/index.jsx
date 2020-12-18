@@ -39,14 +39,25 @@ class RelievingDetails extends PureComponent {
         packageType: '',
       },
     });
+    dispatch({
+      type: 'offboarding/getList1On1',
+      payload: {
+        offBoardingRequest: id,
+      },
+    });
   };
 
   render() {
     const {
-      offboarding: { relievingDetails = {} },
+      offboarding: { relievingDetails = {}, list1On1 = [] },
       currentUser = {},
       loading,
     } = this.props;
+    const {
+      employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
+    } = relievingDetails;
+    const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
+    const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
     if (loading) return <Spin size="large" className={styles.loading} />;
     return (
       <PageContainer>
@@ -54,7 +65,7 @@ class RelievingDetails extends PureComponent {
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with Venkat Vamsi Kr ... [PSI: 1022]
+                Terminate work relationship with {firstName} [{employeeId}]
               </p>
             </div>
           </Affix>
@@ -65,8 +76,15 @@ class RelievingDetails extends PureComponent {
             </Col>
             <Col md={24} lg={14}>
               <MailExit />
-              <ConductExit employeeDetails={relievingDetails} currentUser={currentUser} />
-              <Feedback />
+              {checkStatusSchedule ? (
+                <Feedback itemSchedule={itemScheduleIsRelieving} />
+              ) : (
+                <ConductExit
+                  employeeDetails={relievingDetails}
+                  currentUser={currentUser}
+                  itemSchedule={itemScheduleIsRelieving}
+                />
+              )}
               <ClosePackage />
               <Button className={styles.relievingDetail__btnClose}>Close employee record</Button>
               {/* <div className={styles.relievingDetail__closeRecord}>

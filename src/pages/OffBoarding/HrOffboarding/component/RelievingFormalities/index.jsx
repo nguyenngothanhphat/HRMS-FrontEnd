@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import { connect, NavLink } from 'umi';
+import { connect } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 import RelievingTables from './components/RelievingTables';
 import RelievingTemplates from './components/RelievingTemplates';
@@ -138,14 +138,7 @@ class RelievingFormalities extends Component {
     } = this.props;
     return (
       <div className={styles.relievingFormalities}>
-        <NavLink
-          style={{ padding: '24px' }}
-          to="/offboarding/relieving-detail/5fc8b69a3b0978eb36da231d"
-        >
-          Relieving Details
-        </NavLink>
         {this._renderModal()}
-        {/* <p style={{ padding: '24px' }}>Content Relieving Formalities</p> */}
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={24} md={24} lg={17} xl={17}>
             <RelievingTables />
