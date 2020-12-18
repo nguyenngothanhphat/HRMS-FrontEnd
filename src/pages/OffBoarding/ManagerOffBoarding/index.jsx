@@ -15,6 +15,7 @@ import styles from './index.less';
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
+      hrManager = {},
     } = {},
     user: {
       currentUser: {
@@ -29,6 +30,7 @@ import styles from './index.less';
     locationID,
     companyID,
     listTeamRequest,
+    hrManager,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -70,6 +72,7 @@ class ManagerOffBoading extends Component {
       totalListTeamRequest,
       listOffboarding = [],
       totalList = [],
+      hrManager = {},
     } = this.props;
 
     const resignationRequest = (
@@ -103,12 +106,20 @@ class ManagerOffBoading extends Component {
               >
                 <TabPane tab="Team Request" key="1">
                   <div className={styles.tableTab}>
-                    <TeamRequest data={listTeamRequest} countdata={totalListTeamRequest} />
+                    <TeamRequest
+                      data={listTeamRequest}
+                      countdata={totalListTeamRequest}
+                      hrManager={hrManager}
+                    />
                   </div>
                 </TabPane>
                 <TabPane tab="My Request" key="2">
                   <div className={styles.tableTab}>
-                    <MyRequestContent data={listOffboarding} countdata={totalList} />
+                    <MyRequestContent
+                      data={listOffboarding}
+                      countdata={totalList}
+                      hrManager={hrManager}
+                    />
                   </div>
                 </TabPane>
                 <TabPane tab="Assigned" key="3">

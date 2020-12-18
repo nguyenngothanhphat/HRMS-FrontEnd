@@ -28,12 +28,13 @@ class TabContent extends Component {
   }
 
   initDataTable = (tabId) => {
-    const { dispatch } = this.props;
+    const { dispatch, location = [] } = this.props;
     if (tabId === '1') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'IN-PROGRESS',
+          location,
         },
       });
     }
@@ -42,6 +43,7 @@ class TabContent extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ON-HOLD',
+          location,
         },
       });
     }
@@ -50,6 +52,7 @@ class TabContent extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ACCEPTED',
+          location,
         },
       });
     }
@@ -58,6 +61,7 @@ class TabContent extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'REJECTED',
+          location,
         },
       });
     }
@@ -78,19 +82,20 @@ class TabContent extends Component {
   };
 
   render() {
-    const { data = [], countdata, loading } = this.props;
+    const { data = [], countdata, loading, hrManager = {} } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
     return (
-      <Fragment>
+      <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
           loading={loading}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
+          hrManager={hrManager}
         />
-      </Fragment>
+      </>
     );
   }
 }
