@@ -19,7 +19,7 @@ const appList = [
     id: 2,
     name: 'Timeoff',
     icon: <NewsIcon />,
-    link: '/offboarding',
+    link: '/time-off',
   },
   {
     id: 3,
