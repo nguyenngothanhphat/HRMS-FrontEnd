@@ -32,48 +32,48 @@
     }
 
     // calendar
-    .ant-picker-calendar-full {
-      .ant-picker-panel {
-        border: none;
-      }
-      .ant-picker-date-panel {
-        width: 100%;
-      }
-      .ant-picker-content {
-        width: 100%;
-      }
-      .ant-picker-cell-inner,
-      .ant-picker-calendar-date {
-        width: 30px;
-        height: 30px;
-        border: 1px solid #039775;
-        border-radius: 50%;
-        .ant-picker-calendar-date-value {
-          display: none;
-        }
-      }
-      .ant-picker-calendar-date-today {
-        background-color: black !important;
-        border-color: black !important;
-        .ant-picker-calendar-date-value {
-          display: none;
-        }
-      }
-      .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-        border-radius: 50%;
-        border-color: black !important;
-      }
-      // .ant-picker-cell {
-      //   display: flex;
-      //   justify-content: center;
-      // }
-      // hide weekdays
-      .ant-picker-content {
-        thead:first-child {
-          display: none;
-        }
-      }
-    }
+    // .ant-picker-calendar-full {
+    //   .ant-picker-panel {
+    //     border: none;
+    //   }
+    //   .ant-picker-date-panel {
+    //     width: 100%;
+    //   }
+    //   .ant-picker-content {
+    //     width: 100%;
+    //   }
+    //   .ant-picker-cell-inner,
+    //   .ant-picker-calendar-date {
+    //     width: 30px;
+    //     height: 30px;
+    //     border: 1px solid #039775;
+    //     border-radius: 50%;
+    //     .ant-picker-calendar-date-value {
+    //       display: none;
+    //     }
+    //   }
+    //   .ant-picker-calendar-date-today {
+    //     background-color: black !important;
+    //     border-color: black !important;
+    //     .ant-picker-calendar-date-value {
+    //       display: none;
+    //     }
+    //   }
+    //   .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    //     border-radius: 50%;
+    //     border-color: black !important;
+    //   }
+    //   // .ant-picker-cell {
+    //   //   display: flex;
+    //   //   justify-content: center;
+    //   // }
+    //   // hide weekdays
+    //   .ant-picker-content {
+    //     thead:first-child {
+    //       display: none;
+    //     }
+    //   }
+    // }
   }
   .container {
     display: flex;
@@ -111,5 +111,94 @@
         }
       }
     }
+  }
+
+  p {
+    margin: 0;
+  }
+  .text {
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 20px;
+    color: #161c29;
+  }
+  .btnFillTimeSheet {
+    width: 138px;
+    height: 40px;
+    background: #ffa100;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #ffffff;
+    border: none;
+    margin-top: 10px;
+  }
+  table > thead {
+    display: none;
+  }
+  :global {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
+      box-shadow: none;
+    }
+    .ant-select-arrow {
+      font-weight: bold;
+      font-size: 10px;
+      line-height: 19px;
+      color: #161c29;
+    }
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      border: none;
+      .ant-select-arrow();
+      font-size: 16px;
+    }
+    .ant-picker-calendar-header {
+      display: flex !important;
+      justify-content: flex-start !important;
+      padding: 0 !important;
+    }
+    .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
+      display: none;
+    }
+  }
+  .iconCheck {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .date {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-bottom: 13px;
+  }
+  .check {
+    background: #00c598;
+    border: 1px solid #00c598;
+    cursor: pointer;
+  }
+  .notCheck {
+    background: #ffffff;
+    border: 1px solid #ff3030;
+    cursor: pointer;
+  }
+  .weekend {
+    background: #f3f4f4;
+  }
+  .disable {
+    opacity: 0.3;
+    border: 1px solid #039775;
+    box-sizing: border-box;
+  }
+  .current {
+    background: #161c29;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 14px;
+    color: #ffffff;
   }
 }
