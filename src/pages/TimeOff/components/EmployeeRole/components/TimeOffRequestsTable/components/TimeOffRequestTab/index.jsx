@@ -5,7 +5,7 @@ import CompoffTable from '../CompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
-export default class mockDataTimeOffRequestTab extends PureComponent {
+export default class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,7 +78,6 @@ export default class mockDataTimeOffRequestTab extends PureComponent {
 
     return (
       <div className={styles.TimeOffRequestTab}>
-        <span className={styles.title}>Leave Request</span>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
           {data.length === 0 ? (
