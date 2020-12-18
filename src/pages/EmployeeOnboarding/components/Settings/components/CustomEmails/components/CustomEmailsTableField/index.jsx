@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Spin } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import trashIcon from './assets/trashIcon.svg';
 
@@ -9,7 +9,7 @@ import styles from './index.less';
 @connect(({ employeeSetting: { dataSubmit = {}, listCustomEmail = [] } = {}, loading }) => ({
   dataSubmit,
   listCustomEmail,
-  loading: loading.effects['employeeSetting/addCustomEmail'],
+  loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
 }))
 class CustomEmailsTableField extends PureComponent {
   constructor(props) {
@@ -78,7 +78,7 @@ class CustomEmailsTableField extends PureComponent {
     }).then(() => {
       setTimeout(() => {
         this.refreshPage();
-      }, 2000);
+      }, 1000);
     });
   };
 
@@ -127,6 +127,7 @@ class CustomEmailsTableField extends PureComponent {
         render: () => {
           const { currentRecord = {} } = this.state;
           const { idCustomEmail = '' } = currentRecord;
+          const { loading } = this.props;
 
           return (
             <img
@@ -134,6 +135,7 @@ class CustomEmailsTableField extends PureComponent {
               alt="trash"
               className={styles.trashIcon}
               onClick={() => this.handleActionDelete(idCustomEmail)}
+              loading={loading}
             />
           );
         },
@@ -143,7 +145,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmail } = this.props;
+    const { listCustomEmail, loading } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
@@ -171,28 +173,35 @@ class CustomEmailsTableField extends PureComponent {
     };
     return (
       <div className={styles.CustomEmailsTableField}>
-        <div className={styles.CustomEmailsTableField_title}>
-          {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-        </div>
-        <div className={styles.CustomEmailsTableField_table}>
-          <Table
-            dataSource={this._renderData()}
-            columns={this._renderColumns()}
-            size="middle"
-            onRow={(record) => {
-              return {
-                onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-              };
-            }}
-            rowKey={(record) => record._id}
-            pagination={
-              listCustomEmail.length > rowSize
-                ? { ...pagination, total: listCustomEmail.length }
-                : false
-            }
-            // scroll={scroll}
-          />
-        </div>
+        {loading ? (
+          <div className={styles.CustomEmailsTableField_loading}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div>
+            <div className={styles.CustomEmailsTableField_title}>
+              {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+            </div>
+            <div className={styles.CustomEmailsTableField_table}>
+              <Table
+                dataSource={this._renderData()}
+                columns={this._renderColumns()}
+                size="middle"
+                onRow={(record) => {
+                  return {
+                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                  };
+                }}
+                rowKey={(record) => record._id}
+                pagination={
+                  listCustomEmail.length > rowSize
+                    ? { ...pagination, total: listCustomEmail.length }
+                    : false
+                }
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
   }

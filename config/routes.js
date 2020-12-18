@@ -424,7 +424,7 @@ const routes = [
           },
           {
             path: '/employee-onboarding/view-email/:reId',
-            name: 'viewCustomEmail',
+            name: 'View Email',
             component: './EmailView',
             hideInMenu: true,
           },

@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 
 @connect(({ employeeSetting }) => ({
   employeeSetting,
 }))
-
-class EmailView extends Component {
+class EmailView extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -25,13 +24,11 @@ class EmailView extends Component {
       type: 'employeeSetting/fetchEmailCustomInfo',
       payload: emailCustomId,
     });
-  }
+  };
 
-    render() {
-        return (
-          <div>HELLO</div>
-        )
-    }
+  render() {
+    return <div>HELLO</div>;
+  }
 }
 
-export default EmailView
+export default EmailView;
