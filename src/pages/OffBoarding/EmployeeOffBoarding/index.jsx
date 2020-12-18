@@ -17,7 +17,7 @@ const { TabPane } = Tabs;
       listOffboarding = [],
       totalList = [],
       hrManager = {},
-      inProgressRequest = [],
+      acceptedRequest = [],
     } = {},
     user: {
       currentUser: {
@@ -27,13 +27,13 @@ const { TabPane } = Tabs;
     } = {},
     loading,
   }) => ({
-    inProgressRequest,
+    acceptedRequest,
     totalList,
     locationID,
     companyID,
     listOffboarding,
     loadingFetchList: loading.effects['offboarding/fetchList'],
-    loadingFetchInProgressRequest: loading.effects['offboarding/fetchInProgressRequest'],
+    loadingAcceptedRequest: loading.effects['offboarding/fetchAcceptedRequest'],
     hrManager,
   }),
 )
@@ -55,7 +55,7 @@ class EmployeeOffBoading extends Component {
       },
     });
     dispatch({
-      type: 'offboarding/fetchInProgressRequest',
+      type: 'offboarding/fetchAcceptedRequest',
       payload: {
         status: 'ACCEPTED',
       },
@@ -71,8 +71,8 @@ class EmployeeOffBoading extends Component {
   };
 
   checkIfExistingInprogressRequest = () => {
-    const { inProgressRequest = [], loadingFetchInProgressRequest } = this.props;
-    return inProgressRequest.length > 0 && !loadingFetchInProgressRequest;
+    const { acceptedRequest = [], loadingAcceptedRequest } = this.props;
+    return acceptedRequest.length > 0 && !loadingAcceptedRequest;
   };
 
   render() {
@@ -102,21 +102,15 @@ class EmployeeOffBoading extends Component {
                   </div>
                 </div>
               </TabPane>
-              {
-                //     openRelievingFormalitiesTab && (
-                //   <TabPane
-                //     disabled={!openRelievingFormalitiesTab}
-                //     tab="Relieving Formalities"
-                //     key="2"
-                //   >
-                //     <RelievingFormalities />
-                //   </TabPane>
-                // )
-              }
-
-              <TabPane tab="Relieving Formalities" key="2">
-                <RelievingFormalities />
-              </TabPane>
+              {openRelievingFormalitiesTab && (
+                <TabPane
+                  disabled={!openRelievingFormalitiesTab}
+                  tab="Relieving Formalities"
+                  key="2"
+                >
+                  <RelievingFormalities />
+                </TabPane>
+              )}
             </Tabs>
           </div>
         </div>

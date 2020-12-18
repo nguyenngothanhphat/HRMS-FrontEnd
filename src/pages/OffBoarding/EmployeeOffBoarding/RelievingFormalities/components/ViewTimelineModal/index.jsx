@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Calendar, Select, Radio, Col, Row, Typography, Modal, Button } from 'antd';
+import { Calendar, Select, Col, Row, Modal, Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -7,10 +7,19 @@ import styles from './index.less';
 
 @connect(
   ({
-    offboarding: { relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {} } = {},
+    offboarding: {
+      relievingDetails: {
+        requestDate = '',
+        lastWorkingDate = '',
+        isSent,
+        exitPackage: { waitList = [] } = {},
+      } = {},
+    } = {},
   }) => ({
     waitList,
     isSent,
+    lastWorkingDate,
+    requestDate,
   }),
 )
 class ViewTimelineModal extends PureComponent {
@@ -58,22 +67,61 @@ class ViewTimelineModal extends PureComponent {
     return <div className={`${styles.date} ${styles[status]}`}>{date}</div>;
   };
 
+  // GET LIST OF DAYS FROM DAY A TO DAY B
+  getDateLists = (startDate, endDate) => {
+    const start = moment(startDate);
+    const end = moment(endDate);
+
+    const now = start;
+    const dates = [];
+
+    while (now.isBefore(end) || now.isSame(end)) {
+      dates.push(now.format('DD/MM/YYYY'));
+      now.add(1, 'days');
+    }
+    return dates;
+  };
+
   handeCheckTimeSheet = (value, date) => {
-    const dummy = {
-      '04/12/2020': true,
-      '08/12/2020': true,
-      '09/12/2020': true,
-      '15/12/2020': true,
-    };
+    console.log('value', value, date);
+    const { lastWorkingDate = '', requestDate = '' } = this.props;
+    // const dateLists = this.getDateLists(requestDate, lastWorkingDate);
+    const beginDate = moment(requestDate).format('DD/MM/YYYY');
+    const lastDate = moment(lastWorkingDate).format('DD/MM/YYYY');
     const key = moment(value).format('DD/MM/YYYY');
-    const check = dummy[key] || false;
-    return check ? (
-      <div className={`${styles.date} ${styles.check}`}>
-        <CheckOutlined className={styles.iconCheck} />
-      </div>
-    ) : (
-      <div className={`${styles.date} ${styles.notCheck}`}>{date}</div>
+
+    console.log('beginDate', beginDate);
+    console.log('key', key);
+
+    let normalDate = '';
+    let workedDate = '';
+    let unworkedDate = '';
+    if (moment(beginDate).isBefore(moment(key)) || moment(lastDate).isAfter(moment(key))) {
+      console.log('a');
+      normalDate = styles.normalDate;
+    } else {
+      console.log('d');
+      if (moment(beginDate).isAfter(moment(key))) {
+        workedDate = styles.check;
+        console.log('b');
+      }
+      if (moment(lastDate).isBefore(moment(key))) {
+        unworkedDate = styles.notCheck;
+        console.log('c');
+      }
+    }
+
+    return (
+      <div className={`${styles.date} ${normalDate} ${workedDate} ${unworkedDate}`}>{date}</div>
     );
+
+    // return check ? (
+    //   <div className={`${styles.date} ${styles.check}`}>
+    //     <CheckOutlined className={styles.iconCheck} />
+    //   </div>
+    // ) : (
+    //   <div className={`${styles.date} ${styles.notCheck}`}>{date}</div>
+    // );
   };
 
   render() {
@@ -124,19 +172,8 @@ class ViewTimelineModal extends PureComponent {
                   );
                 }
                 return (
-                  <div style={{ padding: 8 }}>
-                    <Typography.Title level={4}>Custom header</Typography.Title>
+                  <div>
                     <Row gutter={8}>
-                      <Col>
-                        <Radio.Group
-                          size="small"
-                          onChange={(e) => onTypeChange(e.target.value)}
-                          value={type}
-                        >
-                          <Radio.Button value="month">Month</Radio.Button>
-                          <Radio.Button value="year">Year</Radio.Button>
-                        </Radio.Group>
-                      </Col>
                       <Col>
                         <Select
                           size="small"
