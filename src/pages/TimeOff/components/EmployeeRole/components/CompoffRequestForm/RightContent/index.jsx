@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
+import NoteIcon from '@/assets/NoteIcon.svg';
 import styles from './index.less';
 
 const { Step } = Steps;
-class RightContent extends Component {
+class RightContent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -46,11 +47,15 @@ class RightContent extends Component {
     return (
       <div className={styles.RightContent}>
         <div className={styles.header}>
-          <span className={styles.title}>Note</span>
+          <div className={styles.titleWithIcon}>
+            <img src={NoteIcon} alt="note" />
+            <span className={styles.title}>Note</span>
+          </div>
           <span className={styles.description}>
-            Timeoff requests requires approvals.
+            Compoff requests requires approvals.
             <br />
-            It takes anywhere around 2-4 standard working days for the entire process to complete.
+            Once the compoff request is approved, a compoff balance will be shown with you leave
+            balance. You can apply for compoff leave then.
           </span>
         </div>
         <div className={styles.content}>

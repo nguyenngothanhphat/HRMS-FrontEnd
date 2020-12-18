@@ -1,78 +1,49 @@
 import React, { PureComponent } from 'react';
+import { Progress } from 'antd';
 import styles from './index.less';
 
 export default class LeaveProgressBar extends PureComponent {
+  renderCircle = (stepNumber, limitNumber, color) => {
+    return (
+      <span className={styles.smallCircle}>
+        <span style={{ color, fontWeight: 'bold' }}>{stepNumber}</span>/
+        {`0${limitNumber}`.slice(-2)}
+      </span>
+    );
+  };
+
   renderProgressBar = () => {
     const { stepNumber = 0, limitNumber = 0, color = '#000' } = this.props;
-
+    const remaining = (stepNumber / limitNumber) * 100;
     return (
       <div className={styles.renderProgressBar}>
-        {Array.from(Array(stepNumber), (_, index) => {
-          return (
-            <div
-              key={index}
-              style={{
-                backgroundColor: color,
-              }}
-              className={styles.activeColor}
-            />
-          );
-        })}
-        {Array.from(Array(limitNumber - stepNumber), (_, index) => {
-          return (
-            <div
-              style={{
-                backgroundColor: color,
-              }}
-              key={index}
-              className={styles.inactiveColor}
-            />
-          );
-        })}
+        <Progress
+          type="circle"
+          percent={remaining}
+          width={50}
+          strokeColor={color}
+          trailColor="#d6dce0"
+          format={() => this.renderCircle(stepNumber, limitNumber, color)}
+        />
       </div>
     );
   };
 
   render() {
-    const {
-      title = '',
-      shortType = '',
-      stepNumber = 0,
-      limitNumber = 0,
-      color = '#000',
-      moreContent = '',
-    } = this.props;
+    const { title = '', shortType = '', stepNumber = 0 } = this.props;
     return (
       <div className={styles.LeaveProgressBar}>
         <div className={styles.LeaveProgressBar__above}>
-          <p className={styles.title}>
+          <span className={styles.title}>
             {title}
-            <span
-              style={{
-                color,
-              }}
-              className={styles.title__shorten}
-            >
-              {' '}
-              {shortType !== '' && `(${shortType})`}
-            </span>
-          </p>
-          <p className={styles.progress}>
-            <span
-              style={{
-                color,
-              }}
-              className={styles.stepNumber}
-            >
-              {`0${stepNumber}`.slice(-2)}
-            </span>
-            <span className={styles.limitNumber}>/{`0${limitNumber}`.slice(-2)}</span>
-          </p>
+            <span className={styles.title__shorten}> {shortType !== '' && `(${shortType})`}</span>
+          </span>
+          <span className={styles.progress}>
+            <span className={styles.stepNumber}>Remaining: {`0${stepNumber}`.slice(-2)}</span>
+            {/* <span className={styles.limitNumber}>/{`0${limitNumber}`.slice(-2)}</span> */}
+          </span>
         </div>
-        <div className={styles.LeaveProgressBar__below}>
-          {this.renderProgressBar()}
-          {moreContent !== '' && <span className={styles.moreContent}>{moreContent}</span>}
-        </div>
+        <div className={styles.LeaveProgressBar__below}>{this.renderProgressBar()}</div>
       </div>
     );
   }
