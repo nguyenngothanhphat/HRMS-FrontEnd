@@ -1,37 +1,29 @@
 import React, { PureComponent } from 'react';
 import { PlusOutlined, UserOutlined } from '@ant-design/icons';
-import { Tabs, Row, Col, Avatar } from 'antd';
+import { Tabs, Row, Col, Avatar, Spin } from 'antd';
 import s from './index.less';
 
 const { TabPane } = Tabs;
 
-const dummyListMyTeam = [
-  { avatar: '', name: 'Sharan Adla AAAAA AAAAA', jobDetail: 'UX Lead AAAAA AAAAA' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-  { avatar: '', name: 'Sharan Adla', jobDetail: 'UX Lead' },
-];
-
 export default class ManageTeamWork extends PureComponent {
-  renderItemMyTeam = ({ name, avatar, jobDetail }) => {
+  renderItemMyTeam = (item = {}) => {
+    const {
+      generalInfo: { avatar = '', firstName = '' } = {},
+      title: { name: title = '' } = {},
+    } = item;
     return (
       <div className={s.containerItemMyTeam}>
         <Avatar size={42} src={avatar} icon={<UserOutlined />} />
         <div className={s.containerItemMyTeam__viewInfo}>
-          <div className={s.containerItemMyTeam__viewInfo__name}>{name}</div>
-          <div className={s.containerItemMyTeam__viewInfo__jobDetail}>{jobDetail}</div>
+          <div className={s.containerItemMyTeam__viewInfo__name}>{firstName}</div>
+          <div className={s.containerItemMyTeam__viewInfo__jobDetail}>{title}</div>
         </div>
       </div>
     );
   };
 
   render() {
+    const { listMyTeam = [], loadingMyTeam = false } = this.props;
     return (
       <div className={s.root}>
         <Tabs
@@ -44,14 +36,19 @@ export default class ManageTeamWork extends PureComponent {
         >
           <TabPane tab="My Team" key="1">
             <div className={s.contentTab}>
-              <Row gutter={[40, 10]}>
-                {dummyListMyTeam.map((item, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Col span={12} key={index}>
-                    {this.renderItemMyTeam(item)}
-                  </Col>
-                ))}
-              </Row>
+              {loadingMyTeam ? (
+                <div className={s.contentTab__loading}>
+                  <Spin />
+                </div>
+              ) : (
+                <Row gutter={[40, 10]}>
+                  {listMyTeam.map((item) => (
+                    <Col span={12} key={item._id}>
+                      {this.renderItemMyTeam(item)}
+                    </Col>
+                  ))}
+                </Row>
+              )}
             </div>
           </TabPane>
           <TabPane tab="My Projects" key="2">

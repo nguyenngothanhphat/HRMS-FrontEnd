@@ -284,6 +284,7 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/timeOff.svg',
             component: './TimeOff',
+            // authority: ['P_TIMEOFF_VIEW'],
             authority: [
               'employee',
               'hr-manager',
