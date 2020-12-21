@@ -425,8 +425,10 @@ const offboarding = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails: data } });
+        return statusCode;
       } catch (error) {
         dialog(error);
+        return 0;
       }
     },
     *updateRelieving({ payload }, { call, put }) {

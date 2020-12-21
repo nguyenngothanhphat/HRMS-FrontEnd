@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Input, Row, Col, Radio } from 'antd';
+import { Modal, Button, Form, Input, Row, Col, Checkbox } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -7,10 +7,15 @@ const { TextArea } = Input;
 
 @connect(
   ({
-    offboarding: { relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {} } = {},
+    offboarding: {
+      relievingDetails: { _id = '', isSent, exitPackage: { waitList = [] } = {} } = {},
+    } = {},
+    loading,
   }) => ({
+    _id,
     waitList,
     isSent,
+    loadingSavePackage: loading.effects['offboarding/saveOffBoardingPackage'],
   }),
 )
 class AnswerModal extends PureComponent {
@@ -20,7 +25,8 @@ class AnswerModal extends PureComponent {
     super(props);
     this.state = {
       packageName: '',
-      questionList: [],
+      settings: [],
+      templateRelieving: '',
     };
   }
 
@@ -28,21 +34,16 @@ class AnswerModal extends PureComponent {
     const { waitList = [], selectedDocument = -1 } = this.props;
     if (waitList.length > 0) {
       const item = waitList[selectedDocument];
-      const { packageName = '', settings = [] } = item;
+      const { packageName = '', settings = [], templateRelieving = '' } = item;
       this.setState({
         packageName,
-        questionList: settings,
+        settings,
+        templateRelieving,
       });
     }
   };
 
   renderFormItem = (answer, question, answerType, indexOfQuestion) => {
-    const radioStyle = {
-      display: 'block',
-      // height: '30px',
-      lineHeight: '30px',
-    };
-
     return (
       <>
         <Row key={`${indexOfQuestion + 1}`} align="top" gutter={['10', '10']}>
@@ -64,13 +65,7 @@ class AnswerModal extends PureComponent {
             {answerType === 'BULLET' && (
               <>
                 <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
-                  <Radio.Group>
-                    {answer.map((value, index) => (
-                      <Radio style={radioStyle} key={`${index + 1}`} value={value}>
-                        {value}
-                      </Radio>
-                    ))}
-                  </Radio.Group>
+                  <Checkbox.Group options={answer} />
                 </Form.Item>
               </>
             )}
@@ -81,7 +76,7 @@ class AnswerModal extends PureComponent {
   };
 
   renderForm = () => {
-    const { questionList } = this.state;
+    const { settings } = this.state;
     return (
       <>
         <Form
@@ -94,7 +89,7 @@ class AnswerModal extends PureComponent {
           <Form.List name="questions">
             {() => (
               <>
-                {questionList.map((data, index) => {
+                {settings.map((data, index) => {
                   const { answer = '', question = '', answerType = '' } = data;
                   return this.renderFormItem(answer, question, answerType, index);
                 })}
@@ -107,11 +102,45 @@ class AnswerModal extends PureComponent {
   };
 
   onFinish = (values) => {
-    console.log('values', values);
+    const { questions = [] } = values;
+    const { settings, templateRelieving } = this.state;
+    const { dispatch, _id = '', onClose = () => {} } = this.props;
+
+    const newSettings = [...settings];
+    questions.forEach((value, index) => {
+      let setting = [];
+      if (typeof value === 'string' || value instanceof String) {
+        const answer = [];
+        answer.push(value);
+        setting = { ...newSettings[index], answer };
+      } else {
+        setting = { ...newSettings[index], answer: value };
+      }
+      if (typeof value === 'undefined') {
+        setting = { ...newSettings[index], answer: [] };
+      }
+      newSettings[index] = setting;
+    });
+
+    const payload = {
+      packageType: 'EXIT-PACKAGE',
+      ticketId: _id,
+      settings: newSettings,
+      templateId: templateRelieving,
+    };
+
+    dispatch({
+      type: 'offboarding/saveOffBoardingPackage',
+      payload,
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        onClose('submit');
+      }
+    });
   };
 
   render() {
-    const { visible, onClose = () => {}, submitText = '' } = this.props;
+    const { visible, onClose = () => {}, submitText = '', loadingSavePackage } = this.props;
     const { packageName } = this.state;
 
     return (
@@ -128,7 +157,13 @@ class AnswerModal extends PureComponent {
           <p className={styles.title}>{packageName}</p>
           <div className={styles.formContainer}>{this.renderForm()}</div>
           <div className={styles.footer}>
-            <Button key="submit" type="primary" form="myForm" htmlType="submit">
+            <Button
+              loading={loadingSavePackage}
+              key="submit"
+              type="primary"
+              form="myForm"
+              htmlType="submit"
+            >
               {submitText}
             </Button>
           </div>

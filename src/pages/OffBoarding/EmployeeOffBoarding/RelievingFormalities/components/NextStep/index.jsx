@@ -11,14 +11,14 @@ import styles from './index.less';
     offboarding,
     user: { currentUser: { company: { _id: companyId = '' } = {} } = {} } = {},
     offboarding: {
-      inProgressRequest = [],
+      acceptedRequest = [],
       relievingDetails: { isSent, exitPackage: { waitList = [] } = {} } = {},
       list1On1 = [],
     } = {},
     loading,
   }) => ({
     offboarding,
-    inProgressRequest,
+    acceptedRequest,
     companyId,
     waitList,
     isSent,
@@ -35,11 +35,11 @@ class NextStep extends PureComponent {
     };
   }
 
-  componentDidMount = () => {
-    const { dispatch, inProgressRequest = [], companyId = '' } = this.props;
-    if (inProgressRequest.length > 0) {
-      const inProgress = inProgressRequest[0]; // only one offboarding request
-      const { _id = '' } = inProgress;
+  fetchData = () => {
+    const { dispatch, acceptedRequest = [], companyId = '' } = this.props;
+    if (acceptedRequest.length > 0) {
+      const accepted = acceptedRequest[0]; // only one offboarding request
+      const { _id = '' } = accepted;
       dispatch({
         type: 'offboarding/fetchRelievingDetailsById',
         payload: {
@@ -56,6 +56,10 @@ class NextStep extends PureComponent {
         },
       });
     }
+  };
+
+  componentDidMount = () => {
+    this.fetchData();
   };
 
   // render package waitList
@@ -78,11 +82,12 @@ class NextStep extends PureComponent {
     });
   };
 
-  onCloseModal = () => {
+  onCloseModal = (type = '') => {
     this.setState({
       showAnswerModal: false,
       selectedDocument: -1,
     });
+    if (type === 'submit') this.fetchData();
   };
 
   getNewest1On1 = () => {
@@ -102,7 +107,6 @@ class NextStep extends PureComponent {
   render() {
     const {
       isScheduled = true,
-      scheduleTime = '24.09.2020 | 4:00 PM',
       submitted = false,
       loadingFetchPackage,
       waitList = [],
