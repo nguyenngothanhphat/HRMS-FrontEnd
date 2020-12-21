@@ -85,15 +85,20 @@
     box-sizing: border-box;
     border-radius: 8px;
     margin-bottom: 20px;
+    overflow: hidden;
     .viewTop {
       border-bottom: 1px solid #e8eef2;
       padding: 10px;
-      color: rgb(22, 28, 41);
+      color: #fff;
       font-weight: 500;
+      background: #2c6df9;
     }
     .viewBottom {
       .viewTop();
       border-bottom: none;
+      background-color: #fff;
+      color: rgb(22, 28, 41);
+
       &__row {
         p {
           margin: 0;

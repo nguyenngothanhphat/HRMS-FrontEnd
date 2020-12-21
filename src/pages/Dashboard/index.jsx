@@ -22,12 +22,32 @@ const listLinkFQAs = [
 ];
 
 const listQuickLinks = [
-  { name: 'Coronavirus resources', href: '', isNew: true },
-  { name: 'Work From Home guidelines', href: '', isNew: true },
-  { name: 'Employee Handbook', href: '' },
-  { name: 'Annual Report 2020', href: '' },
-  { name: 'Training Program 2020', href: '' },
-  { name: 'Submit Commuter Claim', href: '' },
+  {
+    name: 'Coronavirus resources',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+    isNew: true,
+  },
+  {
+    name: 'Work From Home guidelines',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+    isNew: true,
+  },
+  {
+    name: 'Employee Handbook',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+  },
+  {
+    name: 'Annual Report 2020',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+  },
+  {
+    name: 'Training Program 2020',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+  },
+  {
+    name: 'Submit Commuter Claim',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/5f76c618d140e1d5b28833dc/sample_2.pdf',
+  },
 ];
 
 @connect(
@@ -116,10 +136,10 @@ class Dashboard extends PureComponent {
                   <TimeSheet />
                 </Col>
                 <Col span={12}>
-                  <Links title="FAQs" showButton listData={listLinkFQAs} />
+                  <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
                 </Col>
                 <Col span={12}>
-                  <Links title="Quick Links" listData={listQuickLinks} />
+                  <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
                 </Col>
               </Row>
             </Col>
