@@ -62,14 +62,37 @@ class NextStep extends PureComponent {
     this.fetchData();
   };
 
+  calculateCompletePercent = (settings) => {
+    let count = 0;
+    const total = settings.length;
+    settings.forEach((value) => {
+      const { employeeAnswers = [] } = value;
+      if (employeeAnswers.length > 0) count += 1;
+    });
+    return Math.round((count / total) * 100);
+  };
+
+  // check if document are filled
+  checkFilledDocument = () => {
+    const { waitList = [] } = this.props;
+    let checkFilledDocument = true;
+    waitList.forEach((item) => {
+      const { settings = [] } = item;
+      const percent = this.calculateCompletePercent(settings);
+      if (percent !== 100) checkFilledDocument = false;
+    });
+    return checkFilledDocument;
+  };
+
   // render package waitList
   renderPackageList = () => {
     const { waitList = [] } = this.props;
     return waitList.map((item, index) => {
-      const { packageName = '' } = item;
+      const { packageName = '', settings = [] } = item;
+      const percent = this.calculateCompletePercent(settings);
       return (
         <Col span={8}>
-          <Document name={packageName} onClick={() => this.onFileClick(index)} percent={30} />
+          <Document name={packageName} onClick={() => this.onFileClick(index)} percent={percent} />
         </Col>
       );
     });
@@ -104,6 +127,11 @@ class NextStep extends PureComponent {
     return [];
   };
 
+  // on submit to hr button
+  onSubmitToHRClicked = () => {
+    alert('SUBMIT TO HR');
+  };
+
   render() {
     const {
       isScheduled = true,
@@ -119,6 +147,7 @@ class NextStep extends PureComponent {
       .locale('en')
       .format('DD.MM.YYYY')} | ${meetingTime}`;
 
+    const checkFilledDocument = this.checkFilledDocument();
     return (
       <div className={styles.NextStep}>
         <div className={styles.aboveContainer}>
@@ -184,7 +213,14 @@ class NextStep extends PureComponent {
                   ) : (
                     <span />
                   )}
-                  <span className={styles.submitButton}>Submit to HR</span>
+                  <span
+                    className={`${styles.submitButton} ${
+                      !checkFilledDocument ? styles.disableButton : ''
+                    }`}
+                    onClick={checkFilledDocument ? this.onSubmitToHRClicked : null}
+                  >
+                    Submit to HR
+                  </span>
                 </div>
               )}
             </div>

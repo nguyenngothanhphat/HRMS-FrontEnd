@@ -87,7 +87,7 @@ class ViewTimelineModal extends PureComponent {
   handeCheckTimeSheet = (value, date) => {
     const { lastWorkingDate = '', requestDate = '' } = this.props;
 
-    const beginDate = moment(requestDate).subtract(5, 'days').format('YYYY-MM-DD');
+    const beginDate = moment(requestDate).format('YYYY-MM-DD');
     const lastDate = moment(lastWorkingDate).format('YYYY-MM-DD');
     const currentDate = moment().format('YYYY-MM-DD');
     const key = moment(value).format('YYYY-MM-DD');

@@ -102,15 +102,10 @@ class EmployeeOffBoading extends Component {
                   </div>
                 </div>
               </TabPane>
-              {openRelievingFormalitiesTab && (
-                <TabPane
-                  disabled={!openRelievingFormalitiesTab}
-                  tab="Relieving Formalities"
-                  key="2"
-                >
-                  <RelievingFormalities />
-                </TabPane>
-              )}
+
+              <TabPane disabled={!openRelievingFormalitiesTab} tab="Relieving Formalities" key="2">
+                <RelievingFormalities />
+              </TabPane>
             </Tabs>
           </div>
         </div>

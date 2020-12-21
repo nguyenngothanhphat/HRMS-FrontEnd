@@ -40,10 +40,18 @@ class AnswerModal extends PureComponent {
         settings,
         templateRelieving,
       });
+
+      const originalAnswers = settings.map((ans) => {
+        const { employeeAnswers = [] } = ans;
+        return employeeAnswers;
+      });
+      this.formRef.current.setFieldsValue({
+        questions: originalAnswers,
+      });
     }
   };
 
-  renderFormItem = (answer, question, answerType, indexOfQuestion) => {
+  renderFormItem = (defaultAnswers, question, answerType, indexOfQuestion) => {
     return (
       <>
         <Row key={`${indexOfQuestion + 1}`} align="top" gutter={['10', '10']}>
@@ -65,7 +73,7 @@ class AnswerModal extends PureComponent {
             {answerType === 'BULLET' && (
               <>
                 <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
-                  <Checkbox.Group options={answer} />
+                  <Checkbox.Group options={defaultAnswers} />
                 </Form.Item>
               </>
             )}
@@ -90,8 +98,8 @@ class AnswerModal extends PureComponent {
             {() => (
               <>
                 {settings.map((data, index) => {
-                  const { answer = '', question = '', answerType = '' } = data;
-                  return this.renderFormItem(answer, question, answerType, index);
+                  const { defaultAnswers = [], question = '', answerType = '' } = data;
+                  return this.renderFormItem(defaultAnswers, question, answerType, index);
                 })}
               </>
             )}
@@ -108,17 +116,17 @@ class AnswerModal extends PureComponent {
 
     const newSettings = [...settings];
     questions.forEach((value, index) => {
-      let setting = [];
-      if (typeof value === 'string' || value instanceof String) {
-        const answer = [];
-        answer.push(value);
-        setting = { ...newSettings[index], answer };
-      } else {
-        setting = { ...newSettings[index], answer: value };
-      }
-      if (typeof value === 'undefined') {
-        setting = { ...newSettings[index], answer: [] };
-      }
+      let setting = { ...settings[index] };
+      if (value.length > 0) {
+        if (value[0] === '') setting = { ...newSettings[index], employeeAnswers: [] };
+        else if (typeof value === 'string' || value instanceof String) {
+          const employeeAnswers = [];
+          employeeAnswers.push(value);
+          setting = { ...newSettings[index], employeeAnswers };
+        } else {
+          setting = { ...newSettings[index], employeeAnswers: value };
+        }
+      } else setting = { ...newSettings[index], employeeAnswers: [] };
       newSettings[index] = setting;
     });
 
