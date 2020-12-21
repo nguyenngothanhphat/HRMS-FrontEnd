@@ -31,25 +31,60 @@ const listQuickLinks = [
 ];
 
 @connect(
-  ({ loading, user: { currentUser = {} } = {}, employee: { listEmployeeMyTeam = [] } = {} }) => ({
+  ({
+    loading,
+    user: { currentUser = {} } = {},
+    employee: { listEmployeeMyTeam = [] } = {},
+    offboarding: { listProjectByEmployee = [] } = {},
+  }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+    fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
     currentUser,
     listEmployeeMyTeam,
+    listProjectByEmployee,
   }),
 )
 class Dashboard extends PureComponent {
   componentDidMount() {
-    const { dispatch, currentUser: { location: { _id: locationId } = {} } = {} } = this.props;
+    const {
+      dispatch,
+      currentUser: {
+        location: { _id: locationId } = {},
+        employee: { _id: employee = '' } = {},
+      } = {},
+    } = this.props;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
         location: [locationId],
       },
     });
+    dispatch({
+      type: 'offboarding/getListProjectByEmployee',
+      payload: {
+        employee,
+      },
+    });
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/save',
+      payload: {
+        listProjectByEmployee: [],
+      },
+    });
   }
 
   render() {
-    const { listEmployeeMyTeam = [], fetchMyTeam, currentUser = {} } = this.props;
+    const {
+      listEmployeeMyTeam = [],
+      fetchMyTeam,
+      currentUser = {},
+      listProjectByEmployee = [],
+      fetchListProject,
+    } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -70,7 +105,12 @@ class Dashboard extends PureComponent {
               <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={12}>
-                  <TabManageTeamWork listMyTeam={listEmployeeMyTeam} loadingMyTeam={fetchMyTeam} />
+                  <TabManageTeamWork
+                    listMyTeam={listEmployeeMyTeam}
+                    loadingMyTeam={fetchMyTeam}
+                    listProject={listProjectByEmployee}
+                    loadingProject={fetchListProject}
+                  />
                 </Col>
                 <Col span={12}>
                   <TimeSheet />

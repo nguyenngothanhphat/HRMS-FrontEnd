@@ -78,6 +78,36 @@
       }
     }
   }
+  .containerItemProject {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e8eef2;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    .viewTop {
+      border-bottom: 1px solid #e8eef2;
+      padding: 10px;
+      color: rgb(22, 28, 41);
+      font-weight: 500;
+    }
+    .viewBottom {
+      .viewTop();
+      border-bottom: none;
+      &__row {
+        p {
+          margin: 0;
+        }
+        span {
+          opacity: 0.5;
+        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
 
 .textEllipsis {
@@ -85,4 +115,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.viewEmpty {
+  height: 370px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(22, 28, 41);
+  font-weight: 500;
+  opacity: 0.3;
 }
