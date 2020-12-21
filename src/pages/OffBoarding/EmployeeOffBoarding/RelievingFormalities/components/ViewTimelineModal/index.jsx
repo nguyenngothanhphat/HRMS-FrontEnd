@@ -5,6 +5,8 @@ import moment from 'moment';
 import { connect } from 'umi';
 import styles from './index.less';
 
+moment.locale('en');
+
 @connect(
   ({
     offboarding: {
@@ -140,7 +142,7 @@ class ViewTimelineModal extends PureComponent {
                 const months = [];
                 for (let i = 0; i < 12; i += 1) {
                   current.month(i);
-                  months.push(localeData.monthsShort(current));
+                  months.push(localeData.months(current));
                 }
 
                 for (let index = start; index < end; index += 1) {
@@ -162,27 +164,14 @@ class ViewTimelineModal extends PureComponent {
                   );
                 }
                 return (
-                  <div>
+                  <div className={styles.customHeader}>
                     <Row gutter={8}>
                       <Col>
                         <Select
                           size="small"
                           dropdownMatchSelectWidth={false}
-                          className="my-year-select"
-                          onChange={(newYear) => {
-                            const now = value.clone().year(newYear);
-                            onChange(now);
-                          }}
-                          value={String(year)}
-                        >
-                          {options}
-                        </Select>
-                      </Col>
-                      <Col>
-                        <Select
-                          size="small"
-                          dropdownMatchSelectWidth={false}
                           value={String(month)}
+                          showArrow={false}
                           onChange={(selectedMonth) => {
                             const newValue = value.clone();
                             newValue.month(parseInt(selectedMonth, 10));
@@ -190,6 +179,21 @@ class ViewTimelineModal extends PureComponent {
                           }}
                         >
                           {monthOptions}
+                        </Select>
+                      </Col>
+                      <Col>
+                        <Select
+                          size="small"
+                          dropdownMatchSelectWidth={false}
+                          className="my-year-select"
+                          showArrow={false}
+                          onChange={(newYear) => {
+                            const now = value.clone().year(newYear);
+                            onChange(now);
+                          }}
+                          value={String(year)}
+                        >
+                          {options}
                         </Select>
                       </Col>
                     </Row>
