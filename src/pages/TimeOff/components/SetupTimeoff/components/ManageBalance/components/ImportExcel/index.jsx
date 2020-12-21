@@ -71,21 +71,24 @@ class ExcelToJson extends React.Component {
   render() {
     return (
       <div className={styles.root}>
-        <div className={styles.import}>
-          <input
-            type="file"
-            id="file"
-            ref="fileUploader"
-            onChange={this.filePathset.bind(this)}
-            accept=".xlsx"
-          />
+        <div className={styles.form}>
+          <div className={styles.import}>
+            <input
+              type="file"
+              id="file"
+              ref="fileUploader"
+              onChange={this.filePathset.bind(this)}
+              accept=".xlsx"
+            />
+          </div>
+          <Row gutter={[50, 0]}>
+            <Col span={10}>As per any assigned new policies, their accrual will begin on:</Col>
+            <Col span={7}>
+              <DatePicker className={styles.datePicker} placeholder="Balances effective date" />
+            </Col>
+          </Row>
         </div>
-        <Row gutter={[50, 0]}>
-          <Col span={10}>As per any assigned new policies, their accrual will begin on:</Col>
-          <Col span={7}>
-            <DatePicker />
-          </Col>
-        </Row>
+        <div className={styles.straightLine} />
         <div className={styles.save}>
           <Button
             className={styles.btnSave}

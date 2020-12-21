@@ -7,7 +7,7 @@ class HireProbation extends Component {
     super(props);
     this.state = {
       minimumIncrements: '',
-      select: 'day',
+      select: 'yes',
     };
   }
 
@@ -57,8 +57,8 @@ class HireProbation extends Component {
                 buttonStyle="solid"
                 className={styles.radioGroup}
               >
-                <Radio.Button value="true">Yes</Radio.Button>
-                <Radio.Button value="false">No</Radio.Button>
+                <Radio.Button value="yes">Yes</Radio.Button>
+                <Radio.Button value="no">No</Radio.Button>
               </Radio.Group>
             </Col>
           </Row>

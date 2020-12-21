@@ -34,9 +34,8 @@ class Switch extends PureComponent {
           Keep current employee timeoff balances, but move them to new policies
         </div>
         <img src={icon} alt="" />
-        <div>
-          <ExportCSV csvData={customers} fileName={fileName} />
-        </div>
+        <ExportCSV csvData={customers} fileName={fileName} />
+        <div className={styles.straightLine} />
         <div className={styles.import}>
           <ImportCSV />
         </div>
