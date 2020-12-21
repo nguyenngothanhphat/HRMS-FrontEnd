@@ -80,29 +80,22 @@ export async function reviewRequest(payload) {
   });
 }
 
-export async function getDefaultTemplates(payload) {
-  return request('/api/template/get-default', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function getCustomTemplates(payload) {
-  return request('/api/template/get-custom', {
+export async function getOffBoardingPackages(payload) {
+  return request('/api/templaterelieving/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/template/get-by-id', {
+  return request('/api/templaterelieving/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/template/add', {
+  return request('/api/templaterelieving/add', {
     method: 'POST',
     data: payload,
   });
@@ -115,6 +108,12 @@ export async function getListRelieving(payload) {
   });
 }
 
+export async function sendMailExitPackage(payload) {
+  return request('/api/offboardingrequest/send-package', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function getListAssigned() {
   return request('/api/offboardingrequest/list-assigned', {
     method: 'POST',
@@ -151,6 +150,33 @@ export async function handleRequestChangeLWD(payload) {
 
 export async function handleWithdraw(payload) {
   return request('/api/offboardingrequest/withdraw', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function handleRelievingTemplateDraft(payload) {
+  return request('/api/offboardingrequest/save-package-draft', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateRelieving(payload) {
+  return request('/api/offboardingrequest/update-relieving', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function sendOffBoardingPackage(payload) {
+  return request('/api/offboardingrequest/send-package', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeOffBoardingPackage(payload) {
+  return request('/api/offboardingrequest/remove-package', {
     method: 'POST',
     data: payload,
   });

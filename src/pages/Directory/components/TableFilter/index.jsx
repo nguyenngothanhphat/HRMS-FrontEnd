@@ -92,6 +92,7 @@ class TableFilter extends PureComponent {
       employee: { location = [], department = [], employeetype = [], clearName = false },
       collapsed,
       changeTab,
+      tabName,
     } = this.props;
     const formatDataLocation = location.map((item) => {
       const { name: label, id: value } = item;
@@ -146,29 +147,33 @@ class TableFilter extends PureComponent {
               />
             )}
 
-            {reset || changeTab ? (
-              ''
-            ) : (
-              <CheckBoxForms
-                key={EmploymentState}
-                name={EmploymentState}
-                all={all}
-                data={filteredArr(formatDataEmployeeType)}
-              />
+            {tabName !== 'myTeam' && (
+              <>
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={EmploymentState}
+                    name={EmploymentState}
+                    all={all}
+                    data={filteredArr(formatDataEmployeeType)}
+                  />
+                )}
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={departmentState}
+                    name={departmentState}
+                    all={all}
+                    data={filteredArr(formatDataDepartment)}
+                  />
+                )}
+                {reset || changeTab
+                  ? ''
+                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
+              </>
             )}
-            {reset || changeTab ? (
-              ''
-            ) : (
-              <CheckBoxForms
-                key={departmentState}
-                name={departmentState}
-                all={all}
-                data={filteredArr(formatDataDepartment)}
-              />
-            )}
-            {reset || changeTab
-              ? ''
-              : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
           </div>
         </Sider>
       </div>

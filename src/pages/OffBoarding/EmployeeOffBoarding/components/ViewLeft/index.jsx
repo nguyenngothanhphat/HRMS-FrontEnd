@@ -57,7 +57,7 @@ class ViewLeft extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { data = [], countdata = [] } = this.props;
+    const { data = [], countdata = [], hrManager = {} } = this.props;
     const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
@@ -76,20 +76,20 @@ class ViewLeft extends Component {
           </span>
         </div>
         {!checkSendRequest && (
-          <Fragment>
+          <>
             <div className={styles.subTitle_Text}>
               But, if you have made your mind then lets get to it.
             </div>
             <Button className={styles.submitButton}>
               <Link to="/offboarding/resignation-request">Set a resgination request </Link>
             </Button>
-          </Fragment>
+          </>
         )}
 
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
             <TabPane tab="Send Request" key="1">
-              <ViewTable data={data} countTable={countdata} />
+              <ViewTable data={data} countTable={countdata} hrManager={hrManager} />
             </TabPane>
             <TabPane tab="Drafts" key="2">
               <div className={styles.marrinTop}>

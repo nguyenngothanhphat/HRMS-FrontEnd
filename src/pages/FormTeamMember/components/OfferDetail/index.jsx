@@ -74,8 +74,8 @@ const OfferDetail = (props) => {
     });
 
     const { includeOffer = 1 } = allFieldsValues;
-    console.log(includeOffer);
-    console.log(uploadedOffer);
+    // console.log(includeOffer);
+    // console.log(uploadedOffer);
     if (includeOffer === 2) {
       if (!uploadedOffer.url) {
         valid = false;
@@ -153,7 +153,7 @@ const OfferDetail = (props) => {
           companyHandbook: handbook,
           template: file,
           candidate: _id,
-          hidePreviewOffer: includeOffer === 2,
+          hidePreviewOffer: includeOffer === 1,
         },
       },
     });
@@ -334,6 +334,14 @@ const OfferDetail = (props) => {
           },
         });
 
+        // Enable preview offer
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            disablePreviewOffer: false,
+          },
+        });
+
         // Save offer letter
         dispatch({
           type: 'candidateInfo/updateOfferLetter',
@@ -459,6 +467,7 @@ const OfferDetail = (props) => {
         tempData: {
           ...tempData,
           staticOfferLetter: offerData,
+          disablePreviewOffer: false,
         },
       },
     });

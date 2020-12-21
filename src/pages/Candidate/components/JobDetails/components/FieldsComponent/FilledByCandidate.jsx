@@ -32,14 +32,8 @@ class FilledByCandidate extends PureComponent {
       noticePeriod = '',
       dateOfJoining = '',
     } = this.props;
-    // console.log(moment(dateOfJoining));
-    // console.log(moment(dateOfJoining).format('MM/DD/YYYY'));
-    const dateJoin = moment(dateOfJoining).locale('en').format(dateFormat);
-    console.log(dateJoin);
-    // console.log(new Date(dateOfJoining));
-    // console.log(new Date(dateOfJoining).getDate());
-    console.log(moment(dateJoin, dateFormat));
-    console.log(moment('3/5/2020', dateFormat));
+
+    const dateJoin = dateOfJoining ? moment(dateOfJoining).locale('en').format(dateFormat) : '';
 
     const { isHidden } = this.state;
     return (
@@ -61,7 +55,7 @@ class FilledByCandidate extends PureComponent {
         </Row>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
+            <Typography.Title level={5}>{candidateField[1].name}*</Typography.Title>
             <DatePicker
               className={styles}
               disabledDate={this.disabledDate}
@@ -69,8 +63,7 @@ class FilledByCandidate extends PureComponent {
               picker="date"
               format="MM/DD/YYYY"
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={moment(dateJoin, dateFormat)}
-              // defaultValue={dateOfJoining}
+              defaultValue={dateJoin}
             />
           </Col>
           <Col xs={16} sm={16} md={14} lg={10} xl={10}>

@@ -20,6 +20,10 @@ export default class EmployeeRole extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   onCloseFeedbackBar = () => {
     this.setState({
       closeFeedbackBar: true,
@@ -32,8 +36,10 @@ export default class EmployeeRole extends PureComponent {
   };
 
   buttonOnClickLeave = () => {
-    // eslint-disable-next-line no-alert
-    history.push(`/time-off/new-leave-request`);
+    history.push({
+      pathname: `/time-off/new-leave-request`,
+      state: { action: 'NEW-REQUEST' },
+    });
   };
 
   onInformationCLick = () => {
@@ -45,17 +51,8 @@ export default class EmployeeRole extends PureComponent {
 
   render() {
     const describeText = [
-      <p>
-        Apply for leaves with/without pay, work from home or client office. All request must be
-        approved by your manager and supervisor to avail it.
-        <br />
-        <br />
-        Special leaves can be availed on acase-to-case basis.
-      </p>,
-      <p>
-        Request for a compensation leave if you have worked for extra days/hours. Once approved by
-        your manager and supervisor, it will be credited to your total leave balance.
-      </p>,
+      <p>Apply for leaves with/without pay, work from home or client office.</p>,
+      <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
     ];
     const { viewInformation, closeFeedbackBar } = this.state;
     return (

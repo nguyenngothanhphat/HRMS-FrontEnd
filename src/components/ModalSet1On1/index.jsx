@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
 import moment from 'moment';
 import { Modal, Button, DatePicker, Select } from 'antd';

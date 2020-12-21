@@ -222,14 +222,36 @@ const routes = [
           },
           {
             path: '/time-off/view-request/:reId',
-            name: 'Time Off [Ticket Id: 123456]',
+            name: 'View timeoff request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/ViewRequestForm',
             // authority: ['employee'],
           },
           {
-            path: '/time-off/new-leave-request',
+            path: '/time-off/manager-view-request/:reId',
+            name: 'View timeoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/ManagerRole/components/ManagerViewRequestForm',
+            // authority: ['employee'],
+          },
+          {
+            path: '/time-off/view-compoff-request/:reId',
+            name: 'View compoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/EmployeeRole/components/ViewCompoffRequestForm',
+            // authority: ['employee'],
+          },
+          {
+            // path: '/time-off/new-leave-request',
+            path: '/time-off/:action(new-leave-request)',
             name: 'Request for Timeoff',
+            hideInMenu: true,
+            component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
+            // authority: ['employee'],
+          },
+          {
+            path: '/time-off/:action(edit-leave-request)/:reId',
+            name: 'Edit timeoff request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/LeaveRequestForm',
             // authority: ['employee'],
@@ -262,6 +284,7 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/timeOff.svg',
             component: './TimeOff',
+            // authority: ['P_TIMEOFF_VIEW'],
             authority: [
               'employee',
               'hr-manager',
@@ -331,6 +354,14 @@ const routes = [
             component: './OffBoarding//EmployeeOffBoarding/Request',
             hideInMenu: true,
             authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/offboarding/relieving-detail/:ticketId',
+            name: 'relievingDetail',
+            component:
+              './OffBoarding/HrOffboarding/component/RelievingFormalities/components/RelievingDetails',
+            hideInMenu: true,
+            authority: ['hr-manager'],
           },
           {
             path: '/directory/employee-profile/:reId',
@@ -413,6 +444,12 @@ const routes = [
             name: 'Create Email Reminder',
             hideInMenu: true,
             component: './EmailReminder',
+          },
+          {
+            path: '/employee-onboarding/view-email/:reId',
+            name: 'View Email',
+            component: './EmailView',
+            hideInMenu: true,
           },
           {
             path: '/template-details/:templateId',

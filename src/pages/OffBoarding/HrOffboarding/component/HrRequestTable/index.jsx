@@ -15,6 +15,7 @@ import styles from './index.less';
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
+      hrManager = {},
     } = {},
     user: {
       currentUser: {
@@ -29,6 +30,7 @@ import styles from './index.less';
     locationID,
     companyID,
     listTeamRequest,
+    hrManager,
   }),
 )
 class HRrequestTable extends Component {
@@ -46,6 +48,7 @@ class HRrequestTable extends Component {
       type: 'offboarding/fetchListTeamRequest',
       payload: {
         status: 'IN-PROGRESS',
+        location: [locationID],
       },
     });
     dispatch({
@@ -64,6 +67,8 @@ class HRrequestTable extends Component {
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
+      hrManager = {},
+      locationID = '',
     } = this.props;
 
     const resignationRequest = (
@@ -85,12 +90,21 @@ class HRrequestTable extends Component {
           >
             <TabPane tab="Team request" key="1">
               <div className={styles.tableTab}>
-                <TeamRequest data={listTeamRequest} countdata={totalListTeamRequest} />
+                <TeamRequest
+                  data={listTeamRequest}
+                  countdata={totalListTeamRequest}
+                  hrManager={hrManager}
+                  location={[locationID]}
+                />
               </div>
             </TabPane>
             <TabPane tab="My Request" key="2">
               <div className={styles.tableTab}>
-                <MyRequestContent data={listOffboarding} countdata={totalList} />
+                <MyRequestContent
+                  data={listOffboarding}
+                  countdata={totalList}
+                  hrManager={hrManager}
+                />
               </div>
             </TabPane>
           </Tabs>

@@ -4,6 +4,14 @@ import ManagerOffBoading from './ManagerOffBoarding';
 import HrOffboarding from './HrOffboarding';
 
 class OffBoarding extends PureComponent {
+  findRole = (roles) => {
+    const hrManager = roles.find((item) => item === 'hr-manager');
+    const manager = roles.find((item) => item === 'manager');
+    const employee = roles.find((item) => item === 'employee');
+    const role = hrManager || manager || employee || 'employee';
+    return role;
+  };
+
   render() {
     const renderComponent = {
       'hr-manager': <HrOffboarding />,
@@ -11,10 +19,7 @@ class OffBoarding extends PureComponent {
       employee: <EmployeeOffBoading />,
     };
     const listRole = localStorage.getItem('antd-pro-authority');
-    const role =
-      JSON.parse(listRole).find(
-        (item) => item === 'hr-manager' || item === 'manager' || item === 'employee',
-      ) || 'employee';
+    const role = this.findRole(JSON.parse(listRole));
     return renderComponent[role];
   }
 }

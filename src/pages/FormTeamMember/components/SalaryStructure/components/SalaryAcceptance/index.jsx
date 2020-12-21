@@ -31,6 +31,7 @@ import styles from './index.less';
     fullName,
     settings,
     loadingCloseCandidate: loading.effects['candidateInfo/closeCandidate'],
+    loadingSendFormAgain: loading.effects['candidateInfo/editSalaryStructure'],
   }),
 )
 class SalaryAcceptance extends PureComponent {
@@ -92,7 +93,7 @@ class SalaryAcceptance extends PureComponent {
       type: 'candidateInfo/editSalaryStructure',
       payload: {
         candidate: _id,
-        setting: settings,
+        settings,
       },
     });
   };
@@ -115,7 +116,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { processStatus, fullName, loadingCloseCandidate } = this.props;
+    const { processStatus, fullName, loadingCloseCandidate, loadingSendFormAgain } = this.props;
     console.log(processStatus);
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
@@ -164,7 +165,7 @@ class SalaryAcceptance extends PureComponent {
           We are waiting for Mr / Mrs. {fullName} to mark the acceptance of the shared salary
           structure
         </p>
-        <Button type="primary" onClick={this.onSendFormAgain}>
+        <Button type="primary" loading={loadingSendFormAgain} onClick={this.onSendFormAgain}>
           {formatMessage({ id: 'component.salaryAcceptance.sendFormAgain' })}
         </Button>
       </div>

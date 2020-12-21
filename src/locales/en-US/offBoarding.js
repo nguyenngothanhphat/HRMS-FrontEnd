@@ -25,4 +25,29 @@ export default {
   'pages.offBoarding.accept': 'Accept',
 
   'pages.offBoarding.reasonPutOnHold': 'Reason put on hold',
+
+  // Relieving Formalities
+  'pages.relieving.employeeDetail': 'Employee Detail',
+  'pages.relieving.employeeID': 'Employee ID',
+  'pages.relieving.employeeName': 'Employee Name',
+  'pages.relieving.employee.joinedDate': 'Joined Date',
+  'pages.relieving.employee.jobTitle': 'Job Title',
+  'pages.relieving.employee.reporting': 'Reporting Manager',
+  'pages.relieving.employee.department': 'Department',
+  'pages.relieving.resignation': 'Resignation Overview',
+  'pages.relieving.resignation.lastWorkingDay': 'Last Working Day',
+  'pages.relieving.resignation.reason': 'Reson for leaving us?',
+  'pages.relieving.mailExit': 'Mail exit interview package',
+  'pages.relieving.conductExitInterview': 'Conduct the exit interview',
+  'pages.relieving.conductExitParagraph':
+    'Discuss points from the exit interview form. Take employee feedback on company values, performance, how can the company perform better, on project history, appraisals etc',
+  'pages.relieving.scheduleInterview': 'Schedule Interview',
+  'pages.relieving.exitInterviewScheduledWith': 'Exit interview scheduled with',
+  'pages.relieving.scheduledOn': 'Scheduled on',
+  'pages.relieving.feedbackFrom': 'Feedback from Exit interview',
+  'pages.relieving.conducted': 'Conducted by',
+  'pages.relieving.closePackage': 'Close Package',
+  'pages.relieving.closePackage.notification': 'The closing package has been sent to',
+  'pages.relieving.placeholder.sendMail': 'Enter mail id to send package',
+  'pages.relieving.btn.sendMail': 'Send Mail',
 };

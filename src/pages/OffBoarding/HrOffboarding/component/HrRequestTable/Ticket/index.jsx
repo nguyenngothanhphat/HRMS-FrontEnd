@@ -3,14 +3,15 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import EditComment from '@/components/EditComment';
+import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 import LastWorkingDate from './components/LWD';
-// import CommentsFromHR from './components/CommentFromHr';
 import ButtonSet1On1 from './components/ButtonSet1On1';
 import InfoEmployee from './components/RightContent';
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
 import styles from './index.less';
 
 @connect(
@@ -148,7 +149,7 @@ class HRDetailTicket extends Component {
     const {
       reasonForLeaving = '',
       requestDate = '',
-      // lastWorkingDate,
+      status = '',
       employee: {
         employeeId,
         generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
@@ -165,6 +166,11 @@ class HRDetailTicket extends Component {
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
+    const checkClosingComment =
+      list1On1.find(
+        ({ isRelieving, status: statusRelieving }) =>
+          isRelieving && statusRelieving === 'COMPLETED',
+      ) || {};
     return (
       <>
         <PageContainer>
@@ -174,6 +180,7 @@ class HRDetailTicket extends Component {
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameFrist} [{employeeId}]
                 </p>
+                <StatusRequest status={status} />
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
@@ -190,7 +197,6 @@ class HRDetailTicket extends Component {
                   date={requestDate}
                   name={nameFrist}
                 />
-                {/* {lastWorkingDate && <CommentsFromHR />} */}
                 {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
@@ -210,7 +216,8 @@ class HRDetailTicket extends Component {
                     </Fragment>
                   );
                 })}
-                <LastWorkingDate />
+                {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
+                {status !== 'REJECTED' && <LastWorkingDate />}
               </Col>
               <Col span={7}>
                 <InfoEmployee />

@@ -1,6 +1,13 @@
+@import (css)
+  url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+@blue: #2c6df9;
+@dark-blue: #285ed4;
+
 .containerDashboard {
   // background-color: rgba(0, 0, 0, 0.3);
   min-height: 100vh;
+  background: #f8f9fb;
   .titlePage {
     height: 50px;
     width: 100%;
@@ -9,11 +16,53 @@
     align-items: center;
     padding: 0 40px 0 20px;
     box-shadow: 0 1px 2px 0 #eeeeee;
+    z-index: 20px;
     &__text {
       font-size: 18px;
       font-weight: 500;
       color: #161c29;
       margin: 0;
     }
+  }
+
+  .homeIcon {
+    margin-left: 20px;
+    color: white;
+    cursor: pointer;
+    background: @blue;
+    // width: 75px;
+    // height: 30px;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    padding: 8px 10px;
+    transition: 0.2s ease-in;
+    margin-bottom: 20px;
+
+    div {
+      display: flex;
+      align-items: center;
+    }
+
+    svg {
+      margin-right: 6px;
+    }
+
+    &:hover {
+      background: @dark-blue;
+    }
+  }
+
+  .leftContainer {
+    background: white;
+    padding: 24px 33px;
+    width: 100%;
+    border: 1px solid rgba(214, 220, 224, 0.45);
+  }
+
+  .divide {
+    width: 100%;
+    background: #d2d8dd;
+    height: 1px;
   }
 }

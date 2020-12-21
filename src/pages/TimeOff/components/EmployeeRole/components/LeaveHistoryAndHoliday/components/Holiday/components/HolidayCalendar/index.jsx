@@ -335,15 +335,19 @@ export default class HolidayCalendar extends PureComponent {
         <div className={styles.eventDetailContainer}>
           <div className={styles.eventDetailPart}>
             <span className={styles.title}>Upcoming</span>
-            {this.renderData(1, holidaysList).map((value) => (
-              <EventDetailBox data={value} color={1} />
-            ))}
+            <div className={styles.eventsContainer}>
+              {this.renderData(1, holidaysList).map((value) => (
+                <EventDetailBox data={value} color={1} />
+              ))}
+            </div>
           </div>
           <div className={styles.eventDetailPart}>
             <div className={styles.title}>Leave taken</div>
-            {this.renderData(2, holidaysList).map((value) => (
-              <EventDetailBox data={value} color={2} />
-            ))}
+            <div className={styles.eventsContainer}>
+              {this.renderData(2, holidaysList).map((value) => (
+                <EventDetailBox data={value} color={2} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

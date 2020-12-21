@@ -478,7 +478,7 @@ class OnboardTable extends Component {
                 }, // Hover mouse on row
               };
             }}
-            // scroll={{ x: 1000, y: 'max-content' }}
+            scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
         <CustomModal

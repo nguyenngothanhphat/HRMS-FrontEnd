@@ -1,10 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Popover, notification, Avatar } from 'antd';
 import moment from 'moment';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
+import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
-// import persion from '@/assets/people.svg';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -14,6 +14,36 @@ class HrTable extends PureComponent {
       pageNavigation: 1,
     };
   }
+
+  renderContent = (row) => {
+    const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
+    return (
+      <div
+        style={{ textDecoration: 'underline', cursor: 'pointer', color: '#2C6DF9' }}
+        onClick={() => this.checkFunction(_id, approvalStep, relievingStatus)}
+      >
+        Move to relieving formalities
+      </div>
+    );
+  };
+
+  checkFunction = (id, approvalStep, relievingStatus) => {
+    const { moveToRelieving = () => {} } = this.props;
+    const payload = { id, relievingStatus: 'IN-QUEUES' };
+    if (approvalStep === 2 && !relievingStatus) {
+      moveToRelieving(payload);
+    } else {
+      this.openNotificationWithIcon(approvalStep);
+    }
+  };
+
+  openNotificationWithIcon = (approvalStep) => {
+    const description = approvalStep === 1 ? 'Please submit LWD' : 'Moved to relieving formalities';
+    notification.warning({
+      message: 'Notification',
+      description,
+    });
+  };
 
   push = (data) => {
     history.push(`/offboarding/review/${data}`);
@@ -27,7 +57,12 @@ class HrTable extends PureComponent {
 
   render() {
     const { pageNavigation } = this.state;
-    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
+    const {
+      data = [],
+      loading,
+      textEmpty = 'No resignation request is submitted',
+      isTabAccept = false,
+    } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const pagination = {
@@ -80,22 +115,32 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
-        render: () => (
-          <div className={styles.rowAction}>
-            <p>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-            </p>
-          </div>
-        ),
+        render: (_, row) => {
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          const arrAvt = [avtManager, avtHrManager];
+          return (
+            <div className={styles.rowAction}>
+              {arrAvt.map(
+                (item, index) =>
+                  item && (
+                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+                      <Avatar src={item} size={20} icon={<UserOutlined />} />
+                    </div>
+                  ),
+              )}
+            </div>
+          );
+        },
       },
       {
         title: <span className={styles.title}>Department</span>,
         dataIndex: 'department',
+        render: (department) => {
+          return <p>{department?.name}</p>;
+        },
       },
       {
         title: <span className={styles.title}>LWD</span>,
@@ -105,18 +150,30 @@ class HrTable extends PureComponent {
         },
       },
       {
-        title: <span className={styles.title}>LWD Change</span>,
-        dataIndex: 'LwdChange',
-      },
-      {
         title: <span className={styles.title}>Action</span>,
         dataIndex: '_id',
         align: 'left',
-        render: (_id) => (
-          <div className={styles.rowAction}>
-            <span onClick={() => this.push(_id)}>View Request</span>
-          </div>
-        ),
+        render: (_id, row) => {
+          return (
+            <div className={styles.viewAction}>
+              <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
+                View Request
+              </p>
+              {isTabAccept && (
+                <div className={styles.viewAction__popOver}>
+                  <Popover
+                    content={this.renderContent(row)}
+                    title={false}
+                    trigger="hover"
+                    placement="bottomRight"
+                  >
+                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                  </Popover>
+                </div>
+              )}
+            </div>
+          );
+        },
       },
     ];
 
