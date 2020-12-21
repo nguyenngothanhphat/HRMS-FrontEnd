@@ -37,7 +37,7 @@ class ViewTimelineModal extends PureComponent {
   };
 
   getStatusDay = (value) => {
-    const disable = moment() < moment(value).subtract(1, 'day').endOf('day');
+    // const disable = moment() < moment(value).subtract(1, 'day').endOf('day');
     const isWeekend =
       moment(value).locale('en').format('ddd') === 'Sat' ||
       moment(value).locale('en').format('ddd') === 'Sun';
@@ -46,9 +46,9 @@ class ViewTimelineModal extends PureComponent {
     if (isWeekend) {
       return 'weekend';
     }
-    if (disable) {
-      return 'disable';
-    }
+    // if (disable) {
+    //   return 'disable';
+    // }
     if (isCurrent) {
       return 'current';
     }
@@ -83,45 +83,35 @@ class ViewTimelineModal extends PureComponent {
   };
 
   handeCheckTimeSheet = (value, date) => {
-    console.log('value', value, date);
     const { lastWorkingDate = '', requestDate = '' } = this.props;
-    // const dateLists = this.getDateLists(requestDate, lastWorkingDate);
-    const beginDate = moment(requestDate).format('DD/MM/YYYY');
-    const lastDate = moment(lastWorkingDate).format('DD/MM/YYYY');
-    const key = moment(value).format('DD/MM/YYYY');
 
-    console.log('beginDate', beginDate);
-    console.log('key', key);
+    const beginDate = moment(requestDate).subtract(5, 'days').format('YYYY-MM-DD');
+    const lastDate = moment(lastWorkingDate).format('YYYY-MM-DD');
+    const currentDate = moment().format('YYYY-MM-DD');
+    const key = moment(value).format('YYYY-MM-DD');
 
     let normalDate = '';
     let workedDate = '';
-    let unworkedDate = '';
-    if (moment(beginDate).isBefore(moment(key)) || moment(lastDate).isAfter(moment(key))) {
-      console.log('a');
+    let unworkDate = '';
+    let lastWorkDate = '';
+
+    if (beginDate > key || lastDate < key) {
       normalDate = styles.normalDate;
+    } else if (beginDate <= key && currentDate >= key) {
+      workedDate = styles.check;
     } else {
-      console.log('d');
-      if (moment(beginDate).isAfter(moment(key))) {
-        workedDate = styles.check;
-        console.log('b');
-      }
-      if (moment(lastDate).isBefore(moment(key))) {
-        unworkedDate = styles.notCheck;
-        console.log('c');
-      }
+      unworkDate = styles.notCheck;
+    }
+    // last day
+    if (key === lastDate) {
+      lastWorkDate = styles.lastWorkDate;
     }
 
     return (
-      <div className={`${styles.date} ${normalDate} ${workedDate} ${unworkedDate}`}>{date}</div>
+      <div className={`${styles.date} ${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
+        {date}
+      </div>
     );
-
-    // return check ? (
-    //   <div className={`${styles.date} ${styles.check}`}>
-    //     <CheckOutlined className={styles.iconCheck} />
-    //   </div>
-    // ) : (
-    //   <div className={`${styles.date} ${styles.notCheck}`}>{date}</div>
-    // );
   };
 
   render() {
