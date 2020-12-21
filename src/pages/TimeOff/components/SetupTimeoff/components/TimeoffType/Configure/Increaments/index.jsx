@@ -1,28 +1,84 @@
 import React, { Component } from 'react';
-import { Radio, Input, DatePicker, Checkbox } from 'antd';
+import { Radio, Checkbox, Row, Col, InputNumber } from 'antd';
 import styles from './index.less';
 
 class Increaments extends Component {
-  onChange = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      minimumIncrements: '',
+      select: 'day',
+    };
+  }
+
+  onChangeRadio = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { minimumIncrements } = this.state;
+    this.setState({
+      select: e.target.value,
+    });
+    const data = {
+      select: e.target.value,
+      minimumIncrements,
+    };
+    onChangeValue(data);
+  };
+
+  onChange = (value) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { select } = this.state;
+    this.setState({
+      minimumIncrements: value,
+    });
+    const data = {
+      select,
+      minimumIncrements: value,
+    };
+    onChangeValue(data);
+  };
 
   render() {
+    const { minimumIncrements, select } = this.state;
     return (
-      <div className={styles.contentIncreaments}>
-        <div className={styles.titleText}>
-          <span className={styles.text}>
-            Employees can apply for casual leaves in a minimum increments of
-          </span>
-          <Input className={styles.input} />
-          <Radio.Group defaultValue="a" buttonStyle="solid">
-            <Radio.Button value="a">Day</Radio.Button>
-            <Radio.Button value="d">Hours</Radio.Button>
-          </Radio.Group>
+      <div className={styles.contentIncrements}>
+        <div className={styles.title}>Minimum increments</div>
+        <div className={styles.borderStyles} />
+        <div className={styles.formBody}>
+          <Row gutter={[20, 0]}>
+            <Col span={10}>
+              <div className={styles.titleText}>
+                Employees can apply for casual leaves in a minimum increments of
+              </div>
+              <Checkbox className={styles.checkbox}>Do not impose a minimum increment</Checkbox>
+            </Col>
+            <Col span={12}>
+              <Row className={styles.inputText} gutter={[24, 0]}>
+                <Col>
+                  <InputNumber
+                    min={0}
+                    max={12}
+                    defaultValue={0}
+                    placeholder="day"
+                    formatter={(value) => `${value} day`}
+                    parser={(value) => value.replace('days', '')}
+                    onChange={this.onChange}
+                  />
+                </Col>
+                <Col>
+                  <Radio.Group
+                    onChange={this.onChangeRadio}
+                    value={select}
+                    buttonStyle="solid"
+                    className={styles.radioGroup}
+                  >
+                    <Radio.Button value="day">Days</Radio.Button>
+                    <Radio.Button value="hour">Hours</Radio.Button>
+                  </Radio.Group>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
-        <div className={styles.effectFrom}>
-          <div className={styles.text}> Effective from</div>
-          <DatePicker className={styles.timePicker} />
-        </div>
-        <Checkbox>Do not impose a minimum increment</Checkbox>
       </div>
     );
   }
