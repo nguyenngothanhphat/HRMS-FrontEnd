@@ -284,6 +284,7 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/timeOff.svg',
             component: './TimeOff',
+            // authority: ['P_TIMEOFF_VIEW'],
             authority: [
               'employee',
               'hr-manager',
@@ -443,6 +444,12 @@ const routes = [
             name: 'Create Email Reminder',
             hideInMenu: true,
             component: './EmailReminder',
+          },
+          {
+            path: '/employee-onboarding/view-email/:reId',
+            name: 'View Email',
+            component: './EmailView',
+            hideInMenu: true,
           },
           {
             path: '/template-details/:templateId',
