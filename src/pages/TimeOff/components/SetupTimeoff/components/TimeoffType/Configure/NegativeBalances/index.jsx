@@ -40,16 +40,16 @@ class BaseAccual extends Component {
   render() {
     const { accrualRate, select } = this.state;
     return (
-      <div className={styles.contentBaseAccrual}>
-        <div className={styles.title}>Base accrual rate</div>
+      <div className={styles.contentNegative}>
+        <div className={styles.title}>Negative balances</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <div className={styles.titleText}>
-                During the employee’s 1st year of employment, total casual leave accrued
+                Employees can apply for casual leaves that make their balances negative unto
               </div>
-              <Checkbox className={styles.checkbox}>Unlimited causal leave</Checkbox>
+              <Checkbox className={styles.checkbox}>Unlimited negative balances</Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>

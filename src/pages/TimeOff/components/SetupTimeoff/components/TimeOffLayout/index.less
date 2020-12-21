@@ -2,37 +2,57 @@
   display: flex;
   flex-direction: row;
   background-color: #dedfdf;
+
+  :global {
+    .ant-progress-circle .ant-progress-inner {
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 8px !important;
+      line-height: 9px !important;
+    }
+  }
+
   .itemMenu {
-    border-bottom: 1px solid #d6dce0;
-    padding: 35px 0 25px 45px;
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 500;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(191, 194, 211, 0.5);
     color: #707177;
+    font-size: 14px;
     cursor: pointer;
-    margin-left: 20px;
   }
   .itemMenuAcive {
-    padding: 16px 0 17px 45px;
-    margin: 19px 0 8px 20px;
-    font-size: 14px;
-    line-height: 16px;
-    font-weight: 500;
-    color: #2c6df9;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    color: #707177;
     cursor: pointer;
-    background-color: #e9f0ff;
-    border-radius: 40px 0px 0px 40px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c6df9;
+    border-bottom: none;
+    border-top-left-radius: 100px;
+    border-bottom-left-radius: 100px;
+    background-color: rgba(44, 109, 249, 0.12);
   }
   .leftMenu {
     width: 250px;
     min-width: 250px;
-    margin-right: 30px;
+    margin-right: 40px;
     border: 1px solid #d6dce0;
-    padding-bottom: 200px;
-    padding-top: 7px;
     background-color: #fff;
+    padding-top: 26px;
+    box-shadow: rgba(0, 0, 2, 0.15) 0px 0px 2px 0px;
+    padding-left: 20px;
   }
   .contentWrap {
     padding: 26px 30px 41px 0;
+    width: 100%;
   }
 }

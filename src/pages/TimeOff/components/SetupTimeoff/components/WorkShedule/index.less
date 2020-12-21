@@ -1,6 +1,72 @@
 .root {
-  background-color: #fff;
-  padding: 27px 30px;
+  :global {
+    .ant-input-number {
+      padding: 3px;
+      width: 141px;
+      height: 42px;
+      border-radius: 5px;
+    }
+    .ant-picker {
+      width: 83px;
+      height: 42px;
+    }
+    .ant-radio-group {
+      padding: 2px;
+      border-radius: 5px;
+      border: 1px solid #d6dce4;
+    }
+    .ant-radio-button-wrapper:first-child {
+      border-radius: 10px;
+    }
+    .ant-radio-button-wrapper:last-child {
+      border-radius: 10px;
+    }
+    .ant-radio-button-wrapper > .ant-radio-button {
+      border-radius: 10px;
+    }
+    .ant-form-item {
+      margin-bottom: 0px;
+    }
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+      display: none;
+    }
+    .ant-radio-button-wrapper:not(:first-child)::before {
+      background-color: #fff;
+    }
+  }
+  .formActive {
+    background-color: #fff;
+    width: auto;
+    height: auto;
+    // padding: 27px 24px;
+    .straight {
+      height: 1px;
+      width: 100%;
+      background-color: #e2e4e8;
+      margin: 27px 0 27px;
+    }
+    .formWorkHour {
+      padding: 0 24px;
+    }
+    .content {
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 14px;
+      color: #707177;
+      padding-bottom: 11px;
+    }
+    .formInput {
+      padding: 24px;
+      width: 208px;
+      height: auto;
+      background: #fafafa;
+      border-radius: 13px;
+      margin-bottom: 20px;
+    }
+  }
+  .bottom {
+    margin-top: 40px;
+  }
   .title {
     font-style: normal;
     font-weight: bold;
@@ -15,15 +81,16 @@
     font-size: 13px;
     line-height: 15px;
     color: #464646;
-    padding-bottom: 44px;
+    padding-bottom: 14px;
   }
   .activeText {
+    padding: 27px 24px 0px;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
     line-height: 19px;
     color: #2c6df9;
-    padding-bottom: 16px;
+    // padding-bottom: 16px;
   }
   .workHour {
     font-style: normal;
@@ -36,15 +103,68 @@
   .pb17 {
     padding-bottom: 17px;
   }
-  .form {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding-bottom: 28px;
+  .radio {
+    width: 72px;
+    height: 30px;
+    border-radius: 5px;
   }
+  // .form {
+  //   display: flex;
+  //   flex-direction: row;
+  //   justify-content: space-around;
+  //   // padding-bottom: 28px;
+  //   .formInput {
+  //     // padding: 18px;
+  //     height: 130px;
+  //     background: #fafafa;
+  //     border-radius: 13px;
+  //   }
+  // }
+
   .checkboxWrap {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    // flex-direction: row;
+    // justify-content: space-between;
+  }
+  .circle {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #f1f6ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 17px;
+  }
+  .circleActive {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f6ff;
+    border: 2px solid #2c6df9;
+    box-sizing: border-box;
+    margin: 0 17px;
+
+    .padding {
+      color: #2c6df9;
+    }
+  }
+  .flex {
+    padding-bottom: 27px;
+    display: flex;
+    justify-content: flex-end;
+    .btnSave {
+      width: 108px;
+      color: #fff;
+      margin: 0 20px;
+      height: 40px;
+      background: #ffa100;
+      border-radius: 25px;
+    }
   }
 }
