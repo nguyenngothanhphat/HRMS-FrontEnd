@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import TicketEmployee from '../EmployeeOffBoarding/Request';
@@ -12,6 +13,7 @@ class OffBoarding extends PureComponent {
       type: 'offboarding/save',
       payload: {
         myRequest: {},
+        listProjectByEmployee: [],
       },
     });
   }
