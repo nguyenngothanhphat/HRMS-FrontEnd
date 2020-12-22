@@ -13,12 +13,12 @@ import Carousel from './components/Carousel';
 import styles from './index.less';
 
 const listLinkFQAs = [
-  { name: 'I cannot access an app?', href: '' },
-  { name: 'How do I integrate google calendar with the portal?', href: '' },
-  { name: 'I cannot access an app?', href: '' },
-  { name: 'How do I integrate google calendar with the portal?', href: '' },
-  { name: 'How do I remove an app from the list of apps?', href: '' },
-  { name: 'How do I remove an app from the list of apps?', href: '' },
+  { name: 'I cannot access an app?', href: '/faqpage' },
+  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
+  { name: 'I cannot access an app?', href: '/faqpage' },
+  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
+  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
+  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
 ];
 
 const listQuickLinks = [

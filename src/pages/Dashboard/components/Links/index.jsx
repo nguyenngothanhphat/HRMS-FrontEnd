@@ -59,7 +59,11 @@ export default class Links extends Component {
         <div className={s.root}>
           <div className={s.viewTop}>
             <div className={s.title}>{title}</div>
-            {showButton && <div className={s.btnViewAll}>View all</div>}
+            {showButton && (
+              <Link to="/faqpage">
+                <div className={s.btnViewAll}>View all</div>
+              </Link>
+            )}
           </div>
           {listData.map((item) =>
             type === 'link' ? this.renderLink(item) : this.renderViewPDF(item),

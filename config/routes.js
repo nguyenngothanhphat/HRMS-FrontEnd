@@ -464,6 +464,12 @@ const routes = [
             component: './ChangePassword',
           },
           {
+            path: '/faqpage',
+            name: 'FAQS',
+            hideInMenu: true,
+            component: './FAQs',
+          },
+          {
             component: './404',
           },
         ],
