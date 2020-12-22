@@ -96,8 +96,10 @@ const offboarding = {
         const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { acceptedRequest } });
+        return acceptedRequest;
       } catch (errors) {
         dialog(errors);
+        return null;
       }
     },
     *sendRequest({ payload }, { call, put }) {

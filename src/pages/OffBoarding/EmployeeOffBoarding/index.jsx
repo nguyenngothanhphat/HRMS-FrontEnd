@@ -40,7 +40,9 @@ const { TabPane } = Tabs;
 class EmployeeOffBoading extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      relievingInQueue: false,
+    };
   }
 
   componentDidMount() {
@@ -59,6 +61,10 @@ class EmployeeOffBoading extends Component {
       payload: {
         status: 'ACCEPTED',
       },
+    }).then((data) => {
+      if (data !== null) {
+        this.checkIfExistingInprogressRequest();
+      }
     });
   }
 
@@ -71,13 +77,32 @@ class EmployeeOffBoading extends Component {
   };
 
   checkIfExistingInprogressRequest = () => {
-    const { acceptedRequest = [], loadingAcceptedRequest } = this.props;
-    return acceptedRequest.length > 0 && !loadingAcceptedRequest;
+    const { acceptedRequest = [], companyID = '', dispatch } = this.props;
+    if (acceptedRequest.length > 0) {
+      const accepted = acceptedRequest[0]; // only one offboarding request
+      const { _id = '' } = accepted;
+      dispatch({
+        type: 'offboarding/fetchRelievingDetailsById',
+        payload: {
+          id: _id,
+          company: companyID,
+          packageType: '',
+        },
+      }).then((res) => {
+        const { data = {} } = res;
+        const { relievingStatus = '' } = data;
+        if (relievingStatus === 'IN-QUEUES') {
+          this.setState({
+            relievingInQueue: true,
+          });
+        }
+      });
+    }
   };
 
   render() {
     const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
-    const openRelievingFormalitiesTab = this.checkIfExistingInprogressRequest();
+    const { relievingInQueue } = this.state;
 
     return (
       <PageContainer>
@@ -103,7 +128,7 @@ class EmployeeOffBoading extends Component {
                 </div>
               </TabPane>
 
-              <TabPane disabled={!openRelievingFormalitiesTab} tab="Relieving Formalities" key="2">
+              <TabPane disabled={!relievingInQueue} tab="Relieving Formalities" key="2">
                 <RelievingFormalities />
               </TabPane>
             </Tabs>
