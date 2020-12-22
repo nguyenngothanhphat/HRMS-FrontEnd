@@ -37,6 +37,7 @@ class ModalViewPDF extends Component {
         className={s.root}
         destroyOnClose
         footer={null}
+        centered
       >
         <div className={s.viewDocument}>
           <Document
