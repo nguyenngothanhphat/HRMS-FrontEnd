@@ -83,14 +83,14 @@ const timeOff = {
           return response;
         }
         if (status === '') {
-          const response1 = yield call(getLeaveRequestOfEmployee, { employee });
-          const { statusCode: statusCode1, data: allMyLeaveRequests = [] } = response1;
-          if (statusCode1 !== 200) throw response1;
+          const response = yield call(getLeaveRequestOfEmployee, { employee });
+          const { statusCode, data: allMyLeaveRequests = [] } = response;
+          if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { allMyLeaveRequests },
           });
-          return response1;
+          return response;
         }
       } catch (errors) {
         dialog(errors);
@@ -305,9 +305,10 @@ const timeOff = {
             type: 'save',
             payload: { teamCompoffRequests },
           });
+          return response;
         }
         if (status === '') {
-          const response = yield call(getTeamCompoffRequests, { status });
+          const response = yield call(getTeamCompoffRequests, {});
           const { statusCode, data: allTeamCompoffRequests = {} } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
@@ -315,10 +316,12 @@ const timeOff = {
             type: 'save',
             payload: { allTeamCompoffRequests },
           });
+          return response;
         }
       } catch (errors) {
         // dialog(errors);
       }
+      return {};
     },
 
     *fetchTeamLeaveRequests({ status = '' }, { call, put }) {
@@ -332,9 +335,10 @@ const timeOff = {
             type: 'save',
             payload: { teamLeaveRequests },
           });
+          return response;
         }
         if (status === '') {
-          const response = yield call(getTeamLeaveRequests, { status });
+          const response = yield call(getTeamLeaveRequests, {});
           const { statusCode, data: allTeamLeaveRequests = {} } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
@@ -342,10 +346,12 @@ const timeOff = {
             type: 'save',
             payload: { allTeamLeaveRequests },
           });
+          return response;
         }
       } catch (errors) {
         // dialog(errors);
       }
+      return {};
     },
   },
   reducers: {

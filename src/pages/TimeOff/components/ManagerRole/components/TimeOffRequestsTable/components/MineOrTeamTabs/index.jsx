@@ -6,45 +6,16 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 class MineOrTeamTabs extends PureComponent {
-  renderLoading = () => {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '155px 0',
-          // height: '310px',
-        }}
-      >
-        <Spin size="medium" />
-      </div>
-    );
-  };
-
   render() {
-    const { data1 = [], data2 = [], type = 0, loadingData } = this.props;
+    const { tab = 0, type = 0 } = this.props;
     return (
       <div className={styles.MineOrTeamTabs}>
-        <Tabs
-          tabPosition="top"
-          tabBarGutter={40}
-          defaultActiveKey="1"
-          // onTabClick={this.onTabClick}
-        >
+        <Tabs tabPosition="top" tabBarGutter={40} defaultActiveKey="1">
           <TabPane tab="Team Leave Request" key="1">
-            {!loadingData ? (
-              <TimeOffRequestTab data={data1} type={type} category="TEAM" />
-            ) : (
-              this.renderLoading()
-            )}
+            <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>
           <TabPane tab="My Leave Request" key="2">
-            {!loadingData ? (
-              <TimeOffRequestTab data={data2} type={type} category="MY" />
-            ) : (
-              this.renderLoading()
-            )}
+            <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
         </Tabs>
       </div>

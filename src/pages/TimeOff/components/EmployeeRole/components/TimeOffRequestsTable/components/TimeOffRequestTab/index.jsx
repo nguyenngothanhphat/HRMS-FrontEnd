@@ -58,7 +58,7 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   fetchFilteredDataFromServer = (filterTab) => {
-    const { dispatch, tab = 0, type = 0 } = this.props;
+    const { dispatch, tab = 0, type: tabType = 0 } = this.props;
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
@@ -75,60 +75,45 @@ class TimeOffRequestTab extends PureComponent {
       status = 'DRAFTS';
     }
 
-    if (type === 1)
-      dispatch({
-        type: 'timeOff/fetchLeaveRequestOfEmployee',
-        employee: _id,
-        status,
-      }).then((res) => {
-        const { data: { items = [] } = {}, statusCode } = res;
-        if (statusCode === 200) {
-          const newData = this.getDataByType(items, tab);
-          this.setState({
-            formatData: newData,
-          });
-        }
-      });
+    const commonFunction = (res = {}) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        const newData = this.getDataByType(items, tab);
+        this.setState({
+          formatData: newData,
+        });
+      }
+    };
 
-    if (type === 2)
-      dispatch({
-        type: 'timeOff/fetchMyCompoffRequests',
-        employee: _id,
-        status,
-      }).then((res) => {
-        const { data: { items = [] } = {}, statusCode } = res;
-        if (statusCode === 200) {
-          const newData = this.getDataByType(items, tab);
-          this.setState({
-            formatData: newData,
-          });
-        }
-      });
+    let type = '';
+    if (tabType === 1) {
+      type = 'timeOff/fetchLeaveRequestOfEmployee';
+    } else type = 'timeOff/fetchMyCompoffRequests';
+
+    dispatch({
+      type,
+      status,
+    }).then((res) => {
+      commonFunction(res);
+    });
   };
 
   fetchAllData = () => {
-    const { dispatch, tab = 0, type = 0 } = this.props;
-    if (type === 1) {
-      dispatch({
-        type: 'timeOff/fetchLeaveRequestOfEmployee',
-      }).then((res) => {
-        const { data: { items = [] } = {}, statusCode } = res;
-        if (statusCode === 200) {
-          const newData = this.getDataByType(items, tab);
-          this.countTotal(newData);
-        }
-      });
-    } else {
-      dispatch({
-        type: 'timeOff/fetchMyCompoffRequests',
-      }).then((res) => {
-        const { data: { items = [] } = {}, statusCode } = res;
-        if (statusCode === 200) {
-          const newData = this.getDataByType(items, tab);
-          this.countTotal(newData);
-        }
-      });
-    }
+    const { dispatch, tab = 0, type: tabType = 0 } = this.props;
+    let type = '';
+    if (tabType === 1) {
+      type = 'timeOff/fetchLeaveRequestOfEmployee';
+    } else type = 'timeOff/fetchMyCompoffRequests';
+
+    dispatch({
+      type,
+    }).then((res) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        const newData = this.getDataByType(items, tab);
+        this.countTotal(newData);
+      }
+    });
   };
 
   componentDidMount = () => {

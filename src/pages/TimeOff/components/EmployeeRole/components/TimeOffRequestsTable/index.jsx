@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Spin } from 'antd';
+import { Tabs } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 
@@ -23,22 +23,6 @@ class TimeOffRequestsTable extends PureComponent {
         <span>Timeoff Requests</span>
       </div>
     ),
-  };
-
-  renderLoading = () => {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '160px 0',
-          // height: '310px',
-        }}
-      >
-        <Spin size="medium" />
-      </div>
-    );
   };
 
   render() {

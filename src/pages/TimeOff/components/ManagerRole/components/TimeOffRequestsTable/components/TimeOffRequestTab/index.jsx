@@ -1,56 +1,163 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
+import { connect } from 'umi';
 import DataTable from '../DataTable';
 import CompoffTable from '../CompoffTable';
 import FilterBar from '../FilterBar';
+
 import styles from './index.less';
 
-export default class TimeOffRequestTab extends PureComponent {
+@connect(({ timeOff, user }) => ({
+  timeOff,
+  user,
+}))
+class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterTab: '1',
-      inProgressData: [],
-      rejectedData: [],
-      approvedData: [],
-      draftData: [],
+      formatData: [],
+      inProgressLength: 0,
+      approvedLength: 0,
+      rejectedLength: 0,
+      draftLength: 0,
     };
   }
 
-  componentDidMount = () => {
-    const { data = [] } = this.props;
-    this.progressData(data);
+  getDataByType = (requests, key) => {
+    if (key === 1)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'A' || type === 'B';
+      });
+
+    if (key === 2)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
+      });
+
+    if (key === 3)
+      return requests.filter((req) => {
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType === 'LWP';
+      });
+
+    if (key === 4)
+      return requests.filter((req) => {
+        const { type: { type = '' } = {} } = req;
+        return type === 'D';
+      });
+
+    // compoff requests
+    if (key === 5) {
+      return requests;
+    }
+
+    return [];
   };
 
-  setSelectedFilterTab = (id) => {
-    this.setState({
-      selectedFilterTab: id,
+  fetchFilteredDataFromServer = (filterTab) => {
+    const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
+    const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
+
+    let status = '';
+    if (filterTab === '1') {
+      status = 'IN-PROGRESS';
+    }
+    if (filterTab === '2') {
+      status = 'APPROVED';
+    }
+    if (filterTab === '3') {
+      status = 'REJECTED';
+    }
+    if (filterTab === '4') {
+      status = 'DRAFTS';
+    }
+
+    const commonFunction = (res = {}) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        const newData = this.getDataByType(items, tab);
+        this.setState({
+          formatData: newData,
+        });
+      }
+    };
+
+    let type = '';
+    if (tabType === 1) {
+      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
+      else type = 'timeOff/fetchTeamLeaveRequests';
+    }
+    if (tabType === 2) {
+      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
+      else type = 'timeOff/fetchTeamCompoffRequests';
+    }
+    dispatch({
+      type,
+      employee: _id,
+      status,
+    }).then((res) => {
+      commonFunction(res);
     });
   };
 
-  progressData = (originalData) => {
-    const inProgressData = [];
-    const approvedData = [];
-    const rejectedData = [];
-    const draftData = [];
+  fetchAllData = () => {
+    const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
 
-    originalData.forEach((row) => {
+    let type = '';
+    if (tabType === 1) {
+      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
+      else type = 'timeOff/fetchTeamLeaveRequests';
+    }
+    if (tabType === 2) {
+      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
+      else type = 'timeOff/fetchTeamCompoffRequests';
+    }
+    dispatch({
+      type,
+    }).then((res) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        const newData = this.getDataByType(items, tab);
+        this.countTotal(newData);
+      }
+    });
+  };
+
+  componentDidMount = () => {
+    this.fetchAllData();
+    this.fetchFilteredDataFromServer('1');
+  };
+
+  setSelectedFilterTab = (id) => {
+    this.fetchAllData();
+    this.fetchFilteredDataFromServer(id);
+  };
+
+  countTotal = (newData) => {
+    const inProgressLength = [];
+    const approvedLength = [];
+    const rejectedLength = [];
+    const draftLength = [];
+
+    newData.forEach((row) => {
       const { status = '' } = row;
       switch (status) {
         case 'IN-PROGRESS': {
-          inProgressData.push(row);
+          inProgressLength.push(row);
           break;
         }
         case 'APPROVED': {
-          approvedData.push(row);
+          approvedLength.push(row);
           break;
         }
         case 'REJECTED': {
-          rejectedData.push(row);
+          rejectedLength.push(row);
           break;
         }
         case 'DRAFTS': {
-          draftData.push(row);
+          draftLength.push(row);
           break;
         }
         default:
@@ -58,22 +165,29 @@ export default class TimeOffRequestTab extends PureComponent {
       }
     });
     this.setState({
-      inProgressData,
-      approvedData,
-      rejectedData,
-      draftData,
+      inProgressLength: inProgressLength.length,
+      approvedLength: approvedLength.length,
+      rejectedLength: rejectedLength.length,
+      draftLength: draftLength.length,
     });
   };
 
   render() {
-    const { selectedFilterTab, inProgressData, approvedData, rejectedData, draftData } = this.state;
-    const { data = [], type = 0, category = '' } = this.props;
+    const { type = 0, category = '' } = this.props;
+
+    const {
+      formatData,
+      inProgressLength,
+      approvedLength,
+      rejectedLength,
+      draftLength,
+    } = this.state;
 
     const dataNumber = {
-      inProgressNumber: inProgressData.length,
-      approvedNumber: approvedData.length,
-      rejectedNumber: rejectedData.length,
-      draftNumber: draftData.length,
+      inProgressLength,
+      approvedLength,
+      rejectedLength,
+      draftLength,
     };
 
     return (
@@ -84,78 +198,34 @@ export default class TimeOffRequestTab extends PureComponent {
           category={category}
         />
         <div className={styles.tableContainer}>
-          {data.length === 0 ? (
-            <div className={styles.emptyTable}>
-              <img src={EmptyIcon} alt="empty-table" />
-              <p className={styles.describeTexts}>
-                {category === 'MY' && (
-                  <>
-                    You have not applied for any Leave requests. <br />
-                    Submitted Casual, Sick & Compoff requests will be displayed here.
-                  </>
-                )}
-                {category === 'TEAM' && (
-                  <>
-                    No Leave requests received. <br />
-                    Submitted Casual, Sick & Compoff requests will be displayed here.
-                  </>
-                )}
-              </p>
-            </div>
-          ) : (
-            <div>
-              {type === 1 && (
-                <>
-                  {selectedFilterTab === '1' ? (
-                    <DataTable data={inProgressData} category={category} status="IN-PROGRESS" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '2' ? (
-                    <DataTable data={approvedData} category={category} status="APPROVED" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '3' ? (
-                    <DataTable data={rejectedData} category={category} status="REJECTED" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '4' ? (
-                    <DataTable data={draftData} category={category} status="DRAFTS" />
-                  ) : (
-                    ''
-                  )}
-                </>
-              )}
-              {type === 2 && (
-                <>
-                  {selectedFilterTab === '1' ? (
-                    <CompoffTable data={inProgressData} category={category} status="IN-PROGRESS" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '2' ? (
-                    <CompoffTable data={approvedData} category={category} status="APPROVED" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '3' ? (
-                    <CompoffTable data={rejectedData} category={category} status="REJECTED" />
-                  ) : (
-                    ''
-                  )}
-                  {selectedFilterTab === '4' ? (
-                    <CompoffTable data={draftData} category={category} status="DRAFTS" />
-                  ) : (
-                    ''
-                  )}
-                </>
-              )}
-            </div>
-          )}
+          {
+            //     data.length === 0 ? (
+            //   <div className={styles.emptyTable}>
+            //     <img src={EmptyIcon} alt="empty-table" />
+            //     <p className={styles.describeTexts}>
+            //       {category === 'MY' && (
+            //         <>
+            //           You have not applied for any Leave requests. <br />
+            //           Submitted Casual, Sick & Compoff requests will be displayed here.
+            //         </>
+            //       )}
+            //       {category === 'TEAM' && (
+            //         <>
+            //           No Leave requests received. <br />
+            //           Submitted Casual, Sick & Compoff requests will be displayed here.
+            //         </>
+            //       )}
+            //     </p>
+            //   </div>
+            // ) : (
+          }
+          <div>
+            {type === 1 && <DataTable data={formatData} category={category} />}
+            {type === 2 && <CompoffTable data={formatData} category={category} />}
+          </div>
         </div>
       </div>
     );
   }
 }
+export default TimeOffRequestTab;
