@@ -137,6 +137,7 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   setSelectedFilterTab = (id) => {
+    this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
   };
 
