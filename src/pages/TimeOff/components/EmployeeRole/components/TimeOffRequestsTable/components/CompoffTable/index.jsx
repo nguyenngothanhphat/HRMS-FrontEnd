@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-export default class CompoffTable extends PureComponent {
+@connect(({ timeOff, loading, user }) => ({
+  loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
+  timeOff,
+  user,
+}))
+class CompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -164,7 +169,7 @@ export default class CompoffTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loadingFetchMyCompoffRequests } = this.props;
     const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
@@ -183,7 +188,7 @@ export default class CompoffTable extends PureComponent {
       <div className={styles.CompoffTable}>
         <Table
           size="middle"
-          loading={loading}
+          loading={loadingFetchMyCompoffRequests}
           rowSelection={rowSelection}
           pagination={false}
           columns={this.columns}
@@ -195,3 +200,5 @@ export default class CompoffTable extends PureComponent {
     );
   }
 }
+
+export default CompoffTable;
