@@ -23,6 +23,11 @@ class HeaderSearch extends Component {
 
   handleVisibleChange = (flag) => {
     this.setState({ visible: flag });
+    if (!flag) {
+      this.setState({
+        mode: 'history',
+      });
+    }
   };
 
   renderAdvancedSearch = () => {
