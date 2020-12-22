@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Calendar, Select, Modal, Button } from 'antd';
+import { Calendar, Select, Modal, Button, Tooltip } from 'antd';
 import { CheckOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -37,8 +37,13 @@ class ViewTimelineModal extends PureComponent {
 
   componentDidMount = () => {};
 
-  onPanelChange = (value, mode) => {
-    console.log(value, mode);
+  onPanelChange = (value) => {
+    const selectedMonth = parseInt(moment(value).format('MM'), 10);
+    const selectedYear = parseInt(moment(value).format('YYYY'), 10);
+    this.setState({
+      selectedMonth: selectedMonth - 1,
+      selectedYear,
+    });
   };
 
   getStatusDay = (value) => {
@@ -69,7 +74,13 @@ class ViewTimelineModal extends PureComponent {
   };
 
   renderItemDay = (status, date) => {
-    return <div className={`${styles.date} ${styles[status]}`}>{date}</div>;
+    return (
+      <Tooltip placement="top" title={status === 'current' && 'Current date'} color="volcano">
+        <div className={`${styles.date}`}>
+          <span className={` ${styles[status]}`}>{date}</span>
+        </div>
+      </Tooltip>
+    );
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
@@ -114,14 +125,24 @@ class ViewTimelineModal extends PureComponent {
 
     if (workedDate !== '')
       return (
-        <div className={`${styles.date} ${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
-          <CheckOutlined className={styles.iconCheck} />
+        <div className={`${styles.date} `}>
+          <span className={`${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
+            <CheckOutlined className={styles.iconCheck} />
+          </span>
         </div>
       );
     return (
-      <div className={`${styles.date} ${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
-        {date}
-      </div>
+      <Tooltip
+        placement="bottom"
+        title={lastWorkDate !== '' && 'Last working date'}
+        color="volcano"
+      >
+        <div className={`${styles.date}`}>
+          <span className={`${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
+            {date}
+          </span>
+        </div>
+      </Tooltip>
     );
   };
 
@@ -141,7 +162,7 @@ class ViewTimelineModal extends PureComponent {
           <p className={styles.title}>View timeline</p>
           <div className={styles.calendar}>
             <Calendar
-              headerRender={({ value, type, onChange, onTypeChange }) => {
+              headerRender={({ value, onChange }) => {
                 const { selectedMonth, selectedYear } = this.state;
 
                 const start = 0;
@@ -163,7 +184,6 @@ class ViewTimelineModal extends PureComponent {
                     </Select.Option>,
                   );
                 }
-                const month = value.month();
 
                 const year = value.year();
 
@@ -271,6 +291,7 @@ class ViewTimelineModal extends PureComponent {
               fullscreen
               onPanelChange={this.onPanelChange}
               mode="month"
+              onSelect={null}
               dateFullCellRender={this.dateFullCellRender}
             />
           </div>
