@@ -1,94 +1,64 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { AutoComplete, Input } from 'antd';
-import useMergeValue from 'use-merge-value';
-import React, { useRef } from 'react';
-import classNames from 'classnames';
+import React, { Component } from 'react';
+import { Input, Dropdown } from 'antd';
+import { SearchOutlined, EnterOutlined } from '@ant-design/icons';
+import ViewHistory from './components/ViewHistory';
+import ViewAdvancedSearch from './components/ViewAdvancedSearch';
 import styles from './index.less';
 
-const HeaderSearch = (props) => {
-  const {
-    className,
-    defaultValue,
-    onVisibleChange,
-    placeholder,
-    open,
-    defaultOpen,
-    visible,
-    ...restProps
-  } = props;
-  const inputRef = useRef(null);
-  const [value, setValue] = useMergeValue(defaultValue, {
-    value: props.value,
-    onChange: props.onChange,
-  });
-  const [searchMode, setSearchMode] = useMergeValue(defaultOpen || false, {
-    value: props.open,
-    onChange: onVisibleChange,
-  });
-  const inputClass = classNames(styles.input, {
-    [styles.show]: searchMode,
-  });
-  return (
-    <div
-      className={classNames(className, styles.headerSearch)}
-      style={
-        !searchMode
-          ? { backgroundColor: '#f3f6fc', borderRadius: '50%', width: '44px', height: '44px' }
-          : {}
-      }
-      onClick={() => {
-        setSearchMode(true);
+class HeaderSearch extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // q:'',
+      mode: 'history',
+      visible: false,
+    };
+  }
 
-        if (searchMode && inputRef.current) {
-          inputRef.current.focus();
-        }
-      }}
-      onTransitionEnd={({ propertyName }) => {
-        if (propertyName === 'width' && !searchMode) {
-          if (onVisibleChange) {
-            onVisibleChange(searchMode);
-          }
-        }
-      }}
-    >
-      <SearchOutlined
-        key="Icon"
-        style={{
-          cursor: 'pointer',
-        }}
-      />
-      <AutoComplete
-        key="AutoComplete"
-        className={inputClass}
-        value={value}
-        style={{
-          height: 28,
-          marginTop: -6,
-        }}
-        options={restProps.options}
-        onChange={setValue}
-      >
-        <Input
-          ref={inputRef}
-          defaultValue={defaultValue}
-          aria-label={placeholder}
-          placeholder={placeholder}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              if (restProps.onSearch) {
-                restProps.onSearch(value);
-              }
-            }
-          }}
-          onBlur={() => {
-            if (!visible) {
-              setSearchMode(false);
-            }
-          }}
-        />
-      </AutoComplete>
-    </div>
-  );
-};
+  changeMode = (mode) => {
+    this.setState({
+      mode,
+    });
+  };
+
+  handleVisibleChange = (flag) => {
+    this.setState({ visible: flag });
+  };
+
+  renderAdvancedSearch = () => {
+    const { mode } = this.state;
+    return (
+      <div className={styles.viewAdvancedSearch}>
+        {mode === 'history' ? (
+          <ViewHistory changeMode={this.changeMode} />
+        ) : (
+          <ViewAdvancedSearch changeMode={this.changeMode} />
+        )}
+      </div>
+    );
+  };
+
+  render() {
+    const { visible } = this.state;
+    return (
+      <div className={styles.root}>
+        <Dropdown
+          overlay={this.renderAdvancedSearch()}
+          placement="bottomCenter"
+          trigger={['click']}
+          visible={visible}
+          onVisibleChange={this.handleVisibleChange}
+        >
+          <Input
+            size="large"
+            placeholder="Search for Employees, Documents, Reports, Events and Requests"
+            prefix={<SearchOutlined />}
+            suffix={<EnterOutlined style={{ fontSize: '11px', opacity: 0.5, cursor: 'pointer' }} />}
+          />
+        </Dropdown>
+      </div>
+    );
+  }
+}
 
 export default HeaderSearch;
