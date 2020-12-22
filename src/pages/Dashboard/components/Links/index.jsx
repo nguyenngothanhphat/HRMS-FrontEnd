@@ -1,9 +1,34 @@
-import React, { PureComponent } from 'react';
-import { Tag } from 'antd';
+import React, { Component } from 'react';
 import { Link } from 'umi';
+import ModalViewPDF from '@/components/ModalViewPDF';
 import s from './index.less';
 
-export default class Links extends PureComponent {
+export default class Links extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      linkPDF: '',
+      title: '',
+    };
+  }
+
+  openModalViewPDF = (linkPDF, title) => {
+    this.setState({
+      visible: true,
+      linkPDF,
+      title,
+    });
+  };
+
+  closeModalViewPDF = () => {
+    this.setState({
+      visible: false,
+      linkPDF: '',
+      title: '',
+    });
+  };
+
   renderLink = (item) => {
     const { name = '', href = '', isNew = false } = item;
     return (
@@ -16,16 +41,41 @@ export default class Links extends PureComponent {
     );
   };
 
-  render() {
-    const { title = '', showButton = false, listData = [] } = this.props;
+  renderViewPDF = (item) => {
+    const { name = '', href = '', isNew = false } = item;
     return (
-      <div className={s.root}>
-        <div className={s.viewTop}>
-          <div className={s.title}>{title}</div>
-          {showButton && <div className={s.btnViewAll}>View all</div>}
-        </div>
-        {listData.map((item) => this.renderLink(item))}
+      <div style={{ display: 'flex' }}>
+        <p onClick={() => this.openModalViewPDF(href, name)}>{name}</p>
+        {isNew && <div className={s.new}>New</div>}
       </div>
+    );
+  };
+
+  render() {
+    const { title = '', showButton = false, listData = [], type = '' } = this.props;
+    const { visible = false, linkPDF = '', title: titleNews = '' } = this.state;
+    return (
+      <>
+        <div className={s.root}>
+          <div className={s.viewTop}>
+            <div className={s.title}>{title}</div>
+            {showButton && (
+              <Link to="/faqpage">
+                <div className={s.btnViewAll}>View all</div>
+              </Link>
+            )}
+          </div>
+          {listData.map((item) =>
+            type === 'link' ? this.renderLink(item) : this.renderViewPDF(item),
+          )}
+        </div>
+        <ModalViewPDF
+          title={titleNews}
+          visible={visible}
+          handleCancel={this.closeModalViewPDF}
+          link={linkPDF}
+        />
+      </>
     );
   }
 }
