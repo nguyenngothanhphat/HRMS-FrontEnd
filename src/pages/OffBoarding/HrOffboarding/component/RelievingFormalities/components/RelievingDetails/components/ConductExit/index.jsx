@@ -105,7 +105,7 @@ class ConductExit extends Component {
       isEmployee: true,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        this.handleModalSet1On1();
+        this.handleCancelModalSet1On1();
         dispatch({
           type: 'offboarding/getList1On1',
           payload: {
@@ -116,11 +116,17 @@ class ConductExit extends Component {
     });
   };
 
-  handleModalSet1On1 = () => {
-    const { visible } = this.state;
+  handleOpenModalSet1On1 = () => {
     this.setState({
-      visible: !visible,
-      keyModal: !visible ? '' : Date.now(),
+      visible: true,
+      keyModal: Date.now(),
+    });
+  };
+
+  handleCancelModalSet1On1 = () => {
+    this.setState({
+      visible: false,
+      keyModal: '',
     });
   };
 
@@ -199,6 +205,7 @@ class ConductExit extends Component {
 
   render() {
     const { visible, keyModal, keyModalAddComment, openModalAddComment } = this.state;
+    console.log('visible render', visible);
     const {
       listMeetingTime = [],
       loading,
@@ -246,8 +253,8 @@ class ConductExit extends Component {
             </div>
             <Button
               className={styles.conductExit__btnSchedule}
-              onClick={this.handleModalSet1On1}
-              disabled={idSchedule}
+              onClick={this.handleOpenModalSet1On1}
+              // disabled={idSchedule}
             >
               {formatMessage({ id: 'pages.relieving.scheduleInterview' })}
             </Button>
@@ -289,7 +296,7 @@ class ConductExit extends Component {
         {this.renderFeedbackForm()}
         <ModalSet1On1
           visible={visible}
-          handleCancel={this.handleModalSet1On1}
+          handleCancel={this.handleCancelModalSet1On1}
           handleSubmit={this.handleSendSchedule}
           listMeetingTime={listMeetingTime}
           title={formatMessage({ id: 'pages.relieving.scheduleInterview' })}

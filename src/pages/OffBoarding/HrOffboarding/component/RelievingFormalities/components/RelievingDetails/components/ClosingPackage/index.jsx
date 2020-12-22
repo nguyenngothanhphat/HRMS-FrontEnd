@@ -5,6 +5,7 @@ import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
 import addTemplateIcon from '@/assets/add-template-icon.svg';
 import lightBulbIcon from '@/assets/offboarding-schedule.svg';
+import checkTemplateIcon from '@/assets/check-template-icon.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
 import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
@@ -38,14 +39,17 @@ class ClosingPackage extends PureComponent {
   }
 
   renderExtraContent = () => {
+    const { isSent } = this.state;
     return (
       <div>
-        <img
-          className={styles.closingPkg__card__iconExtra}
-          style={{ paddingRight: '20px' }}
-          src={addTemplateIcon}
-          alt="add-template-icon"
-        />
+        {isSent ? null : (
+          <img
+            className={styles.closingPkg__card__iconExtra}
+            style={{ paddingRight: '20px' }}
+            src={addTemplateIcon}
+            alt="add-template-icon"
+          />
+        )}
       </div>
     );
   };
@@ -141,7 +145,7 @@ class ClosingPackage extends PureComponent {
     return (
       <>
         <Row gutter={[40, 15]}>
-          {closingPackage.map((template, index) => {
+          {closingPackage?.map((template, index) => {
             const { packageName } = template;
             return (
               <Col span={10} key={`${index + 1}`}>
@@ -183,7 +187,7 @@ class ClosingPackage extends PureComponent {
               </Col>
             );
           })}
-          {customDocuments.map((doc, index) => {
+          {customDocuments?.map((doc, index) => {
             if (typeof doc !== 'object') return null;
             const { key } = doc;
             return (
@@ -260,7 +264,7 @@ class ClosingPackage extends PureComponent {
 
   renderAfterSendMail = () => {
     const {
-      closingPackage: { waitList = [], packages = [], toEmail = '' },
+      closingPackage: { packages = [], toEmail = '' },
       employee: {
         generalInfo: { workEmail = '' },
       },
@@ -268,19 +272,6 @@ class ClosingPackage extends PureComponent {
     return (
       <>
         <Row gutter={[40, 15]}>
-          {waitList.map((template, index) => {
-            const { packageName } = template;
-            return (
-              <Col span={10} key={`${index + 1}`}>
-                <div className={styles.template}>
-                  <div className={styles.template__content}>
-                    <img src={templateIcon} alt="template-icon" />
-                    <span>{packageName}</span>
-                  </div>
-                </div>
-              </Col>
-            );
-          })}
           {packages.map((doc, index) => {
             if (typeof doc !== 'object') return null;
             const { key } = doc;
@@ -291,6 +282,8 @@ class ClosingPackage extends PureComponent {
                     <img src={templateIcon} alt="template-icon" />
                     <span>{key}</span>
                   </div>
+
+                  <img src={checkTemplateIcon} alt="check-icon" />
                 </div>
               </Col>
             );

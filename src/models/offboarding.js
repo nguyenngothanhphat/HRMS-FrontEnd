@@ -32,6 +32,7 @@ import {
 const offboarding = {
   namespace: 'offboarding',
   state: {
+    acceptedRequest: [],
     listOffboarding: [],
     listTeamRequest: [],
     request: [],
@@ -85,6 +86,16 @@ const offboarding = {
         } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchAcceptedRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffboardingList, payload);
+        const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { acceptedRequest } });
       } catch (errors) {
         dialog(errors);
       }
@@ -228,6 +239,7 @@ const offboarding = {
           });
           const { statusCode: templateStat } = templateRes;
           if (templateStat !== 200) throw templateRes;
+          return templateRes;
         }
 
         response = yield call(getRequestById, payload);
@@ -413,8 +425,10 @@ const offboarding = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails: data } });
+        return statusCode;
       } catch (error) {
         dialog(error);
+        return 0;
       }
     },
     *updateRelieving({ payload }, { call, put }) {
@@ -437,7 +451,7 @@ const offboarding = {
           message,
         });
         const newRequest = yield call(getRequestById, { id: payload.ticketId });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
@@ -449,8 +463,8 @@ const offboarding = {
         const response = yield call(removeOffBoardingPackage, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const newRequest = yield call(getRequestById, { id: payload.ticketId });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = response;
+        const newRequest = yield call(getRequestById, { id: payload.offboardRequest });
+        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {

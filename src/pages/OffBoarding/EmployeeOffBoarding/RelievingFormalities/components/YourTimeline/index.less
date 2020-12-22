@@ -1,0 +1,66 @@
+.YourTimeline {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+  width: 100%;
+  background-color: white;
+  padding: 20px 0 0 20px;
+  height: 100%;
+  margin-bottom: 20px;
+  .leftContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  .abovePart {
+    display: flex;
+    flex-direction: column;
+    span {
+      margin-bottom: 10px;
+    }
+  }
+  .describe {
+    font-size: 13px;
+    color: #464646;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    // color: #464646;
+  }
+  :global {
+    .ant-btn {
+      max-width: 200px;
+      background-color: #ffa100;
+      border-radius: 25px;
+      border: none;
+      height: 40px;
+      padding-left: 40px;
+      padding-right: 40px;
+      span {
+        color: white;
+        font-weight: bold;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
+    }
+  }
+  .sideContainer {
+    align-items: center;
+    .sideImage {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      width: 100%;
+      height: 100%;
+      img {
+        width: 80%;
+      }
+    }
+  }
+}
