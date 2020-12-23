@@ -128,23 +128,6 @@ class Edit extends Component {
     });
   };
 
-  handleFormItemDivider = (id) => {
-    let borderColor = 'transparent';
-    if (id > 0) {
-      borderColor = '#d6dce0';
-    }
-    return borderColor;
-  };
-
-  handleFormItemStyle = (id) => {
-    let top = '20px';
-    if (id > 0) {
-      top = '13px';
-    }
-
-    return top;
-  };
-
   render() {
     const formItemLayout = {
       labelCol: {
@@ -177,14 +160,7 @@ class Edit extends Component {
                 const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
                 return (
                   <div key={index}>
-                    <div
-                      style={{
-                        width: '100%',
-                        height: '1px',
-                        borderTop: `1px solid ${this.handleFormItemDivider(index)}`,
-                        marginBottom: `${this.handleFormItemStyle(index)}`,
-                      }}
-                    ></div>
+                    {index > 0 ? <div className={styles.line} /> : null}
                     <Form.Item
                       label="Emergency Contact"
                       name={`emergencyContact ${index}`}
@@ -263,23 +239,6 @@ class Edit extends Component {
             </Button>
           </div>
         </Form>
-
-        {/* <Col>
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-              onClick={this.handleSaveContactDetail}
-            >
-              Save
-            </Button>
-          </div>
-        </Col> */}
       </Row>
     );
   }
