@@ -649,7 +649,7 @@ class RequestInformation extends PureComponent {
 
   // RENDER MODAL content
   renderModalContent = () => {
-    const { action = '' } = this.props;
+    const { action = '', ticketID = '' } = this.props;
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
 
@@ -659,7 +659,7 @@ class RequestInformation extends PureComponent {
       } else if (buttonState === 2) {
         if (isEditingDrafts)
           content = `${selectedTypeName} request submitted to the HR and your manager.`;
-        else content = `Edits to ticket id: 123456 submitted to HR and manager`;
+        else content = `Edits to ticket id: ${ticketID} submitted to HR and manager`;
       }
     }
 

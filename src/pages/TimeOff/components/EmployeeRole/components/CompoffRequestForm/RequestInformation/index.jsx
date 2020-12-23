@@ -343,15 +343,15 @@ class RequestInformation extends PureComponent {
 
   // RENDER MODAL content
   renderModalContent = () => {
-    const { action = '' } = this.props;
-    const { buttonState, isEditingDrafts, viewingCompoffRequestId: id } = this.state;
+    const { action = '', ticketID } = this.props;
+    const { buttonState, isEditingDrafts } = this.state;
     let content = '';
 
     if (action === 'edit-compoff-request') {
       if (buttonState === 1) content = `Compoff request saved as draft.`;
       else if (buttonState === 2) {
         if (isEditingDrafts) content = `Compoff request submitted to the HR and your manager.`;
-        else content = `Edits to ticket id: ${id} submitted to HR and manager`;
+        else content = `Edits to ticket id: ${ticketID} submitted to HR and manager`;
       }
     }
 

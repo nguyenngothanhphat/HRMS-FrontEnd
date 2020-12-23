@@ -118,6 +118,7 @@ class CompoffRequestForm extends PureComponent {
                   <RequestInformation
                     action={action}
                     status={status}
+                    ticketID={ticketID}
                     viewingCompoffRequest={viewingCompoffRequest}
                   />
                 </Col>
