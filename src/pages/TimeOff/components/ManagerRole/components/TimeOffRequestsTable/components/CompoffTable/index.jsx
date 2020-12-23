@@ -12,14 +12,17 @@ class CompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: '_id',
+      dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      render: (_id) => (
-        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-          ID
-        </span>
-      ),
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            {ticketID}
+          </span>
+        );
+      },
     },
     {
       title: 'Project',
@@ -134,6 +137,8 @@ class CompoffTable extends PureComponent {
       const {
         manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
         cc = [],
+        ticketID = '',
+        _id = '',
         // extraTime = [],
       } = value;
 
@@ -163,6 +168,10 @@ class CompoffTable extends PureComponent {
         ...value,
         // duration,
         assigned,
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };
