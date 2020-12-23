@@ -6,7 +6,6 @@ import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
   validator = (rule, value, callback) => {
-    console.log('value');
     if (value >= 1 && value <= 9) {
       callback();
     } else callback('Invalid input');
@@ -31,11 +30,7 @@ class ExtraTimeSpentRow extends PureComponent {
             <Col span={7}>{date}</Col>
             <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
             <Col span={7}>
-              <Form.Item
-                name={[index]}
-                fieldKey={[index]}
-                rules={[{}, { validator: this.validator }]}
-              >
+              <Form.Item name={[index]} fieldKey={[index]} rules={[{ validator: this.validator }]}>
                 <Input onChange={(e) => onChange(e, index)} placeholder="0" suffix="Hrs" />
               </Form.Item>
             </Col>
