@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
 import { formatMessage } from 'umi';
-import { Table } from 'antd';
+import { Table, Select } from 'antd';
+import CustomModal from '@/components/CustomModal';
+import ModalContent from '../ModalContent';
 import dropbox from '../assets/dropbox.png';
 
 import s from './index.less';
@@ -143,6 +145,7 @@ const TableComponent = (props) => {
   const { list = [] } = props;
   const [pageSelected, setPageSelected] = useState(1);
   const [currentRecord, setCurrentRecord] = useState(1);
+  const [open, setOpen] = useState(true);
 
   const onChangePagination = (pageNumber) => {
     setPageSelected(pageNumber);
@@ -165,6 +168,14 @@ const TableComponent = (props) => {
     onChange: onChangePagination,
   };
 
+  const closeModal = () => {
+    setOpen(false);
+  };
+
+  const renderModalContent = () => {
+    return <div>asdsad</div>;
+  };
+
   return (
     <div className={s.table}>
       <Table
@@ -172,6 +183,7 @@ const TableComponent = (props) => {
         columns={columns}
         pagination={{ ...pagination, total: list.length }}
       />
+      <CustomModal open={open} closeModal={closeModal} content={<ModalContent />} />
     </div>
   );
 };
