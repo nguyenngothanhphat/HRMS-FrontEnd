@@ -139,7 +139,7 @@ class CompoffTable extends PureComponent {
         cc = [],
         ticketID = '',
         _id = '',
-        // extraTime = [],
+        extraTime = [],
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -147,14 +147,14 @@ class CompoffTable extends PureComponent {
         approvalManagerEmail: workEmail,
       });
 
-      // let duration = {};
-      // if (extraTime.length !== 0) {
-      //   duration = {
-      //     fromDate: extraTime[0].date,
-      //     toDate: extraTime[extraTime.length - 1].date,
-      //   };
-      // }
-      // console.log('duration', duration);
+      let duration = '';
+      if (extraTime.length !== 0) {
+        const fromDate = extraTime[0].date;
+        const toDate = extraTime[extraTime.length - 1].date;
+        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
+          'DD.MM.YYYY',
+        )}`;
+      }
 
       let employeeFromCC = [];
       if (cc.length > 0) {
@@ -166,7 +166,7 @@ class CompoffTable extends PureComponent {
 
       return {
         ...value,
-        // duration,
+        duration,
         assigned,
         id: {
           ticketID,

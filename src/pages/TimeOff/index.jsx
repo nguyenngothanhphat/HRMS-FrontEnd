@@ -4,6 +4,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { history } from 'umi';
 import EmployeeRole from './components/EmployeeRole';
 import ManagerRole from './components/ManagerRole';
+import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
 
 import styles from './index.less';
@@ -47,7 +48,10 @@ export default class TimeOff extends PureComponent {
             <TabPane tab="Manager Timeoff" key="2">
               <ManagerRole />
             </TabPane>
-            <TabPane tab="Setup Timeoff policy" key="3">
+            <TabPane tab="Balances" key="3">
+              <Balances />
+            </TabPane>
+            <TabPane tab="Setup Timeoff policy" key="4">
               <SetupTimeoff />
             </TabPane>
           </Tabs>
