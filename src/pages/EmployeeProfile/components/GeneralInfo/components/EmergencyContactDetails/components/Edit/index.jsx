@@ -35,7 +35,6 @@ class Edit extends Component {
     } = generalData;
 
     const newEmergencyContact = {
-      // _id: 0,
       emergencyContact: eContact,
       emergencyPersonName: ePersonName,
       emergencyRelation: eRelation,
@@ -51,7 +50,6 @@ class Edit extends Component {
     const newDataArr = [...emergencyContactDetails];
 
     const newGeneralDataTemp = {
-      // _id: newDataArr.length,
       emergencyContact: '',
       emergencyPersonName: '',
       emergencyRelation: '',
@@ -82,14 +80,14 @@ class Edit extends Component {
     const { emergencyContactDetails } = this.state;
     const newData = [...emergencyContactDetails];
 
-    if (idName === 'emergencyContact') {
-      newData[index][idName] = value;
+    if (idName === `emergencyContact ${index}`) {
+      newData[index].emergencyContact = value;
     }
-    if (idName === 'emergencyPersonName') {
-      newData[index][idName] = value;
+    if (idName === `emergencyPersonName ${index}`) {
+      newData[index].emergencyPersonName = value;
     }
-    if (idName === 'emergencyRelation') {
-      newData[index][idName] = value;
+    if (idName === `emergencyRelation ${index}`) {
+      newData[index].emergencyRelation = value;
     }
 
     this.setState({ emergencyContactDetails: newData });
@@ -121,13 +119,13 @@ class Edit extends Component {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
-    console.log('payload: ', payload);
-    // dispatch({
-    //   type: 'employeeProfile/updateGeneralInfo',
-    //   payload,
-    //   dataTempKept,
-    //   key: 'openContactDetails',
-    // });
+
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+      key: 'openContactDetails',
+    });
   };
 
   render() {
@@ -142,12 +140,11 @@ class Edit extends Component {
       },
     };
 
-    const { loading, handleCancel = () => {} } = this.props;
+    const { generalData, loading, handleCancel = () => {} } = this.props;
     const { emergencyContactDetails } = this.state;
     const newEmergencyContactDetails = [...emergencyContactDetails];
 
-    console.log('emergencyContactDetails: ', newEmergencyContactDetails);
-
+    const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -165,7 +162,7 @@ class Edit extends Component {
                   <div key={index}>
                     <Form.Item
                       label="Emergency Contact"
-                      name="emergencyContact"
+                      name={`emergencyContact ${index}`}
                       rules={[
                         {
                           pattern: /^[+]*[\d]{0,10}$/,
@@ -183,7 +180,7 @@ class Edit extends Component {
                     </Form.Item>
                     <Form.Item
                       label="Person’s Name"
-                      name="emergencyPersonName"
+                      name={`emergencyPersonName ${index}`}
                       validateTrigger="onChange"
                       rules={[
                         {
@@ -200,7 +197,7 @@ class Edit extends Component {
                     </Form.Item>
                     <Form.Item
                       label="Relation"
-                      name="emergencyRelation"
+                      name={`emergencyRelation ${index}`}
                       rules={[
                         {
                           pattern: /^[a-zA-Z ]*$/,
