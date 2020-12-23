@@ -12,15 +12,29 @@ class UploadImage extends Component {
   }
 
   beforeUpload = (file) => {
-    const { setSizeImageMatch = () => {} } = this.props;
-    const checkType =
-      file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
+    const { setSizeImageMatch = () => {}, isUploadPDF = false } = this.props;
+    let checkType;
+    if (isUploadPDF) {
+      checkType = file.type === 'application/pdf';
+    } else {
+      checkType =
+        file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
+    }
     if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
+      if (isUploadPDF) {
+        message.error('You can only upload PDF file!');
+      } else {
+        message.error('You can only upload JPG/PNG/PDF file!');
+      }
     }
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
-      message.error('Image must smaller than 5MB!');
+      if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        message.error('Image must smaller than 5MB!');
+      }
+      if (file.type === 'application/pdf') {
+        message.error('File must smaller than 5MB!');
+      }
       setSizeImageMatch(isLt5M);
       this.setState({ check: isLt5M });
     }

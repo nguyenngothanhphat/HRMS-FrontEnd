@@ -513,18 +513,32 @@ const OfferDetail = (props) => {
                       {formatMessage({ id: 'component.offerDetail.uploadOffer' })}
                     </Radio>
                   </Col>
-                  <Col sm={8} md={10} style={{ textAlign: 'left' }}>
+                  <Col sm={8} md={14} style={{ textAlign: 'left' }}>
                     {/* If user choose upload offer then display upload section */}
                     {displayUploadedOffer && (
                       <>
                         {uploadedOffer.url ? (
                           // If file uploaded succesfully
-                          <Button className={styles.uploadFile} type="link">
-                            {uploadedOffer.name}
-                          </Button>
+                          <>
+                            <Button
+                              className={styles.uploadFile}
+                              type="link"
+                              style={{ marginRight: '15px' }}
+                            >
+                              {uploadedOffer.name}
+                            </Button>
+                            <UploadImage
+                              isUploadPDF
+                              content="Choose file"
+                              getResponse={(res) => handleUploadResponse(res)}
+                              loading={loading2}
+                              hideValidation
+                            />
+                          </>
                         ) : (
                           // <span>{uploadedOffer.url}</span>
                           <UploadImage
+                            isUploadPDF
                             content="Choose file"
                             getResponse={(res) => handleUploadResponse(res)}
                             loading={loading2}
