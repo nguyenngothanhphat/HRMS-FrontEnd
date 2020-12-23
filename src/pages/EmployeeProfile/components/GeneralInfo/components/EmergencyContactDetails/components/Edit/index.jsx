@@ -128,6 +128,23 @@ class Edit extends Component {
     });
   };
 
+  handleFormItemDivider = (id) => {
+    let borderColor = 'transparent';
+    if (id > 0) {
+      borderColor = '#d6dce0';
+    }
+    return borderColor;
+  };
+
+  handleFormItemStyle = (id) => {
+    let top = '20px';
+    if (id > 0) {
+      top = '13px';
+    }
+
+    return top;
+  };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -160,6 +177,14 @@ class Edit extends Component {
                 const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
                 return (
                   <div key={index}>
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '1px',
+                        borderTop: `1px solid ${this.handleFormItemDivider(index)}`,
+                        marginBottom: `${this.handleFormItemStyle(index)}`,
+                      }}
+                    ></div>
                     <Form.Item
                       label="Emergency Contact"
                       name={`emergencyContact ${index}`}
