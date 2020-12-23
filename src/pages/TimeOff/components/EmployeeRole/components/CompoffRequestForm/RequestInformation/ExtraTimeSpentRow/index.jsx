@@ -6,6 +6,7 @@ import styles from './index.less';
 
 class ExtraTimeSpentRow extends PureComponent {
   validator = (rule, value, callback) => {
+    console.log('value');
     if (value >= 1 && value <= 9) {
       callback();
     } else callback('Invalid input');

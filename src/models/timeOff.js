@@ -17,6 +17,7 @@ import {
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
   getTeamLeaveRequests,
+  withdrawCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -244,10 +245,10 @@ const timeOff = {
       }
       return {};
     },
-    *fetchCompoffRequestById({ id: _id = '' }, { call, put }) {
+    *fetchCompoffRequestById({ id = '' }, { call, put }) {
       try {
-        if (_id !== '') {
-          const response = yield call(getCompoffRequestById, { _id });
+        if (id !== '') {
+          const response = yield call(getCompoffRequestById, { id });
           const { statusCode, data: viewingCompoffRequest = [] } = response;
           if (statusCode !== 200) throw response;
           yield put({
@@ -259,6 +260,25 @@ const timeOff = {
         dialog(errors);
       }
     },
+
+    *withdrawCompoffRequest({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(withdrawCompoffRequest, { id });
+          const { statusCode, data: withdrawnCompoffRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { withdrawnCompoffRequest },
+          });
+          return statusCode;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
       try {
         const response = yield call(getEmailsListByCompany, {

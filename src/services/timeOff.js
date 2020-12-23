@@ -84,6 +84,13 @@ export async function withdrawLeaveRequest(payload) {
   });
 }
 
+export async function withdrawCompoffRequest(payload) {
+  return request('/api/compoffrequest/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getEmailsListByCompany(payload) {
   return request('/api/employee/admin-list', {
     method: 'POST',

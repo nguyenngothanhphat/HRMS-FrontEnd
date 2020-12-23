@@ -14,7 +14,7 @@ export default class WithdrawModal extends PureComponent {
         footer={null}
       >
         <div className={styles.container}>
-          <span className={styles.title}>Withdraw timeoff request?</span>
+          <span className={styles.title}>Withdraw compoff request?</span>
           <p className={styles.subtitle1}>
             Withdrawing request will delete this ticket id and no longer will be kept track of.
           </p>

@@ -8,7 +8,7 @@ import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
-  loadingFetchCompoffRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
+  loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
 }))
 class CompoffRequestForm extends PureComponent {
   constructor(props) {
@@ -28,7 +28,7 @@ class CompoffRequestForm extends PureComponent {
 
     if (action === 'edit-compoff-request') {
       dispatch({
-        type: 'timeOff/fetchLeaveRequestById',
+        type: 'timeOff/fetchCompoffRequestById',
         id: reId,
       });
     }
@@ -69,7 +69,10 @@ class CompoffRequestForm extends PureComponent {
   render() {
     const { action } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {}, viewingLeaveRequest: { status = '' } = {} } = {},
+      timeOff: {
+        viewingCompoffRequest = {},
+        viewingCompoffRequest: { status = '', ticketID = '' } = {},
+      } = {},
       loadingFetchCompoffRequestById,
     } = this.props;
 
@@ -86,7 +89,7 @@ class CompoffRequestForm extends PureComponent {
               )}
               {action === 'edit-compoff-request' && (
                 <>
-                  <p className={styles.titlePage__text}>[Ticket ID: 123456]</p>
+                  <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
                   <div className={this.getColorOfStatus(status)}>
                     <span className={styles.dot} />
@@ -115,7 +118,7 @@ class CompoffRequestForm extends PureComponent {
                   <RequestInformation
                     action={action}
                     status={status}
-                    viewingLeaveRequest={viewingLeaveRequest}
+                    viewingCompoffRequest={viewingCompoffRequest}
                   />
                 </Col>
                 <Col xs={24} lg={8}>
