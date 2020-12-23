@@ -18,10 +18,10 @@ export default class FilterBar extends PureComponent {
   render() {
     const {
       dataNumber: {
-        inProgressNumber = '',
-        approvedNumber = '',
-        rejectedNumber = '',
-        draftNumber = '',
+        inProgressLength = '',
+        approvedLength = '',
+        rejectedLength = '',
+        draftLength = '',
       } = {},
     } = this.props;
 
@@ -35,24 +35,24 @@ export default class FilterBar extends PureComponent {
         >
           <TabPane
             tab={`In Progress ${
-              inProgressNumber !== 0 ? `(${this.addZeroToNumber(inProgressNumber)})` : ''
+              inProgressLength !== 0 ? `(${this.addZeroToNumber(inProgressLength)})` : ''
             } `}
             key="1"
           />
           <TabPane
             tab={`Approved ${
-              approvedNumber !== 0 ? `(${this.addZeroToNumber(approvedNumber)})` : ''
+              approvedLength !== 0 ? `(${this.addZeroToNumber(approvedLength)})` : ''
             } `}
             key="2"
           />
           <TabPane
             tab={`Rejected ${
-              rejectedNumber !== 0 ? `(${this.addZeroToNumber(rejectedNumber)})` : ''
+              rejectedLength !== 0 ? `(${this.addZeroToNumber(rejectedLength)})` : ''
             } `}
             key="3"
           />
           <TabPane
-            tab={`Drafts ${draftNumber !== 0 ? `(${this.addZeroToNumber(draftNumber)})` : ''} `}
+            tab={`Drafts ${draftLength !== 0 ? `(${this.addZeroToNumber(draftLength)})` : ''} `}
             key="4"
           />
         </Tabs>

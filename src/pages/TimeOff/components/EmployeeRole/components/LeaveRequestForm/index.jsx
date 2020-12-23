@@ -74,7 +74,10 @@ class LeaveRequestForm extends PureComponent {
   render() {
     const { action } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {}, viewingLeaveRequest: { status = '' } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest = {},
+        viewingLeaveRequest: { status = '', ticketID = '' } = {},
+      } = {},
       loadingFetchLeaveRequestById,
     } = this.props;
     return (
@@ -117,6 +120,7 @@ class LeaveRequestForm extends PureComponent {
                   <RequestInformation
                     action={action}
                     status={status}
+                    ticketID={ticketID}
                     viewingLeaveRequest={viewingLeaveRequest}
                   />
                 </Col>
