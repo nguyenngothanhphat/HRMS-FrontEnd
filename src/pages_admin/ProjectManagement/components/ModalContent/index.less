@@ -1,8 +1,14 @@
 @orange: #ffa100;
+@blue: #2c6df9;
 
 .modalContent {
   padding: 25px;
   height: fit-content;
+  // min-width: ;
+
+  h3 {
+    font-weight: 500;
+  }
 
   //   button {
   //     padding: 0;
@@ -21,19 +27,23 @@
 
   button {
     display: block;
-    margin: 0 auto;
-    padding: 0;
-    border-radius: 25px;
-    background-color: @orange;
-    height: fit-content;
-    padding: 10px 25px;
     border: none;
     outline: none;
     cursor: pointer;
-
-    color: white;
+    color: @blue;
     font-weight: 500;
     font-size: 14px;
     line-height: 16px;
+    background: transparent;
+
+    &.primary {
+      margin: 0 auto;
+      border-radius: 25px;
+      background-color: @orange;
+      height: fit-content;
+      padding: 10px 25px;
+
+      color: white;
+    }
   }
 }

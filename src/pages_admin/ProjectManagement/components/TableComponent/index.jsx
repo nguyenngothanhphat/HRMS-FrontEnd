@@ -183,7 +183,7 @@ const TableComponent = (props) => {
         columns={columns}
         pagination={{ ...pagination, total: list.length }}
       />
-      <CustomModal open={open} closeModal={closeModal} content={<ModalContent />} />
+      <CustomModal open={open} closeModal={closeModal} content={<ModalContent />} width={750} />
     </div>
   );
 };
