@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Affix } from 'antd';
 import classNames from 'classnames';
 import { SiderProps } from 'antd/lib/layout/Sider';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
@@ -123,7 +123,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
     />
   );
   return (
-    <>
+    <Affix offsetTop={0} className="viewAffixSider">
       {fixSiderbar && (
         <div
           style={{
@@ -219,7 +219,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
           <div className={`${baseClassName}-footer`}>{menuFooterRender(props)}</div>
         )}
       </Sider>
-    </>
+    </Affix>
   );
 };
 

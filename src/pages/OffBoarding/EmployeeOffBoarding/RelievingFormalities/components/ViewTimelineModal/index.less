@@ -1,6 +1,40 @@
 .ViewTimelineModal {
+  // disable selection
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+
   .customHeader {
     margin-bottom: 20px;
+    .monthYearControl {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .leftPart {
+        justify-content: flex-start;
+        display: flex;
+        :global {
+          .ant-select {
+            padding-right: 5px;
+          }
+        }
+      }
+
+      .rightPart {
+        span {
+          font-size: 18px;
+          cursor: pointer;
+          &:hover {
+            color: #2c6df9;
+            background-color: rgb(219, 219, 219);
+          }
+          margin-left: 10px;
+        }
+      }
+    }
   }
 
   :global {
@@ -39,9 +73,11 @@
     display: flex;
     flex-direction: column;
     .title {
-      padding: 20px 0;
+      padding-top: 10px;
+      padding-bottom: 20px;
       font-size: 18px;
       font-weight: bold;
+      color: #2c6df9;
     }
     .calendar {
       width: 100%;
@@ -134,16 +170,23 @@
     font-weight: 600;
   }
   .date {
-    width: 32px;
-    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50%;
+
     margin-bottom: 13px;
-    color: white;
-    font-weight: bold;
-    font-size: 12px;
+    // color: white;
+
+    span {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 13px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   .check {
@@ -153,9 +196,9 @@
   }
   .notCheck {
     background: #ffffff;
-    border: 1px solid #ff3030;
+    border: 1px solid #039775;
     cursor: pointer;
-    color: black;
+    color: #039775;
   }
   .weekend {
     background: #f3f4f4;
@@ -171,11 +214,12 @@
   }
   .normalDate {
     background: white;
-    border: 1px solid #039775;
+    border: 1px solid #f3f4f4;
     cursor: pointer;
   }
   .lastWorkDate {
-    background: red;
+    background: #ffa100;
     color: white;
+    border-color: #ffa100;
   }
 }
