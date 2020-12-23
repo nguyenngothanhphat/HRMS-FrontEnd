@@ -24,7 +24,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
-      payload: { year: moment().format('YYYY'), month: '' },
+      payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
     });
     dispatch({
       type: 'timeOff/fetchLeaveRequestOfEmployee',

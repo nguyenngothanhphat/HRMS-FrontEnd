@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Spin } from 'antd';
+import { Tabs } from 'antd';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
 
@@ -10,7 +10,7 @@ class MineOrTeamTabs extends PureComponent {
     const { tab = 0, type = 0 } = this.props;
     return (
       <div className={styles.MineOrTeamTabs}>
-        <Tabs tabPosition="top" tabBarGutter={40} defaultActiveKey="1">
+        <Tabs destroyInactiveTabPane tabPosition="top" tabBarGutter={40} defaultActiveKey="1">
           <TabPane tab="Team Leave Request" key="1">
             <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>

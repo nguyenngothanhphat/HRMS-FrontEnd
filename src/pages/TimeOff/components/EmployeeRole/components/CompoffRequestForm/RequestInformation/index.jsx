@@ -26,6 +26,8 @@ class RequestInformation extends PureComponent {
       dateLists: [],
       projectManagerId: '',
       projectManagerName: '',
+      buttonState: 0, // save draft or submit
+      isEditingDrafts: false,
     };
   }
 
@@ -129,13 +131,15 @@ class RequestInformation extends PureComponent {
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
 
-    const { dateLists } = this.state;
+    const { dateLists, buttonState } = this.state;
+
+    const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
     const sendData = {
       project: projectId,
       extraTime: dateLists,
       description,
-      action: 'submit',
+      action,
       approvalFlow: '5fb37597daeffc0c68763d8b',
       cc: personCC,
     };
@@ -276,6 +280,32 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // RENDER MODAL content
+  renderModalContent = () => {
+    const { action = '' } = this.props;
+    const { buttonState, isEditingDrafts } = this.state;
+    let content = '';
+
+    if (action === 'edit-compoff-request') {
+      if (buttonState === 1) {
+        if (isEditingDrafts) {
+          content = `Compoff request saved as draft.`;
+        } else {
+          content = `Edits to ticket id: 160012 submitted to HR and manager`;
+        }
+      } else if (buttonState === 2)
+        content = `Compoff request submitted to the HR and your manager.`;
+    }
+
+    if (action === 'new-compoff-request') {
+      if (buttonState === 1) {
+        content = `Compoff request saved as draft.`;
+      } else if (buttonState === 2)
+        content = `Compoff request submitted to the HR and your manager.`;
+    }
+    return content;
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -295,6 +325,7 @@ class RequestInformation extends PureComponent {
       dateLists,
       projectManagerId,
       projectManagerName,
+      buttonState,
     } = this.state;
 
     const { loadingAddCompoffRequest } = this.props;
@@ -306,6 +337,9 @@ class RequestInformation extends PureComponent {
 
     // generate project list
     const projectsList = this.generateProjectsList();
+
+    // if save as draft, no need to validate forms
+    const needValidate = buttonState === 2;
 
     return (
       <div className={styles.RequestInformation}>
@@ -334,7 +368,7 @@ class RequestInformation extends PureComponent {
                 name="projectId"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please enter project name!',
                   },
                 ]}
@@ -380,7 +414,7 @@ class RequestInformation extends PureComponent {
                     name="durationFrom"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -400,7 +434,7 @@ class RequestInformation extends PureComponent {
                     name="durationTo"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -489,7 +523,7 @@ class RequestInformation extends PureComponent {
                 name="description"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please input description!',
                   },
                 ]}
@@ -540,7 +574,15 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button type="link" htmlType="button" onClick={this.saveDraft}>
+            <Button
+              loading={loadingAddCompoffRequest}
+              type="link"
+              form="myForm"
+              htmlType="submit"
+              onClick={() => {
+                this.setState({ buttonState: 1 });
+              }}
+            >
               Save to Draft
             </Button>
             <Button
@@ -549,6 +591,9 @@ class RequestInformation extends PureComponent {
               type="primary"
               form="myForm"
               htmlType="submit"
+              onClick={() => {
+                this.setState({ buttonState: 2 });
+              }}
             >
               Submit
             </Button>
@@ -557,7 +602,7 @@ class RequestInformation extends PureComponent {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content="Compoff request submitted to the HR and your manager."
+          content={this.renderModalContent()}
           submitText="OK"
         />
       </div>
