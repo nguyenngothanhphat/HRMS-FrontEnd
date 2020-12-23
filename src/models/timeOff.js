@@ -217,6 +217,21 @@ const timeOff = {
         return {};
       }
     },
+    *updateCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        alert('updated compoff request');
+        // const response = yield call(addCompoffRequest, payload);
+        // const { statusCode, data: addedCompoffRequest = {} } = response;
+        // if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'save',
+        //   payload: { addedCompoffRequest },
+        // });
+        return { statusCode: 200, data: {} };
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchMyCompoffRequests({ status = '' }, { call, put }) {
       try {
         if (status !== '') {

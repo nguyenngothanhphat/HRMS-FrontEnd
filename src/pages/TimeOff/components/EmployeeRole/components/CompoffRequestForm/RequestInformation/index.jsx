@@ -184,7 +184,7 @@ class RequestInformation extends PureComponent {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
-
+    const { action: pageAction = '' } = this.props; // edit or new compoff request
     const { dateLists, buttonState } = this.state;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
@@ -200,10 +200,17 @@ class RequestInformation extends PureComponent {
 
     // eslint-disable-next-line no-console
     console.log('sendData', sendData);
+    let type = '';
+    if (buttonState === 2) {
+      type =
+        pageAction === 'new-compoff-request'
+          ? 'timeOff/addCompoffRequest'
+          : 'timeOff/updateCompoffRequest';
+    } else type = 'timeOff/addCompoffRequest';
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/addCompoffRequest',
+      type,
       payload: sendData,
     }).then((res) => {
       const { statusCode } = res;
@@ -360,6 +367,12 @@ class RequestInformation extends PureComponent {
     return content;
   };
 
+  // ON CANCEL EDIT
+  onCancelEdit = () => {
+    const { viewingCompoffRequestId: id } = this.state;
+    history.push(`/time-off/view-compoff-request/${id}`);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -380,6 +393,7 @@ class RequestInformation extends PureComponent {
       projectManagerId,
       projectManagerName,
       buttonState,
+      isEditingDrafts,
     } = this.state;
 
     const { loadingAddCompoffRequest } = this.props;
@@ -396,8 +410,6 @@ class RequestInformation extends PureComponent {
     const needValidate = buttonState === 2;
 
     const { action = '' } = this.props;
-
-    console.log('actionred', action);
 
     return (
       <div className={styles.RequestInformation}>
@@ -632,17 +644,30 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button
-              loading={loadingAddCompoffRequest}
-              type="link"
-              form="myForm"
-              htmlType="submit"
-              onClick={() => {
-                this.setState({ buttonState: 1 });
-              }}
-            >
-              Save to Draft
-            </Button>
+            {action === 'edit-compoff-request' && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={this.onCancelEdit}
+              >
+                <span>Cancel</span>
+              </Button>
+            )}
+            {(action === 'new-compoff-request' ||
+              (action === 'edit-leave-request' && isEditingDrafts)) && (
+              <Button
+                loading={loadingAddCompoffRequest}
+                type="link"
+                form="myForm"
+                htmlType="submit"
+                onClick={() => {
+                  this.setState({ buttonState: 1 });
+                }}
+              >
+                Save to Draft
+              </Button>
+            )}
             <Button
               loading={loadingAddCompoffRequest}
               key="submit"
