@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Calendar, Select, Col, Row, Modal, Button } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import { Calendar, Select, Modal, Button, Tooltip } from 'antd';
+import { CheckOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -29,13 +29,21 @@ class ViewTimelineModal extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedMonth: parseInt(moment().subtract(1, 'months').format('MM'), 10),
+      selectedYear: parseInt(moment().format('YYYY'), 10),
+    };
   }
 
   componentDidMount = () => {};
 
-  onPanelChange = (value, mode) => {
-    console.log(value, mode);
+  onPanelChange = (value) => {
+    const selectedMonth = parseInt(moment(value).format('MM'), 10);
+    const selectedYear = parseInt(moment(value).format('YYYY'), 10);
+    this.setState({
+      selectedMonth: selectedMonth - 1,
+      selectedYear,
+    });
   };
 
   getStatusDay = (value) => {
@@ -66,7 +74,13 @@ class ViewTimelineModal extends PureComponent {
   };
 
   renderItemDay = (status, date) => {
-    return <div className={`${styles.date} ${styles[status]}`}>{date}</div>;
+    return (
+      <Tooltip placement="top" title={status === 'current' && 'Current date'} color="volcano">
+        <div className={`${styles.date}`}>
+          <span className={` ${styles[status]}`}>{date}</span>
+        </div>
+      </Tooltip>
+    );
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B
@@ -109,10 +123,26 @@ class ViewTimelineModal extends PureComponent {
       lastWorkDate = styles.lastWorkDate;
     }
 
+    if (workedDate !== '')
+      return (
+        <div className={`${styles.date} `}>
+          <span className={`${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
+            <CheckOutlined className={styles.iconCheck} />
+          </span>
+        </div>
+      );
     return (
-      <div className={`${styles.date} ${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
-        {date}
-      </div>
+      <Tooltip
+        placement="bottom"
+        title={lastWorkDate !== '' && 'Last working date'}
+        color="volcano"
+      >
+        <div className={`${styles.date}`}>
+          <span className={`${lastWorkDate} ${normalDate} ${workedDate} ${unworkDate}`}>
+            {date}
+          </span>
+        </div>
+      </Tooltip>
     );
   };
 
@@ -132,7 +162,9 @@ class ViewTimelineModal extends PureComponent {
           <p className={styles.title}>View timeline</p>
           <div className={styles.calendar}>
             <Calendar
-              headerRender={({ value, type, onChange, onTypeChange }) => {
+              headerRender={({ value, onChange }) => {
+                const { selectedMonth, selectedYear } = this.state;
+
                 const start = 0;
                 const end = 12;
                 const monthOptions = [];
@@ -152,9 +184,9 @@ class ViewTimelineModal extends PureComponent {
                     </Select.Option>,
                   );
                 }
-                const month = value.month();
 
                 const year = value.year();
+
                 const options = [];
                 for (let i = year - 10; i < year + 10; i += 1) {
                   options.push(
@@ -165,23 +197,24 @@ class ViewTimelineModal extends PureComponent {
                 }
                 return (
                   <div className={styles.customHeader}>
-                    <Row gutter={8}>
-                      <Col>
+                    <div className={styles.monthYearControl}>
+                      <div className={styles.leftPart}>
                         <Select
                           size="small"
                           dropdownMatchSelectWidth={false}
-                          value={String(month)}
+                          value={String(selectedMonth)}
                           showArrow={false}
-                          onChange={(selectedMonth) => {
+                          onChange={(selectedMonth1) => {
                             const newValue = value.clone();
-                            newValue.month(parseInt(selectedMonth, 10));
+                            newValue.month(parseInt(selectedMonth1, 10));
                             onChange(newValue);
+                            this.setState({
+                              selectedMonth: selectedMonth1,
+                            });
                           }}
                         >
                           {monthOptions}
                         </Select>
-                      </Col>
-                      <Col>
                         <Select
                           size="small"
                           dropdownMatchSelectWidth={false}
@@ -190,19 +223,75 @@ class ViewTimelineModal extends PureComponent {
                           onChange={(newYear) => {
                             const now = value.clone().year(newYear);
                             onChange(now);
+                            this.setState({
+                              selectedYear: newYear,
+                            });
                           }}
-                          value={String(year)}
+                          value={String(selectedYear)}
                         >
                           {options}
                         </Select>
-                      </Col>
-                    </Row>
+                      </div>
+                      <div className={styles.rightPart}>
+                        <CaretLeftOutlined
+                          onClick={() => {
+                            if (selectedMonth > 0) {
+                              const newMonth = value.clone();
+                              newMonth.month(parseInt(selectedMonth - 1, 10));
+                              onChange(newMonth);
+
+                              this.setState({
+                                selectedMonth: selectedMonth - 1,
+                              });
+                            } else {
+                              const newMonth = value.clone();
+                              newMonth.month(11);
+                              onChange(newMonth);
+
+                              const newYear = newMonth.year(selectedYear - 1);
+                              onChange(newYear);
+
+                              this.setState({
+                                selectedMonth: 11,
+                                selectedYear: selectedYear - 1,
+                              });
+                            }
+                          }}
+                        />
+                        <CaretRightOutlined
+                          onClick={() => {
+                            if (selectedMonth < 11) {
+                              const newMonth = value.clone();
+                              newMonth.month(parseInt(selectedMonth + 1, 10));
+                              onChange(newMonth);
+
+                              this.setState({
+                                selectedMonth: selectedMonth + 1,
+                              });
+                            } else {
+                              const newMonth = value.clone();
+                              newMonth.month(0);
+                              onChange(newMonth);
+
+                              const newYear = newMonth.year(selectedYear + 1);
+                              onChange(newYear);
+
+                              this.setState({
+                                selectedMonth: 0,
+                                selectedYear: selectedYear + 1,
+                              });
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 );
               }}
               fullscreen
               onPanelChange={this.onPanelChange}
               mode="month"
+              onSelect={null}
               dateFullCellRender={this.dateFullCellRender}
             />
           </div>
