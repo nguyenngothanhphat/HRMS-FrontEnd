@@ -655,13 +655,12 @@ class RequestInformation extends PureComponent {
 
     if (action === 'edit-leave-request') {
       if (buttonState === 1) {
-        if (isEditingDrafts) {
-          content = `${selectedTypeName} request saved as draft.`;
-        } else {
-          content = `Edits to ticket id: 160012 submitted to HR and manager`;
-        }
-      } else if (buttonState === 2)
-        content = `${selectedTypeName} request submitted to the HR and your manager.`;
+        content = `${selectedTypeName} request saved as draft.`;
+      } else if (buttonState === 2) {
+        if (isEditingDrafts)
+          content = `${selectedTypeName} request submitted to the HR and your manager.`;
+        else content = `Edits to ticket id: 123456 submitted to HR and manager`;
+      }
     }
 
     if (action === 'new-leave-request') {
