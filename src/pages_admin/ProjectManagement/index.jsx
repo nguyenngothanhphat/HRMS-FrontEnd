@@ -3,7 +3,6 @@ import { connect } from 'umi';
 
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Affix } from 'antd';
-import TableComponent from './components/TableComponent';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
 import s from './index.less';
