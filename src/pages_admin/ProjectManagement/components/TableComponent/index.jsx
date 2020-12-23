@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { formatMessage } from 'umi';
-import { Table, Select } from 'antd';
+import { Table } from 'antd';
 import CustomModal from '@/components/CustomModal';
 import ModalContent from '../ModalContent';
 import dropbox from '../assets/dropbox.png';
@@ -144,8 +144,9 @@ const rowSize = 10;
 const TableComponent = (props) => {
   const { list = [] } = props;
   const [pageSelected, setPageSelected] = useState(1);
-  const [currentRecord, setCurrentRecord] = useState(1);
-  const [open, setOpen] = useState(true);
+  // const [currentRecord, setCurrentRecord] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [projectInfo, setProjectInfo] = useState({});
 
   const onChangePagination = (pageNumber) => {
     setPageSelected(pageNumber);
@@ -172,18 +173,28 @@ const TableComponent = (props) => {
     setOpen(false);
   };
 
-  const renderModalContent = () => {
-    return <div>asdsad</div>;
-  };
-
   return (
     <div className={s.table}>
       <Table
         dataSource={list}
         columns={columns}
         pagination={{ ...pagination, total: list.length }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              const { projectName = '', projectId = '', projectManager } = record;
+              setOpen(true);
+              setProjectInfo({ projectName, projectId, projectManager });
+            },
+          };
+        }}
       />
-      <CustomModal open={open} closeModal={closeModal} content={<ModalContent />} width={750} />
+      <CustomModal
+        open={open}
+        closeModal={closeModal}
+        content={<ModalContent projectInfo={projectInfo} />}
+        width={750}
+      />
     </div>
   );
 };

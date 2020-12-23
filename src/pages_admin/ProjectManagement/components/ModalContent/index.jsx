@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { formatMessage } from 'umi';
-import { Table, Select, Form, Button, Row, Col, Input } from 'antd';
-import CustomModal from '@/components/CustomModal';
+// import { formatMessage } from 'umi';
+import { Form } from 'antd';
+import FormProject from '../FormProject';
 
 import s from './index.less';
 
 const { Item } = Form;
-const { Option } = Select;
 
 const MOCK_EMPLOYEE = [
   {
@@ -43,78 +42,89 @@ const MOCK_ROLE = [
   },
 ];
 
-const ModalContent = () => {
+const ModalContent = (props) => {
+  const {
+    projectInfo: { projectName = '' },
+  } = props;
+  console.log(props);
+  const [form] = Form.useForm();
+  const [formInfo, setFormInfo] = useState([
+    {
+      employee: {
+        id: '1',
+        name: 'John Doe 1',
+      },
+      role: {
+        id: '1',
+        name: 'Project Manager',
+      },
+      effort: 0,
+    },
+  ]);
+  const [temp, setTemp] = useState([{ id: 0 }]); // to render map function
   const onFinish = (v) => {
     console.log(v);
     console.log('SUBMIT');
   };
 
+  const initialValues = [
+    {
+      employee: {
+        id: '1',
+        name: 'John Doe 1',
+      },
+      role: {
+        id: '11',
+        name: 'PM',
+      },
+      effort: 100,
+    },
+  ];
+
+  const add = () => {
+    setTemp((prevState) => {
+      const newState = [...prevState];
+      const id = prevState[prevState.length - 1].id + 1;
+      newState.push({ id });
+      return newState;
+    });
+  };
+
+  useEffect(() => {
+    console.log('FORM');
+    console.log(formInfo);
+  }, [formInfo]);
+
+  const onFormChange = (values, index) => {
+    // formInfo
+    setFormInfo((prevState) => {
+      const newState = [...prevState];
+      newState[index] = values;
+      return newState;
+    });
+    // console.log(formInfo);
+    // console.log(values, index);
+  };
+
   return (
     <div className={s.modalContent}>
-      <h3>Project name: Test1</h3>
+      <h3>Project name: {projectName} </h3>
 
-      <Form name="myForm" onFinish={onFinish}>
-        <Row gutter={12}>
-          <Col span={12}>
-            <Item name="employee" label="Employee">
-              <Select allowClear>
-                {MOCK_EMPLOYEE.map((employee) => {
-                  const { id = '', name = '' } = employee;
-                  return <Option value={id}>{name}</Option>;
-                })}
-              </Select>
-            </Item>
-          </Col>
-          <Col span={7}>
-            <Item name="role" label="Role">
-              <Select allowClear>
-                {MOCK_ROLE.map((role) => {
-                  const { id = '', name = '' } = role;
-                  return <Option value={id}>{name}</Option>;
-                })}
-              </Select>
-            </Item>
-          </Col>
-
-          <Col span={5}>
-            <Item name="effort" label="Effort">
-              <Input />
-            </Item>
-          </Col>
-        </Row>
-
-        <Row gutter={12}>
-          <Col span={12}>
-            <Item name="employee2" label="Employee">
-              <Select allowClear>
-                {MOCK_EMPLOYEE.map((employee) => {
-                  const { id = '', name = '' } = employee;
-                  return <Option value={id}>{name}</Option>;
-                })}
-              </Select>
-            </Item>
-          </Col>
-          <Col span={7}>
-            <Item name="role2" label="Role">
-              <Select allowClear>
-                {MOCK_ROLE.map((role) => {
-                  const { id = '', name = '' } = role;
-                  return <Option value={id}>{name}</Option>;
-                })}
-              </Select>
-            </Item>
-          </Col>
-
-          <Col span={5}>
-            <Item name="effort2" label="Effort">
-              <Input />
-            </Item>
-          </Col>
-        </Row>
-
+      <Form form={form} name="myForm" onFinish={onFinish} initialValues={initialValues}>
+        <Item name="project">
+          {temp.map((item) => (
+            <FormProject
+              key={item.id}
+              listEmployee={MOCK_EMPLOYEE}
+              listRole={MOCK_ROLE}
+              index={item.id}
+              onFormChange={onFormChange}
+            />
+          ))}
+        </Item>
         {/* <Button htmlType="submit">Assign</Button> */}
         <Item>
-          <button className={s.add} type="button">
+          <button className={s.add} type="button" onClick={add}>
             + Add more
           </button>
         </Item>
