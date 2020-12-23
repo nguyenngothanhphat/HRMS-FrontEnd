@@ -108,8 +108,7 @@ class Edit extends Component {
   handleChange = (name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
     const newItem = { [name]: value };
-    console.log('newItem: ', newItem);
-    console.log('passportData: ', passportData);
+
     const getPassportData = {
       ...passportData,
       ...newItem,
@@ -444,9 +443,14 @@ class Edit extends Component {
     newPassportArr.push(newObj);
 
     this.setState({ passportArr: newPassportArr });
+  };
 
-    console.log('newPassportArr: ', newPassportArr);
-    console.log('newObj: ', newObj);
+  handleFormItemDivider = (id) => {
+    let borderColor = 'transparent';
+    if (id > 0) {
+      borderColor = '#d6dce0';
+    }
+    return borderColor;
   };
 
   render() {
@@ -504,23 +508,9 @@ class Edit extends Component {
     const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
     const dateFormat = 'Do MMM YYYY';
 
-    console.log('passportArr: ', passportArr);
-
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        <Form
-          className={styles.Form}
-          {...formItemLayout}
-          // initialValues={
-          //   {
-          //     passportNumber,
-          //     passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
-          //     passportIssuedOn: formatDatePassportIssueOn,
-          //     passportValidTill: formatDatePassportValidTill,
-          //   }
-          // }
-          onFinish={this.handleSave}
-        >
+        <Form className={styles.Form} {...formItemLayout} onFinish={this.handleSave}>
           {passportArr ? (
             <>
               {newPassportArr.map((item, index) => {
@@ -532,6 +522,8 @@ class Edit extends Component {
                 } = item;
                 return (
                   <div key={index}>
+                    {index > 0 ? <div className={styles.line} /> : null}
+
                     <div className={styles.styleUpLoad}>
                       <Form.Item
                         label="Passport Number"
