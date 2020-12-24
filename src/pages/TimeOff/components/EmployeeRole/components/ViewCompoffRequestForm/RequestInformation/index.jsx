@@ -33,10 +33,9 @@ class RequestInformation extends PureComponent {
 
   // EDIT BUTTON
   handleEdit = (_id) => {
-    alert('Edit compoff request');
-    // history.push({
-    //   pathname: `/time-off/edit-leave-request/${_id}`,
-    // });
+    history.push({
+      pathname: `/time-off/edit-compoff-request/${_id}`,
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -70,20 +69,20 @@ class RequestInformation extends PureComponent {
 
   // ON PROCEED withDraw
   onProceed = async () => {
-    // const {
-    //   timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
-    // } = this.props;
-    // const { dispatch } = this.props;
-    // const statusCode = await dispatch({
-    //   type: 'timeOff/withdrawLeaveRequest',
-    //   id,
-    // });
-    // if (statusCode === 200) {
-    //   history.push({
-    //     pathname: `/time-off`,
-    //     state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
-    //   });
-    // }
+    const {
+      timeOff: { viewingCompoffRequest: { _id: id = '', ticketID = '' } = {} } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/withdrawCompoffRequest',
+      id,
+    });
+    if (statusCode === 200) {
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID },
+      });
+    }
   };
 
   render() {

@@ -24,10 +24,11 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
-      payload: { year: moment().format('YYYY'), month: '' },
+      payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
     });
     dispatch({
       type: 'timeOff/fetchLeaveRequestOfEmployee',
+      status: '',
     });
   };
 
@@ -85,8 +86,8 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return result;
   };
 
-  formatLeavingList = (leaveRequests) => {
-    let result = leaveRequests.map((each) => {
+  formatLeavingList = (allLeaveRequests) => {
+    let result = allLeaveRequests.map((each) => {
       const {
         status = '',
         duration = 0,
@@ -118,7 +119,9 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [], leaveRequests: { items = [] } = {} } = {} } = this.props;
+    const {
+      timeOff: { holidaysList = [], allMyLeaveRequests: { items = [] } = {} } = {},
+    } = this.props;
     const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
 

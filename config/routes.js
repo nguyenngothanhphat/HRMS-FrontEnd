@@ -214,8 +214,16 @@ const routes = [
             authority: ['P_DIRECTORY_VIEW'],
           },
           {
-            path: '/time-off/new-compoff-request',
+            // path: '/time-off/new-leave-request',
+            path: '/time-off/:action(new-compoff-request)',
             name: 'Request for Compoff',
+            hideInMenu: true,
+            component: './TimeOff/components/EmployeeRole/components/CompoffRequestForm',
+            // authority: ['employee'],
+          },
+          {
+            path: '/time-off/:action(edit-compoff-request)/:reId',
+            name: 'Edit compoff request',
             hideInMenu: true,
             component: './TimeOff/components/EmployeeRole/components/CompoffRequestForm',
             // authority: ['employee'],
