@@ -8,7 +8,7 @@ class View extends PureComponent {
     const { emergencyContactDetails = [] } = dataAPI;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        {emergencyContactDetails.map((item) => {
+        {emergencyContactDetails.map((item, index) => {
           const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = item;
           return (
             <>
@@ -36,7 +36,9 @@ class View extends PureComponent {
                   {emergencyRelation}
                 </Col>
               </Fragment>
-              <div className={styles.line} />
+              {index === emergencyContactDetails.length - 1 ? null : (
+                <div className={styles.line} />
+              )}
             </>
           );
         })}
