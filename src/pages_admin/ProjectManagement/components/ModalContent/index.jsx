@@ -1,50 +1,22 @@
 import React, { useState, useEffect } from 'react';
 
 // import { formatMessage } from 'umi';
-import { Form } from 'antd';
+import { Form, Button } from 'antd';
 import FormProject from '../FormProject';
 
 import s from './index.less';
 
 const { Item } = Form;
 
-const MOCK_EMPLOYEE = [
-  {
-    id: '1',
-    name: 'John Doe 1',
-  },
-  {
-    id: '2',
-    name: 'John Doe 2',
-  },
-  {
-    id: '3',
-    name: 'John Doe 3',
-  },
-  {
-    id: '4',
-    name: 'John Doe 4',
-  },
-];
-
-const MOCK_ROLE = [
-  {
-    id: '1',
-    name: 'Project Manager',
-  },
-  {
-    id: '2',
-    name: 'QC',
-  },
-  {
-    id: '3',
-    name: 'Developer',
-  },
-];
-
 const ModalContent = (props) => {
   const {
-    projectInfo: { projectName = '' },
+    projectInfo: { projectName = '', projectId = '' },
+    roleList = [],
+    employeeList = [],
+    dispatch,
+    user,
+    loading,
+    closeModal,
   } = props;
   console.log(props);
   const [form] = Form.useForm();
@@ -90,9 +62,37 @@ const ModalContent = (props) => {
     });
   };
 
-  useEffect(() => {
-    console.log('FORM');
+  const assign = async () => {
+    const {
+      currentUser: {
+        employee: { _id: employeeId },
+      },
+    } = user;
+    console.log(projectId);
     console.log(formInfo);
+    const members = formInfo.map((item) => {
+      return { id: item.employee.id, role: item.role.id, effort: item.effort };
+    });
+    if (members.length === 0) {
+      return;
+    }
+    const response = await dispatch({
+      type: 'projectManagement/addMember',
+      payload: {
+        employee: employeeId,
+        project: projectId,
+        members,
+      },
+    });
+    const { statusCode } = response;
+    if (statusCode === 200) {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    // console.log('FORM');
+    // console.log(formInfo);
   }, [formInfo]);
 
   const onFormChange = (values, index) => {
@@ -115,8 +115,8 @@ const ModalContent = (props) => {
           {temp.map((item) => (
             <FormProject
               key={item.id}
-              listEmployee={MOCK_EMPLOYEE}
-              listRole={MOCK_ROLE}
+              listEmployee={employeeList}
+              listRole={roleList}
               index={item.id}
               onFormChange={onFormChange}
             />
@@ -129,9 +129,9 @@ const ModalContent = (props) => {
           </button>
         </Item>
         <Item>
-          <button className={s.primary} type="submit">
+          <Button className={s.primary} type="submit" onClick={assign} loading={loading}>
             Assign
-          </button>
+          </Button>
         </Item>
       </Form>
     </div>
