@@ -108,9 +108,18 @@ class NextStep extends PureComponent {
   onCloseModal = (type = '') => {
     this.setState({
       showAnswerModal: false,
-      selectedDocument: -1,
     });
-    if (type === 'submit') this.fetchData();
+    setTimeout(() => {
+      this.setState({
+        selectedDocument: -1,
+      });
+    }, 200);
+
+    if (type === 'submit') {
+      setTimeout(() => {
+        this.fetchData();
+      }, 400);
+    }
   };
 
   getNewest1On1 = () => {
