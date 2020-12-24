@@ -35,19 +35,19 @@ class TimeOffRequestsTable extends PureComponent {
           destroyInactiveTabPane
         >
           <>
-            <TabPane tab="Leave Request" key="1">
+            <TabPane tab="Leave Requests" key="1">
               <MineOrTeamTabs tab={1} type={1} />
             </TabPane>
-            <TabPane tab="Special Leave Request" key="2">
+            <TabPane tab="Special Leave Requests" key="2">
               <MineOrTeamTabs tab={2} type={1} />
             </TabPane>
-            <TabPane tab="LWP Request" key="3">
+            <TabPane tab="LWP Requests" key="3">
               <MineOrTeamTabs tab={3} type={1} />
             </TabPane>
             <TabPane tab="WFH/CP Requests" key="4">
               <MineOrTeamTabs tab={4} type={1} />
             </TabPane>
-            <TabPane tab="Compoff Request" key="5">
+            <TabPane tab="Compoff Requests" key="5">
               <MineOrTeamTabs tab={5} type={2} />
             </TabPane>
           </>

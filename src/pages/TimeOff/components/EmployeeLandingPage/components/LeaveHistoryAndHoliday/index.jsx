@@ -128,10 +128,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
-          <TabPane tab="Request History" key="1">
+          <TabPane tab="Leave History" key="1">
             <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
           </TabPane>
-          <TabPane tab="Holiday" key="2">
+          <TabPane tab="Holidays" key="2">
             <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
