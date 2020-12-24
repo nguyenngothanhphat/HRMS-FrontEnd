@@ -32,7 +32,8 @@ class FormSearch extends Component {
   formRef = React.createRef();
 
   onFinish = (values) => {
-    console.log(values);
+    const { handleSearch = () => {} } = this.props;
+    handleSearch(values);
   };
 
   onReset = () => {

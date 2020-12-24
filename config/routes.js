@@ -478,6 +478,12 @@ const routes = [
             component: './FAQs',
           },
           {
+            path: '/search-result',
+            name: 'Search Result',
+            hideInMenu: true,
+            component: './SearchResult',
+          },
+          {
             component: './404',
           },
         ],
