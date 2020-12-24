@@ -11,7 +11,7 @@ import LeaveBalanceInfo from './components/LeaveBalanceInfo';
 
 import styles from './index.less';
 
-export default class EmployeeRole extends PureComponent {
+export default class EmployeeLandingPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +57,7 @@ export default class EmployeeRole extends PureComponent {
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
       <>
-        <div className={styles.EmployeeRole}>
+        <div className={styles.EmployeeLandingPage}>
           <Row gutter={[20, 20]}>
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>

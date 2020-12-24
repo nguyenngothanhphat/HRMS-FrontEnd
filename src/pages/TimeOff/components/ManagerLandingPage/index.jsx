@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { history } from 'umi';
-import LeaveInformation from '../EmployeeRole/components/LeaveInformation';
-import ApplyRequest from '../EmployeeRole/components/ApplyRequest';
-import LeaveHistoryAndHoliday from '../EmployeeRole/components/LeaveHistoryAndHoliday';
-import QuickLinks from '../EmployeeRole/components/QuickLinks';
+import LeaveInformation from '../EmployeeLandingPage/components/LeaveInformation';
+import ApplyRequest from '../EmployeeLandingPage/components/ApplyRequest';
+import LeaveHistoryAndHoliday from '../EmployeeLandingPage/components/LeaveHistoryAndHoliday';
+import QuickLinks from '../EmployeeLandingPage/components/QuickLinks';
 import TimeOffRequestsTable from './components/TimeOffRequestsTable';
-import FeedbackBar from '../EmployeeRole/components/FeedbackBar';
-import LeaveBalanceInfo from '../EmployeeRole/components/LeaveBalanceInfo';
+import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
+import LeaveBalanceInfo from '../EmployeeLandingPage/components/LeaveBalanceInfo';
 
 import styles from './index.less';
 
-export default class ManagerRole extends PureComponent {
+export default class ManagerLandingPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +57,7 @@ export default class ManagerRole extends PureComponent {
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
       <>
-        <div className={styles.ManagerRole}>
+        <div className={styles.ManagerLandingPage}>
           <Row gutter={[20, 20]}>
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
