@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /**
  * Ant Design Pro v4 use `@/layouts/layout/src` to handle Layout.
  * You can view component api by:
@@ -74,7 +75,10 @@ const BasicLayout = (props) => {
   const { formatMessage } = useIntl();
 
   const { pathname } = window.location;
-  const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
+  const classNameBreadCrumb =
+    pathname === '/dashboard' || pathname === '/search-result'
+      ? styles.breadCrumbA
+      : styles.breadCrumbB;
 
   return (
     <div className={`${styles.root} ${classNameBreadCrumb}`}>
@@ -106,13 +110,11 @@ const BasicLayout = (props) => {
           if (routers.length > 0) {
             const [firstPath] = routers;
             const { breadcrumbName = '' } = firstPath;
-            if (breadcrumbName === 'Dashboard')
+            if (breadcrumbName === 'Dashboard' || breadcrumbName === 'Search Result')
               listPath = [
                 {
                   path: '/',
-                  breadcrumbName: formatMessage({
-                    id: 'menu.home',
-                  }),
+                  breadcrumbName,
                 },
               ];
           }
