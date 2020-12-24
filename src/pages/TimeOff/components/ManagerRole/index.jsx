@@ -30,15 +30,15 @@ export default class ManagerRole extends PureComponent {
     });
   };
 
-  buttonOnClick = () => {
-    // eslint-disable-next-line no-alert
-    history.push(`/time-off/new-compoff-request`);
+  buttonOnClickCompoff = () => {
+    history.push({
+      pathname: `/time-off/new-compoff-request`,
+    });
   };
 
   buttonOnClickLeave = () => {
     history.push({
       pathname: `/time-off/new-leave-request`,
-      state: { action: 'NEW-REQUEST' },
     });
   };
 
@@ -88,7 +88,7 @@ export default class ManagerRole extends PureComponent {
                   <ApplyRequest
                     title="Apply for Compoff"
                     describe={describeText[1]}
-                    onClick={this.buttonOnClick}
+                    onClick={this.buttonOnClickCompoff}
                     buttonText="Request Compoff"
                     type={2}
                   />

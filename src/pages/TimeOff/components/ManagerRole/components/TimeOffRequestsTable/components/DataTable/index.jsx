@@ -8,20 +8,24 @@ import moment from 'moment';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
-  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
+  loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
 class DataTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: '_id',
+      dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      render: (_id) => (
-        <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
-          ID
-        </span>
-      ),
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            ID
+          </span>
+        );
+      },
     },
     {
       title: 'Type',
@@ -188,6 +192,8 @@ class DataTable extends PureComponent {
           generalInfo: generalInfoA = {},
         } = {},
         cc = [],
+        ticketID = '',
+        _id = '',
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -215,12 +221,16 @@ class DataTable extends PureComponent {
         leaveTimes,
         // assigned,
         assigned: [generalInfoA],
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };
 
   render() {
-    const { data = [], loadingFetchLeaveRequests } = this.props;
+    const { data = [], loading1, loading2 } = this.props;
     const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
@@ -239,7 +249,7 @@ class DataTable extends PureComponent {
       <div className={styles.DataTable}>
         <Table
           size="middle"
-          loading={loadingFetchLeaveRequests}
+          loading={loading1 || loading2}
           rowSelection={rowSelection}
           pagination={false}
           columns={this.columns}

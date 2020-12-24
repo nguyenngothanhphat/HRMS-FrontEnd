@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TableComponent from '../TableComponent';
-import s from './index.less';
+// import s from './index.less';
 
 const ActiveProject = (props) => {
   const { list = [] } = props;

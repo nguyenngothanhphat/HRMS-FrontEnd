@@ -1,21 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-export default class CompoffTable extends PureComponent {
+@connect(({ loading }) => ({
+  loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
+  loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
+}))
+class CompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: '_id',
+      dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      render: (_id) => (
-        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-          ID
-        </span>
-      ),
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            {ticketID}
+          </span>
+        );
+      },
     },
     {
       title: 'Project',
@@ -130,7 +137,9 @@ export default class CompoffTable extends PureComponent {
       const {
         manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
         cc = [],
-        // extraTime = [],
+        ticketID = '',
+        _id = '',
+        extraTime = [],
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -138,14 +147,14 @@ export default class CompoffTable extends PureComponent {
         approvalManagerEmail: workEmail,
       });
 
-      // let duration = {};
-      // if (extraTime.length !== 0) {
-      //   duration = {
-      //     fromDate: extraTime[0].date,
-      //     toDate: extraTime[extraTime.length - 1].date,
-      //   };
-      // }
-      // console.log('duration', duration);
+      let duration = '';
+      if (extraTime.length !== 0) {
+        const fromDate = extraTime[0].date;
+        const toDate = extraTime[extraTime.length - 1].date;
+        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
+          'DD.MM.YYYY',
+        )}`;
+      }
 
       let employeeFromCC = [];
       if (cc.length > 0) {
@@ -157,14 +166,18 @@ export default class CompoffTable extends PureComponent {
 
       return {
         ...value,
-        // duration,
+        duration,
         assigned,
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { data = [], loading1, loading2 } = this.props;
     const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
@@ -183,7 +196,7 @@ export default class CompoffTable extends PureComponent {
       <div className={styles.CompoffTable}>
         <Table
           size="middle"
-          loading={loading}
+          loading={loading1 || loading2}
           rowSelection={rowSelection}
           pagination={false}
           columns={this.columns}
@@ -195,3 +208,4 @@ export default class CompoffTable extends PureComponent {
     );
   }
 }
+export default CompoffTable;

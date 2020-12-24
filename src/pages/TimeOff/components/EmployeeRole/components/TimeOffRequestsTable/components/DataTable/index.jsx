@@ -11,14 +11,17 @@ class DataTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: '_id',
+      dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      render: (_id) => (
-        <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-          ID
-        </span>
-      ),
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            ID
+          </span>
+        );
+      },
     },
     {
       title: 'Type',
@@ -148,6 +151,8 @@ class DataTable extends PureComponent {
           generalInfo: generalInfoA = {},
         } = {},
         cc = [],
+        ticketID = '',
+        _id = '',
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -175,6 +180,10 @@ class DataTable extends PureComponent {
         leaveTimes,
         // assigned,
         assigned: [generalInfoA],
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };

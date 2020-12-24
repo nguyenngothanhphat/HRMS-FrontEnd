@@ -26,6 +26,9 @@ class RequestInformation extends PureComponent {
       dateLists: [],
       projectManagerId: '',
       projectManagerName: '',
+      buttonState: 0, // save draft or submit
+      isEditingDrafts: false,
+      viewingCompoffRequestId: '',
     };
   }
 
@@ -64,17 +67,70 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/fetchLeaveBalanceOfUser',
-    });
-    dispatch({
-      type: 'timeOff/fetchTimeOffTypes',
-    });
+    const { action = '' } = this.props;
     this.fetchEmailsListByCompany();
     this.fetchProjectsListByCompany();
+
+    if (action === 'edit-compoff-request') {
+      const { viewingCompoffRequest = {} } = this.props;
+      const {
+        project: { _id: projectId = '' } = {},
+        extraTime = [],
+        description = '',
+        cc = [],
+        _id = '',
+        status = '',
+      } = viewingCompoffRequest;
+
+      if (status === 'DRAFTS') {
+        this.setState({
+          isEditingDrafts: true,
+        });
+      }
+
+      // set project name
+      this.onEnterProjectNameChange(projectId);
+
+      // set dates
+      let durationFrom = '';
+      let durationTo = '';
+      if (extraTime.length > 0) {
+        durationFrom = extraTime[0].date;
+        durationTo = extraTime[extraTime.length - 1].date;
+      }
+
+      const dateLists = extraTime.map((value) => {
+        const { date = '', timeSpend = 0 } = value;
+        return {
+          date: moment(date).format('YYYY-MM-DD'),
+          timeSpend,
+        };
+      });
+      const listValue = dateLists.map((data) => data.timeSpend);
+
+      // set cc
+      const formattedCc = cc.length > 0 ? cc[0] : [];
+      const personCC = formattedCc.map((person) => (person ? person._id : null));
+
+      // update form
+      this.formRef.current.setFieldsValue({
+        projectId,
+        description,
+        personCC,
+        extraTimeLists: listValue,
+        durationFrom: durationFrom === null ? null : moment(durationFrom),
+        durationTo: durationTo === null ? null : moment(durationTo),
+      });
+
+      // update state
+      this.setState({
+        viewingCompoffRequestId: _id,
+        durationFrom: durationFrom === null ? null : moment(durationFrom),
+        durationTo: durationTo === null ? null : moment(durationTo),
+        dateLists,
+      });
+    }
   };
 
   // GENERATE PROJECT LIST DATA
@@ -128,24 +184,33 @@ class RequestInformation extends PureComponent {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
+    const { action: pageAction = '' } = this.props; // edit or new compoff request
+    const { dateLists, buttonState } = this.state;
 
-    const { dateLists } = this.state;
+    const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
     const sendData = {
       project: projectId,
       extraTime: dateLists,
       description,
-      action: 'submit',
+      action,
       approvalFlow: '5fb37597daeffc0c68763d8b',
       cc: personCC,
     };
 
     // eslint-disable-next-line no-console
     console.log('sendData', sendData);
+    let type = '';
+    if (buttonState === 2) {
+      type =
+        pageAction === 'new-compoff-request'
+          ? 'timeOff/addCompoffRequest'
+          : 'timeOff/updateCompoffRequest';
+    } else type = 'timeOff/addCompoffRequest';
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/addCompoffRequest',
+      type,
       payload: sendData,
     }).then((res) => {
       const { statusCode } = res;
@@ -276,6 +341,35 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // RENDER MODAL content
+  renderModalContent = () => {
+    const { action = '', ticketID } = this.props;
+    const { buttonState, isEditingDrafts } = this.state;
+    let content = '';
+
+    if (action === 'edit-compoff-request') {
+      if (buttonState === 1) content = `Compoff request saved as draft.`;
+      else if (buttonState === 2) {
+        if (isEditingDrafts) content = `Compoff request submitted to the HR and your manager.`;
+        else content = `Edits to ticket id: ${ticketID} submitted to HR and manager`;
+      }
+    }
+
+    if (action === 'new-compoff-request') {
+      if (buttonState === 1) {
+        content = `Compoff request saved as draft.`;
+      } else if (buttonState === 2)
+        content = `Compoff request submitted to the HR and your manager.`;
+    }
+    return content;
+  };
+
+  // ON CANCEL EDIT
+  onCancelEdit = () => {
+    const { viewingCompoffRequestId: id } = this.state;
+    history.push(`/time-off/view-compoff-request/${id}`);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -295,6 +389,8 @@ class RequestInformation extends PureComponent {
       dateLists,
       projectManagerId,
       projectManagerName,
+      buttonState,
+      isEditingDrafts,
     } = this.state;
 
     const { loadingAddCompoffRequest } = this.props;
@@ -306,6 +402,11 @@ class RequestInformation extends PureComponent {
 
     // generate project list
     const projectsList = this.generateProjectsList();
+
+    // if save as draft, no need to validate forms
+    const needValidate = buttonState === 2;
+
+    const { action = '' } = this.props;
 
     return (
       <div className={styles.RequestInformation}>
@@ -334,7 +435,7 @@ class RequestInformation extends PureComponent {
                 name="projectId"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please enter project name!',
                   },
                 ]}
@@ -380,7 +481,7 @@ class RequestInformation extends PureComponent {
                     name="durationFrom"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -400,7 +501,7 @@ class RequestInformation extends PureComponent {
                     name="durationTo"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -489,7 +590,7 @@ class RequestInformation extends PureComponent {
                 name="description"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please input description!',
                   },
                 ]}
@@ -540,15 +641,39 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button type="link" htmlType="button" onClick={this.saveDraft}>
-              Save to Draft
-            </Button>
+            {action === 'edit-compoff-request' && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={this.onCancelEdit}
+              >
+                <span>Cancel</span>
+              </Button>
+            )}
+            {(action === 'new-compoff-request' ||
+              (action === 'edit-leave-request' && isEditingDrafts)) && (
+              <Button
+                loading={loadingAddCompoffRequest}
+                type="link"
+                form="myForm"
+                htmlType="submit"
+                onClick={() => {
+                  this.setState({ buttonState: 1 });
+                }}
+              >
+                Save to Draft
+              </Button>
+            )}
             <Button
               loading={loadingAddCompoffRequest}
               key="submit"
               type="primary"
               form="myForm"
               htmlType="submit"
+              onClick={() => {
+                this.setState({ buttonState: 2 });
+              }}
             >
               Submit
             </Button>
@@ -557,7 +682,7 @@ class RequestInformation extends PureComponent {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          content="Compoff request submitted to the HR and your manager."
+          content={this.renderModalContent()}
           submitText="OK"
         />
       </div>
