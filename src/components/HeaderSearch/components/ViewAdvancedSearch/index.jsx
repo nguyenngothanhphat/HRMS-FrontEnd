@@ -1,9 +1,19 @@
 import React, { PureComponent } from 'react';
 import iconClose from '@/assets/iconClose.png';
+import { history } from 'umi';
 import FormSearch from '../FormSearch';
 import s from './index.less';
 
 class ViewAdvancedSearch extends PureComponent {
+  handleSearch = (query) => {
+    const { closeSearch = () => {} } = this.props;
+    history.push({
+      pathname: '/search-result',
+      query,
+    });
+    closeSearch();
+  };
+
   render() {
     const { changeMode = () => {} } = this.props;
     return (
@@ -17,7 +27,7 @@ class ViewAdvancedSearch extends PureComponent {
             alt="iconClose"
           />
         </div>
-        <FormSearch />
+        <FormSearch handleSearch={this.handleSearch} />
       </div>
     );
   }
