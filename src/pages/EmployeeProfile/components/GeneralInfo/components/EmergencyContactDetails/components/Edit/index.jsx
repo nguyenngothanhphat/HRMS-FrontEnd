@@ -24,36 +24,6 @@ class Edit extends Component {
     super(props);
     this.state = {
       emergencyContactDetails: [],
-      relation: [
-        {
-          name: 'Father',
-          value: 'father',
-        },
-        {
-          name: 'Mother',
-          value: 'mother',
-        },
-        {
-          name: 'Son',
-          value: 'son',
-        },
-        {
-          name: 'Daughter',
-          value: 'daughter',
-        },
-        {
-          name: 'Spouse',
-          value: 'spouse',
-        },
-        {
-          name: 'Friend',
-          value: 'friend',
-        },
-        {
-          name: 'Other',
-          value: 'other',
-        },
-      ],
     };
   }
 
@@ -186,7 +156,7 @@ class Edit extends Component {
     };
 
     const { generalData, loading, handleCancel = () => {} } = this.props;
-    const { emergencyContactDetails, relation } = this.state;
+    const { emergencyContactDetails } = this.state;
     const newEmergencyContactDetails = [...emergencyContactDetails];
 
     console.log('newEmergencyContactDetails: ', newEmergencyContactDetails);
