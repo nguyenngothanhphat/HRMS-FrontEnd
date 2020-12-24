@@ -133,12 +133,12 @@ class Edit extends Component {
     const dataTempKept = this.processDataKept() || {};
 
     console.log('payload: ', payload);
-    // dispatch({
-    //   type: 'employeeProfile/updateGeneralInfo',
-    //   payload,
-    //   dataTempKept,
-    //   key: 'openContactDetails',
-    // });
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload,
+      dataTempKept,
+      key: 'openContactDetails',
+    });
   };
 
   render() {
@@ -158,8 +158,6 @@ class Edit extends Component {
     const { generalData, loading, handleCancel = () => {} } = this.props;
     const { emergencyContactDetails } = this.state;
     const newEmergencyContactDetails = [...emergencyContactDetails];
-
-    console.log('newEmergencyContactDetails: ', newEmergencyContactDetails);
 
     const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (

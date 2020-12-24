@@ -5,23 +5,41 @@ import styles from './index.less';
 class View extends PureComponent {
   render() {
     const { dataAPI } = this.props;
-    const dummyData = [
-      { label: 'Emergency Contact', value: dataAPI.emergencyContact },
-      { label: 'Person’s Name', value: dataAPI.emergencyPersonName },
-      { label: 'Relation', value: dataAPI.emergencyRelation },
-    ];
+    const { emergencyContactDetails = [] } = dataAPI;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        {dummyData.map((item) => (
-          <Fragment key={item.label}>
-            <Col span={6} className={styles.textLabel}>
-              {item.label}
-            </Col>
-            <Col span={18} className={styles.textValue}>
-              {item.value}
-            </Col>
-          </Fragment>
-        ))}
+        {emergencyContactDetails.map((item) => {
+          const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = item;
+          return (
+            <>
+              <Fragment key={item.label}>
+                <Col span={6} className={styles.textLabel}>
+                  Emergency Contact
+                </Col>
+                <Col span={18} className={styles.textValue}>
+                  {emergencyContact}
+                </Col>
+              </Fragment>
+              <Fragment key={item.label}>
+                <Col span={6} className={styles.textLabel}>
+                  Person’s Name
+                </Col>
+                <Col span={18} className={styles.textValue}>
+                  {emergencyPersonName}
+                </Col>
+              </Fragment>
+              <Fragment key={item.label}>
+                <Col span={6} className={styles.textLabel}>
+                  Relation
+                </Col>
+                <Col span={18} className={styles.textValue}>
+                  {emergencyRelation}
+                </Col>
+              </Fragment>
+              <div className={styles.line} />
+            </>
+          );
+        })}
       </Row>
     );
   }
