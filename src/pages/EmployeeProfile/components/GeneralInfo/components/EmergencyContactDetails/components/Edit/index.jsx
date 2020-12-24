@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Form, Input, Button, Col } from 'antd';
+import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
@@ -10,11 +10,13 @@ import styles from './index.less';
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
+      listRelation = [],
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
+    listRelation,
   }),
 )
 class Edit extends Component {
@@ -22,12 +24,47 @@ class Edit extends Component {
     super(props);
     this.state = {
       emergencyContactDetails: [],
+      relation: [
+        {
+          name: 'Father',
+          value: 'father',
+        },
+        {
+          name: 'Mother',
+          value: 'mother',
+        },
+        {
+          name: 'Son',
+          value: 'son',
+        },
+        {
+          name: 'Daughter',
+          value: 'daughter',
+        },
+        {
+          name: 'Spouse',
+          value: 'spouse',
+        },
+        {
+          name: 'Friend',
+          value: 'friend',
+        },
+        {
+          name: 'Other',
+          value: 'other',
+        },
+      ],
     };
-    // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
 
   componentDidMount() {
-    const { generalData } = this.props;
+    const { generalData, dispatch } = this.props;
+
+    dispatch({
+      type: 'employeeProfile/fetchListRelation',
+      payload: {},
+    });
+
     const {
       emergencyContact: eContact = '',
       emergencyPersonName: ePersonName = '',
@@ -86,9 +123,14 @@ class Edit extends Component {
     if (idName === `emergencyPersonName ${index}`) {
       newData[index].emergencyPersonName = value;
     }
-    if (idName === `emergencyRelation ${index}`) {
-      newData[index].emergencyRelation = value;
-    }
+
+    this.setState({ emergencyContactDetails: newData });
+  };
+
+  handleChangeFieldSelect = (value, index) => {
+    const { emergencyContactDetails } = this.state;
+    const newData = [...emergencyContactDetails];
+    newData[index].emergencyRelation = value;
 
     this.setState({ emergencyContactDetails: newData });
   };
@@ -120,15 +162,18 @@ class Edit extends Component {
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
 
-    dispatch({
-      type: 'employeeProfile/updateGeneralInfo',
-      payload,
-      dataTempKept,
-      key: 'openContactDetails',
-    });
+    console.log('payload: ', payload);
+    // dispatch({
+    //   type: 'employeeProfile/updateGeneralInfo',
+    //   payload,
+    //   dataTempKept,
+    //   key: 'openContactDetails',
+    // });
   };
 
   render() {
+    const { Option } = Select;
+    const { listRelation } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -141,8 +186,10 @@ class Edit extends Component {
     };
 
     const { generalData, loading, handleCancel = () => {} } = this.props;
-    const { emergencyContactDetails } = this.state;
+    const { emergencyContactDetails, relation } = this.state;
     const newEmergencyContactDetails = [...emergencyContactDetails];
+
+    console.log('newEmergencyContactDetails: ', newEmergencyContactDetails);
 
     const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (
@@ -206,11 +253,30 @@ class Edit extends Component {
                         },
                       ]}
                     >
-                      <Input
+                      <Select
+                        size="large"
+                        placeholder="Please select a choice"
+                        showArrow
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        className={styles.inputForm}
+                        defaultValue={emergencyRelation}
+                        onChange={(value) => this.handleChangeFieldSelect(value, index)}
+                      >
+                        {listRelation.map((item, index) => {
+                          return (
+                            <Option key={index} value={item}>
+                              {item}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                      {/* <Input
                         defaultValue={emergencyRelation}
                         className={styles.inputForm}
                         onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                      />
+                      /> */}
                     </Form.Item>
                   </div>
                 );

@@ -274,3 +274,9 @@ export async function updatePrivate(payload) {
     data: payload,
   });
 }
+
+export async function getListRelation() {
+  return request('/api/generalinfo/list-relation', {
+    method: 'POST',
+  });
+}
