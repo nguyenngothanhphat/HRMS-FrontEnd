@@ -4,7 +4,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { history } from 'umi';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ManagerLandingPage from './components/ManagerLandingPage';
-import HRLandingPage from './components/HRLandingPage';
+import HRManagerLandingPage from './components/HRManagerLandingPage';
 import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
 
@@ -27,9 +27,8 @@ export default class TimeOff extends PureComponent {
   findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
-    const hr = roles.find((item) => item === 'hr');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || hr || employee || 'employee';
+    const role = hrManager || manager || employee || 'employee';
     return role;
   };
 
@@ -67,7 +66,7 @@ export default class TimeOff extends PureComponent {
       <div className={styles.TimeOff}>
         <PageContainer>
           <Tabs defaultActiveKey="1" tabBarExtraContent={this.options()}>
-            {(role === 'employee' || role === 'hr-manager') && (
+            {role === 'employee' && (
               <TabPane tab="Timeoff" key="1">
                 <EmployeeLandingPage />
               </TabPane>
@@ -77,9 +76,9 @@ export default class TimeOff extends PureComponent {
                 <ManagerLandingPage />
               </TabPane>
             )}
-            {role === 'hr' && (
+            {role === 'hr-manager' && (
               <TabPane tab="Timeoff" key="3">
-                <HRLandingPage />
+                <HRManagerLandingPage />
               </TabPane>
             )}
             {role === 'hr-manager' && (

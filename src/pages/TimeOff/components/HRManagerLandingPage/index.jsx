@@ -11,7 +11,7 @@ import LeaveBalanceInfo from '../EmployeeLandingPage/components/LeaveBalanceInfo
 
 import styles from './index.less';
 
-export default class HRLandingPage extends PureComponent {
+export default class HRManagerLandingPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +57,7 @@ export default class HRLandingPage extends PureComponent {
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
       <>
-        <div className={styles.HRLandingPage}>
+        <div className={styles.HRManagerLandingPage}>
           <Row gutter={[20, 20]}>
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>

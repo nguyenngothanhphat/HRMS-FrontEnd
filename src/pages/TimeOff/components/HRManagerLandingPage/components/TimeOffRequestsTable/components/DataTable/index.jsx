@@ -101,16 +101,6 @@ class DataTable extends PureComponent {
       dataIndex: '_id',
       // width: '25%',
       render: (_id) => {
-        const { category = '', status = '' } = this.props;
-        if (category === 'TEAM' && status === 'IN-PROGRESS')
-          return (
-            <div className={styles.rowAction}>
-              <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
-              <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
-              <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
-            </div>
-          );
-
         return (
           <div className={styles.rowAction}>
             <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -129,21 +119,8 @@ class DataTable extends PureComponent {
     };
   }
 
-  // HANDLE TEAM REQUESTS
-  onOpenClick = (_id) => {
-    history.push({
-      pathname: `/time-off/manager-view-request/${_id}`,
-      // state: { location: name },
-    });
-  };
-
   onIdClick = (_id) => {
-    const { category = '' } = this.props;
-    if (category === 'MY') {
-      this.viewRequest(_id);
-    } else if (category === 'TEAM') {
-      this.onOpenClick(_id);
-    }
+    this.viewRequest(_id);
   };
 
   onApproveClick = () => {

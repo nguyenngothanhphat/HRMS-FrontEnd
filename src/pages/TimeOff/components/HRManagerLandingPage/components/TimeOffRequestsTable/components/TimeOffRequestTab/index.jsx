@@ -56,6 +56,21 @@ class TimeOffRequestTab extends PureComponent {
     return [];
   };
 
+  getTypeToDispatch = (tabType, category) => {
+    let type = '';
+    if (tabType === 1) {
+      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
+      else if (category === 'TEAM') type = 'timeOff/fetchTeamLeaveRequests';
+      else type = 'timeOff/fetchTeamLeaveRequests';
+    }
+    if (tabType === 2) {
+      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
+      else if (category === 'TEAM') type = 'timeOff/fetchTeamCompoffRequests';
+      else type = 'timeOff/fetchTeamCompoffRequests';
+    }
+    return type;
+  };
+
   fetchFilteredDataFromServer = (filterTab) => {
     const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
@@ -84,15 +99,8 @@ class TimeOffRequestTab extends PureComponent {
       }
     };
 
-    let type = '';
-    if (tabType === 1) {
-      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
-      else type = 'timeOff/fetchTeamLeaveRequests';
-    }
-    if (tabType === 2) {
-      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
-      else type = 'timeOff/fetchTeamCompoffRequests';
-    }
+    const type = this.getTypeToDispatch(tabType, category);
+
     dispatch({
       type,
       employee: _id,
@@ -104,16 +112,8 @@ class TimeOffRequestTab extends PureComponent {
 
   fetchAllData = () => {
     const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
+    const type = this.getTypeToDispatch(tabType, category);
 
-    let type = '';
-    if (tabType === 1) {
-      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
-      else type = 'timeOff/fetchTeamLeaveRequests';
-    }
-    if (tabType === 2) {
-      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
-      else type = 'timeOff/fetchTeamCompoffRequests';
-    }
     dispatch({
       type,
     }).then((res) => {

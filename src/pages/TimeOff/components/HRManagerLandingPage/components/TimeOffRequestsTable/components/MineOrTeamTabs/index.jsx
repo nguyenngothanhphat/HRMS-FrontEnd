@@ -14,7 +14,10 @@ class MineOrTeamTabs extends PureComponent {
           <TabPane tab="Team Leave Request" key="1">
             <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>
-          <TabPane tab="My Leave Request" key="2">
+          <TabPane tab="All Leave Request" key="2">
+            <TimeOffRequestTab tab={tab} type={type} category="ALL" />
+          </TabPane>
+          <TabPane tab="My Leave Request" key="3">
             <TimeOffRequestTab tab={tab} type={type} category="MY" />
           </TabPane>
         </Tabs>
