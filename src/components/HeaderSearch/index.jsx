@@ -30,6 +30,10 @@ class HeaderSearch extends Component {
     }
   };
 
+  closeSearch = () => {
+    this.setState({ visible: false, mode: 'history' });
+  };
+
   renderAdvancedSearch = () => {
     const { mode } = this.state;
     return (
@@ -37,7 +41,7 @@ class HeaderSearch extends Component {
         {mode === 'history' ? (
           <ViewHistory changeMode={this.changeMode} />
         ) : (
-          <ViewAdvancedSearch changeMode={this.changeMode} />
+          <ViewAdvancedSearch changeMode={this.changeMode} closeSearch={this.closeSearch} />
         )}
       </div>
     );

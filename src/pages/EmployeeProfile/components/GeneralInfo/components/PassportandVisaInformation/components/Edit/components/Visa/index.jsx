@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
-import { Col, DatePicker, Form, Input, Select, Spin } from 'antd';
-import { DownOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
+import { Col, DatePicker, Form, Input, Select, Spin, Tag } from 'antd';
+import { DownOutlined, PlusOutlined, UpOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -147,6 +147,7 @@ class VisaGeneral extends Component {
     newList.splice(index, 1, newItem);
     this.validateDate(newList, index);
     const isModified = JSON.stringify(newList) !== JSON.stringify(visaDataOrigin);
+
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { visaData: newList },
@@ -201,6 +202,18 @@ class VisaGeneral extends Component {
       return form;
     }
     return form;
+  };
+
+  tagRender = (props) => {
+    const { label, onClose } = props;
+    return (
+      <Tag
+        icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}
+        color="red"
+      >
+        {label}
+      </Tag>
+    );
   };
 
   render() {
@@ -321,6 +334,12 @@ class VisaGeneral extends Component {
                   <Form.Item label="Visa Type" name={`visaType${index}`}>
                     <Select
                       className={styles.selectForm}
+                      tagRender={this.tagRender}
+                      mode="multiple"
+                      showArrow
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
@@ -334,6 +353,8 @@ class VisaGeneral extends Component {
                       }
                     >
                       <Option value="B1">B1</Option>
+                      <Option value="B2">B2</Option>
+                      <Option value="B3">B3</Option>
                       <Option value="nothing">nothing...</Option>
                     </Select>
                   </Form.Item>
@@ -494,6 +515,12 @@ class VisaGeneral extends Component {
                   >
                     <Select
                       className={styles.selectForm}
+                      tagRender={this.tagRender}
+                      mode="multiple"
+                      showArrow
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
@@ -507,6 +534,8 @@ class VisaGeneral extends Component {
                       }
                     >
                       <Option value="B1">B1</Option>
+                      <Option value="B2">B2</Option>
+                      <Option value="B3">B3</Option>
                       <Option value="nothing">nothing...</Option>
                     </Select>
                   </Form.Item>

@@ -160,6 +160,7 @@ class Edit extends Component {
                 const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
                 return (
                   <div key={index}>
+                    {index > 0 ? <div className={styles.line} /> : null}
                     <Form.Item
                       label="Emergency Contact"
                       name={`emergencyContact ${index}`}
@@ -238,23 +239,6 @@ class Edit extends Component {
             </Button>
           </div>
         </Form>
-
-        {/* <Col>
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-              onClick={this.handleSaveContactDetail}
-            >
-              Save
-            </Button>
-          </div>
-        </Col> */}
       </Row>
     );
   }
