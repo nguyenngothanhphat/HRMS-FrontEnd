@@ -90,7 +90,7 @@ export default {
   'component.emailReminderForm.addCondition': '+ Add another condition',
   'component.emailReminderForm.cancel': 'Cancel',
   'component.emailReminderForm.submit': 'Submit',
-  'component.customEmailsTableField.viewEmail': 'View email',
+  'component.customEmailsTableField.editEmail': 'Edit email',
   'component.customEmailsTableField.title': 'Custom emails',
   'component.customEmailsTableField.description':
     'Cras gravida bibendum dolor eu varius. Morbi fermentum velit nisl, eget vehicula lorem sodales eget. Donec quis volutpat orci. Sed ipsum felis, tristique id egestas et, convallis ac velit.',
