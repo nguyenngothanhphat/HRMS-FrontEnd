@@ -26,10 +26,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
       type: 'timeOff/fetchHolidaysList',
       payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
     });
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-      status: '',
-    });
+    // dispatch({
+    //   type: 'timeOff/fetchLeaveRequestOfEmployee',
+    //   status: '',
+    // });
   };
 
   handleSelectShowType = (value) => {
@@ -42,22 +42,30 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.menu}>
-        <Tooltip title="List View">
-          <img
-            src={ListIcon}
-            className={activeShowType === 1 ? styles.activeShowType : ''}
-            onClick={() => this.handleSelectShowType(1)}
-            alt="list"
-          />
-        </Tooltip>
-        <Tooltip title="Calendar View">
-          <img
-            src={CalendarIcon}
-            className={activeShowType === 2 ? styles.activeShowType : ''}
-            onClick={() => this.handleSelectShowType(2)}
-            alt="calendar"
-          />
-        </Tooltip>
+        {activeShowType === 2 && (
+          <Tooltip title="List View">
+            <div className={styles.iconContainer}>
+              <img
+                src={ListIcon}
+                className={activeShowType === 1 ? styles.activeShowType : ''}
+                onClick={() => this.handleSelectShowType(1)}
+                alt="list"
+              />
+            </div>
+          </Tooltip>
+        )}
+        {activeShowType === 1 && (
+          <Tooltip title="Calendar View">
+            <div className={styles.iconContainer}>
+              <img
+                src={CalendarIcon}
+                className={activeShowType === 2 ? styles.activeShowType : ''}
+                onClick={() => this.handleSelectShowType(2)}
+                alt="calendar"
+              />
+            </div>
+          </Tooltip>
+        )}
       </div>
     );
   };
