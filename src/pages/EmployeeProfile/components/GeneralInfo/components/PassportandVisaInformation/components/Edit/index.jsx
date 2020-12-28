@@ -87,7 +87,7 @@ class Edit extends Component {
   };
 
   validateDate = (getPassportData) => {
-    if (getPassportData === {}) return;
+    if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
       passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
@@ -106,24 +106,19 @@ class Edit extends Component {
     }
   };
 
-  handleChange = (name, value) => {
+  handleChange = (index, name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
-    const newItem = { [name]: value };
 
-    const getPassportData = {
-      ...passportData,
-      ...newItem,
-    };
-    this.validateDate(getPassportData);
-    const isModified = JSON.stringify(getPassportData) !== JSON.stringify(passportDataOrigin);
-
-    console.log('passportData: ', passportData);
-    console.log('newItem: ', newItem);
-    console.log('getPassportData: ', getPassportData);
+    const item = passportData[index];
+    const newItem = { ...item, [name]: value };
+    const newList = [...passportData];
+    newList.splice(index, 1, newItem);
+    this.validateDate(newList);
+    const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
 
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: getPassportData },
+      payload: { passportData: newList },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -548,7 +543,7 @@ class Edit extends Component {
                       defaultValue={passportNumber}
                       onChange={(event) => {
                         const { value: fieldValue } = event.target;
-                        this.handleChange('passportNumber', fieldValue);
+                        this.handleChange(index, 'passportNumber', fieldValue);
                       }}
                     />
                   </Form.Item>
@@ -612,7 +607,7 @@ class Edit extends Component {
                     onDropdownVisibleChange={this.handleDropdown}
                     defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
                     onChange={(value) => {
-                      this.handleChange('passportIssuedCountry', value);
+                      this.handleChange(index, 'passportIssuedCountry', value);
                     }}
                     suffixIcon={
                       dropdown ? (
@@ -636,7 +631,7 @@ class Edit extends Component {
                     format={dateFormat}
                     defaultValue={formatDatePassportIssueOn}
                     onChange={(dates) => {
-                      this.handleChange('passportIssuedOn', dates);
+                      this.handleChange(index, 'passportIssuedOn', dates);
                     }}
                     className={styles.dateForm}
                   />
@@ -657,7 +652,7 @@ class Edit extends Component {
                     format={dateFormat}
                     defaultValue={formatDatePassportValidTill}
                     onChange={(dates) => {
-                      this.handleChange('passportValidTill', dates);
+                      this.handleChange(index, 'passportValidTill', dates);
                     }}
                     className={isDate === false ? styles.dateFormValidate : styles.dateForm}
                   />
