@@ -110,3 +110,23 @@ export async function addCustomEmail(payload) {
     data: payload,
   });
 }
+
+export async function getListCustomEmail() {
+  return request('/api/customemail/list-active', {
+    method: 'POST',
+  });
+}
+
+export async function getCustomEmailInfo(payload) {
+  return request('/api/customemail/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function deleteCustomEmailItem(payload) {
+  return request('/api/customemail/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}

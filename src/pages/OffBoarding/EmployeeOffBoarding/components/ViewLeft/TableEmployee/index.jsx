@@ -1,9 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Avatar } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
+import { UserOutlined } from '@ant-design/icons';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
 import t from './index.less';
 
 @connect(({ loading }) => ({
@@ -71,20 +72,27 @@ class TableEmployee extends Component {
         },
       },
       {
-        title: <span className={t.title}>Assigned</span>,
-        dataIndex: 'assigned',
-        render: () => (
-          <div className={t.rowAction}>
-            <p>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-            </p>
-          </div>
-        ),
+        title: <span className={t.title}>Assigned </span>,
+        dataIndex: 'Assigned',
+        render: (_, row) => {
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          const arrAvt = [avtManager, avtHrManager];
+          return (
+            <div className={t.rowAction}>
+              {arrAvt.map(
+                (item, index) =>
+                  item && (
+                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+                      <Avatar src={item} size={20} icon={<UserOutlined />} />
+                    </div>
+                  ),
+              )}
+            </div>
+          );
+        },
       },
       {
         title: <span className={t.title}>Reason of leaving</span>,

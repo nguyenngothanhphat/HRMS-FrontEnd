@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -12,9 +12,9 @@ const { TextArea } = Input;
 @connect(({ timeOff, user, loading }) => ({
   timeOff,
   user,
-  loadingAddLeaveRequest: loading.effects['timeOff/addLeaveRequest'],
+  loadingAddCompoffRequest: loading.effects['timeOff/addCompoffRequest'],
 }))
-class RequestInformation extends Component {
+class RequestInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -26,6 +26,9 @@ class RequestInformation extends Component {
       dateLists: [],
       projectManagerId: '',
       projectManagerName: '',
+      buttonState: 0, // save draft or submit
+      isEditingDrafts: false,
+      viewingCompoffRequestId: '',
     };
   }
 
@@ -36,6 +39,7 @@ class RequestInformation extends Component {
     });
   };
 
+  // FETCH EMAIL LIST AND PROJECT LIST OF COMPANY
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
@@ -47,23 +51,121 @@ class RequestInformation extends Component {
     });
   };
 
-  // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
-  componentDidMount = () => {
-    const { dispatch } = this.props;
+  fetchProjectsListByCompany = () => {
+    const {
+      dispatch,
+      user: {
+        currentUser: {
+          company: { _id: company = '' } = {},
+          location: { _id: location = '' } = {},
+        } = {},
+      } = {},
+    } = this.props;
     dispatch({
-      type: 'timeOff/fetchLeaveBalanceOfUser',
+      type: 'timeOff/fetchProjectsListByCompany',
+      payload: { company, location },
     });
-    dispatch({
-      type: 'timeOff/fetchTimeOffTypes',
-    });
-    this.fetchEmailsListByCompany();
   };
 
-  // GET TIME OFF TYPE BY ID
-  onEnterProjectNameChange = () => {
+  componentDidMount = () => {
+    const { action = '' } = this.props;
+    this.fetchEmailsListByCompany();
+    this.fetchProjectsListByCompany();
+
+    if (action === 'edit-compoff-request') {
+      const { viewingCompoffRequest = {} } = this.props;
+      const {
+        project: { _id: projectId = '' } = {},
+        extraTime = [],
+        description = '',
+        cc = [],
+        _id = '',
+        status = '',
+      } = viewingCompoffRequest;
+
+      if (status === 'DRAFTS') {
+        this.setState({
+          isEditingDrafts: true,
+        });
+      }
+
+      // set project name
+      this.onEnterProjectNameChange(projectId);
+
+      // set dates
+      let durationFrom = '';
+      let durationTo = '';
+      if (extraTime.length > 0) {
+        durationFrom = extraTime[0].date;
+        durationTo = extraTime[extraTime.length - 1].date;
+      }
+
+      const dateLists = extraTime.map((value) => {
+        const { date = '', timeSpend = 0 } = value;
+        return {
+          date: moment(date).format('YYYY-MM-DD'),
+          timeSpend,
+        };
+      });
+      const listValue = dateLists.map((data) => data.timeSpend);
+
+      // set cc
+      const formattedCc = cc.length > 0 ? cc[0] : [];
+      const personCC = formattedCc.map((person) => (person ? person._id : null));
+
+      // update form
+      this.formRef.current.setFieldsValue({
+        projectId,
+        description,
+        personCC,
+        extraTimeLists: listValue,
+        durationFrom: durationFrom === null ? null : moment(durationFrom),
+        durationTo: durationTo === null ? null : moment(durationTo),
+      });
+
+      // update state
+      this.setState({
+        viewingCompoffRequestId: _id,
+        durationFrom: durationFrom === null ? null : moment(durationFrom),
+        durationTo: durationTo === null ? null : moment(durationTo),
+        dateLists,
+      });
+    }
+  };
+
+  // GENERATE PROJECT LIST DATA
+  generateProjectsList = () => {
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    return projectsList.map((project) => {
+      const { _id = '', name = '' } = project;
+      return {
+        _id,
+        name,
+      };
+    });
+  };
+
+  // GET MANAGER ID & NAME OF SELECTED PROJECT
+  onEnterProjectNameChange = (value) => {
+    const { timeOff: { projectsList = [] } = {} } = this.props;
+    let projectManagerId = '';
+    let projectManagerName = '';
+
+    projectsList.forEach((project) => {
+      const {
+        _id = '',
+        manager: { generalInfo: { employeeId = '', lastName = '', firstName = '' } = {} } = {},
+      } = project;
+
+      if (_id === value) {
+        projectManagerId = employeeId;
+        projectManagerName = `${firstName} ${lastName}`;
+      }
+    });
+
     this.setState({
-      projectManagerId: 'PSI- 1221',
-      projectManagerName: 'Rose Mary Mali',
+      projectManagerId,
+      projectManagerName,
     });
   };
 
@@ -77,32 +179,43 @@ class RequestInformation extends Component {
     }
   };
 
-  // CACULATE DURATION FOR API
-  calculateNumberOfLeaveDay = (list) => {
-    let count = 0;
-    list.forEach((value) => {
-      const { timeOfDay = '' } = value;
-      switch (timeOfDay) {
-        case 'MORNING':
-          count += 0.5;
-          break;
-        case 'AFTERNOON':
-          count += 0.5;
-          break;
-        case 'WHOLE-DAY':
-          count += 1;
-          break;
-        default:
-          break;
-      }
-    });
-    return count;
-  };
-
   // ON FINISH
   onFinish = (values) => {
     // eslint-disable-next-line no-console
     console.log('Success:', values);
+    const { projectId = '', description = '', personCC = [] } = values;
+    const { action: pageAction = '' } = this.props; // edit or new compoff request
+    const { dateLists, buttonState } = this.state;
+
+    const action = buttonState === 1 ? 'saveDraft' : 'submit';
+
+    const sendData = {
+      project: projectId,
+      extraTime: dateLists,
+      description,
+      action,
+      approvalFlow: '5fb37597daeffc0c68763d8b',
+      cc: personCC,
+    };
+
+    // eslint-disable-next-line no-console
+    console.log('sendData', sendData);
+    let type = '';
+    if (buttonState === 2) {
+      type =
+        pageAction === 'new-compoff-request'
+          ? 'timeOff/addCompoffRequest'
+          : 'timeOff/updateCompoffRequest';
+    } else type = 'timeOff/addCompoffRequest';
+
+    const { dispatch } = this.props;
+    dispatch({
+      type,
+      payload: sendData,
+    }).then((res) => {
+      const { statusCode } = res;
+      if (statusCode === 200) this.setShowSuccessModal(true);
+    });
   };
 
   onFinishFailed = (errorInfo) => {
@@ -168,7 +281,7 @@ class RequestInformation extends Component {
     while (now.isBefore(end) || now.isSame(end)) {
       const obj = {
         date: now.format('YYYY-MM-DD'),
-        value: null,
+        timeSpend: null,
       };
       dates.push(obj);
       now.add(1, 'days');
@@ -208,7 +321,7 @@ class RequestInformation extends Component {
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
-    const listValue = modifiedList.map((data) => data.value);
+    const listValue = modifiedList.map((data) => data.timeSpend);
 
     this.setDateList(modifiedList);
     this.formRef.current.setFieldsValue({
@@ -221,11 +334,40 @@ class RequestInformation extends Component {
     const { value } = e.target;
     const { dateLists } = this.state;
     const originalList = JSON.parse(JSON.stringify(dateLists));
-    originalList[indexToChange].value = parseFloat(value);
+    originalList[indexToChange].timeSpend = parseFloat(value);
 
     this.setState({
       dateLists: originalList,
     });
+  };
+
+  // RENDER MODAL content
+  renderModalContent = () => {
+    const { action = '', ticketID } = this.props;
+    const { buttonState, isEditingDrafts } = this.state;
+    let content = '';
+
+    if (action === 'edit-compoff-request') {
+      if (buttonState === 1) content = `Compoff request saved as draft.`;
+      else if (buttonState === 2) {
+        if (isEditingDrafts) content = `Compoff request submitted to the HR and your manager.`;
+        else content = `Edits to ticket id: ${ticketID} submitted to HR and manager`;
+      }
+    }
+
+    if (action === 'new-compoff-request') {
+      if (buttonState === 1) {
+        content = `Compoff request saved as draft.`;
+      } else if (buttonState === 2)
+        content = `Compoff request submitted to the HR and your manager.`;
+    }
+    return content;
+  };
+
+  // ON CANCEL EDIT
+  onCancelEdit = () => {
+    const { viewingCompoffRequestId: id } = this.state;
+    history.push(`/time-off/view-compoff-request/${id}`);
   };
 
   render() {
@@ -247,13 +389,24 @@ class RequestInformation extends Component {
       dateLists,
       projectManagerId,
       projectManagerName,
+      buttonState,
+      isEditingDrafts,
     } = this.state;
-    // const numberOfDays = 0;
+
+    const { loadingAddCompoffRequest } = this.props;
 
     // count total days and total hours
-    const listValue = dateLists.map((data) => data.value);
+    const listValue = dateLists.map((data) => data.timeSpend);
     const totalHours = listValue.reduce((a, b) => a + b, 0);
     const totalDays = dateLists.length;
+
+    // generate project list
+    const projectsList = this.generateProjectsList();
+
+    // if save as draft, no need to validate forms
+    const needValidate = buttonState === 2;
+
+    const { action = '' } = this.props;
 
     return (
       <div className={styles.RequestInformation}>
@@ -279,10 +432,10 @@ class RequestInformation extends Component {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="projectName"
+                name="projectId"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please enter project name!',
                   },
                 ]}
@@ -293,9 +446,14 @@ class RequestInformation extends Component {
                   }}
                   placeholder="Enter Project"
                 >
-                  <Option value="HRMS Projekt">
-                    <span style={{ fontSize: '13px' }}>HRMS Projekt</span>
-                  </Option>
+                  {projectsList.map((project) => {
+                    const { _id = '', name = '' } = project;
+                    return (
+                      <Option value={_id}>
+                        <span style={{ fontSize: '13px' }}>{name}</span>
+                      </Option>
+                    );
+                  })}
                 </Select>
               </Form.Item>
             </Col>
@@ -323,7 +481,7 @@ class RequestInformation extends Component {
                     name="durationFrom"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -343,7 +501,7 @@ class RequestInformation extends Component {
                     name="durationTo"
                     rules={[
                       {
-                        required: true,
+                        required: needValidate,
                         message: 'Please select a date!',
                       },
                     ]}
@@ -432,12 +590,15 @@ class RequestInformation extends Component {
                 name="description"
                 rules={[
                   {
-                    required: true,
+                    required: needValidate,
                     message: 'Please input description!',
                   },
                 ]}
               >
-                <TextArea rows={3} placeholder="The reason I am taking timeoff is …" />
+                <TextArea
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  placeholder="The reason I am taking timeoff is …"
+                />
               </Form.Item>
             </Col>
             <Col span={6} />
@@ -480,15 +641,39 @@ class RequestInformation extends Component {
             department head.
           </span>
           <div className={styles.formButtons}>
-            <Button type="link" htmlType="button" onClick={this.saveDraft}>
-              Save to Draft
-            </Button>
+            {action === 'edit-compoff-request' && (
+              <Button
+                className={styles.cancelButton}
+                type="link"
+                htmlType="button"
+                onClick={this.onCancelEdit}
+              >
+                <span>Cancel</span>
+              </Button>
+            )}
+            {(action === 'new-compoff-request' ||
+              (action === 'edit-leave-request' && isEditingDrafts)) && (
+              <Button
+                loading={loadingAddCompoffRequest}
+                type="link"
+                form="myForm"
+                htmlType="submit"
+                onClick={() => {
+                  this.setState({ buttonState: 1 });
+                }}
+              >
+                Save to Draft
+              </Button>
+            )}
             <Button
-              // loading={loadingAddLeaveRequest}
+              loading={loadingAddCompoffRequest}
               key="submit"
               type="primary"
               form="myForm"
               htmlType="submit"
+              onClick={() => {
+                this.setState({ buttonState: 2 });
+              }}
             >
               Submit
             </Button>
@@ -497,7 +682,7 @@ class RequestInformation extends Component {
         <TimeOffModal
           visible={showSuccessModal}
           onClose={this.setShowSuccessModal}
-          // content={`${selectedTypeName} request submitted to the HR and your manager.`}
+          content={this.renderModalContent()}
           submitText="OK"
         />
       </div>

@@ -4,22 +4,42 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
+  withdrawLeaveRequest,
+  addCompoffRequest,
+  getMyCompoffRequests,
+  getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
+  getProjectsListByCompany,
   getLeaveRequestById,
+  updateLeaveRequestById,
+  saveDraftLeaveRequest,
+  updateDraftLeaveRequest,
+  getTeamCompoffRequests,
+  getTeamLeaveRequests,
+  withdrawCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
     holidaysList: [],
+    allMyLeaveRequests: {},
     leavingList: [],
     totalLeaveBalance: {},
-    leaveRequests: [],
+    leaveRequests: {},
+    compoffRequests: {},
+    allMyCompoffRequests: {},
     timeOffTypes: [],
     employeeInfo: {},
     emailsList: [],
+    projectsList: [],
     viewingLeaveRequest: {},
+    savedDraftLR: {},
+    teamCompoffRequests: {},
+    teamLeaveRequests: {},
+    allTeamLeaveRequests: {},
+    allTeamCompoffRequests: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -50,22 +70,35 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchLeaveRequestOfEmployee({ employee = '' }, { call, put }) {
+    *fetchLeaveRequestOfEmployee({ employee = '', status = '' }, { call, put }) {
       try {
-        if (employee !== '') {
-          const response = yield call(getLeaveRequestOfEmployee, { employee });
+        if (status !== '') {
+          const response = yield call(getLeaveRequestOfEmployee, { employee, status });
           const { statusCode, data: leaveRequests = [] } = response;
-          // console.log('response', response);
           if (statusCode !== 200) throw response;
+
           yield put({
             type: 'save',
             payload: { leaveRequests },
           });
+          return response;
+        }
+        if (status === '') {
+          const response = yield call(getLeaveRequestOfEmployee, { employee });
+          const { statusCode, data: allMyLeaveRequests = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { allMyLeaveRequests },
+          });
+          return response;
         }
       } catch (errors) {
         dialog(errors);
       }
+      return {};
     },
+
     *fetchLeaveRequestById({ id = '' }, { call, put }) {
       try {
         if (id !== '') {
@@ -81,9 +114,21 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+    *updateLeaveRequestById({ payload = {} }, { call }) {
       try {
-        const response = yield call(getHolidaysList, { year, month });
+        const response = yield call(updateLeaveRequestById, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getHolidaysList, { year, month });
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -93,17 +138,78 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *addLeaveRequest({ payload = {} }, { call, put }) {
       try {
-        console.log('payload', payload);
         const response = yield call(addLeaveRequest, payload);
         const { statusCode, data: addedLeaveRequest = {} } = response;
-        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: { addedLeaveRequest },
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *withdrawLeaveRequest({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(withdrawLeaveRequest, { id });
+          const { statusCode, data: withdrawnLeaveRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { withdrawnLeaveRequest },
+          });
+          return statusCode;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *saveDraftLeaveRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(saveDraftLeaveRequest, payload);
+        const { statusCode, data: savedDraftLR = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { savedDraftLR },
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *updateDraftLeaveRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateDraftLeaveRequest, payload);
+        const { statusCode, data: savedDraftLR = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { savedDraftLR },
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *addCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addCompoffRequest, payload);
+        const { statusCode, data: addedCompoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { addedCompoffRequest },
         });
         return response;
       } catch (errors) {
@@ -111,6 +217,83 @@ const timeOff = {
         return {};
       }
     },
+    *updateCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        alert('updated compoff request');
+        // const response = yield call(addCompoffRequest, payload);
+        // const { statusCode, data: addedCompoffRequest = {} } = response;
+        // if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'save',
+        //   payload: { addedCompoffRequest },
+        // });
+        return { statusCode: 200, data: {} };
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchMyCompoffRequests({ status = '' }, { call, put }) {
+      try {
+        if (status !== '') {
+          const response = yield call(getMyCompoffRequests, { status });
+          const { statusCode, data: compoffRequests = {} } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { compoffRequests },
+          });
+          return response;
+        }
+        if (status === '') {
+          const response = yield call(getMyCompoffRequests, { status });
+          const { statusCode, data: allMyCompoffRequests = {} } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { allMyCompoffRequests },
+          });
+          return response;
+        }
+      } catch (errors) {
+        // dialog(errors);
+      }
+      return {};
+    },
+    *fetchCompoffRequestById({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(getCompoffRequestById, { id });
+          const { statusCode, data: viewingCompoffRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { viewingCompoffRequest },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *withdrawCompoffRequest({ id = '' }, { call, put }) {
+      try {
+        if (id !== '') {
+          const response = yield call(withdrawCompoffRequest, { id });
+          const { statusCode, data: withdrawnCompoffRequest = [] } = response;
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { withdrawnCompoffRequest },
+          });
+          return statusCode;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
       try {
         const response = yield call(getEmailsListByCompany, {
@@ -126,6 +309,84 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchProjectsListByCompany({ payload: { company = '', location = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getProjectsListByCompany, {
+          company,
+          location,
+        });
+        // console.log('email res', response);
+        const { statusCode, data: projectsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { projectsList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    // MANAGER
+    *fetchTeamCompoffRequests({ status = '' }, { call, put }) {
+      try {
+        if (status !== '') {
+          const response = yield call(getTeamCompoffRequests, { status });
+          const { statusCode, data: teamCompoffRequests = {} } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { teamCompoffRequests },
+          });
+          return response;
+        }
+        if (status === '') {
+          const response = yield call(getTeamCompoffRequests, {});
+          const { statusCode, data: allTeamCompoffRequests = {} } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { allTeamCompoffRequests },
+          });
+          return response;
+        }
+      } catch (errors) {
+        // dialog(errors);
+      }
+      return {};
+    },
+
+    *fetchTeamLeaveRequests({ status = '' }, { call, put }) {
+      try {
+        if (status !== '') {
+          const response = yield call(getTeamLeaveRequests, { status });
+          const { statusCode, data: teamLeaveRequests = {} } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { teamLeaveRequests },
+          });
+          return response;
+        }
+        if (status === '') {
+          const response = yield call(getTeamLeaveRequests, {});
+          const { statusCode, data: allTeamLeaveRequests = {} } = response;
+          // console.log('response', response);
+          if (statusCode !== 200) throw response;
+          yield put({
+            type: 'save',
+            payload: { allTeamLeaveRequests },
+          });
+          return response;
+        }
+      } catch (errors) {
+        // dialog(errors);
+      }
+      return {};
     },
   },
   reducers: {

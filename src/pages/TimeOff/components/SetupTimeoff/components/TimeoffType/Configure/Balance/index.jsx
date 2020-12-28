@@ -1,47 +1,90 @@
 import React, { Component } from 'react';
-import { Checkbox, Input, Radio } from 'antd';
+import { Radio, Checkbox, Row, Col, InputNumber } from 'antd';
 import styles from './index.less';
 
-class AccrualSchedule extends Component {
-  onChange = () => {};
+class Balance extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      balanceRate: '',
+      select: 'day',
+    };
+  }
 
-  renderItem = (render) => {
-    return (
-      <div className={styles.content}>
-        <div className={styles.borderBotton}>
-          <div className={styles.titleText}>{render.title}</div>
-          <div className={styles.inputText}>
-            <span> {render.subText}</span>
-            <Input className={styles.input} defaultValue="0571" />
-            <Radio.Group defaultValue="a" buttonStyle="solid">
-              <Radio.Button value="a">Day</Radio.Button>
-              <Radio.Button value="d">Hours</Radio.Button>
-            </Radio.Group>
-          </div>
-          <Checkbox className={styles.checkbox}>{render.inputCheckbox}</Checkbox>
-        </div>
-      </div>
-    );
+  onChangeRadio = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { balanceRate } = this.state;
+    this.setState({
+      select: e.target.value,
+    });
+    const data = {
+      select: e.target.value,
+      balanceRate,
+    };
+    onChangeValue(data);
+  };
+
+  onChange = (value) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { select } = this.state;
+    this.setState({
+      balanceRate: value,
+    });
+    const data = {
+      select,
+      balanceRate: value,
+    };
+    onChangeValue(data);
   };
 
   render() {
-    const array = [
-      {
-        title: 'Maxinum balance',
-        inputText: 'At a time, employees cannot have a casual leave balance greater than',
-        inputCheckbox: 'Do not limit employee Casual leave balance',
-      },
-      {
-        title: 'Negative balances',
-        inputText: 'Employees can apply for casual leaves that make their balances negative unto',
-        inputCheckbox: 'Unlimited negative balances',
-      },
-    ];
-
+    const { accrualRate, select } = this.state;
+    console.log(accrualRate);
     return (
-      <div className={styles.accrualContent}>{array.map((render) => this.renderItem(render))}</div>
+      <div className={styles.contentbalance}>
+        <div className={styles.title}>Maximum balance</div>
+        <div className={styles.borderStyles} />
+        <div className={styles.formBody}>
+          <Row gutter={[20, 0]}>
+            <Col span={10}>
+              <div className={styles.titleText}>
+                At a time, employees cannot have a casual leave balance greater than
+              </div>
+              <Checkbox className={styles.checkbox}>
+                Do not limit employee Casual leave balance
+              </Checkbox>
+            </Col>
+            <Col span={12}>
+              <Row className={styles.inputText} gutter={[24, 0]}>
+                <Col>
+                  <InputNumber
+                    min={0}
+                    max={12}
+                    defaultValue={0}
+                    placeholder="day"
+                    formatter={(value) => `${value} day`}
+                    parser={(value) => value.replace('days', '')}
+                    onChange={this.onChange}
+                  />
+                </Col>
+                <Col>
+                  <Radio.Group
+                    onChange={this.onChangeRadio}
+                    value={select}
+                    buttonStyle="solid"
+                    className={styles.radioGroup}
+                  >
+                    <Radio.Button value="day">Days</Radio.Button>
+                    <Radio.Button value="hour">Hours</Radio.Button>
+                  </Radio.Group>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+      </div>
     );
   }
 }
 
-export default AccrualSchedule;
+export default Balance;

@@ -5,46 +5,69 @@ import TimeoffType from './components/TimeoffType';
 import ManageBalance from './components/ManageBalance';
 import AssignPolicy from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
+import ScreenBegin from './components/ScreenBegin';
 
 class SetupTimeoff extends Component {
-  onChange = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      pageStart: true,
+    };
+  }
+
+  changePage = () => {
+    const { pageStart } = this.state;
+    this.setState({
+      pageStart: !pageStart,
+    });
+  };
 
   render() {
+    const { pageStart } = this.state;
     const listMenu = [
       {
         id: 1,
         name: 'Holliday Calendar',
         key: 'hollidayCalander',
         component: <HollidayCalendar />,
+        progress: 10,
       },
       {
         id: 2,
         name: 'Employee Work Schedule',
         key: 'workShedule',
         component: <WorkShedule />,
+        progress: 30,
       },
       {
         id: 3,
         name: 'Timeoff Type & Rules',
         key: 'timeoffType',
         component: <TimeoffType />,
+        progress: 70,
       },
       {
         id: 4,
         name: 'Manage Balance',
         key: 'manageBalance',
         component: <ManageBalance />,
+        progress: 100,
       },
       {
         id: 5,
         name: 'Assign Policy',
         key: 'assignPolicy',
         component: <AssignPolicy />,
+        progress: 100,
       },
     ];
     return (
       <div>
-        <TimeOffLayout listMenu={listMenu} />
+        {pageStart ? (
+          <ScreenBegin handleChange={this.changePage} />
+        ) : (
+          <TimeOffLayout listMenu={listMenu} />
+        )}
       </div>
     );
   }

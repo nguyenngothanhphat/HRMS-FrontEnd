@@ -33,6 +33,24 @@ class LeaveBalanceInfo extends PureComponent {
       <PlusOutlined className={styles.alternativeExpandIcon} />
     );
 
+  renderTimeOffTypeInfo = (value) => {
+    return this.renderData().map((data, index) => {
+      const { name = '', description = '', shortType = '', type = '' } = data;
+      if (type === value) {
+        return (
+          <Panel
+            className={styles.eachCollapse}
+            header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
+            key={`${index + 1}`}
+          >
+            <p>{description}</p>
+          </Panel>
+        );
+      }
+      return null;
+    });
+  };
+
   render() {
     const { onClose = () => {}, visible } = this.props;
     return (
@@ -67,18 +85,10 @@ class LeaveBalanceInfo extends PureComponent {
                 expandIconPosition="right"
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
-                {this.renderData().map((data, index) => {
-                  const { name = '', description = '', shortType = '' } = data;
-                  return (
-                    <Panel
-                      className={styles.eachCollapse}
-                      header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
-                      key={`${index + 1}`}
-                    >
-                      <p>{description}</p>
-                    </Panel>
-                  );
-                })}
+                {this.renderTimeOffTypeInfo('A')}
+                {this.renderTimeOffTypeInfo('B')}
+                {this.renderTimeOffTypeInfo('C')}
+                {this.renderTimeOffTypeInfo('D')}
               </Collapse>
             </p>
           </div>

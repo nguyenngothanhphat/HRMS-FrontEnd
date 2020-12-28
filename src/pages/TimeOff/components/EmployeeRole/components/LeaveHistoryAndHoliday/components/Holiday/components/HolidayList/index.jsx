@@ -8,10 +8,10 @@ export default class HolidayList extends PureComponent {
     const { holidaysList = [] } = this.props;
     return (
       <div className={styles.HolidayList}>
-        {holidaysList.map((row) => {
+        {holidaysList.map((row, index) => {
           const { fromDate = '', toDate = '', name = '' } = row;
           return (
-            <Row className={styles.eachRow}>
+            <Row key={`${index + 1}`} className={styles.eachRow}>
               <Col xs={4} className={styles.dateAndMonth}>
                 <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
                 <span className={styles.month}>{moment(fromDate).locale('en').format('MMM')}</span>

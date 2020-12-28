@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Spin } from 'antd';
+import { Tabs } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from './components/TimeOffRequestTab';
 
@@ -17,18 +17,6 @@ class TimeOffRequestsTable extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const {
-      dispatch,
-      user: { currentUser: { employee: { _id = '' } = {} } = {} } = {},
-    } = this.props;
-
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-      employee: _id,
-    });
-  };
-
   renderTableTitle = {
     left: (
       <div className={styles.renderTableTitle}>
@@ -37,57 +25,35 @@ class TimeOffRequestsTable extends PureComponent {
     ),
   };
 
-  renderData = (data) => {
-    return data;
-  };
-
   render() {
-    const { timeOff: { leaveRequests = [] } = {}, loadingFetchLeaveRequests } = this.props;
-    const emptyData = [];
-    const leaveRequestsData = this.renderData(leaveRequests);
-    const specialRequestsData = this.renderData(leaveRequests);
-    const lwpRequestsData = this.renderData(leaveRequests);
-    // const compoffRequestsData = this.renderData(leaveRequests);
-
     return (
       <div className={styles.TimeOffRequestsTable}>
-        {loadingFetchLeaveRequests && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '100px 0',
-            }}
-          >
-            <Spin size="medium" />
-          </div>
-        )}
-        {!loadingFetchLeaveRequests && (
-          <Tabs
-            tabPosition="left"
-            tabBarGutter={40}
-            defaultActiveKey="1"
-            tabBarExtraContent={this.renderTableTitle}
-          >
-            <>
-              <TabPane tab="Leave Request" key="1">
-                <TimeOffRequestTab data={leaveRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="Special Leave Request" key="2">
-                <TimeOffRequestTab data={specialRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="LWP Request" key="3">
-                <TimeOffRequestTab data={lwpRequestsData} type={1} />
-              </TabPane>
-              <TabPane tab="WFH/CP Requests" key="4">
-                <TimeOffRequestTab data={emptyData} type={1} />
-              </TabPane>
-              <TabPane tab="Compoff Request" key="5">
-                <TimeOffRequestTab data={emptyData} type={2} />
-              </TabPane>
-            </>
-          </Tabs>
-        )}
+        <Tabs
+          tabPosition="left"
+          tabBarGutter={40}
+          defaultActiveKey="1"
+          tabBarExtraContent={this.renderTableTitle}
+          onTabClick={this.onTabClick}
+          destroyInactiveTabPane
+        >
+          <>
+            <TabPane tab="Leave Request" key="1">
+              <TimeOffRequestTab tab={1} type={1} />
+            </TabPane>
+            <TabPane tab="Special Leave Request" key="2">
+              <TimeOffRequestTab tab={2} type={1} />
+            </TabPane>
+            <TabPane tab="LWP Request" key="3">
+              <TimeOffRequestTab tab={3} type={1} />
+            </TabPane>
+            <TabPane tab="WFH/CP Requests" key="4">
+              <TimeOffRequestTab tab={4} type={1} />
+            </TabPane>
+            <TabPane tab="Compoff Request" key="5">
+              <TimeOffRequestTab tab={5} type={2} />
+            </TabPane>
+          </>
+        </Tabs>
       </div>
     );
   }

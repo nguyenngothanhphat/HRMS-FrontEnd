@@ -1,3 +1,5 @@
+/* eslint-disable compat/compat */
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
 /* eslint-disable no-plusplus */
@@ -5,17 +7,17 @@
 /* eslint-disable no-bitwise */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
-import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag } from 'antd';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
+import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
-import 'react-quill/dist/quill.snow.css';
 
 import removeIcon from './assets/removeIcon.svg';
-
+import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
 
 Quill.register('modules/mentions', QuillMention);
+
 @connect(
   ({
     employeeSetting: {
@@ -27,7 +29,14 @@ Quill.register('modules/mentions', QuillMention);
       departmentListByCompanyId = [],
       listAutoField = [],
     } = {},
-    user: { currentUser: { company: { _id = '' } = {} } = {} } = {},
+    user: {
+      currentUser: {
+        company: { _id = '' } = {},
+        roles = [],
+        location: { name: locationName = '' } = {},
+      } = {},
+    } = {},
+    loading,
   }) => ({
     triggerEventList,
     locationList,
@@ -37,6 +46,9 @@ Quill.register('modules/mentions', QuillMention);
     departmentListByCompanyId,
     _id,
     listAutoField,
+    locationName,
+    roles,
+    loading: loading.effects['employeeSetting/addCustomEmail'],
   }),
 )
 class EmailReminderForm extends PureComponent {
@@ -55,17 +67,7 @@ class EmailReminderForm extends PureComponent {
       ],
       checkOption: [],
       appliesToData: '',
-      message: '',
-      // frequencyItem: [
-      //   {
-      //     name: 'Premium only',
-      //     value: 'Premium only',
-      //   },
-      //   {
-      //     name: 'Every year',
-      //     value: 'Every year',
-      //   },
-      // ],
+      messages: '',
       sendingDate: [
         {
           name: 'On the event date',
@@ -136,8 +138,45 @@ class EmailReminderForm extends PureComponent {
       _sendingDate: '',
       recipient: '',
       emailSubject: '',
+      load: false,
+      isLocation: false,
+      selectedSelectBox: 0,
     };
   }
+
+  mentionModule = (t) => {
+    return {
+      allowedChars: /^[A-Za-z\s]*$/,
+      mentionDenotationChars: ['@'],
+      showDenotationChar: false,
+      renderItem: (item) => {
+        return item.value;
+      },
+      source(searchTerm, renderList, mentionChar) {
+        let values;
+        const { listAutoField } = t.props;
+        const list = listAutoField.map((item, index) => {
+          return {
+            id: index,
+            value: item,
+          };
+        });
+        if (mentionChar === '@') {
+          values = list;
+        }
+
+        if (searchTerm.length === 0) {
+          renderList(values, searchTerm);
+        } else {
+          const matches = [];
+          for (let i = 0; i < values.length; i++)
+            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+              matches.push(values[i]);
+          renderList(matches, searchTerm);
+        }
+      },
+    };
+  };
 
   checkFields = () => {
     const { conditionsData } = this.state;
@@ -159,16 +198,16 @@ class EmailReminderForm extends PureComponent {
       appliesToData,
       recipient,
       emailSubject,
-      message,
+      messages,
     } = this.state;
 
     if (
       triggerEvent.trim() !== '' &&
       _sendingDate.trim() !== '' &&
       emailSubject.trim() !== '' &&
-      message.trim() !== '' &&
-      message.trim() !== '<p></p>' &&
-      message.trim() !== '<p><br></p>'
+      messages.trim() !== '' &&
+      messages.trim() !== '<p></p>' &&
+      messages.trim() !== '<p><br></p>'
     ) {
       if (appliesToData.trim() === 'any' && recipient.trim() !== '') {
         this.setState({ disabled: false });
@@ -229,7 +268,7 @@ class EmailReminderForm extends PureComponent {
 
   handleChangeEmail = (value) => {
     this.setState({
-      message: value,
+      messages: value,
     });
   };
 
@@ -249,6 +288,88 @@ class EmailReminderForm extends PureComponent {
     this.setState({ emailSubject: value });
   };
 
+  onClickCondition = (index) => {
+    const { conditionsData, selectedSelectBox } = this.state;
+    const newConditionsData = [...conditionsData];
+    const { dispatch } = this.props;
+
+    if (selectedSelectBox !== index) {
+      this.setState({
+        selectedSelectBox: index,
+      });
+
+      newConditionsData.forEach((item) => {
+        if (item.id === index) {
+          switch (item.key) {
+            case 'department':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchDepartmentList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            case 'location':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchLocationList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            case 'title':
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchTitleList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+
+            default:
+              this.setState({ load: false });
+              dispatch({
+                type: 'employeeSetting/fetchEmployeeTypeList',
+                payload: {},
+              }).then((data) => {
+                this.setState((prevState) => ({
+                  conditionsTrigger: {
+                    ...prevState.conditionsTrigger,
+                    departments: data,
+                  },
+                }));
+                this.setState({ load: true });
+              });
+              break;
+          }
+        }
+      });
+    }
+  };
+
   onChangeCondition = (index, name, value) => {
     const { conditionsData, conditions } = this.state;
     const { dispatch } = this.props;
@@ -258,6 +379,7 @@ class EmailReminderForm extends PureComponent {
 
     if (name === 'key') {
       if (value === 'department') {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchDepartmentList',
           payload: {},
@@ -268,8 +390,10 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else if (value === 'location') {
+        this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
           payload: {},
@@ -280,8 +404,10 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else if (value === 'title') {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
           payload: {},
@@ -292,8 +418,10 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       } else {
+        this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchEmployeeTypeList',
           payload: {},
@@ -304,6 +432,7 @@ class EmailReminderForm extends PureComponent {
               departments: data,
             },
           }));
+          this.setState({ load: true });
         });
       }
       newConditions[index][name] = value;
@@ -315,8 +444,7 @@ class EmailReminderForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
-    console.log('newConditionsData:', newConditionsData);
-    console.log('newConditions:', newConditions);
+    // console.log('newConditionsData:', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -351,6 +479,37 @@ class EmailReminderForm extends PureComponent {
         check = true;
       }
     });
+
+    return check;
+  };
+
+  checkOptionDepartment = (departmentName) => {
+    const { locationName, roles } = this.props;
+    const { isLocation } = this.state;
+    let check = true;
+
+    let hrManager = '';
+    let glManager = '';
+
+    roles.forEach((item) => {
+      if (item._id === 'HR-GLOBAL') {
+        glManager = 'HR-GLOBAL';
+      }
+      if (item._id === 'HR-MANAGER') {
+        hrManager = 'HR-MANAGER';
+      }
+    });
+
+    if (isLocation) {
+      if (hrManager && departmentName === locationName) {
+        check = false;
+      }
+      if (glManager) {
+        check = false;
+      }
+    } else {
+      check = false;
+    }
 
     return check;
   };
@@ -394,7 +553,7 @@ class EmailReminderForm extends PureComponent {
 
   onFinish = (values) => {
     const { triggerEventList, dispatch } = this.props;
-    const { message = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
+    const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     let dataSubmit = {};
 
     const newValue = { ...values };
@@ -405,6 +564,8 @@ class EmailReminderForm extends PureComponent {
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
+    const message = messages.replace(/<[^>]+>/g, '');
+
     if (appliesToData === 'any') {
       dataSubmit = { ...newValue, message, sendToExistingWorker };
     }
@@ -412,13 +573,13 @@ class EmailReminderForm extends PureComponent {
       dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
     }
 
-    console.log('dataSubmit: ', dataSubmit);
-
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,
-    }).then((data) => {
-      console.log('dataSubmit AFTER call api: ', data);
+    }).then(() => {
+      setTimeout(() => {
+        this.back();
+      }, 1000);
     });
   };
 
@@ -439,7 +600,10 @@ class EmailReminderForm extends PureComponent {
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
+      load,
     } = this.state;
+
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return (
       <Col span={24}>
@@ -489,17 +653,33 @@ class EmailReminderForm extends PureComponent {
                         value={data.value}
                         tagRender={this.tagRender}
                         mode="multiple"
-                        // showArrow
+                        showArrow
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
+                        onClick={() => this.onClickCondition(index)}
                       >
-                        {departments.map((department) => {
-                          return (
-                            <Option value={department._id} key={department._id}>
-                              {department.name}
-                            </Option>
-                          );
-                        })}
+                        {load ? (
+                          <>
+                            {departments.map((department) => {
+                              return (
+                                <Option
+                                  value={department._id}
+                                  key={department._id}
+                                  disabled={this.checkOptionDepartment(department.name)}
+                                >
+                                  {department.name}
+                                </Option>
+                              );
+                            })}
+                          </>
+                        ) : (
+                          <Option style={{ margin: 'auto', background: 'none' }}>
+                            <Spin indicator={antIcon} className={styles.iconSpin} />
+                          </Option>
+                        )}
                       </Select>
                     </Row>
                   </Col>
@@ -574,44 +754,10 @@ class EmailReminderForm extends PureComponent {
     return listAutoField;
   };
 
-  mentionModule = (t) => {
-    return {
-      allowedChars: /^[A-Za-z\s]*$/,
-      mentionDenotationChars: ['@'],
-      showDenotationChar: false,
-      renderItem: (item) => {
-        return item.value;
-      },
-      source(searchTerm, renderList, mentionChar) {
-        let values;
-        const { listAutoField } = t.props;
-        const list = listAutoField.map((item, index) => {
-          return {
-            id: index,
-            value: item,
-          };
-        });
-        if (mentionChar === '@') {
-          values = list;
-        }
-
-        if (searchTerm.length === 0) {
-          renderList(values, searchTerm);
-        } else {
-          const matches = [];
-          for (let i = 0; i < values.length; i++)
-            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-              matches.push(values[i]);
-          renderList(matches, searchTerm);
-        }
-      },
-    };
-  };
-
   _renderForm = () => {
     const { Option } = Select;
-    const { triggerEventList } = this.props;
-    const { sendingDate, applyTo, sendToWorker, message, disabled } = this.state;
+    const { triggerEventList, loading } = this.props;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
 
     return (
       <Form onFinish={this.onFinish}>
@@ -641,17 +787,6 @@ class EmailReminderForm extends PureComponent {
               </span>
             </div>
           </Col>
-
-          {/* Frequency */}
-          {/* <Col span={24}>
-            <Form.Item name="frequency" label="Frequency">
-              <Radio.Group onChange={(value) => this.onChangeFrequency(value)}>
-                {frequencyItem.map((option) => {
-                  return <Radio value={option.value}>{option.name}</Radio>;
-                })}
-              </Radio.Group>
-            </Form.Item>
-          </Col> */}
 
           {/* Sending date */}
           <Col span={24}>
@@ -715,9 +850,10 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
+
             <ReactQuill
               className={styles.quill}
-              value={message}
+              value={messages}
               onChange={this.handleChangeEmail}
               modules={this.modules}
             />
@@ -737,7 +873,7 @@ class EmailReminderForm extends PureComponent {
               </Button>
             </Link>
             <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={disabled}>
+              <Button type="primary" htmlType="submit" disabled={disabled} loading={loading}>
                 {formatMessage({ id: 'component.emailReminderForm.submit' })}
               </Button>
             </Form.Item>
@@ -748,15 +884,24 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
+    const { loading } = this.props;
     this.checkFields();
     return (
-      <div className={styles.EmailReminderForm}>
-        <div className={styles.EmailReminderForm_title}>
-          {formatMessage({ id: 'component.emailReminderForm.title' })}
-          <hr />
-        </div>
-        <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
-      </div>
+      <>
+        {loading ? (
+          <div className={styles.EmailReminderForm_loading}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div className={styles.EmailReminderForm}>
+            <div className={styles.EmailReminderForm_title}>
+              {formatMessage({ id: 'component.emailReminderForm.title' })}
+              <hr />
+            </div>
+            <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
+          </div>
+        )}
+      </>
     );
   }
 }

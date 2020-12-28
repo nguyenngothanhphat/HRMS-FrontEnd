@@ -20,6 +20,9 @@ import {
   getDepartmentListByCompanyId,
   getListAutoField,
   addCustomEmail,
+  getListCustomEmail,
+  getCustomEmailInfo,
+  deleteCustomEmailItem,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -46,6 +49,8 @@ const employeeSetting = {
     departmentListByCompanyId: [],
     listAutoField: [],
     dataSubmit: {},
+    listCustomEmail: [],
+    emailCustomData: {},
   },
   effects: {
     *fetchDefaultTemplateList(_, { call, put }) {
@@ -66,7 +71,6 @@ const employeeSetting = {
       try {
         const response = yield call(getCustomTemplateList);
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -289,6 +293,52 @@ const employeeSetting = {
         return data;
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fecthListCustomEmail(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListCustomEmail);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listCustomEmail: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchEmailCustomInfo({ payload: id = '' }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getCustomEmailInfo, { id });
+        const { data: emailCustomData, statusCode } = response;
+        yield put({ type: 'save', payload: { emailCustomData } });
+        if (statusCode !== 200) throw response;
+      } catch (error) {
+        dialog(error.message);
+      }
+      return response;
+    },
+    *deleteCustomEmailItem({ payload }, { call, put }) {
+      let response;
+      try {
+        const _id = payload;
+
+        const req = {
+          id: _id,
+        };
+
+        response = yield call(deleteCustomEmailItem, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'fecthListCustomEmail' });
+        notification.success({
+          message: response.status,
+          description: response.message,
+        });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

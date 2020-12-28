@@ -2,19 +2,28 @@ import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { history } from 'umi';
 import styles from './index.less';
 
 export default class EventDetailBox extends PureComponent {
-  onEventClick = () => {
-    // eslint-disable-next-line no-alert
-    alert('View Leave Request');
+  goToLeaveRequest = (_id) => {
+    history.push({
+      pathname: `/time-off/view-request/${_id}`,
+    });
   };
 
   render() {
     const { data = [], color = 0 } = this.props;
-    const { fromDate: from = '', toDate: to = '', type = '', duration = '', name = '' } = data;
+    const {
+      fromDate: from = '',
+      toDate: to = '',
+      type = '',
+      duration = '',
+      name = '',
+      _id = '',
+    } = data;
     return (
-      <Row onClick={this.onEventClick} className={styles.EventDetailBox}>
+      <Row onClick={() => this.goToLeaveRequest(_id)} className={styles.EventDetailBox}>
         {from === to ? (
           <>
             <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>

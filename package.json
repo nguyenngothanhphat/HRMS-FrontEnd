@@ -60,6 +60,7 @@
     "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
+    "file-saver": "^2.0.5",
     "lodash": "^4.17.11",
     "moment": "^2.25.3",
     "omit.js": "^2.0.2",
@@ -85,7 +86,8 @@
     "tslint-react": "^5.0.0",
     "umi": "^3.2.22",
     "umi-request": "^1.0.8",
-    "use-merge-value": "^1.0.1"
+    "use-merge-value": "^1.0.1",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^1.0.18",

@@ -1,10 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, Popover, notification } from 'antd';
+import { Table, Popover, notification, Avatar } from 'antd';
 import moment from 'moment';
 import empty from '@/assets/empty.svg';
-import persion from '@/assets/people.svg';
+import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
-// import persion from '@/assets/people.svg';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -115,22 +115,32 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
-        render: () => (
-          <div className={styles.rowAction}>
-            <p>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-              <span>
-                <img src={persion} style={{ marginTop: '10px' }} alt="" />
-              </span>
-            </p>
-          </div>
-        ),
+        render: (_, row) => {
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          const arrAvt = [avtManager, avtHrManager];
+          return (
+            <div className={styles.rowAction}>
+              {arrAvt.map(
+                (item, index) =>
+                  item && (
+                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+                      <Avatar src={item} size={20} icon={<UserOutlined />} />
+                    </div>
+                  ),
+              )}
+            </div>
+          );
+        },
       },
       {
         title: <span className={styles.title}>Department</span>,
         dataIndex: 'department',
+        render: (department) => {
+          return <p>{department?.name}</p>;
+        },
       },
       {
         title: <span className={styles.title}>LWD</span>,
@@ -138,10 +148,6 @@ class HrTable extends PureComponent {
         render: (lastWorkingDate) => {
           return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
-      },
-      {
-        title: <span className={styles.title}>LWD Change</span>,
-        dataIndex: 'LwdChange',
       },
       {
         title: <span className={styles.title}>Action</span>,

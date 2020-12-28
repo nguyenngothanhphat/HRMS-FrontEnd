@@ -1,22 +1,35 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-export default class CompoffTable extends PureComponent {
+@connect(({ timeOff, loading, user }) => ({
+  loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
+  timeOff,
+  user,
+}))
+class CompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: 'ticketId',
+      dataIndex: 'id',
       align: 'left',
-      render: () => <span>ID</span>,
+      fixed: 'left',
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            {ticketID}
+          </span>
+        );
+      },
     },
     {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      // render: (type) => <span>{type ? type.project : ''}</span>,
+      render: (project) => <span>{project ? project.name : ''}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
@@ -55,6 +68,7 @@ export default class CompoffTable extends PureComponent {
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
                     <Avatar
+                      size="small"
                       style={
                         approvalManagerEmail === workEmail
                           ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
@@ -94,7 +108,7 @@ export default class CompoffTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/view-compoff-request/${_id}`,
       // state: { location: name },
     });
   };
@@ -122,13 +136,11 @@ export default class CompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        fromDate = '',
-        toDate = '',
-        approvalManager: {
-          generalInfo: { workEmail = '' } = {},
-          generalInfo: generalInfoA = {},
-        } = {},
+        manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
         cc = [],
+        ticketID = '',
+        _id = '',
+        extraTime = [],
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -136,51 +148,45 @@ export default class CompoffTable extends PureComponent {
         approvalManagerEmail: workEmail,
       });
 
-      const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
-        .locale('en')
-        .format('MM.DD.YYYY')}`;
+      let duration = '';
+      if (extraTime.length !== 0) {
+        const fromDate = extraTime[0].date;
+        const toDate = extraTime[extraTime.length - 1].date;
+        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
+          'DD.MM.YYYY',
+        )}`;
+      }
 
-      const employeeFromCC = cc.map((each) => {
-        const { generalInfo = {} } = each;
-        return generalInfo;
-      });
+      let employeeFromCC = [];
+      if (cc.length > 0) {
+        employeeFromCC = cc[0].map((each) => {
+          return each;
+        });
+      }
       const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
-        leaveTimes,
+        duration,
         assigned,
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };
 
   render() {
-    const { data = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
+    const { data = [], loadingFetchMyCompoffRequests } = this.props;
+    const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
     const parsedData = this.processData(data);
-    // const scroll = {
-    //   x: '',
-    //   y: 'max-content',
-    // };
-
-    // const pagination = {
-    //   position: ['bottomRight'],
-    //   total: data.length,
-    //   showTotal: (total, range) => (
-    //     <span>
-    //       Showing{' '}
-    //       <b>
-    //         {range[0]} - {range[1]}
-    //       </b>{' '}
-    //       total
-    //     </span>
-    //   ),
-    //   pageSize: rowSize,
-    //   current: pageSelected,
-    //   onChange: this.onChangePagination,
-    // };
+    const scroll = {
+      x: '40vw',
+      y: 'max-content',
+    };
 
     const rowSelection = {
       type: 'checkbox',
@@ -188,18 +194,20 @@ export default class CompoffTable extends PureComponent {
       onChange: this.onSelectChange,
     };
     return (
-      <div className={styles.DataTable}>
+      <div className={styles.CompoffTable}>
         <Table
-          size="small"
-          loading={loading}
+          size="middle"
+          loading={loadingFetchMyCompoffRequests}
           rowSelection={rowSelection}
-          // pagination={{ ...pagination, total: data.length }}
+          pagination={false}
           columns={this.columns}
           dataSource={parsedData}
-          // scroll={scroll}
+          scroll={scroll}
           rowKey="_id"
         />
       </div>
     );
   }
 }
+
+export default CompoffTable;

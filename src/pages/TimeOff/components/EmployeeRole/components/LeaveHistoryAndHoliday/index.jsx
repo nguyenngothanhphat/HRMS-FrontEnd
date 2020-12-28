@@ -24,10 +24,11 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
-      payload: { year: moment().format('YYYY'), month: '' },
+      payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
     });
     dispatch({
       type: 'timeOff/fetchLeaveRequestOfEmployee',
+      status: '',
     });
   };
 
@@ -85,35 +86,44 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return result;
   };
 
-  formatLeavingList = (leaveRequests) => {
-    let result = leaveRequests.map((each) => {
+  formatLeavingList = (allLeaveRequests) => {
+    let result = allLeaveRequests.map((each) => {
       const {
+        status = '',
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
         subject = '',
         type: { shortType = '' } = {},
+        _id = '',
       } = each;
 
-      const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
-      const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-      return {
-        name: subject,
-        fromDate,
-        toDate,
-        duration,
-        type: shortType,
-      };
+      if (status !== 'DRAFTS') {
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        return {
+          _id,
+          name: subject,
+          fromDate,
+          toDate,
+          duration,
+          type: shortType,
+        };
+      }
+      return null;
     });
+    result = result.filter((value) => value !== null);
     result = result.sort(this.compareDates);
     return result;
   };
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [], leaveRequests = [] } = {} } = this.props;
+    const {
+      timeOff: { holidaysList = [], allMyLeaveRequests: { items = [] } = {} } = {},
+    } = this.props;
     const formatHolidayLists = this.formatHolidayLists(holidaysList);
-    const formatLeavingList = this.formatLeavingList(leaveRequests);
+    const formatLeavingList = this.formatLeavingList(items);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>

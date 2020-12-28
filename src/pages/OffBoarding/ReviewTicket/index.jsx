@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import TicketEmployee from '../EmployeeOffBoarding/Request';
@@ -12,6 +13,7 @@ class OffBoarding extends PureComponent {
       type: 'offboarding/save',
       payload: {
         myRequest: {},
+        listProjectByEmployee: [],
       },
     });
   }
@@ -20,7 +22,7 @@ class OffBoarding extends PureComponent {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || employee;
+    const role = hrManager || manager || employee || 'employee';
     return role;
   };
 

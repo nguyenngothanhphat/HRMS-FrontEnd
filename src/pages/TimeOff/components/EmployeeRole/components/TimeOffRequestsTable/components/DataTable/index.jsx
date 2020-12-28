@@ -1,34 +1,47 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-export default class DataTable extends PureComponent {
+@connect(({ loading }) => ({
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+}))
+class DataTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
-      dataIndex: 'ticketId',
+      dataIndex: 'id',
       align: 'left',
-      render: () => <span>ID</span>,
+      fixed: 'left',
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
+        return (
+          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+            ID
+          </span>
+        );
+      },
     },
     {
       title: 'Type',
       dataIndex: 'type',
-      align: 'left',
+      align: 'center',
       render: (type) => <span>{type ? type.shortType : ''}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    {
-      title: 'Leave date',
-      width: '20%',
-      dataIndex: 'leaveTimes',
-      align: 'left',
-    },
+
+    // {
+    //   title: 'Leave date',
+    //   width: '20%',
+    //   dataIndex: 'leaveTimes',
+    //   align: 'left',
+    // },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
-      align: 'left',
+      align: 'center',
+      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -39,17 +52,18 @@ export default class DataTable extends PureComponent {
     {
       title: 'Duration',
       dataIndex: 'duration',
-      align: 'left',
+      align: 'center',
     },
     {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'assigned',
+      // width: '25%',
       render: (assigned) => {
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
-              maxCount={2}
+              maxCount={3}
               maxStyle={{
                 color: '#FFA100',
                 backgroundColor: '#EAF0FF',
@@ -61,6 +75,7 @@ export default class DataTable extends PureComponent {
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
                     <Avatar
+                      size="small"
                       style={
                         approvalManagerEmail === workEmail
                           ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
@@ -80,6 +95,7 @@ export default class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
+      // width: '25%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -135,6 +151,8 @@ export default class DataTable extends PureComponent {
           generalInfo: generalInfoA = {},
         } = {},
         cc = [],
+        ticketID = '',
+        _id = '',
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -142,51 +160,44 @@ export default class DataTable extends PureComponent {
         approvalManagerEmail: workEmail,
       });
 
-      const leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
-        .locale('en')
-        .format('MM.DD.YYYY')}`;
+      let leaveTimes = '';
+      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+          .locale('en')
+          .format('MM.DD.YYYY')}`;
+      }
 
-      const employeeFromCC = cc.map((each) => {
-        const { generalInfo = {} } = each;
-        return generalInfo;
-      });
-      const assigned = [generalInfoA, ...employeeFromCC];
+      let employeeFromCC = [];
+      if (cc.length > 0) {
+        employeeFromCC = cc[0].map((each) => {
+          return each;
+        });
+      }
+      // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
         leaveTimes,
-        assigned,
+        // assigned,
+        assigned: [generalInfoA],
+        id: {
+          ticketID,
+          _id,
+        },
       };
     });
   };
 
   render() {
-    const { data = [], loading } = this.props;
-    const { pageSelected, selectedRowKeys } = this.state;
+    const { data = [], loadingFetchLeaveRequests } = this.props;
+    const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
     const parsedData = this.processData(data);
-    // const scroll = {
-    //   x: '',
-    //   y: 'max-content',
-    // };
-
-    // const pagination = {
-    //   position: ['bottomRight'],
-    //   total: data.length,
-    //   showTotal: (total, range) => (
-    //     <span>
-    //       Showing{' '}
-    //       <b>
-    //         {range[0]} - {range[1]}
-    //       </b>{' '}
-    //       total
-    //     </span>
-    //   ),
-    //   pageSize: rowSize,
-    //   current: pageSelected,
-    //   onChange: this.onChangePagination,
-    // };
+    const scroll = {
+      x: '40vw',
+      y: 'max-content',
+    };
 
     const rowSelection = {
       type: 'checkbox',
@@ -196,16 +207,18 @@ export default class DataTable extends PureComponent {
     return (
       <div className={styles.DataTable}>
         <Table
-          size="small"
-          loading={loading}
+          size="middle"
+          loading={loadingFetchLeaveRequests}
           rowSelection={rowSelection}
-          // pagination={{ ...pagination, total: data.length }}
+          pagination={false}
           columns={this.columns}
           dataSource={parsedData}
-          // scroll={scroll}
+          scroll={scroll}
           rowKey="_id"
         />
       </div>
     );
   }
 }
+
+export default DataTable;

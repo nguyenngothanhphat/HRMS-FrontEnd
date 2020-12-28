@@ -1,0 +1,111 @@
+.NextStep {
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+  width: 100%;
+  background-color: white;
+  margin-bottom: 20px;
+
+  .aboveContainer {
+    padding: 20px;
+    .abovePart {
+      display: flex;
+      flex-direction: column;
+      span {
+        margin-bottom: 10px;
+      }
+      .title {
+        font-weight: bold;
+        // color: #464646;
+        font-size: 16px;
+      }
+    }
+    .stepBoxes {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      .divider {
+        border-right: 1px dotted #e8e8e8;
+        margin: 0 20px;
+      }
+      .eachBox {
+        display: flex;
+        justify-content: flex-start;
+        flex: 4/7;
+        &:nth-of-type(1) {
+          flex: 3/7;
+        }
+        .indexNumber {
+          span {
+            background: #ffa100;
+            border-radius: 50%;
+            height: 25px;
+            width: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+          }
+        }
+        .content1,
+        .content2 {
+          padding-left: 10px;
+          font-size: 13px;
+          p {
+            margin-bottom: 0;
+            color: #464646;
+          }
+        }
+        .content2 {
+          .scheduleTime {
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .belowContainer {
+    padding: 15px 20px 20px 20px;
+    border-top: 1px solid #ebeff2;
+    .submitDocuments {
+      margin: 10px 0;
+      .abovePart {
+        margin-bottom: 20px;
+        .title {
+          font-weight: bold;
+          color: #464646;
+        }
+      }
+      .loadingSpin {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 0;
+      }
+
+      .submitFiles {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        .submittedTime {
+          font-size: 13px;
+          color: #afafaf;
+        }
+        .submitButton {
+          font-weight: bold;
+          color: #2c6df9;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+        .disableButton {
+          opacity: 0.8;
+          cursor: default;
+        }
+      }
+    }
+  }
+}

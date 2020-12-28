@@ -1,22 +1,67 @@
 import React, { Component } from 'react';
-import { Radio, Input } from 'antd';
+import { Radio, Row, Col } from 'antd';
 import styles from './index.less';
 
 class HireProbation extends Component {
-  onChange = () => {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      minimumIncrements: '',
+      select: 'yes',
+    };
+  }
+
+  onChangeRadio = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { minimumIncrements } = this.state;
+    this.setState({
+      select: e.target.value,
+    });
+    const data = {
+      select: e.target.value,
+      minimumIncrements,
+    };
+    onChangeValue(data);
+  };
+
+  onChange = (value) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { select } = this.state;
+    this.setState({
+      minimumIncrements: value,
+    });
+    const data = {
+      select,
+      minimumIncrements: value,
+    };
+    onChangeValue(data);
+  };
 
   render() {
+    const { minimumIncrements, select } = this.state;
     return (
-      <div className={styles.contentIncreaments}>
-        <div className={styles.titleText}>
-          <span className={styles.text}>
-            Should new hires have their casual leave balance prorated for the 1st year?
-          </span>
-          <Input className={styles.input} />
-          <Radio.Group defaultValue="a" buttonStyle="solid">
-            <Radio.Button value="a">Day</Radio.Button>
-            <Radio.Button value="d">Hours</Radio.Button>
-          </Radio.Group>
+      <div className={styles.contentHireProration}>
+        <div className={styles.title}>New hire proration</div>
+        <div className={styles.borderStyles} />
+        <div className={styles.formBody}>
+          <Row gutter={[20, 0]}>
+            <Col span={10}>
+              <div className={styles.titleText}>
+                Should new hires have their casual leave balance prorated for the 1st year?
+              </div>
+            </Col>
+            <Col span={12}>
+              <Radio.Group
+                onChange={this.onChangeRadio}
+                value={select}
+                buttonStyle="solid"
+                className={styles.radioGroup}
+              >
+                <Radio.Button value="yes">Yes</Radio.Button>
+                <Radio.Button value="no">No</Radio.Button>
+              </Radio.Group>
+            </Col>
+          </Row>
         </div>
       </div>
     );

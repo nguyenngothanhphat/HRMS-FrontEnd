@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { Progress } from 'antd';
 import s from './index.less';
 
 class TimeOffLayout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedItemKey: '',
+      selectedItemId: '',
       displayComponent: '',
     };
   }
@@ -13,21 +14,33 @@ class TimeOffLayout extends Component {
   componentDidMount() {
     const { listMenu } = this.props;
     this.setState({
-      selectedItemKey: listMenu[0].key,
+      selectedItemId: listMenu[0].id,
       displayComponent: listMenu[0].component,
     });
   }
 
-  onClickItemMenu = ({ key, component }) => {
-    this.setState({ selectedItemKey: key, displayComponent: component });
+  onClickItemMenu = ({ id, component }) => {
+    this.setState({ selectedItemId: id, displayComponent: component });
   };
 
   _renderItemMenu = (item) => {
-    const { selectedItemKey } = this.state;
-    const classNameItemMenu = selectedItemKey === item.key ? s.itemMenuAcive : s.itemMenu;
+    const { selectedItemId } = this.state;
+    const { id = '' } = item;
+    const classNameItemMenu = selectedItemId === item.id ? s.itemMenuAcive : s.itemMenu;
+    const tabTop = selectedItemId - 1 === id;
     return (
-      <div onClick={() => this.onClickItemMenu(item)} className={classNameItemMenu} key={item.key}>
-        {item.name}
+      <div
+        onClick={() => this.onClickItemMenu(item)}
+        className={classNameItemMenu}
+        style={tabTop ? { borderBottom: 'none' } : {}}
+        key={item.key}
+      >
+        {item.name}{' '}
+        <Progress
+          strokeColor={item.progress < 100 ? '#FFA100' : 'green'}
+          type="circle"
+          percent={item.progress}
+        />
       </div>
     );
   };

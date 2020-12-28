@@ -93,10 +93,10 @@ const Screen2 = (props) => {
           zipCode: headQuarterAddress.zipCode,
           locations: [
             {
-              address: 'a1',
+              address: '',
               country: '',
               state: '',
-              zipCode: 'z1',
+              zipCode: '',
             },
           ],
         }}
