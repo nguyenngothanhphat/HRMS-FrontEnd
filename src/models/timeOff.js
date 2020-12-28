@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import {
   getHolidaysList,
   getLeaveBalanceOfUser,
@@ -17,6 +18,8 @@ import {
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
   getTeamLeaveRequests,
+  uploadFile,
+  uploadBalances,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -35,6 +38,8 @@ const timeOff = {
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
+    urlExcel: undefined,
+    balances: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -272,8 +277,9 @@ const timeOff = {
 
     // MANAGER
     *fetchTeamCompoffRequests(_, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getTeamCompoffRequests, {});
+        response = yield call(getTeamCompoffRequests, {});
         const { statusCode, data: teamCompoffRequests = {} } = response;
         // console.log('response', response);
         if (statusCode !== 200) throw response;
@@ -282,8 +288,9 @@ const timeOff = {
           payload: { teamCompoffRequests },
         });
       } catch (errors) {
-        // dialog(errors);
+        dialog(errors);
       }
+      return response;
     },
 
     *fetchTeamLeaveRequests(_, { call, put }) {
@@ -295,6 +302,40 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { teamLeaveRequests },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+    *uploadFileExcel({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadFile, payload);
+        const { statusCode, data } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: { urlExcel: data[0].id },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+    *uploadBalances({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadBalances, payload);
+        const { statusCode, data: balances } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: balances,
         });
       } catch (errors) {
         // dialog(errors);

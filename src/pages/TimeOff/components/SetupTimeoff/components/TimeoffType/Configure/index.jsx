@@ -23,6 +23,7 @@ class Configure extends Component {
       baseAccual: {},
       tenuaAccrua: {},
       balance: {},
+      negativeBalance: {},
       list: [
         {
           key: 1,
@@ -64,7 +65,7 @@ class Configure extends Component {
           id: 'negativeBalances',
           title: 'Negative balances',
           ref: React.createRef(),
-          componnet: <NegativeBalances onChangeValue={this.onChangeBalance} />,
+          componnet: <NegativeBalances onChangeValue={this.onChangeNegative} />,
         },
         {
           key: 7,
@@ -169,6 +170,10 @@ class Configure extends Component {
     this.setState({ balance: value });
   };
 
+  onChangeNegative = (value = {}) => {
+    this.setState({ negative: value });
+  };
+
   prevStep = (data) => {
     if (data > 1) {
       const dataPrev = data - 1;
@@ -194,7 +199,7 @@ class Configure extends Component {
   render() {
     // const { tabKey = '' } = this.props;
     const { select, tenuaAccrua, balance, step, list, baseAccual } = this.state;
-    console.log(baseAccual);
+    // console.log(negative);
     const selectStep = list.find((item) => item.id === select).key;
 
     return (
