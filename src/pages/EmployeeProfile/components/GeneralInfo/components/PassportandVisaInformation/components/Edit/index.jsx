@@ -15,6 +15,10 @@ import styles from './index.less';
     loading,
     upload: {
       passPortURL = '',
+      passport0URL = '',
+      passport1URL = '',
+      urlImage = '',
+      loadingPassportTest = [],
       visa0IDURL = '',
       visa1IDURL = '',
       passPortIDURL = '',
@@ -41,6 +45,10 @@ import styles from './index.less';
     document,
     idCurrentEmployee,
     loadingPassPort,
+    passport0URL,
+    passport1URL,
+    urlImage,
+    loadingPassportTest
   }),
 )
 class Edit extends Component {
@@ -54,6 +62,7 @@ class Edit extends Component {
       isCheckDateVisa: true,
       visible: false,
       linkImage: '',
+      checkValidate: [{}],
     };
   }
 
@@ -101,7 +110,7 @@ class Edit extends Component {
     });
   };
 
-  handleGetUpLoad = (resp) => {
+  handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
     const value = { id: first ? first.id : '', url: first ? first.url : '' };
@@ -359,7 +368,7 @@ class Edit extends Component {
     const { dispatch, passportData = [], visaData = [] } = this.props;
     const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
     const dataTempKept = this.processDataKeptPassPort() || {};
-    let idPassPort = '';
+    const idPassPort = '';
 
     console.log('payloadUpdatePassPort: ', payloadUpdatePassPort);
 
@@ -391,13 +400,18 @@ class Edit extends Component {
     // });
   };
 
-  handleCanCelIcon = () => {
+  handleCanCelIcon = (index) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
-    const item = { ...passportData, urlFile: '' };
-    const isModified = JSON.stringify(item) !== JSON.stringify(passportDataOrigin);
+    const item = passportData[index];
+
+    const newItem = { ...item, urlFile: '' };
+    const newList = [...passportData];
+    newList.splice(index, 1, newItem);
+
+    const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: item },
+      payload: { passportData: newList },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -405,8 +419,20 @@ class Edit extends Component {
     });
   };
 
-  handleGetSetSizeImage = (isLt5M) => {
-    this.setState({ isLt5M });
+  handleNameDataUpload = (url) => {
+    const split1URL = url.split('/');
+    const nameData1URL = split1URL[split1URL.length - 1];
+    return nameData1URL;
+  };
+
+  handleGetSetSizeImage = (index, isLt5M) => {
+    const { checkValidate } = this.state;
+    const item = checkValidate[index];
+    const newItem = { ...item, isLt5M };
+    const newList = [...checkValidate];
+    newList.splice(index, 1, newItem);
+
+    this.setState({ isLt5M, checkValidate: newList });
   };
 
   getConfirmContent = (setContent) => {
@@ -476,7 +502,10 @@ class Edit extends Component {
       handleCancel = () => {},
       countryList,
       loading,
-      loadingPassPort,
+      // loadingPassPort,
+      // passport0URL,
+      // passport1URL,
+      loadingPassportTest
     } = this.props;
 
     const formatCountryList = countryList.map((item) => {
@@ -487,8 +516,8 @@ class Edit extends Component {
       };
     });
 
-    const newPassportData = [...passportData];
-    console.log('RENDER newPassportData: ', newPassportData);
+    // const newPassportData = [...passportData];
+    // console.log('RENDER newPassportData: ', newPassportData);
 
     const formItemLayout = {
       labelCol: {
@@ -506,7 +535,7 @@ class Edit extends Component {
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form className={styles.Form} {...formItemLayout} onFinish={this.handleSave}>
-          {newPassportData.map((item, index) => {
+          {passportData.map((item, index) => {
             const {
               passportNumber,
               passportIssuedCountry,
@@ -518,13 +547,11 @@ class Edit extends Component {
             const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
             const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
 
-            const nameFile = urlFile ? urlFile.url.split('/') : '';
-            const splitURL = nameFile[nameFile.length - 1];
-
-            console.log(urlFile);
+            // const nameFile = urlFile ? urlFile.url.split('/') : '';
+            // const splitURL = nameFile[nameFile.length - 1];
 
             return (
-              <div key={index}>
+              <div key={`passport${index + 1}`}>
                 {index > 0 ? <div className={styles.line} /> : null}
 
                 <div className={styles.styleUpLoad}>
@@ -559,22 +586,23 @@ class Edit extends Component {
                       />
                     </div>
                   ) : null} */}
-                  <>
-                    {urlFile === '' ? (
-                      <div className={styles.textUpload}>
-                        {loadingPassPort === false ? (
+
+                  { !urlFile ? (
+                    <div className={styles.textUpload}>
+                      {loadingPassportTest[index] === false ||
+                        loadingPassportTest[index] === undefined ? (
                           <UploadImage
                             content={isLt5M ? 'Choose file' : `Retry`}
-                            setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
-                            getResponse={(resp) => this.handleGetUpLoad(resp)}
+                            setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(index, isImage5M)}
+                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                             loading={loading}
+                            index={index}
                             name="passport"
-                            loading={loadingPassPort}
                           />
                         ) : (
-                          <Spin loading={loadingPassPort} active="true" />
+                          <Spin loading={loadingPassportTest[index]} active="true" />
                         )}
-                      </div>
+                    </div>
                     ) : (
                       <div className={styles.viewUpLoadData}>
                         <p
@@ -587,20 +615,20 @@ class Edit extends Component {
                         <img
                           src={cancelIcon}
                           alt=""
-                          onClick={this.handleCanCelIcon}
+                          onClick={this.handleCanCelIcon(index)}
                           className={styles.viewUpLoadDataIconCancel}
                         />
                       </div>
                     )}
-                  </>
+
                 </div>
-                {urlFile !== '' ? (
+                {urlFile ? (
                   <Form.Item label="Uploaded file:" className={styles.labelUpload}>
                     <p
                       onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                       className={styles.urlUpload}
                     >
-                      {splitURL}
+                      {this.handleNameDataUpload(urlFile.url)}
                     </p>
                   </Form.Item>
                 ) : (
@@ -622,10 +650,10 @@ class Edit extends Component {
                       )
                     }
                   >
-                    {formatCountryList.map((item) => {
+                    {formatCountryList.map((itemCountry) => {
                       return (
-                        <Option key={item.value} value={item.value}>
-                          {item.name}
+                        <Option key={itemCountry.value} value={itemCountry.value}>
+                          {itemCountry.name}
                         </Option>
                       );
                     })}
