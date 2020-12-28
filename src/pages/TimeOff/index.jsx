@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { history } from 'umi';
-import EmployeeRole from './components/EmployeeRole';
-import ManagerRole from './components/ManagerRole';
+import EmployeeLandingPage from './components/EmployeeLandingPage';
+import ManagerLandingPage from './components/ManagerLandingPage';
+import HRManagerLandingPage from './components/HRManagerLandingPage';
 import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
 
@@ -28,13 +29,11 @@ export default class TimeOff extends PureComponent {
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
     const role = hrManager || manager || employee || 'employee';
-    console.log('result role', role);
     return role;
   };
 
   componentDidMount = () => {
     const listRole = localStorage.getItem('antd-pro-authority');
-    console.log('listRole', JSON.parse(listRole));
     const role = this.findRole(JSON.parse(listRole));
     this.setState({
       role,
@@ -62,25 +61,26 @@ export default class TimeOff extends PureComponent {
 
   render() {
     const { role } = this.state;
+
     return (
       <div className={styles.TimeOff}>
         <PageContainer>
           <Tabs defaultActiveKey="1" tabBarExtraContent={this.options()}>
-            {(role === 'employee' || role === 'hr-manager') && (
+            {role === 'employee' && (
               <TabPane tab="Timeoff" key="1">
-                <EmployeeRole />
+                <EmployeeLandingPage />
               </TabPane>
             )}
             {role === 'manager' && (
               <TabPane tab="Timeoff" key="2">
-                <ManagerRole />
+                <ManagerLandingPage />
               </TabPane>
             )}
-            {
-              // <TabPane tab="Balances" key="3">
-              //   <Balances />
-              // </TabPane>
-            }
+            {role === 'hr-manager' && (
+              <TabPane tab="Timeoff" key="3">
+                <HRManagerLandingPage />
+              </TabPane>
+            )}
             {role === 'hr-manager' && (
               <TabPane tab="Setup Timeoff policy" key="4">
                 <SetupTimeoff />
