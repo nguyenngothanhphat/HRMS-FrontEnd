@@ -654,7 +654,7 @@ class RequestInformation extends PureComponent {
             {(action === 'new-compoff-request' ||
               (action === 'edit-leave-request' && isEditingDrafts)) && (
               <Button
-                loading={loadingAddCompoffRequest}
+                loading={loadingAddCompoffRequest && buttonState === 1}
                 type="link"
                 form="myForm"
                 htmlType="submit"
@@ -666,7 +666,7 @@ class RequestInformation extends PureComponent {
               </Button>
             )}
             <Button
-              loading={loadingAddCompoffRequest}
+              loading={loadingAddCompoffRequest && buttonState === 2}
               key="submit"
               type="primary"
               form="myForm"

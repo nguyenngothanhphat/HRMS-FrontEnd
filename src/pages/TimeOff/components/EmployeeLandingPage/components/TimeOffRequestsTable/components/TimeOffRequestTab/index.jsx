@@ -59,7 +59,7 @@ class TimeOffRequestTab extends PureComponent {
 
   fetchFilteredDataFromServer = (filterTab) => {
     const { dispatch, tab = 0, type: tabType = 0 } = this.props;
-    const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
+    // const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
     if (filterTab === '1') {
