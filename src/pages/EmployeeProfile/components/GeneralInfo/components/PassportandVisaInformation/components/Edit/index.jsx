@@ -5,6 +5,7 @@ import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import removeIcon from './assets/removeIcon.svg';
 import UploadImage from '../UploadImage';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
@@ -447,6 +448,22 @@ class Edit extends Component {
     this.setState({ passportArr: newPassportArr });
   };
 
+  onRemoveCondition = (index) => {
+    const { passportArr } = this.state;
+    const newPassportArr = [...passportArr];
+
+    newPassportArr.splice(index, 1);
+    console.log('remove index: ', index);
+    console.log('newPassportArr: ', newPassportArr);
+
+    // newPassportArr.forEach((item, itemIndex) => {
+    //   console.log(`item ${itemIndex}: `, item);
+    // });
+    this.setState({
+      passportArr: newPassportArr,
+    });
+  };
+
   render() {
     const {
       isLt5M,
@@ -459,6 +476,7 @@ class Edit extends Component {
     } = this.state;
 
     const newPassportArr = [...passportArr];
+    console.log('RENDER newPassportArr: ', newPassportArr);
 
     const { Option } = Select;
     const {
@@ -540,6 +558,16 @@ class Edit extends Component {
                           }}
                         />
                       </Form.Item>
+                      {index >= 1 ? (
+                        <div>
+                          <img
+                            className={styles.removeIcon}
+                            onClick={() => this.onRemoveCondition(index)}
+                            src={removeIcon}
+                            alt="remove"
+                          />
+                        </div>
+                      ) : null}
                       {!urlFile ? (
                         <div className={styles.textUpload}>
                           {loadingPassPort === false ? (
