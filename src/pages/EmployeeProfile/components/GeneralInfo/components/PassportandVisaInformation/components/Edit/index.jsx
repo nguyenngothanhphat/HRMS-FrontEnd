@@ -518,8 +518,8 @@ class Edit extends Component {
             const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
             const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
 
-            const splitURL = urlFile ? urlFile.url.split('/') : '';
-            const nameDataURL = splitURL[splitURL.length - 1];
+            const nameFile = urlFile ? urlFile.url.split('/') : '';
+            const splitURL = nameFile[nameFile.length - 1];
 
             console.log(urlFile);
 
@@ -549,7 +549,7 @@ class Edit extends Component {
                       }}
                     />
                   </Form.Item>
-                  {index >= 1 ? (
+                  {/* {index >= 1 ? (
                     <div>
                       <img
                         className={styles.removeIcon}
@@ -558,38 +558,41 @@ class Edit extends Component {
                         alt="remove"
                       />
                     </div>
-                  ) : null}
-                  {!urlFile ? (
-                    <div className={styles.textUpload}>
-                      {loadingPassPort === false ? (
-                        <UploadImage
-                          content={isLt5M ? 'Choose file' : `Retry`}
-                          setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
-                          getResponse={(resp) => this.handleGetUpLoad(resp)}
-                          loading={loading}
-                          name="passport"
+                  ) : null} */}
+                  <>
+                    {urlFile === '' ? (
+                      <div className={styles.textUpload}>
+                        {loadingPassPort === false ? (
+                          <UploadImage
+                            content={isLt5M ? 'Choose file' : `Retry`}
+                            setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
+                            getResponse={(resp) => this.handleGetUpLoad(resp)}
+                            loading={loading}
+                            name="passport"
+                            loading={loadingPassPort}
+                          />
+                        ) : (
+                          <Spin loading={loadingPassPort} active="true" />
+                        )}
+                      </div>
+                    ) : (
+                      <div className={styles.viewUpLoadData}>
+                        <p
+                          onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                          className={styles.viewUpLoadDataURL}
+                        >
+                          fileName
+                        </p>
+                        <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                        <img
+                          src={cancelIcon}
+                          alt=""
+                          onClick={this.handleCanCelIcon}
+                          className={styles.viewUpLoadDataIconCancel}
                         />
-                      ) : (
-                        <Spin loading={loadingPassPort} active="true" />
-                      )}
-                    </div>
-                  ) : (
-                    <div className={styles.viewUpLoadData}>
-                      <p
-                        onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                        className={styles.viewUpLoadDataURL}
-                      >
-                        fileName
-                      </p>
-                      <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                      <img
-                        src={cancelIcon}
-                        alt=""
-                        onClick={this.handleCanCelIcon}
-                        className={styles.viewUpLoadDataIconCancel}
-                      />
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </>
                 </div>
                 {urlFile !== '' ? (
                   <Form.Item label="Uploaded file:" className={styles.labelUpload}>
@@ -597,7 +600,7 @@ class Edit extends Component {
                       onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
                       className={styles.urlUpload}
                     >
-                      {nameDataURL}
+                      {splitURL}
                     </p>
                   </Form.Item>
                 ) : (
