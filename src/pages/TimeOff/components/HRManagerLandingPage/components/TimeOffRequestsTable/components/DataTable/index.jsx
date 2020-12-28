@@ -18,6 +18,7 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
+      width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
@@ -27,13 +28,13 @@ class DataTable extends PureComponent {
         );
       },
     },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-    },
+    // {
+    //   title: 'Type',
+    //   dataIndex: 'type',
+    //   align: 'center',
+    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
+    //   // sortDirections: ['ascend', 'descend', 'ascend'],
+    // },
 
     // {
     //   title: 'Leave date',
@@ -45,7 +46,7 @@ class DataTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'center',
-      // width: '30%',
+      width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -53,11 +54,11 @@ class DataTable extends PureComponent {
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      align: 'center',
-    },
+    // {
+    //   title: 'Duration',
+    //   dataIndex: 'duration',
+    //   align: 'center',
+    // },
     {
       title: 'Assigned',
       align: 'left',
@@ -99,7 +100,7 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'center',
       dataIndex: '_id',
-      // width: '25%',
+      width: '20%',
       render: (_id) => {
         return (
           <div className={styles.rowAction}>

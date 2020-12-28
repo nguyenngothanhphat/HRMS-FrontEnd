@@ -63,19 +63,10 @@ class CompoffTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '', workEmail = '' } = user;
-                const { approvalManagerEmail } = this.state;
+                const { firstName = '', lastName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar
-                      size="small"
-                      style={
-                        approvalManagerEmail === workEmail
-                          ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
-                          : { backgroundColor: '#EAF0FF' }
-                      }
-                      src={avatar}
-                    />
+                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
                   </Tooltip>
                 );
               })}
@@ -101,7 +92,6 @@ class CompoffTable extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
-      approvalManagerEmail: '',
     };
   }
 
@@ -136,17 +126,12 @@ class CompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: { workEmail = '' } = {}, generalInfo: generalInfoA = {} } = {},
+        manager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
         extraTime = [],
       } = value;
-
-      // GET ID OF APPROVE MANAGER
-      this.setState({
-        approvalManagerEmail: workEmail,
-      });
 
       let duration = '';
       if (extraTime.length !== 0) {

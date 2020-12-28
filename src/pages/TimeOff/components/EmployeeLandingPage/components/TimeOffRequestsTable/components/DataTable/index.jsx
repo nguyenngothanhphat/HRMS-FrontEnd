@@ -14,6 +14,7 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
+      width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
@@ -23,13 +24,13 @@ class DataTable extends PureComponent {
         );
       },
     },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-    },
+    // {
+    //   title: 'Type',
+    //   dataIndex: 'type',
+    //   align: 'center',
+    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
+    //   // sortDirections: ['ascend', 'descend', 'ascend'],
+    // },
 
     // {
     //   title: 'Leave date',
@@ -41,7 +42,7 @@ class DataTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'center',
-      // width: '30%',
+      width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -49,11 +50,11 @@ class DataTable extends PureComponent {
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      align: 'center',
-    },
+    // {
+    //   title: 'Duration',
+    //   dataIndex: 'duration',
+    //   align: 'center',
+    // },
     {
       title: 'Assigned',
       align: 'left',
@@ -70,19 +71,10 @@ class DataTable extends PureComponent {
               }}
             >
               {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '', workEmail = '' } = user;
-                const { approvalManagerEmail } = this.state;
+                const { firstName = '', lastName = '', avatar = '' } = user;
                 return (
                   <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar
-                      size="small"
-                      style={
-                        approvalManagerEmail === workEmail
-                          ? { backgroundColor: '#EAF0FF', border: '3px solid #FFA100' }
-                          : { backgroundColor: '#EAF0FF' }
-                      }
-                      src={avatar}
-                    />
+                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
                   </Tooltip>
                 );
               })}
@@ -95,7 +87,7 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
-      // width: '25%',
+      width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -109,7 +101,6 @@ class DataTable extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
-      approvalManagerEmail: '',
     };
   }
 
@@ -146,19 +137,11 @@ class DataTable extends PureComponent {
       const {
         fromDate = '',
         toDate = '',
-        approvalManager: {
-          generalInfo: { workEmail = '' } = {},
-          generalInfo: generalInfoA = {},
-        } = {},
+        approvalManager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
       } = value;
-
-      // GET ID OF APPROVE MANAGER
-      this.setState({
-        approvalManagerEmail: workEmail,
-      });
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
