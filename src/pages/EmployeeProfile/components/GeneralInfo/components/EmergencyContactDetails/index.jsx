@@ -35,10 +35,6 @@ class EmergencyContact extends Component {
     const payload = { ...generalData, ...reverseFields };
     const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
 
-    // console.log('generalData: ', generalData);
-    // console.log('payload: ', payload);
-    // console.log('reverseFields: ', reverseFields);
-
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: payload },

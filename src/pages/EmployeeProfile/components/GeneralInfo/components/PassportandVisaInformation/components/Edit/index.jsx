@@ -115,6 +115,11 @@ class Edit extends Component {
     };
     this.validateDate(getPassportData);
     const isModified = JSON.stringify(getPassportData) !== JSON.stringify(passportDataOrigin);
+
+    console.log('passportData: ', passportData);
+    console.log('newItem: ', newItem);
+    console.log('getPassportData: ', getPassportData);
+
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { passportData: getPassportData },
@@ -432,12 +437,9 @@ class Edit extends Component {
     const newPassportArr = [...passportArr];
     const newObj = {
       passportNumber: '',
-      passportIssuedCountry: {
-        name: 'Algeria',
-        _id: 'DZ',
-      },
-      passportIssuedOn: moment(),
-      passportValidTill: moment(),
+      passportIssuedCountry: {},
+      passportIssuedOn: '',
+      passportValidTill: '',
     };
 
     newPassportArr.push(newObj);
