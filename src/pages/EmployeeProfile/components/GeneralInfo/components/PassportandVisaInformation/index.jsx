@@ -10,8 +10,8 @@ import styles from './index.less';
     upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, visaData = [] } = {},
+      originData: { passportData: passportDataOrigin = [], visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = [], visaData = [] } = {},
     } = {},
   }) => ({
     openPassportandVisa,

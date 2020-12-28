@@ -223,12 +223,15 @@ const employeeProfile = {
     *fetchPassPort({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getPassPort, { employee });
-        const { statusCode, data: [passportData = {}] = [] } = response;
+        const { statusCode, data: passportData = [] } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
-        let passportDataTemp = { ...passportData };
+        // let passportDataTemp = { ...passportData };
+        let passportDataTemp = [...passportData];
+
         if (!checkDataTempKept) {
           passportDataTemp = { ...passportDataTemp, ...dataTempKept };
+
           delete passportDataTemp.updatedAt;
           delete passportData.updatedAt;
           const isModified = JSON.stringify(passportDataTemp) !== JSON.stringify(passportData);
