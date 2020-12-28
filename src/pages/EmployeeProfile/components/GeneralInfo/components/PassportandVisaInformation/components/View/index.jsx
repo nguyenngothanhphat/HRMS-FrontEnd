@@ -128,54 +128,73 @@ class View extends PureComponent {
   };
 
   handleRenderDataPassport = () => {
-    const { passportData } = this.props;
-    return passportData.map((item, index) => (
-      <Fragment key={`formPassport${index + 1}`}>
-        <Col span={6} className={styles.textLabel}>
-          Passport Number
-        </Col>
-        <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
-          {item.passportNumber}
-          {item.document ? (
-            <div className={styles.viewFileUpLoad}>
-              <p
-                onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
-                className={styles.urlData}
-              >
-                {item.document.attachment ? item.document.attachment.name : ''}
-              </p>
-              <ConformIcondata
-                data={item.document.attachment ? item.document.attachment.name : ''}
-              />
-            </div>
-          ) : (
-            <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
-          )}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Issued Country
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.passportIssuedCountry.name ? item.passportIssuedCountry.name : ''}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Issued On
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.passportIssuedOn
-            ? Moment(item.passportIssuedOn).locale('en').format('Do MMM YYYY')
-            : ''}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Valid Till
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.passportValidTill
-            ? Moment(item.passportValidTill).locale('en').format('Do MMM YYYY')
-            : ''}
-        </Col>
-      </Fragment>
-    ));
+    const { passportData = [] } = this.props;
+    return passportData.map((item, index) => {
+      const {
+        document = '',
+        passportIssuedCountry = '',
+        passportNumber = '',
+        passportValidTill = '',
+        passportIssuedOn = '',
+      } = item;
+      let nameDocument = '';
+      let getUrl = '';
+      if (document) {
+        if (document.attachment) {
+          const { attachment: { name = '', url = '' } = {} } = document;
+          nameDocument = name;
+          getUrl = url;
+        }
+      }
+      const splitUrlPassPort = document ? nameDocument : '';
+      return (
+        <Fragment key={`formPassport${index + 1}`}>
+          <Col span={6} className={styles.textLabel}>
+            Passport Number
+          </Col>
+          <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
+            {item.passportNumber}
+            {item.document ? (
+              <div className={styles.viewFileUpLoad}>
+                <p
+                  onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
+                  className={styles.urlData}
+                >
+                  {item.document.attachment ? item.document.attachment.name : ''}
+                </p>
+                <ConformIcondata
+                  data={item.document.attachment ? item.document.attachment.name : ''}
+                />
+              </div>
+            ) : (
+              <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
+            )}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Issued Country
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.passportIssuedCountry.name ? item.passportIssuedCountry.name : ''}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Issued On
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.passportIssuedOn
+              ? Moment(item.passportIssuedOn).locale('en').format('Do MMM YYYY')
+              : ''}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Valid Till
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.passportValidTill
+              ? Moment(item.passportValidTill).locale('en').format('Do MMM YYYY')
+              : ''}
+          </Col>
+        </Fragment>
+      );
+    });
   };
 
   handleRenderDataDummyPassport = (dummyData) => {
@@ -207,6 +226,7 @@ class View extends PureComponent {
 
     let nameDocument = '';
     let getUrl = '';
+    console.log(document);
     if (document) {
       if (document.attachment) {
         const { attachment: { name = '', url = '' } = {} } = document;

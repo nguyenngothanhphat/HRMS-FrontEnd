@@ -54,32 +54,7 @@ class Edit extends Component {
       isCheckDateVisa: true,
       visible: false,
       linkImage: '',
-      passportArr: [],
     };
-  }
-
-  componentDidMount() {
-    const { passportData = {} } = this.props;
-    const {
-      // urlFile = '',
-      passportNumber: _passportNumber = '',
-      passportIssuedCountry: _passportIssuedCountry,
-      passportIssuedOn = '',
-      passportValidTill = '',
-    } = passportData;
-    const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
-    const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-    const newArr = [];
-
-    const newPassportData = {
-      passportNumber: _passportNumber,
-      passportIssuedCountry: _passportIssuedCountry,
-      passportIssuedOn: formatDatePassportIssueOn,
-      passportValidTill: formatDatePassportValidTill,
-    };
-
-    newArr.push(newPassportData);
-    this.setState({ passportArr: newArr });
   }
 
   handleDropdown = (open) => {
@@ -113,7 +88,7 @@ class Edit extends Component {
     const newItem = { ...item, [name]: value };
     const newList = [...passportData];
     newList.splice(index, 1, newItem);
-    this.validateDate(newList);
+    // this.validateDate(newList);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
 
     dispatch({
@@ -174,23 +149,53 @@ class Edit extends Component {
 
   processDataChangesPassPort = () => {
     const { passportData: passportDataTemp } = this.props;
-    const {
-      urlFile = '',
-      document = '',
-      passportNumber = '',
-      passportIssuedCountry = '',
-      passportIssuedOn = '',
-      passportValidTill = '',
-      _id: id = '',
-    } = passportDataTemp;
-    const payloadChanges = {
-      id,
-      document: document ? document._id : urlFile.id,
-      passportNumber,
-      passportIssuedCountry,
-      passportIssuedOn,
-      passportValidTill,
-    };
+    const payloadChanges = [
+      {
+        urlFile: '',
+        document: '',
+        passportNumber: '',
+        passportIssuedCountry: '',
+        passportIssuedOn: '',
+        passportValidTill: '',
+        id: '',
+      },
+    ];
+
+    passportDataTemp.map((item, index) => {
+      console.log('item.document: ', item.document);
+      payloadChanges[index] = {
+        urlFile: item.urlFile,
+        document: item.document ? item.document._id : '',
+        // document: item.document ? item.document._id : item.urlFile.id,
+        passportNumber: item.passportNumber,
+        passportIssuedCountry: item.passportIssuedCountry,
+        passportIssuedOn: item.passportIssuedOn,
+        passportValidTill: item.passportValidTill,
+        id: item._id,
+      };
+
+      return payloadChanges;
+    });
+
+    // const {
+    //   urlFile = '',
+    //   document = '',
+    //   passportNumber = '',
+    //   passportIssuedCountry = '',
+    //   passportIssuedOn = '',
+    //   passportValidTill = '',
+    //   _id: id = '',
+    // } = passportDataTemp;
+
+    // const payloadChanges = {
+    //   id,
+    //   document: document ? document._id : urlFile.id,
+    //   passportNumber,
+    //   passportIssuedCountry,
+    //   passportIssuedOn,
+    //   passportValidTill,
+    // };
+    // const payloadChanges = _passportTemp;
 
     return payloadChanges;
   };
@@ -351,37 +356,39 @@ class Edit extends Component {
   };
 
   handleSave = async () => {
-    const { dispatch, passportData = {}, visaData = [] } = this.props;
+    const { dispatch, passportData = [], visaData = [] } = this.props;
     const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
     const dataTempKept = this.processDataKeptPassPort() || {};
     let idPassPort = '';
 
-    if (passportData) {
-      idPassPort = passportData._id;
-    }
+    console.log('payloadUpdatePassPort: ', payloadUpdatePassPort);
 
-    if (idPassPort) {
-      this.handleAddPassPortAllField();
-      dispatch({
-        type: 'employeeProfile/updatePassPort',
-        payload: payloadUpdatePassPort,
-        dataTempKept,
-        key: 'openPassportandVisa',
-      });
-    } else {
-      this.handleAddPassPortAllField();
-    }
-    visaData.map((item, index) => {
-      let idVisa = '';
-      const { _id } = item;
-      if (_id) {
-        idVisa = _id;
-      }
-      if (idVisa) {
-        return this.handleUpdateVisaGroup(item, index);
-      }
-      return this.handleAddVisaAllField(item, index);
-    });
+    // if (passportData) {
+    //   idPassPort = passportData._id;
+    // }
+
+    // if (idPassPort) {
+    //   this.handleAddPassPortAllField();
+    //   dispatch({
+    //     type: 'employeeProfile/updatePassPort',
+    //     payload: payloadUpdatePassPort,
+    //     dataTempKept,
+    //     key: 'openPassportandVisa',
+    //   });
+    // } else {
+    //   this.handleAddPassPortAllField();
+    // }
+    // visaData.map((item, index) => {
+    //   let idVisa = '';
+    //   const { _id } = item;
+    //   if (_id) {
+    //     idVisa = _id;
+    //   }
+    //   if (idVisa) {
+    //     return this.handleUpdateVisaGroup(item, index);
+    //   }
+    //   return this.handleAddVisaAllField(item, index);
+    // });
   };
 
   handleCanCelIcon = () => {
@@ -513,6 +520,8 @@ class Edit extends Component {
 
             const splitURL = urlFile ? urlFile.url.split('/') : '';
             const nameDataURL = splitURL[splitURL.length - 1];
+
+            console.log(urlFile);
 
             return (
               <div key={index}>
