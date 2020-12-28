@@ -133,10 +133,21 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  // SET REMAINING DAY OF SELECTED TYPE
-  setRemainingDay = (value) => {
+  // GET REMAINING DAY
+  getRemainingDay = (shortType) => {
+    const {
+      timeOff: { totalLeaveBalance: { commonLeaves: { timeOffTypes = [] } = {} } = {} } = {},
+    } = this.props;
+    let count = 0;
+    timeOffTypes.forEach((value) => {
+      const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
+      if (shortType === shortType1) {
+        count = currentAllowance;
+      }
+    });
+
     this.setState({
-      remainingDayOfSelectedType: value,
+      remainingDayOfSelectedType: count,
     });
   };
 
@@ -147,6 +158,7 @@ class RequestInformation extends PureComponent {
     timeOffTypes.forEach((eachType) => {
       const { _id = '', name = '', shortType = '', type = '' } = eachType;
       if (id === _id) {
+        this.getRemainingDay(shortType);
         this.autoValueForToDate(type, shortType, durationFrom);
         if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
@@ -693,6 +705,7 @@ class RequestInformation extends PureComponent {
       selectedType,
       isEditingDrafts,
       buttonState,
+      remainingDayOfSelectedType,
     } = this.state;
 
     const {
@@ -995,6 +1008,7 @@ class RequestInformation extends PureComponent {
                 type="link"
                 form="myForm"
                 className={styles.saveDraftButton}
+                disabled={remainingDayOfSelectedType === 0}
                 htmlType="submit"
                 onClick={() => {
                   this.setState({ buttonState: 1 });
@@ -1009,6 +1023,7 @@ class RequestInformation extends PureComponent {
               key="submit"
               type="primary"
               form="myForm"
+              disabled={remainingDayOfSelectedType === 0}
               htmlType="submit"
               onClick={() => {
                 this.setState({ buttonState: 2 });
