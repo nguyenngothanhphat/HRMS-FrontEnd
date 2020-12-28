@@ -279,8 +279,7 @@ class VisaGeneral extends Component {
                           <UploadImage
                             content={this.handleShowContent(index, checkValidate)}
                             setSizeImageMatch={(isLt5M) =>
-                              this.handleGetSetSizeImage(index, isLt5M)
-                            }
+                              this.handleGetSetSizeImage(index, isLt5M)}
                             getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                             loading={loading}
                             name="visa"
@@ -301,8 +300,7 @@ class VisaGeneral extends Component {
                       <div className={styles.viewUpLoadData}>
                         <p
                           onClick={() =>
-                            this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)
-                          }
+                            this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)}
                           className={styles.viewUpLoadDataURL}
                         >
                           fileName
@@ -321,8 +319,7 @@ class VisaGeneral extends Component {
                     <Form.Item label="Visa:" className={styles.labelUpload}>
                       <p
                         onClick={() =>
-                          this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)
-                        }
+                          this.handleOpenModalReview(index === 0 ? visa0URL : visa1URL)}
                         className={styles.urlUpload}
                       >
                         {this.handleNameDataUpload(index)}
@@ -338,8 +335,7 @@ class VisaGeneral extends Component {
                       mode="multiple"
                       showArrow
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
@@ -362,8 +358,7 @@ class VisaGeneral extends Component {
                     <Select
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) =>
-                        this.handleDropdown('visaIssuedCountry', open)
-                      }
+                        this.handleDropdown('visaIssuedCountry', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);
                       }}
@@ -463,8 +458,7 @@ class VisaGeneral extends Component {
                           <UploadImage
                             content={this.handleShowContent(index, checkValidate)}
                             setSizeImageMatch={(isLt5M) =>
-                              this.handleGetSetSizeImage(index, isLt5M)
-                            }
+                              this.handleGetSetSizeImage(index, isLt5M)}
                             getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                             loading={loading}
                             name="visa"
@@ -478,8 +472,7 @@ class VisaGeneral extends Component {
                       <div className={styles.viewUpLoadData}>
                         <p
                           onClick={() =>
-                            this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')
-                          }
+                            this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
                           className={styles.viewUpLoadDataURL}
                         >
                           fileName
@@ -498,8 +491,7 @@ class VisaGeneral extends Component {
                     <Form.Item label="Visa:" className={styles.labelUpload}>
                       <p
                         onClick={() =>
-                          this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')
-                        }
+                          this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
                         className={styles.urlUpload}
                       >
                         {this.handleNameDataUpload(item.urlFile.url)}
@@ -519,8 +511,7 @@ class VisaGeneral extends Component {
                       mode="multiple"
                       showArrow
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       onDropdownVisibleChange={(open) => this.handleDropdown('visaType', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
@@ -547,8 +538,7 @@ class VisaGeneral extends Component {
                     <Select
                       className={styles.selectForm}
                       onDropdownVisibleChange={(open) =>
-                        this.handleDropdown('visaIssuedCountry', open)
-                      }
+                        this.handleDropdown('visaIssuedCountry', open)}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);
                       }}

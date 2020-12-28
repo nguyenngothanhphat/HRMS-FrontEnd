@@ -96,7 +96,9 @@ class Edit extends Component {
     const item = passportData[index];
     const newItem = { ...item, [name]: value };
     const newList = [...passportData];
+
     newList.splice(index, 1, newItem);
+    console.log('newList: ', newList);
     // this.validateDate(newList);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
 
@@ -104,17 +106,17 @@ class Edit extends Component {
       type: 'employeeProfile/saveTemp',
       payload: { passportData: newList },
     });
-    dispatch({
-      type: 'employeeProfile/save',
-      payload: { isModified },
-    });
+    // dispatch({
+    //   type: 'employeeProfile/save',
+    //   payload: { isModified },
+    // });
   };
 
   handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
     const value = { id: first ? first.id : '', url: first ? first.url : '' };
-    this.handleChange('urlFile', value);
+    this.handleChange(index,'urlFile', value);
   };
 
   handleAddPassPortAllField = () => {
