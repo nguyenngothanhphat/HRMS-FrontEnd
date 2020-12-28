@@ -445,14 +445,6 @@ class Edit extends Component {
     this.setState({ passportArr: newPassportArr });
   };
 
-  handleFormItemDivider = (id) => {
-    let borderColor = 'transparent';
-    if (id > 0) {
-      borderColor = '#d6dce0';
-    }
-    return borderColor;
-  };
-
   render() {
     const {
       isLt5M,

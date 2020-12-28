@@ -1,5 +1,6 @@
 import { dialog } from '@/utils/utils';
-import listProjectByCompany from '../services/projectManagement';
+import { listProjectByCompany, addProjectMember } from '../services/projectManagement';
+import { getEmployeesList, getRoleList } from '../services/usersManagement';
 
 const mockData = [
   {
@@ -49,6 +50,40 @@ const mockData = [
     members: '',
     projectHealth: '60%',
     action: 'View Project',
+  },
+];
+
+const MOCK_EMPLOYEE = [
+  {
+    id: '1',
+    name: 'John Doe 1',
+  },
+  {
+    id: '2',
+    name: 'John Doe 2',
+  },
+  {
+    id: '3',
+    name: 'John Doe 3',
+  },
+  {
+    id: '4',
+    name: 'John Doe 4',
+  },
+];
+
+const MOCK_ROLE = [
+  {
+    id: '1',
+    name: 'Project Manager',
+  },
+  {
+    id: '2',
+    name: 'QC',
+  },
+  {
+    id: '3',
+    name: 'Developer',
   },
 ];
 
@@ -130,6 +165,10 @@ const projectManagement = {
   state: {
     activeList: [],
     inactiveList: [],
+    // roleList: MOCK_ROLE,
+    // employeeList: MOCK_EMPLOYEE,
+    roleList: [],
+    employeeList: [],
   },
   effects: {
     *getProjectByCompany({ payload }, { call, put }) {
@@ -154,7 +193,8 @@ const projectManagement = {
             projectHealth,
           } = item;
           const project = {
-            projectId: _id.substring(_id.length - 4, _id.length) || '',
+            // projectId: _id.substring(_id.length - 4, _id.length) || '',
+            projectId: _id,
             projectName: projectName || '',
             createdDate: formatCreatedDate(createdDate) || '',
             projectManager: managerName || '',
@@ -177,6 +217,51 @@ const projectManagement = {
           payload: {
             activeList,
             inactiveList,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *addMember({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(addProjectMember, payload);
+        console.log(response);
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *getEmployees({ payload }, { call, put }) {
+      let response;
+      let response2;
+      try {
+        response = yield call(getEmployeesList, payload);
+        response2 = yield call(getRoleList);
+        const { data: dataEmployee = [] } = response;
+        const { data: dataRole = [] } = response2;
+
+        const listEmployee = dataEmployee.map(
+          ({ _id = '', generalInfo: { firstName = '' } = {} }) => ({
+            id: _id,
+            name: firstName,
+          }),
+        );
+
+        const listRole = dataRole.map(({ _id = '', name = '' }) => ({
+          id: _id,
+          name,
+        }));
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: listEmployee,
+            roleList: listRole,
           },
         });
       } catch (error) {
