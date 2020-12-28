@@ -429,33 +429,26 @@ class Edit extends Component {
   };
 
   handleAddBtn = () => {
-    const { passportArr } = this.state;
-    const newPassportArr = [...passportArr];
-    const newObj = {
-      passportNumber: '',
-      passportIssuedCountry: {},
-      passportIssuedOn: '',
-      passportValidTill: '',
-    };
-
-    newPassportArr.push(newObj);
-
-    this.setState({ passportArr: newPassportArr });
+    const { passportData = [], dispatch } = this.props;
+    const newList = [...passportData, {}];
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: newList },
+    });
   };
 
   onRemoveCondition = (index) => {
-    const { passportArr } = this.state;
-    const newPassportArr = [...passportArr];
+    const { passportData = [], dispatch } = this.props;
 
-    newPassportArr.splice(index, 1);
+    const newPassportData = [...passportData];
+
+    newPassportData.splice(index, 1);
     console.log('remove index: ', index);
-    console.log('newPassportArr: ', newPassportArr);
+    console.log('newPassportData: ', newPassportData);
 
-    // newPassportArr.forEach((item, itemIndex) => {
-    //   console.log(`item ${itemIndex}: `, item);
-    // });
-    this.setState({
-      passportArr: newPassportArr,
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: newPassportData },
     });
   };
 
