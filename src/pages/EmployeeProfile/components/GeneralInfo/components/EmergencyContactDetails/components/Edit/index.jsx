@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Form, Input, Button, Col } from 'antd';
+import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
 import styles from './index.less';
@@ -10,11 +10,13 @@ import styles from './index.less';
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
+      listRelation = [],
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
+    listRelation,
   }),
 )
 class Edit extends Component {
@@ -23,40 +25,30 @@ class Edit extends Component {
     this.state = {
       emergencyContactDetails: [],
     };
-    // this.handleFieldChange = debounce(this.handleFieldChange, 600);
   }
 
   componentDidMount() {
-    const { generalData } = this.props;
-    const {
-      emergencyContact: eContact = '',
-      emergencyPersonName: ePersonName = '',
-      emergencyRelation: eRelation = '',
-    } = generalData;
+    const { dispatch } = this.props;
 
-    const newEmergencyContact = {
-      emergencyContact: eContact,
-      emergencyPersonName: ePersonName,
-      emergencyRelation: eRelation,
-    };
+    // const { emergencyContactDetails = [] } = generalData;
 
-    const arrData = [];
-    arrData.push(newEmergencyContact);
-    this.setState({ emergencyContactDetails: arrData });
+    dispatch({
+      type: 'employeeProfile/fetchListRelation',
+      payload: {},
+    });
+
+    // this.setState({ emergencyContactDetails: emergencyContactDetails });
   }
 
   handleAddBtn = () => {
-    const { emergencyContactDetails } = this.state;
-    const newDataArr = [...emergencyContactDetails];
+    const { generalData, dispatch } = this.props;
+    const { emergencyContactDetails = [] } = generalData;
+    const newEmergencyContactDetails = [...emergencyContactDetails, {}];
 
-    const newGeneralDataTemp = {
-      emergencyContact: '',
-      emergencyPersonName: '',
-      emergencyRelation: '',
-    };
-
-    newDataArr.push(newGeneralDataTemp);
-    this.setState({ emergencyContactDetails: newDataArr });
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
+    });
   };
 
   handleChange = (changedValues) => {
@@ -77,27 +69,54 @@ class Edit extends Component {
   };
 
   handleChangeField = (idName, value, index) => {
-    const { emergencyContactDetails } = this.state;
-    const newData = [...emergencyContactDetails];
+    const {
+      generalData: { emergencyContactDetails = [] },
+      dispatch,
+    } = this.props;
+    let newIdName = '';
 
     if (idName === `emergencyContact ${index}`) {
-      newData[index].emergencyContact = value;
+      newIdName = idName.slice(0, 16);
     }
     if (idName === `emergencyPersonName ${index}`) {
-      newData[index].emergencyPersonName = value;
-    }
-    if (idName === `emergencyRelation ${index}`) {
-      newData[index].emergencyRelation = value;
+      newIdName = idName.slice(0, 19);
     }
 
-    this.setState({ emergencyContactDetails: newData });
+    const item = emergencyContactDetails[index];
+    const newItem = { ...item, [newIdName]: value };
+    const newList = [...emergencyContactDetails];
+
+    newList.splice(index, 1, newItem);
+
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: { emergencyContactDetails: newList } },
+    });
+  };
+
+  handleChangeFieldSelect = (value, index) => {
+    const {
+      generalData: { emergencyContactDetails = [] },
+      dispatch,
+    } = this.props;
+
+    const item = emergencyContactDetails[index];
+    const newItem = { ...item, ['emergencyRelation']: value };
+    const newList = [...emergencyContactDetails];
+
+    newList.splice(index, 1, newItem);
+
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { generalData: { emergencyContactDetails: newList } },
+    });
   };
 
   processDataChanges = () => {
-    const { generalData } = this.props;
-    const { emergencyContactDetails: newData } = this.state;
+    const { generalData, generalDataOrigin } = this.props;
 
-    const { _id } = generalData;
+    const { _id } = generalDataOrigin;
+    const { emergencyContactDetails: newData = [] } = generalData;
 
     const payloadChanges = {
       emergencyContactDetails: newData,
@@ -129,6 +148,8 @@ class Edit extends Component {
   };
 
   render() {
+    const { Option } = Select;
+    const { listRelation } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -140,11 +161,12 @@ class Edit extends Component {
       },
     };
 
-    const { generalData, loading, handleCancel = () => {} } = this.props;
-    const { emergencyContactDetails } = this.state;
-    const newEmergencyContactDetails = [...emergencyContactDetails];
+    const {
+      generalData: { emergencyContactDetails = [] },
+      loading,
+      handleCancel = () => {},
+    } = this.props;
 
-    const { emergencyContact = '', emergencyPersonName = '', emergencyRelation = '' } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -154,69 +176,79 @@ class Edit extends Component {
           onValuesChange={this.handleChange}
           onFinish={this.handleSave}
         >
-          {emergencyContactDetails ? (
-            <>
-              {newEmergencyContactDetails.map((item, index) => {
-                const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
-                return (
-                  <div key={index}>
-                    {index > 0 ? <div className={styles.line} /> : null}
-                    <Form.Item
-                      label="Emergency Contact"
-                      name={`emergencyContact ${index}`}
-                      rules={[
-                        {
-                          pattern: /^[+]*[\d]{0,10}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateWorkNumber',
-                          }),
-                        },
-                      ]}
-                    >
-                      <Input
-                        defaultValue={emergencyContact}
-                        className={styles.inputForm}
-                        onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Person’s Name"
-                      name={`emergencyPersonName ${index}`}
-                      validateTrigger="onChange"
-                      rules={[
-                        {
-                          pattern: /^[a-zA-Z ]*$/,
-                          message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-                        },
-                      ]}
-                    >
-                      <Input
-                        defaultValue={emergencyPersonName}
-                        className={styles.inputForm}
-                        onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Relation"
-                      name={`emergencyRelation ${index}`}
-                      rules={[
-                        {
-                          pattern: /^[a-zA-Z ]*$/,
-                          message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
-                        },
-                      ]}
-                    >
-                      <Input
-                        defaultValue={emergencyRelation}
-                        className={styles.inputForm}
-                        onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
-                      />
-                    </Form.Item>
-                  </div>
-                );
-              })}
-            </>
-          ) : null}
+          {emergencyContactDetails.map((item, index) => {
+            const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
+            return (
+              <div key={index}>
+                {index > 0 ? <div className={styles.line} /> : null}
+                <Form.Item
+                  label="Emergency Contact"
+                  name={`emergencyContact ${index}`}
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{0,10}$/,
+                      message: formatMessage({
+                        id: 'pages.employeeProfile.validateWorkNumber',
+                      }),
+                    },
+                  ]}
+                >
+                  <Input
+                    defaultValue={emergencyContact}
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Person’s Name"
+                  name={`emergencyPersonName ${index}`}
+                  validateTrigger="onChange"
+                  rules={[
+                    {
+                      pattern: /^[a-zA-Z ]*$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                    },
+                  ]}
+                >
+                  <Input
+                    defaultValue={emergencyPersonName}
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.id, e.target.value, index)}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Relation"
+                  name={`emergencyRelation ${index}`}
+                  rules={[
+                    {
+                      pattern: /^[a-zA-Z ]*$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    placeholder="Please select a choice"
+                    showArrow
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    className={styles.inputForm}
+                    defaultValue={emergencyRelation}
+                    onChange={(value) => this.handleChangeFieldSelect(value, index)}
+                  >
+                    {listRelation.map((item, index) => {
+                      return (
+                        <Option key={index} value={item}>
+                          {item}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </div>
+            );
+          })}
           <Col span={9} offset={1} className={styles.addMoreButton}>
             <div onClick={this.handleAddBtn}>
               <PlusOutlined className={styles.addMoreButtonIcon} />
