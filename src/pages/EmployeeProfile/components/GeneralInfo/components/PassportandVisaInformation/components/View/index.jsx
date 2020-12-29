@@ -219,7 +219,7 @@ class View extends PureComponent {
 
     let nameDocument = '';
     let getUrl = '';
-    console.log(document);
+
     if (document) {
       if (document.attachment) {
         const { attachment: { name = '', url = '' } = {} } = document;

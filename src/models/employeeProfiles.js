@@ -385,9 +385,13 @@ const employeeProfile = {
     },
     *updatePassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
+        console.log('payload updatePassport: ', payload);
+
         const response = yield call(updatePassPort, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
+        console.log('response updatePassport: ', response);
+
         if (statusCode !== 200) throw response;
         notification.success({
           message,

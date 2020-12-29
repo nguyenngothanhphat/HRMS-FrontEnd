@@ -98,6 +98,7 @@ class Edit extends Component {
     const newList = [...passportData];
 
     newList.splice(index, 1, newItem);
+    console.log('newList: ', newList);
     // this.validateDate(newList);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
@@ -118,14 +119,35 @@ class Edit extends Component {
   };
 
   handleAddPassPortAllField = () => {
-    const { dispatch, idCurrentEmployee, passportData } = this.props;
-    const { document: documentPassPort, urlFile } = passportData;
+    const { dispatch, idCurrentEmployee, passportData = [] } = this.props;
+    // const { document: documentPassPort, urlFile } = passportData;
+
+    const passportObj = [
+      {
+        _document: '',
+        _urlFile: '',
+      },
+    ];
     let getFile = '';
-    if (urlFile) {
-      getFile = urlFile;
-    }
-    if (documentPassPort) {
-      const dataPassport = { id: documentPassPort._id, attachment: getFile.id };
+    // let getIndex = '';
+    let getDocument = '';
+
+    passportData.map((item, index) => {
+      if (item.urlFile) {
+        passportObj[index] = {
+          _document: item.document,
+          _urlFile: item.urlFile,
+        };
+        // getIndex = index;
+        getFile = item.urlFile;
+        getDocument = item.document;
+      }
+
+      return passportObj;
+    });
+
+    if (getDocument) {
+      const dataPassport = { id: getDocument._id, attachment: getFile.id };
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: dataPassport,
@@ -142,6 +164,28 @@ class Edit extends Component {
         },
       }).then((id) => this.handleAddPassPort(id));
     }
+
+    // if (urlFile) {
+    //   getFile = urlFile;
+    // }
+    // if (documentPassPort) {
+    //   const dataPassport = { id: documentPassPort._id, attachment: getFile.id };
+    //   dispatch({
+    //     type: 'employeeProfile/fetchDocumentUpdate',
+    //     payload: dataPassport,
+    //   });
+    // } else {
+    //   dispatch({
+    //     type: 'employeeProfile/fetchDocumentAdd',
+    //     payload: {
+    //       key: 'PassPort',
+    //       attachment: getFile.id,
+    //       employeeGroup: 'Identity',
+    //       parentEmployeeGroup: 'Indentification Documents',
+    //       employee: idCurrentEmployee,
+    //     },
+    //   }).then((id) => this.handleAddPassPort(id));
+    // }
   };
 
   handleAddPassPort = (id) => {
@@ -366,38 +410,38 @@ class Edit extends Component {
 
   handleSave = async () => {
     const { dispatch, passportData = [], visaData = [] } = this.props;
+    // const passportLength = passportData.length;
     const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
     const dataTempKept = this.processDataKeptPassPort() || {};
-    const idPassPort = '';
+    let idPassPort = '';
+
+    if (passportData) {
+      idPassPort = passportData._id;
+    }
 
     console.log('payloadUpdatePassPort: ', payloadUpdatePassPort);
-
-    // if (passportData) {
-    //   idPassPort = passportData._id;
-    // }
-
-    // if (idPassPort) {
-    //   this.handleAddPassPortAllField();
-    //   dispatch({
-    //     type: 'employeeProfile/updatePassPort',
-    //     payload: payloadUpdatePassPort,
-    //     dataTempKept,
-    //     key: 'openPassportandVisa',
-    //   });
-    // } else {
-    //   this.handleAddPassPortAllField();
-    // }
-    // visaData.map((item, index) => {
-    //   let idVisa = '';
-    //   const { _id } = item;
-    //   if (_id) {
-    //     idVisa = _id;
-    //   }
-    //   if (idVisa) {
-    //     return this.handleUpdateVisaGroup(item, index);
-    //   }
-    //   return this.handleAddVisaAllField(item, index);
-    // });
+    if (idPassPort) {
+      this.handleAddPassPortAllField();
+      dispatch({
+        type: 'employeeProfile/updatePassPort',
+        payload: payloadUpdatePassPort,
+        dataTempKept,
+        key: 'openPassportandVisa',
+      });
+    } else {
+      this.handleAddPassPortAllField();
+    }
+    visaData.map((item, index) => {
+      let idVisa = '';
+      const { _id } = item;
+      if (_id) {
+        idVisa = _id;
+      }
+      if (idVisa) {
+        return this.handleUpdateVisaGroup(item, index);
+      }
+      return this.handleAddVisaAllField(item, index);
+    });
   };
 
   handleCanCelIcon = (index) => {
