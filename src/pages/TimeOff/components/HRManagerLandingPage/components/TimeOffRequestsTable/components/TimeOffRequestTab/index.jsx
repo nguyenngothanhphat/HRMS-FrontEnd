@@ -22,7 +22,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      selectedTab: 'IN-PROCESS',
+      selectedTab: 'IN-PROGRESS',
     };
   }
 
@@ -137,7 +137,7 @@ class TimeOffRequestTab extends PureComponent {
     this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
 
-    let selectedTab = 'IN-PROCESS';
+    let selectedTab = 'IN-PROGRESS';
     if (id === '2') {
       selectedTab = 'APPROVED';
     } else if (id === '3') {
@@ -240,15 +240,21 @@ class TimeOffRequestTab extends PureComponent {
             {type === 1 && category === 'TEAM' && (
               <TeamDataTable data={formatData} category={category} selectedTab={selectedTab} />
             )}
-            {type === 1 && category === 'MY' && <MyDataTable data={formatData} />}
+            {type === 1 && category === 'MY' && (
+              <MyDataTable data={formatData} selectedTab={selectedTab} />
+            )}
             {type === 1 && category === 'ALL' && (
               <TeamDataTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'TEAM' && (
-              <TeamCompoffTable data={formatData} category={category} />
+              <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />
             )}
-            {type === 2 && category === 'MY' && <MyCompoffTable data={formatData} />}
-            {type === 2 && category === 'ALL' && <TeamCompoffTable data={formatData} />}
+            {type === 2 && category === 'MY' && (
+              <MyCompoffTable data={formatData} selectedTab={selectedTab} />
+            )}
+            {type === 2 && category === 'ALL' && (
+              <TeamCompoffTable data={formatData} selectedTab={selectedTab} />
+            )}
           </div>
         </div>
       </div>

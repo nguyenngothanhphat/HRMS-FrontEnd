@@ -101,8 +101,8 @@ class DataTable extends PureComponent {
       dataIndex: '_id',
       // width: '20%',
       render: (_id) => {
-        const { status = '' } = this.props;
-        if (status === 'IN-PROGRESS')
+        const { selectedTab = '' } = this.props;
+        if (selectedTab === 'IN-PROGRESS')
           return (
             <div className={styles.rowAction}>
               <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
@@ -146,6 +146,14 @@ class DataTable extends PureComponent {
 
   onCancelClick = () => {
     alert('Cancel');
+  };
+
+  // view request
+  viewRequest = (_id) => {
+    history.push({
+      pathname: `/time-off/view-compoff-request/${_id}`,
+      // state: { location: name },
+    });
   };
 
   // pagination
