@@ -200,8 +200,8 @@ class CompoffTable extends PureComponent {
       <div className={styles.CompoffTable}>
         <Table
           size="middle"
-          loading={loadingFetchMyCompoffRequests}
           rowSelection={rowSelection}
+          loading={loadingFetchMyCompoffRequests}
           pagination={{ ...pagination, total: parsedData.length }}
           columns={this.columns}
           dataSource={parsedData}

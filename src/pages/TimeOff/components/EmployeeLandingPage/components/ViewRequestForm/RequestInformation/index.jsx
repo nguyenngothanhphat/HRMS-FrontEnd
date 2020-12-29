@@ -63,7 +63,9 @@ class RequestInformation extends PureComponent {
   // ON PROCEED withDraw
   onProceed = async () => {
     const {
-      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest: { _id: id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
     } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
@@ -73,9 +75,15 @@ class RequestInformation extends PureComponent {
     if (statusCode === 200) {
       history.push({
         pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
       });
     }
+  };
+
+  checkWithdrawValid = (fromDate) => {
+    const now = moment().format('YYYY-MM-DD');
+    const from = moment(fromDate).format('YYYY-MM-DD');
+    return from > now;
   };
 
   render() {
@@ -99,14 +107,18 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
+    const checkWithdrawValid = this.checkWithdrawValid(fromDate);
+
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
-          <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
-            <img src={EditIcon} className={styles.icon} alt="edit-icon" />
-            <span className={styles.label}>Edit</span>
-          </div>
+          {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
+              <img src={EditIcon} className={styles.icon} alt="edit-icon" />
+              <span className={styles.label}>Edit</span>
+            </div>
+          )}
         </div>
 
         {loadingFetchLeaveRequestById && (
@@ -173,7 +185,9 @@ class RequestInformation extends PureComponent {
                 </Col>
               </Row>
             </div>
-            {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            {(status === 'DRAFTS' ||
+              status === 'IN-PROGRESS' ||
+              (status === 'APPROVED' && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to

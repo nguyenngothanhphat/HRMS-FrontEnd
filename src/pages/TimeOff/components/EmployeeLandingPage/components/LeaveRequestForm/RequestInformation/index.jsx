@@ -1026,7 +1026,9 @@ class RequestInformation extends PureComponent {
               type="primary"
               form="myForm"
               disabled={
-                remainingDayOfSelectedType === 0 && (selectedType === 'A' || selectedType === 'B')
+                remainingDayOfSelectedType === 0 &&
+                (selectedType === 'A' || selectedType === 'B') &&
+                action === 'new-leave-request'
               }
               htmlType="submit"
               onClick={() => {
