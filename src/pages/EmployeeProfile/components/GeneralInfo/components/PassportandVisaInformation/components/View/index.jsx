@@ -198,26 +198,19 @@ class View extends PureComponent {
   };
 
   handleRenderDataDummyPassport = (dummyData) => {
-    return dummyData.map((item) => (
-      <Fragment key={item.label}>
-        <Col span={6} className={styles.textLabel}>
-          {item.label}
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.value}
-          {item.label === 'Passport Number' ? (
-            <div className={styles.viewFileUpLoad}>
-              <p onClick={() => this.handleOpenModalReview(getUrl)} className={styles.urlData}>
-                {splitUrlPassPort}
-              </p>
-              <ConformIcondata data={splitUrlPassPort} />
-            </div>
-          ) : (
-            ''
-          )}
-        </Col>
-      </Fragment>
-    ));
+    const { passportData = [] } = this.props;
+    return dummyData.map((item) => {
+      return (
+        <Fragment key={item.label}>
+          <Col span={6} className={styles.textLabel}>
+            {item.label}
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.value}
+          </Col>
+        </Fragment>
+      );
+    });
   };
 
   render() {

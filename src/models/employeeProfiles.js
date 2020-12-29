@@ -1021,7 +1021,6 @@ const employeeProfile = {
     },
     saveTemp(state, action) {
       const { tempData } = state;
-      console.log('temp: ', action.payload);
       return {
         ...state,
         tempData: {
