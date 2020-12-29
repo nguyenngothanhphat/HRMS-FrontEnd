@@ -11,14 +11,14 @@ const { Item } = Form;
 const ModalContent = (props) => {
   const {
     projectInfo: { projectName = '', projectId = '' },
-    roleList = [],
-    employeeList = [],
+    roleList: roleListProp = [],
+    employeeList: employeeListProp = [],
     dispatch,
     user,
     loading,
     closeModal,
   } = props;
-  console.log(props);
+  // console.log(props);
   const [form] = Form.useForm();
   const [formInfo, setFormInfo] = useState([
     {
@@ -34,10 +34,45 @@ const ModalContent = (props) => {
     },
   ]);
   const [temp, setTemp] = useState([{ id: 0 }]); // to render map function
-  const onFinish = (v) => {
-    console.log(v);
-    console.log('SUBMIT');
-  };
+  const [roleList, setRoleList] = useState([]);
+  const [employeeList, setEmployeeList] = useState([]);
+
+  useEffect(() => {
+    setEmployeeList(employeeListProp);
+  }, [employeeListProp]);
+
+  useEffect(() => {
+    setRoleList(roleListProp);
+  }, [roleListProp]);
+
+  useEffect(() => {
+    // Check to validate not assign the same person twice to the project
+    if (formInfo.length > 0) {
+      const filteredEmployeeList = employeeListProp.filter((item) => {
+        const { id = '' } = item;
+        return !formInfo.some((formItem) => formItem.employee.id === id);
+      });
+      setEmployeeList(filteredEmployeeList);
+    }
+
+    // Check to validate 1 project lead per project
+    const existPM = formInfo.find((item) => {
+      const {
+        role: { id },
+      } = item;
+      return id === 'MANAGER';
+    });
+
+    if (existPM) {
+      const filteredRoleList = roleListProp.filter((item) => {
+        const { id = '' } = item;
+        return id !== 'MANAGER';
+      });
+      setRoleList(filteredRoleList);
+    } else {
+      setRoleList(roleListProp);
+    }
+  }, [formInfo]);
 
   const initialValues = [
     {
@@ -68,8 +103,6 @@ const ModalContent = (props) => {
         employee: { _id: employeeId },
       },
     } = user;
-    console.log(projectId);
-    console.log(formInfo);
     const members = formInfo.map((item) => {
       return { id: item.employee.id, role: item.role.id, effort: item.effort };
     });
@@ -90,27 +123,19 @@ const ModalContent = (props) => {
     }
   };
 
-  useEffect(() => {
-    // console.log('FORM');
-    // console.log(formInfo);
-  }, [formInfo]);
-
   const onFormChange = (values, index) => {
-    // formInfo
     setFormInfo((prevState) => {
       const newState = [...prevState];
       newState[index] = values;
       return newState;
     });
-    // console.log(formInfo);
-    // console.log(values, index);
   };
 
   return (
     <div className={s.modalContent}>
       <h3>Project name: {projectName} </h3>
 
-      <Form form={form} name="myForm" onFinish={onFinish} initialValues={initialValues}>
+      <Form form={form} name="myForm" initialValues={initialValues}>
         <Item name="project">
           {temp.map((item) => (
             <FormProject
@@ -119,6 +144,7 @@ const ModalContent = (props) => {
               listRole={roleList}
               index={item.id}
               onFormChange={onFormChange}
+              formInfo={formInfo}
             />
           ))}
         </Item>
