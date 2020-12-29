@@ -230,20 +230,8 @@ class EditEmail extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
-    this.fetchData();
-
-    dispatch({
-      type: 'employeeSetting/fetchTriggerEventList',
-      payload: {},
-    });
-    dispatch({
-      type: 'employeeSetting/fetchListAutoField',
-      payload: {},
-    });
-  };
-
-  fetchData = () => {
+    // const { dispatch } = this.props;
+    // this.fetchData();
     const {
       match: { params: { reId: id = '' } = {} },
       dispatch,
@@ -253,7 +241,28 @@ class EditEmail extends PureComponent {
       type: 'employeeSetting/fetchEmailCustomInfo',
       payload: id,
     });
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchTriggerEventList',
+    //   payload: {},
+    // });
+    // dispatch({
+    //   type: 'employeeSetting/fetchListAutoField',
+    //   payload: {},
+    // });
   };
+
+  // fetchData = () => {
+  //   const {
+  //     match: { params: { reId: id = '' } = {} },
+  //     dispatch,
+  //   } = this.props;
+
+  //   dispatch({
+  //     type: 'employeeSetting/fetchEmailCustomInfo',
+  //     payload: id,
+  //   });
+  // };
 
   handleChangeApply = (value) => {
     const { dispatch, _id } = this.props;
@@ -764,18 +773,30 @@ class EditEmail extends PureComponent {
     return listAutoField;
   };
 
-  _renderForm = () => {
+  _renderForm = (emailCustomData) => {
     const { Option } = Select;
     const { triggerEventList, loadingAddCustomEmail } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
+    const { message, subject, triggerEvent = {} } = emailCustomData;
+
+    console.log('emailCustomData: ', emailCustomData);
+    console.log('triggerEvent: ', triggerEvent);
 
     return (
       <Form onFinish={this.onFinish}>
-        <Row gutter={[36, 24]}>
-          {/* Trigger Event */}
-          <Col span={12}>
-            <Form.Item label="Trigger event" name="triggerEvent">
-              <Select
+        {emailCustomData ? (
+          <Row gutter={[36, 24]}>
+            {/* Trigger Event */}
+            <Col span={12}>
+              <Form.Item label="Trigger event" name="triggerEvent">
+                <Input
+                  defaultValue={triggerEvent.name}
+                  disabled
+                  // onChange={(e) => this.onChangeEmailSubject(e.target.value)}
+                >
+                  {/* {triggerEvent.name} */}
+                </Input>
+                {/* <Select
                 size="large"
                 placeholder="Please select a choice"
                 onChange={(value) => this.onChangeTriggerEvent(value)}
@@ -783,117 +804,122 @@ class EditEmail extends PureComponent {
                 {triggerEventList.map((option) => {
                   return <Option value={option.value}>{option.name}</Option>;
                 })}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <div className={styles.note}>
-              <span>
-                {formatMessage({ id: 'component.emailReminderForm.triggerNote' })}{' '}
-                <a href="#">
-                  {' '}
-                  {formatMessage({ id: 'component.emailReminderForm.triggerNoteLink' })}
-                </a>
-              </span>
-            </div>
-          </Col>
+              </Select> */}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <div className={styles.note}>
+                <span>
+                  {formatMessage({ id: 'component.emailReminderForm.triggerNote' })}{' '}
+                  <a href="#">
+                    {' '}
+                    {formatMessage({ id: 'component.emailReminderForm.triggerNoteLink' })}
+                  </a>
+                </span>
+              </div>
+            </Col>
 
-          {/* Sending date */}
-          <Col span={24}>
-            <Form.Item name="sendingDate" label="Sending date">
-              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
-                {sendingDate.map((option) => {
-                  return <Radio value={option.value}>{option.name}</Radio>;
-                })}
-              </Radio.Group>
-            </Form.Item>
-          </Col>
+            {/* Sending date */}
+            <Col span={24}>
+              <Form.Item name="sendingDate" label="Sending date">
+                <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
+                  {sendingDate.map((option) => {
+                    return <Radio value={option.value}>{option.name}</Radio>;
+                  })}
+                </Radio.Group>
+              </Form.Item>
+            </Col>
 
-          {/* Applies to */}
-          <Col span={12}>
-            <Form.Item name="applyTo" label="Applies to">
-              <Select
-                size="large"
-                placeholdementionModuler="Please select a choice"
-                onChange={this.handleChangeApply}
-              >
-                {applyTo.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
+            {/* Applies to */}
+            <Col span={12}>
+              <Form.Item name="applyTo" label="Applies to">
+                <Select
+                  size="large"
+                  placeholdementionModuler="Please select a choice"
+                  onChange={this.handleChangeApply}
+                >
+                  {applyTo.map((option) => {
+                    return <Option value={option.value}>{option.name}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
 
-          <Col span={12} />
+            <Col span={12} />
 
-          {this._renderApplyToOptions()}
+            {this._renderApplyToOptions()}
 
-          {/* Send to existing workers */}
-          <Col span={12}>
-            <Form.Item name="sendToWorker" label="Send to existing workers">
-              <Checkbox.Group>
-                {sendToWorker.map((option) => {
-                  return (
-                    <Checkbox
-                      value={option.value}
-                      onChange={(value) => this.handleChangeChckBox(value)}
-                    >
-                      {option.name}
-                    </Checkbox>
-                  );
-                })}
-              </Checkbox.Group>
-            </Form.Item>
-          </Col>
+            {/* Send to existing workers */}
+            <Col span={12}>
+              <Form.Item name="sendToWorker" label="Send to existing workers">
+                <Checkbox.Group>
+                  {sendToWorker.map((option) => {
+                    return (
+                      <Checkbox
+                        value={option.value}
+                        onChange={(value) => this.handleChangeChckBox(value)}
+                      >
+                        {option.name}
+                      </Checkbox>
+                    );
+                  })}
+                </Checkbox.Group>
+              </Form.Item>
+            </Col>
 
-          {/* Email subject */}
-          <Col span={24}>
-            <Form.Item name="subject" label="Email subject">
-              <Input
-                placeholder="Eg:  Welcome to the company"
-                onChange={(e) => this.onChangeEmailSubject(e.target.value)}
+            {/* Email subject */}
+            <Col span={24}>
+              <Form.Item name="subject" label="Email subject">
+                <Input
+                  placeholder="Eg:  Welcome to the company"
+                  onChange={(e) => this.onChangeEmailSubject(e.target.value)}
+                />
+              </Form.Item>
+            </Col>
+
+            {/* Email message */}
+            <Col span={24}>
+              {/* <Form.Item name="message" label="Email message"> */}
+              <p className={styles.label}>Email message :</p>
+
+              <ReactQuill
+                className={styles.quill}
+                value={messages}
+                onChange={this.handleChangeEmail}
+                modules={this.modules}
               />
-            </Form.Item>
-          </Col>
+              {/* </Form.Item> */}
+            </Col>
 
-          {/* Email message */}
-          <Col span={24}>
-            {/* <Form.Item name="message" label="Email message"> */}
-            <p className={styles.label}>Email message :</p>
-
-            <ReactQuill
-              className={styles.quill}
-              value={messages}
-              onChange={this.handleChangeEmail}
-              modules={this.modules}
-            />
-            {/* </Form.Item> */}
-          </Col>
-
-          <Col className={styles.buttons} span={8} offset={16}>
-            <Link
-              to={{
-                pathname: '/employee-onboarding',
-                state: { defaultActiveKey: '2' },
-              }}
-            >
-              <Button type="secondary">
-                {' '}
-                {formatMessage({ id: 'component.emailReminderForm.cancel' })}
-              </Button>
-            </Link>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={disabled}
-                loading={loadingAddCustomEmail}
+            <Col className={styles.buttons} span={8} offset={16}>
+              <Link
+                to={{
+                  pathname: '/employee-onboarding',
+                  state: { defaultActiveKey: '2' },
+                }}
               >
-                {formatMessage({ id: 'component.emailReminderForm.submit' })}
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
+                <Button type="secondary">
+                  {' '}
+                  {formatMessage({ id: 'component.emailReminderForm.cancel' })}
+                </Button>
+              </Link>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  disabled={disabled}
+                  loading={loadingAddCustomEmail}
+                >
+                  {formatMessage({ id: 'component.emailReminderForm.submit' })}
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        ) : (
+          <div className={styles.EditEmail_loading}>
+            <Spin size="large" />
+          </div>
+        )}
       </Form>
     );
   };
@@ -914,7 +940,7 @@ class EditEmail extends PureComponent {
               {formatMessage({ id: 'component.emailReminderForm.title' })}
               <hr />
             </div>
-            <div className={styles.EditEmail_form}>{this._renderForm()}</div>
+            <div className={styles.EditEmail_form}>{this._renderForm(emailCustomData)}</div>
             <div>
               {/* <h1>{applyTo}</h1> */}
               <h1>SUBJECT: {subject}</h1>
