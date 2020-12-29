@@ -154,7 +154,6 @@ const projectManagement = {
       let response;
       let response2;
       try {
-        // response = yield call(getEmployeesList, payload);
         response = yield call(getListEmployeeActive, payload);
         response2 = yield call(getRoleList);
         const { data: dataEmployee = [] } = response;
