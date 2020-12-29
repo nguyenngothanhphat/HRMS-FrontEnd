@@ -73,11 +73,12 @@ class PassportVisaInformation extends PureComponent {
   };
 
   render() {
-    const { passportData, openPassportandVisa } = this.props;
+    const { openPassportandVisa } = this.props;
     const renderComponent = openPassportandVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={passportData} />
+      <View />
+      // <View dataAPI={passportData} />
     );
     return (
       <div className={styles.PassportVisaInformation}>

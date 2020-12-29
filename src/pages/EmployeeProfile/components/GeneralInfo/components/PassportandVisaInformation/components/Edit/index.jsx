@@ -98,7 +98,6 @@ class Edit extends Component {
     const newList = [...passportData];
 
     newList.splice(index, 1, newItem);
-    console.log('newList: ', newList);
     // this.validateDate(newList);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
@@ -118,36 +117,21 @@ class Edit extends Component {
     this.handleChange(index, 'urlFile', value);
   };
 
-  handleAddPassPortAllField = () => {
-    const { dispatch, idCurrentEmployee, passportData = [] } = this.props;
-    // const { document: documentPassPort, urlFile } = passportData;
+  handleAddPassPortAllField = (item, index) => {
+    const { dispatch, idCurrentEmployee } = this.props;
+    const { document: documentPassPort, urlFile } = item;
 
-    const passportObj = [
-      {
-        _document: '',
-        _urlFile: '',
-      },
-    ];
     let getFile = '';
-    // let getIndex = '';
-    let getDocument = '';
+    if (urlFile) {
+      getFile = urlFile;
+    }
 
-    passportData.map((item, index) => {
-      if (item.urlFile) {
-        passportObj[index] = {
-          _document: item.document,
-          _urlFile: item.urlFile,
-        };
-        // getIndex = index;
-        getFile = item.urlFile;
-        getDocument = item.document;
-      }
-
-      return passportObj;
-    });
-
-    if (getDocument) {
-      const dataPassport = { id: getDocument._id, attachment: getFile.id };
+    if (documentPassPort) {
+      const dataPassport = {
+        id: documentPassPort._id,
+        attachment: getFile.id,
+        key: `Passport${index + 1}`,
+      };
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: dataPassport,
@@ -156,42 +140,20 @@ class Edit extends Component {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
-          key: 'PassPort',
+          key: `PassPort${index + 1}`,
           attachment: getFile.id,
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
         },
-      }).then((id) => this.handleAddPassPort(id));
+      }).then((id) => this.handleAddPassPort(id, index, item));
     }
-
-    // if (urlFile) {
-    //   getFile = urlFile;
-    // }
-    // if (documentPassPort) {
-    //   const dataPassport = { id: documentPassPort._id, attachment: getFile.id };
-    //   dispatch({
-    //     type: 'employeeProfile/fetchDocumentUpdate',
-    //     payload: dataPassport,
-    //   });
-    // } else {
-    //   dispatch({
-    //     type: 'employeeProfile/fetchDocumentAdd',
-    //     payload: {
-    //       key: 'PassPort',
-    //       attachment: getFile.id,
-    //       employeeGroup: 'Identity',
-    //       parentEmployeeGroup: 'Indentification Documents',
-    //       employee: idCurrentEmployee,
-    //     },
-    //   }).then((id) => this.handleAddPassPort(id));
-    // }
   };
 
-  handleAddPassPort = (id) => {
+  handleAddPassPort = (id, index, item) => {
     const { dispatch } = this.props;
     const dataTempKept = this.processDataKeptPassPort() || {};
-    const payloadAddPassPort = this.processDataAddPassPort(id) || {};
+    const payloadAddPassPort = this.processDataAddPassPort(id, item) || {};
     dispatch({
       type: 'employeeProfile/addPassPort',
       payload: payloadAddPassPort,
@@ -219,7 +181,6 @@ class Edit extends Component {
       payloadChanges[index] = {
         urlFile: item.urlFile,
         document: item.document ? item.document._id : '',
-        // document: item.document ? item.document._id : item.urlFile.id,
         passportNumber: item.passportNumber,
         passportIssuedCountry: item.passportIssuedCountry,
         passportIssuedOn: item.passportIssuedOn,
@@ -229,26 +190,6 @@ class Edit extends Component {
 
       return payloadChanges;
     });
-
-    // const {
-    //   urlFile = '',
-    //   document = '',
-    //   passportNumber = '',
-    //   passportIssuedCountry = '',
-    //   passportIssuedOn = '',
-    //   passportValidTill = '',
-    //   _id: id = '',
-    // } = passportDataTemp;
-
-    // const payloadChanges = {
-    //   id,
-    //   document: document ? document._id : urlFile.id,
-    //   passportNumber,
-    //   passportIssuedCountry,
-    //   passportIssuedOn,
-    //   passportValidTill,
-    // };
-    // const payloadChanges = _passportTemp;
 
     return payloadChanges;
   };
@@ -281,15 +222,16 @@ class Edit extends Component {
     return formVisa;
   };
 
-  processDataAddPassPort = (id) => {
-    const { passportData: passportDataTemp, generalData } = this.props;
+  processDataAddPassPort = (id, item) => {
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
     const {
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
       passportValidTill = '',
-    } = passportDataTemp;
+    } = item;
+
     const payloadChanges = {
       passportNumber,
       passportIssuedCountry,
@@ -298,6 +240,7 @@ class Edit extends Component {
       document: id,
       employee,
     };
+
     return payloadChanges;
   };
 
@@ -364,9 +307,8 @@ class Edit extends Component {
     return formVisa;
   };
 
-  processDataKeptPassPort = () => {
-    const { passportData } = this.props;
-    const newObj = { ...passportData };
+  processDataKeptPassPort = (item) => {
+    const newObj = { ...item };
     const listKey = [
       'urlFile',
       'passportNumber',
@@ -375,7 +317,7 @@ class Edit extends Component {
       'passportValidTill',
       'document',
     ];
-    listKey.forEach((item) => delete newObj[item]);
+    listKey.forEach((itemPassport) => delete newObj[itemPassport]);
     return newObj;
   };
 
@@ -408,37 +350,44 @@ class Edit extends Component {
     });
   };
 
+  handleUpdatePassportGroup = (item, index) => {
+    const { dispatch } = this.props;
+    const payloadUpdatePassPort = this.processDataChangesPassPort(item) || {};
+    const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
+
+    this.handleAddPassPortAllField(item, index);
+    dispatch({
+      type: 'employeeProfile/updatePassPort',
+      payload: payloadUpdatePassPort,
+      dataTempKeptPassport,
+      key: 'openPassportandVisa',
+    });
+  };
+
   handleSave = async () => {
-    const { dispatch, passportData = [], visaData = [] } = this.props;
-    const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
-    const dataTempKept = this.processDataKeptPassPort() || {};
-    let idPassPort = '';
+    const { passportData = [], visaData = [] } = this.props;
 
-    if (passportData) {
-      // idPassPort = passportData._id;
-      passportData.map((item) => {
-        idPassPort = item._id;
-      });
-    }
+    passportData.map((item, index) => {
+      let idPassPort = '';
+      const { _id } = item;
+      if (_id) {
+        idPassPort = _id;
+      }
 
-    console.log('payloadUpdatePassPort: ', payloadUpdatePassPort);
-    if (idPassPort) {
-      this.handleAddPassPortAllField();
-      dispatch({
-        type: 'employeeProfile/updatePassPort',
-        payload: payloadUpdatePassPort,
-        dataTempKept,
-        key: 'openPassportandVisa',
-      });
-    } else {
-      this.handleAddPassPortAllField();
-    }
+      if (idPassPort) {
+        return this.handleUpdatePassportGroup(item, index);
+      } else {
+        return this.handleAddPassPortAllField(item, index);
+      }
+    });
+
     visaData.map((item, index) => {
       let idVisa = '';
       const { _id } = item;
       if (_id) {
         idVisa = _id;
       }
+
       if (idVisa) {
         return this.handleUpdateVisaGroup(item, index);
       }
