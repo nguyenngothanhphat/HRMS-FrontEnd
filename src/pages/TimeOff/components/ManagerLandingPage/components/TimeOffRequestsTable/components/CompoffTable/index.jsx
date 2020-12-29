@@ -213,10 +213,29 @@ class CompoffTable extends PureComponent {
 
   render() {
     const { data = [], loading1, loading2, selectedTab = '' } = this.props;
-    const { selectedRowKeys } = this.state;
-    // const rowSize = 20;
+    const { selectedRowKeys, pageSelected } = this.state;
+    const rowSize = 10;
 
     const parsedData = this.processData(data);
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: parsedData.length,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          Showing{'  '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {total}{' '}
+        </span>
+      ),
+      pageSize: rowSize,
+      current: pageSelected,
+      onChange: this.onChangePagination,
+    };
+
     const scroll = {
       x: '60vw',
       y: 'max-content',
@@ -239,7 +258,7 @@ class CompoffTable extends PureComponent {
           size="middle"
           loading={loading1 || loading2}
           rowSelection={rowSelection}
-          pagination={false}
+          pagination={{ ...pagination, total: parsedData.length }}
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}

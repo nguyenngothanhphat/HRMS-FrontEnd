@@ -180,7 +180,9 @@ class RequestInformation extends PureComponent {
                   your department head.
                 </span>
                 <div className={styles.formButtons}>
-                  <Button onClick={() => this.withDraw()}>Withdraw</Button>
+                  <Button onClick={() => this.withDraw()}>
+                    {status === 'DRAFTS' ? 'Discard' : 'Withdraw'}
+                  </Button>
                 </div>
               </div>
             )}
@@ -191,6 +193,7 @@ class RequestInformation extends PureComponent {
           visible={showWithdrawModal}
           onProceed={this.onProceed}
           onClose={this.setShowWithdrawModal}
+          status={status}
         />
       </div>
     );

@@ -230,7 +230,7 @@ class DataTable extends PureComponent {
       showTotal: (total, range) => (
         <span>
           {' '}
-          Showing
+          Showing{'  '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
