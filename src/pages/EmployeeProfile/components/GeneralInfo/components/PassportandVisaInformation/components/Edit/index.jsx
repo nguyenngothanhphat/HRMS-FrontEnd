@@ -210,7 +210,7 @@ class Edit extends Component {
         passportIssuedCountry: '',
         passportIssuedOn: '',
         passportValidTill: '',
-        id: '',
+        _id: '',
       },
     ];
 
@@ -224,7 +224,7 @@ class Edit extends Component {
         passportIssuedCountry: item.passportIssuedCountry,
         passportIssuedOn: item.passportIssuedOn,
         passportValidTill: item.passportValidTill,
-        id: item._id,
+        _id: item._id,
       };
 
       return payloadChanges;
@@ -410,13 +410,15 @@ class Edit extends Component {
 
   handleSave = async () => {
     const { dispatch, passportData = [], visaData = [] } = this.props;
-    // const passportLength = passportData.length;
     const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
     const dataTempKept = this.processDataKeptPassPort() || {};
     let idPassPort = '';
 
     if (passportData) {
-      idPassPort = passportData._id;
+      // idPassPort = passportData._id;
+      passportData.map((item) => {
+        idPassPort = item._id;
+      });
     }
 
     console.log('payloadUpdatePassPort: ', payloadUpdatePassPort);
