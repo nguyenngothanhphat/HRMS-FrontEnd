@@ -1,91 +1,7 @@
 import { dialog } from '@/utils/utils';
 import { listProjectByCompany, addProjectMember } from '../services/projectManagement';
-import { getEmployeesList, getRoleList } from '../services/usersManagement';
-
-const mockData = [
-  {
-    key: '1',
-    projectId: '8097',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '2',
-    projectId: '8098',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '3',
-    projectId: '8099',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '4',
-    projectId: '8100',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-];
-
-const MOCK_EMPLOYEE = [
-  {
-    id: '1',
-    name: 'John Doe 1',
-  },
-  {
-    id: '2',
-    name: 'John Doe 2',
-  },
-  {
-    id: '3',
-    name: 'John Doe 3',
-  },
-  {
-    id: '4',
-    name: 'John Doe 4',
-  },
-];
-
-const MOCK_ROLE = [
-  {
-    id: '1',
-    name: 'Project Manager',
-  },
-  {
-    id: '2',
-    name: 'QC',
-  },
-  {
-    id: '3',
-    name: 'Developer',
-  },
-];
+import { getRoleList } from '../services/usersManagement';
+import { getListEmployeeActive } from '../services/employee';
 
 const PROJECT_STATUS = {
   ACTIVE: 'ACTIVE',
@@ -111,22 +27,22 @@ const formatMonth = (month) => {
   return monthNames[month];
 };
 
-const formatDay = (day) => {
-  const nth = (d) => {
-    if (d > 3 && d < 21) return 'th';
-    switch (d % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-  return day + nth(day);
-};
+// const formatDay = (day) => {
+//   const nth = (d) => {
+//     if (d > 3 && d < 21) return 'th';
+//     switch (d % 10) {
+//       case 1:
+//         return 'st';
+//       case 2:
+//         return 'nd';
+//       case 3:
+//         return 'rd';
+//       default:
+//         return 'th';
+//     }
+//   };
+//   return day + nth(day);
+// };
 
 const getDate = (date) => {
   if (!date) {
@@ -175,14 +91,12 @@ const projectManagement = {
       let response;
       try {
         response = yield call(listProjectByCompany, payload);
-        console.log(response);
+        // console.log(response);
         const { data = [] } = response;
         const inactiveList = [];
         const activeList = [];
         const { ACTIVE, INACTIVE } = PROJECT_STATUS;
         data.forEach((item) => {
-          // const {status, beginDate, createdAt, projectHealth, name, _id}
-          // console.log(item);
           const {
             status,
             _id,
@@ -191,6 +105,7 @@ const projectManagement = {
             manager: { generalInfo: { legalName: managerName } = {} } = {},
             beginDate,
             projectHealth,
+            company,
           } = item;
           const project = {
             // projectId: _id.substring(_id.length - 4, _id.length) || '',
@@ -200,6 +115,7 @@ const projectManagement = {
             projectManager: managerName || '',
             startDate: formatStartDate(beginDate) || '',
             projectHealth: (projectHealth && `${projectHealth}%`) || '',
+            company,
           };
 
           // console.log(project);
@@ -210,8 +126,7 @@ const projectManagement = {
             inactiveList.push(project);
           }
         });
-        console.log(activeList);
-        console.log(inactiveList);
+
         yield put({
           type: 'save',
           payload: {
@@ -225,11 +140,10 @@ const projectManagement = {
       return response;
     },
 
-    *addMember({ payload }, { call, put }) {
+    *addMember({ payload }, { call }) {
       let response;
       try {
         response = yield call(addProjectMember, payload);
-        console.log(response);
       } catch (error) {
         dialog(error);
       }
@@ -240,7 +154,8 @@ const projectManagement = {
       let response;
       let response2;
       try {
-        response = yield call(getEmployeesList, payload);
+        // response = yield call(getEmployeesList, payload);
+        response = yield call(getListEmployeeActive, payload);
         response2 = yield call(getRoleList);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;
