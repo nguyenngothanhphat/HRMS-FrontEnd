@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-import DataTable from '../DataTable';
-import CompoffTable from '../CompoffTable';
+import TeamDataTable from '../DataTable';
+import TeamCompoffTable from '../CompoffTable';
+import MyDataTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/DataTable';
+import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
 import FilterBar from '../FilterBar';
 
 import styles from './index.less';
@@ -20,6 +22,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
+      selectedTab: 'IN-PROCESS',
     };
   }
 
@@ -133,6 +136,19 @@ class TimeOffRequestTab extends PureComponent {
   setSelectedFilterTab = (id) => {
     this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
+
+    let selectedTab = 'IN-PROCESS';
+    if (id === '2') {
+      selectedTab = 'APPROVED';
+    } else if (id === '3') {
+      selectedTab = 'REJECTED';
+    } else if (id === '4') {
+      selectedTab = 'DRAFTS';
+    }
+
+    this.setState({
+      selectedTab,
+    });
   };
 
   countTotal = (newData) => {
@@ -181,6 +197,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      selectedTab,
     } = this.state;
 
     const dataNumber = {
@@ -220,8 +237,18 @@ class TimeOffRequestTab extends PureComponent {
             // ) : (
           }
           <div>
-            {type === 1 && <DataTable data={formatData} category={category} />}
-            {type === 2 && <CompoffTable data={formatData} category={category} />}
+            {type === 1 && category === 'TEAM' && (
+              <TeamDataTable data={formatData} category={category} selectedTab={selectedTab} />
+            )}
+            {type === 1 && category === 'MY' && <MyDataTable data={formatData} />}
+            {type === 1 && category === 'ALL' && (
+              <TeamDataTable data={formatData} selectedTab={selectedTab} />
+            )}
+            {type === 2 && category === 'TEAM' && (
+              <TeamCompoffTable data={formatData} category={category} />
+            )}
+            {type === 2 && category === 'MY' && <MyCompoffTable data={formatData} />}
+            {type === 2 && category === 'ALL' && <TeamCompoffTable data={formatData} />}
           </div>
         </div>
       </div>

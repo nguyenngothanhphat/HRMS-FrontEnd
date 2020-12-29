@@ -18,7 +18,7 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '20%',
+      // width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
@@ -28,37 +28,45 @@ class DataTable extends PureComponent {
         );
       },
     },
-    // {
-    //   title: 'Type',
-    //   dataIndex: 'type',
-    //   align: 'center',
-    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
-    //   // sortDirections: ['ascend', 'descend', 'ascend'],
-    // },
-
-    // {
-    //   title: 'Leave date',
-    //   width: '20%',
-    //   dataIndex: 'leaveTimes',
-    //   align: 'left',
-    // },
     {
-      title: `Req’ted on `,
-      dataIndex: 'onDate',
+      title: 'Requestee',
+      dataIndex: 'requestee',
+      align: 'left',
+      render: (requestee) => <span>{requestee}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
       align: 'center',
-      width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
-      defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+
+    {
+      title: 'Duration',
+      width: '20%',
+      dataIndex: 'leaveTimes',
+      align: 'left',
     },
     // {
-    //   title: 'Duration',
-    //   dataIndex: 'duration',
+    //   title: `Req’ted on `,
+    //   dataIndex: 'onDate',
     //   align: 'center',
+    //   width: '30%',
+    //   render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+    //   defaultSortOrder: ['ascend'],
+    //   sorter: {
+    //     compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+    //   },
+    //   sortDirections: ['ascend', 'descend', 'ascend'],
     // },
+    {
+      title: 'Comment',
+      dataIndex: 'comment',
+      align: 'center',
+      render: () => <span />,
+    },
     {
       title: 'Assigned',
       align: 'left',
@@ -100,8 +108,18 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'center',
       dataIndex: '_id',
-      width: '20%',
+      // width: '20%',
       render: (_id) => {
+        const { status = '' } = this.props;
+        if (status === 'IN-PROGRESS')
+          return (
+            <div className={styles.rowAction}>
+              <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+              <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
+              <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
+            </div>
+          );
+
         return (
           <div className={styles.rowAction}>
             <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -120,8 +138,16 @@ class DataTable extends PureComponent {
     };
   }
 
+  // HANDLE TEAM REQUESTS
+  onOpenClick = (_id) => {
+    history.push({
+      pathname: `/time-off/manager-view-request/${_id}`,
+      // state: { location: name },
+    });
+  };
+
   onIdClick = (_id) => {
-    this.viewRequest(_id);
+    this.onOpenClick(_id);
   };
 
   onApproveClick = () => {
@@ -172,6 +198,9 @@ class DataTable extends PureComponent {
         cc = [],
         ticketID = '',
         _id = '',
+        employee: { generalInfo: { firstName = '', lastName = '' } = {} },
+        firstComment = '',
+        secondComment = '',
       } = value;
 
       // GET ID OF APPROVE MANAGER
@@ -203,18 +232,19 @@ class DataTable extends PureComponent {
           ticketID,
           _id,
         },
+        requestee: `${firstName} ${lastName}`,
       };
     });
   };
 
   render() {
-    const { data = [], loading1, loading2 } = this.props;
+    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
     const { selectedRowKeys } = this.state;
     // const rowSize = 20;
 
     const parsedData = this.processData(data);
     const scroll = {
-      x: '40vw',
+      x: '60vw',
       y: 'max-content',
     };
 
@@ -223,6 +253,12 @@ class DataTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
+    const tableByRole =
+      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+        ? this.columns.filter((col) => col.dataIndex !== 'assigned')
+        : this.columns.filter((col) => col.dataIndex !== 'comment');
+
     return (
       <div className={styles.DataTable}>
         <Table
@@ -230,7 +266,7 @@ class DataTable extends PureComponent {
           loading={loading1 || loading2}
           rowSelection={rowSelection}
           pagination={false}
-          columns={this.columns}
+          columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
           rowKey="_id"

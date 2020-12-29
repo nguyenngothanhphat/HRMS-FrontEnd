@@ -168,7 +168,7 @@ class CompoffTable extends PureComponent {
 
     const parsedData = this.processData(data);
     const scroll = {
-      x: '40vw',
+      x: '60vw',
       y: 'max-content',
     };
 
