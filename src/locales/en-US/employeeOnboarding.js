@@ -90,7 +90,6 @@ export default {
   'component.emailReminderForm.addCondition': '+ Add another condition',
   'component.emailReminderForm.cancel': 'Cancel',
   'component.emailReminderForm.submit': 'Submit',
-  'component.customEmailsTableField.editEmail': 'Edit email',
   'component.customEmailsTableField.title': 'Custom emails',
   'component.customEmailsTableField.description':
     'Cras gravida bibendum dolor eu varius. Morbi fermentum velit nisl, eget vehicula lorem sodales eget. Donec quis volutpat orci. Sed ipsum felis, tristique id egestas et, convallis ac velit.',
@@ -102,4 +101,21 @@ export default {
   'component.customEmailsTableField.triggerEvent': 'Trigger Event',
   'component.customEmailsTableField.frequency': 'Frequency',
   'component.customEmailsTableField.actions': 'Actions',
+
+  // Edit email
+  'component.editEmailNote.title': 'Note',
+  'component.editEmailNote.note1':
+    'Custom Email messages are a great way to recognize important dates and milestones.',
+  'component.editEmailNote.note2':
+    'For example, you can remind managers of their team members’ start dates or create reminders for events, like license renewals or 30 day check-ins. ',
+  'component.editEmailNote.note3':
+    'You can use the Auto Text feature to generate personalized emails from a template.',
+  'component.customEmailsTableField.editEmail': 'Edit email',
+  'component.editEmailHeader.title': 'Edit a custom email reminder',
+  'component.editEmailForm.addCondition': '+ Add another condition',
+  'component.editEmailForm.triggerNote': 'You can add additional events with',
+  'component.editEmailForm.triggerNoteLink': 'Custom fields',
+  'component.editEmailForm.cancel': 'Cancel',
+  'component.editEmailForm.submit': 'Submit',
+  'component.editEmailForm.title': 'Edit a custom email',
 };
