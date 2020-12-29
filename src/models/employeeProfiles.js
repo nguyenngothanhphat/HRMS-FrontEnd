@@ -337,9 +337,12 @@ const employeeProfile = {
     },
     *addPassPort({ payload = {}, dataTempKept = {}, key = '' }, { put, call, select }) {
       try {
+        console.log(payload);
         const response = yield call(getAddPassPort, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
+        console.log(response);
+
         if (statusCode !== 200) throw response;
         notification.success({
           message,
@@ -676,8 +679,11 @@ const employeeProfile = {
     *fetchDocumentUpdate({ payload }, { call, put }) {
       let doc = {};
       try {
+        console.log('payload fetchDocUpdate: ', payload);
         const response = yield call(getDocumentUpdate, payload);
         const { statusCode, data } = response;
+        console.log('response fetchDocUpdate: ', response);
+
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });
         doc = data;

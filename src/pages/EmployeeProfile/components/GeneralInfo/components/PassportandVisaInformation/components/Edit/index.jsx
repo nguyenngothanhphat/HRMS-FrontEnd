@@ -98,7 +98,7 @@ class Edit extends Component {
     const newList = [...passportData];
 
     newList.splice(index, 1, newItem);
-    // this.validateDate(newList);
+    this.validateDate(newList);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -126,6 +126,8 @@ class Edit extends Component {
       getFile = urlFile;
     }
 
+    console.log('documentPassPort: ', documentPassPort);
+
     if (documentPassPort) {
       const dataPassport = {
         id: documentPassPort._id,
@@ -137,6 +139,7 @@ class Edit extends Component {
         payload: dataPassport,
       });
     } else {
+      console.log('Docs is not exist');
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
@@ -176,8 +179,9 @@ class Edit extends Component {
       },
     ];
 
+    console.log('passportDataTemp: ', passportDataTemp);
+
     passportDataTemp.map((item, index) => {
-      console.log('item.document: ', item.document);
       payloadChanges[index] = {
         urlFile: item.urlFile,
         document: item.document ? item.document._id : '',
@@ -187,6 +191,7 @@ class Edit extends Component {
         passportValidTill: item.passportValidTill,
         _id: item._id,
       };
+      console.log('payloadChanges: ', payloadChanges);
 
       return payloadChanges;
     });
@@ -373,6 +378,9 @@ class Edit extends Component {
       if (_id) {
         idPassPort = _id;
       }
+
+      // console.log('passportData: ', passportData);
+      // console.log('idPassPort: ', idPassPort);
 
       if (idPassPort) {
         return this.handleUpdatePassportGroup(item, index);
