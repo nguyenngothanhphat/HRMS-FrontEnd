@@ -29,9 +29,13 @@ class DataTable extends PureComponent {
       dataIndex: 'type',
       align: 'center',
       render: (type) => <span>{type ? type.shortType : ''}</span>,
-      defaultSortOrder: ['ascend'],
+      // defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => a.localeCompare(b),
+        compare: (a, b) => {
+          const { type: { shortType: s1 = '' } = {} } = a;
+          const { type: { shortType: s2 = '' } = {} } = b;
+          return s1.localeCompare(s2);
+        },
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
