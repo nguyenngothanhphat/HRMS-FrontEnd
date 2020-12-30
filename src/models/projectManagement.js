@@ -1,5 +1,9 @@
 import { dialog } from '@/utils/utils';
-import { listProjectByCompany, addProjectMember, listProjectRole } from '../services/projectManagement';
+import {
+  listProjectByCompany,
+  addProjectMember,
+  listProjectRole,
+} from '../services/projectManagement';
 import { getRoleList } from '../services/usersManagement';
 import { getListEmployeeActive } from '../services/employee';
 
@@ -144,6 +148,9 @@ const projectManagement = {
       let response;
       try {
         response = yield call(addProjectMember, payload);
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
       } catch (error) {
         dialog(error);
       }
@@ -166,10 +173,6 @@ const projectManagement = {
           }),
         );
 
-        // const listRole = dataRole.map(({ _id = '', name = '' }) => ({
-        //   id: _id,
-        //   name,
-        // }));
         const listRole = dataRole.map((item) => item);
 
         yield put({
@@ -179,6 +182,12 @@ const projectManagement = {
             roleList: listRole,
           },
         });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+        if (response2.statusCode !== 200) {
+          dialog(response2);
+        }
       } catch (error) {
         dialog(error);
       }
