@@ -12,11 +12,10 @@ export async function addProjectMember(payload) {
     method: 'POST',
     data: payload, //
   });
-  //   payload: {
-  //     "employee": _id,
-  //     "project": _id,
-  //     "members": [
-  //        {"id": _id, "role": _id, "effort": 100},
-  //     ]
-  // }
+}
+
+export async function listProjectRole() {
+  return request('/api/project/list-role', {
+    method: 'POST',
+  });
 }

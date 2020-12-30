@@ -1,5 +1,5 @@
 import { dialog } from '@/utils/utils';
-import { listProjectByCompany, addProjectMember } from '../services/projectManagement';
+import { listProjectByCompany, addProjectMember, listProjectRole } from '../services/projectManagement';
 import { getRoleList } from '../services/usersManagement';
 import { getListEmployeeActive } from '../services/employee';
 
@@ -155,7 +155,7 @@ const projectManagement = {
       let response2;
       try {
         response = yield call(getListEmployeeActive, payload);
-        response2 = yield call(getRoleList);
+        response2 = yield call(listProjectRole);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;
 
@@ -166,10 +166,11 @@ const projectManagement = {
           }),
         );
 
-        const listRole = dataRole.map(({ _id = '', name = '' }) => ({
-          id: _id,
-          name,
-        }));
+        // const listRole = dataRole.map(({ _id = '', name = '' }) => ({
+        //   id: _id,
+        //   name,
+        // }));
+        const listRole = dataRole.map((item) => item);
 
         yield put({
           type: 'save',
