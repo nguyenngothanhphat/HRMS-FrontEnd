@@ -583,11 +583,18 @@ class EditEmailForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
+    const { emailCustomData = {} } = this.props;
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
       load,
     } = this.state;
+
+    const { conditions = [] } = emailCustomData;
+
+    console.log('conditions: ', conditions);
+    const conditionsKey = conditions.map((item) => item.key);
+    console.log('conditionsKey: ', conditionsKey);
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -641,7 +648,8 @@ class EditEmailForm extends PureComponent {
                         mode="multiple"
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -745,8 +753,14 @@ class EditEmailForm extends PureComponent {
     const { Option } = Select;
     const { loadingAddCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
-    const { message: _messages = '', subject = '', triggerEvent = {}, applyTo: _applyTo = '', sendToExistingWorker } = emailCustomData;
-    this.setState({messages: _messages});
+    const {
+      message: _messages = '',
+      subject = '',
+      triggerEvent = {},
+      applyTo: _applyTo = '',
+      sendToExistingWorker,
+    } = emailCustomData;
+    this.setState({ messages: _messages });
 
     return (
       <Form onFinish={this.onFinish}>
@@ -770,10 +784,7 @@ class EditEmailForm extends PureComponent {
             <div className={styles.note}>
               <span>
                 {formatMessage({ id: 'component.editEmailForm.triggerNote' })}{' '}
-                <a href="#">
-                  {' '}
-                  {formatMessage({ id: 'component.editEmailForm.triggerNoteLink' })}
-                </a>
+                <a href="#"> {formatMessage({ id: 'component.editEmailForm.triggerNoteLink' })}</a>
               </span>
             </div>
           </Col>
@@ -783,8 +794,8 @@ class EditEmailForm extends PureComponent {
             <Form.Item name="sendingDate" label="Sending date">
               <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
                 {sendingDate.map((option) => {
-                    return <Radio value={option.value}>{option.name}</Radio>;
-                  })}
+                  return <Radio value={option.value}>{option.name}</Radio>;
+                })}
               </Radio.Group>
             </Form.Item>
           </Col>
@@ -792,26 +803,22 @@ class EditEmailForm extends PureComponent {
           {/* Applies to */}
           <Col span={12}>
             <Form.Item name="applyTo" label="Applies to">
-              {
-                applyTo.map((option) => (
-                  <>
-                    {
-                      _applyTo === option.value ? (
-                        <Select
-                          size="large"
-                          defaultValue={option.name}
-                          onChange={this.handleChangeApply}
-                          disabled
-                        >
-                          {applyTo.map((item) => {
-                          return <Option value={item.value}>{item.name}</Option>;
-                        })}
-                        </Select>
-                      ) : null
-                    }
-                  </>
-                ))
-              }
+              {applyTo.map((option) => (
+                <>
+                  {_applyTo === option.value ? (
+                    <Select
+                      size="large"
+                      defaultValue={option.name}
+                      onChange={this.handleChangeApply}
+                      disabled
+                    >
+                      {applyTo.map((item) => {
+                        return <Option value={item.value}>{item.name}</Option>;
+                      })}
+                    </Select>
+                  ) : null}
+                </>
+              ))}
             </Form.Item>
           </Col>
 
@@ -822,10 +829,9 @@ class EditEmailForm extends PureComponent {
           {/* Send to existing workers */}
           <Col span={12}>
             <Form.Item name="sendToWorker" label="Send to existing workers">
-              {
-                sendToExistingWorker ? (
-                  <div>
-                    {sendToWorker.map((option) => {
+              {sendToExistingWorker ? (
+                <div>
+                  {sendToWorker.map((option) => {
                     return (
                       <Checkbox
                         value={option.value}
@@ -837,10 +843,10 @@ class EditEmailForm extends PureComponent {
                       </Checkbox>
                     );
                   })}
-                  </div>
-                ) : (
-                  <Checkbox.Group>
-                    {sendToWorker.map((option) => {
+                </div>
+              ) : (
+                <Checkbox.Group>
+                  {sendToWorker.map((option) => {
                     return (
                       <Checkbox
                         value={option.value}
@@ -851,9 +857,8 @@ class EditEmailForm extends PureComponent {
                       </Checkbox>
                     );
                   })}
-                  </Checkbox.Group>
-                )
-              }
+                </Checkbox.Group>
+              )}
             </Form.Item>
           </Col>
 
@@ -885,9 +890,9 @@ class EditEmailForm extends PureComponent {
           <Col className={styles.buttons} span={8} offset={16}>
             <Link
               to={{
-                  pathname: '/employee-onboarding',
-                  state: { defaultActiveKey: '2' },
-                }}
+                pathname: '/employee-onboarding',
+                state: { defaultActiveKey: '2' },
+              }}
             >
               <Button type="secondary">
                 {' '}

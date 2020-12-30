@@ -705,6 +705,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   back = () => {
+    // history.
     history.goBack();
   };
 
