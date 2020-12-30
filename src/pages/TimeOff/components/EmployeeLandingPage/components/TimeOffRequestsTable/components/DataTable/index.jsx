@@ -14,35 +14,43 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '20%',
+      // width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            ID
+            {ticketID}
           </span>
         );
       },
     },
-    // {
-    //   title: 'Type',
-    //   dataIndex: 'type',
-    //   align: 'center',
-    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
-    //   // sortDirections: ['ascend', 'descend', 'ascend'],
-    // },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      align: 'center',
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => {
+          const { type: { shortType: s1 = '' } = {} } = a;
+          const { type: { shortType: s2 = '' } = {} } = b;
+          return s1.localeCompare(s2);
+        },
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
+    },
 
-    // {
-    //   title: 'Leave date',
-    //   width: '20%',
-    //   dataIndex: 'leaveTimes',
-    //   align: 'left',
-    // },
+    {
+      title: 'Leave date',
+      width: '20%',
+      dataIndex: 'leaveTimes',
+      align: 'left',
+    },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'center',
-      width: '30%',
+      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -50,11 +58,11 @@ class DataTable extends PureComponent {
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
-    // {
-    //   title: 'Duration',
-    //   dataIndex: 'duration',
-    //   align: 'center',
-    // },
+    {
+      title: 'Duration',
+      dataIndex: 'duration',
+      align: 'center',
+    },
     {
       title: 'Assigned',
       align: 'left',
@@ -87,7 +95,7 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
-      width: '20%',
+      // width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -173,12 +181,31 @@ class DataTable extends PureComponent {
 
   render() {
     const { data = [], loadingFetchLeaveRequests } = this.props;
-    const { selectedRowKeys } = this.state;
-    // const rowSize = 20;
+    const { selectedRowKeys, pageSelected } = this.state;
+    const rowSize = 10;
 
     const parsedData = this.processData(data);
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: parsedData.length,
+      showTotal: (total, range) => (
+        <span>
+          {' '}
+          Showing{'  '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {total}{' '}
+        </span>
+      ),
+      pageSize: rowSize,
+      current: pageSelected,
+      onChange: this.onChangePagination,
+    };
+
     const scroll = {
-      x: '40vw',
+      x: '60vw',
       y: 'max-content',
     };
 
@@ -187,13 +214,14 @@ class DataTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
     return (
       <div className={styles.DataTable}>
         <Table
           size="middle"
           loading={loadingFetchLeaveRequests}
           rowSelection={rowSelection}
-          pagination={false}
+          pagination={{ ...pagination, total: parsedData.length }}
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}

@@ -4,7 +4,7 @@ import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import WithdrawModal from '../WithdrawModal';
-
+import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
@@ -19,6 +19,7 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showWithdrawModal: false,
+      showWithdraw2Modal: false,
     };
   }
 
@@ -45,6 +46,12 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  setShowWithdraw2Modal = (value) => {
+    this.setState({
+      showWithdraw2Modal: value,
+    });
+  };
+
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
@@ -56,14 +63,17 @@ class RequestInformation extends PureComponent {
   };
 
   // WITHDRAW CLICKED
-  withDraw = () => {
-    this.setShowWithdrawModal(true);
+  withDraw = (status) => {
+    if (status !== 'APPROVED') this.setShowWithdrawModal(true);
+    else this.setShowWithdraw2Modal(true);
   };
 
-  // ON PROCEED withDraw
+  // ON WITHDRAW WHEN A TICKET IS DRAFT OR IN PROGRESS
   onProceed = async () => {
     const {
-      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest: { _id: id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
     } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
@@ -73,19 +83,32 @@ class RequestInformation extends PureComponent {
     if (statusCode === 200) {
       history.push({
         pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
       });
     }
   };
 
+  // ON WITHDRAW WHEN A TICKET WAS APPROVED
+  onProceed2 = async (title, reason) => {
+    // eslint-disable-next-line no-console
+    console.log('withdraw', title, reason);
+  };
+
+  checkWithdrawValid = (fromDate) => {
+    const now = moment().format('YYYY-MM-DD');
+    const from = moment(fromDate).format('YYYY-MM-DD');
+    return from > now;
+  };
+
   render() {
-    const { showWithdrawModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
       loadingWithdrawLeaveRequest,
     } = this.props;
     const {
+      ticketID = '',
       status = '',
       _id = '',
       subject = '',
@@ -99,14 +122,20 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
+    const checkWithdrawValid = this.checkWithdrawValid(fromDate);
+
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
-          <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
-          <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
-            <img src={EditIcon} className={styles.icon} alt="edit-icon" />
-            <span className={styles.label}>Edit</span>
-          </div>
+          <span className={styles.title}>
+            [Ticket ID: {ticketID}]: {subject}
+          </span>
+          {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
+              <img src={EditIcon} className={styles.icon} alt="edit-icon" />
+              <span className={styles.label}>Edit</span>
+            </div>
+          )}
         </div>
 
         {loadingFetchLeaveRequestById && (
@@ -173,14 +202,18 @@ class RequestInformation extends PureComponent {
                 </Col>
               </Row>
             </div>
-            {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            {(status === 'DRAFTS' ||
+              status === 'IN-PROGRESS' ||
+              (status === 'APPROVED' && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
                   your department head.
                 </span>
                 <div className={styles.formButtons}>
-                  <Button onClick={() => this.withDraw()}>Withdraw</Button>
+                  <Button onClick={() => this.withDraw(status)}>
+                    {status === 'DRAFTS' ? 'Discard' : 'Withdraw'}
+                  </Button>
                 </div>
               </div>
             )}
@@ -191,6 +224,14 @@ class RequestInformation extends PureComponent {
           visible={showWithdrawModal}
           onProceed={this.onProceed}
           onClose={this.setShowWithdrawModal}
+          status={status}
+        />
+        <Withdraw2Modal
+          loading={loadingWithdrawLeaveRequest}
+          visible={showWithdraw2Modal}
+          onProceed={this.onProceed2}
+          onClose={this.setShowWithdraw2Modal}
+          status={status}
         />
       </div>
     );
