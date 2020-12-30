@@ -19,7 +19,7 @@ class DataTable extends PureComponent {
         const { ticketID = '', _id = '' } = id;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            ID
+            {ticketID}
           </span>
         );
       },

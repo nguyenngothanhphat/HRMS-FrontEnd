@@ -23,7 +23,7 @@ class DataTable extends PureComponent {
         const { ticketID = '', _id = '' } = id;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            ID
+            {ticketID}
           </span>
         );
       },
@@ -67,37 +67,37 @@ class DataTable extends PureComponent {
       align: 'center',
       render: () => <span />,
     },
-    {
-      title: 'Assigned',
-      align: 'left',
-      dataIndex: 'assigned',
-      // width: '25%',
-      render: (assigned) => {
-        return (
-          <div className={styles.rowAction}>
-            <Avatar.Group
-              maxCount={3}
-              maxStyle={{
-                color: '#FFA100',
-                backgroundColor: '#EAF0FF',
-              }}
-            >
-              {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
-                return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
-                  </Tooltip>
-                );
-              })}
-            </Avatar.Group>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: 'Assigned',
+    //   align: 'left',
+    //   dataIndex: 'assigned',
+    //   // width: '25%',
+    //   render: (assigned) => {
+    //     return (
+    //       <div className={styles.rowAction}>
+    //         <Avatar.Group
+    //           maxCount={3}
+    //           maxStyle={{
+    //             color: '#FFA100',
+    //             backgroundColor: '#EAF0FF',
+    //           }}
+    //         >
+    //           {assigned.map((user) => {
+    //             const { firstName = '', lastName = '', avatar = '' } = user;
+    //             return (
+    //               <Tooltip title={`${firstName} ${lastName}`} placement="top">
+    //                 <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+    //               </Tooltip>
+    //             );
+    //           })}
+    //         </Avatar.Group>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: 'Action',
-      align: 'center',
+      align: 'left',
       dataIndex: '_id',
       // width: '20%',
       render: (_id) => {

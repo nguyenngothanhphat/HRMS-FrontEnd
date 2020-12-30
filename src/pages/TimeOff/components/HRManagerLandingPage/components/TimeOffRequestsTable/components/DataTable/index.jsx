@@ -17,13 +17,13 @@ class DataTable extends PureComponent {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
-      fixed: 'left',
+      // fixed: 'left',
       // width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            ID
+            {ticketID}
           </span>
         );
       },
@@ -106,12 +106,12 @@ class DataTable extends PureComponent {
     },
     {
       title: 'Action',
-      align: 'center',
+      align: 'left',
       dataIndex: '_id',
       // width: '20%',
       render: (_id) => {
-        const { status = '' } = this.props;
-        if (status === 'IN-PROGRESS')
+        const { selectedTab = '' } = this.props;
+        if (selectedTab === 'IN-PROGRESS')
           return (
             <div className={styles.rowAction}>
               <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
