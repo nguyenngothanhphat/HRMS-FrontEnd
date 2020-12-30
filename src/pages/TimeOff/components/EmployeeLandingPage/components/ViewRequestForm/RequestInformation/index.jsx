@@ -4,7 +4,7 @@ import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import WithdrawModal from '../WithdrawModal';
-
+import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
@@ -19,6 +19,7 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showWithdrawModal: false,
+      showWithdraw2Modal: false,
     };
   }
 
@@ -45,6 +46,12 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  setShowWithdraw2Modal = (value) => {
+    this.setState({
+      showWithdraw2Modal: value,
+    });
+  };
+
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
@@ -56,11 +63,12 @@ class RequestInformation extends PureComponent {
   };
 
   // WITHDRAW CLICKED
-  withDraw = () => {
-    this.setShowWithdrawModal(true);
+  withDraw = (status) => {
+    if (status !== 'APPROVED') this.setShowWithdrawModal(true);
+    else this.setShowWithdraw2Modal(true);
   };
 
-  // ON PROCEED withDraw
+  // ON WITHDRAW WHEN A TICKET IS DRAFT OR IN PROGRESS
   onProceed = async () => {
     const {
       timeOff: {
@@ -80,6 +88,12 @@ class RequestInformation extends PureComponent {
     }
   };
 
+  // ON WITHDRAW WHEN A TICKET WAS APPROVED
+  onProceed2 = async (title, reason) => {
+    // eslint-disable-next-line no-console
+    console.log('withdraw', title, reason);
+  };
+
   checkWithdrawValid = (fromDate) => {
     const now = moment().format('YYYY-MM-DD');
     const from = moment(fromDate).format('YYYY-MM-DD');
@@ -87,7 +101,7 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
@@ -197,7 +211,7 @@ class RequestInformation extends PureComponent {
                   your department head.
                 </span>
                 <div className={styles.formButtons}>
-                  <Button onClick={() => this.withDraw()}>
+                  <Button onClick={() => this.withDraw(status)}>
                     {status === 'DRAFTS' ? 'Discard' : 'Withdraw'}
                   </Button>
                 </div>
@@ -210,6 +224,13 @@ class RequestInformation extends PureComponent {
           visible={showWithdrawModal}
           onProceed={this.onProceed}
           onClose={this.setShowWithdrawModal}
+          status={status}
+        />
+        <Withdraw2Modal
+          loading={loadingWithdrawLeaveRequest}
+          visible={showWithdraw2Modal}
+          onProceed={this.onProceed2}
+          onClose={this.setShowWithdraw2Modal}
           status={status}
         />
       </div>

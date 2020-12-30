@@ -19,10 +19,11 @@ class ExtraTimeSpentRow extends PureComponent {
       onChange = () => {},
       listLength = 0,
       totalHours = 0,
-      totalDays = 0,
     } = this.props;
 
     const { date = '' } = eachDate;
+    const totalDays = totalHours / 8;
+
     return (
       <Row className={styles.ExtraTimeSpentRow}>
         <Col span={16}>

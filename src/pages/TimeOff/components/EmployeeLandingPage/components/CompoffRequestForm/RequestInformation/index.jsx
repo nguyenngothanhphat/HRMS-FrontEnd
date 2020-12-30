@@ -398,7 +398,6 @@ class RequestInformation extends PureComponent {
     // count total days and total hours
     const listValue = dateLists.map((data) => data.timeSpend);
     const totalHours = listValue.reduce((a, b) => a + b, 0);
-    const totalDays = dateLists.length;
 
     // generate project list
     const projectsList = this.generateProjectsList();
@@ -567,7 +566,6 @@ class RequestInformation extends PureComponent {
                                 onRemove={this.onDateRemove}
                                 listLength={dateLists.length}
                                 onChange={this.onDataChange}
-                                totalDays={totalDays}
                                 totalHours={totalHours}
                               />
                             );
