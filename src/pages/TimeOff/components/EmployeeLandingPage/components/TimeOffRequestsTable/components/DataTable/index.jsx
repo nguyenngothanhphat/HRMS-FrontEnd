@@ -29,7 +29,11 @@ class DataTable extends PureComponent {
       dataIndex: 'type',
       align: 'center',
       render: (type) => <span>{type ? type.shortType : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => a.localeCompare(b),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
 
     {

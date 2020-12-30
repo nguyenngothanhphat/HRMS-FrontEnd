@@ -947,6 +947,7 @@ class RequestInformation extends PureComponent {
               >
                 <TextArea
                   autoSize={{ minRows: 3, maxRows: 6 }}
+                  maxLength={250}
                   placeholder="The reason I am taking timeoff is …"
                 />
               </Form.Item>

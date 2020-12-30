@@ -22,7 +22,7 @@ class DataTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          <span className={styles.ID} onClick={() => this.onOpenClick(_id)}>
             {ticketID}
           </span>
         );
@@ -40,7 +40,11 @@ class DataTable extends PureComponent {
       dataIndex: 'type',
       align: 'center',
       render: (type) => <span>{type ? type.shortType : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => a.localeCompare(b),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
 
     {
@@ -122,7 +126,7 @@ class DataTable extends PureComponent {
 
         return (
           <div className={styles.rowAction}>
-            <span onClick={() => this.viewRequest(_id)}>View Request</span>
+            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
           </div>
         );
       },
