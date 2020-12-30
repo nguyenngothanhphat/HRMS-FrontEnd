@@ -143,6 +143,32 @@ class EditEmailForm extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { emailCustomData: { conditions: conditionsCustomEmail = [] } = {} } = this.props;
+    const { conditionsData } = this.state;
+
+    const newConditionCustomEmail = [...conditionsCustomEmail];
+    const newData = [...conditionsData];
+
+    const conditionsKey = newConditionCustomEmail.map((item) => item.key);
+    conditionsKey.map((item, index) => {
+      const newObj = {
+        id: index,
+        key: item,
+        tobeVerb: '',
+        value: [],
+      };
+
+      newData.push(newObj);
+      return filterData;
+    });
+    const filterData = newData.filter((item) => item.key !== '');
+
+    this.setState({
+      conditionsData: filterData,
+    });
+  }
+
   mentionModule = (t) => {
     return {
       allowedChars: /^[A-Za-z\s]*$/,
@@ -583,18 +609,20 @@ class EditEmailForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
-    const { emailCustomData = {} } = this.props;
+    // const { emailCustomData = {} } = this.props;
+    let valueToBeVerb = '';
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
       load,
     } = this.state;
 
-    const { conditions = [] } = emailCustomData;
-
-    console.log('conditions: ', conditions);
-    const conditionsKey = conditions.map((item) => item.key);
-    console.log('conditionsKey: ', conditionsKey);
+    conditionsData.map((item) => {
+      if (item.tobeVerb === 'is') {
+        valueToBeVerb = item.tobeVerb;
+      }
+      return valueToBeVerb;
+    });
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -611,6 +639,7 @@ class EditEmailForm extends PureComponent {
                       size="large"
                       value={data.key}
                       placeholder="Please select a choice"
+                      disabled
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
                       {units.map((unit) => {
@@ -629,6 +658,7 @@ class EditEmailForm extends PureComponent {
                       size="large"
                       value={data.toBeVerb}
                       placeholder="Please select a choice"
+                      disabled
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
                       {toBeVerbs.map((toBeVerb) => {
@@ -644,8 +674,9 @@ class EditEmailForm extends PureComponent {
                         className={styles.departmentCondition}
                         size="large"
                         value={data.value}
+                        disabled
                         tagRender={this.tagRender}
-                        mode="multiple"
+                        mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -808,7 +839,7 @@ class EditEmailForm extends PureComponent {
                   {_applyTo === option.value ? (
                     <Select
                       size="large"
-                      defaultValue={option.name}
+                      value={option.name}
                       onChange={this.handleChangeApply}
                       disabled
                     >

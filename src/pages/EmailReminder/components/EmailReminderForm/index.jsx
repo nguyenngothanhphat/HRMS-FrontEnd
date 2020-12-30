@@ -377,8 +377,6 @@ class EmailReminderForm extends PureComponent {
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
 
-    console.log('name:', name);
-
     if (name === 'key') {
       if (value === 'department') {
         this.setState({ isLocation: false });
@@ -606,12 +604,10 @@ class EmailReminderForm extends PureComponent {
       load,
     } = this.state;
 
-    const newConditionsData = [...conditionsData];
-
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     let valueToBeVerb = '';
-    newConditionsData.map((item) => {
+    conditionsData.map((item) => {
       if (item.tobeVerb === 'is') {
         valueToBeVerb = item.tobeVerb;
       }
