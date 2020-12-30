@@ -56,17 +56,19 @@ const ModalContent = (props) => {
     }
 
     // Check to validate 1 project lead per project
+    console.log(formInfo);
     const existPM = formInfo.find((item) => {
-      const {
-        role: { id },
-      } = item;
-      return id === 'MANAGER';
+      const { role } = item;
+      return role === 'Project Manager';
     });
+
+    console.log('existPM: ', existPM);
 
     if (existPM) {
       const filteredRoleList = roleListProp.filter((item) => {
-        const { id = '' } = item;
-        return id !== 'MANAGER';
+        // const { id = '' } = item;
+        // return id !== 'MANAGER';
+        return item !== 'Project Manager';
       });
       setRoleList(filteredRoleList);
     } else {
@@ -104,7 +106,7 @@ const ModalContent = (props) => {
       },
     } = user;
     const members = formInfo.map((item) => {
-      return { id: item.employee.id, role: item.role.id, effort: item.effort };
+      return { id: item.employee.id, role: item.role, effort: item.effort };
     });
     if (members.length === 0) {
       return;

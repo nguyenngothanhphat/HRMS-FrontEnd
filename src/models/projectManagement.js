@@ -1,5 +1,9 @@
 import { dialog } from '@/utils/utils';
-import { listProjectByCompany, addProjectMember } from '../services/projectManagement';
+import {
+  listProjectByCompany,
+  addProjectMember,
+  listProjectRole,
+} from '../services/projectManagement';
 import { getRoleList } from '../services/usersManagement';
 import { getListEmployeeActive } from '../services/employee';
 
@@ -144,6 +148,9 @@ const projectManagement = {
       let response;
       try {
         response = yield call(addProjectMember, payload);
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
       } catch (error) {
         dialog(error);
       }
@@ -155,7 +162,7 @@ const projectManagement = {
       let response2;
       try {
         response = yield call(getListEmployeeActive, payload);
-        response2 = yield call(getRoleList);
+        response2 = yield call(listProjectRole);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;
 
@@ -166,10 +173,7 @@ const projectManagement = {
           }),
         );
 
-        const listRole = dataRole.map(({ _id = '', name = '' }) => ({
-          id: _id,
-          name,
-        }));
+        const listRole = dataRole.map((item) => item);
 
         yield put({
           type: 'save',
@@ -178,6 +182,12 @@ const projectManagement = {
             roleList: listRole,
           },
         });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+        if (response2.statusCode !== 200) {
+          dialog(response2);
+        }
       } catch (error) {
         dialog(error);
       }
