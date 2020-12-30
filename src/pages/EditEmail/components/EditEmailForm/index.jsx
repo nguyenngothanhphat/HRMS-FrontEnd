@@ -51,6 +51,7 @@ Quill.register('modules/mentions', QuillMention);
   }),
 )
 class EditEmailForm extends PureComponent {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
     this.modules = { mention: this.mentionModule(this) };
@@ -93,6 +94,7 @@ class EditEmailForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
+      checkValue: '',
       sendToExistingWorker: false,
       recipients: [],
       conditionsTrigger: {
@@ -158,6 +160,7 @@ class EditEmailForm extends PureComponent {
     const newConditionCustomEmail = [...conditionsCustomEmail];
     const newData = [...conditionsData];
 
+    // fetch data of emailCustomData got from reducer and set state into conditionsData.
     const conditionsKey = newConditionCustomEmail.map((item) => item.key);
     conditionsKey.map((item, index) => {
       const newObj = {
@@ -171,11 +174,29 @@ class EditEmailForm extends PureComponent {
       return filterData;
     });
     const filterData = newData.filter((item) => item.key !== '');
+    //////////////////////////////////////////////
+
+    // set sendingDate radio button as default checked
+    const value1 = 'Specific number of days before or after the event';
+    const value2 = 'On the event date';
+
+    if (sendingDate.type === 'now') {
+      this.formRef.current.setFieldsValue({
+        sendingDate: value1,
+      });
+      this.setState({ _sendingDate: value1 });
+    } else {
+      this.formRef.current.setFieldsValue({
+        sendingDate: value2,
+      });
+      this.setState({ _sendingDate: value2 });
+    }
+    //////////////////////////////////////////////
 
     this.setState({
       conditionsData: filterData,
       messages: message,
-      triggerEvent: _triggerEvent,
+      triggerEvent: _triggerEvent.value,
       emailSubject: subject,
     });
   }
@@ -238,6 +259,9 @@ class EditEmailForm extends PureComponent {
     } = this.state;
 
     if (
+      triggerEvent.trim() !== '' &&
+      _sendingDate.trim() !== '' &&
+      emailSubject.trim() !== '' &&
       messages.trim() !== '' &&
       messages.trim() !== '<p></p>' &&
       messages.trim() !== '<p><br></p>'
@@ -311,7 +335,7 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeSendingDate = (value) => {
-    console.log('value message: ', value);
+    console.log('value message: ', value.target.value);
 
     this.setState({ _sendingDate: value.target.value });
   };
@@ -810,21 +834,14 @@ class EditEmailForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { loadingAddCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
-    const { sendingDate, applyTo, sendToWorker, messages, disabled, valueSendingDate } = this.state;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
     const {
       message: _messages = '',
       subject = '',
       triggerEvent = {},
       applyTo: _applyTo = '',
-      sendingDate: _sendingDate = {},
       sendToExistingWorker,
     } = emailCustomData;
-
-    // set sendingDate radion button as default
-    let check = 'On the event date';
-    _sendingDate.type === 'now'
-      ? (check = 'Specific number of days before or after the event')
-      : (check = 'On the event date');
 
     return (
       <Form onFinish={this.onFinish} ref={this.formRef}>
@@ -855,12 +872,8 @@ class EditEmailForm extends PureComponent {
 
           {/* Sending date */}
           <Col span={24}>
-            <Form.Item name="sendingDate" label="Sending date" rules={[{ required: true }]}>
-              <Radio.Group
-                onChange={(value) => this.onChangeSendingDate(value)}
-                defaultValue={check}
-                disabled
-              >
+            <Form.Item name="sendingDate" label="Sending date">
+              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)} disabled>
                 {sendingDate.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
