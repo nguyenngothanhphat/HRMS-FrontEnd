@@ -102,4 +102,9 @@ export default {
   'component.customEmailsTableField.triggerEvent': 'Trigger Event',
   'component.customEmailsTableField.frequency': 'Frequency',
   'component.customEmailsTableField.actions': 'Actions',
+
+  // Company Signatory
+  'component.companySignatory.title': 'Company Signatory',
+  'component.companySignatory.description':
+    "The signature will be used on all relieving and experience letters. An authorized signatory is someone who will sign all the letters on company's behalf.",
 };
