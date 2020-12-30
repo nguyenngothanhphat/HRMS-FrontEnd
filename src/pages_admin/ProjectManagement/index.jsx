@@ -30,17 +30,10 @@ const ProjectManagement = (props) => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
-        company: '5e8723f131c6e53d60ae9678',
+        company: user.currentUser.company._id || '',
       },
     });
-
-    dispatch({
-      type: 'projectManagement/getEmployees',
-      payload: {},
-    });
   }, []);
-
-  console.log(props);
 
   return (
     <PageContainer>

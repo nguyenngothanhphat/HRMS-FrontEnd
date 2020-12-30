@@ -182,9 +182,16 @@ const TableComponent = (props) => {
         onRow={(record) => {
           return {
             onClick: () => {
-              const { projectName = '', projectId = '', projectManager } = record;
+              const { projectName = '', projectId = '', projectManager, company } = record;
               setOpen(true);
-              setProjectInfo({ projectName, projectId, projectManager });
+              setProjectInfo({ projectName, projectId, projectManager, company });
+
+              dispatch({
+                type: 'projectManagement/getEmployees',
+                payload: {
+                  company: company._id,
+                },
+              });
             },
           };
         }}
