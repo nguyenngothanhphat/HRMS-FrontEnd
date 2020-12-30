@@ -1009,9 +1009,6 @@ class RequestInformation extends PureComponent {
                 type="link"
                 form="myForm"
                 className={styles.saveDraftButton}
-                disabled={
-                  remainingDayOfSelectedType === 0 && (selectedType === 'A' || selectedType === 'B')
-                }
                 htmlType="submit"
                 onClick={() => {
                   this.setState({ buttonState: 1 });
