@@ -92,7 +92,7 @@ class LeaveRequestForm extends PureComponent {
               )}
               {action === 'edit-leave-request' && (
                 <>
-                  <p className={styles.titlePage__text}>[Ticket ID: 123456]</p>
+                  <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
                   <div className={this.getColorOfStatus(status)}>
                     <span className={styles.dot} />

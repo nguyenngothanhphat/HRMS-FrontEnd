@@ -94,6 +94,7 @@ class RequestInformation extends PureComponent {
       loadingWithdrawLeaveRequest,
     } = this.props;
     const {
+      ticketID = '',
       status = '',
       _id = '',
       subject = '',
@@ -112,7 +113,9 @@ class RequestInformation extends PureComponent {
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
-          <span className={styles.title}>{`[Ticket ID: 123456]: ${subject}`}</span>
+          <span className={styles.title}>
+            [Ticket ID: {ticketID}]: {subject}
+          </span>
           {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
               <img src={EditIcon} className={styles.icon} alt="edit-icon" />

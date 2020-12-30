@@ -59,7 +59,9 @@ class ManagerViewRequestForm extends PureComponent {
   };
 
   render() {
-    const { timeOff: { viewingLeaveRequest: { status = '' } = {} } = {} } = this.props;
+    const {
+      timeOff: { viewingLeaveRequest: { status = '', ticketID = '' } = {} } = {},
+    } = this.props;
 
     const {
       match: { params: { reId: id = '' } = {} },
@@ -70,7 +72,7 @@ class ManagerViewRequestForm extends PureComponent {
         <div className={styles.ManagerViewRequestForm}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>[Ticket ID: 123456]</p>
+              <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
               <div className={this.getColorOfStatus(status)}>
                 <span className={styles.dot} />
                 <span className={styles.statusText}>{this.getNameOfStatus(status)}</span>
