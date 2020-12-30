@@ -144,7 +144,15 @@ class EditEmailForm extends PureComponent {
   }
 
   componentDidMount() {
-    const { emailCustomData: { conditions: conditionsCustomEmail = [] } = {} } = this.props;
+    const {
+      emailCustomData: {
+        conditions: conditionsCustomEmail = [],
+        message = '',
+        triggerEvent: _triggerEvent = {},
+        subject = '',
+        sendingDate = {},
+      } = {},
+    } = this.props;
     const { conditionsData } = this.state;
 
     const newConditionCustomEmail = [...conditionsCustomEmail];
@@ -166,6 +174,9 @@ class EditEmailForm extends PureComponent {
 
     this.setState({
       conditionsData: filterData,
+      messages: message,
+      triggerEvent: _triggerEvent,
+      emailSubject: subject,
     });
   }
 
@@ -227,34 +238,45 @@ class EditEmailForm extends PureComponent {
     } = this.state;
 
     if (
-      triggerEvent.trim() !== '' &&
-      _sendingDate.trim() !== '' &&
-      emailSubject.trim() !== '' &&
       messages.trim() !== '' &&
       messages.trim() !== '<p></p>' &&
       messages.trim() !== '<p><br></p>'
     ) {
-      if (appliesToData.trim() === 'any' && recipient.trim() !== '') {
-        this.setState({ disabled: false });
-      } else if (
-        appliesToData.trim() === 'condition' &&
-        key.trim() !== '' &&
-        tobeVerb.trim() !== '' &&
-        value.length !== 0
-      ) {
-        this.setState({ disabled: false });
-
-        if (value[1] !== '') {
-          this.setState({ disabled: false });
-        } else {
-          this.setState({ disabled: true });
-        }
-      } else {
-        this.setState({ disabled: true });
-      }
+      this.setState({ disabled: false });
     } else {
       this.setState({ disabled: true });
     }
+
+    // if (
+    //   triggerEvent.trim() !== '' &&
+    //   _sendingDate.trim() !== '' &&
+    //   emailSubject.trim() !== '' &&
+    //   messages.trim() !== '' &&
+    //   messages.trim() !== '<p></p>' &&
+    //   messages.trim() !== '<p><br></p>'
+    // ) {
+    //   if (
+    //     appliesToData.trim() === 'any' && recipient.trim() !== '') {
+    //     this.setState({ disabled: false });
+    //   } else if (
+    //     appliesToData.trim() === 'condition' &&
+    //     key.trim() !== '' &&
+    //     tobeVerb.trim() !== '' &&
+    //     value.length !== 0
+    //   ) {
+    //     this.setState({ disabled: false });
+
+    //     if (value[1] !== '') {
+    //       this.setState({ disabled: false });
+    //     } else {
+    //       this.setState({ disabled: true });
+    //     }
+    //   } else {
+    //     this.setState({ disabled: true });
+    //   }
+    // } else {
+    //   this.setState({ disabled: true });
+    // }
   };
 
   handleChangeApply = (value) => {
@@ -289,6 +311,8 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeSendingDate = (value) => {
+    console.log('value message: ', value);
+
     this.setState({ _sendingDate: value.target.value });
   };
 
@@ -564,35 +588,37 @@ class EditEmailForm extends PureComponent {
   };
 
   onFinish = (values) => {
-    const { triggerEventList, dispatch } = this.props;
-    const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
-    let dataSubmit = {};
+    // const { triggerEventList, dispatch } = this.props;
+    // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
+    const { messages = '' } = this.state;
+    // let dataSubmit = {};
 
-    const newValue = { ...values };
-    delete newValue.sendToWorker;
-    delete newValue.frequency;
+    // const newValue = { ...values };
+    // delete newValue.sendToWorker;
+    // delete newValue.frequency;
 
-    const triggerEventValue = values.triggerEvent;
-    const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
-    newValue.triggerEvent = triggerEvent;
+    // const triggerEventValue = values.triggerEvent;
+    // const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
+    // newValue.triggerEvent = triggerEvent;
 
     const message = messages.replace(/<[^>]+>/g, '');
 
-    if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, message, sendToExistingWorker };
-    }
-    if (appliesToData === 'condition') {
-      dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
-    }
+    // if (appliesToData === 'any') {
+    //   dataSubmit = { ...newValue, message, sendToExistingWorker };
+    // }
+    // if (appliesToData === 'condition') {
+    //   dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
+    // }
 
-    dispatch({
-      type: 'employeeSetting/addCustomEmail',
-      payload: dataSubmit,
-    }).then(() => {
-      setTimeout(() => {
-        this.back();
-      }, 1000);
-    });
+    // dispatch({
+    //   type: 'employeeSetting/addCustomEmail',
+    //   payload: dataSubmit,
+    // }).then(() => {
+    //   setTimeout(() => {
+    //     this.back();
+    //   }, 1000);
+    // });
+    console.log('success: ', message);
   };
 
   tagRender = (props) => {
@@ -609,7 +635,7 @@ class EditEmailForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
-    // const { emailCustomData = {} } = this.props;
+    const { emailCustomData = {} } = this.props;
     let valueToBeVerb = '';
     const {
       conditionsData,
@@ -626,6 +652,7 @@ class EditEmailForm extends PureComponent {
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
+    // console.log('emailCustomData: ', emailCustomData);
     return (
       <Col span={24}>
         <Form.Item label="Conditions: Trigger for someone if">
@@ -707,13 +734,13 @@ class EditEmailForm extends PureComponent {
                       </Select>
                     </Row>
                   </Col>
-                  <Col span={1}>
+                  {/* <Col span={1}>
                     <img
                       onClick={() => this.onRemoveCondition(index)}
                       src={removeIcon}
                       alt="remove"
                     />
-                  </Col>
+                  </Col> */}
                 </Row>
               </div>
             );
@@ -783,18 +810,24 @@ class EditEmailForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { loadingAddCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
-    const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled, valueSendingDate } = this.state;
     const {
       message: _messages = '',
       subject = '',
       triggerEvent = {},
       applyTo: _applyTo = '',
+      sendingDate: _sendingDate = {},
       sendToExistingWorker,
     } = emailCustomData;
-    this.setState({ messages: _messages });
+
+    // set sendingDate radion button as default
+    let check = 'On the event date';
+    _sendingDate.type === 'now'
+      ? (check = 'Specific number of days before or after the event')
+      : (check = 'On the event date');
 
     return (
-      <Form onFinish={this.onFinish}>
+      <Form onFinish={this.onFinish} ref={this.formRef}>
         <Row gutter={[36, 24]}>
           {/* Trigger Event */}
           <Col span={12}>
@@ -822,8 +855,12 @@ class EditEmailForm extends PureComponent {
 
           {/* Sending date */}
           <Col span={24}>
-            <Form.Item name="sendingDate" label="Sending date">
-              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
+            <Form.Item name="sendingDate" label="Sending date" rules={[{ required: true }]}>
+              <Radio.Group
+                onChange={(value) => this.onChangeSendingDate(value)}
+                defaultValue={check}
+                disabled
+              >
                 {sendingDate.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
@@ -949,6 +986,7 @@ class EditEmailForm extends PureComponent {
   render() {
     const { loadingfetchEmailCustomInfo } = this.props;
     this.checkFields();
+
     return (
       <>
         {loadingfetchEmailCustomInfo ? (
