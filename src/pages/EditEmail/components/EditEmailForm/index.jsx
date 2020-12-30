@@ -1,10 +1,6 @@
-/* eslint-disable compat/compat */
-/* eslint-disable react/jsx-curly-newline */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 /* eslint-disable no-plusplus */
-/* eslint-disable react/sort-comp */
 /* eslint-disable no-bitwise */
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
@@ -28,6 +24,7 @@ Quill.register('modules/mentions', QuillMention);
       employeeTypeList = [],
       departmentListByCompanyId = [],
       listAutoField = [],
+      // emailCustomData = {},
     } = {},
     user: {
       currentUser: {
@@ -48,10 +45,13 @@ Quill.register('modules/mentions', QuillMention);
     listAutoField,
     locationName,
     roles,
-    loading: loading.effects['employeeSetting/addCustomEmail'],
+    // loadingAddCustomEmail: loading.effects['employeeSetting/addCustomEmail'],
+    loadingfetchEmailCustomInfo: loading.effects['employeeSetting/fetchEmailCustomInfo'],
+    // emailCustomData,
   }),
 )
-class EmailReminderForm extends PureComponent {
+class EditEmailForm extends PureComponent {
+  formRef = React.createRef();
   constructor(props) {
     super(props);
     this.modules = { mention: this.mentionModule(this) };
@@ -94,6 +94,7 @@ class EmailReminderForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
+      checkValue: '',
       sendToExistingWorker: false,
       recipients: [],
       conditionsTrigger: {
@@ -142,6 +143,62 @@ class EmailReminderForm extends PureComponent {
       isLocation: false,
       selectedSelectBox: 0,
     };
+  }
+
+  componentDidMount() {
+    const {
+      emailCustomData: {
+        conditions: conditionsCustomEmail = [],
+        message = '',
+        triggerEvent: _triggerEvent = {},
+        subject = '',
+        sendingDate = {},
+      } = {},
+    } = this.props;
+    const { conditionsData } = this.state;
+
+    const newConditionCustomEmail = [...conditionsCustomEmail];
+    const newData = [...conditionsData];
+
+    // fetch data of emailCustomData got from reducer and set state into conditionsData.
+    const conditionsKey = newConditionCustomEmail.map((item) => item.key);
+    conditionsKey.map((item, index) => {
+      const newObj = {
+        id: index,
+        key: item,
+        tobeVerb: '',
+        value: [],
+      };
+
+      newData.push(newObj);
+      return filterData;
+    });
+    const filterData = newData.filter((item) => item.key !== '');
+    //////////////////////////////////////////////
+
+    // set sendingDate radio button as default checked
+    const value1 = 'Specific number of days before or after the event';
+    const value2 = 'On the event date';
+
+    if (sendingDate.type === 'now') {
+      this.formRef.current.setFieldsValue({
+        sendingDate: value1,
+      });
+      this.setState({ _sendingDate: value1 });
+    } else {
+      this.formRef.current.setFieldsValue({
+        sendingDate: value2,
+      });
+      this.setState({ _sendingDate: value2 });
+    }
+    //////////////////////////////////////////////
+
+    this.setState({
+      conditionsData: filterData,
+      messages: message,
+      triggerEvent: _triggerEvent.value,
+      emailSubject: subject,
+    });
   }
 
   mentionModule = (t) => {
@@ -209,40 +266,41 @@ class EmailReminderForm extends PureComponent {
       messages.trim() !== '<p></p>' &&
       messages.trim() !== '<p><br></p>'
     ) {
-      if (appliesToData.trim() === 'any' && recipient.trim() !== '') {
-        this.setState({ disabled: false });
-      } else if (
-        appliesToData.trim() === 'condition' &&
-        key.trim() !== '' &&
-        tobeVerb.trim() !== '' &&
-        value.length !== 0
-      ) {
-        this.setState({ disabled: false });
-
-        if (value[1] !== '') {
-          this.setState({ disabled: false });
-        } else {
-          this.setState({ disabled: true });
-        }
-      } else {
-        this.setState({ disabled: true });
-      }
+      this.setState({ disabled: false });
     } else {
       this.setState({ disabled: true });
     }
-  };
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
+    // if (
+    //   triggerEvent.trim() !== '' &&
+    //   _sendingDate.trim() !== '' &&
+    //   emailSubject.trim() !== '' &&
+    //   messages.trim() !== '' &&
+    //   messages.trim() !== '<p></p>' &&
+    //   messages.trim() !== '<p><br></p>'
+    // ) {
+    //   if (
+    //     appliesToData.trim() === 'any' && recipient.trim() !== '') {
+    //     this.setState({ disabled: false });
+    //   } else if (
+    //     appliesToData.trim() === 'condition' &&
+    //     key.trim() !== '' &&
+    //     tobeVerb.trim() !== '' &&
+    //     value.length !== 0
+    //   ) {
+    //     this.setState({ disabled: false });
 
-    dispatch({
-      type: 'employeeSetting/fetchTriggerEventList',
-      payload: {},
-    });
-    dispatch({
-      type: 'employeeSetting/fetchListAutoField',
-      payload: {},
-    });
+    //     if (value[1] !== '') {
+    //       this.setState({ disabled: false });
+    //     } else {
+    //       this.setState({ disabled: true });
+    //     }
+    //   } else {
+    //     this.setState({ disabled: true });
+    //   }
+    // } else {
+    //   this.setState({ disabled: true });
+    // }
   };
 
   handleChangeApply = (value) => {
@@ -277,6 +335,8 @@ class EmailReminderForm extends PureComponent {
   };
 
   onChangeSendingDate = (value) => {
+    console.log('value message: ', value.target.value);
+
     this.setState({ _sendingDate: value.target.value });
   };
 
@@ -442,10 +502,9 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
-    if (name === 'tobeVerb') {
-    }
-
     newConditionsData[index][name] = value;
+
+    // console.log('newConditionsData:', newConditionsData);
 
     this.setState({
       conditionsData: newConditionsData,
@@ -553,35 +612,37 @@ class EmailReminderForm extends PureComponent {
   };
 
   onFinish = (values) => {
-    const { triggerEventList, dispatch } = this.props;
-    const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
-    let dataSubmit = {};
+    // const { triggerEventList, dispatch } = this.props;
+    // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
+    const { messages = '' } = this.state;
+    // let dataSubmit = {};
 
-    const newValue = { ...values };
-    delete newValue.sendToWorker;
-    delete newValue.frequency;
+    // const newValue = { ...values };
+    // delete newValue.sendToWorker;
+    // delete newValue.frequency;
 
-    const triggerEventValue = values.triggerEvent;
-    const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
-    newValue.triggerEvent = triggerEvent;
+    // const triggerEventValue = values.triggerEvent;
+    // const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
+    // newValue.triggerEvent = triggerEvent;
 
     const message = messages.replace(/<[^>]+>/g, '');
 
-    if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, message, sendToExistingWorker };
-    }
-    if (appliesToData === 'condition') {
-      dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
-    }
+    // if (appliesToData === 'any') {
+    //   dataSubmit = { ...newValue, message, sendToExistingWorker };
+    // }
+    // if (appliesToData === 'condition') {
+    //   dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
+    // }
 
-    dispatch({
-      type: 'employeeSetting/addCustomEmail',
-      payload: dataSubmit,
-    }).then(() => {
-      setTimeout(() => {
-        this.back();
-      }, 1000);
-    });
+    // dispatch({
+    //   type: 'employeeSetting/addCustomEmail',
+    //   payload: dataSubmit,
+    // }).then(() => {
+    //   setTimeout(() => {
+    //     this.back();
+    //   }, 1000);
+    // });
+    console.log('success: ', message);
   };
 
   tagRender = (props) => {
@@ -598,15 +659,14 @@ class EmailReminderForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
+    const { emailCustomData = {} } = this.props;
+    let valueToBeVerb = '';
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
       load,
     } = this.state;
 
-    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
-    let valueToBeVerb = '';
     conditionsData.map((item) => {
       if (item.tobeVerb === 'is') {
         valueToBeVerb = item.tobeVerb;
@@ -614,6 +674,9 @@ class EmailReminderForm extends PureComponent {
       return valueToBeVerb;
     });
 
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    // console.log('emailCustomData: ', emailCustomData);
     return (
       <Col span={24}>
         <Form.Item label="Conditions: Trigger for someone if">
@@ -627,6 +690,7 @@ class EmailReminderForm extends PureComponent {
                       size="large"
                       value={data.key}
                       placeholder="Please select a choice"
+                      disabled
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
                       {units.map((unit) => {
@@ -645,6 +709,7 @@ class EmailReminderForm extends PureComponent {
                       size="large"
                       value={data.toBeVerb}
                       placeholder="Please select a choice"
+                      disabled
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
                       {toBeVerbs.map((toBeVerb) => {
@@ -660,6 +725,7 @@ class EmailReminderForm extends PureComponent {
                         className={styles.departmentCondition}
                         size="large"
                         value={data.value}
+                        disabled
                         tagRender={this.tagRender}
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
@@ -692,13 +758,13 @@ class EmailReminderForm extends PureComponent {
                       </Select>
                     </Row>
                   </Col>
-                  <Col span={1}>
+                  {/* <Col span={1}>
                     <img
                       onClick={() => this.onRemoveCondition(index)}
                       src={removeIcon}
                       alt="remove"
                     />
-                  </Col>
+                  </Col> */}
                 </Row>
               </div>
             );
@@ -706,7 +772,7 @@ class EmailReminderForm extends PureComponent {
         </Form.Item>
         <div className={styles.addNewButton}>
           <Button onClick={this.onAddCondition}>
-            {formatMessage({ id: 'component.emailReminderForm.addCondition' })}
+            {formatMessage({ id: 'component.editEmailForm.addCondition' })}
           </Button>
         </div>
       </Col>
@@ -714,7 +780,6 @@ class EmailReminderForm extends PureComponent {
   };
 
   back = () => {
-    // history.
     history.goBack();
   };
 
@@ -725,8 +790,10 @@ class EmailReminderForm extends PureComponent {
 
   _renderApplyToOptions = () => {
     const { Option } = Select;
-    const { appliesToData, recipients } = this.state;
-    if (appliesToData === 'any') {
+    const { recipients } = this.state;
+    const { emailCustomData = {} } = this.props;
+    const { applyTo = '' } = emailCustomData;
+    if (applyTo === 'any') {
       return (
         // recipients
         <>
@@ -753,7 +820,7 @@ class EmailReminderForm extends PureComponent {
         </>
       );
     }
-    if (appliesToData === 'condition') {
+    if (applyTo === 'condition') {
       return this._renderConditions();
     }
     return null;
@@ -766,18 +833,26 @@ class EmailReminderForm extends PureComponent {
 
   _renderForm = () => {
     const { Option } = Select;
-    const { triggerEventList, loading } = this.props;
+    const { loadingAddCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
+    const {
+      message: _messages = '',
+      subject = '',
+      triggerEvent = {},
+      applyTo: _applyTo = '',
+      sendToExistingWorker,
+    } = emailCustomData;
 
     return (
-      <Form onFinish={this.onFinish}>
+      <Form onFinish={this.onFinish} ref={this.formRef}>
         <Row gutter={[36, 24]}>
           {/* Trigger Event */}
           <Col span={12}>
             <Form.Item label="Trigger event" name="triggerEvent">
               <Select
                 size="large"
-                placeholder="Please select a choice"
+                defaultValue={triggerEvent.name}
+                disabled
                 onChange={(value) => this.onChangeTriggerEvent(value)}
               >
                 {triggerEventList.map((option) => {
@@ -789,11 +864,8 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <div className={styles.note}>
               <span>
-                {formatMessage({ id: 'component.emailReminderForm.triggerNote' })}{' '}
-                <a href="#">
-                  {' '}
-                  {formatMessage({ id: 'component.emailReminderForm.triggerNoteLink' })}
-                </a>
+                {formatMessage({ id: 'component.editEmailForm.triggerNote' })}{' '}
+                <a href="#"> {formatMessage({ id: 'component.editEmailForm.triggerNoteLink' })}</a>
               </span>
             </div>
           </Col>
@@ -801,7 +873,7 @@ class EmailReminderForm extends PureComponent {
           {/* Sending date */}
           <Col span={24}>
             <Form.Item name="sendingDate" label="Sending date">
-              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
+              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)} disabled>
                 {sendingDate.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
@@ -812,15 +884,22 @@ class EmailReminderForm extends PureComponent {
           {/* Applies to */}
           <Col span={12}>
             <Form.Item name="applyTo" label="Applies to">
-              <Select
-                size="large"
-                placeholdementionModuler="Please select a choice"
-                onChange={this.handleChangeApply}
-              >
-                {applyTo.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
-                })}
-              </Select>
+              {applyTo.map((option) => (
+                <>
+                  {_applyTo === option.value ? (
+                    <Select
+                      size="large"
+                      value={option.name}
+                      onChange={this.handleChangeApply}
+                      disabled
+                    >
+                      {applyTo.map((item) => {
+                        return <Option value={item.value}>{item.name}</Option>;
+                      })}
+                    </Select>
+                  ) : null}
+                </>
+              ))}
             </Form.Item>
           </Col>
 
@@ -831,18 +910,36 @@ class EmailReminderForm extends PureComponent {
           {/* Send to existing workers */}
           <Col span={12}>
             <Form.Item name="sendToWorker" label="Send to existing workers">
-              <Checkbox.Group>
-                {sendToWorker.map((option) => {
-                  return (
-                    <Checkbox
-                      value={option.value}
-                      onChange={(value) => this.handleChangeChckBox(value)}
-                    >
-                      {option.name}
-                    </Checkbox>
-                  );
-                })}
-              </Checkbox.Group>
+              {sendToExistingWorker ? (
+                <div>
+                  {sendToWorker.map((option) => {
+                    return (
+                      <Checkbox
+                        value={option.value}
+                        checked
+                        disabled
+                        onChange={(value) => this.handleChangeChckBox(value)}
+                      >
+                        {option.name}
+                      </Checkbox>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Checkbox.Group>
+                  {sendToWorker.map((option) => {
+                    return (
+                      <Checkbox
+                        value={option.value}
+                        disabled
+                        onChange={(value) => this.handleChangeChckBox(value)}
+                      >
+                        {option.name}
+                      </Checkbox>
+                    );
+                  })}
+                </Checkbox.Group>
+              )}
             </Form.Item>
           </Col>
 
@@ -850,7 +947,8 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             <Form.Item name="subject" label="Email subject">
               <Input
-                placeholder="Eg:  Welcome to the company"
+                defaultValue={subject}
+                disabled
                 onChange={(e) => this.onChangeEmailSubject(e.target.value)}
               />
             </Form.Item>
@@ -879,12 +977,17 @@ class EmailReminderForm extends PureComponent {
             >
               <Button type="secondary">
                 {' '}
-                {formatMessage({ id: 'component.emailReminderForm.cancel' })}
+                {formatMessage({ id: 'component.editEmailForm.cancel' })}
               </Button>
             </Link>
             <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={disabled} loading={loading}>
-                {formatMessage({ id: 'component.emailReminderForm.submit' })}
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={disabled}
+                loading={loadingAddCustomEmail}
+              >
+                {formatMessage({ id: 'component.editEmailForm.submit' })}
               </Button>
             </Form.Item>
           </Col>
@@ -894,21 +997,22 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loadingfetchEmailCustomInfo } = this.props;
     this.checkFields();
+
     return (
       <>
-        {loading ? (
-          <div className={styles.EmailReminderForm_loading}>
+        {loadingfetchEmailCustomInfo ? (
+          <div className={styles.EditEmailForm_loading}>
             <Spin size="large" />
           </div>
         ) : (
-          <div className={styles.EmailReminderForm}>
-            <div className={styles.EmailReminderForm_title}>
-              {formatMessage({ id: 'component.emailReminderForm.title' })}
+          <div className={styles.EditEmailForm}>
+            <div className={styles.EditEmailForm_title}>
+              {formatMessage({ id: 'component.editEmailForm.title' })}
               <hr />
             </div>
-            <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
+            <div className={styles.EditEmailForm_form}>{this._renderForm()}</div>
           </div>
         )}
       </>
@@ -916,4 +1020,4 @@ class EmailReminderForm extends PureComponent {
   }
 }
 
-export default EmailReminderForm;
+export default EditEmailForm;

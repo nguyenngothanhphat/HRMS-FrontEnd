@@ -110,8 +110,8 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`}>
-              {formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}
+            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
+              {formatMessage({ id: 'component.customEmailsTableField.editEmail' })}
             </Link>
           );
         },
