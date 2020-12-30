@@ -377,6 +377,8 @@ class EmailReminderForm extends PureComponent {
     const newConditionsData = [...conditionsData];
     const newConditions = [...conditions];
 
+    console.log('name:', name);
+
     if (name === 'key') {
       if (value === 'department') {
         this.setState({ isLocation: false });
@@ -442,9 +444,10 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
-    newConditionsData[index][name] = value;
+    if (name === 'tobeVerb') {
+    }
 
-    // console.log('newConditionsData:', newConditionsData);
+    newConditionsData[index][name] = value;
 
     this.setState({
       conditionsData: newConditionsData,
@@ -603,7 +606,17 @@ class EmailReminderForm extends PureComponent {
       load,
     } = this.state;
 
+    const newConditionsData = [...conditionsData];
+
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    let valueToBeVerb = '';
+    newConditionsData.map((item) => {
+      if (item.tobeVerb === 'is') {
+        valueToBeVerb = item.tobeVerb;
+      }
+      return valueToBeVerb;
+    });
 
     return (
       <Col span={24}>
@@ -652,7 +665,7 @@ class EmailReminderForm extends PureComponent {
                         size="large"
                         value={data.value}
                         tagRender={this.tagRender}
-                        mode="multiple"
+                        mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
