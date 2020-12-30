@@ -1,56 +1,7 @@
 import { dialog } from '@/utils/utils';
-import listProjectByCompany from '../services/projectManagement';
-
-const mockData = [
-  {
-    key: '1',
-    projectId: '8097',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '2',
-    projectId: '8098',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '3',
-    projectId: '8099',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '4',
-    projectId: '8100',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-];
+import { listProjectByCompany, addProjectMember } from '../services/projectManagement';
+import { getRoleList } from '../services/usersManagement';
+import { getListEmployeeActive } from '../services/employee';
 
 const PROJECT_STATUS = {
   ACTIVE: 'ACTIVE',
@@ -76,22 +27,22 @@ const formatMonth = (month) => {
   return monthNames[month];
 };
 
-const formatDay = (day) => {
-  const nth = (d) => {
-    if (d > 3 && d < 21) return 'th';
-    switch (d % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-  return day + nth(day);
-};
+// const formatDay = (day) => {
+//   const nth = (d) => {
+//     if (d > 3 && d < 21) return 'th';
+//     switch (d % 10) {
+//       case 1:
+//         return 'st';
+//       case 2:
+//         return 'nd';
+//       case 3:
+//         return 'rd';
+//       default:
+//         return 'th';
+//     }
+//   };
+//   return day + nth(day);
+// };
 
 const getDate = (date) => {
   if (!date) {
@@ -130,20 +81,22 @@ const projectManagement = {
   state: {
     activeList: [],
     inactiveList: [],
+    // roleList: MOCK_ROLE,
+    // employeeList: MOCK_EMPLOYEE,
+    roleList: [],
+    employeeList: [],
   },
   effects: {
     *getProjectByCompany({ payload }, { call, put }) {
       let response;
       try {
         response = yield call(listProjectByCompany, payload);
-        console.log(response);
+        // console.log(response);
         const { data = [] } = response;
         const inactiveList = [];
         const activeList = [];
         const { ACTIVE, INACTIVE } = PROJECT_STATUS;
         data.forEach((item) => {
-          // const {status, beginDate, createdAt, projectHealth, name, _id}
-          // console.log(item);
           const {
             status,
             _id,
@@ -152,14 +105,17 @@ const projectManagement = {
             manager: { generalInfo: { legalName: managerName } = {} } = {},
             beginDate,
             projectHealth,
+            company,
           } = item;
           const project = {
-            projectId: _id.substring(_id.length - 4, _id.length) || '',
+            // projectId: _id.substring(_id.length - 4, _id.length) || '',
+            projectId: _id,
             projectName: projectName || '',
             createdDate: formatCreatedDate(createdDate) || '',
             projectManager: managerName || '',
             startDate: formatStartDate(beginDate) || '',
             projectHealth: (projectHealth && `${projectHealth}%`) || '',
+            company,
           };
 
           // console.log(project);
@@ -170,13 +126,56 @@ const projectManagement = {
             inactiveList.push(project);
           }
         });
-        console.log(activeList);
-        console.log(inactiveList);
+
         yield put({
           type: 'save',
           payload: {
             activeList,
             inactiveList,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *addMember({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(addProjectMember, payload);
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *getEmployees({ payload }, { call, put }) {
+      let response;
+      let response2;
+      try {
+        response = yield call(getListEmployeeActive, payload);
+        response2 = yield call(getRoleList);
+        const { data: dataEmployee = [] } = response;
+        const { data: dataRole = [] } = response2;
+
+        const listEmployee = dataEmployee.map(
+          ({ _id = '', generalInfo: { firstName = '' } = {} }) => ({
+            id: _id,
+            name: firstName,
+          }),
+        );
+
+        const listRole = dataRole.map(({ _id = '', name = '' }) => ({
+          id: _id,
+          name,
+        }));
+
+        yield put({
+          type: 'save',
+          payload: {
+            employeeList: listEmployee,
+            roleList: listRole,
           },
         });
       } catch (error) {

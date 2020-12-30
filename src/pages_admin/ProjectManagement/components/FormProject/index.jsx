@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Select, Form, Input } from 'antd';
+import { Row, Col, Select, InputNumber } from 'antd';
 
 import s from './index.less';
 
@@ -7,22 +7,20 @@ const { Option } = Select;
 
 const FormProject = (props) => {
   const { listEmployee = [], listRole = [], index = 0, onFormChange } = props;
-  console.log(props);
 
   const [info, setInfo] = useState({
     employee: {
-      id: '1',
-      name: 'John Doe 1',
+      id: '',
+      name: '',
     },
     role: {
-      id: '1',
-      name: 'Project Manager',
+      id: '',
+      name: '',
     },
-    effort: 0,
+    effort: '',
   });
 
   useEffect(() => {
-    console.log('info: ', info);
     onFormChange(info, index);
   }, [info]);
 
@@ -86,10 +84,11 @@ const FormProject = (props) => {
 
         <Col span={4}>
           <span className={s.label}>Effort</span>
-          <Input
+          <InputNumber
             defaultValue={effort}
-            onChange={(e) => {
-              const { value } = e.target;
+            min={0}
+            max={100}
+            onChange={(value) => {
               updateInfo('effort', value);
             }}
           />

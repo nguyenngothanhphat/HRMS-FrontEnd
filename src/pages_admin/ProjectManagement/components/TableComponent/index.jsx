@@ -142,7 +142,7 @@ const columns = [
 const rowSize = 10;
 
 const TableComponent = (props) => {
-  const { list = [] } = props;
+  const { list = [], roleList = [], employeeList = [], dispatch, user, loading } = props;
   const [pageSelected, setPageSelected] = useState(1);
   // const [currentRecord, setCurrentRecord] = useState(1);
   const [open, setOpen] = useState(false);
@@ -182,9 +182,16 @@ const TableComponent = (props) => {
         onRow={(record) => {
           return {
             onClick: () => {
-              const { projectName = '', projectId = '', projectManager } = record;
+              const { projectName = '', projectId = '', projectManager, company } = record;
               setOpen(true);
-              setProjectInfo({ projectName, projectId, projectManager });
+              setProjectInfo({ projectName, projectId, projectManager, company });
+
+              dispatch({
+                type: 'projectManagement/getEmployees',
+                payload: {
+                  company: company._id,
+                },
+              });
             },
           };
         }}
@@ -192,7 +199,17 @@ const TableComponent = (props) => {
       <CustomModal
         open={open}
         closeModal={closeModal}
-        content={<ModalContent projectInfo={projectInfo} />}
+        content={
+          <ModalContent
+            dispatch={dispatch}
+            projectInfo={projectInfo}
+            roleList={roleList}
+            employeeList={employeeList}
+            user={user}
+            loading={loading}
+            closeModal={closeModal}
+          />
+        }
         width={750}
       />
     </div>

@@ -42,6 +42,7 @@ import {
   getLocationsByCompany,
   updateEmployment,
   updatePrivate,
+  getListRelation,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -110,6 +111,7 @@ const employeeProfile = {
     AdhaarCard: {},
     emailsList: [],
     isUpdateEmployment: false,
+    listRelation: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -972,6 +974,16 @@ const employeeProfile = {
           type: 'fetchGeneralInfo',
           payload: { employee: idCurrentEmployee },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListRelation(_, { call, put }) {
+      try {
+        const response = yield call(getListRelation);
+        const { statusCode, data: listRelation = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listRelation } });
       } catch (errors) {
         dialog(errors);
       }
