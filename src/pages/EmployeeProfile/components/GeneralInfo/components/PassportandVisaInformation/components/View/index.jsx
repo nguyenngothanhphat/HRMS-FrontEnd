@@ -132,6 +132,7 @@ class View extends PureComponent {
     const { passportData = [] } = this.props;
     return passportData.map((item, index) => (
       <Fragment key={`formPassport${index + 1}`}>
+        {index > 0 ? <Col span={24} className={styles.line} /> : null}
         <Col span={6} className={styles.textLabel}>
           Passport Number
         </Col>

@@ -138,7 +138,6 @@ class Edit extends Component {
         payload: dataPassport,
       });
     } else {
-      console.log('Docs is not exist');
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
