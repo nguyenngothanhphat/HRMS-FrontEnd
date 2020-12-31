@@ -192,7 +192,7 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  // CACULATE DURATION FOR API
+  // CALCULATE DURATION FOR API
   calculateNumberOfLeaveDay = (list) => {
     let count = 0;
     list.forEach((value) => {
@@ -312,7 +312,7 @@ class RequestInformation extends PureComponent {
       user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
-    const { viewingLeaveRequestId } = this.state;
+    const { viewingLeaveRequestId, remainingDayOfSelectedType, selectedTypeName } = this.state;
     const {
       timeOffType = '',
       subject = '',
@@ -336,36 +336,42 @@ class RequestInformation extends PureComponent {
         // generate data for API
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        const data = {
-          type: timeOffType,
-          status: 'IN-PROGRESS',
-          employee: employeeId,
-          subject,
-          fromDate: durationFrom,
-          toDate: durationTo,
-          duration,
-          leaveDates,
-          onDate: moment(),
-          description,
-          approvalManager: managerId, // id
-          cc: personCC,
-        };
+        if (duration > remainingDayOfSelectedType) {
+          message.error(
+            `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
+          );
+        } else {
+          const data = {
+            type: timeOffType,
+            status: 'IN-PROGRESS',
+            employee: employeeId,
+            subject,
+            fromDate: durationFrom,
+            toDate: durationTo,
+            duration,
+            leaveDates,
+            onDate: moment(),
+            description,
+            approvalManager: managerId, // id
+            cc: personCC,
+          };
 
-        if (action === 'new-leave-request') {
-          dispatch({
-            type: 'timeOff/addLeaveRequest',
-            payload: data,
-          }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
-          });
-        } else if (action === 'edit-leave-request') {
-          data._id = viewingLeaveRequestId;
-          dispatch({
-            type: 'timeOff/updateLeaveRequestById',
-            payload: data,
-          }).then((statusCode) => {
-            if (statusCode === 200) this.setShowSuccessModal(true);
-          });
+          if (action === 'new-leave-request') {
+            dispatch({
+              type: 'timeOff/addLeaveRequest',
+              payload: data,
+            }).then((statusCode) => {
+              if (statusCode === 200) this.setShowSuccessModal(true);
+            });
+          } else if (action === 'edit-leave-request') {
+            data._id = viewingLeaveRequestId;
+            dispatch({
+              type: 'timeOff/updateLeaveRequestById',
+              payload: data,
+            }).then((statusCode) => {
+              if (statusCode === 200) this.setShowSuccessModal(true);
+            });
+          }
         }
       }
     } else if (buttonState === 1) {
@@ -380,7 +386,7 @@ class RequestInformation extends PureComponent {
     this.onSaveDraft(values);
   };
 
-  // AUTO VALUE FOR TODATE DATEPICKER DEPENDING ON SELECTED TYPE
+  // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
   autoValueForToDate = (selectedType, selectedShortType, durationFrom) => {
     if (
       durationFrom !== null &&
