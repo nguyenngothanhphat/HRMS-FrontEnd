@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import undo from '@/assets/undo-signs.svg';
 import styles from './index.less';
 
-@connect(({ upload: { loadingVisaTest = [] } = {} }) => ({ loadingVisaTest }))
+@connect(({ upload: { loadingVisaTest = [], loadingPassportTest = [] } = {} }) => ({ loadingVisaTest, loadingPassportTest }))
 class UploadImage extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +32,7 @@ class UploadImage extends Component {
   };
 
   handleUpload = (file) => {
-    const { dispatch, getResponse = () => {}, name, index, loadingVisaTest } = this.props;
+    const { dispatch, getResponse = () => {}, name, index, loadingVisaTest, loadingPassportTest } = this.props;
     const formData = new FormData();
     formData.append('uri', file);
     dispatch({
@@ -43,9 +43,15 @@ class UploadImage extends Component {
     }).then((resp) => {
       getResponse(resp);
       if (name === 'passport') {
+        const getValuesLoading = [...loadingPassportTest];
+        getValuesLoading.splice(index, 1, false);
+        // dispatch({
+        //   type: 'upload/save',
+        //   payload: { loadingPassPort: false },
+        // });
         dispatch({
           type: 'upload/save',
-          payload: { loadingPassPort: false },
+          payload: { loadingPassportTest: getValuesLoading },
         });
       }
       if (name === 'visa') {

@@ -13,10 +13,7 @@ const FormProject = (props) => {
       id: '',
       name: '',
     },
-    role: {
-      id: '',
-      name: '',
-    },
+    role: '',
     effort: '',
   });
 
@@ -24,7 +21,7 @@ const FormProject = (props) => {
     onFormChange(info, index);
   }, [info]);
 
-  const { employee = {}, role = {}, effort = 0 } = info;
+  const { employee = {}, role = '', effort = 0 } = info;
 
   const updateInfo = (field, value) => {
     setInfo((prevState) => ({
@@ -63,21 +60,19 @@ const FormProject = (props) => {
 
           <Select
             allowClear
-            defaultValue={role.id}
+            // defaultValue={role.id}
+            defaultValue={role[0]}
             onChange={(_, option) => {
               if (!option) {
                 return;
               }
               const { value = '', children = '' } = option;
-              updateInfo('role', {
-                id: value,
-                name: children,
-              });
+              console.log(option);
+              updateInfo('role', children);
             }}
           >
             {listRole.map((roleItem) => {
-              const { id = '', name = '' } = roleItem;
-              return <Option value={id}>{name}</Option>;
+              return <Option value={roleItem}>{roleItem}</Option>;
             })}
           </Select>
         </Col>

@@ -180,7 +180,7 @@ class SalaryStructureTemplate extends PureComponent {
       //   dataIndex: 'action',
       //   key: 'action',
       //   render: () => (
-      //     <a href="#">{formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}</a>
+      //     <a href="#">{formatMessage({ id: 'component.customEmailsTableField.editEmail' })}</a>
       //   ),
       // },
     ];

@@ -947,6 +947,7 @@ class RequestInformation extends PureComponent {
               >
                 <TextArea
                   autoSize={{ minRows: 3, maxRows: 6 }}
+                  maxLength={250}
                   placeholder="The reason I am taking timeoff is …"
                 />
               </Form.Item>
@@ -1008,9 +1009,6 @@ class RequestInformation extends PureComponent {
                 type="link"
                 form="myForm"
                 className={styles.saveDraftButton}
-                disabled={
-                  remainingDayOfSelectedType === 0 && (selectedType === 'A' || selectedType === 'B')
-                }
                 htmlType="submit"
                 onClick={() => {
                   this.setState({ buttonState: 1 });
@@ -1026,7 +1024,9 @@ class RequestInformation extends PureComponent {
               type="primary"
               form="myForm"
               disabled={
-                remainingDayOfSelectedType === 0 && (selectedType === 'A' || selectedType === 'B')
+                remainingDayOfSelectedType === 0 &&
+                (selectedType === 'A' || selectedType === 'B') &&
+                action === 'new-leave-request'
               }
               htmlType="submit"
               onClick={() => {

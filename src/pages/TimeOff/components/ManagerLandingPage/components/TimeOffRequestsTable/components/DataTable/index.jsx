@@ -18,83 +18,99 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '20%',
+      // width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            ID
+          <span className={styles.ID} onClick={() => this.onOpenClick(_id)}>
+            {ticketID}
           </span>
         );
       },
     },
-    // {
-    //   title: 'Type',
-    //   dataIndex: 'type',
-    //   align: 'center',
-    //   render: (type) => <span>{type ? type.shortType : ''}</span>,
-    //   // sortDirections: ['ascend', 'descend', 'ascend'],
-    // },
-
-    // {
-    //   title: 'Leave date',
-    //   width: '20%',
-    //   dataIndex: 'leaveTimes',
-    //   align: 'left',
-    // },
     {
-      title: `Req’ted on `,
-      dataIndex: 'onDate',
+      title: 'Requestee',
+      dataIndex: 'requestee',
+      align: 'left',
+      render: (requestee) => <span>{requestee}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
       align: 'center',
-      width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
-      defaultSortOrder: ['ascend'],
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // defaultSortOrder: ['ascend'],
       sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+        compare: (a, b) => {
+          const { type: { shortType: s1 = '' } = {} } = a;
+          const { type: { shortType: s2 = '' } = {} } = b;
+          return s1.localeCompare(s2);
+        },
       },
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
+
+    {
+      title: 'Duration',
+      width: '20%',
+      dataIndex: 'leaveTimes',
+      align: 'left',
+    },
     // {
-    //   title: 'Duration',
-    //   dataIndex: 'duration',
+    //   title: `Req’ted on `,
+    //   dataIndex: 'onDate',
     //   align: 'center',
+    //   // width: '30%',
+    //   render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+    //   defaultSortOrder: ['ascend'],
+    //   sorter: {
+    //     compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+    //   },
+    //   sortDirections: ['ascend', 'descend', 'ascend'],
     // },
     {
-      title: 'Assigned',
-      align: 'left',
-      dataIndex: 'assigned',
-      // width: '25%',
-      render: (assigned) => {
-        return (
-          <div className={styles.rowAction}>
-            <Avatar.Group
-              maxCount={3}
-              maxStyle={{
-                color: '#FFA100',
-                backgroundColor: '#EAF0FF',
-              }}
-            >
-              {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
-                return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
-                  </Tooltip>
-                );
-              })}
-            </Avatar.Group>
-          </div>
-        );
-      },
+      title: 'Comment',
+      dataIndex: 'comment',
+      align: 'center',
+      render: () => <span />,
     },
+    // {
+    //   title: 'Assigned',
+    //   align: 'left',
+    //   dataIndex: 'assigned',
+    //   // width: '25%',
+    //   render: (assigned) => {
+    //     return (
+    //       <div className={styles.rowAction}>
+    //         <Avatar.Group
+    //           maxCount={3}
+    //           maxStyle={{
+    //             color: '#FFA100',
+    //             backgroundColor: '#EAF0FF',
+    //           }}
+    //         >
+    //           {assigned.map((user) => {
+    //             const { firstName = '', lastName = '', avatar = '' } = user;
+    //             return (
+    //               <Tooltip title={`${firstName} ${lastName}`} placement="top">
+    //                 <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+    //               </Tooltip>
+    //             );
+    //           })}
+    //         </Avatar.Group>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: 'Action',
-      align: 'center',
+      align: 'left',
       dataIndex: '_id',
-      width: '20%',
+      // width: '20%',
       render: (_id) => {
-        const { category = '', status = '' } = this.props;
-        if (category === 'TEAM' && status === 'IN-PROGRESS')
+        const { selectedTab = '' } = this.props;
+        if (selectedTab === 'IN-PROGRESS')
           return (
             <div className={styles.rowAction}>
               <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
@@ -105,7 +121,7 @@ class DataTable extends PureComponent {
 
         return (
           <div className={styles.rowAction}>
-            <span onClick={() => this.viewRequest(_id)}>View Request</span>
+            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
           </div>
         );
       },
@@ -129,12 +145,7 @@ class DataTable extends PureComponent {
   };
 
   onIdClick = (_id) => {
-    const { category = '' } = this.props;
-    if (category === 'MY') {
-      this.viewRequest(_id);
-    } else if (category === 'TEAM') {
-      this.onOpenClick(_id);
-    }
+    this.onOpenClick(_id);
   };
 
   onApproveClick = () => {
@@ -182,6 +193,7 @@ class DataTable extends PureComponent {
         cc = [],
         ticketID = '',
         _id = '',
+        employee: { generalInfo: { firstName = '', lastName = '' } = {} },
       } = value;
 
       let leaveTimes = '';
@@ -208,12 +220,13 @@ class DataTable extends PureComponent {
           ticketID,
           _id,
         },
+        requestee: `${firstName} ${lastName}`,
       };
     });
   };
 
   render() {
-    const { data = [], loading1, loading2 } = this.props;
+    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
@@ -225,7 +238,7 @@ class DataTable extends PureComponent {
       showTotal: (total, range) => (
         <span>
           {' '}
-          Showing
+          Showing{'  '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
@@ -238,7 +251,7 @@ class DataTable extends PureComponent {
     };
 
     const scroll = {
-      x: '40vw',
+      x: '60vw',
       y: 'max-content',
     };
 
@@ -247,6 +260,12 @@ class DataTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
+    const tableByRole =
+      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+        ? this.columns.filter((col) => col.dataIndex !== 'assigned')
+        : this.columns.filter((col) => col.dataIndex !== 'comment');
+
     return (
       <div className={styles.DataTable}>
         <Table
@@ -254,7 +273,7 @@ class DataTable extends PureComponent {
           loading={loading1 || loading2}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: parsedData.length }}
-          columns={this.columns}
+          columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
           rowKey="_id"
