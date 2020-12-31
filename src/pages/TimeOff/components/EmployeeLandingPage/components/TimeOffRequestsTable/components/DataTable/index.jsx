@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip } from 'antd';
+import { Table, Avatar, Tooltip, Tag } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
@@ -14,12 +14,13 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '15%',
+      width: '20%',
       render: (id) => {
-        const { ticketID = '', _id = '' } = id;
+        const { ticketID = '', _id = '', updated = false, status = '' } = id;
+        const checkUpdated = status === 'IN-PROGRESS' && updated;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            {ticketID}
+            {ticketID} {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
           </span>
         );
       },
@@ -143,12 +144,14 @@ class DataTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
+        status = '',
         fromDate = '',
         toDate = '',
         approvalManager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
+        updated = false,
       } = value;
 
       let leaveTimes = '';
@@ -174,6 +177,8 @@ class DataTable extends PureComponent {
         id: {
           ticketID,
           _id,
+          updated,
+          status,
         },
       };
     });

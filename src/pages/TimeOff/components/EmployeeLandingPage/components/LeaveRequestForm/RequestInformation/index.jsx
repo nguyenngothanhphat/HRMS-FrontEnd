@@ -130,6 +130,9 @@ class RequestInformation extends PureComponent {
       if ((type === 'A' || type === 'B') && moment(fromDate) !== null && moment(fromDate) !== '') {
         this.setSecondNotice(`${shortType}s gets credited each month.`);
       }
+
+      // set remaining day of selected leave type
+      this.getRemainingDay(shortType);
     }
   };
 
