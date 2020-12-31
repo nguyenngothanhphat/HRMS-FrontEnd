@@ -52,7 +52,6 @@ class View extends PureComponent {
     const { visaData } = this.props;
 
     return visaData.map((item, index) => {
-      console.log('item.visaType: ', item.visaType);
       return (
         <Fragment key={`formVisa${index + 1}`}>
           <Col span={6} className={styles.textLabel}>
