@@ -137,7 +137,9 @@ const timeOff = {
           payload: { holidaysList },
         });
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
+        // eslint-disable-next-line no-console
+        // console.log('errors of holiday list', erros);
       }
       return response;
     },
