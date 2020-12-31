@@ -142,6 +142,7 @@ class EditEmailForm extends PureComponent {
       load: false,
       isLocation: false,
       selectedSelectBox: 0,
+      _isDefault: false,
     };
   }
 
@@ -153,12 +154,16 @@ class EditEmailForm extends PureComponent {
         triggerEvent: _triggerEvent = {},
         subject = '',
         sendingDate = {},
+        isDefault = '',
       } = {},
     } = this.props;
     const { conditionsData } = this.state;
 
     const newConditionCustomEmail = [...conditionsCustomEmail];
     const newData = [...conditionsData];
+
+    // Check isDefault data field
+    isDefault ? this.setState({ _isDefault: true }) : this.setState({ _isDefault: false });
 
     // fetch data of emailCustomData got from reducer and set state into conditionsData.
     const conditionsKey = newConditionCustomEmail.map((item) => item.key);
@@ -665,6 +670,7 @@ class EditEmailForm extends PureComponent {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
       load,
+      _isDefault,
     } = this.state;
 
     conditionsData.map((item) => {
@@ -676,7 +682,6 @@ class EditEmailForm extends PureComponent {
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-    // console.log('emailCustomData: ', emailCustomData);
     return (
       <Col span={24}>
         <Form.Item label="Conditions: Trigger for someone if">
@@ -690,7 +695,7 @@ class EditEmailForm extends PureComponent {
                       size="large"
                       value={data.key}
                       placeholder="Please select a choice"
-                      disabled
+                      disabled={_isDefault}
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
                       {units.map((unit) => {
@@ -709,7 +714,7 @@ class EditEmailForm extends PureComponent {
                       size="large"
                       value={data.toBeVerb}
                       placeholder="Please select a choice"
-                      disabled
+                      disabled={_isDefault}
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
                       {toBeVerbs.map((toBeVerb) => {
@@ -725,7 +730,7 @@ class EditEmailForm extends PureComponent {
                         className={styles.departmentCondition}
                         size="large"
                         value={data.value}
-                        disabled
+                        disabled={_isDefault}
                         tagRender={this.tagRender}
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
@@ -790,7 +795,7 @@ class EditEmailForm extends PureComponent {
 
   _renderApplyToOptions = () => {
     const { Option } = Select;
-    const { recipients } = this.state;
+    const { recipients, _isDefault } = this.state;
     const { emailCustomData = {} } = this.props;
     const { applyTo = '' } = emailCustomData;
     if (applyTo === 'any') {
@@ -802,6 +807,7 @@ class EditEmailForm extends PureComponent {
               <Select
                 size="large"
                 placeholder="Please select a choice"
+                disabled={_isDefault}
                 onChange={(value) => {
                   this.onChangeRecipients(value);
                 }}
@@ -834,7 +840,7 @@ class EditEmailForm extends PureComponent {
   _renderForm = () => {
     const { Option } = Select;
     const { loadingAddCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
-    const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled, _isDefault } = this.state;
     const {
       message: _messages = '',
       subject = '',
@@ -852,7 +858,7 @@ class EditEmailForm extends PureComponent {
               <Select
                 size="large"
                 defaultValue={triggerEvent.name}
-                disabled
+                disabled={_isDefault}
                 onChange={(value) => this.onChangeTriggerEvent(value)}
               >
                 {triggerEventList.map((option) => {
@@ -873,7 +879,10 @@ class EditEmailForm extends PureComponent {
           {/* Sending date */}
           <Col span={24}>
             <Form.Item name="sendingDate" label="Sending date">
-              <Radio.Group onChange={(value) => this.onChangeSendingDate(value)} disabled>
+              <Radio.Group
+                onChange={(value) => this.onChangeSendingDate(value)}
+                disabled={_isDefault}
+              >
                 {sendingDate.map((option) => {
                   return <Radio value={option.value}>{option.name}</Radio>;
                 })}
@@ -891,7 +900,7 @@ class EditEmailForm extends PureComponent {
                       size="large"
                       value={option.name}
                       onChange={this.handleChangeApply}
-                      disabled
+                      disabled={_isDefault}
                     >
                       {applyTo.map((item) => {
                         return <Option value={item.value}>{item.name}</Option>;
@@ -917,7 +926,7 @@ class EditEmailForm extends PureComponent {
                       <Checkbox
                         value={option.value}
                         checked
-                        disabled
+                        disabled={_isDefault}
                         onChange={(value) => this.handleChangeChckBox(value)}
                       >
                         {option.name}
@@ -931,7 +940,7 @@ class EditEmailForm extends PureComponent {
                     return (
                       <Checkbox
                         value={option.value}
-                        disabled
+                        disabled={_isDefault}
                         onChange={(value) => this.handleChangeChckBox(value)}
                       >
                         {option.name}
@@ -948,7 +957,7 @@ class EditEmailForm extends PureComponent {
             <Form.Item name="subject" label="Email subject">
               <Input
                 defaultValue={subject}
-                disabled
+                // disabled
                 onChange={(e) => this.onChangeEmailSubject(e.target.value)}
               />
             </Form.Item>
