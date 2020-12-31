@@ -126,14 +126,13 @@ class Edit extends Component {
       getFile = urlFile;
     }
 
-    console.log('documentPassPort: ', documentPassPort);
-
     if (documentPassPort) {
       const dataPassport = {
         id: documentPassPort._id,
         attachment: getFile.id,
         key: `Passport${index + 1}`,
       };
+
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: dataPassport,
@@ -165,36 +164,26 @@ class Edit extends Component {
     });
   };
 
-  processDataChangesPassPort = () => {
-    const { passportData: passportDataTemp } = this.props;
-    const payloadChanges = [
-      {
-        urlFile: '',
-        document: '',
-        passportNumber: '',
-        passportIssuedCountry: '',
-        passportIssuedOn: '',
-        passportValidTill: '',
-        _id: '',
-      },
-    ];
+  processDataChangesPassPort = (item) => {
+    const {
+      urlFile,
+      document,
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
+      _id,
+    } = item;
 
-    console.log('passportDataTemp: ', passportDataTemp);
-
-    passportDataTemp.map((item, index) => {
-      payloadChanges[index] = {
-        urlFile: item.urlFile,
-        document: item.document ? item.document._id : '',
-        passportNumber: item.passportNumber,
-        passportIssuedCountry: item.passportIssuedCountry,
-        passportIssuedOn: item.passportIssuedOn,
-        passportValidTill: item.passportValidTill,
-        _id: item._id,
-      };
-      console.log('payloadChanges: ', payloadChanges);
-
-      return payloadChanges;
-    });
+    const payloadChanges = {
+      urlFile,
+      document: document ? document._id : '',
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
+      _id,
+    };
 
     return payloadChanges;
   };
@@ -378,9 +367,6 @@ class Edit extends Component {
       if (_id) {
         idPassPort = _id;
       }
-
-      // console.log('passportData: ', passportData);
-      // console.log('idPassPort: ', idPassPort);
 
       if (idPassPort) {
         return this.handleUpdatePassportGroup(item, index);
