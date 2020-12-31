@@ -352,6 +352,10 @@ const employeeSetting = {
           type: 'save',
           payload: {},
         });
+        notification.success({
+          message: response.status,
+          description: response.message,
+        });
       } catch (errors) {
         dialog(errors);
       }
