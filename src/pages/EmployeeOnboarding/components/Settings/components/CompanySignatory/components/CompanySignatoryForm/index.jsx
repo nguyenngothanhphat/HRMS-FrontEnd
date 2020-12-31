@@ -80,18 +80,19 @@ class CompanySignatoryForm extends PureComponent {
             <Col className={styles.CompanySignatoryForm_content} span={6}>
               SanDeep Meta
             </Col>
-            <Col className={styles.CompanySignatoryForm_content} span={12}></Col>
-            <Col className={styles.CompanySignatoryForm_content} span={6}>
+            <Col className={styles.CompanySignatoryForm_image} span={12}>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={this.handlePreview}
+                onChange={this.handleUpload}
+                beforeUpload={() => false}
+              >
+                <UploadOutlined />
+              </Upload>
+            </Col>
+            <Col className={styles.CompanySignatoryForm_action} span={6}>
               <>
-                <Upload
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={this.handlePreview}
-                  onChange={this.handleUpload}
-                  beforeUpload={() => false}
-                >
-                  <UploadOutlined />
-                </Upload>
                 <Modal
                   visible={previewVisible}
                   title={previewTitle}
