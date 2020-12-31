@@ -6,6 +6,7 @@ import {
   addLeaveRequest,
   withdrawLeaveRequest,
   addCompoffRequest,
+  updateCompoffRequest,
   getMyCompoffRequests,
   getCompoffRequestById,
   getTimeOffTypes,
@@ -219,17 +220,17 @@ const timeOff = {
     },
     *updateCompoffRequest({ payload = {} }, { call, put }) {
       try {
-        alert('updated compoff request');
-        // const response = yield call(addCompoffRequest, payload);
-        // const { statusCode, data: addedCompoffRequest = {} } = response;
-        // if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { addedCompoffRequest },
-        // });
+        const response = yield call(updateCompoffRequest, payload);
+        const { statusCode, data: updatedCompoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { updatedCompoffRequest },
+        });
         return { statusCode: 200, data: {} };
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
     *fetchMyCompoffRequests({ status = '' }, { call, put }) {
