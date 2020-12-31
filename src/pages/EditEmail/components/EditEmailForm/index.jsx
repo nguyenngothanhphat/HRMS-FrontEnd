@@ -255,17 +255,17 @@ class EditEmailForm extends PureComponent {
     });
 
     const {
-      triggerEvent,
-      _sendingDate,
-      appliesToData,
-      recipient,
+      // triggerEvent,
+      // _sendingDate,
+      // appliesToData,
+      // recipient,
       emailSubject,
       messages,
     } = this.state;
 
     if (
-      triggerEvent.trim() !== '' &&
-      _sendingDate.trim() !== '' &&
+      // triggerEvent.trim() !== '' &&
+      // _sendingDate.trim() !== '' &&
       emailSubject.trim() !== '' &&
       messages.trim() !== '' &&
       messages.trim() !== '<p></p>' &&
