@@ -29,7 +29,8 @@ class DataTable extends PureComponent {
 
         return (
           <span className={styles.ID} onClick={() => this.onOpenClick(_id)}>
-            {ticketID} {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
+            {ticketID}
+            {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
           </span>
         );
       },

@@ -20,7 +20,8 @@ class DataTable extends PureComponent {
         const checkUpdated = status === 'IN-PROGRESS' && updated;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
-            {ticketID} {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
+            {ticketID}
+            {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
           </span>
         );
       },
