@@ -51,62 +51,69 @@ class View extends PureComponent {
   handleRenderDataVisa = () => {
     const { visaData } = this.props;
 
-    return visaData.map((item, index) => (
-      <Fragment key={`formVisa${index + 1}`}>
-        <Col span={6} className={styles.textLabel}>
-          Visa Number
-        </Col>
-        <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
-          {item.visaNumber}
-          {item.document ? (
-            <div className={styles.viewFileUpLoad}>
-              <p
-                onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
-                className={styles.urlData}
-              >
-                {item.document.attachment ? item.document.attachment.name : ''}
-              </p>
-              <ConformIcondata
-                data={item.document.attachment ? item.document.attachment.name : ''}
-              />
-            </div>
-          ) : (
-            <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
-          )}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Visa Type
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.visaType}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Country
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.visaIssuedCountry.name}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Entry Type
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.visaEntryType}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Issued On
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.visaIssuedOn ? Moment(item.visaIssuedOn).locale('en').format('Do MMM YYYY') : ''}
-        </Col>
-        <Col span={6} className={styles.textLabel}>
-          Valid Till
-        </Col>
-        <Col span={18} className={styles.textValue}>
-          {item.visaValidTill ? Moment(item.visaValidTill).locale('en').format('Do MMM YYYY') : ''}
-        </Col>
-        <Col span={24} className={styles.line} />
-      </Fragment>
-    ));
+    return visaData.map((item, index) => {
+      console.log('item.visaType: ', item.visaType);
+      return (
+        <Fragment key={`formVisa${index + 1}`}>
+          <Col span={6} className={styles.textLabel}>
+            Visa Number
+          </Col>
+          <Col span={18} className={`${styles.textValue} ${styles.setIconEarly}`}>
+            {item.visaNumber}
+            {item.document ? (
+              <div className={styles.viewFileUpLoad}>
+                <p
+                  onClick={() => this.handleOpenModalReview(item.document.attachment.url)}
+                  className={styles.urlData}
+                >
+                  {item.document.attachment ? item.document.attachment.name : ''}
+                </p>
+                <ConformIcondata
+                  data={item.document.attachment ? item.document.attachment.name : ''}
+                />
+              </div>
+            ) : (
+              <img src={iconPDF} alt="iconFilePDF" className={styles.iconEarly} />
+            )}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Visa Type
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.visaType.map((itemVisa, indexItem) => (
+              <div key={`visaType${indexItem + 1}`}>{itemVisa}</div>
+            ))}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Country
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.visaIssuedCountry.name}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Entry Type
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.visaEntryType}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Issued On
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.visaIssuedOn ? Moment(item.visaIssuedOn).locale('en').format('Do MMM YYYY') : ''}
+          </Col>
+          <Col span={6} className={styles.textLabel}>
+            Valid Till
+          </Col>
+          <Col span={18} className={styles.textValue}>
+            {item.visaValidTill
+              ? Moment(item.visaValidTill).locale('en').format('Do MMM YYYY')
+              : ''}
+          </Col>
+          <Col span={24} className={styles.line} />
+        </Fragment>
+      );
+    });
   };
 
   handleRenderDataDummyVisa = (dummyData2) => {
