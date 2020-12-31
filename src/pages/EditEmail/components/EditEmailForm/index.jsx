@@ -619,18 +619,27 @@ class EditEmailForm extends PureComponent {
   onFinish = (values) => {
     // const { triggerEventList, dispatch } = this.props;
     // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
+    const { dispatch } = this.props;
     const { messages = '' } = this.state;
-    // let dataSubmit = {};
+    const { emailCustomData: { _id = '' } = {} } = this.props;
+    let dataSubmit = {};
 
-    // const newValue = { ...values };
+    const newValue = { ...values };
+    const { subject } = newValue;
+
+    const message = messages.replace(/<[^>]+>/g, '');
+    dataSubmit = {
+      _id,
+      subject,
+      message,
+    };
+
     // delete newValue.sendToWorker;
     // delete newValue.frequency;
 
     // const triggerEventValue = values.triggerEvent;
     // const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     // newValue.triggerEvent = triggerEvent;
-
-    const message = messages.replace(/<[^>]+>/g, '');
 
     // if (appliesToData === 'any') {
     //   dataSubmit = { ...newValue, message, sendToExistingWorker };
@@ -647,7 +656,12 @@ class EditEmailForm extends PureComponent {
     //     this.back();
     //   }, 1000);
     // });
-    console.log('success: ', message);
+
+    // console.log('success: ', dataSubmit);
+    dispatch({
+      type: 'employeeSetting/updateCustomEmail',
+      payload: dataSubmit,
+    });
   };
 
   tagRender = (props) => {

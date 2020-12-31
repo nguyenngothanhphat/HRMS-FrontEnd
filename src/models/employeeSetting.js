@@ -23,6 +23,7 @@ import {
   getListCustomEmail,
   getCustomEmailInfo,
   deleteCustomEmailItem,
+  updateCustomEmail,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -341,6 +342,19 @@ const employeeSetting = {
         dialog(error);
       }
       return response;
+    },
+    *updateCustomEmail({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateCustomEmail, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {},
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {
