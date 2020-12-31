@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip } from 'antd';
+import { Table, Avatar, Tooltip, Tag } from 'antd';
 import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
@@ -18,12 +18,18 @@ class DataTable extends PureComponent {
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '15%',
+      width: '17%',
       render: (id) => {
-        const { ticketID = '', _id = '' } = id;
+        const { ticketID = '', _id = '', onDate = '', status = '' } = id;
+        const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
+        const nowDate = moment().locale('en').format('YYYY/MM/DD');
+        const isNewRequest =
+          status === 'IN-PROGRESS' &&
+          moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
+
         return (
           <span className={styles.ID} onClick={() => this.onOpenClick(_id)}>
-            {ticketID}
+            {ticketID} {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
           </span>
         );
       },
@@ -187,12 +193,14 @@ class DataTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
+        status = '',
         fromDate = '',
         toDate = '',
         approvalManager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
+        onDate = '',
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
       } = value;
 
@@ -219,6 +227,8 @@ class DataTable extends PureComponent {
         id: {
           ticketID,
           _id,
+          onDate,
+          status,
         },
         requestee: `${firstName} ${lastName}`,
       };
