@@ -717,9 +717,9 @@ class EditEmailForm extends PureComponent {
                       disabled={_isDefault}
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
-                      {units.map((unit) => {
+                      {units.map((unit, _index) => {
                         return (
-                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)}>
+                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)} key={`${_index + 1}`}>
                             {unit.name}
                           </Option>
                         );
@@ -736,8 +736,8 @@ class EditEmailForm extends PureComponent {
                       disabled={_isDefault}
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
-                      {toBeVerbs.map((toBeVerb) => {
-                        return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
+                      {toBeVerbs.map((toBeVerb, _index) => {
+                        return <Option value={toBeVerb.value} key={`${_index + 1}`}>{toBeVerb.name}</Option>;
                       })}
                     </Select>
                   </Col>
@@ -886,8 +886,8 @@ class EditEmailForm extends PureComponent {
                     disabled={_isDefault}
                     onChange={(value) => this.onChangeTriggerEvent(value)}
                   >
-                    {triggerEventList.map((option) => {
-                      return <Option value={option.value}>{option.name}</Option>;
+                    {triggerEventList.map((option, _index) => {
+                      return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
                     })}
                   </Select>
                 </Form.Item>
@@ -911,8 +911,8 @@ class EditEmailForm extends PureComponent {
                     onChange={(value) => this.onChangeSendingDate(value)}
                     disabled={_isDefault}
                   >
-                    {sendingDate.map((option) => {
-                      return <Radio value={option.value}>{option.name}</Radio>;
+                    {sendingDate.map((option, _index) => {
+                      return <Radio value={option.value} key={`${_index + 1}`}>{option.name}</Radio>;
                     })}
                   </Radio.Group>
                 </Form.Item>
@@ -921,17 +921,18 @@ class EditEmailForm extends PureComponent {
               {/* Applies to */}
               <Col span={12}>
                 <Form.Item name="applyTo" label="Applies to">
-                  {applyTo.map((option) => (
+                  {applyTo.map((option, _index) => (
                     <>
                       {_applyTo === option.value ? (
                         <Select
                           size="large"
+                          key={`${_index + 1}`}
                           value={option.name}
                           onChange={this.handleChangeApply}
                           disabled={_isDefault}
                         >
-                          {applyTo.map((item) => {
-                            return <Option value={item.value}>{item.name}</Option>;
+                          {applyTo.map((item, _indexItem) => {
+                            return <Option value={item.value} key={`${_indexItem + 1}`}>{item.name}</Option>;
                           })}
                         </Select>
                       ) : null}
@@ -964,10 +965,11 @@ class EditEmailForm extends PureComponent {
                     </div>
                   ) : (
                     <Checkbox.Group>
-                      {sendToWorker.map((option) => {
+                      {sendToWorker.map((option, _index) => {
                         return (
                           <Checkbox
                             value={option.value}
+                            key={`${_index + 1}`}
                             disabled={_isDefault}
                             onChange={(value) => this.handleChangeChckBox(value)}
                           >
