@@ -36,9 +36,9 @@ class EmailReminderNote extends Component {
           </div>
         </div>
         <div className={styles.EmailReminderNote_list}>
-          {notes.map((note) => {
+          {notes.map((note, index) => {
             return (
-              <div className={styles.EmailReminderNote_list_note}>
+              <div className={styles.EmailReminderNote_list_note} key={`${index + 1}`}>
                 <img src={checkIcon} alt="icon" />
                 <div className={styles.content}>{note}</div>
               </div>

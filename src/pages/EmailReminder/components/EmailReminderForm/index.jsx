@@ -15,6 +15,7 @@ import QuillMention from 'quill-mention';
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
+import EditorQuill from './components';
 
 Quill.register('modules/mentions', QuillMention);
 
@@ -49,12 +50,28 @@ Quill.register('modules/mentions', QuillMention);
     locationName,
     roles,
     loading: loading.effects['employeeSetting/addCustomEmail'],
+    loadingFetchListAutoField: loading.effects['employeeSetting/fetchListAutoField'],
   }),
 )
 class EmailReminderForm extends PureComponent {
+
+  // Render list auto text and push into array
+  listTexts = [];
+
+  listTemp = () => {
+        const {listAutoField} = this.props
+        const newList = [...listAutoField]; 
+
+        newList.map((item) => {
+            this.listTexts.push(item);
+            return this.listTexts;
+        }) 
+        return this.listTexts; 
+  }
+
   constructor(props) {
     super(props);
-    this.modules = { mention: this.mentionModule(this) };
+    // this.modules = { mention: this.mentionModule(this) };
 
     this.state = {
       conditionsData: [
@@ -144,39 +161,39 @@ class EmailReminderForm extends PureComponent {
     };
   }
 
-  mentionModule = (t) => {
-    return {
-      allowedChars: /^[A-Za-z\s]*$/,
-      mentionDenotationChars: ['@'],
-      showDenotationChar: false,
-      renderItem: (item) => {
-        return item.value;
-      },
-      source(searchTerm, renderList, mentionChar) {
-        let values;
-        const { listAutoField } = t.props;
-        const list = listAutoField.map((item, index) => {
-          return {
-            id: index,
-            value: item,
-          };
-        });
-        if (mentionChar === '@') {
-          values = list;
-        }
+  // mentionModule = (t) => {
+  //   return {
+  //     allowedChars: /^[A-Za-z\s]*$/,
+  //     mentionDenotationChars: ['@'],
+  //     showDenotationChar: false,
+  //     renderItem: (item) => {
+  //       return item.value;
+  //     },
+  //     source(searchTerm, renderList, mentionChar) {
+  //       let values;
+  //       const { listAutoField } = t.props;
+  //       const list = listAutoField.map((item, index) => {
+  //         return {
+  //           id: index,
+  //           value: item,
+  //         };
+  //       });
+  //       if (mentionChar === '@') {
+  //         values = list;
+  //       }
 
-        if (searchTerm.length === 0) {
-          renderList(values, searchTerm);
-        } else {
-          const matches = [];
-          for (let i = 0; i < values.length; i++)
-            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-              matches.push(values[i]);
-          renderList(matches, searchTerm);
-        }
-      },
-    };
-  };
+  //       if (searchTerm.length === 0) {
+  //         renderList(values, searchTerm);
+  //       } else {
+  //         const matches = [];
+  //         for (let i = 0; i < values.length; i++)
+  //           if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+  //             matches.push(values[i]);
+  //         renderList(matches, searchTerm);
+  //       }
+  //     },
+  //   };
+  // };
 
   checkFields = () => {
     const { conditionsData } = this.state;
@@ -442,8 +459,8 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
-    if (name === 'tobeVerb') {
-    }
+    // if (name === 'tobeVerb') {
+    // }
 
     newConditionsData[index][name] = value;
 
@@ -764,7 +781,7 @@ class EmailReminderForm extends PureComponent {
     return listAutoField;
   };
 
-  _renderForm = () => {
+  _renderForm = (listAutoText) => {
     const { Option } = Select;
     const { triggerEventList, loading } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
@@ -861,14 +878,7 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
-
-            <ReactQuill
-              className={styles.quill}
-              value={messages}
-              onChange={this.handleChangeEmail}
-              modules={this.modules}
-            />
-            {/* </Form.Item> */}
+            <EditorQuill messages={messages} handleChangeEmail={this.handleChangeEmail} listAutoText={listAutoText} />
           </Col>
 
           <Col className={styles.buttons} span={8} offset={16}>
@@ -895,11 +905,13 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loadingFetchListAutoField } = this.props;
     this.checkFields();
+    const listAutoText = this.listTemp();
+
     return (
       <>
-        {loading ? (
+        {loadingFetchListAutoField ? (
           <div className={styles.EmailReminderForm_loading}>
             <Spin size="large" />
           </div>
@@ -909,7 +921,7 @@ class EmailReminderForm extends PureComponent {
               {formatMessage({ id: 'component.emailReminderForm.title' })}
               <hr />
             </div>
-            <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
+            <div className={styles.EmailReminderForm_form}>{this._renderForm(listAutoText)}</div>
           </div>
         )}
       </>
