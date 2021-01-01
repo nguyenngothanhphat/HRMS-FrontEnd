@@ -629,9 +629,9 @@ class EmailReminderForm extends PureComponent {
                       placeholder="Please select a choice"
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
-                      {units.map((unit) => {
+                      {units.map((unit, _index) => {
                         return (
-                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)}>
+                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)} key={`${_index + 1}`}>
                             {unit.name}
                           </Option>
                         );
@@ -647,8 +647,8 @@ class EmailReminderForm extends PureComponent {
                       placeholder="Please select a choice"
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
-                      {toBeVerbs.map((toBeVerb) => {
-                        return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
+                      {toBeVerbs.map((toBeVerb, _index) => {
+                        return <Option value={toBeVerb.value} key={`${_index + 1}`}>{toBeVerb.name}</Option>;
                       })}
                     </Select>
                   </Col>
@@ -780,8 +780,8 @@ class EmailReminderForm extends PureComponent {
                 placeholder="Please select a choice"
                 onChange={(value) => this.onChangeTriggerEvent(value)}
               >
-                {triggerEventList.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
+                {triggerEventList.map((option, _index) => {
+                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
                 })}
               </Select>
             </Form.Item>
@@ -802,8 +802,8 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             <Form.Item name="sendingDate" label="Sending date">
               <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
-                {sendingDate.map((option) => {
-                  return <Radio value={option.value}>{option.name}</Radio>;
+                {sendingDate.map((option, _index) => {
+                  return <Radio value={option.value} key={`${_index + 1}`}>{option.name}</Radio>;
                 })}
               </Radio.Group>
             </Form.Item>
@@ -817,8 +817,8 @@ class EmailReminderForm extends PureComponent {
                 placeholdementionModuler="Please select a choice"
                 onChange={this.handleChangeApply}
               >
-                {applyTo.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
+                {applyTo.map((option, _index) => {
+                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
                 })}
               </Select>
             </Form.Item>
@@ -832,10 +832,11 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <Form.Item name="sendToWorker" label="Send to existing workers">
               <Checkbox.Group>
-                {sendToWorker.map((option) => {
+                {sendToWorker.map((option, _index) => {
                   return (
                     <Checkbox
                       value={option.value}
+                      key={`${_index + 1}`}
                       onChange={(value) => this.handleChangeChckBox(value)}
                     >
                       {option.name}
