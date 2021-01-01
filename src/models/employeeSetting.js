@@ -346,7 +346,7 @@ const employeeSetting = {
     *updateCustomEmail({ payload = {} }, { call, put }) {
       try {
         const response = yield call(updateCustomEmail, payload);
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',

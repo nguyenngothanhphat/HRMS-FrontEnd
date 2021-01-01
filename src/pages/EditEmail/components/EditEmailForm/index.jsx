@@ -8,7 +8,7 @@ import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReactQuill, { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 
-import removeIcon from './assets/removeIcon.svg';
+// import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
 
@@ -53,6 +53,7 @@ Quill.register('modules/mentions', QuillMention);
 )
 class EditEmailForm extends PureComponent {
   formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.modules = { mention: this.mentionModule(this) };
@@ -67,7 +68,6 @@ class EditEmailForm extends PureComponent {
         },
       ],
       checkOption: [],
-      appliesToData: '',
       messages: '',
       sendingDate: [
         {
@@ -95,8 +95,6 @@ class EditEmailForm extends PureComponent {
           value: 'Yes, send this email to all current workers ',
         },
       ],
-      checkValue: '',
-      sendToExistingWorker: false,
       recipients: [],
       conditionsTrigger: {
         units: [
@@ -136,9 +134,9 @@ class EditEmailForm extends PureComponent {
         },
       ],
       disabled: true,
-      triggerEvent: '',
-      _sendingDate: '',
-      recipient: '',
+      // triggerEvent: '',
+      // _sendingDate: '',
+      // recipient: '',
       emailSubject: '',
       load: false,
       isLocation: false,
@@ -152,7 +150,7 @@ class EditEmailForm extends PureComponent {
       emailCustomData: {
         conditions: conditionsCustomEmail = [],
         message = '',
-        triggerEvent: _triggerEvent = {},
+        // triggerEvent: _triggerEvent = {},
         subject = '',
         sendingDate = {},
         isDefault = '',
@@ -164,7 +162,11 @@ class EditEmailForm extends PureComponent {
     const newData = [...conditionsData];
 
     // Check isDefault data field
-    isDefault ? this.setState({ _isDefault: true }) : this.setState({ _isDefault: false });
+    if(isDefault){
+      this.setState({ _isDefault: true })
+    }else {
+      this.setState({ _isDefault: false })
+    }
 
     // fetch data of emailCustomData got from reducer and set state into conditionsData.
     const conditionsKey = newConditionCustomEmail.map((item) => item.key);
@@ -177,10 +179,10 @@ class EditEmailForm extends PureComponent {
       };
 
       newData.push(newObj);
-      return filterData;
+      return newData;
     });
     const filterData = newData.filter((item) => item.key !== '');
-    //////////////////////////////////////////////
+    /// ///////////////////////////////////////////
 
     // set sendingDate radio button as default checked
     const value1 = 'Specific number of days before or after the event';
@@ -190,19 +192,19 @@ class EditEmailForm extends PureComponent {
       this.formRef.current.setFieldsValue({
         sendingDate: value1,
       });
-      this.setState({ _sendingDate: value1 });
+      // this.setState({ _sendingDate: value1 });
     } else {
       this.formRef.current.setFieldsValue({
         sendingDate: value2,
       });
-      this.setState({ _sendingDate: value2 });
+      // this.setState({ _sendingDate: value2 });
     }
-    //////////////////////////////////////////////
+    /// ///////////////////////////////////////////
 
     this.setState({
       conditionsData: filterData,
       messages: message,
-      triggerEvent: _triggerEvent.value,
+      // triggerEvent: _triggerEvent.value,
       emailSubject: subject,
     });
   }
@@ -242,18 +244,18 @@ class EditEmailForm extends PureComponent {
   };
 
   checkFields = () => {
-    const { conditionsData } = this.state;
+    // const { conditionsData } = this.state;
 
-    let key = '';
-    let tobeVerb = '';
-    let value = '';
+    // let key = '';
+    // let tobeVerb = '';
+    // let value = '';
 
-    conditionsData.map((item) => {
-      key = item.key;
-      tobeVerb = item.tobeVerb;
-      value = item.value;
-      return item;
-    });
+    // conditionsData.map((item) => {
+    //   key = item.key;
+    //   tobeVerb = item.tobeVerb;
+    //   value = item.value;
+    //   return item;
+    // });
 
     const {
       // triggerEvent,
@@ -312,9 +314,9 @@ class EditEmailForm extends PureComponent {
   handleChangeApply = (value) => {
     const { dispatch, _id } = this.props;
 
-    this.setState({
-      appliesToData: value,
-    });
+    // this.setState({
+    //   appliesToData: value,
+    // });
 
     if (value === 'any') {
       dispatch({
@@ -337,17 +339,19 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeTriggerEvent = (value) => {
-    this.setState({ triggerEvent: value });
+    // this.setState({ triggerEvent: value });
+    console.log('value message: ',value);
   };
 
   onChangeSendingDate = (value) => {
     console.log('value message: ', value.target.value);
 
-    this.setState({ _sendingDate: value.target.value });
+    // this.setState({ _sendingDate: value.target.value });
   };
 
   onChangeRecipients = (value) => {
-    this.setState({ recipient: value });
+    // this.setState({ recipient: value });
+    console.log('value message: ',value);
   };
 
   onChangeEmailSubject = (value) => {
@@ -679,7 +683,7 @@ class EditEmailForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
-    const { emailCustomData = {} } = this.props;
+    // const { emailCustomData = {} } = this.props;
     let valueToBeVerb = '';
     const {
       conditionsData,
@@ -750,8 +754,7 @@ class EditEmailForm extends PureComponent {
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -804,8 +807,9 @@ class EditEmailForm extends PureComponent {
   };
 
   handleChangeChckBox = (value) => {
-    const { target: { checked = '' } = {} } = value;
-    this.setState({ sendToExistingWorker: checked });
+    console.log('value message: ', value);
+    // const { target: { checked = '' } = {} } = value;
+    // this.setState({ sendToExistingWorker: checked });
   };
 
   _renderApplyToOptions = () => {
@@ -857,7 +861,7 @@ class EditEmailForm extends PureComponent {
     const { loadingUpdateCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled, _isDefault } = this.state;
     const {
-      message: _messages = '',
+      // message: _messages = '',
       subject = '',
       triggerEvent = {},
       applyTo: _applyTo = '',

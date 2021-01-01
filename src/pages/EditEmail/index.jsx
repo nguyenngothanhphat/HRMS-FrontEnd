@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Spin } from 'antd';
+import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import PageContainer from '@/layouts/layout/src/PageContainer';
 import EditEmailHeader from './components/EditEmailHeader';
@@ -32,7 +32,7 @@ class EditEmail extends Component {
   };
 
   render() {
-    const { loadingfetchEmailCustomInfo, emailCustomData } = this.props;
+    const { emailCustomData } = this.props;
 
     return (
       <PageContainer>
