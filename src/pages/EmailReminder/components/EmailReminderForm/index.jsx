@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-import ReactQuill, { Quill } from 'react-quill';
+import { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 
 import removeIcon from './assets/removeIcon.svg';
@@ -49,7 +49,7 @@ Quill.register('modules/mentions', QuillMention);
     listAutoField,
     locationName,
     roles,
-    loading: loading.effects['employeeSetting/addCustomEmail'],
+    loadingAddCustomEmail: loading.effects['employeeSetting/addCustomEmail'],
     loadingFetchListAutoField: loading.effects['employeeSetting/fetchListAutoField'],
   }),
 )
@@ -905,24 +905,34 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
-    const { loadingFetchListAutoField } = this.props;
+    const { loadingFetchListAutoField, loadingAddCustomEmail } = this.props;
     this.checkFields();
     const listAutoText = this.listTemp();
 
     return (
       <>
-        {loadingFetchListAutoField ? (
+        {loadingAddCustomEmail ? (
           <div className={styles.EmailReminderForm_loading}>
             <Spin size="large" />
           </div>
         ) : (
-          <div className={styles.EmailReminderForm}>
-            <div className={styles.EmailReminderForm_title}>
-              {formatMessage({ id: 'component.emailReminderForm.title' })}
-              <hr />
-            </div>
-            <div className={styles.EmailReminderForm_form}>{this._renderForm(listAutoText)}</div>
-          </div>
+          <>
+            {
+              loadingFetchListAutoField ? (
+                <div className={styles.EditEmailForm_loading}>
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <div className={styles.EmailReminderForm}>
+                  <div className={styles.EmailReminderForm_title}>
+                    {formatMessage({ id: 'component.emailReminderForm.title' })}
+                    <hr />
+                  </div>
+                  <div className={styles.EmailReminderForm_form}>{this._renderForm(listAutoText)}</div>
+                </div>
+              )
+            }
+          </>
         )}
       </>
     );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import PageContainer from '@/layouts/layout/src/PageContainer';
 import EditEmailHeader from './components/EditEmailHeader';
@@ -32,21 +32,29 @@ class EditEmail extends Component {
   };
 
   render() {
-    const { emailCustomData } = this.props;
+    const { emailCustomData, loadingfetchEmailCustomInfo } = this.props;
 
     return (
       <PageContainer>
         <div className={styles.EditEmail}>
           <EditEmailHeader />
           <div className={styles.EditEmail_content}>
-            <Row gutter={[24, 24]}>
-              <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-                <EditEmailForm emailCustomData={emailCustomData} />
-              </Col>
-              <Col xs={24} sm={24} md={24} lg={7} xl={7}>
-                <EditEmailNote />
-              </Col>
-            </Row>
+            {
+              loadingfetchEmailCustomInfo ? (
+                <div className={styles.EditEmailForm_loading}>
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <Row gutter={[24, 24]}>
+                  <Col xs={24} sm={24} md={24} lg={17} xl={17}>
+                    <EditEmailForm emailCustomData={emailCustomData} />
+                  </Col>
+                  <Col xs={24} sm={24} md={24} lg={7} xl={7}>
+                    <EditEmailNote />
+                  </Col>
+                </Row>
+              )
+            }
           </div>
         </div>
       </PageContainer>
