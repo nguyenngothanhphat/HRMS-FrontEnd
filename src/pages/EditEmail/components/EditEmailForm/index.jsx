@@ -44,7 +44,6 @@ Quill.register('modules/mentions', QuillMention);
     listAutoField,
     locationName,
     roles,
-    // loadingAddCustomEmail: loading.effects['employeeSetting/addCustomEmail'],
     loadingfetchEmailCustomInfo: loading.effects['employeeSetting/fetchEmailCustomInfo'],
     loadingUpdateCustomEmail: loading.effects['employeeSetting/updateCustomEmail'],
     loadingFetchListAutoField: loading.effects['employeeSetting/fetchListAutoField'],
@@ -67,7 +66,7 @@ class EditEmailForm extends PureComponent {
           value: [],
         },
       ],
-      checkOption: [],
+      // checkOption: [],
       messages: '',
       sendingDate: [
         {
@@ -142,27 +141,28 @@ class EditEmailForm extends PureComponent {
       isLocation: false,
       selectedSelectBox: 0,
       _isDefault: false,
+      _sendingDate: '',
+      isCheckBox: false,
     };
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'employeeSetting/fetchListAutoField',
-      payload: {},
-    });
-
     const {
+      dispatch,
       emailCustomData: {
         conditions: conditionsCustomEmail = [],
-        // triggerEvent: _triggerEvent = {},
         message: newMessage = '',
         isDefault = '',
         sendingDate: {type: typeSendingDate = ''} = {},
         subject = '',
+        sendToExistingWorker = ''
       } = {},
     } = this.props;
-    console.log('sendingDate: ', typeSendingDate)
+
+    dispatch({
+      type: 'employeeSetting/fetchListAutoField',
+      payload: {},
+    });
     
     const { conditionsData } = this.state;
 
@@ -185,35 +185,36 @@ class EditEmailForm extends PureComponent {
     const filterData = newData.filter((item) => item.key !== '');
     /// ///////////////////////////////////////////
 
-    this.setState({
-      conditionsData: filterData,
-      emailSubject: subject,
-      messages: newMessage
-    });
-
-    // set sendingDate radio button as default checked
-    const value1 = 'Specific number of days before or after the event';
-    const value2 = 'On the event date';
-
-    if (typeSendingDate === 'now') {
-      this.formRef.current.setFieldsValue({
-        sendingDate: value1,
-      });
-      // this.setState({ _sendingDate: value1 });
-    } else {
-      this.formRef.current.setFieldsValue({
-        sendingDate: value2,
-      });
-      // this.setState({ _sendingDate: value2 });
-    }
-    /// ///////////////////////////////////////////
-
     // Check isDefault data field
     if(isDefault){
       this.setState({ _isDefault: true })
     }else {
       this.setState({ _isDefault: false })
     }
+
+    /// ///////////////////////////////////////////
+
+    // set sendingDate radio button as default checked
+
+    const value1 = 'Specific number of days before or after the event';
+    const value2 = 'On the event date';
+
+    if (typeSendingDate === 'now') {
+      this.setState({ _sendingDate: value1 });
+    } else {
+      this.setState({ _sendingDate: value2 });
+    }
+
+    if(sendToExistingWorker){
+      this.setState({isCheckBox: true})
+    }
+    /// ///////////////////////////////////////////
+
+    this.setState({
+      conditionsData: filterData,
+      emailSubject: subject,
+      messages: newMessage
+    });
   }
 
   listTemp = () => {
@@ -243,16 +244,15 @@ class EditEmailForm extends PureComponent {
 
     const {
       // triggerEvent,
-      // _sendingDate,
+      _sendingDate,
       // appliesToData,
       // recipient,
       emailSubject,
       messages,
     } = this.state;
-
+    
     if (
-      // triggerEvent.trim() !== '' &&
-      // _sendingDate.trim() !== '' &&
+      _sendingDate.trim() !== '' &&
       emailSubject.trim() !== '' &&
       messages.trim() !== '' &&
       messages.trim() !== '<p></p>' &&
@@ -624,6 +624,12 @@ class EditEmailForm extends PureComponent {
     };
 
     console.log('dataSubmit: ', dataSubmit)
+    // console.log('success: ', dataSubmit);
+    // dispatch({
+    //   type: 'employeeSetting/updateCustomEmail',
+    //   payload: dataSubmit,
+    // });
+
 
     // delete newValue.sendToWorker;
     // delete newValue.frequency;
@@ -646,12 +652,6 @@ class EditEmailForm extends PureComponent {
     //   setTimeout(() => {
     //     this.back();
     //   }, 1000);
-    // });
-
-    // console.log('success: ', dataSubmit);
-    // dispatch({
-    //   type: 'employeeSetting/updateCustomEmail',
-    //   payload: dataSubmit,
     // });
   };
 
@@ -843,18 +843,22 @@ class EditEmailForm extends PureComponent {
 
   _renderForm = (listAutoText) => {
     const { Option } = Select;
-    const { loadingUpdateCustomEmail, emailCustomData = {}, triggerEventList } = this.props;
-    const { sendingDate, applyTo, sendToWorker, messages, disabled, _isDefault } = this.state;
+    const { loadingUpdateCustomEmail, emailCustomData = {}, triggerEventList, loadingfetchEmailCustomInfo } = this.props;
+    const { sendingDate, applyTo, sendToWorker, messages, disabled, _isDefault, _sendingDate, isCheckBox } = this.state;
     const {
       subject = '',
       triggerEvent = {},
       applyTo: _applyTo = '',
-      sendToExistingWorker,
     } = emailCustomData;
-    
 
     return (
       <>
+        {
+      loadingfetchEmailCustomInfo ? (
+        <div className={styles.EditEmailForm_loading}>
+          <Spin size="large" />
+        </div>
+      ) : (
         <Form onFinish={this.onFinish} ref={this.formRef}>
           <Row gutter={[36, 24]}>
             {/* Trigger Event */}
@@ -890,6 +894,7 @@ class EditEmailForm extends PureComponent {
                 <Radio.Group
                   onChange={(value) => this.onChangeSendingDate(value)}
                   disabled={_isDefault}
+                  defaultValue={_sendingDate}
                 >
                   {sendingDate.map((option, _index) => {
                       return <Radio value={option.value} key={`${_index + 1}`}>{option.name}</Radio>;
@@ -928,37 +933,19 @@ class EditEmailForm extends PureComponent {
             {/* Send to existing workers */}
             <Col span={12}>
               <Form.Item name="sendToWorker" label="Send to existing workers">
-                {sendToExistingWorker ? (
-                  <div>
-                    {sendToWorker.map((option) => {
-                        return (
-                          <Checkbox
-                            value={option.value}
-                            checked
-                            disabled={_isDefault}
-                            onChange={(value) => this.handleChangeChckBox(value)}
-                          >
-                            {option.name}
-                          </Checkbox>
-                        );
-                      })}
-                  </div>
-                  ) : (
-                    <Checkbox.Group>
-                      {sendToWorker.map((option, _index) => {
-                        return (
-                          <Checkbox
-                            value={option.value}
-                            key={`${_index + 1}`}
-                            disabled={_isDefault}
-                            onChange={(value) => this.handleChangeChckBox(value)}
-                          >
-                            {option.name}
-                          </Checkbox>
-                        );
-                      })}
-                    </Checkbox.Group>
-                  )}
+                {sendToWorker.map((option, _index) => {
+                  return (
+                    <Checkbox
+                      value={option.value}
+                      checked={isCheckBox}
+                      disabled={_isDefault}
+                      key={`${_index + 1}`}
+                      onChange={(value) => this.handleChangeChckBox(value)}
+                    >
+                      {option.name}
+                    </Checkbox>
+                  );
+                })}
               </Form.Item>
             </Col>
 
@@ -1005,41 +992,35 @@ class EditEmailForm extends PureComponent {
             </Col>
           </Row>
         </Form>
+        )
+      }
       </> 
     );
   };
 
   render() {
-    const { loadingfetchEmailCustomInfo, loadingFetchListAutoField } = this.props;
+    const { loadingFetchListAutoField } = this.props;
     this.checkFields();
     const listAutoText = this.listTemp();
 
     return (
-      // <>
-      //   {loadingfetchEmailCustomInfo ? (
-      //     <div className={styles.EditEmailForm_loading}>
-      //       <Spin size="large" />
-      //     </div>
-      //   ) : (
       <>
         {
-              loadingFetchListAutoField ? (
-                <div className={styles.EditEmailForm_loading}>
-                  <Spin size="large" />
-                </div>
-              ) : (
-                <div className={styles.EditEmailForm}>
-                  <div className={styles.EditEmailForm_title}>
-                    {formatMessage({ id: 'component.editEmailForm.title' })}
-                    <hr />
-                  </div>
-                  <div className={styles.EditEmailForm_form}>{this._renderForm(listAutoText)}</div>
-                </div>
-              )
-            }
+          loadingFetchListAutoField ? (
+            <div className={styles.EditEmailForm_loading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <div className={styles.EditEmailForm}>
+              <div className={styles.EditEmailForm_title}>
+                {formatMessage({ id: 'component.editEmailForm.title' })}
+                <hr />
+              </div>
+              <div className={styles.EditEmailForm_form}>{this._renderForm(listAutoText)}</div>
+            </div>
+          )
+        }
       </> 
-      //   )}
-      // </>
     );
   }
 }
