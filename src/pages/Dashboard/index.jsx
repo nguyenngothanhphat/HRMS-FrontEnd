@@ -108,18 +108,21 @@ class Dashboard extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
-          <Affix offsetTop={40}>
+          {/* <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Dashboard</p>
             </div>
-          </Affix>
+          </Affix> */}
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={7}>
-              <Greeting name={currentUser?.generalInfo?.firstName} />
-              <div className={styles.leftContainer}>
-                <ActivityLog />
+              <div className={styles.leftSection}>
+                <Greeting name={currentUser?.generalInfo?.firstName} />
+                <div className={styles.leftContainer}>
+                  <ActivityLog />
+                </div>
               </div>
             </Col>
+            {/* <Col span={7} /> */}
             <Col span={17}>
               <Carousel />
               <MyApps />
