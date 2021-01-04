@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Divider, Upload, Modal, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-import 'antd/dist/antd.css';
 import styles from './index.less';
 
 const getBase64 = (file) => {
