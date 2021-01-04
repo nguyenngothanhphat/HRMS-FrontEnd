@@ -1,7 +1,19 @@
 .balance {
-  :gobal {
-    .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list {
-      background-color: #dedfdf;
+  // .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list {
+  //   background-color: #dedfdf;
+  // }
+  .titleText {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    color: #464646;
+    padding-bottom: 25px;
+  }
+  :global {
+    .ant-tabs > .ant-tabs-nav,
+    .ant-tabs > div > .ant-tabs-nav {
+      background-color: #dedfdf !important;
+      border-bottom: 1px solid #dedfdf;
     }
   }
 }

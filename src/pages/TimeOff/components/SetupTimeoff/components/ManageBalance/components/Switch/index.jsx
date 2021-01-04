@@ -13,13 +13,11 @@ class Switch extends PureComponent {
   };
 
   render() {
-    const { tab } = this.props;
+    const { tab, name, content } = this.props;
     return (
       <div className={styles.root}>
-        <div className={styles.title}>Switch</div>
-        <div className={styles.subText}>
-          Keep current employee timeoff balances, but move them to new policies
-        </div>
+        <div className={styles.title}>{name}</div>
+        <div className={styles.subText}>{content}</div>
         <div>
           <img src={icon} alt="" />
           {/* <ExportCSV csvData={customers} fileName={fileName} /> */}

@@ -27,10 +27,10 @@ class SetupTimeoff extends Component {
     const listMenu = [
       {
         id: 1,
-        name: 'Holliday Calendar',
-        key: 'hollidayCalander',
-        component: <HollidayCalendar />,
-        progress: 10,
+        name: 'Timeoff Type & Rules',
+        key: 'timeoffType',
+        component: <TimeoffType />,
+        progress: 70,
       },
       {
         id: 2,
@@ -41,10 +41,10 @@ class SetupTimeoff extends Component {
       },
       {
         id: 3,
-        name: 'Timeoff Type & Rules',
-        key: 'timeoffType',
-        component: <TimeoffType />,
-        progress: 70,
+        name: 'Holliday Calendar',
+        key: 'hollidayCalander',
+        component: <HollidayCalendar />,
+        progress: 10,
       },
       {
         id: 4,

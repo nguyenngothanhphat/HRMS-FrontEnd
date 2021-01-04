@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, DatePicker, Row, Col, Upload, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+// import { UploadOutlined } from '@ant-design/icons';
 import Icon from '@/assets/importExcel.svg';
 
 import { connect } from 'umi';
@@ -69,7 +69,6 @@ class ImportExcel extends React.Component {
   };
 
   handleUpload = (file) => {
-    console.log(file);
     const { dispatch, getResponse = () => {} } = this.props;
     const formData = new FormData();
     const newFile = new File([file], 'ExcelFile.xlsx', {
@@ -92,7 +91,6 @@ class ImportExcel extends React.Component {
     // console.log(!effectiveDate, 'effectiveDate');
     // console.log(!urlExcel, 'urlExcel');
     // console.log(check, 'check');
-    console.log(tab, 'check');
 
     return (
       <div className={styles.root}>

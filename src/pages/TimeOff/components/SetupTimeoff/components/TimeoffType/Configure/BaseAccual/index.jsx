@@ -77,7 +77,7 @@ class BaseAccual extends Component {
                     min={0}
                     max={12}
                     defaultValue={0}
-                    placeholder="day"
+                    placeholder="days"
                     formatter={(value) => `${value} day`}
                     parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}

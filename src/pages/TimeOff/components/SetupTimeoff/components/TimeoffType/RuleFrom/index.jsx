@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 import icon from '@/assets/delete.svg';
 import styles from './index.less';
@@ -15,12 +15,10 @@ class RuleFrom extends Component {
           <div className={styles.header}>
             <div className={styles.flex}>
               <div className={styles.title}>{render.type}</div>
-              <div className={styles.buttonRequest}>
-                <span>{render.button}</span>
-              </div>
+              <Button className={styles.buttonRequest}>{render.button}</Button>
             </div>
           </div>
-          <div className={styles.strang} />
+          <div className={styles.straightLine} />
           <div>
             {children.map((item, index) => {
               const { title, name, change } = item;
@@ -113,11 +111,16 @@ class RuleFrom extends Component {
     ];
 
     return (
-      <Row className={styles.root} gutter={[30, 25]}>
-        {array.map((render) => (
-          <Col span={24}>{this.renderItem(render)}</Col>
-        ))}
-      </Row>
+      <div className={styles.root}>
+        <Row gutter={[30, 25]}>
+          {array.map((render) => (
+            <Col span={24}>{this.renderItem(render)}</Col>
+          ))}
+        </Row>
+        <div className={styles.footer}>
+          <Button className={styles.btnNext}>Next</Button>
+        </div>
+      </div>
     );
   }
 }
