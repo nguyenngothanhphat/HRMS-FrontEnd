@@ -115,14 +115,11 @@ class Dashboard extends PureComponent {
           </Affix> */}
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={7}>
-              <div className={styles.leftSection}>
-                <Greeting name={currentUser?.generalInfo?.firstName} />
-                <div className={styles.leftContainer}>
-                  <ActivityLog />
-                </div>
+              <Greeting name={currentUser?.generalInfo?.firstName} />
+              <div className={styles.leftContainer}>
+                <ActivityLog />
               </div>
             </Col>
-            {/* <Col span={7} /> */}
             <Col span={17}>
               <Carousel />
               <MyApps />
