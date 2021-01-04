@@ -67,6 +67,14 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // clear viewingCompoffRequest
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/clearViewingCompoffRequest',
+    });
+  };
+
   componentDidMount = () => {
     const { action = '' } = this.props;
     this.fetchEmailsListByCompany();

@@ -6,39 +6,56 @@ class BaseAccual extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      accrualRate: '',
-      select: 'day',
+      unto: '',
+      date: 'day',
+      unlimited: false,
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { accrualRate } = this.state;
+    const { unto, unlimited } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      accrualRate,
+      date: e.target.value,
+      unto,
+      unlimited,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, unlimited } = this.state;
     this.setState({
-      accrualRate: value,
+      unto: value,
     });
     const data = {
-      select,
-      accrualRate: value,
+      date,
+      unto: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, unto } = this.state;
+    this.setState({
+      unlimited: e.target.checked,
+    });
+    const data = {
+      date,
+      unto,
+      unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { accrualRate, select } = this.state;
+    const { unto, date } = this.state;
     return (
       <div className={styles.contentNegative}>
         <div className={styles.title}>Negative balances</div>
@@ -49,7 +66,9 @@ class BaseAccual extends Component {
               <div className={styles.titleText}>
                 Employees can apply for casual leaves that make their balances negative unto
               </div>
-              <Checkbox className={styles.checkbox}>Unlimited negative balances</Checkbox>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+                Unlimited negative balances
+              </Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
@@ -67,7 +86,7 @@ class BaseAccual extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >

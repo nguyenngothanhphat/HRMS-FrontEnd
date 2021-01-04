@@ -1,5 +1,27 @@
 .root {
   padding-top: 20px;
+  .footer {
+    width: 100%;
+    height: 88px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #d6dce0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    .btnNext {
+      width: 108px;
+      height: 40px;
+      background: #ffa100;
+      border-radius: 25px;
+      border: none;
+      color: #fff;
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
+    }
+  }
   .TimeoffRuleFrom {
     .flex {
       display: flex;
@@ -17,9 +39,8 @@
       font-weight: 500;
       line-height: 16.41px;
       color: #2c6df9;
-      padding: 9px;
+      padding: 7px;
       width: 157px;
-      height: 34px;
       cursor: pointer;
     }
     .from {
@@ -35,7 +56,7 @@
     // .body {
     //   padding: 27px 24px;
     // }
-    .strang {
+    .straightLine {
       background-color: #d6dce0;
       width: 100%;
       height: 1px;

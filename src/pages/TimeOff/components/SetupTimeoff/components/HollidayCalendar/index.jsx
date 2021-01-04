@@ -1,10 +1,74 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col, Spin } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import s from './index.less';
 
+const CheckboxGroup = Checkbox.Group;
+
 const { Option } = Select;
+const MOCK_DATA = [
+  {
+    text: 'Jan',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Feb',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Mar',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Apr',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'May',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Jun',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Jul',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Aug',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Sep',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Oct',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Nov',
+    ref: React.createRef(),
+    children: [],
+  },
+  {
+    text: 'Dec',
+    ref: React.createRef(),
+    children: [],
+  },
+];
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loading: loading.effects['timeOff/fetchHolidaysList'],
@@ -13,77 +77,35 @@ class HollidayCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      select: 'Jan',
-      data: [
-        {
-          text: 'Jan',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Feb',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Mar',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Apr',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'May',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Jun',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Jul',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Aug',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Sep',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Oct',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Nov',
-          ref: React.createRef(),
-          children: [],
-        },
-        {
-          text: 'Dec',
-          ref: React.createRef(),
-          children: [],
-        },
-      ],
+      data: [],
+      // indeterminate: true,
+      // checkedList: [],
+      // plainOptions: [],
+      // checkAll: false,
     };
   }
 
   componentDidMount = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    this.initListHoliday(year);
+  };
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { year } = this.state;
+  //   const { year: nextyear } = nextState;
+  //   if (year !== nextyear) {
+  //     this.initListHoliday(nextyear);
+  //   }
+  //   return true;
+  // }
+
+  initListHoliday = (currenYear) => {
     const { dispatch } = this.props;
+    // const { year } = this.state;
     dispatch({
       type: 'timeOff/fetchHolidaysList',
-      payload: { year: moment().format('YYYY'), month: '' },
+      payload: { year: currenYear, month: '' },
     }).then((response) => {
       const { statusCode, data: holidaysList = [] } = response;
       if (statusCode === 200) {
@@ -94,14 +116,29 @@ class HollidayCalendar extends Component {
 
   handleChange = (value) => {
     const { data } = this.state;
-    this.setState({ select: value });
+    // this.setState({ select: value });
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
     window.scrollBy(0, -70);
   };
 
+  onChange = (value) => {
+    // this.setState({ year: value });
+    this.initListHoliday(value);
+  };
+
+  // onChangeCheckAll = (checkedList) => {
+  //   const { plainOptions } = this.state;
+  //   this.setState({
+  //     list: checkedList,
+  //     indeterminate: !!checkedList.length && checkedList.length,
+  //     checkAll: checkedList.length === plainOptions.length,
+  //   });
+  // };
+
   renderItem = (item) => {
     const { children = [] } = item;
+    const { checkedList, plainOptions } = this.state;
     return (
       <div ref={item.ref}>
         <div key={item.text} className={s.formTable}>
@@ -115,7 +152,11 @@ class HollidayCalendar extends Component {
                 <div>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
-                      <Checkbox />
+                      <CheckboxGroup
+                        options={plainOptions}
+                        value={checkedList}
+                        onChange={this.onChangeCheckAll}
+                      />
                     </Col>
                     <Col span={6} className={s.textHoliday}>
                       {name}
@@ -137,8 +178,7 @@ class HollidayCalendar extends Component {
   };
 
   fomatDate = (holidaysList = []) => {
-    const { data } = this.state;
-    let result = data;
+    let result = MOCK_DATA;
     holidaysList.forEach((item) => {
       const monthItem = moment(item.date).format('MMM');
       const fomatDataItem = moment(item.date).format('YYYY, MMM');
@@ -154,7 +194,7 @@ class HollidayCalendar extends Component {
   };
 
   render() {
-    const { select, data } = this.state;
+    const { data } = this.state;
     const { loading = false } = this.props;
     return (
       <div className={s.root}>
@@ -166,10 +206,15 @@ class HollidayCalendar extends Component {
             <p> provides holidays. You may add holidays to the list as well.</p>
           </div>
         </div>
-        <Row className={s.listHoliday}>
-          <Col span={24} className={s.flex}>
+        <div className={s.listHoliday}>
+          <div span={24} className={s.flex}>
             <div>
-              <Checkbox className={s.select}>Select All</Checkbox>
+              <Checkbox
+                // indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}
+                className={s.select}
+              >
+                Select All
+              </Checkbox>
             </div>
             <div>
               <Row gutter={[24, 0]}>
@@ -177,7 +222,15 @@ class HollidayCalendar extends Component {
                   <Button className={s.btnHoliday}>Add a holiday</Button>
                 </Col>
                 <Col>
-                  <Select style={{ width: 120 }} onChange={this.handleChange} value={select}>
+                  <InputNumber
+                    min={2019}
+                    max={2022}
+                    defaultValue={moment().format('YYYY')}
+                    onChange={this.onChange}
+                  />
+                </Col>
+                <Col>
+                  <Select style={{ width: 120 }} onChange={this.handleChange}>
                     {data.map((item) => (
                       <Option key={item.month} value={item.text}>
                         {item.text}
@@ -187,17 +240,19 @@ class HollidayCalendar extends Component {
                 </Col>
               </Row>
             </div>
-          </Col>
-          <Row style={{ width: '100%' }}>
-            {loading ? (
-              <Col span={24} className={s.center}>
-                <Spin />
-              </Col>
-            ) : (
-              data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
-            )}
-          </Row>
-        </Row>
+          </div>
+          <div>
+            <Row>
+              {loading ? (
+                <Col span={24} className={s.center}>
+                  <Spin />
+                </Col>
+              ) : (
+                data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
+              )}
+            </Row>
+          </div>
+        </div>
       </div>
     );
   }
