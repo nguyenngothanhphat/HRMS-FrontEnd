@@ -6,39 +6,56 @@ class BaseAccual extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      accrualRate: '',
-      select: 'day',
+      time: '',
+      date: 'day',
+      unlimited: false,
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { accrualRate } = this.state;
+    const { time, unlimited } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
       select: e.target.value,
-      accrualRate,
+      time,
+      unlimited,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, unlimited } = this.state;
     this.setState({
-      accrualRate: value,
+      time: value,
     });
     const data = {
-      select,
-      accrualRate: value,
+      date,
+      time: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, time } = this.state;
+    this.setState({
+      unlimited: e.target.checked,
+    });
+    const data = {
+      date,
+      time,
+      unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { accrualRate, select } = this.state;
+    const { accrualRate, date } = this.state;
     return (
       <div className={styles.contentBaseAccrual}>
         <div className={styles.title}>Base accrual rate</div>
@@ -49,7 +66,9 @@ class BaseAccual extends Component {
               <div className={styles.titleText}>
                 During the employee’s 1st year of employment, total casual leave accrued
               </div>
-              <Checkbox className={styles.checkbox}>Unlimited causal leave</Checkbox>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+                Unlimited causal leave
+              </Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
@@ -58,7 +77,7 @@ class BaseAccual extends Component {
                     min={0}
                     max={12}
                     defaultValue={0}
-                    placeholder="day"
+                    placeholder="days"
                     formatter={(value) => `${value} day`}
                     parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
@@ -67,7 +86,7 @@ class BaseAccual extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >

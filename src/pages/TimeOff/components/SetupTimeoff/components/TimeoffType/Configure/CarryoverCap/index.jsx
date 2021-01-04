@@ -6,39 +6,56 @@ class CarryoverCap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      accrualRate: '',
-      select: 'day',
+      uptownAmount: '',
+      date: 'day',
+      unlimited: false,
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { accrualRate } = this.state;
+    const { uptownAmount, unlimited } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      accrualRate,
+      date: e.target.value,
+      uptownAmount,
+      unlimited,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, unlimited } = this.state;
     this.setState({
-      accrualRate: value,
+      uptownAmount: value,
     });
     const data = {
-      select,
-      accrualRate: value,
+      date,
+      uptownAmount: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, uptownAmount } = this.state;
+    this.setState({
+      unlimited: e.target.checked,
+    });
+    const data = {
+      date,
+      uptownAmount,
+      unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { accrualRate, select } = this.state;
+    const { date } = this.state;
     return (
       <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
@@ -66,7 +83,7 @@ class CarryoverCap extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >
@@ -82,12 +99,12 @@ class CarryoverCap extends Component {
               <div className={styles.titleText}>effective from</div>
             </Col>
             <Col span={12}>
-              <Select className={styles.select} placeholder="Select a carryover date" />
+              <Select className={styles.date} placeholder="Select a carryover date" />
             </Col>
           </Row>
           <Row gutter={[20, 0]}>
             <Col span={10}>
-              <Checkbox className={styles.checkbox}>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
                 Do not limit number of hours/days employee carryover
               </Checkbox>
             </Col>

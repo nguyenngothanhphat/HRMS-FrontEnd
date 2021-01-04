@@ -6,39 +6,56 @@ class WaitingPeriod extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      minimumIncrements: '',
-      select: 'day',
+      afterAmount: '',
+      date: 'day',
+      unlimited: false,
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { minimumIncrements } = this.state;
+    const { afterAmount, unlimited } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      minimumIncrements,
+      date: e.target.value,
+      afterAmount,
+      unlimited,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, unlimited } = this.state;
     this.setState({
-      minimumIncrements: value,
+      afterAmount: value,
     });
     const data = {
-      select,
-      minimumIncrements: value,
+      date,
+      afterAmount: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, afterAmount } = this.state;
+    this.setState({
+      unlimited: e.target.checked,
+    });
+    const data = {
+      date,
+      afterAmount,
+      unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { minimumIncrements, select } = this.state;
+    const { date } = this.state;
     return (
       <div className={styles.contentWaiting}>
         <div className={styles.title}>Waiting periods</div>
@@ -49,7 +66,7 @@ class WaitingPeriod extends Component {
               <div className={styles.titleText}>
                 New employees can apply for casual leaves after
               </div>
-              <Checkbox className={styles.checkbox}>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
                 Accrue casual leave during this period
               </Checkbox>
             </Col>
@@ -69,7 +86,7 @@ class WaitingPeriod extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >

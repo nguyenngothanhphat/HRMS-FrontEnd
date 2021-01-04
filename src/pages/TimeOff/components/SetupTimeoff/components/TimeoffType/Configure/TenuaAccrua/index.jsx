@@ -6,60 +6,60 @@ class TenuaAccrua extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      employeeDay: '',
-      select: 'days',
-      dayPerYear: '',
-      effective: '',
+      totalLeave: '',
+      date: 'days',
+      yearOfEmployment: '',
+      effectiveFrom: '',
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { effective, dayPerYear, employeeDay } = this.state;
+    const { effectiveFrom, yearOfEmployment, totalLeave } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      effective,
-      dayPerYear,
-      employeeDay,
+      date: e.target.value,
+      effectiveFrom,
+      yearOfEmployment,
+      totalLeave,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { effective, dayPerYear, select } = this.state;
+    const { effectiveFrom, yearOfEmployment, date } = this.state;
     this.setState({
-      employeeDay: value,
+      totalLeave: value,
     });
     const data = {
-      select,
-      effective,
-      dayPerYear,
-      employeeDay: value,
+      date,
+      effectiveFrom,
+      yearOfEmployment,
+      totalLeave: value,
     };
     onChangeValue(data);
   };
 
   onChangeYear = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { effective, select, employeeDay } = this.state;
+    const { effectiveFrom, date, totalLeave } = this.state;
     this.setState({
-      dayPerYear: value,
+      yearOfEmployment: value,
     });
     const data = {
-      select,
-      effective,
-      dayPerYear: value,
-      employeeDay,
+      date,
+      effectiveFrom,
+      yearOfEmployment: value,
+      totalLeave,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { select } = this.state;
+    const { date } = this.state;
     return (
       <div className={styles.contentTenua}>
         <div className={styles.flex}>
@@ -98,7 +98,7 @@ class TenuaAccrua extends Component {
                   </Col>
                   <Col>
                     <Radio.Group
-                      value={select}
+                      value={date}
                       buttonStyle="solid"
                       className={styles.radioGroup}
                       onChange={this.onChangeRadio}
@@ -111,9 +111,9 @@ class TenuaAccrua extends Component {
               </Col>
             </Row>
             <Row gutter={[30, 0]}>
-              <Col span={10}>effective from</Col>
+              <Col span={10}>effectiveFrom from</Col>
               <Col xs={24} sm={24} md={24} lg={24} xl={10}>
-                <Select className={styles.select} placeholder="their anniversary date" />
+                <Select className={styles.date} placeholder="their anniversary date" />
               </Col>
             </Row>
           </div>

@@ -133,3 +133,15 @@ export async function getTeamLeaveRequests(payload) {
     data: payload,
   });
 }
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
+export async function uploadBalances(data) {
+  return request('/api/managebalances/upload-file', {
+    method: 'POST',
+    data,
+  });
+}

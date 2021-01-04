@@ -6,11 +6,26 @@ class AnnualReset extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      resetDate: '',
+      annualReset: '',
+      resetAnnually: false,
     };
   }
 
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { annualReset } = this.state;
+    this.setState({
+      resetAnnually: e.target.checked,
+    });
+    const data = {
+      annualReset,
+      unlimited: e.target.checked,
+    };
+    onChangeValue(data);
+  };
+
   render() {
+    const { resetAnnually } = this.state;
     return (
       <div className={styles.contentAnnual}>
         <div className={styles.title}>Annual reset</div>
@@ -21,7 +36,9 @@ class AnnualReset extends Component {
               <div className={styles.titleText}>
                 During the employee’s 1st year of employment, total casual leave accrued
               </div>
-              <Checkbox className={styles.checkbox}>Unlimited causal leave</Checkbox>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+                Unlimited causal leave
+              </Checkbox>
             </Col>
             <Col span={12}>
               <Select className={styles.select} placeholder="Select a reset date" />

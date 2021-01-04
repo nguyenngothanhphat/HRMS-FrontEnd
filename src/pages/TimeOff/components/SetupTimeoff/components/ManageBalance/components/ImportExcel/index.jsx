@@ -1,102 +1,135 @@
 import React from 'react';
-import { Button, DatePicker, Row, Col } from 'antd';
-import * as XLSX from 'xlsx';
+import { Button, DatePicker, Row, Col, Upload, message } from 'antd';
+// import { UploadOutlined } from '@ant-design/icons';
+import Icon from '@/assets/importExcel.svg';
+
+import { connect } from 'umi';
+// import * as XLSX from 'xlsx';
 import styles from './index.less';
 
-class ExcelToJson extends React.Component {
+const { Dragger } = Upload;
+
+const propsUpload = {
+  name: 'file',
+  multiple: false,
+  showUploadList: false,
+};
+
+@connect(({ loading, timeOff: { urlExcel = '' } = {} }) => ({
+  urlExcel,
+  loading: loading.effects['timeOff/uploadBalances'],
+}))
+class ImportExcel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      file: '',
+      effectiveDate: '',
     };
   }
 
-  handleClick = () => {
-    this.refs.fileUploader.click();
-  };
-
-  filePathset = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    const file = e.target.files[0];
-    console.log(file);
-    this.setState({ file });
-  };
-
-  readFile = () => {
-    const { file: f = {} } = this.state;
-    const { name } = f;
+  getBase64 = (img, callback) => {
     const reader = new FileReader();
-    reader.onload = (evt) => {
-      // evt = on_file_select event
-      /* Parse data */
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      /* Get first worksheet */
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      /* Convert array of arrays */
-      const data = XLSX.utils.sheet_to_csv(ws, { header: 1 });
-      /* Update state */
-      console.log(data); // shows that excel data is read
-      console.log(this.convertToJson(data)); // shows data in json format
-    };
-
-    reader.readAsBinaryString(f);
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   };
 
-  convertToJson = (csv) => {
-    console.log(csv, 'csv');
-    const lines = csv.split('\n');
-    console.log(lines, 'line');
-    const result = [];
+  beforeUpload = (file) => {
+    const isJpgOrPng =
+      // file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      file.type === '';
 
-    const headers = lines[0].split(',');
-
-    for (let i = 1; i < lines.length; i += 1) {
-      const obj = {};
-      const currentline = lines[i].split(',');
-
-      for (let j = 0; j < headers.length; j += 1) {
-        obj[headers[j]] = currentline[j];
-      }
-      console.log(obj);
-      result.push(obj);
+    if (!isJpgOrPng) {
+      message.error('You can only upload Excel file!');
     }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  };
 
-    // return result; //JavaScript object
-    return JSON.stringify(result); // JSON
+  onChange = (date) => {
+    this.setState({
+      effectiveDate: date,
+    });
+  };
+
+  handleSubmit = (tab) => {
+    const { dispatch, urlExcel } = this.props;
+    const { effectiveDate } = this.state;
+    const data = {
+      attachment: urlExcel,
+      type: tab === 1 ? 'SWITCH' : 'IMPORT_DATA',
+      effectiveDate,
+    };
+    dispatch({
+      type: 'timeOff/uploadBalances',
+      payload: data,
+    });
+  };
+
+  handleUpload = (file) => {
+    const { dispatch, getResponse = () => {} } = this.props;
+    const formData = new FormData();
+    const newFile = new File([file], 'ExcelFile.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    formData.append('uri', newFile);
+    dispatch({
+      // type: 'upload/uploadFile',
+      type: 'timeOff/uploadFileExcel',
+      payload: formData,
+    }).then((resp) => {
+      getResponse(resp);
+    });
   };
 
   render() {
+    const { effectiveDate } = this.state;
+    const { urlExcel, tab, loading } = this.props;
+    const check = !effectiveDate || !urlExcel;
+    // console.log(!effectiveDate, 'effectiveDate');
+    // console.log(!urlExcel, 'urlExcel');
+    // console.log(check, 'check');
+
     return (
       <div className={styles.root}>
         <div className={styles.form}>
           <div className={styles.import}>
-            <input
-              type="file"
-              id="file"
-              ref="fileUploader"
-              onChange={this.filePathset.bind(this)}
-              accept=".xlsx"
-            />
+            <Dragger
+              {...propsUpload}
+              beforeUpload={this.beforeUpload}
+              action={(file) => this.handleUpload(file)}
+            >
+              <img src={Icon} alt="" />
+              <span>
+                <span className={styles.choosefile}>Choose file</span>
+                <span className={styles.choosefileText}> Or drop file here</span>
+              </span>
+            </Dragger>
           </div>
           <Row gutter={[50, 0]}>
             <Col span={10}>As per any assigned new policies, their accrual will begin on:</Col>
             <Col span={7}>
-              <DatePicker className={styles.datePicker} placeholder="Balances effective date" />
+              <DatePicker
+                className={styles.datePicker}
+                placeholder="Balances effective date"
+                onChange={this.onChange}
+              />
             </Col>
           </Row>
         </div>
         <div className={styles.straightLine} />
         <div className={styles.save}>
           <Button
+            disabled={check}
+            loading={loading}
             className={styles.btnSave}
             onClick={() => {
-              this.readFile();
+              this.handleSubmit(tab);
             }}
           >
-            Read File
+            Next
           </Button>
         </div>
       </div>
@@ -104,4 +137,4 @@ class ExcelToJson extends React.Component {
   }
 }
 
-export default ExcelToJson;
+export default ImportExcel;
