@@ -1,47 +1,58 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip } from 'antd';
+import { Table, Avatar, Tooltip, Tag } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
-@connect(({ timeOff, loading, user }) => ({
-  loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
-  timeOff,
-  user,
+@connect(({ loading }) => ({
+  loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
-class CompoffTable extends PureComponent {
+class MyLeaveTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
       fixed: 'left',
-      width: '15%',
+      width: '20%',
       render: (id) => {
-        const { ticketID = '', _id = '' } = id;
+        const { ticketID = '', _id = '', updated = false, status = '' } = id;
+        const checkUpdated = status === 'IN-PROGRESS' && updated;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
             {ticketID}
+            {checkUpdated && <Tag color="#2C6DF9">Updated</Tag>}
           </span>
         );
       },
     },
     {
-      title: 'Project',
-      dataIndex: 'project',
-      align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
-      // sortDirections: ['ascend', 'descend', 'ascend'],
+      title: 'Type',
+      dataIndex: 'type',
+      align: 'center',
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => {
+          const { type: { shortType: s1 = '' } = {} } = a;
+          const { type: { shortType: s2 = '' } = {} } = b;
+          return s1.localeCompare(s2);
+        },
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
+
     {
-      title: 'Duration',
-      dataIndex: 'duration',
+      title: 'Leave date',
+      width: '20%',
+      dataIndex: 'leaveTimes',
       align: 'left',
     },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
-      align: 'left',
+      align: 'center',
+      // width: '30%',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
@@ -50,14 +61,20 @@ class CompoffTable extends PureComponent {
       sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
+      title: 'Duration',
+      dataIndex: 'duration',
+      align: 'center',
+    },
+    {
       title: 'Assigned',
       align: 'left',
       dataIndex: 'assigned',
+      // width: '25%',
       render: (assigned) => {
         return (
           <div className={styles.rowAction}>
             <Avatar.Group
-              maxCount={2}
+              maxCount={3}
               maxStyle={{
                 color: '#FFA100',
                 backgroundColor: '#EAF0FF',
@@ -80,6 +97,7 @@ class CompoffTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
+      // width: '20%',
       render: (_id) => (
         <div className={styles.rowAction}>
           <span onClick={() => this.viewRequest(_id)}>View Request</span>
@@ -99,7 +117,7 @@ class CompoffTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-compoff-request/${_id}`,
+      pathname: `/time-off/view-request/${_id}`,
       // state: { location: name },
     });
   };
@@ -127,20 +145,21 @@ class CompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
+        status = '',
+        fromDate = '',
+        toDate = '',
+        approvalManager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
-        extraTime = [],
+        updated = false,
       } = value;
 
-      let duration = '';
-      if (extraTime.length !== 0) {
-        const fromDate = extraTime[0].date;
-        const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
-          'DD.MM.YYYY',
-        )}`;
+      let leaveTimes = '';
+      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+          .locale('en')
+          .format('MM.DD.YYYY')}`;
       }
 
       let employeeFromCC = [];
@@ -149,26 +168,30 @@ class CompoffTable extends PureComponent {
           return each;
         });
       }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
-        duration,
-        assigned,
+        leaveTimes,
+        // assigned,
+        assigned: [generalInfoA],
         id: {
           ticketID,
           _id,
+          updated,
+          status,
         },
       };
     });
   };
 
   render() {
-    const { data = [], loadingFetchMyCompoffRequests } = this.props;
+    const { data = [], loadingFetchLeaveRequests } = this.props;
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
     const parsedData = this.processData(data);
+
     const pagination = {
       position: ['bottomLeft'],
       total: parsedData.length,
@@ -197,21 +220,22 @@ class CompoffTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
     return (
-      <div className={styles.CompoffTable}>
+      <div className={styles.MyLeaveTable}>
         <Table
           size="middle"
+          loading={loadingFetchLeaveRequests}
           rowSelection={rowSelection}
-          loading={loadingFetchMyCompoffRequests}
           pagination={{ ...pagination, total: parsedData.length }}
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
 
-export default CompoffTable;
+export default MyLeaveTable;

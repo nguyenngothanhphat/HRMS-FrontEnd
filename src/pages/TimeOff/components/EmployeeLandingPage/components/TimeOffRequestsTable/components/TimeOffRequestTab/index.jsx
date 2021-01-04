@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-import DataTable from '../DataTable';
-import CompoffTable from '../CompoffTable';
+import MyLeaveTable from '../MyLeaveTable';
+import MyCompoffTable from '../MyCompoffTable';
 import FilterBar from '../FilterBar';
 import styles from './index.less';
 
@@ -198,12 +198,12 @@ class TimeOffRequestTab extends PureComponent {
           <div>
             {type === 1 && (
               <>
-                <DataTable data={formatData} />
+                <MyLeaveTable data={formatData} />
               </>
             )}
             {type === 2 && (
               <>
-                <CompoffTable data={formatData} />
+                <MyCompoffTable data={formatData} />
               </>
             )}
           </div>

@@ -11,13 +11,13 @@ import styles from './index.less';
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
-class DataTable extends PureComponent {
+class TeamLeaveTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
-      fixed: 'left',
+      // fixed: 'left',
       width: '17%',
       render: (id) => {
         const { ticketID = '', _id = '', onDate = '', status = '' } = id;
@@ -48,14 +48,14 @@ class DataTable extends PureComponent {
       align: 'center',
       render: (type) => <span>{type ? type.shortType : ''}</span>,
       // defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => {
-          const { type: { shortType: s1 = '' } = {} } = a;
-          const { type: { shortType: s2 = '' } = {} } = b;
-          return s1.localeCompare(s2);
-        },
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => {
+      //     const { type: { shortType: s1 = '' } = {} } = a;
+      //     const { type: { shortType: s2 = '' } = {} } = b;
+      //     return s1.localeCompare(s2);
+      //   },
+      // },
+      // sortDirections: ['ascend', 'descend', 'ascend'],
     },
 
     {
@@ -114,6 +114,7 @@ class DataTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
+      // fixed: 'right',
       // width: '20%',
       render: (_id) => {
         const { selectedTab = '' } = this.props;
@@ -278,7 +279,7 @@ class DataTable extends PureComponent {
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
     return (
-      <div className={styles.DataTable}>
+      <div className={styles.TeamLeaveTable}>
         <Table
           size="middle"
           loading={loading1 || loading2}
@@ -287,11 +288,11 @@ class DataTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
 
-export default DataTable;
+export default TeamLeaveTable;

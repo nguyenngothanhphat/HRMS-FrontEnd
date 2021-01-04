@@ -11,7 +11,7 @@ import styles from './index.less';
   loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
 }))
-class CompoffTable extends PureComponent {
+class TeamCompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -220,6 +220,7 @@ class CompoffTable extends PureComponent {
     const parsedData = this.processData(data);
 
     const pagination = {
+      hideOnSinglePage: false,
       position: ['bottomLeft'],
       total: parsedData.length,
       showTotal: (total, range) => (
@@ -239,7 +240,7 @@ class CompoffTable extends PureComponent {
 
     const scroll = {
       x: '60vw',
-      y: 140,
+      y: 'max-content',
     };
 
     const rowSelection = {
@@ -254,7 +255,7 @@ class CompoffTable extends PureComponent {
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
     return (
-      <div className={styles.CompoffTable}>
+      <div className={styles.TeamCompoffTable}>
         <Table
           size="middle"
           loading={loading1 || loading2}
@@ -263,10 +264,10 @@ class CompoffTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
-export default CompoffTable;
+export default TeamCompoffTable;
