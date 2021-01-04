@@ -6,6 +6,26 @@
   box-sizing: border-box;
   border-radius: 5px;
   overflow: hidden;
+
+  :global{
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .ant-tabs-tab-btn{
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .ant-tabs-tab{
+      margin: 0px 25px 0 0;
+    }
+
+    .ant-tabs-ink-bar{
+
+    }
+  }
+
   .extraBtn {
     display: flex;
     justify-content: center;
@@ -18,6 +38,11 @@
     cursor: pointer;
     &:active {
       transform: translateY(-1px);
+    }
+
+    &:hover{
+      transition: 0.6s;
+      transform: rotateZ(180deg);
     }
   }
   .contentTab {
@@ -58,6 +83,7 @@
     padding: 16px;
     display: flex;
     align-items: center;
+    cursor: pointer;
     &__viewInfo {
       display: flex;
       flex-direction: column;
@@ -77,6 +103,48 @@
         .textEllipsis();
       }
     }
+
+    &:hover {
+      -webkit-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
+      -moz-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
+      box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
+      transition: all .3s ease-in-out;
+    }
+  }
+  .containerItemProject {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e8eef2;
+    box-sizing: border-box;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    .viewTop {
+      border-bottom: 1px solid #e8eef2;
+      padding: 10px;
+      color: #fff;
+      font-weight: 500;
+      background: #2c6df9;
+    }
+    .viewBottom {
+      .viewTop();
+      border-bottom: none;
+      background-color: #fff;
+      color: rgb(22, 28, 41);
+
+      &__row {
+        p {
+          margin: 0;
+        }
+        span {
+          opacity: 0.5;
+        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+    }
   }
 }
 
@@ -85,4 +153,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.viewEmpty {
+  height: 370px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(22, 28, 41);
+  font-weight: 500;
+  opacity: 0.3;
 }

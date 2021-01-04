@@ -42,6 +42,7 @@ import {
   getLocationsByCompany,
   updateEmployment,
   updatePrivate,
+  getListRelation,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -86,7 +87,7 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
-      passportData: {},
+      passportData: [],
       visaData: [],
       employmentData: {},
       changeHistories: [],
@@ -96,7 +97,7 @@ const employeeProfile = {
     tempData: {
       generalData: {},
       compensationData: {},
-      passportData: {},
+      passportData: [],
       visaData: [],
       document: {},
       bankData: {},
@@ -110,6 +111,7 @@ const employeeProfile = {
     AdhaarCard: {},
     emailsList: [],
     isUpdateEmployment: false,
+    listRelation: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -221,12 +223,15 @@ const employeeProfile = {
     *fetchPassPort({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getPassPort, { employee });
-        const { statusCode, data: [passportData = {}] = [] } = response;
+        const { statusCode, data: passportData = [] } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
-        let passportDataTemp = { ...passportData };
+        // let passportDataTemp = { ...passportData };
+        let passportDataTemp = [...passportData];
+
         if (!checkDataTempKept) {
           passportDataTemp = { ...passportDataTemp, ...dataTempKept };
+
           delete passportDataTemp.updatedAt;
           delete passportData.updatedAt;
           const isModified = JSON.stringify(passportDataTemp) !== JSON.stringify(passportData);
@@ -335,6 +340,7 @@ const employeeProfile = {
         const response = yield call(getAddPassPort, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
+
         if (statusCode !== 200) throw response;
         notification.success({
           message,
@@ -383,6 +389,7 @@ const employeeProfile = {
         const response = yield call(updatePassPort, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
+
         if (statusCode !== 200) throw response;
         notification.success({
           message,
@@ -407,6 +414,7 @@ const employeeProfile = {
         const response = yield call(updateVisa, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
+
         if (statusCode !== 200) throw response;
         notification.success({
           message,
@@ -671,6 +679,7 @@ const employeeProfile = {
       try {
         const response = yield call(getDocumentUpdate, payload);
         const { statusCode, data } = response;
+
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });
         doc = data;
@@ -972,6 +981,16 @@ const employeeProfile = {
           type: 'fetchGeneralInfo',
           payload: { employee: idCurrentEmployee },
         });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListRelation(_, { call, put }) {
+      try {
+        const response = yield call(getListRelation);
+        const { statusCode, data: listRelation = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listRelation } });
       } catch (errors) {
         dialog(errors);
       }

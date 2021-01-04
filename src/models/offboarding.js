@@ -32,6 +32,7 @@ import {
 const offboarding = {
   namespace: 'offboarding',
   state: {
+    acceptedRequest: [],
     listOffboarding: [],
     listTeamRequest: [],
     request: [],
@@ -87,6 +88,18 @@ const offboarding = {
         yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *fetchAcceptedRequest({ payload }, { call, put }) {
+      try {
+        const response = yield call(getOffboardingList, payload);
+        const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { acceptedRequest } });
+        return acceptedRequest;
+      } catch (errors) {
+        dialog(errors);
+        return null;
       }
     },
     *sendRequest({ payload }, { call, put }) {
@@ -414,8 +427,10 @@ const offboarding = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails: data } });
+        return statusCode;
       } catch (error) {
         dialog(error);
+        return 0;
       }
     },
     *updateRelieving({ payload }, { call, put }) {

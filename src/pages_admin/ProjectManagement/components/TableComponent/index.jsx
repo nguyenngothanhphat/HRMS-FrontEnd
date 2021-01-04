@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import { formatMessage } from 'umi';
 import { Table } from 'antd';
+import CustomModal from '@/components/CustomModal';
+import ModalContent from '../ModalContent';
 import dropbox from '../assets/dropbox.png';
 
 import s from './index.less';
@@ -140,9 +142,11 @@ const columns = [
 const rowSize = 10;
 
 const TableComponent = (props) => {
-  const { list = [] } = props;
+  const { list = [], roleList = [], employeeList = [], dispatch, user, loading } = props;
   const [pageSelected, setPageSelected] = useState(1);
-  const [currentRecord, setCurrentRecord] = useState(1);
+  // const [currentRecord, setCurrentRecord] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [projectInfo, setProjectInfo] = useState({});
 
   const onChangePagination = (pageNumber) => {
     setPageSelected(pageNumber);
@@ -165,12 +169,48 @@ const TableComponent = (props) => {
     onChange: onChangePagination,
   };
 
+  const closeModal = () => {
+    setOpen(false);
+  };
+
   return (
     <div className={s.table}>
       <Table
         dataSource={list}
         columns={columns}
         pagination={{ ...pagination, total: list.length }}
+        onRow={(record) => {
+          return {
+            onClick: () => {
+              const { projectName = '', projectId = '', projectManager, company } = record;
+              setOpen(true);
+              setProjectInfo({ projectName, projectId, projectManager, company });
+
+              dispatch({
+                type: 'projectManagement/getEmployees',
+                payload: {
+                  company: company._id,
+                },
+              });
+            },
+          };
+        }}
+      />
+      <CustomModal
+        open={open}
+        closeModal={closeModal}
+        content={
+          <ModalContent
+            dispatch={dispatch}
+            projectInfo={projectInfo}
+            roleList={roleList}
+            employeeList={employeeList}
+            user={user}
+            loading={loading}
+            closeModal={closeModal}
+          />
+        }
+        width={750}
       />
     </div>
   );

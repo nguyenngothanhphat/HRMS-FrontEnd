@@ -1,0 +1,67 @@
+.ViewRequestForm {
+  // background-color: rgba(0, 0, 0, 0.3);
+  min-height: 100vh;
+  .ViewRequestForm__content {
+    padding: 20px 30px;
+  }
+  .titlePage {
+    height: 60px;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 40px 0 20px;
+    box-shadow: 0 1px 2px 0 #eeeeee;
+    &__text {
+      font-size: 18px;
+      font-weight: 500;
+      color: #2c6df9;
+      margin: 0;
+    }
+    .leaveStatus {
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+      .dot {
+        height: 8px;
+        width: 8px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .statusText {
+        font-size: 13px;
+        font-weight: bold;
+        margin-left: 10px;
+        // margin-bottom: -2px;
+      }
+    }
+    .inProgressColor {
+      color: #00c598;
+      .dot {
+        background-color: #00c598;
+      }
+    }
+    .approvedColor {
+      color: #ffa100;
+      .dot {
+        background-color: #ffa100;
+      }
+    }
+    .rejectedColor {
+      color: #666;
+      .dot {
+        background-color: #666;
+      }
+    }
+    .draftsColor {
+      color: #13c2c2;
+      .dot {
+        background-color: #13c2c2;
+      }
+    }
+  }
+  .container {
+    padding: 23px;
+  }
+}

@@ -63,6 +63,13 @@ export async function addCompoffRequest(payload) {
   });
 }
 
+export async function updateCompoffRequest(payload) {
+  return request('/api/compoffrequest/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getMyCompoffRequests(payload) {
   return request('/api/compoffrequest/get-my-request', {
     method: 'POST',
@@ -79,6 +86,13 @@ export async function getCompoffRequestById(payload) {
 
 export async function withdrawLeaveRequest(payload) {
   return request('/api/leaverequest/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function withdrawCompoffRequest(payload) {
+  return request('/api/compoffrequest/remove', {
     method: 'POST',
     data: payload,
   });

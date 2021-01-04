@@ -3,7 +3,6 @@ import { connect } from 'umi';
 
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Affix } from 'antd';
-import TableComponent from './components/TableComponent';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
 import s from './index.less';
@@ -25,18 +24,16 @@ const {
 } = COLUMN_NAME;
 
 const ProjectManagement = (props) => {
-  const { activeList, inactiveList, dispatch } = props;
+  const { activeList, inactiveList, roleList, employeeList, dispatch, user, loading1 } = props;
 
   useEffect(() => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
-        company: '5e8723f131c6e53d60ae9678',
+        company: user.currentUser.company._id || '',
       },
     });
   }, []);
-
-  console.log(props);
 
   return (
     <PageContainer>
@@ -70,6 +67,11 @@ const ProjectManagement = (props) => {
                     PROJECT_HEALTH,
                     ACTION,
                   ]}
+                  roleList={roleList}
+                  employeeList={employeeList}
+                  dispatch={dispatch}
+                  user={user}
+                  loading={loading1}
                 />
               </TabPane>
               <TabPane
@@ -78,7 +80,25 @@ const ProjectManagement = (props) => {
                 key="2"
               >
                 {/* <FinalOfferDrafts list={finalOfferDrafts} /> */}
-                <InactiveProject list={inactiveList} />
+                <InactiveProject
+                  list={inactiveList}
+                  columnArr={[
+                    PROJECT_ID,
+                    PROJECT_NAME,
+                    CREATED_DATE,
+                    PROJECT_MANAGER,
+                    DURATION,
+                    START_DATE,
+                    MEMBERS,
+                    PROJECT_HEALTH,
+                    ACTION,
+                  ]}
+                  roleList={roleList}
+                  employeeList={employeeList}
+                  dispatch={dispatch}
+                  user={user}
+                  loading={loading1}
+                />
               </TabPane>
             </Tabs>
           </div>
@@ -86,51 +106,24 @@ const ProjectManagement = (props) => {
       </div>
     </PageContainer>
   );
-
-  // return (
-  //   <div className={s.projectManagement}>
-  //     <h1>Project list</h1>
-  //     <div className={s.tabs}>
-  //       <Tabs defaultActiveKey="1">
-  //         <TabPane
-  //           // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-  //           tab="Active"
-  //           key="1"
-  //         >
-  //           {/* <ProvisionalOfferDrafts list={provisionalOfferDrafts} /> */}
-  //           <ActiveProject
-  //             list={activeList}
-  //             columnArr={[
-  //               PROJECT_ID,
-  //               PROJECT_NAME,
-  //               CREATED_DATE,
-  //               PROJECT_MANAGER,
-  //               DURATION,
-  //               START_DATE,
-  //               MEMBERS,
-  //               PROJECT_HEALTH,
-  //               ACTION,
-  //             ]}
-  //           />
-  //         </TabPane>
-  //         <TabPane
-  //           // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
-  //           tab="Inactive"
-  //           key="2"
-  //         >
-  //           {/* <FinalOfferDrafts list={finalOfferDrafts} /> */}
-  //           <InactiveProject list={inactiveList} />
-  //         </TabPane>
-  //       </Tabs>
-  //     </div>
-  //   </div>
-  // );
 };
 
-// export default connect(({ projectManagement: { listData = [] } = {} }) => ({
-//   listData,
-// }))(ProjectManagement);
-export default connect(({ projectManagement: { activeList = [], inactiveList = [] } = {} }) => ({
-  activeList,
-  inactiveList,
-}))(ProjectManagement);
+export default connect(
+  ({
+    user,
+    projectManagement: {
+      activeList = [],
+      inactiveList = [],
+      roleList = [],
+      employeeList = [],
+    } = {},
+    loading,
+  }) => ({
+    user,
+    activeList,
+    inactiveList,
+    roleList,
+    employeeList,
+    loading1: loading.effects['projectManagement/addMember'],
+  }),
+)(ProjectManagement);

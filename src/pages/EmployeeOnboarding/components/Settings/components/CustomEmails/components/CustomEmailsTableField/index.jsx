@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Table, Spin } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
+import moment from 'moment';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
@@ -47,10 +48,12 @@ class CustomEmailsTableField extends PureComponent {
     const newListCustomEmail = [];
 
     cloneListEmail.reverse().forEach((item) => {
+      const formatDate = `${moment(item.createdAt).locale('en').format('Do MMMM, YYYY')}`;
+
       newListCustomEmail.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
-        createdOn: item.createdAt !== undefined ? item.createdAt : '24th August, 2020',
+        createdOn: formatDate !== undefined ? formatDate : '24th August, 2020',
         triggerEvent:
           item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
         frequency: 'None',
@@ -110,8 +113,8 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/employee-onboarding/view-email/${idCustomEmail}`}>
-              {formatMessage({ id: 'component.customEmailsTableField.viewEmail' })}
+            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
+              {formatMessage({ id: 'component.customEmailsTableField.editEmail' })}
             </Link>
           );
         },

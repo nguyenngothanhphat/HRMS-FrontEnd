@@ -1,0 +1,57 @@
+.LeaveHistoryList {
+  max-height: 300px;
+  // overflow-y: scroll;
+  overflow: auto;
+  .eachRow {
+    &:hover {
+      background-color: #e4e1e1;
+      cursor: pointer;
+    }
+    background-color: #fafafa;
+    align-items: center;
+    // border-bottom: 1px solid #d6dce0;
+    padding: 10px 24px;
+    margin-top: 7px;
+    :global {
+      .ant-col {
+        font-size: 13px;
+        color: #464646;
+      }
+    }
+    .eventOfDay {
+      padding-left: 10px;
+      color: #161c29;
+    }
+    .dateAndMonth {
+      border-radius: 5px;
+      background-color: #f4f4f6;
+      padding: 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .subtractSymbol {
+        font-weight: bold;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        span {
+          font-weight: bold;
+          color: #161c29;
+        }
+        .day {
+          font-size: 14px;
+        }
+        .month {
+          font-size: 11px;
+        }
+      }
+    }
+    .dayInWeek {
+      text-align: right;
+      color: #ff5252;
+    }
+  }
+}
