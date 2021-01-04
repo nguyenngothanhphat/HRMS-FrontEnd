@@ -28,6 +28,14 @@ class ViewRequestForm extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
+  // clear viewingLeaveRequest
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/clearViewingLeaveRequest',
+    });
+  };
+
   getColorOfStatus = (status) => {
     switch (status) {
       case 'IN-PROGRESS':
