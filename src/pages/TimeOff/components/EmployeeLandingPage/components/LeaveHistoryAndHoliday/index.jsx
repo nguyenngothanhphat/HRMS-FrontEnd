@@ -26,10 +26,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
       type: 'timeOff/fetchHolidaysList',
       payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
     });
-    // dispatch({
-    //   type: 'timeOff/fetchLeaveRequestOfEmployee',
-    //   status: '',
-    // });
+    dispatch({
+      type: 'timeOff/fetchLeaveHistory',
+      status: '',
+    });
   };
 
   handleSelectShowType = (value) => {
