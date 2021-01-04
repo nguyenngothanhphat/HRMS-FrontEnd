@@ -17,8 +17,8 @@ class DataTable extends PureComponent {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
-      // fixed: 'left',
-      // width: '20%',
+      fixed: 'left',
+      width: '15%',
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
