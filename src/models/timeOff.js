@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import {
   getHolidaysList,
   getLeaveBalanceOfUser,
@@ -18,6 +19,8 @@ import {
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
   getTeamLeaveRequests,
+  uploadFile,
+  uploadBalances,
   withdrawCompoffRequest,
 } from '../services/timeOff';
 
@@ -39,6 +42,8 @@ const timeOff = {
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
+    urlExcel: undefined,
+    balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
   },
@@ -357,7 +362,7 @@ const timeOff = {
           return response;
         }
       } catch (errors) {
-        // dialog(errors);
+        dialog(errors);
       }
       return {};
     },
@@ -411,6 +416,40 @@ const timeOff = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *uploadFileExcel({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadFile, payload);
+        const { statusCode, data } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: { urlExcel: data[0].id },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+    *uploadBalances({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadBalances, payload);
+        const { statusCode, data: balances } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: balances,
+        });
+      } catch (errors) {
+        // dialog(errors);
       }
     },
   },

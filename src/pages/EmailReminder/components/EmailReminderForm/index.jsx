@@ -9,12 +9,13 @@ import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-import ReactQuill, { Quill } from 'react-quill';
+import { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
+import EditorQuill from './components';
 
 Quill.register('modules/mentions', QuillMention);
 
@@ -48,13 +49,29 @@ Quill.register('modules/mentions', QuillMention);
     listAutoField,
     locationName,
     roles,
-    loading: loading.effects['employeeSetting/addCustomEmail'],
+    loadingAddCustomEmail: loading.effects['employeeSetting/addCustomEmail'],
+    loadingFetchListAutoField: loading.effects['employeeSetting/fetchListAutoField'],
   }),
 )
 class EmailReminderForm extends PureComponent {
+
+  // Render list auto text and push into array
+  listTexts = [];
+
+  listTemp = () => {
+        const {listAutoField} = this.props
+        const newList = [...listAutoField]; 
+
+        newList.map((item) => {
+            this.listTexts.push(item);
+            return this.listTexts;
+        }) 
+        return this.listTexts; 
+  }
+
   constructor(props) {
     super(props);
-    this.modules = { mention: this.mentionModule(this) };
+    // this.modules = { mention: this.mentionModule(this) };
 
     this.state = {
       conditionsData: [
@@ -144,39 +161,39 @@ class EmailReminderForm extends PureComponent {
     };
   }
 
-  mentionModule = (t) => {
-    return {
-      allowedChars: /^[A-Za-z\s]*$/,
-      mentionDenotationChars: ['@'],
-      showDenotationChar: false,
-      renderItem: (item) => {
-        return item.value;
-      },
-      source(searchTerm, renderList, mentionChar) {
-        let values;
-        const { listAutoField } = t.props;
-        const list = listAutoField.map((item, index) => {
-          return {
-            id: index,
-            value: item,
-          };
-        });
-        if (mentionChar === '@') {
-          values = list;
-        }
+  // mentionModule = (t) => {
+  //   return {
+  //     allowedChars: /^[A-Za-z\s]*$/,
+  //     mentionDenotationChars: ['@'],
+  //     showDenotationChar: false,
+  //     renderItem: (item) => {
+  //       return item.value;
+  //     },
+  //     source(searchTerm, renderList, mentionChar) {
+  //       let values;
+  //       const { listAutoField } = t.props;
+  //       const list = listAutoField.map((item, index) => {
+  //         return {
+  //           id: index,
+  //           value: item,
+  //         };
+  //       });
+  //       if (mentionChar === '@') {
+  //         values = list;
+  //       }
 
-        if (searchTerm.length === 0) {
-          renderList(values, searchTerm);
-        } else {
-          const matches = [];
-          for (let i = 0; i < values.length; i++)
-            if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
-              matches.push(values[i]);
-          renderList(matches, searchTerm);
-        }
-      },
-    };
-  };
+  //       if (searchTerm.length === 0) {
+  //         renderList(values, searchTerm);
+  //       } else {
+  //         const matches = [];
+  //         for (let i = 0; i < values.length; i++)
+  //           if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()))
+  //             matches.push(values[i]);
+  //         renderList(matches, searchTerm);
+  //       }
+  //     },
+  //   };
+  // };
 
   checkFields = () => {
     const { conditionsData } = this.state;
@@ -442,8 +459,8 @@ class EmailReminderForm extends PureComponent {
       newConditions[index][name] = value;
     }
 
-    if (name === 'tobeVerb') {
-    }
+    // if (name === 'tobeVerb') {
+    // }
 
     newConditionsData[index][name] = value;
 
@@ -629,9 +646,9 @@ class EmailReminderForm extends PureComponent {
                       placeholder="Please select a choice"
                       onChange={(value) => this.onChangeCondition(index, 'key', value)}
                     >
-                      {units.map((unit) => {
+                      {units.map((unit, _index) => {
                         return (
-                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)}>
+                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)} key={`${_index + 1}`}>
                             {unit.name}
                           </Option>
                         );
@@ -647,8 +664,8 @@ class EmailReminderForm extends PureComponent {
                       placeholder="Please select a choice"
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
-                      {toBeVerbs.map((toBeVerb) => {
-                        return <Option value={toBeVerb.value}>{toBeVerb.name}</Option>;
+                      {toBeVerbs.map((toBeVerb, _index) => {
+                        return <Option value={toBeVerb.value} key={`${_index + 1}`}>{toBeVerb.name}</Option>;
                       })}
                     </Select>
                   </Col>
@@ -764,7 +781,7 @@ class EmailReminderForm extends PureComponent {
     return listAutoField;
   };
 
-  _renderForm = () => {
+  _renderForm = (listAutoText) => {
     const { Option } = Select;
     const { triggerEventList, loading } = this.props;
     const { sendingDate, applyTo, sendToWorker, messages, disabled } = this.state;
@@ -780,8 +797,8 @@ class EmailReminderForm extends PureComponent {
                 placeholder="Please select a choice"
                 onChange={(value) => this.onChangeTriggerEvent(value)}
               >
-                {triggerEventList.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
+                {triggerEventList.map((option, _index) => {
+                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
                 })}
               </Select>
             </Form.Item>
@@ -802,8 +819,8 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             <Form.Item name="sendingDate" label="Sending date">
               <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
-                {sendingDate.map((option) => {
-                  return <Radio value={option.value}>{option.name}</Radio>;
+                {sendingDate.map((option, _index) => {
+                  return <Radio value={option.value} key={`${_index + 1}`}>{option.name}</Radio>;
                 })}
               </Radio.Group>
             </Form.Item>
@@ -817,8 +834,8 @@ class EmailReminderForm extends PureComponent {
                 placeholdementionModuler="Please select a choice"
                 onChange={this.handleChangeApply}
               >
-                {applyTo.map((option) => {
-                  return <Option value={option.value}>{option.name}</Option>;
+                {applyTo.map((option, _index) => {
+                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
                 })}
               </Select>
             </Form.Item>
@@ -832,10 +849,11 @@ class EmailReminderForm extends PureComponent {
           <Col span={12}>
             <Form.Item name="sendToWorker" label="Send to existing workers">
               <Checkbox.Group>
-                {sendToWorker.map((option) => {
+                {sendToWorker.map((option, _index) => {
                   return (
                     <Checkbox
                       value={option.value}
+                      key={`${_index + 1}`}
                       onChange={(value) => this.handleChangeChckBox(value)}
                     >
                       {option.name}
@@ -860,14 +878,7 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
-
-            <ReactQuill
-              className={styles.quill}
-              value={messages}
-              onChange={this.handleChangeEmail}
-              modules={this.modules}
-            />
-            {/* </Form.Item> */}
+            <EditorQuill messages={messages} handleChangeEmail={this.handleChangeEmail} listAutoText={listAutoText} />
           </Col>
 
           <Col className={styles.buttons} span={8} offset={16}>
@@ -894,22 +905,34 @@ class EmailReminderForm extends PureComponent {
   };
 
   render() {
-    const { loading } = this.props;
+    const { loadingFetchListAutoField, loadingAddCustomEmail } = this.props;
     this.checkFields();
+    const listAutoText = this.listTemp();
+
     return (
       <>
-        {loading ? (
+        {loadingAddCustomEmail ? (
           <div className={styles.EmailReminderForm_loading}>
             <Spin size="large" />
           </div>
         ) : (
-          <div className={styles.EmailReminderForm}>
-            <div className={styles.EmailReminderForm_title}>
-              {formatMessage({ id: 'component.emailReminderForm.title' })}
-              <hr />
-            </div>
-            <div className={styles.EmailReminderForm_form}>{this._renderForm()}</div>
-          </div>
+          <>
+            {
+              loadingFetchListAutoField ? (
+                <div className={styles.EditEmailForm_loading}>
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <div className={styles.EmailReminderForm}>
+                  <div className={styles.EmailReminderForm_title}>
+                    {formatMessage({ id: 'component.emailReminderForm.title' })}
+                    <hr />
+                  </div>
+                  <div className={styles.EmailReminderForm_form}>{this._renderForm(listAutoText)}</div>
+                </div>
+              )
+            }
+          </>
         )}
       </>
     );

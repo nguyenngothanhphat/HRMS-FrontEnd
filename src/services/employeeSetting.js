@@ -130,3 +130,10 @@ export async function deleteCustomEmailItem(payload) {
     data: payload,
   });
 }
+
+export async function updateCustomEmail(payload) {
+  return request('/api/customemail/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -23,6 +23,11 @@ class Configure extends Component {
       baseAccual: {},
       tenuaAccrua: {},
       balance: {},
+      negativeBalance: {},
+      carryoverCap: {},
+      waitingPeriod: {},
+      minIncrements: {},
+      hireProbation: {},
       list: [
         {
           key: 1,
@@ -64,35 +69,35 @@ class Configure extends Component {
           id: 'negativeBalances',
           title: 'Negative balances',
           ref: React.createRef(),
-          componnet: <NegativeBalances onChangeValue={this.onChangeBalance} />,
+          componnet: <NegativeBalances onChangeValue={this.onChangeNegative} />,
         },
         {
           key: 7,
           id: 'carryoverCap',
           title: 'Carryover Cap',
           ref: React.createRef(),
-          componnet: <CarryoverCap onChangeValue={this.onChangeBalance} />,
+          componnet: <CarryoverCap onChangeValue={this.onChangeCarryover} />,
         },
         {
           key: 8,
           id: 'minimumIncrements',
           title: 'Minimum Increments',
           ref: React.createRef(),
-          componnet: <Increaments onChangeValue={this.onChangeBalance} />,
+          componnet: <Increaments onChangeValue={this.onChangeIncrements} />,
         },
         {
           key: 9,
           id: 'waitingPeriods',
           title: 'Waiting periods',
           ref: React.createRef(),
-          componnet: <WaitingPeriod onChangeValue={this.onChangeBalance} />,
+          componnet: <WaitingPeriod onChangeValue={this.onChangeWaiting} />,
         },
         {
           key: 10,
           id: 'hireProbation',
           title: 'New Hire proration',
           ref: React.createRef(),
-          componnet: <HireProbation onChangeValue={this.onChangeBalance} />,
+          componnet: <HireProbation onChangeValue={this.onChangeHireProbation} />,
         },
       ],
     };
@@ -169,6 +174,26 @@ class Configure extends Component {
     this.setState({ balance: value });
   };
 
+  onChangeNegative = (value = {}) => {
+    this.setState({ negative: value });
+  };
+
+  onChangeCarryover = (value = {}) => {
+    this.setState({ carryoverCap: value });
+  };
+
+  onChangeIncrements = (value = {}) => {
+    this.setState({ minIncrements: value });
+  };
+
+  onChangeWaiting = (value = {}) => {
+    this.setState({ waitingPeriod: value });
+  };
+
+  onChangeHireProbation = (value = {}) => {
+    this.setState({ hireProbation: value });
+  };
+
   prevStep = (data) => {
     if (data > 1) {
       const dataPrev = data - 1;
@@ -188,13 +213,13 @@ class Configure extends Component {
       const { ref } = renderStep;
       ref.current.scrollIntoView(true);
       window.scrollBy(0, -150);
-    } else return;
+    }
   };
 
   render() {
     // const { tabKey = '' } = this.props;
-    const { select, tenuaAccrua, balance, step, list, baseAccual } = this.state;
-    console.log(baseAccual);
+    const { select, list, waitingPeriod, hireProbation } = this.state;
+    console.log(hireProbation);
     const selectStep = list.find((item) => item.id === select).key;
 
     return (
@@ -211,7 +236,7 @@ class Configure extends Component {
                   onClick={() => this.prevStep(selectStep)}
                   className={selectStep > 1 ? styles.nextStep : styles.prevStep}
                 >
-                  Prev
+                  &lt; Prev
                 </Button>
               </Col>
               <Col>{`${selectStep}/10 Steps `}</Col>
