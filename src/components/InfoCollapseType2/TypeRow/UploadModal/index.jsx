@@ -8,9 +8,10 @@ import ImageIcon from '@/assets/image_icon.png';
 import styles from './index.less';
 
 const { Dragger } = Upload;
-@connect(({ loading, employeeProfile }) => ({
+@connect(({ loading, employeeProfile, user: { currentUser: { employeeId = '' } = {} } } = {}) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
   employeeProfile,
+  employeeId,
 }))
 class UploadModal extends Component {
   formRef = React.createRef();
@@ -104,8 +105,9 @@ class UploadModal extends Component {
 
   handleFileName = (e) => {
     const { value } = e.target;
+    const { employeeId = '' } = this.props;
     this.setState({
-      keyFileName: value,
+      keyFileName: `[${employeeId}] ${value}`,
     });
   };
 

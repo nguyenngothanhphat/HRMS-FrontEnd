@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Collapse, Row, Col } from 'antd';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
-import UploadIcon from '@/assets/upload_icon.png';
+// import UploadIcon from '@/assets/upload_icon.png';
 import DownloadIcon from '@/assets/download_icon.svg';
 import DownArrowIcon from '@/assets/downArrow.svg';
 import UpArrowIcon from '@/assets/upArrow.svg';
@@ -62,23 +62,21 @@ class CollapseRow extends PureComponent {
 
   statusAndButtons = () => {
     const { data: row = [] } = this.props;
-    console.log('row', row);
-    const { kind = '', files = [] } = row;
-    let checkExistFile = true;
-    if (files.length === 1) {
-      files.forEach((value) => {
-        const { id = '' } = value;
-        if (id === '') checkExistFile = false;
-      });
-    }
+    const { kind = '' } = row;
+    //  const { files = [] } = row;
+    // let checkExistFile = true;
+    // if (files.length === 1) {
+    //   files.forEach((value) => {
+    //     const { id = '' } = value;
+    //     if (id === '') checkExistFile = false;
+    //   });
+    // }
     return (
       <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
         {/* <a>Complete</a> */}
         <div onClick={this.handleUploadClick} className={styles.uploadButton}>
           {/* <img src={UploadIcon} alt="upload" /> */}
-          {kind !== 'Identity' && checkExistFile === false && (
-            <span className={styles.uploadText}>Choose file</span>
-          )}
+          {kind !== 'Identity' && <span className={styles.uploadText}>Choose file</span>}
         </div>
         {/* <Dropdown overlay={menu}>
         <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
