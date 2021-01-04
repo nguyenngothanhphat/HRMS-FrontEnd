@@ -84,14 +84,17 @@ const routes = [
           {
             path: '/account-setup',
             component: './AccountSetup',
+            name: 'Account Setup',
           },
           {
             path: '/account-setup/get-started',
             component: './GetStarted',
+            name: 'Getting Started',
           },
           {
             path: '/account-setup/get-started/company-profile/:reId',
             component: './CompanyProfile',
+            name: 'Company Profile',
           },
         ],
       },
