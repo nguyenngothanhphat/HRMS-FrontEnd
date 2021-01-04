@@ -77,6 +77,25 @@ const routes = [
         ],
       },
       {
+        path: '/account-setup',
+        component: '../layouts/AccountSetupLayout',
+        // authority: ['candidate'],
+        routes: [
+          {
+            path: '/account-setup',
+            component: './AccountSetup',
+          },
+          {
+            path: '/account-setup/get-started',
+            component: './GetStarted',
+          },
+          {
+            path: '/account-setup/get-started/company-profile/:reId',
+            component: './CompanyProfile',
+          },
+        ],
+      },
+      {
         path: '/',
         component: '../layouts/BasicLayout',
         authority: [
@@ -488,6 +507,7 @@ const routes = [
           },
         ],
       },
+
       {
         component: './404',
       },
