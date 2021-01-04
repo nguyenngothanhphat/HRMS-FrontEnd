@@ -22,7 +22,7 @@ class CompoffTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
             {ticketID}
           </span>
         );
@@ -108,7 +108,7 @@ class CompoffTable extends PureComponent {
 
         return (
           <div className={styles.rowAction}>
-            <span onClick={() => this.viewRequest(_id)}>View Request</span>
+            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
           </div>
         );
       },
@@ -239,7 +239,7 @@ class CompoffTable extends PureComponent {
 
     const scroll = {
       x: '60vw',
-      y: 'max-content',
+      y: 140,
     };
 
     const rowSelection = {

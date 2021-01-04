@@ -28,7 +28,7 @@ class DataTable extends PureComponent {
           moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
 
         return (
-          <span className={styles.ID} onClick={() => this.onOpenClick(_id)}>
+          <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
             {ticketID}
             {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
           </span>
