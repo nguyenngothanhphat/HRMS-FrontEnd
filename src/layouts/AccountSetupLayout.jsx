@@ -22,7 +22,7 @@ class AccountSetup extends PureComponent {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, location: { pathname = '' } = {} } = this.props;
     const routes = this.getBreadcrumbName() || [];
     return (
       <Layout className={styles.root}>
@@ -43,7 +43,7 @@ class AccountSetup extends PureComponent {
                 const { name = '', path = '' } = item;
                 return (
                   <Breadcrumb.Item key={name}>
-                    <Link to={path}>{name}</Link>
+                    <Link to={name === 'Company Profile' ? pathname : path}>{name}</Link>
                   </Breadcrumb.Item>
                 );
               })}
