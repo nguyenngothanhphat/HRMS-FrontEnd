@@ -391,6 +391,28 @@ const timeOff = {
       }
       return {};
     },
+
+    *clearViewingLeaveRequest(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { viewingLeaveRequest: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *clearViewingCompoffRequest(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { viewingCompoffRequest: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {

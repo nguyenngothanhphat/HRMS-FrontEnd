@@ -113,9 +113,9 @@ class LeaveInformation extends PureComponent {
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
     });
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestOfEmployee',
-    });
+    // dispatch({
+    //   type: 'timeOff/fetchLeaveRequestOfEmployee',
+    // });
   };
 
   handleShow = () => {

@@ -48,6 +48,14 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  // clear viewingLeaveRequest
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/clearViewingLeaveRequest',
+    });
+  };
+
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
     const { dispatch, action = '' } = this.props;
