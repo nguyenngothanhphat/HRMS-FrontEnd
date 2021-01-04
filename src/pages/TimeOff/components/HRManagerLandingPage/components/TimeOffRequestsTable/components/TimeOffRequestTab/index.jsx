@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-import TeamDataTable from '../DataTable';
-import TeamCompoffTable from '../CompoffTable';
+// import TeamDataTable from '../DataTable';
+// import TeamCompoffTable from '../CompoffTable';
+import TeamDataTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/DataTable';
+import TeamCompoffTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
 import MyDataTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/DataTable';
 import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
 import FilterBar from '../FilterBar';

@@ -185,7 +185,7 @@ class RequestInformation extends PureComponent {
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
-    const { dateLists, buttonState } = this.state;
+    const { dateLists, buttonState, viewingCompoffRequestId } = this.state;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
@@ -198,15 +198,26 @@ class RequestInformation extends PureComponent {
       cc: personCC,
     };
 
-    // eslint-disable-next-line no-console
-    console.log('sendData', sendData);
     let type = '';
+
+    // ON SUBMIT BUTTON
     if (buttonState === 2) {
-      type =
-        pageAction === 'new-compoff-request'
-          ? 'timeOff/addCompoffRequest'
-          : 'timeOff/updateCompoffRequest';
-    } else type = 'timeOff/addCompoffRequest';
+      if (pageAction === 'edit-compoff-request') {
+        type = 'timeOff/updateCompoffRequest';
+        sendData._id = viewingCompoffRequestId;
+      } else if (pageAction === 'new-compoff-request') {
+        type = 'timeOff/addCompoffRequest';
+      }
+      sendData.status = 'IN-PROGRESS';
+    }
+    // ON SAVE TO DRAFT BUTTON
+    else if (pageAction === 'edit-compoff-request') {
+      type = 'timeOff/updateCompoffRequest';
+      sendData._id = viewingCompoffRequestId;
+      sendData.status = 'DRAFTS';
+    } else if (pageAction === 'new-compoff-request') {
+      type = 'timeOff/addCompoffRequest';
+    }
 
     const { dispatch } = this.props;
     dispatch({
@@ -650,11 +661,12 @@ class RequestInformation extends PureComponent {
               </Button>
             )}
             {(action === 'new-compoff-request' ||
-              (action === 'edit-leave-request' && isEditingDrafts)) && (
+              (action === 'edit-compoff-request' && isEditingDrafts)) && (
               <Button
                 loading={loadingAddCompoffRequest && buttonState === 1}
                 type="link"
                 form="myForm"
+                className={styles.saveDraftButton}
                 htmlType="submit"
                 onClick={() => {
                   this.setState({ buttonState: 1 });
