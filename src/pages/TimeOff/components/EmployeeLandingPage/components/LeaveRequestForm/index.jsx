@@ -113,17 +113,19 @@ class LeaveRequestForm extends PureComponent {
               <Spin size="medium" />
             </div>
           )}
-          {!loadingFetchLeaveRequestById && (status === 'APPROVED' || status === 'REJECTED') && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '100px 0',
-              }}
-            >
-              <span>You are not allowed to edit this leave request!</span>
-            </div>
-          )}
+          {!loadingFetchLeaveRequestById &&
+            action === 'edit-leave-request' &&
+            (status === 'APPROVED' || status === 'REJECTED') && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '100px 0',
+                }}
+              >
+                <span>You are not allowed to edit this leave request!</span>
+              </div>
+            )}
 
           {!loadingFetchLeaveRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
             <>

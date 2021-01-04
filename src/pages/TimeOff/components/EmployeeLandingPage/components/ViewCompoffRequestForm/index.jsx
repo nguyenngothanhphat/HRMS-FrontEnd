@@ -28,6 +28,14 @@ class ViewCompoffRequestForm extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
+  // clear viewingCompoffRequest
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/clearViewingCompoffRequest',
+    });
+  };
+
   getColorOfStatus = (status) => {
     switch (status) {
       case 'IN-PROGRESS':

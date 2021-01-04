@@ -111,17 +111,19 @@ class CompoffRequestForm extends PureComponent {
             </div>
           )}
 
-          {!loadingFetchCompoffRequestById && (status === 'APPROVED' || status === 'REJECTED') && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '100px 0',
-              }}
-            >
-              <span>You are not allowed to edit this compoff request!</span>
-            </div>
-          )}
+          {!loadingFetchCompoffRequestById &&
+            action === 'edit-compoff-request' &&
+            (status === 'APPROVED' || status === 'REJECTED') && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '100px 0',
+                }}
+              >
+                <span>You are not allowed to edit this compoff request!</span>
+              </div>
+            )}
 
           {!loadingFetchCompoffRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
             <>

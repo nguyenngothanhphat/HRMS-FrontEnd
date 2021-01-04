@@ -61,11 +61,11 @@ export default class TimeOff extends PureComponent {
 
   render() {
     const { role } = this.state;
-
     return (
       <div className={styles.TimeOff}>
         <PageContainer>
-          <Tabs defaultActiveKey="1" tabBarExtraContent={this.options()}>
+          {/* tabBarExtraContent={this.options()} */}
+          <Tabs destroyInactiveTabPane defaultActiveKey="1">
             {role === 'employee' && (
               <TabPane tab="Timeoff" key="1">
                 <EmployeeLandingPage />
