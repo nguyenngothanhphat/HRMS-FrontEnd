@@ -53,8 +53,10 @@ class VisaForm extends PureComponent {
               rules={[{ required: true, message: 'Please select visa type!' }]}
             >
               <Select onChange={() => {}}>
-                <Option value="Type 1">Type 1</Option>
-                <Option value="Type 2">Type 2</Option>
+                <Option value="B1">B1</Option>
+                <Option value="B2">B2</Option>
+                <Option value="B3">B3</Option>
+                <Option value="nothing">nothing...</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -85,8 +87,8 @@ class VisaForm extends PureComponent {
               rules={[{ required: true, message: 'Please select entry type!' }]}
             >
               <Select onChange={() => {}}>
-                <Option value="Type 1">Type 1</Option>
-                <Option value="Type 2">Type 2</Option>
+                <Option value="Single Entry">Single Entry</Option>
+                <Option value="nothing">nothing....</Option>
               </Select>
             </Form.Item>
           </Col>

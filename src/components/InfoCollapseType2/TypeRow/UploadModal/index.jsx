@@ -106,8 +106,9 @@ class UploadModal extends Component {
   handleFileName = (e) => {
     const { value } = e.target;
     const { employeeId = '' } = this.props;
+    const keyFileName = `${value}_${employeeId}`;
     this.setState({
-      keyFileName: `[${employeeId}] ${value}`,
+      keyFileName: keyFileName.replace(/ /g, ''),
     });
   };
 
@@ -157,7 +158,6 @@ class UploadModal extends Component {
     const { uploadedFileName = '' } = this.state;
     const { loadingUploadAttachment, employeeGroup = '' } = this.props;
     const { visible = false, loading = false, handleCancel = () => {} } = this.props;
-
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
@@ -204,80 +204,68 @@ class UploadModal extends Component {
             ),
           ]}
         >
-          {employeeGroup === 'Identity' ? (
-            <span className={styles.errorMessage}>
-              Please add these following documents via{' '}
-              <span className={styles.boldText}>General Info</span> tab.
-              <div className={styles.list}>
-                <span>- Visa</span>
-                <span>- Passport</span>
-                <span>- Adhaar Card</span>
-              </div>
-            </span>
-          ) : (
-            <div>
-              <div className={styles.FileUploadForm}>
-                <Dragger
-                  beforeUpload={this.beforeUpload}
-                  showUploadList={false}
-                  action={(file) => this.handleUpload(file)}
-                >
-                  {uploadedFileName !== '' ? (
-                    <div className={styles.fileUploadedContainer}>
-                      <p className={styles.previewIcon}>
-                        {this.identifyImageOrPdf(uploadedFileName) === 1 ? (
-                          <img src={PDFIcon} alt="pdf" />
-                        ) : (
-                          <img src={ImageIcon} alt="img" />
-                        )}
-                      </p>
-                      <p className={styles.fileName}>
-                        Uploaded: <a>{uploadedFileName}</a>
-                      </p>
-                      <Button>Choose an another file</Button>
-                    </div>
-                  ) : (
-                    <div>
-                      {loadingUploadAttachment ? (
-                        <Spin />
-                      ) : (
-                        <div>
-                          <div>
-                            <p className={styles.uploadIcon}>
-                              <img src={FileUploadIcon} alt="upload" />
-                            </p>
-                          </div>
-                          <p className={styles.uploadText}>Drap and drop the file here</p>
-                          <p className={styles.uploadText}>or</p>
-                          <Button>Choose file</Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </Dragger>
-              </div>
-              <Form
-                initialValues={{ documentType: employeeGroup }}
-                ref={this.formRef}
-                id="myForm"
-                className={styles.fileNameInput}
-                name="basic"
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...layout}
+          <div>
+            <div className={styles.FileUploadForm}>
+              <Dragger
+                beforeUpload={this.beforeUpload}
+                showUploadList={false}
+                action={(file) => this.handleUpload(file)}
               >
-                <Form.Item
-                  label="Document Name"
-                  name="documentName"
-                  rules={[{ required: true, message: 'Please input file name!' }]}
-                >
-                  <Input onChange={this.handleFileName} />
-                </Form.Item>
-                <Form.Item label="Document Type" name="documentType" rules={[{ required: true }]}>
-                  <Input disabled />
-                </Form.Item>
-              </Form>
+                {uploadedFileName !== '' ? (
+                  <div className={styles.fileUploadedContainer}>
+                    <p className={styles.previewIcon}>
+                      {this.identifyImageOrPdf(uploadedFileName) === 1 ? (
+                        <img src={PDFIcon} alt="pdf" />
+                      ) : (
+                        <img src={ImageIcon} alt="img" />
+                      )}
+                    </p>
+                    <p className={styles.fileName}>
+                      Uploaded: <a>{uploadedFileName}</a>
+                    </p>
+                    <Button>Choose an another file</Button>
+                  </div>
+                ) : (
+                  <div>
+                    {loadingUploadAttachment ? (
+                      <Spin />
+                    ) : (
+                      <div>
+                        <div>
+                          <p className={styles.uploadIcon}>
+                            <img src={FileUploadIcon} alt="upload" />
+                          </p>
+                        </div>
+                        <p className={styles.uploadText}>Drap and drop the file here</p>
+                        <p className={styles.uploadText}>or</p>
+                        <Button>Choose file</Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </Dragger>
             </div>
-          )}
+            <Form
+              initialValues={{ documentType: employeeGroup }}
+              ref={this.formRef}
+              id="myForm"
+              className={styles.fileNameInput}
+              name="basic"
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...layout}
+            >
+              <Form.Item
+                label="Document Name"
+                name="documentName"
+                rules={[{ required: true, message: 'Please input file name!' }]}
+              >
+                <Input onChange={this.handleFileName} />
+              </Form.Item>
+              <Form.Item label="Document Type" name="documentType" rules={[{ required: true }]}>
+                <Input disabled />
+              </Form.Item>
+            </Form>
+          </div>
         </Modal>
       </div>
     );
