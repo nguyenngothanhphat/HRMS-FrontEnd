@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Input, Button } from 'antd';
-import moment from 'moment';
-import { connect } from 'umi';
 import icon from '@/assets/offboarding-schedule.svg';
+import { Button, Input, Spin } from 'antd';
+import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -27,6 +27,12 @@ class ResigationLeft extends Component {
         location: locationID,
       },
     });
+    dispatch({
+      type: 'offboarding/fetchList',
+      payload: {
+        status: 'IN-PROGRESS',
+      },
+    });
   }
 
   submitForm = (action) => {
@@ -46,6 +52,12 @@ class ResigationLeft extends Component {
         this.setState({
           sendleaveRequest: true,
         });
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'IN-PROGRESS',
+          },
+        });
       }
     });
   };
@@ -58,8 +70,17 @@ class ResigationLeft extends Component {
 
   render() {
     const { reasonForLeaving = '', sendleaveRequest } = this.state;
-    const { loading } = this.props;
+    const { loading, totalList = [], loadingFetchListRequest } = this.props;
+    const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
+    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     const date = moment().format('DD.MM.YY | h:mm A');
+    if (loadingFetchListRequest)
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
     return (
       <div className={styles.resignationLeft}>
         <div className={styles.title_Box}>
@@ -83,9 +104,10 @@ class ResigationLeft extends Component {
             className={styles.boxReason}
             value={reasonForLeaving}
             onChange={this.handleChange}
+            disabled={sendleaveRequest || checkSendRequest}
           />
         </div>
-        {!sendleaveRequest && (
+        {!sendleaveRequest && !checkSendRequest && (
           <div className={styles.subbmitForm}>
             <div className={styles.subbmiText}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -116,7 +138,7 @@ class ResigationLeft extends Component {
 
 export default connect(
   ({
-    offboarding: { sendrequest, approvalflow = [] } = {},
+    offboarding: { approvalflow = [], totalList = [] } = {},
     user: {
       currentUser: {
         location: { _id: locationID = '' } = {},
@@ -128,7 +150,8 @@ export default connect(
     locationID,
     companyID,
     approvalflow,
-    sendrequest,
+    totalList,
     loading: loading.effects['offboarding/sendRequest'],
+    loadingFetchListRequest: loading.effects['offboarding/fetchList'],
   }),
 )(ResigationLeft);

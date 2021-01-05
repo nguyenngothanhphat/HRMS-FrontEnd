@@ -9,10 +9,18 @@
       font-size: 13px;
     }
     .statusFilter {
-      display: inline;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      :global {
+        .ant-form-item {
+          padding-top: 0 !important;
+        }
+      }
       .itemLabel {
         display: inline;
         margin-right: 20px;
+        margin-top: 10px;
       }
     }
 

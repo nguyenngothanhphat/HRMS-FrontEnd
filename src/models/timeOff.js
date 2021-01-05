@@ -105,6 +105,20 @@ const timeOff = {
       return {};
     },
 
+    *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
+      try {
+        const response = yield call(getLeaveRequestOfEmployee, { employee, status });
+        const { statusCode, data: allMyLeaveRequests = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { allMyLeaveRequests },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *fetchLeaveRequestById({ id = '' }, { call, put }) {
       try {
         if (id !== '') {

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip } from 'antd';
+import { Table, Avatar, Tooltip, Tag } from 'antd';
 import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
@@ -8,22 +8,29 @@ import moment from 'moment';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
-  loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
-  loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
+  loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
+  loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
-class CompoffTable extends PureComponent {
+class TeamLeaveTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
-      fixed: 'left',
-      width: '15%',
+      // fixed: 'left',
+      width: '17%',
       render: (id) => {
-        const { ticketID = '', _id = '' } = id;
+        const { ticketID = '', _id = '', onDate = '', status = '' } = id;
+        const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
+        const nowDate = moment().locale('en').format('YYYY/MM/DD');
+        const isNewRequest =
+          status === 'IN-PROGRESS' &&
+          moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
+
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
             {ticketID}
+            {isNewRequest && <Tag color="#2C6DF9">New</Tag>}
           </span>
         );
       },
@@ -36,21 +43,32 @@ class CompoffTable extends PureComponent {
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
-      title: 'Project',
-      dataIndex: 'project',
-      align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
+      title: 'Type',
+      dataIndex: 'type',
+      align: 'center',
+      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      // defaultSortOrder: ['ascend'],
+      // sorter: {
+      //   compare: (a, b) => {
+      //     const { type: { shortType: s1 = '' } = {} } = a;
+      //     const { type: { shortType: s2 = '' } = {} } = b;
+      //     return s1.localeCompare(s2);
+      //   },
+      // },
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
+
     {
       title: 'Duration',
-      dataIndex: 'duration',
+      width: '20%',
+      dataIndex: 'leaveTimes',
       align: 'left',
     },
     // {
     //   title: `Req’ted on `,
     //   dataIndex: 'onDate',
-    //   align: 'left',
+    //   align: 'center',
+    //   // width: '30%',
     //   render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
     //   defaultSortOrder: ['ascend'],
     //   sorter: {
@@ -64,37 +82,40 @@ class CompoffTable extends PureComponent {
       align: 'center',
       render: () => <span />,
     },
-    {
-      title: 'Assigned',
-      align: 'left',
-      dataIndex: 'assigned',
-      render: (assigned) => {
-        return (
-          <div className={styles.rowAction}>
-            <Avatar.Group
-              maxCount={2}
-              maxStyle={{
-                color: '#FFA100',
-                backgroundColor: '#EAF0FF',
-              }}
-            >
-              {assigned.map((user) => {
-                const { firstName = '', lastName = '', avatar = '' } = user;
-                return (
-                  <Tooltip title={`${firstName} ${lastName}`} placement="top">
-                    <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
-                  </Tooltip>
-                );
-              })}
-            </Avatar.Group>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: 'Assigned',
+    //   align: 'left',
+    //   dataIndex: 'assigned',
+    //   // width: '25%',
+    //   render: (assigned) => {
+    //     return (
+    //       <div className={styles.rowAction}>
+    //         <Avatar.Group
+    //           maxCount={3}
+    //           maxStyle={{
+    //             color: '#FFA100',
+    //             backgroundColor: '#EAF0FF',
+    //           }}
+    //         >
+    //           {assigned.map((user) => {
+    //             const { firstName = '', lastName = '', avatar = '' } = user;
+    //             return (
+    //               <Tooltip title={`${firstName} ${lastName}`} placement="top">
+    //                 <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={avatar} />
+    //               </Tooltip>
+    //             );
+    //           })}
+    //         </Avatar.Group>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
+      // fixed: 'right',
+      // width: '20%',
       render: (_id) => {
         const { selectedTab = '' } = this.props;
         if (selectedTab === 'IN-PROGRESS')
@@ -108,7 +129,7 @@ class CompoffTable extends PureComponent {
 
         return (
           <div className={styles.rowAction}>
-            <span onClick={() => this.viewRequest(_id)}>View Request</span>
+            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
           </div>
         );
       },
@@ -146,7 +167,7 @@ class CompoffTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-compoff-request/${_id}`,
+      pathname: `/time-off/view-request/${_id}`,
       // state: { location: name },
     });
   };
@@ -174,38 +195,42 @@ class CompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
+        status = '',
+        fromDate = '',
+        toDate = '',
+        approvalManager: { generalInfo: generalInfoA = {} } = {},
         cc = [],
         ticketID = '',
         _id = '',
-        extraTime = [],
+        onDate = '',
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
       } = value;
 
-      let duration = '';
-      if (extraTime.length !== 0) {
-        const fromDate = extraTime[0].date;
-        const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
-          'DD.MM.YYYY',
-        )}`;
+      let leaveTimes = '';
+      if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+          .locale('en')
+          .format('MM.DD.YYYY')}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      // let employeeFromCC = [];
+      // if (cc.length > 0) {
+      //   employeeFromCC = cc[0].map((each) => {
+      //     return each;
+      //   });
+      // }
+      // const assigned = [generalInfoA, ...employeeFromCC];
 
       return {
         ...value,
-        duration,
-        assigned,
+        leaveTimes,
+        // assigned,
+        assigned: [generalInfoA],
         id: {
           ticketID,
           _id,
+          onDate,
+          status,
         },
         requestee: `${firstName} ${lastName}`,
       };
@@ -254,7 +279,7 @@ class CompoffTable extends PureComponent {
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
     return (
-      <div className={styles.CompoffTable}>
+      <div className={styles.TeamLeaveTable}>
         <Table
           size="middle"
           loading={loading1 || loading2}
@@ -263,10 +288,11 @@ class CompoffTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
-export default CompoffTable;
+
+export default TeamLeaveTable;
