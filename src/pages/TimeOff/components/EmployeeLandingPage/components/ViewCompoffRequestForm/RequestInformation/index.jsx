@@ -116,10 +116,12 @@ class RequestInformation extends PureComponent {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: ${ticketID}]`}</span>
-          <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
-            <img src={EditIcon} className={styles.icon} alt="edit-icon" />
-            <span className={styles.label}>Edit</span>
-          </div>
+          {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
+              <img src={EditIcon} className={styles.icon} alt="edit-icon" />
+              <span className={styles.label}>Edit</span>
+            </div>
+          )}
         </div>
 
         {loadingFetchCompoffRequestById && (

@@ -92,7 +92,7 @@ class LeaveRequestForm extends PureComponent {
               )}
               {action === 'edit-leave-request' && (
                 <>
-                  <p className={styles.titlePage__text}>[Ticket ID: 123456]</p>
+                  <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
                   <div className={this.getColorOfStatus(status)}>
                     <span className={styles.dot} />
@@ -113,7 +113,21 @@ class LeaveRequestForm extends PureComponent {
               <Spin size="medium" />
             </div>
           )}
-          {!loadingFetchLeaveRequestById && (
+          {!loadingFetchLeaveRequestById &&
+            action === 'edit-leave-request' &&
+            (status === 'APPROVED' || status === 'REJECTED') && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '100px 0',
+                }}
+              >
+                <span>You are not allowed to edit this leave request!</span>
+              </div>
+            )}
+
+          {!loadingFetchLeaveRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
             <>
               <Row className={styles.container} gutter={[20, 20]}>
                 <Col xs={24} lg={16}>

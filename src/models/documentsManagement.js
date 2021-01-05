@@ -198,6 +198,7 @@ const documentsManagement = {
           attachment = '',
           employee = '',
           company = '',
+          shareDocument = [],
         } = data;
 
         const response = yield call(uploadDocument, {
@@ -207,6 +208,7 @@ const documentsManagement = {
           attachment,
           employee,
           company,
+          shareDocument,
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;

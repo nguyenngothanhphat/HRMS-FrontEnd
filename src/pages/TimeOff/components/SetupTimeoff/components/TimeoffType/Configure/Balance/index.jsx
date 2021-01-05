@@ -6,39 +6,56 @@ class Balance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      balanceRate: '',
-      select: 'day',
+      notGreaterThan: '',
+      date: 'day',
+      unlimited: 'false',
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { balanceRate } = this.state;
+    const { notGreaterThan, unlimited } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      balanceRate,
+      date: e.target.value,
+      notGreaterThan,
+      unlimited,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, unlimited } = this.state;
     this.setState({
-      balanceRate: value,
+      notGreaterThan: value,
     });
     const data = {
-      select,
-      balanceRate: value,
+      date,
+      notGreaterThan: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeSelect = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, notGreaterThan } = this.state;
+    this.setState({
+      unlimited: e.target.checked,
+    });
+    const data = {
+      date,
+      notGreaterThan,
+      unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { accrualRate, select } = this.state;
+    const { accrualRate, date } = this.state;
     console.log(accrualRate);
     return (
       <div className={styles.contentbalance}>
@@ -50,7 +67,7 @@ class Balance extends Component {
               <div className={styles.titleText}>
                 At a time, employees cannot have a casual leave balance greater than
               </div>
-              <Checkbox className={styles.checkbox}>
+              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
                 Do not limit employee Casual leave balance
               </Checkbox>
             </Col>
@@ -70,7 +87,7 @@ class Balance extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >

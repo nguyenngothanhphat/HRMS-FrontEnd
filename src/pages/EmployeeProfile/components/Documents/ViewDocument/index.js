@@ -204,16 +204,27 @@ class ViewDocument extends PureComponent {
     return visaNumberFinal;
   };
 
+  // get visa information
+  getPassportInformation = (passportData, files, currentViewingFile) => {
+    let passportNumberFinal = '';
+    passportData.forEach((passport) => {
+      const { document, passportNumber } = passport;
+      const { _id } = document;
+      files.forEach((file, index) => {
+        if (_id === file.id && passportNumber !== undefined && currentViewingFile === index) {
+          passportNumberFinal = passportNumber;
+        }
+      });
+    });
+    return passportNumberFinal;
+  };
+
   render() {
     const { numPages, currentViewingFile } = this.state;
     const { onBackClick, loading, loadingFileDetail } = this.props;
     const {
       employeeProfile: {
-        tempData: {
-          passportData: { passportNumber = '' } = {},
-          visaData = [],
-          generalData: { adhaarCardNumber = '' } = {},
-        },
+        tempData: { passportData = [], visaData = [], generalData: { adhaarCardNumber = '' } = {} },
         groupViewingDocuments,
         documentDetail,
       },
@@ -304,7 +315,13 @@ class ViewDocument extends PureComponent {
                   {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(key, 'passport') ? passportNumber : ''}
+                  {this.includeString(key, 'passport')
+                    ? this.getPassportInformation(
+                        passportData,
+                        groupViewingDocuments,
+                        currentViewingFile - 1,
+                      )
+                    : ''}
                   {this.includeString(key, 'visa')
                     ? this.getVisaInformation(
                         visaData,
