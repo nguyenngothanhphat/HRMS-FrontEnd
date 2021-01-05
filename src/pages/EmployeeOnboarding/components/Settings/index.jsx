@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SettingLayout from '@/components/SettingLayout';
-
-import BackgroundChecks from './components/BackgroundChecks';
+// import BackgroundChecks from './components/BackgroundChecks';
 import CompanySignatory from './components/CompanySignatory';
 import CustomEmails from './components/CustomEmails';
 import DocumentsAndTemplates from './components/DocumentsAndTemplates';
@@ -28,25 +27,25 @@ class Settings extends PureComponent {
         key: 'nonExtempNotice',
         component: <NonExtempNotice />,
       },
+      // {
+      //   id: 3,
+      //   name: 'Background Checks',
+      //   key: 'backgroundChecks',
+      //   component: <BackgroundChecks />,
+      // },
       {
         id: 3,
-        name: 'Background Checks',
-        key: 'backgroundChecks',
-        component: <BackgroundChecks />,
-      },
-      {
-        id: 4,
         name: 'Optional Onboarding Questions',
         key: 'optionalOnboardingQuestions',
         component: <OptionalOnboardingQuestions />,
       },
       {
-        id: 5,
+        id: 4,
         name: 'Company Signatory',
         key: 'companySignatory',
         component: <CompanySignatory />,
       },
-      { id: 6, name: 'Custom Emails', key: 'customEmails', component: <CustomEmails /> },
+      { id: 5, name: 'Custom Emails', key: 'customEmails', component: <CustomEmails /> },
     ];
     return (
       <div>
