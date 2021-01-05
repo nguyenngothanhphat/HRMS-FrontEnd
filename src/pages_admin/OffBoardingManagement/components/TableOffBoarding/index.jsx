@@ -13,41 +13,46 @@ class TableOffBoarding extends PureComponent {
       render: (text, record, index) => index + 1,
     },
     {
-      title: 'Ticket No',
-      dataIndex: 'ticketNo',
+      title: 'Ticket ID',
+      dataIndex: 'candidate',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a.ticketNo.localeCompare(b.ticketNo),
+      render: (candidate = {}) => {
+        const { ticketID = '' } = candidate;
+        return <span>{ticketID}</span>;
       },
     },
     {
       title: 'User ID',
-      width: '7%',
-      dataIndex: 'userId',
+      dataIndex: 'employee',
+      render: (employee) => {
+        const { generalInfo: { employeeId = '' } = {} } = employee;
+        return <span>{employeeId}</span>;
+      },
     },
     {
       title: 'Full Name',
-      dataIndex: 'fullName',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      // },
+      dataIndex: 'employee',
+      render: (employee) => {
+        const { generalInfo: { legalName = '' } = {} } = employee;
+        return <span>{legalName}</span>;
+      },
     },
     {
       title: 'Group',
       dataIndex: 'group',
+      render: () => <span>Group</span>,
     },
     {
       title: 'Submitted Date',
-      dataIndex: 'submittedDate',
+      dataIndex: 'createdAt',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      render: (submittedDate) => {
-        const formatedDate = moment(submittedDate).format('MM/DD/YYYY');
+      render: (createdAt) => {
+        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
-        compare: (a, b) => new Date(a.submittedDate) - new Date(b.submittedDate),
+        compare: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
       },
     },
     {
@@ -57,14 +62,14 @@ class TableOffBoarding extends PureComponent {
     {
       title: 'Last Working Date',
       dataIndex: 'lastWorkingDate',
-      sortDirections: ['ascend', 'descend', 'ascend'],
+      // sortDirections: ['ascend', 'descend', 'ascend'],
       render: (lastWorkingDate) => {
         const formatedDate = moment(lastWorkingDate).format('MM/DD/YYYY');
         return <span>{formatedDate}</span>;
       },
-      sorter: {
-        compare: (a, b) => new Date(a.lastWorkingDate) - new Date(b.lastWorkingDate),
-      },
+      // sorter: {
+      //   compare: (a, b) => new Date(a.lastWorkingDate) - new Date(b.lastWorkingDate),
+      // },
     },
 
     {
