@@ -1,0 +1,61 @@
+.root {
+  display: flex;
+  width: 629px;
+  height: 90px;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  box-sizing: border-box;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  padding: 21px 26px;
+  .logoCompany {
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    object-fit: scale-down;
+  }
+  .viewInfo {
+    padding: 5px 0 0 13px;
+    width: 63%;
+    &__name {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      color: #161c29;
+      margin-bottom: 4px;
+    }
+    &__location {
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      color: #707177;
+      margin: 0;
+    }
+  }
+  .viewAction {
+    display: flex;
+    .btnOutline {
+      width: 138px;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #ffa100;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      cursor: pointer;
+      &:hover {
+        color: #b1740c;
+        border: solid 1px #b1740c;
+      }
+    }
+    .option {
+      font-size: 30px;
+      color: #707177;
+      margin: -5px 0 0 24px;
+      cursor: pointer;
+    }
+  }
+}

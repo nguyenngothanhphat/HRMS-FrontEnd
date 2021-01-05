@@ -13,11 +13,8 @@ class AccountSetup extends PureComponent {
       const { name = '', path = '' } = item;
       return { name, path };
     });
-    const getLengthPatname = pathname.split('/').filter((item) => item).length;
-    let size = getLengthPatname;
-    if (getLengthPatname === 4) {
-      size = 3;
-    }
+    const getLengthPathname = pathname.split('/').filter((item) => item).length;
+    const size = getLengthPathname === 4 ? 3 : getLengthPathname;
     return formatRoutes.slice(0, size).filter((item) => item.name !== 'Account Setup');
   };
 
@@ -49,7 +46,6 @@ class AccountSetup extends PureComponent {
               })}
             </Breadcrumb>
           )}
-
           {children}
         </Content>
       </Layout>
