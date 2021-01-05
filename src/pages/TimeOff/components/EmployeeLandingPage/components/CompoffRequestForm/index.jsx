@@ -40,7 +40,7 @@ class CompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
@@ -55,7 +55,7 @@ class CompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';
@@ -113,7 +113,7 @@ class CompoffRequestForm extends PureComponent {
 
           {!loadingFetchCompoffRequestById &&
             action === 'edit-compoff-request' &&
-            (status === 'APPROVED' || status === 'REJECTED') && (
+            (status === 'ACCEPTED' || status === 'REJECTED') && (
               <div
                 style={{
                   display: 'flex',
@@ -125,7 +125,7 @@ class CompoffRequestForm extends PureComponent {
               </div>
             )}
 
-          {!loadingFetchCompoffRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
+          {!loadingFetchCompoffRequestById && status !== 'ACCEPTED' && status !== 'REJECTED' && (
             <>
               <Row className={styles.container} gutter={[20, 20]}>
                 <Col xs={24} lg={16}>

@@ -80,7 +80,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'center',
-      render: () => <span />,
+      render: (comment) => <span>{comment}</span>,
     },
     // {
     //   title: 'Assigned',
@@ -199,7 +199,7 @@ class TeamLeaveTable extends PureComponent {
         fromDate = '',
         toDate = '',
         approvalManager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
+        // cc = [],
         ticketID = '',
         _id = '',
         onDate = '',
@@ -274,7 +274,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+      selectedTab === 'REJECTED'
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 

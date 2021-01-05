@@ -145,3 +145,18 @@ export async function uploadBalances(data) {
     data,
   });
 }
+
+// reporting manager
+export async function reportingManagerApprove(data) {
+  return request('/api/leaverequest/reporting-manager-approve', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function reportingManagerReject(data) {
+  return request('/api/leaverequest/reporting-manager-reject', {
+    method: 'POST',
+    data,
+  });
+}

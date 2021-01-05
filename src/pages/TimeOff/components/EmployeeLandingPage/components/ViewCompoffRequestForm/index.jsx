@@ -40,7 +40,7 @@ class ViewCompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
@@ -55,7 +55,7 @@ class ViewCompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';

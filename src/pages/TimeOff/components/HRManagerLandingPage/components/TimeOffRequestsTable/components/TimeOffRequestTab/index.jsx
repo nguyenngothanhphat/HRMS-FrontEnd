@@ -85,7 +85,7 @@ class TimeOffRequestTab extends PureComponent {
       status = 'IN-PROGRESS';
     }
     if (filterTab === '2') {
-      status = 'APPROVED';
+      status = 'ACCEPTED';
     }
     if (filterTab === '3') {
       status = 'REJECTED';
@@ -141,7 +141,7 @@ class TimeOffRequestTab extends PureComponent {
 
     let selectedTab = 'IN-PROGRESS';
     if (id === '2') {
-      selectedTab = 'APPROVED';
+      selectedTab = 'ACCEPTED';
     } else if (id === '3') {
       selectedTab = 'REJECTED';
     } else if (id === '4') {
@@ -166,7 +166,7 @@ class TimeOffRequestTab extends PureComponent {
           inProgressLength.push(row);
           break;
         }
-        case 'APPROVED': {
+        case 'ACCEPTED': {
           approvedLength.push(row);
           break;
         }

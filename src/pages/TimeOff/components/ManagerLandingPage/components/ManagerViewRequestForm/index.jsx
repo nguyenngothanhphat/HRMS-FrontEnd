@@ -32,7 +32,7 @@ class ManagerViewRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
@@ -47,7 +47,7 @@ class ManagerViewRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';
@@ -60,7 +60,10 @@ class ManagerViewRequestForm extends PureComponent {
 
   render() {
     const {
-      timeOff: { viewingLeaveRequest: { status = '', ticketID = '' } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest: { status = '', ticketID = '' } = {},
+        viewingLeaveRequest = {},
+      } = {},
     } = this.props;
 
     const {
@@ -84,7 +87,7 @@ class ManagerViewRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent viewingLeaveRequest={viewingLeaveRequest} />
             </Col>
           </Row>
         </div>

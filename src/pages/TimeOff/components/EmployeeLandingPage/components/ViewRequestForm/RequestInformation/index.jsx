@@ -64,7 +64,7 @@ class RequestInformation extends PureComponent {
 
   // WITHDRAW CLICKED
   withDraw = (status) => {
-    if (status !== 'APPROVED') this.setShowWithdrawModal(true);
+    if (status !== 'ACCEPTED') this.setShowWithdrawModal(true);
     else this.setShowWithdraw2Modal(true);
   };
 
@@ -118,6 +118,7 @@ class RequestInformation extends PureComponent {
       // onDate = '',
       description = '',
       type: { name = '', type = '', shortType = '' } = {},
+      comment = '',
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -201,10 +202,18 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
               </Row>
+              {status === 'REJECTED' && (
+                <Row>
+                  <Col span={6}>Comment</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>{comment}</span>
+                  </Col>
+                </Row>
+              )}
             </div>
             {(status === 'DRAFTS' ||
               status === 'IN-PROGRESS' ||
-              (status === 'APPROVED' && checkWithdrawValid)) && (
+              (status === 'ACCEPTED' && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to

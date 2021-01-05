@@ -22,6 +22,8 @@ import {
   uploadFile,
   uploadBalances,
   withdrawCompoffRequest,
+  reportingManagerApprove,
+  reportingManagerReject,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -464,6 +466,30 @@ const timeOff = {
         });
       } catch (errors) {
         // dialog(errors);
+      }
+    },
+
+    // REPORTING MANAGER
+    *reportingManagerApprove({ payload = {} }, { call }) {
+      try {
+        const response = yield call(reportingManagerApprove, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *reportingManagerReject({ payload = {} }, { call }) {
+      try {
+        const response = yield call(reportingManagerReject, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
       }
     },
   },

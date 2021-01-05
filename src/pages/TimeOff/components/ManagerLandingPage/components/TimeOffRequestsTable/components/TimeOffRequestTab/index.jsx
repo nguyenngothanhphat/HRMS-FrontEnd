@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
 import TeamLeaveTable from '../TeamLeaveTable';
 import TeamCompoffTable from '../TeamCompoffTable';
@@ -68,7 +67,7 @@ class TimeOffRequestTab extends PureComponent {
       status = 'IN-PROGRESS';
     }
     if (filterTab === '2') {
-      status = 'APPROVED';
+      status = 'ACCEPTED';
     }
     if (filterTab === '3') {
       status = 'REJECTED';
@@ -139,7 +138,7 @@ class TimeOffRequestTab extends PureComponent {
 
     let selectedTab = 'IN-PROGRESS';
     if (id === '2') {
-      selectedTab = 'APPROVED';
+      selectedTab = 'ACCEPTED';
     } else if (id === '3') {
       selectedTab = 'REJECTED';
     } else if (id === '4') {
@@ -164,7 +163,7 @@ class TimeOffRequestTab extends PureComponent {
           inProgressLength.push(row);
           break;
         }
-        case 'APPROVED': {
+        case 'ACCEPTED': {
           approvedLength.push(row);
           break;
         }
@@ -215,27 +214,6 @@ class TimeOffRequestTab extends PureComponent {
           category={category}
         />
         <div className={styles.tableContainer}>
-          {
-            //     data.length === 0 ? (
-            //   <div className={styles.emptyTable}>
-            //     <img src={EmptyIcon} alt="empty-table" />
-            //     <p className={styles.describeTexts}>
-            //       {category === 'MY' && (
-            //         <>
-            //           You have not applied for any Leave requests. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //       {category === 'TEAM' && (
-            //         <>
-            //           No Leave requests received. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //     </p>
-            //   </div>
-            // ) : (
-          }
           <div>
             {type === 1 && category === 'TEAM' && (
               <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
