@@ -125,9 +125,9 @@ class AvatarDropdown extends React.Component {
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size={44} className={styles.avatar} src={avatar} alt="avatar" />
-          <span className={`${styles.name} anticon`} style={{ color: '#707177' }}>
+          {/* <span className={`${styles.name} anticon`} style={{ color: '#707177' }}>
             {name}
-          </span>
+          </span> */}
         </span>
       </HeaderDropdown>
     ) : (

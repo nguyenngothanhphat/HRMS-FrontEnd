@@ -10,8 +10,8 @@ import styles from './index.less';
     upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
     employeeProfile: {
       editGeneral: { openPassportandVisa = false },
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, visaData = [] } = {},
+      originData: { passportData: passportDataOrigin = [], visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = [], visaData = [] } = {},
     } = {},
   }) => ({
     openPassportandVisa,
@@ -73,11 +73,12 @@ class PassportVisaInformation extends PureComponent {
   };
 
   render() {
-    const { passportData, openPassportandVisa } = this.props;
+    const { openPassportandVisa } = this.props;
     const renderComponent = openPassportandVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={passportData} />
+      <View />
+      // <View dataAPI={passportData} />
     );
     return (
       <div className={styles.PassportVisaInformation}>

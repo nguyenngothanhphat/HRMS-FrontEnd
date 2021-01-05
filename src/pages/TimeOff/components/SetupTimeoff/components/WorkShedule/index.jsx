@@ -84,7 +84,6 @@ class WorkShedule extends Component {
       totalHour,
       workday: arrayActive,
     };
-    console.log(payload);
   };
 
   render() {
@@ -122,7 +121,7 @@ class WorkShedule extends Component {
                 schedule will be deducted from the total leave balance.
               </div>
               <Row justify="space-between">
-                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                <Col xs={24} sm={24} md={24} lg={12} xl={7} className={s.formInput}>
                   <div className={s.content}>Total Hours in a workday</div>
                   <Form.Item name="totalHour">
                     <InputNumber
@@ -135,7 +134,7 @@ class WorkShedule extends Component {
                     />
                   </Form.Item>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                <Col xs={24} sm={24} md={24} lg={12} xl={7} className={s.formInput}>
                   <div className={s.content}>Workday start at</div>
                   <Row gutter={[16, 0]}>
                     <Col>
@@ -156,7 +155,7 @@ class WorkShedule extends Component {
                     </Col>
                   </Row>
                 </Col>
-                <Col xs={24} sm={24} md={24} lg={7} xl={7} className={s.formInput}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={7} className={s.formInput}>
                   <div className={s.content}>Workday end at</div>
                   <Row gutter={[16, 0]}>
                     <Col>
@@ -186,12 +185,12 @@ class WorkShedule extends Component {
                 </div>
                 <div className={s.checkboxWrap}>{array.map((item) => this.renderItem(item))}</div>
               </div>
-              <div className={s.straight} />
-              <div className={s.flex}>
-                <Button className={s.btnSave} htmlType="submit">
-                  Save
-                </Button>
-              </div>
+            </div>
+            <div className={s.straight} />
+            <div className={s.flex}>
+              <Button className={s.btnSave} htmlType="submit">
+                Save
+              </Button>
             </div>
           </div>
         </Form>

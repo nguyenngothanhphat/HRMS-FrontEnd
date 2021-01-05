@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import {
   getHolidaysList,
   getLeaveBalanceOfUser,
@@ -6,6 +7,7 @@ import {
   addLeaveRequest,
   withdrawLeaveRequest,
   addCompoffRequest,
+  updateCompoffRequest,
   getMyCompoffRequests,
   getCompoffRequestById,
   getTimeOffTypes,
@@ -17,6 +19,8 @@ import {
   updateDraftLeaveRequest,
   getTeamCompoffRequests,
   getTeamLeaveRequests,
+  uploadFile,
+  uploadBalances,
   withdrawCompoffRequest,
 } from '../services/timeOff';
 
@@ -38,6 +42,8 @@ const timeOff = {
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
+    urlExcel: undefined,
+    balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
   },
@@ -136,7 +142,9 @@ const timeOff = {
           payload: { holidaysList },
         });
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
+        // eslint-disable-next-line no-console
+        // console.log('errors of holiday list', erros);
       }
       return response;
     },
@@ -219,17 +227,17 @@ const timeOff = {
     },
     *updateCompoffRequest({ payload = {} }, { call, put }) {
       try {
-        alert('updated compoff request');
-        // const response = yield call(addCompoffRequest, payload);
-        // const { statusCode, data: addedCompoffRequest = {} } = response;
-        // if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { addedCompoffRequest },
-        // });
+        const response = yield call(updateCompoffRequest, payload);
+        const { statusCode, data: updatedCompoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { updatedCompoffRequest },
+        });
         return { statusCode: 200, data: {} };
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
     *fetchMyCompoffRequests({ status = '' }, { call, put }) {
@@ -354,7 +362,7 @@ const timeOff = {
           return response;
         }
       } catch (errors) {
-        // dialog(errors);
+        dialog(errors);
       }
       return {};
     },
@@ -387,6 +395,62 @@ const timeOff = {
         // dialog(errors);
       }
       return {};
+    },
+
+    *clearViewingLeaveRequest(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { viewingLeaveRequest: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *clearViewingCompoffRequest(_, { put }) {
+      try {
+        yield put({
+          type: 'save',
+          payload: { viewingCompoffRequest: {} },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *uploadFileExcel({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadFile, payload);
+        const { statusCode, data } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: { urlExcel: data[0].id },
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
+    },
+    *uploadBalances({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(uploadBalances, payload);
+        const { statusCode, data: balances } = response;
+        // console.log('response', response);
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Upload file Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: balances,
+        });
+      } catch (errors) {
+        // dialog(errors);
+      }
     },
   },
   reducers: {

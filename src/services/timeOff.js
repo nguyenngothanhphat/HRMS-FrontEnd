@@ -63,6 +63,13 @@ export async function addCompoffRequest(payload) {
   });
 }
 
+export async function updateCompoffRequest(payload) {
+  return request('/api/compoffrequest/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getMyCompoffRequests(payload) {
   return request('/api/compoffrequest/get-my-request', {
     method: 'POST',
@@ -124,5 +131,17 @@ export async function getTeamLeaveRequests(payload) {
   return request('/api/leaverequest/get-team-request', {
     method: 'POST',
     data: payload,
+  });
+}
+export async function uploadFile(data) {
+  return request('/api/attachments/upload', {
+    method: 'POST',
+    data,
+  });
+}
+export async function uploadBalances(data) {
+  return request('/api/managebalances/upload-file', {
+    method: 'POST',
+    data,
   });
 }

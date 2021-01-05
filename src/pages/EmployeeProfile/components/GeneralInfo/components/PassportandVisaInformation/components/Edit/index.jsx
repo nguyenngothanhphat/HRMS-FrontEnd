@@ -5,6 +5,7 @@ import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
+import removeIcon from './assets/removeIcon.svg';
 import UploadImage from '../UploadImage';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
@@ -14,6 +15,10 @@ import styles from './index.less';
     loading,
     upload: {
       passPortURL = '',
+      passport0URL = '',
+      passport1URL = '',
+      urlImage = '',
+      loadingPassportTest = [],
       visa0IDURL = '',
       visa1IDURL = '',
       passPortIDURL = '',
@@ -22,8 +27,8 @@ import styles from './index.less';
     employeeProfile: {
       countryList,
       idCurrentEmployee,
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = [], document = {} } = {},
+      originData: { passportData: passportDataOrigin = [], visaData: visaDataOrigin = [] } = {},
+      tempData: { passportData = [], generalData = {}, visaData = [], document = {} } = {},
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -40,6 +45,10 @@ import styles from './index.less';
     document,
     idCurrentEmployee,
     loadingPassPort,
+    passport0URL,
+    passport1URL,
+    urlImage,
+    loadingPassportTest,
   }),
 )
 class Edit extends Component {
@@ -53,32 +62,8 @@ class Edit extends Component {
       isCheckDateVisa: true,
       visible: false,
       linkImage: '',
-      passportArr: [],
+      checkValidate: [{}],
     };
-  }
-
-  componentDidMount() {
-    const { passportData = {} } = this.props;
-    const {
-      // urlFile = '',
-      passportNumber: _passportNumber = '',
-      passportIssuedCountry: _passportIssuedCountry,
-      passportIssuedOn = '',
-      passportValidTill = '',
-    } = passportData;
-    const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
-    const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-    const newArr = [];
-
-    const newPassportData = {
-      passportNumber: _passportNumber,
-      passportIssuedCountry: _passportIssuedCountry,
-      passportIssuedOn: formatDatePassportIssueOn,
-      passportValidTill: formatDatePassportValidTill,
-    };
-
-    newArr.push(newPassportData);
-    this.setState({ passportArr: newArr });
   }
 
   handleDropdown = (open) => {
@@ -86,7 +71,7 @@ class Edit extends Component {
   };
 
   validateDate = (getPassportData) => {
-    if (getPassportData === {}) return;
+    if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
       passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
@@ -105,19 +90,19 @@ class Edit extends Component {
     }
   };
 
-  handleChange = (name, value) => {
+  handleChange = (index, name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
-    const newItem = { [name]: value };
 
-    const getPassportData = {
-      ...passportData,
-      ...newItem,
-    };
-    this.validateDate(getPassportData);
-    const isModified = JSON.stringify(getPassportData) !== JSON.stringify(passportDataOrigin);
+    const item = passportData[index];
+    const newItem = { ...item, [name]: value };
+    const newList = [...passportData];
+
+    newList.splice(index, 1, newItem);
+    this.validateDate(newList);
+    const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: getPassportData },
+      payload: { passportData: newList },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -125,22 +110,29 @@ class Edit extends Component {
     });
   };
 
-  handleGetUpLoad = (resp) => {
+  handleGetUpLoad = (index, resp) => {
     const { data = [] } = resp;
     const [first] = data;
     const value = { id: first ? first.id : '', url: first ? first.url : '' };
-    this.handleChange('urlFile', value);
+    this.handleChange(index, 'urlFile', value);
   };
 
-  handleAddPassPortAllField = () => {
-    const { dispatch, idCurrentEmployee, passportData } = this.props;
-    const { document: documentPassPort, urlFile } = passportData;
+  handleAddPassPortAllField = (item, index) => {
+    const { dispatch, idCurrentEmployee } = this.props;
+    const { document: documentPassPort, urlFile } = item;
+
     let getFile = '';
     if (urlFile) {
       getFile = urlFile;
     }
+
     if (documentPassPort) {
-      const dataPassport = { id: documentPassPort._id, attachment: getFile.id };
+      const dataPassport = {
+        id: documentPassPort._id,
+        attachment: getFile.id,
+        key: `Passport${index + 1}`,
+      };
+
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: dataPassport,
@@ -149,20 +141,20 @@ class Edit extends Component {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
-          key: 'PassPort',
+          key: `PassPort${index + 1}`,
           attachment: getFile.id,
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
         },
-      }).then((id) => this.handleAddPassPort(id));
+      }).then((id) => this.handleAddPassPort(id, index, item));
     }
   };
 
-  handleAddPassPort = (id) => {
+  handleAddPassPort = (id, index, item) => {
     const { dispatch } = this.props;
     const dataTempKept = this.processDataKeptPassPort() || {};
-    const payloadAddPassPort = this.processDataAddPassPort(id) || {};
+    const payloadAddPassPort = this.processDataAddPassPort(id, item) || {};
     dispatch({
       type: 'employeeProfile/addPassPort',
       payload: payloadAddPassPort,
@@ -171,24 +163,25 @@ class Edit extends Component {
     });
   };
 
-  processDataChangesPassPort = () => {
-    const { passportData: passportDataTemp } = this.props;
+  processDataChangesPassPort = (item) => {
     const {
-      urlFile = '',
-      document = '',
-      passportNumber = '',
-      passportIssuedCountry = '',
-      passportIssuedOn = '',
-      passportValidTill = '',
-      _id: id = '',
-    } = passportDataTemp;
-    const payloadChanges = {
-      id,
-      document: document ? document._id : urlFile.id,
+      urlFile,
+      document,
       passportNumber,
       passportIssuedCountry,
       passportIssuedOn,
       passportValidTill,
+      _id,
+    } = item;
+
+    const payloadChanges = {
+      urlFile,
+      document: document ? document._id : '',
+      passportNumber,
+      passportIssuedCountry,
+      passportIssuedOn,
+      passportValidTill,
+      _id,
     };
 
     return payloadChanges;
@@ -222,15 +215,16 @@ class Edit extends Component {
     return formVisa;
   };
 
-  processDataAddPassPort = (id) => {
-    const { passportData: passportDataTemp, generalData } = this.props;
+  processDataAddPassPort = (id, item) => {
+    const { generalData } = this.props;
     const { employee = '' } = generalData;
     const {
       passportNumber = '',
       passportIssuedCountry = '',
       passportIssuedOn = '',
       passportValidTill = '',
-    } = passportDataTemp;
+    } = item;
+
     const payloadChanges = {
       passportNumber,
       passportIssuedCountry,
@@ -239,6 +233,7 @@ class Edit extends Component {
       document: id,
       employee,
     };
+
     return payloadChanges;
   };
 
@@ -305,9 +300,8 @@ class Edit extends Component {
     return formVisa;
   };
 
-  processDataKeptPassPort = () => {
-    const { passportData } = this.props;
-    const newObj = { ...passportData };
+  processDataKeptPassPort = (item) => {
+    const newObj = { ...item };
     const listKey = [
       'urlFile',
       'passportNumber',
@@ -316,7 +310,7 @@ class Edit extends Component {
       'passportValidTill',
       'document',
     ];
-    listKey.forEach((item) => delete newObj[item]);
+    listKey.forEach((itemPassport) => delete newObj[itemPassport]);
     return newObj;
   };
 
@@ -349,33 +343,44 @@ class Edit extends Component {
     });
   };
 
+  handleUpdatePassportGroup = (item, index) => {
+    const { dispatch } = this.props;
+    const payloadUpdatePassPort = this.processDataChangesPassPort(item) || {};
+    const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
+
+    this.handleAddPassPortAllField(item, index);
+    dispatch({
+      type: 'employeeProfile/updatePassPort',
+      payload: payloadUpdatePassPort,
+      dataTempKeptPassport,
+      key: 'openPassportandVisa',
+    });
+  };
+
   handleSave = async () => {
-    const { dispatch, passportData = {}, visaData = [] } = this.props;
-    const payloadUpdatePassPort = this.processDataChangesPassPort() || {};
-    const dataTempKept = this.processDataKeptPassPort() || {};
-    let idPassPort = '';
+    const { passportData = [], visaData = [] } = this.props;
 
-    if (passportData) {
-      idPassPort = passportData._id;
-    }
+    passportData.map((item, index) => {
+      let idPassPort = '';
+      const { _id } = item;
+      if (_id) {
+        idPassPort = _id;
+      }
 
-    if (idPassPort) {
-      this.handleAddPassPortAllField();
-      dispatch({
-        type: 'employeeProfile/updatePassPort',
-        payload: payloadUpdatePassPort,
-        dataTempKept,
-        key: 'openPassportandVisa',
-      });
-    } else {
-      this.handleAddPassPortAllField();
-    }
+      if (idPassPort) {
+        return this.handleUpdatePassportGroup(item, index);
+      } else {
+        return this.handleAddPassPortAllField(item, index);
+      }
+    });
+
     visaData.map((item, index) => {
       let idVisa = '';
       const { _id } = item;
       if (_id) {
         idVisa = _id;
       }
+
       if (idVisa) {
         return this.handleUpdateVisaGroup(item, index);
       }
@@ -383,13 +388,18 @@ class Edit extends Component {
     });
   };
 
-  handleCanCelIcon = () => {
+  handleCanCelIcon = (index) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
-    const item = { ...passportData, urlFile: '' };
-    const isModified = JSON.stringify(item) !== JSON.stringify(passportDataOrigin);
+    const item = passportData[index];
+
+    const newItem = { ...item, urlFile: '' };
+    const newList = [...passportData];
+    newList.splice(index, 1, newItem);
+
+    const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
-      payload: { passportData: item },
+      payload: { passportData: newList },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -397,8 +407,20 @@ class Edit extends Component {
     });
   };
 
-  handleGetSetSizeImage = (isLt5M) => {
-    this.setState({ isLt5M });
+  handleNameDataUpload = (url) => {
+    const split1URL = url.split('/');
+    const nameData1URL = split1URL[split1URL.length - 1];
+    return nameData1URL;
+  };
+
+  handleGetSetSizeImage = (index, isLt5M) => {
+    const { checkValidate } = this.state;
+    const item = checkValidate[index];
+    const newItem = { ...item, isLt5M };
+    const newList = [...checkValidate];
+    newList.splice(index, 1, newItem);
+
+    this.setState({ isLt5M, checkValidate: newList });
   };
 
   getConfirmContent = (setContent) => {
@@ -428,21 +450,27 @@ class Edit extends Component {
   };
 
   handleAddBtn = () => {
-    const { passportArr } = this.state;
-    const newPassportArr = [...passportArr];
-    const newObj = {
-      passportNumber: '',
-      passportIssuedCountry: {
-        name: 'Algeria',
-        _id: 'DZ',
-      },
-      passportIssuedOn: moment(),
-      passportValidTill: moment(),
-    };
+    const { passportData = [], dispatch } = this.props;
+    const newList = [...passportData, {}];
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: newList },
+    });
+  };
 
-    newPassportArr.push(newObj);
+  onRemoveCondition = (index) => {
+    const { passportData = [], dispatch } = this.props;
 
-    this.setState({ passportArr: newPassportArr });
+    const newPassportData = [...passportData];
+
+    newPassportData.splice(index, 1);
+    console.log('remove index: ', index);
+    console.log('newPassportData: ', newPassportData);
+
+    dispatch({
+      type: 'employeeProfile/saveTemp',
+      payload: { passportData: newPassportData },
+    });
   };
 
   render() {
@@ -453,19 +481,18 @@ class Edit extends Component {
       isCheckDateVisa,
       visible,
       linkImage,
-      passportArr,
+      dropdown,
     } = this.state;
-
-    const newPassportArr = [...passportArr];
 
     const { Option } = Select;
     const {
-      passportData = {},
+      passportData = [],
       handleCancel = () => {},
       countryList,
       loading,
-      loadingPassPort,
+      loadingPassportTest,
     } = this.props;
+
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
       return {
@@ -474,17 +501,6 @@ class Edit extends Component {
       };
     });
 
-    const {
-      urlFile = '',
-      passportNumber = '',
-      passportIssuedCountry,
-      passportIssuedOn = '',
-      passportValidTill = '',
-    } = passportData;
-    const splitURL = urlFile ? urlFile.url.split('/') : '';
-    const nameDataURL = splitURL[splitURL.length - 1];
-
-    const { dropdown } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -496,155 +512,167 @@ class Edit extends Component {
       },
     };
 
-    const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
-    const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
     const dateFormat = 'Do MMM YYYY';
 
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form className={styles.Form} {...formItemLayout} onFinish={this.handleSave}>
-          {passportArr ? (
-            <>
-              {newPassportArr.map((item, index) => {
-                const {
-                  passportNumber,
-                  passportIssuedCountry,
-                  passportIssuedOn,
-                  passportValidTill,
-                } = item;
-                return (
-                  <div key={index}>
-                    {index > 0 ? <div className={styles.line} /> : null}
+          {passportData.map((item, index) => {
+            const {
+              passportNumber,
+              passportIssuedCountry,
+              passportIssuedOn,
+              passportValidTill,
+              urlFile = '',
+            } = item;
 
-                    <div className={styles.styleUpLoad}>
-                      <Form.Item
-                        label="Passport Number"
-                        name={`passportNumber ${index}`}
-                        rules={[
-                          {
-                            pattern: /^[a-zA-Z0-9]{0,12}$/,
-                            message: formatMessage({
-                              id: 'pages.employeeProfile.validatePassPortNumber',
-                            }),
-                          },
-                        ]}
-                      >
-                        <Input
-                          className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
-                          defaultValue={passportNumber}
-                          onChange={(event) => {
-                            const { value: fieldValue } = event.target;
-                            this.handleChange('passportNumber', fieldValue);
-                          }}
+            const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
+            const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+
+            return (
+              <div key={`passport${index + 1}`}>
+                {index > 0 ? <div className={styles.line} /> : null}
+
+                <div className={styles.styleUpLoad}>
+                  <Form.Item
+                    label="Passport Number"
+                    name={`passportNumber ${index}`}
+                    rules={[
+                      {
+                        pattern: /^[a-zA-Z0-9]{0,12}$/,
+                        message: formatMessage({
+                          id: 'pages.employeeProfile.validatePassPortNumber',
+                        }),
+                      },
+                    ]}
+                  >
+                    <Input
+                      className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
+                      defaultValue={passportNumber}
+                      onChange={(event) => {
+                        const { value: fieldValue } = event.target;
+                        this.handleChange(index, 'passportNumber', fieldValue);
+                      }}
+                    />
+                  </Form.Item>
+                  {index >= 1 ? (
+                    <div>
+                      <img
+                        className={styles.removeIcon}
+                        onClick={() => this.onRemoveCondition(index)}
+                        src={removeIcon}
+                        alt="remove"
+                      />
+                    </div>
+                  ) : null}
+
+                  {!urlFile ? (
+                    <div className={styles.textUpload}>
+                      {loadingPassportTest[index] === false ||
+                      loadingPassportTest[index] === undefined ? (
+                        <UploadImage
+                          content={isLt5M ? 'Choose file' : `Retry`}
+                          setSizeImageMatch={(isImage5M) =>
+                            this.handleGetSetSizeImage(index, isImage5M)
+                          }
+                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                          loading={loading}
+                          index={index}
+                          name="passport"
                         />
-                      </Form.Item>
-                      {!urlFile ? (
-                        <div className={styles.textUpload}>
-                          {loadingPassPort === false ? (
-                            <UploadImage
-                              content={isLt5M ? 'Choose file' : `Retry`}
-                              setSizeImageMatch={(isImage5M) =>
-                                this.handleGetSetSizeImage(isImage5M)
-                              }
-                              getResponse={(resp) => this.handleGetUpLoad(resp)}
-                              loading={loading}
-                              name="passport"
-                            />
-                          ) : (
-                            <Spin loading={loadingPassPort} active="true" />
-                          )}
-                        </div>
                       ) : (
-                        <div className={styles.viewUpLoadData}>
-                          <p
-                            onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                            className={styles.viewUpLoadDataURL}
-                          >
-                            fileName
-                          </p>
-                          <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                          <img
-                            src={cancelIcon}
-                            alt=""
-                            onClick={this.handleCanCelIcon}
-                            className={styles.viewUpLoadDataIconCancel}
-                          />
-                        </div>
+                        <Spin loading={loadingPassportTest[index]} active="true" />
                       )}
                     </div>
-                    {urlFile !== '' ? (
-                      <Form.Item label="Uploaded file:" className={styles.labelUpload}>
-                        <p
-                          onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                          className={styles.urlUpload}
-                        >
-                          {nameDataURL}
-                        </p>
-                      </Form.Item>
-                    ) : (
-                      ''
-                    )}
-                    <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
-                      <Select
-                        className={styles.selectForm}
-                        onDropdownVisibleChange={this.handleDropdown}
-                        defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
-                        onChange={(value) => {
-                          this.handleChange('passportIssuedCountry', value);
-                        }}
-                        suffixIcon={
-                          dropdown ? (
-                            <UpOutlined className={styles.arrowUP} />
-                          ) : (
-                            <DownOutlined className={styles.arrowDown} />
-                          )
-                        }
+                  ) : (
+                    <div className={styles.viewUpLoadData}>
+                      <p
+                        onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                        className={styles.viewUpLoadDataURL}
                       >
-                        {formatCountryList.map((item) => {
-                          return (
-                            <Option key={item.value} value={item.value}>
-                              {item.name}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item label="Issued On" name={`passportIssuedOn ${index}`}>
-                      <DatePicker
-                        format={dateFormat}
-                        defaultValue={passportIssuedOn}
-                        onChange={(dates) => {
-                          this.handleChange('passportIssuedOn', dates);
-                        }}
-                        className={styles.dateForm}
+                        fileName
+                      </p>
+                      <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                      <img
+                        src={cancelIcon}
+                        alt=""
+                        onClick={() => this.handleCanCelIcon(index)}
+                        className={styles.viewUpLoadDataIconCancel}
                       />
-                    </Form.Item>
-                    <Form.Item
-                      label="Valid Till"
-                      name={`passportValidTill ${index}`}
-                      validateStatus={isDate === false ? 'error' : 'success'}
-                      help={
-                        isDate === false
-                          ? formatMessage({
-                              id: 'pages.employeeProfile.validateDate',
-                            })
-                          : ''
-                      }
+                    </div>
+                  )}
+                </div>
+                {urlFile ? (
+                  <Form.Item label="Uploaded file:" className={styles.labelUpload}>
+                    <p
+                      onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                      className={styles.urlUpload}
                     >
-                      <DatePicker
-                        format={dateFormat}
-                        defaultValue={passportValidTill}
-                        onChange={(dates) => {
-                          this.handleChange('passportValidTill', dates);
-                        }}
-                        className={isDate === false ? styles.dateFormValidate : styles.dateForm}
-                      />
-                    </Form.Item>
-                  </div>
-                );
-              })}
-            </>
-          ) : null}
+                      {this.handleNameDataUpload(urlFile.url)}
+                    </p>
+                  </Form.Item>
+                ) : (
+                  ''
+                )}
+                <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
+                  <Select
+                    className={styles.selectForm}
+                    onDropdownVisibleChange={this.handleDropdown}
+                    defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
+                    onChange={(value) => {
+                      this.handleChange(index, 'passportIssuedCountry', value);
+                    }}
+                    suffixIcon={
+                      dropdown ? (
+                        <UpOutlined className={styles.arrowUP} />
+                      ) : (
+                        <DownOutlined className={styles.arrowDown} />
+                      )
+                    }
+                  >
+                    {formatCountryList.map((itemCountry) => {
+                      return (
+                        <Option key={itemCountry.value} value={itemCountry.value}>
+                          {itemCountry.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+                <Form.Item label="Issued On" name={`passportIssuedOn ${index}`}>
+                  <DatePicker
+                    format={dateFormat}
+                    defaultValue={formatDatePassportIssueOn}
+                    onChange={(dates) => {
+                      this.handleChange(index, 'passportIssuedOn', dates);
+                    }}
+                    className={styles.dateForm}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Valid Till"
+                  name={`passportValidTill ${index}`}
+                  validateStatus={isDate === false ? 'error' : 'success'}
+                  help={
+                    isDate === false
+                      ? formatMessage({
+                          id: 'pages.employeeProfile.validateDate',
+                        })
+                      : ''
+                  }
+                >
+                  <DatePicker
+                    format={dateFormat}
+                    defaultValue={formatDatePassportValidTill}
+                    onChange={(dates) => {
+                      this.handleChange(index, 'passportValidTill', dates);
+                    }}
+                    className={isDate === false ? styles.dateFormValidate : styles.dateForm}
+                  />
+                </Form.Item>
+              </div>
+            );
+          })}
 
           <Col span={9} offset={1} className={styles.addMoreButton}>
             <div onClick={this.handleAddBtn}>

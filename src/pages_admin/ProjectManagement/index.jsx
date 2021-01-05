@@ -30,17 +30,10 @@ const ProjectManagement = (props) => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
-        company: '5e8723f131c6e53d60ae9678',
+        company: user.currentUser.company._id || '',
       },
     });
-
-    dispatch({
-      type: 'projectManagement/getEmployees',
-      payload: {},
-    });
   }, []);
-
-  console.log(props);
 
   return (
     <PageContainer>
@@ -113,50 +106,8 @@ const ProjectManagement = (props) => {
       </div>
     </PageContainer>
   );
-
-  // return (
-  //   <div className={s.projectManagement}>
-  //     <h1>Project list</h1>
-  //     <div className={s.tabs}>
-  //       <Tabs defaultActiveKey="1">
-  //         <TabPane
-  //           // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-  //           tab="Active"
-  //           key="1"
-  //         >
-  //           {/* <ProvisionalOfferDrafts list={provisionalOfferDrafts} /> */}
-  //           <ActiveProject
-  //             list={activeList}
-  //             columnArr={[
-  //               PROJECT_ID,
-  //               PROJECT_NAME,
-  //               CREATED_DATE,
-  //               PROJECT_MANAGER,
-  //               DURATION,
-  //               START_DATE,
-  //               MEMBERS,
-  //               PROJECT_HEALTH,
-  //               ACTION,
-  //             ]}
-  //           />
-  //         </TabPane>
-  //         <TabPane
-  //           // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
-  //           tab="Inactive"
-  //           key="2"
-  //         >
-  //           {/* <FinalOfferDrafts list={finalOfferDrafts} /> */}
-  //           <InactiveProject list={inactiveList} />
-  //         </TabPane>
-  //       </Tabs>
-  //     </div>
-  //   </div>
-  // );
 };
 
-// export default connect(({ projectManagement: { listData = [] } = {} }) => ({
-//   listData,
-// }))(ProjectManagement);
 export default connect(
   ({
     user,

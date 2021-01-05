@@ -11,13 +11,16 @@ export default {
     employeeInformationURL: '',
     passPortURL: '',
     passPortIDURL: '',
+    passport0URL: '',
     visa0URL: '',
     visa0IDURL: '',
+    passport1URL: '',
     visa1URL: '',
     visa1IDURL: '',
     loadingPassPort: false,
     loadingVisa: false,
     loadingVisaTest: [],
+    loadingPassportTest: [],
   },
 
   effects: {
@@ -28,6 +31,10 @@ export default {
           yield put({
             type: 'save',
             payload: { loadingPassPort: true },
+          });
+          yield put({
+            type: 'saveLoadingPassport',
+            payload: index,
           });
           break;
         case 'visa':
@@ -65,6 +72,16 @@ export default {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveLoadingPassport(state, action) {
+      const { loadingPassportTest } = state;
+      const getValuesLoading = [...loadingPassportTest];
+      const index = action.payload;
+      getValuesLoading.splice(index, 1, true);
+      return {
+        ...state,
+        loadingPassportTest: getValuesLoading,
       };
     },
     saveLoadingVisa(state, action) {

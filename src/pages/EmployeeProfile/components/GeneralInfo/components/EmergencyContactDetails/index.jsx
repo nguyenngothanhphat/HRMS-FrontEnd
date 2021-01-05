@@ -30,18 +30,11 @@ class EmergencyContact extends Component {
 
   handleCancel = () => {
     const { generalDataOrigin, generalData, dispatch } = this.props;
-    const {
-      emergencyContact = '',
-      emergencyPersonName = '',
-      emergencyRelation = '',
-    } = generalDataOrigin;
-    const reverseFields = {
-      emergencyContact,
-      emergencyPersonName,
-      emergencyRelation,
-    };
+    const { emergencyContactDetails = [] } = generalDataOrigin;
+    const reverseFields = { emergencyContactDetails };
     const payload = { ...generalData, ...reverseFields };
     const isModified = JSON.stringify(payload) !== JSON.stringify(generalDataOrigin);
+
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: payload },
