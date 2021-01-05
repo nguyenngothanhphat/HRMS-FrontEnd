@@ -820,7 +820,7 @@ const candidateInfo = {
             amountIn: data.amountIn || '',
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
-            hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
+            // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:
             //   (data.offerLetter && data.offerLetter.attachment) ||
             //   (data.staticOfferLetter && data.staticOfferLetter.url),

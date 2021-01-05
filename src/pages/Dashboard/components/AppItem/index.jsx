@@ -5,10 +5,10 @@ import { Link } from 'umi';
 import s from './index.less';
 
 const AppItem = (props) => {
-  const { Icon = '', name = '', add = false, link } = props;
+  const { Icon = '', name = '', add = false, link, showMore = () => {} } = props;
   if (add) {
     return (
-      <div className={s.container}>
+      <div className={s.container} onClick={showMore}>
         <div className={s.circleAdd}>
           <PlusIcon />
         </div>
