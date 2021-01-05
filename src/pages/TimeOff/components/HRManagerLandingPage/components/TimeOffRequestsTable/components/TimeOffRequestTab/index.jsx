@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-// import TeamDataTable from '../DataTable';
+// import TeamLeaveTable from '../DataTable';
 // import TeamCompoffTable from '../CompoffTable';
-import TeamDataTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/DataTable';
-import TeamCompoffTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
-import MyDataTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/DataTable';
-import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
+import TeamLeaveTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamLeaveTable';
+import TeamCompoffTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamCompoffTable';
+import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
+import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
 import FilterBar from '../FilterBar';
 
 import styles from './index.less';
@@ -240,13 +240,13 @@ class TimeOffRequestTab extends PureComponent {
           }
           <div>
             {type === 1 && category === 'TEAM' && (
-              <TeamDataTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
             )}
             {type === 1 && category === 'MY' && (
-              <MyDataTable data={formatData} selectedTab={selectedTab} />
+              <MyLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 1 && category === 'ALL' && (
-              <TeamDataTable data={formatData} selectedTab={selectedTab} />
+              <TeamLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'TEAM' && (
               <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />

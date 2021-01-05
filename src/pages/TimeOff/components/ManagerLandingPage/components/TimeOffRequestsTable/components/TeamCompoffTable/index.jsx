@@ -1,15 +1,17 @@
 import React, { PureComponent } from 'react';
 import { Table, Avatar, Tooltip } from 'antd';
 import { history, connect } from 'umi';
+import ApproveIcon from '@/assets/approveTR.svg';
+import OpenIcon from '@/assets/openTR.svg';
+import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
 import styles from './index.less';
 
-@connect(({ timeOff, loading, user }) => ({
-  loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
-  timeOff,
-  user,
+@connect(({ loading }) => ({
+  loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
+  loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
 }))
-class CompoffTable extends PureComponent {
+class TeamCompoffTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -20,11 +22,18 @@ class CompoffTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         return (
-          <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
+          <span className={styles.ID} onClick={() => this.onIdClick(_id)}>
             {ticketID}
           </span>
         );
       },
+    },
+    {
+      title: 'Requestee',
+      dataIndex: 'requestee',
+      align: 'left',
+      render: (requestee) => <span>{requestee}</span>,
+      // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Project',
@@ -38,16 +47,22 @@ class CompoffTable extends PureComponent {
       dataIndex: 'duration',
       align: 'left',
     },
+    // {
+    //   title: `Req’ted on `,
+    //   dataIndex: 'onDate',
+    //   align: 'left',
+    //   render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+    //   defaultSortOrder: ['ascend'],
+    //   sorter: {
+    //     compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+    //   },
+    //   sortDirections: ['ascend', 'descend', 'ascend'],
+    // },
     {
-      title: `Req’ted on `,
-      dataIndex: 'onDate',
-      align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
-      defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
+      title: 'Comment',
+      dataIndex: 'comment',
+      align: 'center',
+      render: () => <span />,
     },
     {
       title: 'Assigned',
@@ -80,11 +95,23 @@ class CompoffTable extends PureComponent {
       title: 'Action',
       align: 'left',
       dataIndex: '_id',
-      render: (_id) => (
-        <div className={styles.rowAction}>
-          <span onClick={() => this.viewRequest(_id)}>View Request</span>
-        </div>
-      ),
+      render: (_id) => {
+        const { selectedTab = '' } = this.props;
+        if (selectedTab === 'IN-PROGRESS')
+          return (
+            <div className={styles.rowAction}>
+              <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+              <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
+              <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
+            </div>
+          );
+
+        return (
+          <div className={styles.rowAction}>
+            <span onClick={() => this.onOpenClick(_id)}>View Request</span>
+          </div>
+        );
+      },
     },
   ];
 
@@ -95,6 +122,26 @@ class CompoffTable extends PureComponent {
       selectedRowKeys: [],
     };
   }
+
+  // HANDLE TEAM REQUESTS
+  onOpenClick = (_id) => {
+    history.push({
+      pathname: `/time-off/manager-view-request/${_id}`,
+      // state: { location: name },
+    });
+  };
+
+  onIdClick = (_id) => {
+    this.onOpenClick(_id);
+  };
+
+  onApproveClick = () => {
+    alert('Approve');
+  };
+
+  onCancelClick = () => {
+    alert('Cancel');
+  };
 
   // view request
   viewRequest = (_id) => {
@@ -132,6 +179,7 @@ class CompoffTable extends PureComponent {
         ticketID = '',
         _id = '',
         extraTime = [],
+        employee: { generalInfo: { firstName = '', lastName = '' } = {} },
       } = value;
 
       let duration = '';
@@ -159,17 +207,20 @@ class CompoffTable extends PureComponent {
           ticketID,
           _id,
         },
+        requestee: `${firstName} ${lastName}`,
       };
     });
   };
 
   render() {
-    const { data = [], loadingFetchMyCompoffRequests } = this.props;
+    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
     const parsedData = this.processData(data);
+
     const pagination = {
+      hideOnSinglePage: false,
       position: ['bottomLeft'],
       total: parsedData.length,
       showTotal: (total, range) => (
@@ -197,21 +248,26 @@ class CompoffTable extends PureComponent {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
+    const tableByRole =
+      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+        ? this.columns.filter((col) => col.dataIndex !== 'assigned')
+        : this.columns.filter((col) => col.dataIndex !== 'comment');
+
     return (
-      <div className={styles.CompoffTable}>
+      <div className={styles.TeamCompoffTable}>
         <Table
           size="middle"
+          loading={loading1 || loading2}
           rowSelection={rowSelection}
-          loading={loadingFetchMyCompoffRequests}
           pagination={{ ...pagination, total: parsedData.length }}
-          columns={this.columns}
+          columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
-
-export default CompoffTable;
+export default TeamCompoffTable;

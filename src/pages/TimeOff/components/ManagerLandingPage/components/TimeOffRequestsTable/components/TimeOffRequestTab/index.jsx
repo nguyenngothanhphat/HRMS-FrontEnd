@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-import TeamDataTable from '../DataTable';
-import TeamCompoffTable from '../CompoffTable';
-import MyDataTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/DataTable';
-import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/CompoffTable';
+import TeamLeaveTable from '../TeamLeaveTable';
+import TeamCompoffTable from '../TeamCompoffTable';
+import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
+import MyCompoffTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyCompoffTable';
 import FilterBar from '../FilterBar';
 
 import styles from './index.less';
@@ -238,10 +238,10 @@ class TimeOffRequestTab extends PureComponent {
           }
           <div>
             {type === 1 && category === 'TEAM' && (
-              <TeamDataTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
             )}
             {type === 1 && category === 'MY' && (
-              <MyDataTable data={formatData} selectedTab={selectedTab} />
+              <MyLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'TEAM' && (
               <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />

@@ -7,7 +7,7 @@ import styles from './index.less';
 @connect(({ loading }) => ({
   loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
-class DataTable extends PureComponent {
+class MyLeaveTable extends PureComponent {
   columns = [
     {
       title: 'Ticket ID',
@@ -222,7 +222,7 @@ class DataTable extends PureComponent {
     };
 
     return (
-      <div className={styles.DataTable}>
+      <div className={styles.MyLeaveTable}>
         <Table
           size="middle"
           loading={loadingFetchLeaveRequests}
@@ -231,11 +231,11 @@ class DataTable extends PureComponent {
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey="_id"
+          rowKey={(id) => id.ticketID}
         />
       </div>
     );
   }
 }
 
-export default DataTable;
+export default MyLeaveTable;
