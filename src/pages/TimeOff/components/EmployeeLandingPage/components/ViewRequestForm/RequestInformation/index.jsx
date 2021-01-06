@@ -125,7 +125,7 @@ class RequestInformation extends PureComponent {
     const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/employeeWithdrawInProgress',
+      type: 'timeOff/employeeWithdrawApproved',
       payload: { _id, title, reason },
     });
     if (statusCode === 200) {

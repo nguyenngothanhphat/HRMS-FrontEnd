@@ -51,6 +51,8 @@ class LeaveRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case 'DRAFTS':
         return `${styles.leaveStatus} ${styles.draftsColor}`;
+      case 'ON-HOLD':
+        return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -66,6 +68,8 @@ class LeaveRequestForm extends PureComponent {
         return 'Rejected';
       case 'DRAFTS':
         return 'Drafts';
+      case 'ON-HOLD':
+        return 'On hold';
       default:
         return 'Unknown';
     }
@@ -115,7 +119,8 @@ class LeaveRequestForm extends PureComponent {
           )}
           {!loadingFetchLeaveRequestById &&
             action === 'edit-leave-request' &&
-            (status === 'ACCEPTED' || status === 'REJECTED') && (
+            status !== 'DRAFTS' &&
+            status !== 'IN-PROGRESS' && (
               <div
                 style={{
                   display: 'flex',
@@ -130,8 +135,7 @@ class LeaveRequestForm extends PureComponent {
           {(action === 'new-leave-request' ||
             (action === 'edit-leave-request' &&
               !loadingFetchLeaveRequestById &&
-              status !== 'ACCEPTED' &&
-              status !== 'REJECTED')) && (
+              (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
                   <Col xs={24} lg={16}>
