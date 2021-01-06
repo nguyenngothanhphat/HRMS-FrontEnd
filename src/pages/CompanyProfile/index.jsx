@@ -1,8 +1,14 @@
-import Layout from '@/components/LayoutEmployeeProfile';
-import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import CompanyDetails from './components/CompanyDetails';
+import { Tabs } from 'antd';
+import Layout from '@/components/LayoutEmployeeProfile';
 import UserManagement from './components/UserManagement';
+import CompanyDetails from './components/CompanyDetails';
+import WorkLocations from './components/WorkLocations';
+import Departments from './components/Departments';
+import CompanySignatory from './components/CompanySignatory';
+import BillingPayments from './components/BillingPayments';
+import PlanInfo from './components/PlanInfo';
+import Integrations from './components/Integrations';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -16,32 +22,32 @@ const listMenu = [
   {
     id: 2,
     name: 'Work Locations',
-    component: <CompanyDetails />,
+    component: <WorkLocations />,
   },
   {
     id: 3,
     name: 'Departments',
-    component: <CompanyDetails />,
+    component: <Departments />,
   },
   {
     id: 4,
     name: 'Company Signatory',
-    component: <CompanyDetails />,
+    component: <CompanySignatory />,
   },
   {
     id: 5,
     name: 'Billing & Payments',
-    component: <CompanyDetails />,
+    component: <BillingPayments />,
   },
   {
     id: 6,
     name: 'Plan info',
-    component: <CompanyDetails />,
+    component: <PlanInfo />,
   },
   {
     id: 7,
     name: 'Integrations',
-    component: <CompanyDetails />,
+    component: <Integrations />,
   },
 ];
 
