@@ -82,7 +82,10 @@ class CommonLayout extends PureComponent {
       <div className={s.root}>
         <Affix offsetTop={isCompanyProfile ? 0 : 90}>
           <div className={s.viewLeft}>
-            <div className={s.viewLeft__menu}>
+            <div
+              className={s.viewLeft__menu}
+              style={isCompanyProfile ? { padding: '24px 0 24px 40px' } : {}}
+            >
               {listMenu.map((item) => (
                 <ItemMenu
                   key={item.id}
