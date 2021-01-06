@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Tooltip } from 'antd';
 import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
@@ -123,13 +123,19 @@ class TeamLeaveTable extends PureComponent {
         if (selectedTab === 'IN-PROGRESS')
           return (
             <div className={styles.rowAction}>
-              <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
-              <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
-              <img
-                src={CancelIcon}
-                onClick={() => this.onCancelClick(_id, ticketID)}
-                alt="cancel"
-              />
+              <Tooltip title="View">
+                <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+              </Tooltip>
+              <Tooltip title="Approve">
+                <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
+              </Tooltip>
+              <Tooltip title="Reject">
+                <img
+                  src={CancelIcon}
+                  onClick={() => this.onCancelClick(_id, ticketID)}
+                  alt="cancel"
+                />
+              </Tooltip>
             </div>
           );
 
