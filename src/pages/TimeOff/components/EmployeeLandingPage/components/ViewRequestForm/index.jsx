@@ -68,7 +68,9 @@ class ViewRequestForm extends PureComponent {
 
   render() {
     const {
-      timeOff: { viewingLeaveRequest: { status = '', ticketID = '' } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest: { status = '', ticketID = '', approvalManager = {} } = {},
+      } = {},
     } = this.props;
 
     const {
@@ -92,7 +94,7 @@ class ViewRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent approvalManager={approvalManager} status={status} />
             </Col>
           </Row>
         </div>

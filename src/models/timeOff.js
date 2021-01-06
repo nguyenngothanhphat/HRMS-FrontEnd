@@ -470,22 +470,36 @@ const timeOff = {
     },
 
     // REPORTING MANAGER
-    *reportingManagerApprove({ payload = {} }, { call }) {
+    *reportingManagerApprove({ payload = {} }, { call, put }) {
       try {
         const response = yield call(reportingManagerApprove, payload);
-        const { statusCode } = response;
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
         return response;
       } catch (errors) {
         dialog(errors);
         return {};
       }
     },
-    *reportingManagerReject({ payload = {} }, { call }) {
+    *reportingManagerReject({ payload = {} }, { call, put }) {
       try {
         const response = yield call(reportingManagerReject, payload);
-        const { statusCode } = response;
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -498,6 +512,16 @@ const timeOff = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveViewingLeaveRequest(state, action) {
+      const { viewingLeaveRequest } = state;
+      return {
+        ...state,
+        viewingLeaveRequest: {
+          ...viewingLeaveRequest,
+          ...action.payload,
+        },
       };
     },
   },

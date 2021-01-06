@@ -90,6 +90,9 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
+      this.setState({
+        isReject: false,
+      });
     }
   };
 
@@ -122,6 +125,9 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
+      this.setState({
+        isReject: false,
+      });
     }
   };
 
@@ -363,7 +369,7 @@ class RequestInformation extends PureComponent {
 
         <TimeOffModal
           visible={showModal}
-          onOk={this.refreshPage}
+          onOk={() => this.setShowModal(false)}
           content={
             isReject
               ? 'Timeoff request has been rejected from your end. All in loop will be notified.'

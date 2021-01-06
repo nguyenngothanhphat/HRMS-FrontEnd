@@ -204,7 +204,7 @@ class RequestInformation extends PureComponent {
               </Row>
               {status === 'REJECTED' && (
                 <Row>
-                  <Col span={6}>Comment</Col>
+                  <Col span={6}>Request Rejection Comments</Col>
                   <Col span={18} className={styles.detailColumn}>
                     <span>{comment}</span>
                   </Col>

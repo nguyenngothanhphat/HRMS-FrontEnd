@@ -699,7 +699,7 @@ class RequestInformation extends PureComponent {
         </div>
         <TimeOffModal
           visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
+          onOk={() => this.setShowSuccessModal(false)}
           content={this.renderModalContent()}
           submitText="OK"
         />

@@ -199,6 +199,9 @@ class RequestInformation extends PureComponent {
     if (!value) {
       setTimeout(() => {
         history.goBack();
+        // history.push({
+        //   pathname: `/time-off`,
+        // });
       }, 200);
     }
   };
@@ -1057,7 +1060,7 @@ class RequestInformation extends PureComponent {
 
         <TimeOffModal
           visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
+          onOk={() => this.setShowSuccessModal(false)}
           content={this.renderModalContent()}
           submitText="OK"
         />

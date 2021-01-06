@@ -127,22 +127,26 @@ class LeaveRequestForm extends PureComponent {
               </div>
             )}
 
-          {!loadingFetchLeaveRequestById && status !== 'ACCEPTED' && status !== 'REJECTED' && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingLeaveRequest={viewingLeaveRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent />
-                </Col>
-              </Row>
-            </>
+          {(action === 'new-leave-request' ||
+            (action === 'edit-leave-request' &&
+              !loadingFetchLeaveRequestById &&
+              status !== 'ACCEPTED' &&
+              status !== 'REJECTED')) && (
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingLeaveRequest={viewingLeaveRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>

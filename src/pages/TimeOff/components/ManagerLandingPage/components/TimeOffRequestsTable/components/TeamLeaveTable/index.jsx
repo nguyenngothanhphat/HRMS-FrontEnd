@@ -79,8 +79,8 @@ class TeamLeaveTable extends PureComponent {
     {
       title: 'Comment',
       dataIndex: 'comment',
-      align: 'center',
-      render: (comment) => <span>{comment}</span>,
+      align: 'left',
+      render: (comment) => <span>{comment.slice(0, 12)}...</span>,
     },
     // {
     //   title: 'Assigned',
