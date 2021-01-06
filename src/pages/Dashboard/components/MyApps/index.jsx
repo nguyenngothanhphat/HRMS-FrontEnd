@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col } from 'antd';
 import { ReactComponent as DateIcon } from '@/assets/dashboard_date.svg';
 import { ReactComponent as NewsIcon } from '@/assets/newspaper.svg';
@@ -12,33 +12,46 @@ import s from './index.less';
 const appList = [
   {
     id: 1,
-    name: 'Timesheets',
-    icon: <DateIcon />,
-  },
-  {
-    id: 2,
-    name: 'Timeoff',
-    icon: <NewsIcon />,
-    link: '/time-off',
-  },
-  {
-    id: 3,
     name: 'Directory',
     icon: <DateIcon />,
     link: '/directory',
   },
   {
+    id: 2,
+    name: 'Onboarding',
+    icon: <DateIcon />,
+    link: '/employee-onboarding',
+  },
+  {
+    id: 3,
+    name: 'Timeoff',
+    icon: <NewsIcon />,
+    link: '/time-off',
+  },
+  {
     id: 4,
-    name: 'Expenso',
-    icon: <TimeIcon />,
+    name: 'Offboarding',
+    icon: <DateIcon />,
+    link: '/offboarding',
   },
   {
     id: 5,
-    name: 'Report',
-    icon: <ReportIcon />,
+    name: 'Payroll',
+    icon: <DateIcon />,
   },
   {
     id: 6,
+    name: 'Project management',
+    icon: <TimeIcon />,
+    link: '/project-management',
+  },
+  {
+    id: 7,
+    name: 'Timesheet',
+    icon: <DateIcon />,
+  },
+  {
+    id: 8,
     add: true,
   },
 ];
@@ -81,10 +94,34 @@ const renderAppRow = (list) => {
 // };
 
 const MyApps = () => {
+  const [list, setList] = useState([...[...appList].splice(0, 4), appList[appList.length - 1]]);
+
+  const showMore = () => {
+    setList([...appList]);
+    console.log('MORE');
+  };
+
   return (
     <div className={s.container}>
       <h3>my apps</h3>
-      <Row>{renderAppRow(appList)}</Row>
+      {/* <Row>{renderAppRow(list)}</Row> */}
+      <Row>
+        {list.map((app) => {
+          const { name = '', icon = '', add = false, link } = app;
+          if (add) {
+            return (
+              <Col span={3}>
+                <AppItem add showMore={showMore} />
+              </Col>
+            );
+          }
+          return (
+            <Col span={3}>
+              <AppItem Icon={icon} name={name} link={link} />
+            </Col>
+          );
+        })}
+      </Row>
     </div>
   );
 };

@@ -121,17 +121,20 @@ class InformationUploadForm extends PureComponent {
   addDocument = (fieldsValue, attachmentId, addDoc) => {
     const {
       dispatch,
-      documentsManagement: { employeeDetail: { employee = '' } = {} },
+      documentsManagement: { employeeDetail: { employee = '', workEmail = '' } = {} },
     } = this.props;
     const { secondType } = this.state;
-    const { documentName = '', documentGroup = '', company = '' } = fieldsValue;
+    const { documentName = '', documentGroup = '', company = '', employeeId = '' } = fieldsValue;
+    const keyFileName = `${documentName}_${employeeId}`;
+    const shareDocument = [workEmail];
     const documentData = {
-      key: documentName,
+      key: keyFileName.replace(/ /g, ''),
       employeeGroup: secondType,
       parentEmployeeGroup: documentGroup,
       attachment: attachmentId,
       employee,
       company,
+      shareDocument,
     };
     dispatch({
       type: 'documentsManagement/uploadDocument',

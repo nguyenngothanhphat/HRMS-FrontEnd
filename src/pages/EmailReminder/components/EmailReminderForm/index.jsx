@@ -15,7 +15,7 @@ import QuillMention from 'quill-mention';
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
-import EditorQuill from './components';
+import EditorQuill from './components/EditorQuill';
 
 Quill.register('modules/mentions', QuillMention);
 
@@ -54,20 +54,19 @@ Quill.register('modules/mentions', QuillMention);
   }),
 )
 class EmailReminderForm extends PureComponent {
-
   // Render list auto text and push into array
   listTexts = [];
 
   listTemp = () => {
-        const {listAutoField} = this.props
-        const newList = [...listAutoField]; 
+    const { listAutoField } = this.props;
+    const newList = [...listAutoField];
 
-        newList.map((item) => {
-            this.listTexts.push(item);
-            return this.listTexts;
-        }) 
-        return this.listTexts; 
-  }
+    newList.map((item) => {
+      this.listTexts.push(item);
+      return this.listTexts;
+    });
+    return this.listTexts;
+  };
 
   constructor(props) {
     super(props);
@@ -648,7 +647,11 @@ class EmailReminderForm extends PureComponent {
                     >
                       {units.map((unit, _index) => {
                         return (
-                          <Option value={unit.value} disabled={this.checkOptionKey(unit.value)} key={`${_index + 1}`}>
+                          <Option
+                            value={unit.value}
+                            disabled={this.checkOptionKey(unit.value)}
+                            key={`${_index + 1}`}
+                          >
                             {unit.name}
                           </Option>
                         );
@@ -665,7 +668,11 @@ class EmailReminderForm extends PureComponent {
                       onChange={(value) => this.onChangeCondition(index, 'tobeVerb', value)}
                     >
                       {toBeVerbs.map((toBeVerb, _index) => {
-                        return <Option value={toBeVerb.value} key={`${_index + 1}`}>{toBeVerb.name}</Option>;
+                        return (
+                          <Option value={toBeVerb.value} key={`${_index + 1}`}>
+                            {toBeVerb.name}
+                          </Option>
+                        );
                       })}
                     </Select>
                   </Col>
@@ -798,7 +805,11 @@ class EmailReminderForm extends PureComponent {
                 onChange={(value) => this.onChangeTriggerEvent(value)}
               >
                 {triggerEventList.map((option, _index) => {
-                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
+                  return (
+                    <Option value={option.value} key={`${_index + 1}`}>
+                      {option.name}
+                    </Option>
+                  );
                 })}
               </Select>
             </Form.Item>
@@ -820,7 +831,11 @@ class EmailReminderForm extends PureComponent {
             <Form.Item name="sendingDate" label="Sending date">
               <Radio.Group onChange={(value) => this.onChangeSendingDate(value)}>
                 {sendingDate.map((option, _index) => {
-                  return <Radio value={option.value} key={`${_index + 1}`}>{option.name}</Radio>;
+                  return (
+                    <Radio value={option.value} key={`${_index + 1}`}>
+                      {option.name}
+                    </Radio>
+                  );
                 })}
               </Radio.Group>
             </Form.Item>
@@ -835,7 +850,11 @@ class EmailReminderForm extends PureComponent {
                 onChange={this.handleChangeApply}
               >
                 {applyTo.map((option, _index) => {
-                  return <Option value={option.value} key={`${_index + 1}`}>{option.name}</Option>;
+                  return (
+                    <Option value={option.value} key={`${_index + 1}`}>
+                      {option.name}
+                    </Option>
+                  );
                 })}
               </Select>
             </Form.Item>
@@ -878,7 +897,11 @@ class EmailReminderForm extends PureComponent {
           <Col span={24}>
             {/* <Form.Item name="message" label="Email message"> */}
             <p className={styles.label}>Email message :</p>
-            <EditorQuill messages={messages} handleChangeEmail={this.handleChangeEmail} listAutoText={listAutoText} />
+            <EditorQuill
+              messages={messages}
+              handleChangeEmail={this.handleChangeEmail}
+              listAutoText={listAutoText}
+            />
           </Col>
 
           <Col className={styles.buttons} span={8} offset={16}>
@@ -917,21 +940,21 @@ class EmailReminderForm extends PureComponent {
           </div>
         ) : (
           <>
-            {
-              loadingFetchListAutoField ? (
-                <div className={styles.EditEmailForm_loading}>
-                  <Spin size="large" />
+            {loadingFetchListAutoField ? (
+              <div className={styles.EditEmailForm_loading}>
+                <Spin size="large" />
+              </div>
+            ) : (
+              <div className={styles.EmailReminderForm}>
+                <div className={styles.EmailReminderForm_title}>
+                  {formatMessage({ id: 'component.emailReminderForm.title' })}
+                  <hr />
                 </div>
-              ) : (
-                <div className={styles.EmailReminderForm}>
-                  <div className={styles.EmailReminderForm_title}>
-                    {formatMessage({ id: 'component.emailReminderForm.title' })}
-                    <hr />
-                  </div>
-                  <div className={styles.EmailReminderForm_form}>{this._renderForm(listAutoText)}</div>
+                <div className={styles.EmailReminderForm_form}>
+                  {this._renderForm(listAutoText)}
                 </div>
-              )
-            }
+              </div>
+            )}
           </>
         )}
       </>

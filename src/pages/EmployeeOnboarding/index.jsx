@@ -52,7 +52,6 @@ class EmployeeOnboarding extends PureComponent {
     const { TabPane } = Tabs;
 
     const isHrManager = rolesList.indexOf(ROLE.HRMANAGER) > -1;
-    console.log();
     return (
       <PageContainer>
         {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? (

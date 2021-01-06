@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
-import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
+// import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 import Test from './components/test';
@@ -120,25 +120,17 @@ class EmployeeProfile extends Component {
         component: <EmploymentTab />,
       });
     }
-    if (permissions.viewTabPerformance !== -1 || profileOwner) {
-      listMenu.push({
-        id: 3,
-        name: 'Performance History',
-        component: <PerformanceHistory />,
-      });
-    }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({ id: 3, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
     }
-    // { id: 6, name: 'Work Eligibility & I-9', component: <Test /> },
     if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
-      listMenu.push({ id: 7, name: 'Time & Scheduling', component: <Test /> });
+      listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 8, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
     }
 
     return listMenu;

@@ -17,13 +17,15 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'offBoardingManagement/fetchListOffBoarding',
+      payload: {},
     });
   };
 
-  getDataTable = () => {
+  getDataTable = (filterData) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'offBoardingManagement/fetchListOffBoarding',
+      payload: filterData,
     });
   };
 
