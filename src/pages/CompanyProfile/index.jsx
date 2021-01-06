@@ -53,11 +53,11 @@ const listMenu = [
 
 export default class CompanyProfile extends PureComponent {
   render() {
-    const {
-      match: { params: { reId: companyId = '' } = {} },
-    } = this.props;
+    // const {
+    //   match: { params: { reId: companyId = '' } = {} },
+    // } = this.props;
 
-    console.log('companyid', companyId);
+    // console.log('companyid', companyId);
     return (
       <div className={styles.root}>
         <div className={styles.titlePage}>Company Profile</div>

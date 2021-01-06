@@ -1,0 +1,106 @@
+.root {
+  width: 100%;
+  height: fit-content;
+  background: #fafafa;
+  mix-blend-mode: normal;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.27);
+  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 30px;
+  p {
+    margin: 0;
+  }
+  .viewTop {
+    display: flex;
+    justify-content: space-between;
+    &__title {
+      font-weight: 500;
+      font-size: 14px;
+      color: #161c29;
+    }
+    &__btnAddNew {
+      display: flex;
+      cursor: pointer;
+      &__icon {
+        color: #2c6df9;
+        margin: 2px 7px 0 0;
+      }
+      &__text {
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+        text-decoration-line: underline;
+        color: #707177;
+      }
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+  }
+  .viewAddNew {
+    border-top: 1px solid #e2e4e8;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    &__viewInput {
+      width: 265px;
+      :global {
+        .ant-input {
+          background: #ffffff;
+          border: 1px solid #d6dce0;
+          box-sizing: border-box;
+          border-radius: 5px;
+          width: 100%;
+          height: 42px;
+          &:focus {
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    &__viewUpload {
+      width: 176px;
+      height: 78px;
+      background: #ffffff;
+      border: 1px solid #d6dce0;
+      box-sizing: border-box;
+      border-radius: 5px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &__upload {
+        width: 156px;
+        height: 62px;
+        background: rgba(233, 240, 255, 0.19);
+        border: 1px dashed #b6c1d9;
+        box-sizing: border-box;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        color: #707177;
+        cursor: pointer;
+        &__icon {
+          font-size: 11;
+          margin-right: 5px;
+        }
+      }
+      &__textChange {
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+        text-decoration-line: underline;
+        cursor: pointer;
+        color: #707177;
+        margin-top: 9px;
+      }
+    }
+    &__viewDelete {
+      width: 115px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
