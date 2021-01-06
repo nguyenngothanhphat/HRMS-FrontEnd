@@ -66,9 +66,9 @@ class RequestInformation extends PureComponent {
 
   // ON VIEW EMPLOYEE PROFILE
   onViewEmployeeProfile = (_id) => {
-    // history.push({
-    //   pathname: `/directory/employee-profile/${_id}`,
-    // });
+    history.push({
+      pathname: `/directory/employee-profile/${_id}`,
+    });
   };
 
   // REJECT CLICKED
@@ -293,7 +293,7 @@ class RequestInformation extends PureComponent {
                 </Row>
                 {status === 'REJECTED' && (
                   <Row>
-                    <Col span={6}>Comment</Col>
+                    <Col span={6}>Request Rejection Comments</Col>
                     <Col span={18} className={styles.detailColumn}>
                       <span>{comment}</span>
                     </Col>

@@ -311,12 +311,20 @@ class RequestInformation extends PureComponent {
   // DISABLE DATE OF DATE PICKER
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
-    return current && current > moment(durationTo);
+    return (
+      (current && current > moment(durationTo)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
-    return current && current < moment(durationFrom);
+    return (
+      (current && current < moment(durationFrom)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   // RENDER EMAILS LIST

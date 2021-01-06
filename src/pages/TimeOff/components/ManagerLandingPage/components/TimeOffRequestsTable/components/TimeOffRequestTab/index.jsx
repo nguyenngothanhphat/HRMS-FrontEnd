@@ -22,6 +22,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength: 0,
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
+      selectedTabNumber: '1',
     };
   }
 
@@ -147,6 +148,7 @@ class TimeOffRequestTab extends PureComponent {
 
     this.setState({
       selectedTab,
+      selectedTabNumber: id,
     });
   };
 
@@ -197,6 +199,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       selectedTab,
+      selectedTabNumber,
     } = this.state;
 
     const dataNumber = {
@@ -212,17 +215,28 @@ class TimeOffRequestTab extends PureComponent {
           dataNumber={dataNumber}
           setSelectedFilterTab={this.setSelectedFilterTab}
           category={category}
+          selectedTab={selectedTabNumber}
         />
         <div className={styles.tableContainer}>
           <div>
             {type === 1 && category === 'TEAM' && (
-              <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamLeaveTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 1 && category === 'MY' && (
               <MyLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'TEAM' && (
-              <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamCompoffTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 2 && category === 'MY' && (
               <MyCompoffTable data={formatData} selectedTab={selectedTab} />

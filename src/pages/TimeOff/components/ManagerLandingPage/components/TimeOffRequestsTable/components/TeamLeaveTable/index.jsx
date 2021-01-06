@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Tag } from 'antd';
+import { Table, Tag } from 'antd';
 import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
+import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
@@ -80,7 +81,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'left',
-      render: (comment) => <span>{comment.slice(0, 12)}...</span>,
+      render: (comment) => (comment ? <span>{comment.slice(0, 12)}...</span> : <span />),
     },
     // {
     //   title: 'Assigned',
@@ -113,17 +114,22 @@ class TeamLeaveTable extends PureComponent {
     {
       title: 'Action',
       align: 'left',
-      dataIndex: '_id',
+      dataIndex: 'id',
       // fixed: 'right',
       // width: '20%',
-      render: (_id) => {
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
         const { selectedTab = '' } = this.props;
         if (selectedTab === 'IN-PROGRESS')
           return (
             <div className={styles.rowAction}>
               <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
-              <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
-              <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
+              <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
+              <img
+                src={CancelIcon}
+                onClick={() => this.onCancelClick(_id, ticketID)}
+                alt="cancel"
+              />
             </div>
           );
 
@@ -141,6 +147,9 @@ class TeamLeaveTable extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
+      commentModalVisible: false,
+      rejectingId: '',
+      rejectingTicketID: '',
     };
   }
 
@@ -156,12 +165,48 @@ class TeamLeaveTable extends PureComponent {
     this.onOpenClick(_id);
   };
 
-  onApproveClick = () => {
-    alert('Approve');
+  onRefreshTable = (onMovedTab) => {
+    const { onRefreshTable = () => {} } = this.props;
+    onRefreshTable(onMovedTab);
   };
 
-  onCancelClick = () => {
-    alert('Cancel');
+  onApproveClick = async (_id) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/reportingManagerApprove',
+      payload: {
+        _id,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.onRefreshTable('2');
+    }
+  };
+
+  onCancelClick = (_id, ticketID) => {
+    this.toggleCommentModal(true);
+    this.setState({
+      rejectingId: _id,
+      rejectingTicketID: ticketID,
+    });
+  };
+
+  onReject = async (comment) => {
+    const { dispatch } = this.props;
+    const { rejectingId } = this.state;
+    const res = await dispatch({
+      type: 'timeOff/reportingManagerReject',
+      payload: {
+        _id: rejectingId,
+        comment,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.toggleCommentModal(false);
+      this.onRefreshTable('3');
+    }
   };
 
   // view request
@@ -237,9 +282,15 @@ class TeamLeaveTable extends PureComponent {
     });
   };
 
+  toggleCommentModal = (value) => {
+    this.setState({
+      commentModalVisible: value,
+    });
+  };
+
   render() {
     const { data = [], loading1, loading2, selectedTab = '' } = this.props;
-    const { selectedRowKeys, pageSelected } = this.state;
+    const { selectedRowKeys, pageSelected, commentModalVisible, rejectingTicketID } = this.state;
     const rowSize = 10;
 
     const parsedData = this.processData(data);
@@ -289,6 +340,12 @@ class TeamLeaveTable extends PureComponent {
           dataSource={parsedData}
           scroll={scroll}
           rowKey={(id) => id.ticketID}
+        />
+        <RejectCommentModal
+          visible={commentModalVisible}
+          onClose={() => this.toggleCommentModal(false)}
+          onReject={this.onReject}
+          ticketID={rejectingTicketID}
         />
       </div>
     );
