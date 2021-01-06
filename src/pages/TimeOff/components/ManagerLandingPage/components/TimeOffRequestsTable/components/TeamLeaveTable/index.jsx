@@ -18,7 +18,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Ticket ID',
       dataIndex: 'id',
       align: 'left',
-      // fixed: 'left',
+      fixed: 'left',
       width: '17%',
       render: (id) => {
         const { ticketID = '', _id = '', onDate = '', status = '' } = id;
