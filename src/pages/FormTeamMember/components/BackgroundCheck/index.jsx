@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Row, Col, Typography, Spin, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
-import { map, isEmpty } from 'lodash';
+import { map } from 'lodash';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -230,7 +230,7 @@ class BackgroundCheck extends Component {
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory } = this.props;
     if (e.target.value === 1) {
-      console.log(e.target.value);
+      // console.log(e.target.value);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -267,7 +267,7 @@ class BackgroundCheck extends Component {
     const { dispatch } = this.props;
     const {
       tempData: { documentList, employer, employeeType },
-      data,
+      // data,
       data: {
         department,
         workLocation,
@@ -298,23 +298,6 @@ class BackgroundCheck extends Component {
         },
       });
     } else {
-      console.log({
-        candidate: _id,
-        fullName,
-        position,
-        employeeType: employeeType._id,
-        department: department._id,
-        title: title._id,
-        workLocation: workLocation._id,
-        reportingManager: reportingManager._id,
-        privateEmail,
-        workEmail,
-        previousExperience,
-        salaryStructure,
-        documentChecklistSetting: newArrToAdjust,
-        action: 'submit',
-        options: 1,
-      });
       dispatch({
         type: 'candidateInfo/submitPhase1Effect',
         payload: {
@@ -379,7 +362,7 @@ class BackgroundCheck extends Component {
     // Modify
     const {
       tempData: { documentList, employer, employeeType },
-      data,
+      // data,
       data: {
         department,
         workLocation,
