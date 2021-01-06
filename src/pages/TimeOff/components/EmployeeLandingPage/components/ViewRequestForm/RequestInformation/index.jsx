@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin } from 'antd';
+import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -10,7 +10,9 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
-  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  loadingRemoveLeaveRequestOnDatabase: loading.effects['timeOff/removeLeaveRequestOnDatabase'],
+  loadingEmployeeWithdrawInProgress: loading.effects['timeOff/employeeWithdrawInProgress'],
+  loadingEmployeeWithdrawApproved: loading.effects['timeOff/employeeWithdrawApproved'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -30,6 +32,12 @@ class RequestInformation extends PureComponent {
       type: 'timeOff/fetchLeaveRequestById',
       id,
     });
+  };
+
+  refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 3000);
   };
 
   // EDIT BUTTON
@@ -69,16 +77,40 @@ class RequestInformation extends PureComponent {
   };
 
   // ON WITHDRAW WHEN A TICKET IS DRAFT OR IN PROGRESS
-  onProceed = async () => {
+  onProceedInProgress = async () => {
     const {
       timeOff: {
-        viewingLeaveRequest: { _id: id = '', ticketID = '', type: { name = '' } = {} } = {},
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
       } = {},
     } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/withdrawLeaveRequest',
-      id,
+      type: 'timeOff/employeeWithdrawInProgress',
+      payload: { _id },
+    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'timeOff/removeLeaveRequestOnDatabase',
+        payload: { id: _id },
+      }).then(() => {
+        history.push({
+          pathname: `/time-off`,
+          state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
+        });
+      });
+    }
+  };
+
+  onProceedDrafts = async () => {
+    const {
+      timeOff: {
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/removeLeaveRequestOnDatabase',
+      id: _id,
     });
     if (statusCode === 200) {
       history.push({
@@ -89,9 +121,20 @@ class RequestInformation extends PureComponent {
   };
 
   // ON WITHDRAW WHEN A TICKET WAS APPROVED
-  onProceed2 = async (title, reason) => {
-    // eslint-disable-next-line no-console
-    console.log('withdraw', title, reason);
+  onProceedApproved = async (title, reason) => {
+    const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/employeeWithdrawInProgress',
+      payload: { _id, title, reason },
+    });
+    if (statusCode === 200) {
+      notification.success({
+        message: 'Withdraw request sent!',
+      });
+      this.setShowWithdraw2Modal(false);
+      this.refreshPage();
+    }
   };
 
   checkWithdrawValid = (fromDate) => {
@@ -105,7 +148,9 @@ class RequestInformation extends PureComponent {
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
-      loadingWithdrawLeaveRequest,
+      loadingRemoveLeaveRequestOnDatabase,
+      loadingEmployeeWithdrawInProgress,
+      loadingEmployeeWithdrawApproved,
     } = this.props;
     const {
       ticketID = '',
@@ -229,16 +274,16 @@ class RequestInformation extends PureComponent {
           </>
         )}
         <WithdrawModal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawInProgress || loadingRemoveLeaveRequestOnDatabase}
           visible={showWithdrawModal}
-          onProceed={this.onProceed}
+          onProceed={status === 'IN-PROGRESS' ? this.onProceedInProgress : this.onProceedDrafts}
           onClose={this.setShowWithdrawModal}
           status={status}
         />
         <Withdraw2Modal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawApproved}
           visible={showWithdraw2Modal}
-          onProceed={this.onProceed2}
+          onProceed={this.onProceedApproved}
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />
