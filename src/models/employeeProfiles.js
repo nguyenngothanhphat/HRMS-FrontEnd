@@ -44,6 +44,7 @@ import {
   updatePrivate,
   getListRelation,
   getCountryStates,
+  getRevokeHistory,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -114,6 +115,7 @@ const employeeProfile = {
     isUpdateEmployment: false,
     listRelation: [],
     listStates: [],
+    revoke: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -1003,6 +1005,44 @@ const employeeProfile = {
         const { statusCode, data: listStates = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listStates } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *revokeHistory({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getRevokeHistory, payload);
+        const { statusCode, data: revoke = [], message } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { revoke } });
+        notification.success({
+          message,
+        });
+        const { newChangeList = [] } = revoke;
+        yield put({
+          type: 'saveOrigin',
+          payload: { changeHistories: newChangeList },
+        });
+
+        ////////////////////////
+        if (statusCode === 200) {
+          const employment = yield call(getEmploymentInfo, payload);
+          yield put({
+            type: 'saveOrigin',
+            payload: { employmentData: employment.data },
+          });
+          if (employment.statusCode !== 200) throw response;
+          const compensation = yield call(getCompensation, { employee: payload.id });
+          if (compensation.statusCode !== 200) throw response;
+          yield put({
+            type: 'saveOrigin',
+            payload: { compensationData: compensation.data },
+          });
+          yield put({
+            type: 'saveTemp',
+            payload: { compensationData: compensation.data },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

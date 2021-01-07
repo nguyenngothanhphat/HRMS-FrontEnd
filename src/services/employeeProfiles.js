@@ -281,8 +281,16 @@ export async function getListRelation() {
   });
 }
 
-export async function getCountryStates() {
+export async function getCountryStates(payload) {
   return request('/api/country/get-states', {
     method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getRevokeHistory(payload) {
+  return request('/api/changehistory/revoke', {
+    method: 'POST',
+    data: payload,
   });
 }
