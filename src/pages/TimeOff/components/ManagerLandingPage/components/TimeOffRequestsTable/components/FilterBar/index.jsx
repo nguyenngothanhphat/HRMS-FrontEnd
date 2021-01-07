@@ -45,9 +45,10 @@ export default class FilterBar extends PureComponent {
           {category === 'MY' && (
             <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
           )}
-          {onHoldLength !== 0 && (
+          {/* ONLY HR-MANAGER CAN SEE THE WITHDRAW LIST */}
+          {/* {onHoldLength !== 0 && (
             <TabPane tab={`Withdraw (${this.addZeroToNumber(onHoldLength)})`} key="5" />
-          )}
+          )} */}
         </Tabs>
       </div>
     );

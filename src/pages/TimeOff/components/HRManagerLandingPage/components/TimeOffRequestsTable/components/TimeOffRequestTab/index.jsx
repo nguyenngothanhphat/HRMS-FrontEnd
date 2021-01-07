@@ -24,6 +24,7 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab: 'IN-PROGRESS',
       selectedTabNumber: '1',
       onHoldLength: 0,
+      deletedLength: 0,
     };
   }
 
@@ -95,6 +96,9 @@ class TimeOffRequestTab extends PureComponent {
     if (filterTab === '5') {
       status = 'ON-HOLD';
     }
+    if (filterTab === '6') {
+      status = 'DELETED';
+    }
 
     const commonFunction = (res = {}) => {
       const { data: { items = [] } = {}, statusCode } = res;
@@ -150,6 +154,8 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab = 'DRAFTS';
     } else if (id === '5') {
       selectedTab = 'ON-HOLD';
+    } else if (id === '6') {
+      selectedTab = 'DELETED';
     }
 
     this.setState({
@@ -164,6 +170,7 @@ class TimeOffRequestTab extends PureComponent {
     const rejectedLength = [];
     const draftLength = [];
     const onHoldLength = [];
+    const deletedLength = [];
 
     newData.forEach((row) => {
       const { status = '' } = row;
@@ -188,6 +195,10 @@ class TimeOffRequestTab extends PureComponent {
           onHoldLength.push(row);
           break;
         }
+        case 'DELETED': {
+          deletedLength.push(row);
+          break;
+        }
         default:
           break;
       }
@@ -198,6 +209,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength: rejectedLength.length,
       draftLength: draftLength.length,
       onHoldLength: onHoldLength.length,
+      deletedLength: deletedLength.length,
     });
   };
 
@@ -213,6 +225,7 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab,
       selectedTabNumber,
       onHoldLength,
+      deletedLength,
     } = this.state;
 
     const dataNumber = {
@@ -221,6 +234,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       onHoldLength,
+      deletedLength,
     };
 
     return (

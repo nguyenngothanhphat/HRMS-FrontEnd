@@ -24,6 +24,7 @@ export default class FilterBar extends PureComponent {
         rejectedLength = '',
         draftLength = '',
         onHoldLength = '',
+        deletedLength = '',
       } = {},
       category = '',
     } = this.props;
@@ -47,6 +48,9 @@ export default class FilterBar extends PureComponent {
           )}
           {onHoldLength !== 0 && (
             <TabPane tab={`Withdraw (${this.addZeroToNumber(onHoldLength)})`} key="5" />
+          )}
+          {deletedLength !== 0 && (
+            <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
           )}
         </Tabs>
       </div>
