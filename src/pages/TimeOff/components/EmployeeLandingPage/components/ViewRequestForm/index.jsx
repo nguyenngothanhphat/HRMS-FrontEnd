@@ -66,7 +66,7 @@ class ViewRequestForm extends PureComponent {
       case 'DRAFTS':
         return 'Drafts';
       case 'ON-HOLD':
-        return 'On hold';
+        return 'Withdraw';
       case 'DELETED':
         return 'Deleted';
       default:
