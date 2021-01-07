@@ -23,6 +23,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
       selectedTabNumber: '1',
+      onHoldLength: 0,
     };
   }
 
@@ -75,6 +76,9 @@ class TimeOffRequestTab extends PureComponent {
     }
     if (filterTab === '4') {
       status = 'DRAFTS';
+    }
+    if (filterTab === '5') {
+      status = 'ON-HOLD';
     }
 
     const commonFunction = (res = {}) => {
@@ -144,6 +148,8 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab = 'REJECTED';
     } else if (id === '4') {
       selectedTab = 'DRAFTS';
+    } else if (id === '5') {
+      selectedTab = 'ON-HOLD';
     }
 
     this.setState({
@@ -157,6 +163,7 @@ class TimeOffRequestTab extends PureComponent {
     const approvedLength = [];
     const rejectedLength = [];
     const draftLength = [];
+    const onHoldLength = [];
 
     newData.forEach((row) => {
       const { status = '' } = row;
@@ -177,6 +184,10 @@ class TimeOffRequestTab extends PureComponent {
           draftLength.push(row);
           break;
         }
+        case 'ON-HOLD': {
+          onHoldLength.push(row);
+          break;
+        }
         default:
           break;
       }
@@ -186,6 +197,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: approvedLength.length,
       rejectedLength: rejectedLength.length,
       draftLength: draftLength.length,
+      onHoldLength: onHoldLength.length,
     });
   };
 
@@ -200,6 +212,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength,
       selectedTab,
       selectedTabNumber,
+      onHoldLength,
     } = this.state;
 
     const dataNumber = {
@@ -207,6 +220,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      onHoldLength,
     };
 
     return (

@@ -49,12 +49,13 @@ class RightContent extends PureComponent {
 
   render() {
     const people = this.getFlow();
+    const { status = '' } = this.props;
 
     return (
       <div className={styles.RightContent}>
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
-          <Steps current={1} labelPlacement="vertical">
+          <Steps current={status === 'IN-PROGRESS' ? 1 : 2} labelPlacement="vertical">
             {people.map((value, index) => {
               const { avatar = '', name = '' } = value;
               return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;

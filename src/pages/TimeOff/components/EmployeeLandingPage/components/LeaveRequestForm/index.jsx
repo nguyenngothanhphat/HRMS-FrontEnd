@@ -69,7 +69,7 @@ class LeaveRequestForm extends PureComponent {
       case 'DRAFTS':
         return 'Drafts';
       case 'ON-HOLD':
-        return 'On hold';
+        return 'Withdraw';
       default:
         return 'Unknown';
     }
