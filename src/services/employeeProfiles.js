@@ -280,3 +280,9 @@ export async function getListRelation() {
     method: 'POST',
   });
 }
+
+export async function getCountryStates() {
+  return request('/api/country/get-states', {
+    method: 'POST',
+  });
+}

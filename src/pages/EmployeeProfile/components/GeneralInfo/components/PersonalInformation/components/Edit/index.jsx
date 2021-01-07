@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Input, Form, Select, Button } from 'antd';
+import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -10,11 +10,16 @@ import styles from './index.less';
     employeeProfile: {
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
+      countryList = [],
+      listStates = [],
     } = {},
   }) => ({
     loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
+    loadingStates: loading.effects['employeeProfile/fetchCountryStates'],
     generalDataOrigin,
     generalData,
+    countryList,
+    listStates,
   }),
 )
 class Edit extends PureComponent {
@@ -89,12 +94,27 @@ class Edit extends PureComponent {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
+
+    console.log('payload: ', payload);
+    // console.log('dataTempKept: ', dataTempKept);
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
       dataTempKept,
       key: 'openPersonnalInfor',
     });
+  };
+
+  handleFieldChange = (nameField, fieldValue) => {
+    const { dispatch } = this.props;
+    if (nameField === 'country') {
+      dispatch({
+        type: 'employeeProfile/fetchCountryStates',
+        payload: {
+          id: fieldValue,
+        },
+      });
+    }
   };
 
   render() {
@@ -111,7 +131,22 @@ class Edit extends PureComponent {
         sm: { span: 9 },
       },
     };
-    const { generalData, loading, handleCancel = () => {} } = this.props;
+    const {
+      generalData,
+      loading,
+      handleCancel = () => {},
+      countryList,
+      listStates,
+      loadingStates,
+    } = this.props;
+    const formatCountryList = countryList.map((item) => {
+      const { _id: value, name, states } = item;
+      return {
+        value,
+        name,
+      };
+    });
+
     const {
       personalNumber = '',
       personalEmail = '',
@@ -216,9 +251,87 @@ class Edit extends PureComponent {
           <Form.Item label="Residence Address" name="residentAddress">
             <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
           </Form.Item>
-          <Form.Item label="Current Address" name="currentAddress">
+          <Form.Item label="Address" name="currentAddress">
             <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
           </Form.Item>
+          <Row gutter={[0, 24]} align="middle">
+            <Col span={4} className={styles.address}>
+              <Form.Item label="Country" name="country" className={styles.addressSection}>
+                <Select
+                  className={styles.selectForm}
+                  onDropdownVisibleChange={this.handleDropdown}
+                  onChange={(value) => {
+                    this.handleFieldChange('country', value);
+                  }}
+                  suffixIcon={
+                    dropdown ? (
+                      <UpOutlined className={styles.arrowUP} />
+                    ) : (
+                      <DownOutlined className={styles.arrowDown} />
+                    )
+                  }
+                >
+                  {formatCountryList.map((itemCountry) => {
+                    return (
+                      <Option key={itemCountry.value} value={itemCountry.value}>
+                        {itemCountry.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={4} className={styles.address}>
+              <Form.Item label="State" name="stateCountry" className={styles.addressSection}>
+                <Select
+                  className={styles.selectForm}
+                  onDropdownVisibleChange={this.handleDropdown}
+                  suffixIcon={
+                    dropdown ? (
+                      <UpOutlined className={styles.arrowUP} />
+                    ) : (
+                      <DownOutlined className={styles.arrowDown} />
+                    )
+                  }
+                >
+                  {loadingStates ? (
+                    <div className={styles.selectForm_loading}>
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <>
+                      {listStates.map((item, index) => {
+                        return (
+                          <Option key={index + 1} value={item}>
+                            {item}
+                          </Option>
+                        );
+                      })}
+                    </>
+                  )}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={4} className={styles.address}>
+              <Form.Item label="Zip Code" name="zipCode" className={styles.addressSection}>
+                <Select
+                  className={styles.selectForm}
+                  onDropdownVisibleChange={this.handleDropdown}
+                  suffixIcon={
+                    dropdown ? (
+                      <UpOutlined className={styles.arrowUP} />
+                    ) : (
+                      <DownOutlined className={styles.arrowDown} />
+                    )
+                  }
+                >
+                  <Option value="Single">123</Option>
+                  <Option value="Married">456</Option>
+                  <Option value="Rather not mention">768</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel

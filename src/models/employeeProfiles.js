@@ -43,6 +43,7 @@ import {
   updateEmployment,
   updatePrivate,
   getListRelation,
+  getCountryStates,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -112,6 +113,7 @@ const employeeProfile = {
     emailsList: [],
     isUpdateEmployment: false,
     listRelation: [],
+    listStates: [],
   },
   effects: {
     *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
@@ -991,6 +993,16 @@ const employeeProfile = {
         const { statusCode, data: listRelation = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listRelation } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCountryStates({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getCountryStates, payload);
+        const { statusCode, data: listStates = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listStates } });
       } catch (errors) {
         dialog(errors);
       }
