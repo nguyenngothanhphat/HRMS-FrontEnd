@@ -24,8 +24,10 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showModal: false,
+      showWithdrawModal: false,
       isReject: false,
       commentContent: '',
+      acceptWithdraw: false,
     };
   }
 
@@ -48,6 +50,12 @@ class RequestInformation extends PureComponent {
   setShowModal = (value) => {
     this.setState({
       showModal: value,
+    });
+  };
+
+  setShowWithdrawModal = (value) => {
+    this.setState({
+      showWithdrawModal: value,
     });
   };
 
@@ -144,7 +152,10 @@ class RequestInformation extends PureComponent {
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      this.setShowModal(true);
+      this.setShowWithdrawModal(true);
+      this.setState({
+        acceptWithdraw: true,
+      });
     }
   };
 
@@ -158,12 +169,15 @@ class RequestInformation extends PureComponent {
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      this.setShowModal(true);
+      this.setShowWithdrawModal(true);
+      this.setState({
+        acceptWithdraw: false,
+      });
     }
   };
 
   render() {
-    const { showModal, isReject } = this.state;
+    const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
@@ -406,7 +420,6 @@ class RequestInformation extends PureComponent {
             </div>
           </div>
         )}
-
         <TimeOffModal
           visible={showModal}
           onOk={() => this.setShowModal(false)}
@@ -414,6 +427,16 @@ class RequestInformation extends PureComponent {
             isReject
               ? 'Timeoff request has been rejected from your end. All in loop will be notified.'
               : 'Timeoff request has been approved from your end. All in loop will be notified.'
+          }
+          submitText="OK"
+        />
+        <TimeOffModal
+          visible={showWithdrawModal}
+          onOk={() => this.setShowWithdrawModal(false)}
+          content={
+            acceptWithdraw
+              ? 'Withdrawing timeoff request has been approved from your end. All in loop will be notified.'
+              : 'Withdrawing timeoff request has been rejected from your end. All in loop will be notified.'
           }
           submitText="OK"
         />

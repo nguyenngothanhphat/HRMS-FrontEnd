@@ -533,23 +533,37 @@ const timeOff = {
       }
       return 0;
     },
-    *managerApproveWithdrawRequest({ payload = {} }, { call }) {
+    *managerApproveWithdrawRequest({ payload = {} }, { call, put }) {
       try {
         const response = yield call(managerApproveWithdrawRequest, payload);
-        const { statusCode } = response;
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
-        return statusCode;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
       } catch (errors) {
         dialog(errors);
       }
       return 0;
     },
-    *managerRejectWithdrawRequest({ payload = {} }, { call }) {
+    *managerRejectWithdrawRequest({ payload = {} }, { call, put }) {
       try {
         const response = yield call(managerRejectWithdrawRequest, payload);
-        const { statusCode } = response;
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
-        return statusCode;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
       } catch (errors) {
         dialog(errors);
       }

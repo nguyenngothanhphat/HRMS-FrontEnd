@@ -48,6 +48,8 @@ class ViewRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.draftsColor}`;
       case 'ON-HOLD':
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
+      case 'DELETED':
+        return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -65,6 +67,8 @@ class ViewRequestForm extends PureComponent {
         return 'Drafts';
       case 'ON-HOLD':
         return 'On hold';
+      case 'DELETED':
+        return 'Deleted';
       default:
         return 'Unknown';
     }
