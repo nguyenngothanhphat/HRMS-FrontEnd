@@ -10,7 +10,6 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
-  loadingRemoveLeaveRequestOnDatabase: loading.effects['timeOff/removeLeaveRequestOnDatabase'],
   loadingEmployeeWithdrawInProgress: loading.effects['timeOff/employeeWithdrawInProgress'],
   loadingEmployeeWithdrawApproved: loading.effects['timeOff/employeeWithdrawApproved'],
 }))
@@ -37,7 +36,7 @@ class RequestInformation extends PureComponent {
   refreshPage = () => {
     setTimeout(() => {
       window.location.reload(false);
-    }, 3000);
+    }, 1000);
   };
 
   // EDIT BUTTON
@@ -89,14 +88,9 @@ class RequestInformation extends PureComponent {
       payload: { _id },
     });
     if (statusCode === 200) {
-      dispatch({
-        type: 'timeOff/removeLeaveRequestOnDatabase',
-        payload: { id: _id },
-      }).then(() => {
-        history.push({
-          pathname: `/time-off`,
-          state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
-        });
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
       });
     }
   };
@@ -148,7 +142,6 @@ class RequestInformation extends PureComponent {
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
-      loadingRemoveLeaveRequestOnDatabase,
       loadingEmployeeWithdrawInProgress,
       loadingEmployeeWithdrawApproved,
     } = this.props;
@@ -274,7 +267,7 @@ class RequestInformation extends PureComponent {
           </>
         )}
         <WithdrawModal
-          loading={loadingEmployeeWithdrawInProgress || loadingRemoveLeaveRequestOnDatabase}
+          loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
           onProceed={status === 'IN-PROGRESS' ? this.onProceedInProgress : this.onProceedDrafts}
           onClose={this.setShowWithdrawModal}

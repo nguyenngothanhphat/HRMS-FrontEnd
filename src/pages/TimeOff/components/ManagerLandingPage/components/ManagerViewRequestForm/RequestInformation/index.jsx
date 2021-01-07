@@ -202,6 +202,8 @@ class RequestInformation extends PureComponent {
         position: { name: position = '' } = {},
       } = {},
       comment = '',
+      withdraw: { title = '', reason = '' } = {},
+      withdraw = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -268,7 +270,7 @@ class RequestInformation extends PureComponent {
 
         <div className={styles.requesteeDetails}>
           <div className={styles.formTitle}>
-            <span className={styles.title}>Leave details</span>
+            <span className={styles.title}>Timeoff request details</span>
           </div>
           {loadingFetchLeaveRequestById && (
             <div
@@ -332,6 +334,40 @@ class RequestInformation extends PureComponent {
             </>
           )}
         </div>
+
+        {/* WITHDRAW REASON */}
+        {Object.keys(withdraw).length !== 0 && (
+          <div className={styles.requesteeDetails}>
+            <div className={styles.formTitle}>
+              <span className={styles.title}>Withdraw request details</span>
+            </div>
+            <div className={styles.formContent}>
+              <Row>
+                <Col span={6}>Title</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span className={styles.fieldValue}>{title}</span>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={6}>Subject</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span>{reason}</span>
+                </Col>
+              </Row>
+              {status !== 'ON-HOLD' && (
+                <Row>
+                  <Col span={6}>Status</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>
+                      {status === 'ACCEPTED' && 'Rejected'}
+                      {status === 'DELETED' && 'Accepted'}
+                    </span>
+                  </Col>
+                </Row>
+              )}
+            </div>
+          </div>
+        )}
 
         {isReject && (
           <div className={styles.rejectComment}>
