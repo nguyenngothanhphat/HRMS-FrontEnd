@@ -45,12 +45,14 @@ class LeaveRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case 'DRAFTS':
         return `${styles.leaveStatus} ${styles.draftsColor}`;
+      case 'ON-HOLD':
+        return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -60,12 +62,14 @@ class LeaveRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';
       case 'DRAFTS':
         return 'Drafts';
+      case 'ON-HOLD':
+        return 'On hold';
       default:
         return 'Unknown';
     }
@@ -115,7 +119,8 @@ class LeaveRequestForm extends PureComponent {
           )}
           {!loadingFetchLeaveRequestById &&
             action === 'edit-leave-request' &&
-            (status === 'APPROVED' || status === 'REJECTED') && (
+            status !== 'DRAFTS' &&
+            status !== 'IN-PROGRESS' && (
               <div
                 style={{
                   display: 'flex',
@@ -127,22 +132,25 @@ class LeaveRequestForm extends PureComponent {
               </div>
             )}
 
-          {!loadingFetchLeaveRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingLeaveRequest={viewingLeaveRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent />
-                </Col>
-              </Row>
-            </>
+          {(action === 'new-leave-request' ||
+            (action === 'edit-leave-request' &&
+              !loadingFetchLeaveRequestById &&
+              (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingLeaveRequest={viewingLeaveRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>

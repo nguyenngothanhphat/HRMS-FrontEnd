@@ -5,7 +5,7 @@ import styles from './index.less';
 
 export default class TimeOffModal extends PureComponent {
   render() {
-    const { visible, onClose = () => {}, content = '', submitText = '' } = this.props;
+    const { visible, content = '', submitText = '', onOk = () => {} } = this.props;
     return (
       <Modal
         className={styles.TimeOffModal}
@@ -17,7 +17,7 @@ export default class TimeOffModal extends PureComponent {
         <div className={styles.container}>
           <img src={Icon} alt="success-icon" />
           <p>{content}</p>
-          <Button onClick={() => onClose(false)}>{submitText}</Button>
+          <Button onClick={() => onOk()}>{submitText}</Button>
         </div>
       </Modal>
     );

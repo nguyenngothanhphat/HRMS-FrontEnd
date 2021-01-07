@@ -199,6 +199,9 @@ class RequestInformation extends PureComponent {
     if (!value) {
       setTimeout(() => {
         history.goBack();
+        // history.push({
+        //   pathname: `/time-off`,
+        // });
       }, 200);
     }
   };
@@ -323,7 +326,12 @@ class RequestInformation extends PureComponent {
       user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
-    const { viewingLeaveRequestId, remainingDayOfSelectedType, selectedTypeName } = this.state;
+    const {
+      viewingLeaveRequestId,
+      remainingDayOfSelectedType,
+      selectedTypeName,
+      selectedType,
+    } = this.state;
     const {
       timeOffType = '',
       subject = '',
@@ -347,7 +355,10 @@ class RequestInformation extends PureComponent {
         // generate data for API
         const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
-        if (duration > remainingDayOfSelectedType) {
+        if (
+          (selectedType === 'A' || selectedType === 'B') &&
+          duration > remainingDayOfSelectedType
+        ) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
@@ -367,22 +378,20 @@ class RequestInformation extends PureComponent {
             cc: personCC,
           };
 
+          let type = '';
           if (action === 'new-leave-request') {
-            dispatch({
-              type: 'timeOff/addLeaveRequest',
-              payload: data,
-            }).then((statusCode) => {
-              if (statusCode === 200) this.setShowSuccessModal(true);
-            });
+            type = 'timeOff/addLeaveRequest';
           } else if (action === 'edit-leave-request') {
             data._id = viewingLeaveRequestId;
-            dispatch({
-              type: 'timeOff/updateLeaveRequestById',
-              payload: data,
-            }).then((statusCode) => {
-              if (statusCode === 200) this.setShowSuccessModal(true);
-            });
+            type = 'timeOff/updateLeaveRequestById';
           }
+
+          dispatch({
+            type,
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
         }
       }
     } else if (buttonState === 1) {
@@ -638,12 +647,20 @@ class RequestInformation extends PureComponent {
   // DISABLE DATE OF DATE PICKER
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
-    return current && current > moment(durationTo);
+    return (
+      (current && current > moment(durationTo)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
-    return current && current < moment(durationFrom);
+    return (
+      (current && current < moment(durationFrom)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   // RENDER EMAILS LIST
@@ -1057,7 +1074,7 @@ class RequestInformation extends PureComponent {
 
         <TimeOffModal
           visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
+          onOk={() => this.setShowSuccessModal(false)}
           content={this.renderModalContent()}
           submitText="OK"
         />

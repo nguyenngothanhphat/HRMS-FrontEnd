@@ -185,15 +185,20 @@ const formatData = (list = []) => {
       // position,
       title = '',
       workLocation = '',
+      dateOfJoining = '',
+      requestDate = '',
+      receiveDate = '',
+      sentDate = '',
+      expireDate = '',
       updatedAt = '',
-      createdAt = '',
+      // createdAt = '',
       comments = '',
     } = item;
-    const dateSent = formatDate(createdAt) || '';
-    const dateReceived = formatDate(updatedAt) || '';
-    const dateJoin = formatDate(updatedAt) || '';
-    const dateRequest = formatDate(updatedAt) || '';
-    const expire = formatDate(updatedAt) || '';
+    const dateSent = formatDate(sentDate) || '';
+    const dateReceived = formatDate(receiveDate) || '';
+    const dateJoin = formatDate(dateOfJoining) || '';
+    const dateRequest = formatDate(requestDate) || '';
+    const expire = formatDate(expireDate) || '';
     let isNew = false;
     if (fullName) {
       isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
@@ -735,10 +740,9 @@ const onboard = {
       }
     },
 
-    *redirectToReview({ payload }, { call, put }) {
+    *redirectToReview({ payload }) {
       try {
         const { id } = payload;
-        console.log(history);
         history.push(`/employee-onboarding/review/${id}`);
         yield null;
       } catch (error) {
@@ -746,12 +750,12 @@ const onboard = {
       }
     },
 
-    *createProfileEffect({ payload }, { call, put }) {
+    *createProfileEffect({ payload }, { call }) {
       let response;
       try {
         response = yield call(createProfile, payload);
-        const { statusCode, data } = response;
-        console.log(data[0].defaultMessage);
+        const { statusCode } = response;
+        // console.log(data[0].defaultMessage);
         if (statusCode === 400) {
           dialog(response);
         }
