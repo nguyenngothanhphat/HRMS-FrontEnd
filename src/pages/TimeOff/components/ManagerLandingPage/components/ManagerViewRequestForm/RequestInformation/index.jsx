@@ -14,6 +14,8 @@ const { TextArea } = Input;
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
   loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
   loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
+  loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
+  loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -131,21 +133,32 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  // ON PROCEED withDraw
-  onProceed = async () => {
-    const {
-      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
-    } = this.props;
+  // WITHDRAW
+  onApproveWithdrawClicked = async (_id) => {
     const { dispatch } = this.props;
-    const statusCode = await dispatch({
-      type: 'timeOff/withdrawLeaveRequest',
-      id,
+    const res = await dispatch({
+      type: 'timeOff/managerApproveWithdrawRequest',
+      payload: {
+        _id,
+      },
     });
+    const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      history.push({
-        pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
-      });
+      this.setShowModal(true);
+    }
+  };
+
+  onRejectWithdrawClicked = async (_id) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/managerRejectWithdrawRequest',
+      payload: {
+        _id,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.setShowModal(true);
     }
   };
 
@@ -156,6 +169,8 @@ class RequestInformation extends PureComponent {
       loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
+      loadingManagerApproveWithdrawRequest,
+      loadingManagerRejectWithdrawRequest,
     } = this.props;
     const {
       status = '',
@@ -318,6 +333,7 @@ class RequestInformation extends PureComponent {
           </div>
         )}
 
+        {/* IN PROGRESS */}
         {!isReject && status === 'IN-PROGRESS' && (
           <div className={styles.footer}>
             <span className={styles.note}>
@@ -335,7 +351,8 @@ class RequestInformation extends PureComponent {
           </div>
         )}
 
-        {!isReject && status !== 'IN-PROGRESS' && (
+        {/* ACCEPTED OR REJECTED  */}
+        {!isReject && (status === 'ACCEPTED' || status === 'REJECTED') && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -350,6 +367,29 @@ class RequestInformation extends PureComponent {
           </div>
         )}
 
+        {/* WITHDRAW */}
+        {!isReject && status === 'ON-HOLD' && (
+          <div className={styles.footer}>
+            <span className={styles.note}>Withdrawing an approved request</span>
+            <div className={styles.formButtons}>
+              <Button
+                loading={loadingManagerRejectWithdrawRequest}
+                type="link"
+                onClick={() => this.onRejectWithdrawClicked(_id)}
+              >
+                Reject
+              </Button>
+              <Button
+                loading={loadingManagerApproveWithdrawRequest}
+                onClick={() => this.onApproveWithdrawClicked(_id)}
+              >
+                Withdraw
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* REJECTING  */}
         {isReject && (
           <div className={styles.footer}>
             <span className={styles.note}>

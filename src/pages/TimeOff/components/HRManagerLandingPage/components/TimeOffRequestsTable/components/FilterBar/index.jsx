@@ -23,15 +23,19 @@ export default class FilterBar extends PureComponent {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
+        onHoldLength = '',
       } = {},
       category = '',
     } = this.props;
+
+    const { selectedTab } = this.props;
 
     return (
       <div className={styles.FilterBar}>
         <Tabs
           tabBarGutter={35}
           defaultActiveKey="1"
+          activeKey={selectedTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
@@ -40,6 +44,9 @@ export default class FilterBar extends PureComponent {
           <TabPane tab={`Rejected (${this.addZeroToNumber(rejectedLength)})`} key="3" />
           {category === 'MY' && (
             <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
+          )}
+          {onHoldLength !== 0 && (
+            <TabPane tab={`Withdraw (${this.addZeroToNumber(onHoldLength)})`} key="5" />
           )}
         </Tabs>
       </div>
