@@ -84,7 +84,7 @@ export async function getCompoffRequestById(payload) {
   });
 }
 
-export async function withdrawLeaveRequest(payload) {
+export async function removeLeaveRequestOnDatabase(payload) {
   return request('/api/leaverequest/remove', {
     method: 'POST',
     data: payload,
@@ -141,6 +141,52 @@ export async function uploadFile(data) {
 }
 export async function uploadBalances(data) {
   return request('/api/managebalances/upload-file', {
+    method: 'POST',
+    data,
+  });
+}
+
+// reporting manager
+export async function reportingManagerApprove(data) {
+  return request('/api/leaverequest/reporting-manager-approve', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function reportingManagerReject(data) {
+  return request('/api/leaverequest/reporting-manager-reject', {
+    method: 'POST',
+    data,
+  });
+}
+
+// WITHDRAW (INCLUDING SEND EMAIL)
+// for employee
+export async function employeeWithdrawInProgress(data) {
+  return request('/api/leaverequest/withdraw-progress', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function employeeWithdrawApproved(data) {
+  return request('/api/leaverequest/withdraw-submit', {
+    method: 'POST',
+    data,
+  });
+}
+
+// for hr manager
+export async function managerApproveWithdrawRequest(data) {
+  return request('/api/leaverequest/withdraw-approve', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function managerRejectWithdrawRequest(data) {
+  return request('/api/leaverequest/withdraw-reject', {
     method: 'POST',
     data,
   });

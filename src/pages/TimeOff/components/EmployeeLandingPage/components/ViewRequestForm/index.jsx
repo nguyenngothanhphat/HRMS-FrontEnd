@@ -40,12 +40,14 @@ class ViewRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case 'DRAFTS':
         return `${styles.leaveStatus} ${styles.draftsColor}`;
+      case 'ON-HOLD':
+        return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -55,12 +57,14 @@ class ViewRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';
       case 'DRAFTS':
         return 'Drafts';
+      case 'ON-HOLD':
+        return 'On hold';
       default:
         return 'Unknown';
     }
@@ -68,7 +72,9 @@ class ViewRequestForm extends PureComponent {
 
   render() {
     const {
-      timeOff: { viewingLeaveRequest: { status = '', ticketID = '' } = {} } = {},
+      timeOff: {
+        viewingLeaveRequest: { status = '', ticketID = '', approvalManager = {} } = {},
+      } = {},
     } = this.props;
 
     const {
@@ -92,7 +98,7 @@ class ViewRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent approvalManager={approvalManager} status={status} />
             </Col>
           </Row>
         </div>
