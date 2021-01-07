@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import UploadImage from '@/components/UploadImage';
 import { Input, Image } from 'antd';
 import s from './index.less';
@@ -104,9 +104,10 @@ class ItemSignature extends Component {
             <div
               style={!check ? { visibility: 'hidden' } : {}}
               className={s.viewAddNew__viewDelete}
-              onClick={this.handleDelete}
             >
-              Delete
+              <div className={s.viewAddNew__viewDelete__icon} onClick={this.handleDelete}>
+                <DeleteOutlined />
+              </div>
             </div>
           </div>
         )}
