@@ -25,7 +25,37 @@ import styles from './index.less';
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { dropdown: false };
+    this.state = {
+      dropdown: false,
+      residentAddress: {
+        address: '',
+        country: {
+          _id: '',
+          name: '',
+        },
+        state: '',
+        zipCode: '',
+      },
+      currentAddress: {
+        address: '',
+        country: {
+          _id: '',
+          name: '',
+        },
+        state: '',
+        zipCode: '',
+      },
+    };
+  }
+
+  componentDidMount() {
+    const { generalData } = this.props;
+    const { residentAddress: residents = {}, currentAddress: current = {} } = generalData;
+
+    this.setState({
+      residentAddress: residents,
+      currentAddress: current,
+    });
   }
 
   handleDropdown = (open) => {
@@ -34,11 +64,13 @@ class Edit extends PureComponent {
 
   handleChange = (changedValues) => {
     const { dispatch, generalData, generalDataOrigin } = this.props;
+
     const generalInfo = {
       ...generalData,
       ...changedValues,
     };
     const isModified = JSON.stringify(generalInfo) !== JSON.stringify(generalDataOrigin);
+
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { generalData: generalInfo },
@@ -49,16 +81,121 @@ class Edit extends PureComponent {
     });
   };
 
+  getCountryObjData = (idCountry) => {
+    const { countryList } = this.props;
+    let _name = '';
+    countryList.forEach((item) => {
+      const { _id, name } = item;
+      if (_id === idCountry) {
+        _name = name;
+      }
+    });
+
+    return {
+      _id: idCountry,
+      name: _name,
+    };
+  };
+
+  handleChangeAddress = (name, value) => {
+    const { dispatch } = this.props;
+
+    switch (name) {
+      case 'r_Address':
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            address: value,
+          },
+        }));
+        break;
+      case 'r_countryName':
+        dispatch({
+          type: 'employeeProfile/fetchCountryStates',
+          payload: {
+            id: value,
+          },
+        });
+        const r_country = this.getCountryObjData(value);
+
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            country: r_country,
+          },
+        }));
+        break;
+      case 'r_state':
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            state: value,
+          },
+        }));
+        break;
+      case 'r_zipCode':
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            zipCode: value,
+          },
+        }));
+        break;
+      case 'c_Address':
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            address: value,
+          },
+        }));
+        break;
+      case 'c_countryName':
+        dispatch({
+          type: 'employeeProfile/fetchCountryStates',
+          payload: {
+            id: value,
+          },
+        });
+        const c_country = this.getCountryObjData(value);
+
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            country: c_country,
+          },
+        }));
+        break;
+      case 'c_state':
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            state: value,
+          },
+        }));
+        break;
+      default:
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            zipCode: value,
+          },
+        }));
+        break;
+    }
+  };
+
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
+    const { currentAddress, residentAddress } = this.state;
+
     const {
       personalNumber = '',
       personalEmail = '',
       Blood = '',
       maritalStatus = '',
       linkedIn = '',
-      residentAddress = '',
-      currentAddress = '',
+      // residentAddress = '',
+      // currentAddress = '',
       _id: id = '',
     } = generalDataTemp;
     const payloadChanges = {
@@ -96,7 +233,6 @@ class Edit extends PureComponent {
     const dataTempKept = this.processDataKept() || {};
 
     console.log('payload: ', payload);
-    // console.log('dataTempKept: ', dataTempKept);
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
@@ -120,7 +256,7 @@ class Edit extends PureComponent {
   render() {
     const { Option } = Select;
     const { TextArea } = Input;
-    const { dropdown } = this.state;
+    const { dropdown, residentAddress: addressState, currentAddress: _addressState } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -139,6 +275,7 @@ class Edit extends PureComponent {
       listStates,
       loadingStates,
     } = this.props;
+
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name, states } = item;
       return {
@@ -153,8 +290,20 @@ class Edit extends PureComponent {
       Blood = '',
       maritalStatus = '',
       linkedIn = '',
-      residentAddress = '',
-      currentAddress = '',
+      residentAddress = {},
+      currentAddress = {},
+      residentAddress: {
+        address: r_Address = '',
+        country: { name: r_countryName = '' } = {},
+        state: r_state = '',
+        zipCode: r_zipCode = '',
+      } = {},
+      currentAddress: {
+        address: c_Address = '',
+        country: { name: c_countryName = '' } = {},
+        state: c_state = '',
+        zipCode: c_zipCode = '',
+      } = {},
     } = generalData;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -167,8 +316,6 @@ class Edit extends PureComponent {
             Blood,
             maritalStatus,
             linkedIn,
-            residentAddress,
-            currentAddress,
           }}
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
           onFinish={this.handleSave}
@@ -248,20 +395,23 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
-          <Form.Item label="Residence Address" name="residentAddress">
-            <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
-          </Form.Item>
-          <Form.Item label="Address" name="currentAddress">
-            <TextArea autoSize={{ minRows: 2, maxRows: 6 }} className={styles.areaForm} />
+          <Form.Item label="Residence Address">
+            <TextArea
+              autoSize={{ minRows: 2, maxRows: 6 }}
+              className={styles.areaForm}
+              defaultValue={r_Address}
+              onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
+            />
           </Form.Item>
           <Row gutter={[0, 24]} align="middle">
             <Col span={4} className={styles.address}>
-              <Form.Item label="Country" name="country" className={styles.addressSection}>
+              <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
+                  defaultValue={r_countryName}
                   onChange={(value) => {
-                    this.handleFieldChange('country', value);
+                    this.handleChangeAddress('r_countryName', value);
                   }}
                   suffixIcon={
                     dropdown ? (
@@ -282,10 +432,12 @@ class Edit extends PureComponent {
               </Form.Item>
             </Col>
             <Col span={4} className={styles.address}>
-              <Form.Item label="State" name="stateCountry" className={styles.addressSection}>
+              <Form.Item label="State" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
+                  defaultValue={r_state}
+                  onChange={(e) => this.handleChangeAddress('r_state', e)}
                   suffixIcon={
                     dropdown ? (
                       <UpOutlined className={styles.arrowUP} />
@@ -313,10 +465,32 @@ class Edit extends PureComponent {
               </Form.Item>
             </Col>
             <Col span={4} className={styles.address}>
-              <Form.Item label="Zip Code" name="zipCode" className={styles.addressSection}>
+              <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Input
+                  className={styles.inputForm}
+                  defaultValue={r_zipCode}
+                  onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item label="Current Address">
+            <TextArea
+              autoSize={{ minRows: 2, maxRows: 6 }}
+              className={styles.areaForm}
+              defaultValue={c_Address}
+              onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
+            />
+          </Form.Item>
+          <Row gutter={[0, 24]} align="middle">
+            <Col span={4} className={styles.address}>
+              <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
+                  defaultValue={c_countryName}
+                  onChange={(value) => this.handleChangeAddress('c_countryName', value)}
                   suffixIcon={
                     dropdown ? (
                       <UpOutlined className={styles.arrowUP} />
@@ -325,10 +499,56 @@ class Edit extends PureComponent {
                     )
                   }
                 >
-                  <Option value="Single">123</Option>
-                  <Option value="Married">456</Option>
-                  <Option value="Rather not mention">768</Option>
+                  {formatCountryList.map((itemCountry) => {
+                    return (
+                      <Option key={itemCountry.value} value={itemCountry.value}>
+                        {itemCountry.name}
+                      </Option>
+                    );
+                  })}
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col span={4} className={styles.address}>
+              <Form.Item label="State" className={styles.addressSection}>
+                <Select
+                  className={styles.selectForm}
+                  onDropdownVisibleChange={this.handleDropdown}
+                  defaultValue={c_state}
+                  onChange={(value) => this.handleChangeAddress('c_state', value)}
+                  suffixIcon={
+                    dropdown ? (
+                      <UpOutlined className={styles.arrowUP} />
+                    ) : (
+                      <DownOutlined className={styles.arrowDown} />
+                    )
+                  }
+                >
+                  {loadingStates ? (
+                    <div className={styles.selectForm_loading}>
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <>
+                      {listStates.map((item, index) => {
+                        return (
+                          <Option key={index + 1} value={item}>
+                            {item}
+                          </Option>
+                        );
+                      })}
+                    </>
+                  )}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={4} className={styles.address}>
+              <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Input
+                  className={styles.inputForm}
+                  defaultValue={c_zipCode}
+                  onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
+                />
               </Form.Item>
             </Col>
           </Row>
