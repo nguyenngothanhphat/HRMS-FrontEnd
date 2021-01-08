@@ -89,7 +89,11 @@ class ChangeHistoryTable extends PureComponent {
         dataIndex: 'action',
         key: 'action',
         align: 'left',
-        render: (action) => <span className={styles.changeHistoryTable_action}>{action}</span>,
+        render: (action) => (
+          <span className={styles.changeHistoryTable_action} onClick={this.handleClick}>
+            {action}
+          </span>
+        ),
       },
     ];
 
@@ -97,6 +101,22 @@ class ChangeHistoryTable extends PureComponent {
       ...col,
       title: col.title,
     }));
+  };
+
+  handleClick = () => {
+    const {
+      dispatch,
+      employeeProfile: { originData: { generalData: { employee: employeeId = '' } = {} } = {} },
+    } = this.props;
+
+    console.log(employeeId);
+
+    dispatch({
+      type: 'employeeProfile/revokeHistory',
+      payload: {
+        employee: employeeId,
+      },
+    });
   };
 
   render() {
