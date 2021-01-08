@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import clsx from 'clsx';
 import styles from './index.less';
 
 @connect(
@@ -194,8 +195,6 @@ class Edit extends PureComponent {
       Blood = '',
       maritalStatus = '',
       linkedIn = '',
-      // residentAddress = '',
-      // currentAddress = '',
       _id: id = '',
     } = generalDataTemp;
     const payloadChanges = {
@@ -308,6 +307,7 @@ class Edit extends PureComponent {
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
+          name="personal_information"
           {...formItemLayout}
           initialValues={{
             personalNumber,
@@ -397,21 +397,34 @@ class Edit extends PureComponent {
           <Form.Item label="Residence Address">
             <TextArea
               autoSize={{ minRows: 2, maxRows: 6 }}
-              className={styles.areaForm}
+              className={styles.selectForm}
               defaultValue={r_Address}
               onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input address',
+                },
+              ]}
             />
           </Form.Item>
           <Row gutter={[0, 24]} align="middle">
             <Col span={4} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
-                  className={styles.selectForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_countryName}
                   onChange={(value) => {
                     this.handleChangeAddress('r_countryName', value);
                   }}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input address',
+                      type: 'array',
+                    },
+                  ]}
                   suffixIcon={
                     dropdown ? (
                       <UpOutlined className={styles.arrowUP} />
@@ -433,7 +446,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
-                  className={styles.selectForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_state}
                   onChange={(e) => this.handleChangeAddress('r_state', e)}
@@ -466,7 +479,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
-                  className={styles.inputForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   defaultValue={r_zipCode}
                   onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
                 />
@@ -486,7 +499,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
-                  className={styles.selectForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_countryName}
                   onChange={(value) => this.handleChangeAddress('c_countryName', value)}
@@ -511,7 +524,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
-                  className={styles.selectForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_state}
                   onChange={(value) => this.handleChangeAddress('c_state', value)}
@@ -544,7 +557,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
-                  className={styles.inputForm}
+                  className={`${styles.selectForm} ${styles.selectAddress}`}
                   defaultValue={c_zipCode}
                   onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
                 />
