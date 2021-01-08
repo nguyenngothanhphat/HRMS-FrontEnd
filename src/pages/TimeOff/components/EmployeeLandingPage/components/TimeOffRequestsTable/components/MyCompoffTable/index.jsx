@@ -25,11 +25,6 @@ class MyCompoffTable extends PureComponent {
           </span>
         );
       },
-      defaultSortOrder: ['ascend'],
-      sorter: {
-        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
-      },
-      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Project',
@@ -137,7 +132,6 @@ class MyCompoffTable extends PureComponent {
         ticketID = '',
         _id = '',
         extraTime = [],
-        onDate = '',
       } = value;
 
       let duration = '';
@@ -164,7 +158,6 @@ class MyCompoffTable extends PureComponent {
         id: {
           ticketID,
           _id,
-          onDate,
         },
       };
     });
