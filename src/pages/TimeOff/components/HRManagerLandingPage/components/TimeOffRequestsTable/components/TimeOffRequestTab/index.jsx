@@ -1,8 +1,5 @@
 import React, { PureComponent } from 'react';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
-// import TeamLeaveTable from '../DataTable';
-// import TeamCompoffTable from '../CompoffTable';
 import TeamLeaveTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamLeaveTable';
 import TeamCompoffTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamCompoffTable';
 import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
@@ -25,6 +22,9 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength: 0,
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
+      selectedTabNumber: '1',
+      onHoldLength: 0,
+      deletedLength: 0,
     };
   }
 
@@ -93,6 +93,12 @@ class TimeOffRequestTab extends PureComponent {
     if (filterTab === '4') {
       status = 'DRAFTS';
     }
+    if (filterTab === '5') {
+      status = 'ON-HOLD';
+    }
+    if (filterTab === '6') {
+      status = 'DELETED';
+    }
 
     const commonFunction = (res = {}) => {
       const { data: { items = [] } = {}, statusCode } = res;
@@ -146,10 +152,15 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab = 'REJECTED';
     } else if (id === '4') {
       selectedTab = 'DRAFTS';
+    } else if (id === '5') {
+      selectedTab = 'ON-HOLD';
+    } else if (id === '6') {
+      selectedTab = 'DELETED';
     }
 
     this.setState({
       selectedTab,
+      selectedTabNumber: id,
     });
   };
 
@@ -158,6 +169,8 @@ class TimeOffRequestTab extends PureComponent {
     const approvedLength = [];
     const rejectedLength = [];
     const draftLength = [];
+    const onHoldLength = [];
+    const deletedLength = [];
 
     newData.forEach((row) => {
       const { status = '' } = row;
@@ -178,6 +191,14 @@ class TimeOffRequestTab extends PureComponent {
           draftLength.push(row);
           break;
         }
+        case 'ON-HOLD': {
+          onHoldLength.push(row);
+          break;
+        }
+        case 'DELETED': {
+          deletedLength.push(row);
+          break;
+        }
         default:
           break;
       }
@@ -187,6 +208,8 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: approvedLength.length,
       rejectedLength: rejectedLength.length,
       draftLength: draftLength.length,
+      onHoldLength: onHoldLength.length,
+      deletedLength: deletedLength.length,
     });
   };
 
@@ -200,6 +223,9 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       selectedTab,
+      selectedTabNumber,
+      onHoldLength,
+      deletedLength,
     } = this.state;
 
     const dataNumber = {
@@ -207,6 +233,8 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      onHoldLength,
+      deletedLength,
     };
 
     return (
@@ -215,47 +243,45 @@ class TimeOffRequestTab extends PureComponent {
           dataNumber={dataNumber}
           setSelectedFilterTab={this.setSelectedFilterTab}
           category={category}
+          selectedTab={selectedTabNumber}
         />
         <div className={styles.tableContainer}>
-          {
-            //     data.length === 0 ? (
-            //   <div className={styles.emptyTable}>
-            //     <img src={EmptyIcon} alt="empty-table" />
-            //     <p className={styles.describeTexts}>
-            //       {category === 'MY' && (
-            //         <>
-            //           You have not applied for any Leave requests. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //       {category === 'TEAM' && (
-            //         <>
-            //           No Leave requests received. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //     </p>
-            //   </div>
-            // ) : (
-          }
           <div>
             {type === 1 && category === 'TEAM' && (
-              <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamLeaveTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 1 && category === 'MY' && (
               <MyLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 1 && category === 'ALL' && (
-              <TeamLeaveTable data={formatData} selectedTab={selectedTab} />
+              <TeamLeaveTable
+                data={formatData}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 2 && category === 'TEAM' && (
-              <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamCompoffTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 2 && category === 'MY' && (
               <MyCompoffTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'ALL' && (
-              <TeamCompoffTable data={formatData} selectedTab={selectedTab} />
+              <TeamCompoffTable
+                data={formatData}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
           </div>
         </div>

@@ -46,6 +46,10 @@ class ManagerViewRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case 'DRAFTS':
         return `${styles.leaveStatus} ${styles.draftsColor}`;
+      case 'ON-HOLD':
+        return `${styles.leaveStatus} ${styles.onHoldColor}`;
+      case 'DELETED':
+        return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -61,6 +65,10 @@ class ManagerViewRequestForm extends PureComponent {
         return 'Rejected';
       case 'DRAFTS':
         return 'Drafts';
+      case 'ON-HOLD':
+        return 'Withdraw';
+      case 'DELETED':
+        return 'Deleted';
       default:
         return 'Unknown';
     }
@@ -95,7 +103,7 @@ class ManagerViewRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent viewingLeaveRequest={viewingLeaveRequest} />
+              <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
             </Col>
           </Row>
         </div>

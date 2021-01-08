@@ -34,6 +34,7 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
+      numberOfDaySelectedTypeC: 0,
     };
   }
 
@@ -147,9 +148,17 @@ class RequestInformation extends PureComponent {
   // GET REMAINING DAY
   getRemainingDay = (shortType) => {
     const {
-      timeOff: { totalLeaveBalance: { commonLeaves: { timeOffTypes = [] } = {} } = {} } = {},
+      timeOff: {
+        totalLeaveBalance: {
+          commonLeaves: { timeOffTypes = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypeC = [] } = {},
+        } = {},
+      } = {},
     } = this.props;
+
     let count = 0;
+    let total = 0;
+
     timeOffTypes.forEach((value) => {
       const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
       if (shortType === shortType1) {
@@ -157,8 +166,16 @@ class RequestInformation extends PureComponent {
       }
     });
 
+    timeOffTypeC.forEach((value) => {
+      const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
+      if (shortType === shortType1) {
+        total = currentAllowance;
+      }
+    });
+
     this.setState({
       remainingDayOfSelectedType: count,
+      numberOfDaySelectedTypeC: total,
     });
   };
 
@@ -260,7 +277,13 @@ class RequestInformation extends PureComponent {
 
   // ON SAVE DRAFT
   onSaveDraft = (values) => {
-    const { buttonState, isEditingDrafts, viewingLeaveRequestId } = this.state;
+    const {
+      buttonState,
+      isEditingDrafts,
+      viewingLeaveRequestId,
+      numberOfDaySelectedTypeC,
+      selectedType,
+    } = this.state;
     if (buttonState === 1) {
       const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
       const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
@@ -279,7 +302,9 @@ class RequestInformation extends PureComponent {
       } else {
         const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
 
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        let duration = 0;
+        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        else duration = numberOfDaySelectedTypeC;
 
         const data = {
           type: timeOffType,
@@ -328,6 +353,7 @@ class RequestInformation extends PureComponent {
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
     const {
       viewingLeaveRequestId,
+      numberOfDaySelectedTypeC,
       remainingDayOfSelectedType,
       selectedTypeName,
       selectedType,
@@ -353,7 +379,9 @@ class RequestInformation extends PureComponent {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        let duration = 0;
+        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        else duration = numberOfDaySelectedTypeC;
 
         if (
           (selectedType === 'A' || selectedType === 'B') &&
@@ -445,7 +473,7 @@ class RequestInformation extends PureComponent {
             );
           }
 
-          autoToDate = moment(durationFrom).add(time, 'day');
+          autoToDate = moment(durationFrom).add(time - 1, 'day');
         }
       });
 
