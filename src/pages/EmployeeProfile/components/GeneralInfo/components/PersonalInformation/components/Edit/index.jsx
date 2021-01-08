@@ -397,7 +397,7 @@ class Edit extends PureComponent {
           <Form.Item label="Residence Address">
             <TextArea
               autoSize={{ minRows: 2, maxRows: 6 }}
-              className={styles.selectForm}
+              className={styles.areaForm}
               defaultValue={r_Address}
               onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
               rules={[
@@ -412,7 +412,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_countryName}
                   onChange={(value) => {
@@ -446,7 +446,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_state}
                   onChange={(e) => this.handleChangeAddress('r_state', e)}
@@ -479,7 +479,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   defaultValue={r_zipCode}
                   onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
                 />
@@ -499,7 +499,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_countryName}
                   onChange={(value) => this.handleChangeAddress('c_countryName', value)}
@@ -524,7 +524,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_state}
                   onChange={(value) => this.handleChangeAddress('c_state', value)}
@@ -557,7 +557,7 @@ class Edit extends PureComponent {
             <Col span={4} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
-                  className={`${styles.selectForm} ${styles.selectAddress}`}
+                  className={styles.selectForm}
                   defaultValue={c_zipCode}
                   onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
                 />
