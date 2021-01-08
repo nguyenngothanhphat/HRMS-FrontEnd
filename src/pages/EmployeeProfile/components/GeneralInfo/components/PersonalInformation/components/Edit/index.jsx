@@ -232,7 +232,6 @@ class Edit extends PureComponent {
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
 
-    console.log('payload: ', payload);
     dispatch({
       type: 'employeeProfile/updateGeneralInfo',
       payload,
