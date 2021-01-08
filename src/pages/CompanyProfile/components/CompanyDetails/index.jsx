@@ -198,7 +198,6 @@ class CompanyDetails extends Component {
                     placeholder="Select State"
                     showArrow
                     showSearch
-                    onChange={this.onChangeCountry}
                     disabled={!countryHeadquarter}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -315,7 +314,6 @@ class CompanyDetails extends Component {
                     showArrow
                     showSearch
                     disabled={!countryLegal}
-                    onChange={this.onChangeSelectLegal}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
