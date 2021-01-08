@@ -96,7 +96,7 @@ class CompanyDetails extends Component {
     const listStateLegal = this.findListState(countryLegal) || [];
 
     return (
-      <Form className={s.root} ref={this.formRef} onFinish={this.onFinish}>
+      <Form className={s.root} ref={this.formRef} onFinish={this.onFinish} autoComplete="off">
         <div className={s.blockContent}>
           <div className={s.content__viewTop}>
             <p className={s.title}>Company Details</p>

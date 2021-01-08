@@ -27,7 +27,7 @@ export default class WorkLocations extends PureComponent {
 
   render() {
     return (
-      <Form ref={this.formRef} onFinish={this.onFinish}>
+      <Form ref={this.formRef} onFinish={this.onFinish} autoComplete="off">
         <div className={s.root}>
           <div className={s.content__viewTop}>
             <p className={s.title}>Work Locations</p>
