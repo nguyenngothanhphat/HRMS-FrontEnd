@@ -156,8 +156,9 @@ export default class TimeSheet extends PureComponent {
                   </div>
                   <div className={s.rightPart}>
                     <img
-                      src={previousArrowIcon}
+                      src="./assets/images/previous-arrow.svg"
                       alt="previous-arrow"
+                      className={`${s.arrowBtn} `}
                       onClick={() => {
                         if (selectedMonth > 0) {
                           const newMonth = value.clone();
@@ -183,9 +184,9 @@ export default class TimeSheet extends PureComponent {
                       }}
                     />
                     <img
-                      src={nextArrowIcon}
+                      src="./assets/images/next-arrow.svg"
                       alt="next-arrow"
-                      className={s.nextArrow}
+                      className={`${s.arrowBtn} ${s.nextArrowBtn}`}
                       onClick={() => {
                         if (selectedMonth < 11) {
                           const newMonth = value.clone();
