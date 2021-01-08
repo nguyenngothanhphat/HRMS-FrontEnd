@@ -27,6 +27,11 @@ class TeamCompoffTable extends PureComponent {
           </span>
         );
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Requestee',
@@ -179,6 +184,7 @@ class TeamCompoffTable extends PureComponent {
         ticketID = '',
         _id = '',
         extraTime = [],
+        onDate,
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
       } = value;
 
@@ -206,6 +212,7 @@ class TeamCompoffTable extends PureComponent {
         id: {
           ticketID,
           _id,
+          onDate,
         },
         requestee: `${firstName} ${lastName}`,
       };

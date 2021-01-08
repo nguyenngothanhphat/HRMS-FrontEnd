@@ -204,6 +204,7 @@ class RequestInformation extends PureComponent {
       action,
       approvalFlow: '5fb37597daeffc0c68763d8b',
       cc: personCC,
+      onDate: moment(),
     };
 
     let type = '';

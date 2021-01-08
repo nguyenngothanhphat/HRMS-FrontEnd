@@ -35,6 +35,11 @@ class TeamLeaveTable extends PureComponent {
           </span>
         );
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Requestee',
