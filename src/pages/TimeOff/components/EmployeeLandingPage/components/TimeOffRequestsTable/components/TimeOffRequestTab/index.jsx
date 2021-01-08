@@ -21,6 +21,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
+      onHoldLength: 0,
     };
   }
 
@@ -66,13 +67,16 @@ class TimeOffRequestTab extends PureComponent {
       status = 'IN-PROGRESS';
     }
     if (filterTab === '2') {
-      status = 'APPROVED';
+      status = 'ACCEPTED';
     }
     if (filterTab === '3') {
       status = 'REJECTED';
     }
     if (filterTab === '4') {
       status = 'DRAFTS';
+    }
+    if (filterTab === '5') {
+      status = 'ON-HOLD';
     }
 
     const commonFunction = (res = {}) => {
@@ -131,6 +135,7 @@ class TimeOffRequestTab extends PureComponent {
     const approvedLength = [];
     const rejectedLength = [];
     const draftLength = [];
+    const onHoldLength = [];
 
     newData.forEach((row) => {
       const { status = '' } = row;
@@ -139,7 +144,7 @@ class TimeOffRequestTab extends PureComponent {
           inProgressLength.push(row);
           break;
         }
-        case 'APPROVED': {
+        case 'ACCEPTED': {
           approvedLength.push(row);
           break;
         }
@@ -151,6 +156,10 @@ class TimeOffRequestTab extends PureComponent {
           draftLength.push(row);
           break;
         }
+        case 'ON-HOLD': {
+          onHoldLength.push(row);
+          break;
+        }
         default:
           break;
       }
@@ -160,6 +169,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: approvedLength.length,
       rejectedLength: rejectedLength.length,
       draftLength: draftLength.length,
+      onHoldLength: onHoldLength.length,
     });
   };
 
@@ -170,6 +180,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      onHoldLength,
     } = this.state;
     const { type = 0 } = this.props;
 
@@ -178,6 +189,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      onHoldLength,
     };
 
     return (

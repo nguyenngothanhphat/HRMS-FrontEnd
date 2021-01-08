@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin } from 'antd';
+import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -10,7 +10,8 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
-  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  loadingEmployeeWithdrawInProgress: loading.effects['timeOff/employeeWithdrawInProgress'],
+  loadingEmployeeWithdrawApproved: loading.effects['timeOff/employeeWithdrawApproved'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -30,6 +31,12 @@ class RequestInformation extends PureComponent {
       type: 'timeOff/fetchLeaveRequestById',
       id,
     });
+  };
+
+  refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
   };
 
   // EDIT BUTTON
@@ -64,21 +71,40 @@ class RequestInformation extends PureComponent {
 
   // WITHDRAW CLICKED
   withDraw = (status) => {
-    if (status !== 'APPROVED') this.setShowWithdrawModal(true);
+    if (status !== 'ACCEPTED') this.setShowWithdrawModal(true);
     else this.setShowWithdraw2Modal(true);
   };
 
   // ON WITHDRAW WHEN A TICKET IS DRAFT OR IN PROGRESS
-  onProceed = async () => {
+  onProceedInProgress = async () => {
     const {
       timeOff: {
-        viewingLeaveRequest: { _id: id = '', ticketID = '', type: { name = '' } = {} } = {},
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
       } = {},
     } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/withdrawLeaveRequest',
-      id,
+      type: 'timeOff/employeeWithdrawInProgress',
+      payload: { _id },
+    });
+    if (statusCode === 200) {
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
+      });
+    }
+  };
+
+  onProceedDrafts = async () => {
+    const {
+      timeOff: {
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/removeLeaveRequestOnDatabase',
+      id: _id,
     });
     if (statusCode === 200) {
       history.push({
@@ -89,9 +115,20 @@ class RequestInformation extends PureComponent {
   };
 
   // ON WITHDRAW WHEN A TICKET WAS APPROVED
-  onProceed2 = async (title, reason) => {
-    // eslint-disable-next-line no-console
-    console.log('withdraw', title, reason);
+  onProceedApproved = async (title, reason) => {
+    const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/employeeWithdrawApproved',
+      payload: { _id, title, reason },
+    });
+    if (statusCode === 200) {
+      notification.success({
+        message: 'Withdraw request sent!',
+      });
+      this.setShowWithdraw2Modal(false);
+      this.refreshPage();
+    }
   };
 
   checkWithdrawValid = (fromDate) => {
@@ -105,7 +142,8 @@ class RequestInformation extends PureComponent {
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
-      loadingWithdrawLeaveRequest,
+      loadingEmployeeWithdrawInProgress,
+      loadingEmployeeWithdrawApproved,
     } = this.props;
     const {
       ticketID = '',
@@ -118,6 +156,7 @@ class RequestInformation extends PureComponent {
       // onDate = '',
       description = '',
       type: { name = '', type = '', shortType = '' } = {},
+      comment = '',
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -201,10 +240,18 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
               </Row>
+              {status === 'REJECTED' && (
+                <Row>
+                  <Col span={6}>Request Rejection Comments</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>{comment}</span>
+                  </Col>
+                </Row>
+              )}
             </div>
             {(status === 'DRAFTS' ||
               status === 'IN-PROGRESS' ||
-              (status === 'APPROVED' && checkWithdrawValid)) && (
+              (status === 'ACCEPTED' && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
@@ -220,16 +267,16 @@ class RequestInformation extends PureComponent {
           </>
         )}
         <WithdrawModal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
-          onProceed={this.onProceed}
+          onProceed={status === 'IN-PROGRESS' ? this.onProceedInProgress : this.onProceedDrafts}
           onClose={this.setShowWithdrawModal}
           status={status}
         />
         <Withdraw2Modal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawApproved}
           visible={showWithdraw2Modal}
-          onProceed={this.onProceed2}
+          onProceed={this.onProceedApproved}
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />

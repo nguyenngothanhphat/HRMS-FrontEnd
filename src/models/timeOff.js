@@ -5,7 +5,7 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
-  withdrawLeaveRequest,
+  removeLeaveRequestOnDatabase,
   addCompoffRequest,
   updateCompoffRequest,
   getMyCompoffRequests,
@@ -22,6 +22,13 @@ import {
   uploadFile,
   uploadBalances,
   withdrawCompoffRequest,
+  reportingManagerApprove,
+  reportingManagerReject,
+  // WITHDRAW
+  employeeWithdrawInProgress,
+  employeeWithdrawApproved,
+  managerApproveWithdrawRequest,
+  managerRejectWithdrawRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -177,18 +184,16 @@ const timeOff = {
         return {};
       }
     },
-    *withdrawLeaveRequest({ id = '' }, { call, put }) {
+    *removeLeaveRequestOnDatabase({ id = '' }, { call, put }) {
       try {
-        if (id !== '') {
-          const response = yield call(withdrawLeaveRequest, { id });
-          const { statusCode, data: withdrawnLeaveRequest = [] } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { withdrawnLeaveRequest },
-          });
-          return statusCode;
-        }
+        const response = yield call(removeLeaveRequestOnDatabase, { id });
+        const { statusCode, data: withdrawnLeaveRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { withdrawnLeaveRequest },
+        });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
       }
@@ -466,12 +471,120 @@ const timeOff = {
         // dialog(errors);
       }
     },
+
+    // REPORTING MANAGER
+    *reportingManagerApprove({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(reportingManagerApprove, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *reportingManagerReject({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(reportingManagerReject, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
+    // WITHDRAW (INCLUDING SEND EMAILs)
+    *employeeWithdrawInProgress({ payload = {} }, { call }) {
+      try {
+        const response = yield call(employeeWithdrawInProgress, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *employeeWithdrawApproved({ payload = {} }, { call }) {
+      try {
+        const response = yield call(employeeWithdrawApproved, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *managerApproveWithdrawRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(managerApproveWithdrawRequest, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *managerRejectWithdrawRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(managerRejectWithdrawRequest, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveViewingLeaveRequest(state, action) {
+      const { viewingLeaveRequest } = state;
+      return {
+        ...state,
+        viewingLeaveRequest: {
+          ...viewingLeaveRequest,
+          ...action.payload,
+        },
       };
     },
   },

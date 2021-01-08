@@ -264,7 +264,7 @@ class CompoffTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+      selectedTab === 'REJECTED' || selectedTab === 'ACCEPTED'
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 

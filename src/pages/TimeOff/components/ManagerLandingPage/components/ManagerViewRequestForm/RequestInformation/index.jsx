@@ -12,6 +12,10 @@ const { TextArea } = Input;
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
+  loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
+  loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
+  loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -20,10 +24,18 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showModal: false,
+      showWithdrawModal: false,
       isReject: false,
       commentContent: '',
+      acceptWithdraw: false,
     };
   }
+
+  refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 500);
+  };
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
@@ -38,6 +50,12 @@ class RequestInformation extends PureComponent {
   setShowModal = (value) => {
     this.setState({
       showModal: value,
+    });
+  };
+
+  setShowWithdrawModal = (value) => {
+    this.setState({
+      showWithdrawModal: value,
     });
   };
 
@@ -57,8 +75,10 @@ class RequestInformation extends PureComponent {
   };
 
   // ON VIEW EMPLOYEE PROFILE
-  onViewEmployeeProfile = () => {
-    alert('VIEW EMPLOYEE');
+  onViewEmployeeProfile = (_id) => {
+    history.push({
+      pathname: `/directory/employee-profile/${_id}`,
+    });
   };
 
   // REJECT CLICKED
@@ -69,9 +89,21 @@ class RequestInformation extends PureComponent {
   };
 
   // APPROVE CLICKED
-  onApproveClicked = () => {
-    console.log('APPROVED');
-    this.setShowModal(true);
+  onApproveClicked = async (_id) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/reportingManagerApprove',
+      payload: {
+        _id,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.setShowModal(true);
+      this.setState({
+        isReject: false,
+      });
+    }
   };
 
   // ON COMMENT CHANGE
@@ -90,32 +122,70 @@ class RequestInformation extends PureComponent {
   };
 
   // ON REJECT SUBMIT
-  onRejectSubmit = () => {
-    console.log('REJECTED');
-    this.setShowModal(true);
+  onRejectSubmit = async (_id) => {
+    const { commentContent } = this.state;
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/reportingManagerReject',
+      payload: {
+        _id,
+        comment: commentContent,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.setShowModal(true);
+      this.setState({
+        isReject: false,
+      });
+    }
   };
 
-  // ON PROCEED withDraw
-  onProceed = async () => {
-    const {
-      timeOff: { viewingLeaveRequest: { _id: id = '', type: { name = '' } = {} } = {} } = {},
-    } = this.props;
+  // WITHDRAW
+  onApproveWithdrawClicked = async (_id) => {
     const { dispatch } = this.props;
-    const statusCode = await dispatch({
-      type: 'timeOff/withdrawLeaveRequest',
-      id,
+    const res = await dispatch({
+      type: 'timeOff/managerApproveWithdrawRequest',
+      payload: {
+        _id,
+      },
     });
+    const { statusCode = 0 } = res;
     if (statusCode === 200) {
-      history.push({
-        pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: '123456', typeName: name },
+      this.setShowWithdrawModal(true);
+      this.setState({
+        acceptWithdraw: true,
+      });
+    }
+  };
+
+  onRejectWithdrawClicked = async (_id) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/managerRejectWithdrawRequest',
+      payload: {
+        _id,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.setShowWithdrawModal(true);
+      this.setState({
+        acceptWithdraw: false,
       });
     }
   };
 
   render() {
-    const { showModal, isReject } = this.state;
-    const { timeOff: { viewingLeaveRequest = {} } = {}, loadingFetchLeaveRequestById } = this.props;
+    const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
+    const {
+      timeOff: { viewingLeaveRequest = {} } = {},
+      loadingFetchLeaveRequestById,
+      loadingApproveRequest,
+      loadingRejectRequest,
+      loadingManagerApproveWithdrawRequest,
+      loadingManagerRejectWithdrawRequest,
+    } = this.props;
     const {
       status = '',
       _id = '',
@@ -126,6 +196,14 @@ class RequestInformation extends PureComponent {
       // onDate = '',
       description = '',
       type: { name = '', shortType = '' } = {},
+      employee: {
+        generalInfo: { firstName = '', lastName = '' } = {},
+        employeeId = '',
+        position: { name: position = '' } = {},
+      } = {},
+      comment = '',
+      withdraw: { title = '', reason = '' } = {},
+      withdraw = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -140,21 +218,24 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Employee ID</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span className={styles.fieldValue}>PSI-1224</span>
+                <span className={styles.fieldValue}>{employeeId}</span>
               </Col>
             </Row>
             <Row>
               <Col span={6}>Employee Name</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
-                  Siddhartha Sengupta
+                <span
+                  onClick={() => this.onViewEmployeeProfile(_id)}
+                  className={styles.employeeLink}
+                >
+                  {`${firstName} ${lastName}`}
                 </span>
               </Col>
             </Row>
             <Row>
               <Col span={6}>Position</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span>Senior UX designer</span>
+                <span>{position}</span>
               </Col>
             </Row>
             <Row>
@@ -189,7 +270,7 @@ class RequestInformation extends PureComponent {
 
         <div className={styles.requesteeDetails}>
           <div className={styles.formTitle}>
-            <span className={styles.title}>Leave details</span>
+            <span className={styles.title}>Timeoff request details</span>
           </div>
           {loadingFetchLeaveRequestById && (
             <div
@@ -241,10 +322,52 @@ class RequestInformation extends PureComponent {
                     <span>{description}</span>
                   </Col>
                 </Row>
+                {status === 'REJECTED' && (
+                  <Row>
+                    <Col span={6}>Request Rejection Comments</Col>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{comment}</span>
+                    </Col>
+                  </Row>
+                )}
               </div>
             </>
           )}
         </div>
+
+        {/* WITHDRAW REASON */}
+        {Object.keys(withdraw).length !== 0 && (
+          <div className={styles.requesteeDetails}>
+            <div className={styles.formTitle}>
+              <span className={styles.title}>Withdraw request details</span>
+            </div>
+            <div className={styles.formContent}>
+              <Row>
+                <Col span={6}>Title</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span className={styles.fieldValue}>{title}</span>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={6}>Subject</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <span>{reason}</span>
+                </Col>
+              </Row>
+              {status !== 'ON-HOLD' && (
+                <Row>
+                  <Col span={6}>Status</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>
+                      {status === 'ACCEPTED' && 'Rejected'}
+                      {status === 'DELETED' && 'Accepted'}
+                    </span>
+                  </Col>
+                </Row>
+              )}
+            </div>
+          </div>
+        )}
 
         {isReject && (
           <div className={styles.rejectComment}>
@@ -253,13 +376,15 @@ class RequestInformation extends PureComponent {
               <TextArea
                 onChange={this.onRejectCommentChange}
                 placeholder="The reason I am rejecting this request is…"
+                maxLength={500}
                 autoSize={{ minRows: 3, maxRows: 7 }}
               />
             </div>
           </div>
         )}
 
-        {status === 'IN-PROGRESS' && !isReject && (
+        {/* IN PROGRESS */}
+        {!isReject && status === 'IN-PROGRESS' && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -269,12 +394,53 @@ class RequestInformation extends PureComponent {
               <Button type="link" onClick={() => this.onRejectClicked()}>
                 Reject
               </Button>
-              <Button onClick={() => this.onApproveClicked()}>Accept</Button>
+              <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+                Accept
+              </Button>
             </div>
           </div>
         )}
 
-        {status === 'IN-PROGRESS' && isReject && (
+        {/* ACCEPTED OR REJECTED  */}
+        {!isReject && (status === 'ACCEPTED' || status === 'REJECTED') && (
+          <div className={styles.footer}>
+            <span className={styles.note}>
+              By default notifications will be sent to HR, your manager and recursively loop to your
+              department head.
+            </span>
+            <div className={styles.formButtons}>
+              <Button type="link" disabled>
+                {status === 'ACCEPTED' && 'Approved'}
+                {status === 'REJECTED' && 'Rejected'}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* WITHDRAW */}
+        {!isReject && status === 'ON-HOLD' && (
+          <div className={styles.footer}>
+            <span className={styles.note}>Withdrawing an approved request</span>
+            <div className={styles.formButtons}>
+              <Button
+                loading={loadingManagerRejectWithdrawRequest}
+                type="link"
+                onClick={() => this.onRejectWithdrawClicked(_id)}
+              >
+                Reject
+              </Button>
+              <Button
+                loading={loadingManagerApproveWithdrawRequest}
+                onClick={() => this.onApproveWithdrawClicked(_id)}
+              >
+                Withdraw
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* REJECTING  */}
+        {isReject && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
@@ -284,18 +450,29 @@ class RequestInformation extends PureComponent {
               <Button type="link" onClick={this.onCancel}>
                 Cancel
               </Button>
-              <Button onClick={() => this.onRejectSubmit()}>Submit</Button>
+              <Button loading={loadingRejectRequest} onClick={() => this.onRejectSubmit(_id)}>
+                Submit
+              </Button>
             </div>
           </div>
         )}
-
         <TimeOffModal
           visible={showModal}
-          onClose={this.setShowModal}
+          onOk={() => this.setShowModal(false)}
           content={
             isReject
               ? 'Timeoff request has been rejected from your end. All in loop will be notified.'
               : 'Timeoff request has been approved from your end. All in loop will be notified.'
+          }
+          submitText="OK"
+        />
+        <TimeOffModal
+          visible={showWithdrawModal}
+          onOk={() => this.setShowWithdrawModal(false)}
+          content={
+            acceptWithdraw
+              ? 'Withdrawing timeoff request has been approved from your end. All in loop will be notified.'
+              : 'Withdrawing timeoff request has been rejected from your end. All in loop will be notified.'
           }
           submitText="OK"
         />

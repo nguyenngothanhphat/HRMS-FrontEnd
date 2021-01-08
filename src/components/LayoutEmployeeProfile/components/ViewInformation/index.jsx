@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Divider, Tag, Menu, Dropdown, Button, Spin, Input } from 'antd';
+import { Divider, Tag, Button, Spin, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 
-const { Item } = Menu;
 const { TextArea } = Input;
 
 @connect(
@@ -172,22 +171,7 @@ class ViewInformation extends Component {
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
     const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
-    const menu = (
-      <Menu>
-        <Item key="1" onClick={this.handleEditBio}>
-          <div className={s.itemDropdownMenu}>Edit bio</div>
-        </Item>
-        <Item key="2">
-          <div className={s.itemDropdownMenu}>Put on Leave (PWP)</div>
-        </Item>
-        <Item key="3">
-          <div className={s.itemDropdownMenu}>Raise Termination</div>
-        </Item>
-        <Item key="4">
-          <div className={s.itemDropdownMenu}>Request Details</div>
-        </Item>
-      </Menu>
-    );
+
     if (loading)
       return (
         <div className={s.viewLoading}>
@@ -259,16 +243,9 @@ class ViewInformation extends Component {
           </div>
         </div>
         <div className={s.viewBtnAction}>
-          <Dropdown overlay={menu} placement="bottomRight">
-            <Button type="primary" className={s.btnAction}>
-              <span className={s.btnAction__text}>Action</span>
-              <img
-                src="/assets/images/iconDownButton.svg"
-                alt="img-arrow"
-                style={{ marginLeft: '5px' }}
-              />
-            </Button>
-          </Dropdown>
+          <Button onClick={this.handleEditBio} className={s.btnEditBio}>
+            Edit Bio
+          </Button>
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"

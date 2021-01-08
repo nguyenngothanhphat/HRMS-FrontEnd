@@ -12,7 +12,8 @@ export default class FilterBar extends PureComponent {
   };
 
   addZeroToNumber = (number) => {
-    return `0${number}`.slice(-2);
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
   };
 
   render() {
@@ -22,42 +23,32 @@ export default class FilterBar extends PureComponent {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
+        onHoldLength = '',
       } = {},
       category = '',
     } = this.props;
+
+    const { selectedTab } = this.props;
 
     return (
       <div className={styles.FilterBar}>
         <Tabs
           tabBarGutter={35}
           defaultActiveKey="1"
+          activeKey={selectedTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane
-            tab={`In Progress ${
-              inProgressLength !== 0 ? `(${this.addZeroToNumber(inProgressLength)})` : ''
-            } `}
-            key="1"
-          />
-          <TabPane
-            tab={`Approved ${
-              approvedLength !== 0 ? `(${this.addZeroToNumber(approvedLength)})` : ''
-            } `}
-            key="2"
-          />
-          <TabPane
-            tab={`Rejected ${
-              rejectedLength !== 0 ? `(${this.addZeroToNumber(rejectedLength)})` : ''
-            } `}
-            key="3"
-          />
+          <TabPane tab={`In Progress (${this.addZeroToNumber(inProgressLength)})`} key="1" />
+          <TabPane tab={`Approved (${this.addZeroToNumber(approvedLength)})`} key="2" />
+          <TabPane tab={`Rejected (${this.addZeroToNumber(rejectedLength)})`} key="3" />
           {category === 'MY' && (
-            <TabPane
-              tab={`Drafts ${draftLength !== 0 ? `(${this.addZeroToNumber(draftLength)})` : ''} `}
-              key="4"
-            />
+            <TabPane tab={`Drafts (${this.addZeroToNumber(draftLength)})`} key="4" />
           )}
+          {/* ONLY HR-MANAGER CAN SEE THE WITHDRAW LIST */}
+          {/* {onHoldLength !== 0 && (
+            <TabPane tab={`Withdraw (${this.addZeroToNumber(onHoldLength)})`} key="5" />
+          )} */}
         </Tabs>
       </div>
     );
