@@ -35,7 +35,12 @@ class ViewTimelineModal extends PureComponent {
     };
   }
 
-  componentDidMount = () => {};
+  componentDidMount = () => {
+    const currentMonth = parseInt(moment().format('MM'), 10);
+    this.setState({
+      selectedMonth: currentMonth - 1,
+    });
+  };
 
   onPanelChange = (value) => {
     const selectedMonth = parseInt(moment(value).format('MM'), 10);
@@ -69,7 +74,7 @@ class ViewTimelineModal extends PureComponent {
     const date = value.date();
     const status = this.getStatusDay(value);
     return status === 'normal'
-      ? this.handeCheckTimeSheet(value, date)
+      ? this.handleCheckTimeSheet(value, date)
       : this.renderItemDay(status, date);
   };
 
@@ -98,7 +103,7 @@ class ViewTimelineModal extends PureComponent {
     return dates;
   };
 
-  handeCheckTimeSheet = (value, date) => {
+  handleCheckTimeSheet = (value, date) => {
     const { lastWorkingDate = '', requestDate = '' } = this.props;
 
     const beginDate = moment(requestDate).format('YYYY-MM-DD');

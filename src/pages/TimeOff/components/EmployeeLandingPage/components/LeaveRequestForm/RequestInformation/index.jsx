@@ -35,6 +35,7 @@ class RequestInformation extends PureComponent {
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
       numberOfDaySelectedTypeC: 0,
+      unpaidLeaveActivate: false,
     };
   }
 
@@ -123,9 +124,18 @@ class RequestInformation extends PureComponent {
       const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
       // }
 
+      // paid or unpaid leave?
+      let timeOffType = '';
+      if (type === 'B') {
+        timeOffType = this.getUnpaidLeaveIdOfTypeB(shortType, name);
+        this.setState({
+          unpaidLeaveActivate: true,
+        });
+      } else timeOffType = typeId;
+
       // set values from server to fields
       this.formRef.current.setFieldsValue({
-        timeOffType: typeId,
+        timeOffType,
         subject,
         durationFrom: fromDate === null ? null : moment(fromDate),
         durationTo: toDate === null ? null : moment(toDate),
@@ -177,6 +187,8 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType: count,
       numberOfDaySelectedTypeC: total,
     });
+
+    return count;
   };
 
   // GET TIME OFF TYPE BY ID
@@ -184,18 +196,32 @@ class RequestInformation extends PureComponent {
     const { durationFrom } = this.state;
     const { timeOff: { timeOffTypes = [] } = {} } = this.props;
     timeOffTypes.forEach((eachType) => {
-      const { _id = '', name = '', shortType = '', type = '' } = eachType;
+      const { _id = '', name = '', shortType = '', type = '', typeName = '' } = eachType;
       if (id === _id) {
-        this.getRemainingDay(shortType);
+        const remainingDay = this.getRemainingDay(shortType);
         this.autoValueForToDate(type, shortType, durationFrom);
         if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
+        }
+
+        // if remaining day = 0, activate unpaid leaves
+
+        let unpaidLeaveActivate = false;
+        if (remainingDay === 0) {
+          if (type === 'A') {
+            const { timeOff: { totalLeaveBalance: { commonLeaves = {} } = {} } = {} } = this.props;
+            const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
+            if (this.checkDuplicateTypeAAndB(typesOfCommonLeaves, shortType, 'B')) {
+              unpaidLeaveActivate = true;
+            }
+          }
         }
 
         this.setState({
           selectedShortType: shortType,
           selectedType: type,
           selectedTypeName: name,
+          unpaidLeaveActivate,
         });
       }
     });
@@ -283,6 +309,9 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId,
       numberOfDaySelectedTypeC,
       selectedType,
+      unpaidLeaveActivate,
+      selectedShortType,
+      selectedTypeName,
     } = this.state;
     if (buttonState === 1) {
       const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
@@ -298,7 +327,7 @@ class RequestInformation extends PureComponent {
       } = values;
 
       if (timeOffType === '') {
-        message.error('Nothing to save as draft!');
+        message.error('Please fill required fields!');
       } else {
         const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
 
@@ -307,7 +336,9 @@ class RequestInformation extends PureComponent {
         else duration = numberOfDaySelectedTypeC;
 
         const data = {
-          type: timeOffType,
+          type: unpaidLeaveActivate
+            ? this.getUnpaidLeaveIdOfTypeA(selectedShortType, selectedTypeName)
+            : timeOffType,
           employee: employeeId,
           subject,
           fromDate: durationFrom,
@@ -357,6 +388,8 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType,
       selectedTypeName,
       selectedType,
+      selectedShortType,
+      unpaidLeaveActivate,
     } = this.state;
     const {
       timeOffType = '',
@@ -385,14 +418,17 @@ class RequestInformation extends PureComponent {
 
         if (
           (selectedType === 'A' || selectedType === 'B') &&
-          duration > remainingDayOfSelectedType
+          duration > remainingDayOfSelectedType &&
+          !unpaidLeaveActivate
         ) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
         } else {
           const data = {
-            type: timeOffType,
+            type: unpaidLeaveActivate
+              ? this.getUnpaidLeaveIdOfTypeA(selectedShortType, selectedTypeName)
+              : timeOffType,
             status: 'IN-PROGRESS',
             employee: employeeId,
             subject,
@@ -532,28 +568,72 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  checkDuplicateTypeAAndB = (typesOfCommonLeaves, shortTypeToCheck, typeToCheck) => {
+    let check = false;
+    if (typeToCheck === 'B') {
+      typesOfCommonLeaves.forEach((type) => {
+        const { defaultSettings = {} } = type;
+        if (defaultSettings !== null) {
+          const { shortType = '', type: type1 = '' } = defaultSettings;
+          if (type1 === 'A' && shortTypeToCheck === shortType) check = true;
+        }
+      });
+    }
+    return check;
+  };
+
+  // get unpaid leave id of type A
+  getUnpaidLeaveIdOfTypeA = (shortTypeToCheck, nameToCheck) => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    let id = '';
+
+    timeOffTypes.forEach((type) => {
+      const { type: type1 = '', shortType = '', _id = '', name = '' } = type;
+      if (type1 === 'B' && name === nameToCheck && shortType === shortTypeToCheck) id = _id;
+    });
+
+    return id;
+  };
+
+  // get paid leave id of type B
+  getUnpaidLeaveIdOfTypeB = (shortTypeToCheck, nameToCheck) => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    let id = '';
+
+    timeOffTypes.forEach((type) => {
+      const { type: type1 = '', shortType = '', _id = '', name = '' } = type;
+      if (type1 === 'A' && name === nameToCheck && shortType === shortTypeToCheck) id = _id;
+    });
+
+    return id;
+  };
+
   // RENDER SELECT BOX
   // GET DATA FOR SELECT BOX TYPE 1,2
   renderTimeOffTypes1 = (data) => {
-    return data.map((type) => {
+    const result = data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
         const {
           _id = '',
           name = '',
           shortType = '',
+          type: type1 = '',
           baseAccrual: { time = 0 } = {},
         } = defaultSettings;
-        return {
-          name,
-          shortName: shortType,
-          remaining: currentAllowance,
-          total: time,
-          _id,
-        };
+        if (!this.checkDuplicateTypeAAndB(data, shortType, type1))
+          return {
+            name,
+            shortName: shortType,
+            remaining: currentAllowance,
+            total: time,
+            type: type1,
+            _id,
+          };
       }
       return '';
     });
+    return result.filter((v) => v !== '');
   };
 
   // GET DATA FOR SELECT BOX TYPE 3 (WFH/CP...)
@@ -576,8 +656,10 @@ class RequestInformation extends PureComponent {
   // RENDER OPTIONS
   // TYPE A: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
+    const { unpaidLeaveActivate, selectedShortType } = this.state;
+
     return data.map((value) => {
-      const { name = '', shortName = '', remaining = 0, total = 0, _id = '' } = value;
+      const { name = '', type = '', shortName = '', remaining = 0, total = 0, _id = '' } = value;
       const defaultCss = {
         fontSize: 12,
         color: '#6f7076',
@@ -597,25 +679,42 @@ class RequestInformation extends PureComponent {
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>
                 {`${name} (${shortName})`}
+                {type === 'A' && selectedShortType === shortName && unpaidLeaveActivate && (
+                  <span
+                    style={{
+                      marginLeft: '10px',
+                      color: '#00C598',
+                      padding: '5px 10px',
+                      fontSize: '10px',
+                      boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    Advanced leave activated
+                  </span>
+                )}
               </span>
+
               <span
                 className={styles.days}
                 style={{
                   float: 'right',
                 }}
               >
-                <span style={remaining === 0 ? invalidCss : defaultCss} className={styles.totals}>
-                  <span
-                    style={
-                      remaining === 0
-                        ? { fontSize: 12, color: '#FD4546' }
-                        : { fontSize: 12, color: 'black' }
-                    }
-                  >
-                    {remaining}
+                {type === 'A' && (
+                  <span style={remaining === 0 ? invalidCss : defaultCss}>
+                    <span
+                      style={
+                        remaining === 0
+                          ? { fontSize: 12, color: '#FD4546' }
+                          : { fontSize: 12, color: 'black' }
+                      }
+                    >
+                      {remaining}
+                    </span>
+                    /{total} days
                   </span>
-                  /{total} days
-                </span>
+                )}
               </span>
             </>
           </div>
@@ -768,6 +867,7 @@ class RequestInformation extends PureComponent {
       isEditingDrafts,
       buttonState,
       remainingDayOfSelectedType,
+      unpaidLeaveActivate,
     } = this.state;
 
     const {
@@ -1087,6 +1187,7 @@ class RequestInformation extends PureComponent {
               form="myForm"
               disabled={
                 remainingDayOfSelectedType === 0 &&
+                !unpaidLeaveActivate &&
                 (selectedType === 'A' || selectedType === 'B') &&
                 action === 'new-leave-request'
               }
