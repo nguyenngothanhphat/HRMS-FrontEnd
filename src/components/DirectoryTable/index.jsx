@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar } from 'antd';
+import { Table, Avatar, Popover } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -11,6 +11,7 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       isSort: false,
+      visible: false,
     };
   }
 
@@ -32,6 +33,26 @@ class DirectoryTable extends Component {
         <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
       </div>
     );
+  };
+
+  renderContent = (row) => {
+    // const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
+    return (
+      <div
+        style={{ textDecoration: 'none', cursor: 'pointer', color: '#2C6DF9' }}
+        onClick={() => this.checkFunction(row)}
+      >
+        Menu actions
+      </div>
+    );
+  };
+
+  checkFunction = (row) => {
+    alert(`Clicked action[${row}`);
+  };
+
+  handleVisibleChange = (visible) => {
+    this.setState({ visible });
   };
 
   generateColumns = (sortedName) => {
@@ -125,6 +146,31 @@ class DirectoryTable extends Component {
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
         width: '15%',
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.action' }),
+        dataIndex: '_id',
+        // key: 'action',
+        align: 'center',
+        width: '8%',
+        render: (_id, row) => {
+          return (
+            <div className={styles.viewAction}>
+              <div className={styles.viewAction__popOver}>
+                <Popover
+                  content={this.renderContent(row)}
+                  title="title action"
+                  trigger="click"
+                  placement="bottomRight"
+                  visible={this.state.visible}
+                  onVisibleChange={this.handleVisibleChange}
+                >
+                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                </Popover>
+              </div>
+            </div>
+          );
+        },
       },
     ];
 
