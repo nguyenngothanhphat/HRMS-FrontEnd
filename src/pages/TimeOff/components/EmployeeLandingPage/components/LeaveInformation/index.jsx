@@ -179,9 +179,11 @@ class LeaveInformation extends PureComponent {
     typesOfCommonLeaves.forEach((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
-        const { baseAccrual: { time = 0 } = {} } = defaultSettings;
-        remaining += currentAllowance;
-        total += time;
+        const { type: type1 = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+        if (type1 === 'A') {
+          remaining += currentAllowance;
+          total += time;
+        }
         this.setState({
           remaining,
         });

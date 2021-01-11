@@ -36,6 +36,7 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType: 0,
       numberOfDaySelectedTypeC: 0,
       unpaidLeaveActivate: false,
+      negativeLeave: 0,
     };
   }
 
@@ -175,8 +176,11 @@ class RequestInformation extends PureComponent {
     let total = 0;
 
     timeOffTypes.forEach((value) => {
-      const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
-      if (shortType === shortType1) {
+      const {
+        defaultSettings: { shortType: shortType1 = '', type = '' } = {},
+        currentAllowance = 0,
+      } = value;
+      if (shortType === shortType1 && type === 'A') {
         count = currentAllowance;
       }
     });
@@ -194,6 +198,32 @@ class RequestInformation extends PureComponent {
     });
 
     return count;
+  };
+
+  // get negative of timeoff type
+  getNegativeLeave = (timeOffTypes, shortType) => {
+    let result = 0;
+    timeOffTypes.forEach((type) => {
+      const {
+        defaultSettings: {
+          shortType: st1 = '',
+          type: t1 = '',
+          balance: { negative: { unlimited = false, unto = 0 } = {} } = {},
+        } = {},
+        currentAllowance = 0,
+      } = type;
+
+      if (shortType === st1 && t1 === 'A') {
+        if (unlimited) result = -1;
+        else result = unto;
+      }
+      // get unpaid currentAllowance in type B with same shortType
+      else if (shortType === st1 && t1 === 'B') {
+        result += currentAllowance;
+      }
+    });
+
+    return result;
   };
 
   // GET TIME OFF TYPE BY ID
@@ -224,14 +254,17 @@ class RequestInformation extends PureComponent {
         }
 
         // if remaining day = 0, activate unpaid leaves
-
         let unpaidLeaveActivate = false;
+        let negativeLeave = 0;
         if (remainingDay === 0) {
           if (type === 'A') {
             const { timeOff: { totalLeaveBalance: { commonLeaves = {} } = {} } = {} } = this.props;
             const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
-            if (this.checkDuplicateTypeAAndB(typesOfCommonLeaves, shortType, 'B')) {
-              unpaidLeaveActivate = true;
+            negativeLeave = this.getNegativeLeave(typesOfCommonLeaves, shortType);
+            if (negativeLeave !== 0) {
+              if (this.checkDuplicateTypeAAndB(typesOfCommonLeaves, shortType, 'B')) {
+                unpaidLeaveActivate = true;
+              }
             }
           }
         }
@@ -241,6 +274,7 @@ class RequestInformation extends PureComponent {
           selectedType: type,
           selectedTypeName: name,
           unpaidLeaveActivate,
+          negativeLeave,
         });
       }
     });
@@ -409,6 +443,7 @@ class RequestInformation extends PureComponent {
       selectedType,
       selectedShortType,
       unpaidLeaveActivate,
+      negativeLeave,
     } = this.state;
     const {
       timeOffType = '',
@@ -442,6 +477,15 @@ class RequestInformation extends PureComponent {
         ) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
+          );
+        } else if (
+          (selectedType === 'A' || selectedType === 'B') &&
+          duration > remainingDayOfSelectedType &&
+          unpaidLeaveActivate &&
+          duration > negativeLeave + remainingDayOfSelectedType
+        ) {
+          message.error(
+            `You only have ${negativeLeave} unpaid leave days of ${selectedTypeName} left.`,
           );
         } else {
           const data = {
@@ -891,6 +935,7 @@ class RequestInformation extends PureComponent {
       buttonState,
       remainingDayOfSelectedType,
       unpaidLeaveActivate,
+      negativeLeave,
     } = this.state;
 
     const {
