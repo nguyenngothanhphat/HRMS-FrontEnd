@@ -152,7 +152,8 @@ export default class TimeSheet extends PureComponent {
                         newValue.month(parseInt(selectedMonth1, 10));
                         onChange(newValue);
                         this.setState({
-                          selectedMonth: selectedMonth1,
+                          // selectedMonth: selectedMonth1,
+                          selectedMonth: parseInt(moment(selectedMonth1).format('MM'), 10),
                         });
                       }}
                     >
@@ -167,7 +168,8 @@ export default class TimeSheet extends PureComponent {
                         const now = value.clone().year(newYear);
                         onChange(now);
                         this.setState({
-                          selectedYear: newYear,
+                          // selectedYear: newYear,
+                          selectedYear: parseInt(moment(newYear).format('YYYY'), 10),
                         });
                       }}
                       value={String(selectedYear)}
