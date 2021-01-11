@@ -1,7 +1,6 @@
 .root {
   width: 100%;
   height: fit-content;
-  padding: 24px;
   background: #ffffff;
   border: 1px solid #d6dce0;
   box-sizing: border-box;
@@ -9,10 +8,76 @@
   p {
     margin: 0;
   }
+
+  .viewAddDepartments {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    color: #2c6df9;
+    &__icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
+      cursor: pointer;
+    }
+    &__text {
+      margin-left: 11px !important;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+      text-decoration-line: underline;
+    }
+  }
+
   .title {
     font-weight: bold;
     font-size: 16px;
     line-height: 19px;
-    color: #161c29;
+  }
+  .content {
+    &__viewTop {
+      padding: 24px;
+      border-bottom: 1px solid #d6dce0;
+
+      .text {
+        margin-top: 10px;
+        text-align: justify;
+        font-size: 12px;
+        line-height: 20px;
+        color: #707177;
+      }
+    }
+    &__viewBottom {
+      height: fit-content;
+      padding: 30px;
+      font-size: 13px;
+      line-height: 15px;
+      color: #161c29;
+    }
+  }
+}
+.viewBtn {
+  width: 100%;
+  height: fit-content;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  .btnSubmit {
+    background: #ffa100;
+    border-radius: 25px;
+    height: 40px;
+    width: 150px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    color: #ffffff;
+    border: none;
   }
 }

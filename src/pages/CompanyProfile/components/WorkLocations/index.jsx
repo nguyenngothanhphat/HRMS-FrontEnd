@@ -49,14 +49,12 @@ export default class WorkLocations extends PureComponent {
               {(fields, { add, remove }) => (
                 <>
                   {fields.map((field) => (
-                    <>
-                      <FormWorkLocation
-                        {...field}
-                        key={field.name}
-                        formRef={this.formRef}
-                        listCountry={dummyListCountry}
-                      />
-                    </>
+                    <FormWorkLocation
+                      {...field}
+                      key={field.name}
+                      formRef={this.formRef}
+                      listCountry={dummyListCountry}
+                    />
                   ))}
                   <div className={s.viewAddWorkLocation}>
                     <p className={s.viewAddWorkLocation__icon} onClick={() => add()}>
