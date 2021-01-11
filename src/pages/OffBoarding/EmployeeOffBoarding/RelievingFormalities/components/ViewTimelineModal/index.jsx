@@ -178,7 +178,6 @@ class ViewTimelineModal extends PureComponent {
             <Calendar
               headerRender={({ value, onChange }) => {
                 const { selectedMonth, selectedYear } = this.state;
-
                 const start = 0;
                 const end = 12;
                 const monthOptions = [];
@@ -223,7 +222,7 @@ class ViewTimelineModal extends PureComponent {
                             newValue.month(parseInt(selectedMonth1, 10));
                             onChange(newValue);
                             this.setState({
-                              selectedMonth: parseInt(moment(selectedMonth1).format('MM'), 10),
+                              selectedMonth: parseInt(selectedMonth1, 10),
                             });
                           }}
                         >
@@ -238,7 +237,7 @@ class ViewTimelineModal extends PureComponent {
                             const now = value.clone().year(newYear);
                             onChange(now);
                             this.setState({
-                              selectedYear: parseInt(moment(newYear).format('YYYY'), 10),
+                              selectedYear: newYear,
                             });
                           }}
                           value={String(selectedYear)}
