@@ -11,10 +11,6 @@ moment.locale('en');
 export default class TimeSheet extends PureComponent {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   selectedMonth: moment().subtract(1, 'months').format('MM'),
-    //   selectedYear: moment().format('YYYY'),
-    // };
     this.state = {
       selectedMonth: parseInt(moment().subtract(1, 'months').format('MM'), 10),
       selectedYear: parseInt(moment().format('YYYY'), 10),
@@ -27,15 +23,6 @@ export default class TimeSheet extends PureComponent {
       selectedMonth: currentMonth - 1,
     });
   };
-
-  // onPanelChange = (value) => {
-  //   const selectedMonth = moment(value).locale('en').format('MMMM');
-  //   const selectedYear = moment(value).format('YYYY');
-  //   this.setState({
-  //     selectedMonth: selectedMonth - 1,
-  //     selectedYear,
-  //   });
-  // };
 
   onPanelChange = (value) => {
     const selectedMonth = parseInt(moment(value).format('MM'), 10);
@@ -147,13 +134,12 @@ export default class TimeSheet extends PureComponent {
                       dropdownMatchSelectWidth={false}
                       value={String(selectedMonth)}
                       showArrow={false}
-                      onChange={(selectedMonth1) => {
+                      onChange={(_selectedMonth) => {
                         const newValue = value.clone();
-                        newValue.month(parseInt(selectedMonth1, 10));
+                        newValue.month(parseInt(_selectedMonth, 10));
                         onChange(newValue);
                         this.setState({
-                          // selectedMonth: selectedMonth1,
-                          selectedMonth: parseInt(moment(selectedMonth1).format('MM'), 10),
+                          selectedMonth: parseInt(_selectedMonth, 10),
                         });
                       }}
                     >
@@ -168,8 +154,7 @@ export default class TimeSheet extends PureComponent {
                         const now = value.clone().year(newYear);
                         onChange(now);
                         this.setState({
-                          // selectedYear: newYear,
-                          selectedYear: parseInt(moment(newYear).format('YYYY'), 10),
+                          selectedYear: parseInt(newYear, 10),
                         });
                       }}
                       value={String(selectedYear)}
