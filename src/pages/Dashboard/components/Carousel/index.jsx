@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Carousel } from 'antd';
+import { formatMessage } from 'umi';
 import s from './index.less';
 
 export default class Panner extends PureComponent {
@@ -10,7 +11,9 @@ export default class Panner extends PureComponent {
         <Carousel arrows prevArrow={<LeftOutlined />} nextArrow={<RightOutlined />}>
           <div className={`${s.content} ${s.bg1}`}>
             <div className={s.content1}>
-              <div className={s.content1__text1}>Welcome Jason!</div>
+              <div className={s.content1__text1}>
+                {formatMessage({ id: 'pages.dashboard.carousel.welcome' })} Jason!
+              </div>
               <div className={s.content1__text2}>
                 He has joined our studio as an Illustrator. Here’s a message from him.
               </div>

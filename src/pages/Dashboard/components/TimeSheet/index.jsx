@@ -12,14 +12,25 @@ export default class TimeSheet extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMonth: moment().subtract(1, 'months').format('MM'),
-      selectedYear: moment().format('YYYY'),
+      selectedMonth: parseInt(moment().subtract(1, 'months').format('MM'), 10),
+      selectedYear: parseInt(moment().format('YYYY'), 10),
+      getDate: parseInt(moment().format('DD'), 10),
     };
   }
 
+  componentDidMount = () => {
+    const currentMonth = parseInt(moment().format('MM'), 10);
+    const currentDate = parseInt(moment().format('DD'), 10);
+    const currentYear = parseInt(moment().format('YYYY'), 10);
+    this.setState({
+      selectedMonth: currentMonth - 1,
+      getDate: currentDate,
+    });
+  };
+
   onPanelChange = (value) => {
-    const selectedMonth = moment(value).locale('en').format('MMMM');
-    const selectedYear = moment(value).format('YYYY');
+    const selectedMonth = parseInt(moment(value).format('MM'), 10);
+    const selectedYear = parseInt(moment(value).format('YYYY'), 10);
     this.setState({
       selectedMonth: selectedMonth - 1,
       selectedYear,
@@ -48,6 +59,7 @@ export default class TimeSheet extends PureComponent {
   dateFullCellRender = (value) => {
     const date = value.date();
     const status = this.getStatusDay(value);
+
     return status === 'normal'
       ? this.handeCheckTimeSheet(value, date)
       : this.renderItemDay(status, date);
@@ -85,53 +97,74 @@ export default class TimeSheet extends PureComponent {
           dateFullCellRender={this.dateFullCellRender}
           onPanelChange={this.onPanelChange}
           headerRender={({ value, onChange }) => {
-            const { selectedMonth, selectedYear } = this.state;
+            const { selectedMonth, selectedYear, getDate } = this.state;
 
-            const start = 0;
-            const end = 12;
-            const monthOptions = [];
+            // const start = 0;
+            // const end = 12;
+            // const monthOptions = [];
 
+            // const current = value.clone();
+            // const localeData = value.localeData();
+            // const months = [];
+            // for (let i = 0; i < 12; i += 1) {
+            //   current.month(i);
+
+            //   months.push(localeData.months(current));
+            // }
+
+            // for (let index = start; index < end; index += 1) {
+            //   monthOptions.push(
+            //     <Select.Option className="month-item" key={`${index}`}>
+            //       {months[index]}
+            //     </Select.Option>,
+            //   );
+            // }
+
+            // const year = value.year();
+
+            // const options = [];
+            // for (let i = year - 10; i < year + 10; i += 1) {
+            //   options.push(
+            //     <Select.Option key={i} value={i} className="year-item">
+            //       {i}
+            //     </Select.Option>,
+            //   );
+            // }
+
+            // get current month string
             const current = value.clone();
             const localeData = value.localeData();
             const months = [];
             for (let i = 0; i < 12; i += 1) {
               current.month(i);
+
               months.push(localeData.months(current));
             }
 
-            for (let index = start; index < end; index += 1) {
-              monthOptions.push(
-                <Select.Option className="month-item" key={`${index}`}>
-                  {months[index]}
-                </Select.Option>,
-              );
-            }
-
-            const year = value.year();
-
-            const options = [];
-            for (let i = year - 10; i < year + 10; i += 1) {
-              options.push(
-                <Select.Option key={i} value={i} className="year-item">
-                  {i}
-                </Select.Option>,
-              );
-            }
+            let _month = '';
+            months.forEach((item, index) => {
+              if (selectedMonth === index) {
+                _month = item;
+              }
+            });
             return (
               <div className={s.customHeader}>
                 <div className={s.monthYearControl}>
                   <div className={s.leftPart}>
-                    <Select
+                    <p className={s.headerText}>
+                      {getDate}, {_month} {selectedYear}
+                    </p>
+                    {/* <Select
                       size="small"
                       dropdownMatchSelectWidth={false}
                       value={String(selectedMonth)}
                       showArrow={false}
-                      onChange={(selectedMonth1) => {
+                      onChange={(_selectedMonth) => {
                         const newValue = value.clone();
-                        newValue.month(parseInt(selectedMonth1, 10));
+                        newValue.month(parseInt(_selectedMonth, 10));
                         onChange(newValue);
                         this.setState({
-                          selectedMonth: selectedMonth1,
+                          selectedMonth: parseInt(_selectedMonth, 10),
                         });
                       }}
                     >
@@ -146,13 +179,13 @@ export default class TimeSheet extends PureComponent {
                         const now = value.clone().year(newYear);
                         onChange(now);
                         this.setState({
-                          selectedYear: newYear,
+                          selectedYear: parseInt(newYear, 10),
                         });
                       }}
                       value={String(selectedYear)}
                     >
                       {options}
-                    </Select>
+                    </Select> */}
                   </div>
                   <div className={s.rightPart}>
                     <img
