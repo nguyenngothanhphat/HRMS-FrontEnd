@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Popover, Button, Menu, Dropdown } from 'antd';
+import { Table, Avatar, Button, Menu, Dropdown, message } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -11,7 +12,6 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       isSort: false,
-      visible: false,
     };
   }
 
@@ -35,20 +35,23 @@ class DirectoryTable extends Component {
     );
   };
 
-  handleVisibleChange = (visible) => {
-    this.setState({ visible });
-  };
+  renderMenu = (data) => {
 
-  renderMenu = (
-    <Menu onClick={(e) => this.handleClickMenu(e)}>
-      <Menu.Item>1st menu item</Menu.Item>
-      <Menu.Item>2nd menu item</Menu.Item>
-      <Menu.Item>3rd menu item</Menu.Item>
-    </Menu>
-  );
+    return (
+      <Menu onClick={(e) => this.handleClickMenu(e)}>
+        {
+        data.map(item => (
+          <Menu.Item key={item.key}>{item.label}</Menu.Item>    
+        ))
+      }
+      </Menu>
+    )
+  }
+  
 
   handleClickMenu = (e) => {
-    console.log(e);
+    e.domEvent.stopPropagation()
+    message.info('Clicked');
   };
 
   generateColumns = (sortedName) => {
@@ -150,10 +153,25 @@ class DirectoryTable extends Component {
         align: 'center',
         width: '8%',
         render: () => {
+          const data = [
+            {
+              key: 'item 1',
+              label: 'Menu 1'
+            },
+            {
+              key: 'item 2',
+              label: 'Menu 2'
+            },
+            {
+              key: 'item 3',
+              label: 'Menu 3'
+            }
+          ];
+
           return (
             <div className={styles.viewAction}>
               <Dropdown
-                overlay={this.renderMenu}
+                overlay={this.renderMenu(data)}
                 placement="bottomLeft"
                 arrow
                 className={styles.action}
@@ -200,12 +218,11 @@ class DirectoryTable extends Component {
   };
 
   handleProfileEmployee = (row) => {
-    console.log(row);
     const { _id = '', location: { name = '' } = {} } = row;
-    // history.push({
-    //   pathname: `/directory/employee-profile/${_id}`,
-    //   state: { location: name },
-    // });
+    history.push({
+      pathname: `/directory/employee-profile/${_id}`,
+      state: { location: name },
+    });
   };
 
   checkPermissionViewProfile = (permissions) => {
