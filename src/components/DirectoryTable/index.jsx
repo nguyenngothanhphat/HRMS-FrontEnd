@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Popover } from 'antd';
+import { Table, Avatar, Popover, Button, Menu, Dropdown } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -35,24 +35,20 @@ class DirectoryTable extends Component {
     );
   };
 
-  renderContent = (row) => {
-    // const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
-    return (
-      <div
-        style={{ textDecoration: 'none', cursor: 'pointer', color: '#2C6DF9' }}
-        onClick={() => this.checkFunction(row)}
-      >
-        Menu actions
-      </div>
-    );
-  };
-
-  checkFunction = (row) => {
-    alert(`Clicked action[${row}`);
-  };
-
   handleVisibleChange = (visible) => {
     this.setState({ visible });
+  };
+
+  renderMenu = (
+    <Menu onClick={(e) => this.handleClickMenu(e)}>
+      <Menu.Item>1st menu item</Menu.Item>
+      <Menu.Item>2nd menu item</Menu.Item>
+      <Menu.Item>3rd menu item</Menu.Item>
+    </Menu>
+  );
+
+  handleClickMenu = (e) => {
+    console.log(e);
   };
 
   generateColumns = (sortedName) => {
@@ -149,25 +145,23 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
-        dataIndex: '_id',
-        // key: 'action',
+        dataIndex: 'action',
+        key: 'action',
         align: 'center',
         width: '8%',
-        render: (_id, row) => {
+        render: () => {
           return (
             <div className={styles.viewAction}>
-              <div className={styles.viewAction__popOver}>
-                <Popover
-                  content={this.renderContent(row)}
-                  title="title action"
-                  trigger="click"
-                  placement="bottomRight"
-                  visible={this.state.visible}
-                  onVisibleChange={this.handleVisibleChange}
-                >
-                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-                </Popover>
-              </div>
+              <Dropdown
+                overlay={this.renderMenu}
+                placement="bottomLeft"
+                arrow
+                className={styles.action}
+              >
+                <Button onClick={(e) => e.stopPropagation()} className={styles.action__btn}>
+                  <span className={styles.action__popOver__dots}>&#8285;</span>
+                </Button>
+              </Dropdown>
             </div>
           );
         },
@@ -206,11 +200,12 @@ class DirectoryTable extends Component {
   };
 
   handleProfileEmployee = (row) => {
+    console.log(row);
     const { _id = '', location: { name = '' } = {} } = row;
-    history.push({
-      pathname: `/directory/employee-profile/${_id}`,
-      state: { location: name },
-    });
+    // history.push({
+    //   pathname: `/directory/employee-profile/${_id}`,
+    //   state: { location: name },
+    // });
   };
 
   checkPermissionViewProfile = (permissions) => {
