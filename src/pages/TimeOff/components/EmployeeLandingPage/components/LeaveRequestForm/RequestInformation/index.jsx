@@ -146,9 +146,14 @@ class RequestInformation extends PureComponent {
 
       // set notice
       this.autoValueForToDate(type, shortType, moment(fromDate));
-      if ((type === 'A' || type === 'B') && moment(fromDate) !== null && moment(fromDate) !== '') {
+      if (
+        (type === 'A' || type === 'B') &&
+        moment(fromDate) !== null &&
+        moment(fromDate) !== '' &&
+        shortType === 'CL'
+      ) {
         this.setSecondNotice(`${shortType}s gets credited each month.`);
-      }
+      } else this.setSecondNotice('');
 
       // set remaining day of selected leave type
       this.getRemainingDay(shortType);
@@ -196,13 +201,18 @@ class RequestInformation extends PureComponent {
     const { durationFrom } = this.state;
     const { timeOff: { timeOffTypes = [] } = {} } = this.props;
     timeOffTypes.forEach((eachType) => {
-      const { _id = '', name = '', shortType = '', type = '', typeName = '' } = eachType;
+      const { _id = '', name = '', shortType = '', type = '' } = eachType;
       if (id === _id) {
         const remainingDay = this.getRemainingDay(shortType);
         this.autoValueForToDate(type, shortType, durationFrom);
-        if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
+        if (
+          (type === 'A' || type === 'B') &&
+          durationFrom !== null &&
+          durationFrom !== '' &&
+          shortType === 'CL'
+        ) {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
-        }
+        } else this.setSecondNotice('');
 
         // if remaining day = 0, activate unpaid leaves
 
@@ -533,8 +543,9 @@ class RequestInformation extends PureComponent {
 
     const { selectedShortType, selectedType } = this.state;
     this.autoValueForToDate(selectedType, selectedShortType, value);
-    if (selectedType === 'A' || selectedType === 'B')
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+    else this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationTo } = this.state;
@@ -556,8 +567,9 @@ class RequestInformation extends PureComponent {
       });
     }
     const { selectedShortType, selectedType } = this.state;
-    if (selectedType === 'A' || selectedType === 'B')
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+    else this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationFrom } = this.state;
