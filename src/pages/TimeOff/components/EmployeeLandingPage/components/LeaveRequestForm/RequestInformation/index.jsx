@@ -153,7 +153,7 @@ class RequestInformation extends PureComponent {
         shortType === 'CL'
       ) {
         this.setSecondNotice(`${shortType}s gets credited each month.`);
-      } else this.setSecondNotice('');
+      }
 
       // set remaining day of selected leave type
       this.getRemainingDay(shortType);
@@ -212,7 +212,16 @@ class RequestInformation extends PureComponent {
           shortType === 'CL'
         ) {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
-        } else this.setSecondNotice('');
+        }
+
+        if (
+          (type === 'A' || type === 'B') &&
+          durationFrom !== null &&
+          durationFrom !== '' &&
+          shortType !== 'CL'
+        ) {
+          this.setSecondNotice('');
+        }
 
         // if remaining day = 0, activate unpaid leaves
 
@@ -545,7 +554,8 @@ class RequestInformation extends PureComponent {
     this.autoValueForToDate(selectedType, selectedShortType, value);
     if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    else this.setSecondNotice('');
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
+      this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationTo } = this.state;
@@ -569,7 +579,8 @@ class RequestInformation extends PureComponent {
     const { selectedShortType, selectedType } = this.state;
     if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    else this.setSecondNotice('');
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
+      this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationFrom } = this.state;
