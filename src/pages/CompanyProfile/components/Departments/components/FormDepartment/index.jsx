@@ -1,3 +1,5 @@
+/* eslint-disable compat/compat */
+/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import { DeleteOutlined } from '@ant-design/icons';
@@ -36,6 +38,17 @@ class FormDepartment extends PureComponent {
                   required: true,
                   message: 'Please enter name department!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const checkUnique = getFieldValue('listDepartment').filter(
+                      (item) => item.name === value,
+                    );
+                    if (checkUnique.length === 1) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('This department has already been used!');
+                  },
+                }),
               ]}
             >
               <Select
