@@ -11,15 +11,35 @@ moment.locale('en');
 export default class TimeSheet extends PureComponent {
   constructor(props) {
     super(props);
+    // this.state = {
+    //   selectedMonth: moment().subtract(1, 'months').format('MM'),
+    //   selectedYear: moment().format('YYYY'),
+    // };
     this.state = {
-      selectedMonth: moment().subtract(1, 'months').format('MM'),
-      selectedYear: moment().format('YYYY'),
+      selectedMonth: parseInt(moment().subtract(1, 'months').format('MM'), 10),
+      selectedYear: parseInt(moment().format('YYYY'), 10),
     };
   }
 
+  componentDidMount = () => {
+    const currentMonth = parseInt(moment().format('MM'), 10);
+    this.setState({
+      selectedMonth: currentMonth - 1,
+    });
+  };
+
+  // onPanelChange = (value) => {
+  //   const selectedMonth = moment(value).locale('en').format('MMMM');
+  //   const selectedYear = moment(value).format('YYYY');
+  //   this.setState({
+  //     selectedMonth: selectedMonth - 1,
+  //     selectedYear,
+  //   });
+  // };
+
   onPanelChange = (value) => {
-    const selectedMonth = moment(value).locale('en').format('MMMM');
-    const selectedYear = moment(value).format('YYYY');
+    const selectedMonth = parseInt(moment(value).format('MM'), 10);
+    const selectedYear = parseInt(moment(value).format('YYYY'), 10);
     this.setState({
       selectedMonth: selectedMonth - 1,
       selectedYear,
@@ -96,6 +116,7 @@ export default class TimeSheet extends PureComponent {
             const months = [];
             for (let i = 0; i < 12; i += 1) {
               current.month(i);
+
               months.push(localeData.months(current));
             }
 
