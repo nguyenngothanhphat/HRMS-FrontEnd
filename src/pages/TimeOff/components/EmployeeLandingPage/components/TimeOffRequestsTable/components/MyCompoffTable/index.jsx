@@ -42,7 +42,7 @@ class MyCompoffTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),

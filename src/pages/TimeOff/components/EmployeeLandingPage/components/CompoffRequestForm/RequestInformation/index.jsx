@@ -408,7 +408,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'MM/DD/YYYY';
+    const dateFormat = 'DD.MM.YYYY';
 
     const {
       showSuccessModal,
