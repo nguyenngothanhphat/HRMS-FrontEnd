@@ -9,7 +9,7 @@ import styles from './index.less';
 @connect(({ timeOff }) => ({
   timeOff,
 }))
-class ViewCompoffRequestForm extends PureComponent {
+class ManagerViewCompoffForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -28,7 +28,7 @@ class ViewCompoffRequestForm extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  // clear viewingCompoffRequest
+  // clear viewingLeaveRequest
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -76,7 +76,10 @@ class ViewCompoffRequestForm extends PureComponent {
 
   render() {
     const {
-      timeOff: { viewingCompoffRequest: { ticketID = '', status = '' } = {} } = {},
+      timeOff: {
+        viewingCompoffRequest: { status = '', ticketID = '' } = {},
+        viewingCompoffRequest = {},
+      } = {},
     } = this.props;
 
     const {
@@ -85,7 +88,7 @@ class ViewCompoffRequestForm extends PureComponent {
 
     return (
       <PageContainer>
-        <div className={styles.ViewCompoffRequestForm}>
+        <div className={styles.ManagerViewCompoffForm}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
@@ -100,7 +103,7 @@ class ViewCompoffRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent viewingCompoffRequest={viewingCompoffRequest} status={status} />
             </Col>
           </Row>
         </div>
@@ -109,4 +112,4 @@ class ViewCompoffRequestForm extends PureComponent {
   }
 }
 
-export default ViewCompoffRequestForm;
+export default ManagerViewCompoffForm;

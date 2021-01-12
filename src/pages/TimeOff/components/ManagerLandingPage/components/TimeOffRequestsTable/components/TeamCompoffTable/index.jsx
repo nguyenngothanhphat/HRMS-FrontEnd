@@ -131,7 +131,7 @@ class TeamCompoffTable extends PureComponent {
   // HANDLE TEAM REQUESTS
   onOpenClick = (_id) => {
     history.push({
-      pathname: `/time-off/manager-view-request/${_id}`,
+      pathname: `/time-off/manager-view-compoff/${_id}`,
       // state: { location: name },
     });
   };
