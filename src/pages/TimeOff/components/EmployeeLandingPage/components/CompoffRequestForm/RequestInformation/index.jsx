@@ -175,6 +175,19 @@ class RequestInformation extends PureComponent {
       projectManagerId,
       projectManagerName,
     });
+
+    const {
+      dispatch,
+      user: { currentUser: { employee: { _id: userId } = {} } = {} } = {},
+    } = this.props;
+
+    dispatch({
+      type: 'timeOff/getCompoffApprovalFlow',
+      payload: {
+        employeeId: userId,
+        projectId: value,
+      },
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT

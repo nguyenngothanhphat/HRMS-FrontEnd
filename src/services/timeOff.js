@@ -191,3 +191,11 @@ export async function managerRejectWithdrawRequest(data) {
     data,
   });
 }
+
+// COMPOFF FLOW
+export async function getCompoffApprovalFlow(data) {
+  return request('/api/compoffrequest/get-approval-flow', {
+    method: 'POST',
+    data,
+  });
+}

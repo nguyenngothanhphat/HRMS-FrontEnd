@@ -29,6 +29,8 @@ import {
   employeeWithdrawApproved,
   managerApproveWithdrawRequest,
   managerRejectWithdrawRequest,
+  // compoff approval flow
+  getCompoffApprovalFlow,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -53,6 +55,7 @@ const timeOff = {
     balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
+    compoffApprovalFlow: {},
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -561,6 +564,23 @@ const timeOff = {
           payload: {
             status: leaveRequest.status,
             comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *getCompoffApprovalFlow({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getCompoffApprovalFlow, payload);
+        const { statusCode, data: compoffApprovalFlow = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            compoffApprovalFlow,
           },
         });
         return response;
