@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { Component } from 'react';
@@ -6,7 +7,11 @@ import s from './index.less';
 
 export default class ItemCompany extends Component {
   handleStartSetup = (id) => {
-    history.push(`/account-setup/get-started/company-profile/${id}`);
+    if (id) {
+      history.push(`/account-setup/get-started/company-profile/${id}`);
+    } else {
+      history.push('/account-setup/get-started/setup-employee-directory');
+    }
   };
 
   render() {
@@ -32,7 +37,9 @@ export default class ItemCompany extends Component {
           <Button
             disabled={status === 'lock'}
             className={s.btnOutline}
-            onClick={() => this.handleStartSetup(12345678)}
+            onClick={() =>
+              this.handleStartSetup(name === 'Setup Company profile' ? 12345678 : undefined)
+            }
           >
             Start
           </Button>

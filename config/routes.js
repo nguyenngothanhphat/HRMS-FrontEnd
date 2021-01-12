@@ -96,6 +96,11 @@ const routes = [
             component: './CompanyProfile',
             name: 'Company Profile',
           },
+          {
+            path: '/account-setup/get-started/setup-employee-directory',
+            component: './SetupEmployeeDirectory',
+            name: 'Setup Employee Directory',
+          },
         ],
       },
       {
