@@ -1,0 +1,44 @@
+.root {
+  :global(.ant-layout-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 76px;
+    padding: 0 16px 0 0;
+    color: rgba(0, 0, 0, 0.85);
+    background: #fff;
+  }
+  .content {
+    background: #f6f7f9;
+    :global {
+      .ant-breadcrumb {
+        height: 34px;
+        display: flex;
+        align-items: center;
+        padding: 5px 0 0 22px;
+        background: #f8f9fb;
+      }
+
+      .ant-breadcrumb a {
+        font-weight: 500;
+        font-size: 13px;
+        color: #161c29;
+        opacity: 0.6;
+      }
+      .ant-breadcrumb > span:last-child a {
+        color: #161c29;
+        font-size: 13px;
+        font-weight: 500;
+        height: 30px;
+        background-color: #fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        align-items: center;
+        display: flex;
+        padding: 0 15px;
+        opacity: 1;
+        margin-left: 6px;
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+.content {
+  p {
+    margin: 0;
+  }
+  .mgb16 {
+    margin-bottom: 16px;
+  }
+  .mgb10 {
+    margin-bottom: 10px;
+  }
+  .textInput {
+    width: 430px;
+    height: 42px;
+    background: #ffffff;
+    box-sizing: border-box;
+    border-radius: 5px;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .viewRemoveField {
+    display: flex;
+    justify-content: flex-end;
+    margin: 15px 0;
+    color: red;
+  }
+  .title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+  }
+  &__viewBottom {
+    height: fit-content;
+    font-size: 13px;
+    line-height: 15px;
+    color: #161c29;
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      .viewFormVertical {
+        width: fit-content;
+        :global {
+          .ant-input {
+            .textInput();
+            width: 187px !important;
+          }
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+            .ant-select-selector {
+            box-shadow: none;
+          }
+          .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+            padding: 5px 11px 0;
+            width: 187px;
+            height: 42px;
+            background: #ffffff;
+            box-sizing: border-box;
+            border-radius: 5px;
+          }
+          .ant-select-single:not(.ant-select-customize-input)
+            .ant-select-selector
+            .ant-select-selection-search-input {
+            height: 36px;
+          }
+        }
+      }
+      &__textLabel {
+        width: 151px;
+      }
+      :global {
+        .ant-form-item {
+          margin-bottom: 0px;
+        }
+        .ant-input {
+          .textInput();
+        }
+      }
+    }
+    div:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
