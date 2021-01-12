@@ -18,16 +18,18 @@ class RightContent extends PureComponent {
   };
 
   getFlow = () => {
+    const { viewingCompoffRequest: { approvalFlow = {} } = {} } = this.props;
     const {
-      viewingLeaveRequest: {
-        employee: {
-          generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
-        } = {},
-        approvalManager: {
-          generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
-        } = {},
+      step1: {
+        generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
       } = {},
-    } = this.props;
+      step2: {
+        generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+      } = {},
+      step3: {
+        generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+      } = {},
+    } = approvalFlow;
 
     const arr = [];
     arr.push({
@@ -44,18 +46,25 @@ class RightContent extends PureComponent {
           ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
           : av2,
     });
+    arr.push({
+      name: `${fn3} ${ln3}`,
+      avatar:
+        av3 === ''
+          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
+          : av3,
+    });
     return arr;
   };
 
   render() {
     const people = this.getFlow();
-    const { status = '' } = this.props;
+    const { viewingCompoffRequest: { currentStep = 0 } = {} } = this.props;
 
     return (
       <div className={styles.RightContent}>
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
-          <Steps current={status === 'IN-PROGRESS' ? 1 : 2} labelPlacement="vertical">
+          <Steps current={currentStep} labelPlacement="vertical">
             {people.map((value, index) => {
               const { avatar = '', name = '' } = value;
               return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;

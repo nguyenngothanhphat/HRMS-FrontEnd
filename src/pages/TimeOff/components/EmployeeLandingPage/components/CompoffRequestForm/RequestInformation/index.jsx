@@ -207,6 +207,7 @@ class RequestInformation extends PureComponent {
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
     const { dateLists, buttonState, viewingCompoffRequestId } = this.state;
+    const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
@@ -215,7 +216,7 @@ class RequestInformation extends PureComponent {
       extraTime: dateLists,
       description,
       action,
-      approvalFlow: '5fb37597daeffc0c68763d8b',
+      approvalFlow: compoffApprovalFlow,
       cc: personCC,
       onDate: moment(),
     };

@@ -103,7 +103,7 @@ class ManagerViewCompoffForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent viewingCompoffRequest={viewingCompoffRequest} status={status} />
+              <RightContent viewingCompoffRequest={viewingCompoffRequest} />
             </Col>
           </Row>
         </div>
