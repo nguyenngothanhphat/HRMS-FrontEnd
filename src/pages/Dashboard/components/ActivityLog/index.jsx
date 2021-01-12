@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as SortIcon } from '@/assets/dashboard_sort.svg';
 import { ReactComponent as FilterIcon } from '@/assets/dashboard_filter.svg';
+import { formatMessage } from 'umi';
 import { Tabs } from 'antd';
 
 import ActivityItem from '../ActivityItem';
@@ -151,22 +152,25 @@ const ActivityLog = () => {
 
   return (
     <div className={s.container}>
-      <h3>activity log</h3>
+      <h3>{formatMessage({ id: 'pages.dashboard.activityLog.title' })}</h3>
 
       <div className={s.actionContainer}>
         <div className={s.action} onClick={() => sort()}>
           <SortIcon />
-          <span>sort</span>
+          <span>{formatMessage({ id: 'pages.dashboard.activityLog.sort' })}</span>
         </div>
 
         <div className={s.action} onClick={() => filter()}>
           <FilterIcon />
-          <span>filter</span>
+          <span>{formatMessage({ id: 'pages.dashboard.activityLog.filter' })}</span>
         </div>
       </div>
 
       <Tabs defaultActiveKey="1" onChange={(key) => setActiveTab(key)}>
-        <TabPane tab={`All (${allCount})`} key="1">
+        <TabPane
+          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.all' })} (${allCount})`}
+          key="1"
+        >
           <div className={s.main}>
             {allList.map((item) => {
               const { day = '', month = '', info = '', id = '' } = item;
@@ -175,7 +179,10 @@ const ActivityLog = () => {
           </div>
         </TabPane>
 
-        <TabPane tab={`Requires my approvals (${requireCount})`} key="2">
+        <TabPane
+          tab={`${formatMessage({ id: 'pages.dashboard.activityLog.require' })} (${requireCount})`}
+          key="2"
+        >
           <div className={s.main}>
             {requireList.map((item) => {
               const { day = '', month = '', info = '', id = '' } = item;
