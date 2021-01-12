@@ -1,6 +1,7 @@
-import React from 'react';
 import Breadcrumb from '@/components/Breadcrumb';
 import DownloadTemplate from '@/components/DownloadEmployeeTemplate';
+import { Button } from 'antd';
+import React from 'react';
 import s from './index.less';
 
 class SetupEmployeeDirectory extends React.PureComponent {
@@ -19,6 +20,7 @@ class SetupEmployeeDirectory extends React.PureComponent {
           <div className={s.titlePage}>Setup Employee Directory</div>
           <div className={s.content}>
             <DownloadTemplate />
+            <Button className={s.btnFinish}>Finish Setup</Button>
           </div>
         </div>
       </>
