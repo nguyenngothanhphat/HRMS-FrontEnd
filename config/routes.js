@@ -97,7 +97,7 @@ const routes = [
             name: 'Company Profile',
           },
           {
-            path: '/account-setup/get-started/setup-employee-directory',
+            path: '/account-setup/get-started/setup-employee-directory/:reId',
             component: './SetupEmployeeDirectory',
             name: 'Setup Employee Directory',
           },
