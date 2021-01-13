@@ -8,9 +8,10 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-@connect(({ timeOff, user }) => ({
+@connect(({ timeOff, user, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
   user,
+  currentUserRole,
 }))
 class TimeOffRequestTab extends PureComponent {
   constructor(props) {
@@ -81,23 +82,45 @@ class TimeOffRequestTab extends PureComponent {
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
-    if (filterTab === '1') {
-      status = 'IN-PROGRESS';
-    }
-    if (filterTab === '2') {
-      status = 'ACCEPTED';
-    }
-    if (filterTab === '3') {
-      status = 'REJECTED';
-    }
-    if (filterTab === '4') {
-      status = 'DRAFTS';
-    }
-    if (filterTab === '5') {
-      status = 'ON-HOLD';
-    }
-    if (filterTab === '6') {
-      status = 'DELETED';
+    if (tabType === 1) {
+      if (filterTab === '1') {
+        status = 'IN-PROGRESS';
+      }
+      if (filterTab === '2') {
+        status = 'ACCEPTED';
+      }
+      if (filterTab === '3') {
+        status = 'REJECTED';
+      }
+      if (filterTab === '4') {
+        status = 'DRAFTS';
+      }
+      if (filterTab === '5') {
+        status = 'ON-HOLD';
+      }
+      if (filterTab === '6') {
+        status = 'DELETED';
+      }
+    } else if (tabType === 2) {
+      // compoff
+      if (filterTab === '1') {
+        status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+      }
+      if (filterTab === '2') {
+        status = ['ACCEPTED'];
+      }
+      if (filterTab === '3') {
+        status = ['REJECTED'];
+      }
+      if (filterTab === '4') {
+        status = ['DRAFTS'];
+      }
+      if (filterTab === '5') {
+        status = ['ON-HOLD'];
+      }
+      if (filterTab === '6') {
+        status = ['DELETED'];
+      }
     }
 
     const commonFunction = (res = {}) => {
@@ -176,6 +199,10 @@ class TimeOffRequestTab extends PureComponent {
       const { status = '' } = row;
       switch (status) {
         case 'IN-PROGRESS': {
+          inProgressLength.push(row);
+          break;
+        }
+        case 'IN-PROGRESS-NEXT': {
           inProgressLength.push(row);
           break;
         }

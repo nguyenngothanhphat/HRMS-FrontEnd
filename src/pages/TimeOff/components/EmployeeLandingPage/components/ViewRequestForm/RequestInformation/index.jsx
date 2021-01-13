@@ -62,9 +62,9 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
         .locale('en')
-        .format('MM.DD.YYYY')}`;
+        .format('DD.MM.YYYY')}`;
     }
     return leaveTimes;
   };
@@ -195,12 +195,28 @@ class RequestInformation extends PureComponent {
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
-                  <span className={styles.smallNotice}>
-                    <span className={styles.normalText}>
-                      {shortType}s are covered under{' '}
-                      <span className={styles.link}>Standard Policy</span>
+                  {type === 'A' && (
+                    <span className={styles.smallNotice}>
+                      <span className={styles.normalText}>
+                        {shortType}s are covered under{' '}
+                        <span className={styles.link}>Standard Policy</span>
+                      </span>
                     </span>
-                  </span>
+                  )}
+                  {type === 'B' && (
+                    <span
+                      style={{
+                        marginLeft: '10px',
+                        color: '#00C598',
+                        padding: '5px 10px',
+                        fontSize: '10px',
+                        boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      Advanced leave activated
+                    </span>
+                  )}
                 </Col>
               </Row>
               <Row>

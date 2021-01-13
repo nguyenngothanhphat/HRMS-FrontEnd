@@ -9,12 +9,23 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
+  loadingFetchCompoffApprovalFlow: loading.effects['timeOff/getCompoffApprovalFlow'],
 }))
 class CompoffRequestForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { action: '' };
   }
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        compoffApprovalFlow: {},
+      },
+    });
+  };
 
   componentDidMount = () => {
     const {
@@ -77,8 +88,10 @@ class CompoffRequestForm extends PureComponent {
       timeOff: {
         viewingCompoffRequest = {},
         viewingCompoffRequest: { status = '', ticketID = '' } = {},
+        compoffApprovalFlow = {},
       } = {},
       loadingFetchCompoffRequestById,
+      loadingFetchCompoffApprovalFlow,
     } = this.props;
 
     return (
@@ -146,7 +159,10 @@ class CompoffRequestForm extends PureComponent {
                     />
                   </Col>
                   <Col xs={24} lg={8}>
-                    <RightContent />
+                    <RightContent
+                      compoffApprovalFlow={compoffApprovalFlow}
+                      loading={loadingFetchCompoffApprovalFlow}
+                    />
                   </Col>
                 </Row>
               </>

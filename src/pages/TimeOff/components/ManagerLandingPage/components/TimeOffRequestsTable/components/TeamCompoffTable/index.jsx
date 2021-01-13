@@ -27,6 +27,11 @@ class TeamCompoffTable extends PureComponent {
           </span>
         );
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Requestee',
@@ -62,7 +67,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'center',
-      render: () => <span />,
+      render: (comment) => <span>{comment}</span>,
     },
     {
       title: 'Assigned',
@@ -126,7 +131,7 @@ class TeamCompoffTable extends PureComponent {
   // HANDLE TEAM REQUESTS
   onOpenClick = (_id) => {
     history.push({
-      pathname: `/time-off/manager-view-request/${_id}`,
+      pathname: `/time-off/manager-view-compoff/${_id}`,
       // state: { location: name },
     });
   };
@@ -174,12 +179,14 @@ class TeamCompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
         ticketID = '',
         _id = '',
         extraTime = [],
+        onDate,
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
+        approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
+        commentPM = '',
+        commentCLA = '',
       } = value;
 
       let duration = '';
@@ -191,13 +198,15 @@ class TeamCompoffTable extends PureComponent {
         )}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      const oneAssign = (step) => {
+        const { generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {} } = step;
+        return {
+          firstName: fn,
+          lastName: ln,
+          avatar,
+        };
+      };
+      const assigned = [oneAssign(step1), oneAssign(step2), oneAssign(step3)];
 
       return {
         ...value,
@@ -206,7 +215,9 @@ class TeamCompoffTable extends PureComponent {
         id: {
           ticketID,
           _id,
+          onDate,
         },
+        comment: commentCLA || commentPM,
         requestee: `${firstName} ${lastName}`,
       };
     });

@@ -272,6 +272,13 @@ const routes = [
             // authority: ['employee'],
           },
           {
+            path: '/time-off/manager-view-compoff/:reId',
+            name: 'View compoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/ManagerLandingPage/components/ManagerViewCompoffForm',
+            authority: ['hr-manager', 'manager'],
+          },
+          {
             // path: '/time-off/new-leave-request',
             path: '/time-off/:action(new-leave-request)',
             name: 'Request for Timeoff',

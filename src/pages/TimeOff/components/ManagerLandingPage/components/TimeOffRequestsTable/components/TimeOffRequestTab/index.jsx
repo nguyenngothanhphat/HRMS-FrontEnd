@@ -8,9 +8,10 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-@connect(({ timeOff, user }) => ({
+@connect(({ timeOff, user, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
   user,
+  currentUserRole,
 }))
 class TimeOffRequestTab extends PureComponent {
   constructor(props) {
@@ -61,24 +62,53 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   fetchFilteredDataFromServer = (filterTab) => {
-    const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
+    const {
+      dispatch,
+      tab = 0,
+      type: tabType = 0,
+      category = '',
+      currentUserRole = '',
+    } = this.props;
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
-    if (filterTab === '1') {
-      status = 'IN-PROGRESS';
-    }
-    if (filterTab === '2') {
-      status = 'ACCEPTED';
-    }
-    if (filterTab === '3') {
-      status = 'REJECTED';
-    }
-    if (filterTab === '4') {
-      status = 'DRAFTS';
-    }
-    if (filterTab === '5') {
-      status = 'ON-HOLD';
+    if (tabType === 1) {
+      if (filterTab === '1') {
+        status = 'IN-PROGRESS';
+      }
+      if (filterTab === '2') {
+        status = 'ACCEPTED';
+      }
+      if (filterTab === '3') {
+        status = 'REJECTED';
+      }
+      if (filterTab === '4') {
+        status = 'DRAFTS';
+      }
+      if (filterTab === '5') {
+        status = 'ON-HOLD';
+      }
+    } else if (tabType === 2) {
+      // compoff
+      if (filterTab === '1') {
+        if (currentUserRole === 'ADMIN-CLA') {
+          status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+        } else status = ['IN-PROGRESS'];
+      }
+      if (filterTab === '2') {
+        if (currentUserRole === 'ADMIN-CLA') {
+          status = ['ACCEPTED'];
+        } else status = ['IN-PROGRESS-NEXT', 'ACCEPTED'];
+      }
+      if (filterTab === '3') {
+        status = ['REJECTED'];
+      }
+      if (filterTab === '4') {
+        status = ['DRAFTS'];
+      }
+      if (filterTab === '5') {
+        status = ['ON-HOLD'];
+      }
     }
 
     const commonFunction = (res = {}) => {
@@ -159,6 +189,7 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   countTotal = (newData) => {
+    const { currentUserRole = '' } = this.props;
     const inProgressLength = [];
     const approvedLength = [];
     const rejectedLength = [];
@@ -167,6 +198,26 @@ class TimeOffRequestTab extends PureComponent {
 
     newData.forEach((row) => {
       const { status = '' } = row;
+      if (currentUserRole === 'ADMIN-CLA') {
+        switch (status) {
+          case 'IN-PROGRESS-NEXT': {
+            inProgressLength.push(row);
+            break;
+          }
+          default:
+            break;
+        }
+      } else if (currentUserRole !== 'ADMIN-CLA') {
+        switch (status) {
+          case 'IN-PROGRESS-NEXT': {
+            approvedLength.push(row);
+            break;
+          }
+          default:
+            break;
+        }
+      }
+
       switch (status) {
         case 'IN-PROGRESS': {
           inProgressLength.push(row);

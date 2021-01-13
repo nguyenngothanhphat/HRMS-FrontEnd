@@ -8,14 +8,15 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ timeOff, loading }) => ({
+@connect(({ timeOff, loading, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
-  loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
-  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
-  loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
-  loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
-  loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
-  loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
+  currentUserRole,
+  loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
+  // loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  // loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
+  // loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
+  // loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
+  // loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -64,7 +65,14 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  formatDurationTime = (fromDate, toDate) => {
+  formatDurationTime = (extraTime) => {
+    let fromDate = '';
+    let toDate = '';
+    if (extraTime.length !== 0) {
+      fromDate = extraTime[0].date;
+      toDate = extraTime[extraTime.length - 1].date;
+    }
+
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
@@ -97,7 +105,7 @@ class RequestInformation extends PureComponent {
   onApproveClicked = async (_id) => {
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
+      type: 'timeOff/approveCompoffRequest',
       payload: {
         _id,
       },
@@ -131,7 +139,7 @@ class RequestInformation extends PureComponent {
     const { commentContent } = this.state;
     const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
+      type: 'timeOff/rejectCompoffRequest',
       payload: {
         _id,
         comment: commentContent,
@@ -143,72 +151,39 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  // WITHDRAW
-  onApproveWithdrawClicked = async (_id) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'timeOff/managerApproveWithdrawRequest',
-      payload: {
-        _id,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      this.setShowWithdrawModal(true);
-      this.setState({
-        acceptWithdraw: true,
-      });
-    }
-  };
-
-  onRejectWithdrawClicked = async (_id) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'timeOff/managerRejectWithdrawRequest',
-      payload: {
-        _id,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      this.setShowWithdrawModal(true);
-      this.setState({
-        acceptWithdraw: false,
-      });
-    }
-  };
-
   render() {
-    const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
+    const { showModal, isReject } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {} } = {},
-      loadingFetchLeaveRequestById,
+      timeOff: { viewingCompoffRequest = {} } = {},
+      loadingFetchCompoffRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
-      loadingManagerApproveWithdrawRequest,
-      loadingManagerRejectWithdrawRequest,
+      currentUserRole,
     } = this.props;
     const {
       status = '',
       _id = '',
-      subject = '',
-      fromDate = '',
-      toDate = '',
-      duration = '',
-      // onDate = '',
-      description = '',
-      type: { name = '', shortType = '' } = {},
       employee: {
         generalInfo: { firstName = '', lastName = '' } = {},
         employeeId = '',
         position: { name: position = '' } = {},
       } = {},
-      comment = '',
-      withdraw: { title = '', reason = '' } = {},
-      withdraw = {},
-    } = viewingLeaveRequest;
+      extraTime = [],
+      description = '',
+      project: {
+        name = '',
+        manager: {
+          generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
+        } = {},
+      } = {},
+      currentStep = 0,
+      commentPM = '',
+      commentCLA = '',
+    } = viewingCompoffRequest;
 
-    const formatDurationTime = this.formatDurationTime(fromDate, toDate);
+    const projectManagerName = `${firstName1} ${lastName1}`;
+
+    const formatDurationTime = this.formatDurationTime(extraTime);
 
     return (
       <div className={styles.RequestInformation}>
@@ -243,14 +218,14 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Current Project</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span>Intranet</span>
+                <span>{name}</span>
               </Col>
             </Row>
             <Row>
               <Col span={6}>Project Manager</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
-                  Rose Mary
+                  {projectManagerName}
                 </span>
               </Col>
             </Row>
@@ -272,9 +247,9 @@ class RequestInformation extends PureComponent {
 
         <div className={styles.requesteeDetails}>
           <div className={styles.formTitle}>
-            <span className={styles.title}>Timeoff request details</span>
+            <span className={styles.title}>Compoff request details</span>
           </div>
-          {loadingFetchLeaveRequestById && (
+          {loadingFetchCompoffRequestById && (
             <div
               style={{
                 display: 'flex',
@@ -285,19 +260,13 @@ class RequestInformation extends PureComponent {
               <Spin size="medium" />
             </div>
           )}
-          {!loadingFetchLeaveRequestById && (
+          {!loadingFetchCompoffRequestById && (
             <>
               <div className={styles.formContent}>
                 <Row>
-                  <Col span={6}>Timeoff Type</Col>
+                  <Col span={6}>Project</Col>
                   <Col span={18} className={styles.detailColumn}>
-                    <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={6}>Subject</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>{subject}</span>
+                    <span className={styles.fieldValue}>{`${name}`}</span>
                   </Col>
                 </Row>
                 <Row>
@@ -306,17 +275,47 @@ class RequestInformation extends PureComponent {
                     <>
                       <Col span={18} className={styles.detailColumn}>
                         <span>{formatDurationTime}</span>{' '}
-                        <span
-                          style={{
-                            fontWeight: 'bold',
-                          }}
-                          className={styles.fieldValue}
-                        >
-                          [{duration <= 1 ? `${duration} day` : `${duration} days`}]
-                        </span>
                       </Col>
                     </>
                   )}
+                </Row>
+                <Row>
+                  <Col span={6}>Extra time spent</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <div className={styles.extraTimeSpent}>
+                      <Row className={styles.header}>
+                        <Col span={7}>Date</Col>
+                        <Col span={7}>Day</Col>
+                        <Col span={10}>Time Spent (In Hrs)</Col>
+                      </Row>
+
+                      <div className={styles.content}>
+                        {extraTime.map((day, index) => {
+                          const { date = '', timeSpend = 0 } = day;
+                          return (
+                            <Row
+                              key={`${index + 1}`}
+                              justify="center"
+                              align="center"
+                              className={styles.rowContainer}
+                            >
+                              <Col span={7}>{moment(date).locale('en').format('DD.MM.YYYY')}</Col>
+                              <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
+                              <Col span={7}>
+                                <Input
+                                  disabled
+                                  placeholder="0"
+                                  suffix="Hrs"
+                                  defaultValue={timeSpend}
+                                />
+                              </Col>
+                              <Col span={3} />
+                            </Row>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </Col>
                 </Row>
                 <Row>
                   <Col span={6}>Description</Col>
@@ -324,11 +323,19 @@ class RequestInformation extends PureComponent {
                     <span>{description}</span>
                   </Col>
                 </Row>
-                {status === 'REJECTED' && (
+                {status === 'REJECTED' && currentStep === 2 && (
                   <Row>
-                    <Col span={6}>Request Rejection Comments</Col>
+                    <Col span={6}>Request Rejection Comments (Project Manager)</Col>
                     <Col span={18} className={styles.detailColumn}>
-                      <span>{comment}</span>
+                      <span>{commentPM}</span>
+                    </Col>
+                  </Row>
+                )}
+                {status === 'REJECTED' && currentStep > 2 && (
+                  <Row>
+                    <Col span={6}>Request Rejection Comments (Region Head)</Col>
+                    <Col span={18} className={styles.detailColumn}>
+                      <span>{commentCLA}</span>
                     </Col>
                   </Row>
                 )}
@@ -336,40 +343,6 @@ class RequestInformation extends PureComponent {
             </>
           )}
         </div>
-
-        {/* WITHDRAW REASON */}
-        {Object.keys(withdraw).length !== 0 && (
-          <div className={styles.requesteeDetails}>
-            <div className={styles.formTitle}>
-              <span className={styles.title}>Withdraw request details</span>
-            </div>
-            <div className={styles.formContent}>
-              <Row>
-                <Col span={6}>Title</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span className={styles.fieldValue}>{title}</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={6}>Subject</Col>
-                <Col span={18} className={styles.detailColumn}>
-                  <span>{reason}</span>
-                </Col>
-              </Row>
-              {status !== 'ON-HOLD' && (
-                <Row>
-                  <Col span={6}>Status</Col>
-                  <Col span={18} className={styles.detailColumn}>
-                    <span>
-                      {status === 'ACCEPTED' && 'Rejected'}
-                      {status === 'DELETED' && 'Accepted'}
-                    </span>
-                  </Col>
-                </Row>
-              )}
-            </div>
-          </div>
-        )}
 
         {isReject && (
           <div className={styles.rejectComment}>
@@ -386,60 +359,45 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* IN PROGRESS */}
-        {!isReject && status === 'IN-PROGRESS' && (
-          <div className={styles.footer}>
-            <span className={styles.note}>
-              By default notifications will be sent to HR, your manager and recursively loop to your
-              department head.
-            </span>
-            <div className={styles.formButtons}>
-              <Button type="link" onClick={() => this.onRejectClicked()}>
-                Reject
-              </Button>
-              <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
-                Accept
-              </Button>
+        {!isReject &&
+          (status === 'IN-PROGRESS' ||
+            (currentUserRole === 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) && (
+            <div className={styles.footer}>
+              <span className={styles.note}>
+                By default notifications will be sent to HR, your manager and recursively loop to
+                your department head.
+              </span>
+              <div className={styles.formButtons}>
+                <Button type="link" onClick={() => this.onRejectClicked()}>
+                  Reject
+                </Button>
+                <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
+                  Accept
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* ACCEPTED OR REJECTED  */}
-        {!isReject && (status === 'ACCEPTED' || status === 'REJECTED') && (
-          <div className={styles.footer}>
-            <span className={styles.note}>
-              By default notifications will be sent to HR, your manager and recursively loop to your
-              department head.
-            </span>
-            <div className={styles.formButtons}>
-              <Button type="link" disabled>
-                {status === 'ACCEPTED' && 'Approved'}
-                {status === 'REJECTED' && 'Rejected'}
-              </Button>
+        {!isReject &&
+          (status === 'ACCEPTED' ||
+            (currentUserRole !== 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT') ||
+            status === 'REJECTED') && (
+            <div className={styles.footer}>
+              <span className={styles.note}>
+                By default notifications will be sent to HR, your manager and recursively loop to
+                your department head.
+              </span>
+              <div className={styles.formButtons}>
+                <Button type="link" disabled>
+                  {(status === 'ACCEPTED' ||
+                    (currentUserRole !== 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) &&
+                    'Approved'}
+                  {status === 'REJECTED' && 'Rejected'}
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-
-        {/* WITHDRAW */}
-        {!isReject && status === 'ON-HOLD' && (
-          <div className={styles.footer}>
-            <span className={styles.note}>Withdrawing an approved request</span>
-            <div className={styles.formButtons}>
-              <Button
-                loading={loadingManagerRejectWithdrawRequest}
-                type="link"
-                onClick={() => this.onRejectWithdrawClicked(_id)}
-              >
-                Reject
-              </Button>
-              <Button
-                loading={loadingManagerApproveWithdrawRequest}
-                onClick={() => this.onApproveWithdrawClicked(_id)}
-              >
-                Withdraw
-              </Button>
-            </div>
-          </div>
-        )}
+          )}
 
         {/* REJECTING  */}
         {isReject && (
@@ -463,18 +421,8 @@ class RequestInformation extends PureComponent {
           onOk={() => this.setShowModal(false)}
           content={
             isReject
-              ? 'Timeoff request has been rejected from your end. All in loop will be notified.'
-              : 'Timeoff request has been approved from your end. All in loop will be notified.'
-          }
-          submitText="OK"
-        />
-        <TimeOffModal
-          visible={showWithdrawModal}
-          onOk={() => this.setShowWithdrawModal(false)}
-          content={
-            acceptWithdraw
-              ? 'Withdrawing timeoff request has been approved from your end. All in loop will be notified.'
-              : 'Withdrawing timeoff request has been rejected from your end. All in loop will be notified.'
+              ? 'Compoff request has been rejected from your end. All in loop will be notified.'
+              : 'Compoff request has been approved from your end. All in loop will be notified.'
           }
           submitText="OK"
         />
