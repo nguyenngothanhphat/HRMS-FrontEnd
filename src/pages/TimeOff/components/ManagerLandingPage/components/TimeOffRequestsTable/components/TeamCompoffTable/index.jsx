@@ -179,13 +179,12 @@ class TeamCompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
         ticketID = '',
         _id = '',
         extraTime = [],
         onDate,
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
+        approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
       } = value;
 
       let duration = '';
@@ -197,13 +196,15 @@ class TeamCompoffTable extends PureComponent {
         )}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      const oneAssign = (step) => {
+        const { generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {} } = step;
+        return {
+          firstName: fn,
+          lastName: ln,
+          avatar,
+        };
+      };
+      const assigned = [oneAssign(step1), oneAssign(step2), oneAssign(step3)];
 
       return {
         ...value,

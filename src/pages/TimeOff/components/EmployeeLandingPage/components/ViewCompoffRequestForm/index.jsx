@@ -76,7 +76,10 @@ class ViewCompoffRequestForm extends PureComponent {
 
   render() {
     const {
-      timeOff: { viewingCompoffRequest: { ticketID = '', status = '' } = {} } = {},
+      timeOff: {
+        viewingCompoffRequest = {},
+        viewingCompoffRequest: { ticketID = '', status = '' } = {},
+      } = {},
     } = this.props;
 
     const {
@@ -100,7 +103,7 @@ class ViewCompoffRequestForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent />
+              <RightContent viewingCompoffRequest={viewingCompoffRequest} />
             </Col>
           </Row>
         </div>

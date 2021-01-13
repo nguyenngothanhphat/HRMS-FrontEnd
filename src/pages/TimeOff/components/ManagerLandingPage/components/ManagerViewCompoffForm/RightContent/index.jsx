@@ -64,7 +64,7 @@ class RightContent extends PureComponent {
       <div className={styles.RightContent}>
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
-          <Steps current={currentStep} labelPlacement="vertical">
+          <Steps current={currentStep - 1} labelPlacement="vertical">
             {people.map((value, index) => {
               const { avatar = '', name = '' } = value;
               return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;
