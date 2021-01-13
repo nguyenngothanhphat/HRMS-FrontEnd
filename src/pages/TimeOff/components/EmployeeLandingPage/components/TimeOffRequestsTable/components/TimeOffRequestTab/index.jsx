@@ -63,20 +63,40 @@ class TimeOffRequestTab extends PureComponent {
     // const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
-    if (filterTab === '1') {
-      status = 'IN-PROGRESS';
-    }
-    if (filterTab === '2') {
-      status = 'ACCEPTED';
-    }
-    if (filterTab === '3') {
-      status = 'REJECTED';
-    }
-    if (filterTab === '4') {
-      status = 'DRAFTS';
-    }
-    if (filterTab === '5') {
-      status = 'ON-HOLD';
+
+    if (tabType === 1) {
+      if (filterTab === '1') {
+        status = 'IN-PROGRESS';
+      }
+      if (filterTab === '2') {
+        status = 'ACCEPTED';
+      }
+      if (filterTab === '3') {
+        status = 'REJECTED';
+      }
+      if (filterTab === '4') {
+        status = 'DRAFTS';
+      }
+      if (filterTab === '5') {
+        status = 'ON-HOLD';
+      }
+    } else if (tabType === 2) {
+      // compoff
+      if (filterTab === '1') {
+        status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+      }
+      if (filterTab === '2') {
+        status = ['ACCEPTED'];
+      }
+      if (filterTab === '3') {
+        status = ['REJECTED'];
+      }
+      if (filterTab === '4') {
+        status = ['DRAFTS'];
+      }
+      if (filterTab === '5') {
+        status = ['ON-HOLD'];
+      }
     }
 
     const commonFunction = (res = {}) => {

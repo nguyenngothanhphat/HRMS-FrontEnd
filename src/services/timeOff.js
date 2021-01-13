@@ -199,3 +199,17 @@ export async function getCompoffApprovalFlow(data) {
     data,
   });
 }
+
+export async function approveCompoffRequest(data) {
+  return request('/api/compoffrequest/approve-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function rejectCompoffRequest(data) {
+  return request('/api/compoffrequest/approve-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}

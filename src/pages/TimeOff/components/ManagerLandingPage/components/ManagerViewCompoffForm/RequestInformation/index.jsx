@@ -8,8 +8,9 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ timeOff, loading }) => ({
+@connect(({ timeOff, loading, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
+  currentUserRole,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
   // loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
   // loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
@@ -97,20 +98,20 @@ class RequestInformation extends PureComponent {
 
   // APPROVE CLICKED
   onApproveClicked = async (_id) => {
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'timeOff/reportingManagerApprove',
-      payload: {
-        _id,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      this.setShowModal(true);
-      this.setState({
-        isReject: false,
-      });
-    }
+    // const { dispatch } = this.props;
+    // const res = await dispatch({
+    //   type: 'timeOff/reportingManagerApprove',
+    //   payload: {
+    //     _id,
+    //   },
+    // });
+    // const { statusCode = 0 } = res;
+    // if (statusCode === 200) {
+    //   this.setShowModal(true);
+    //   this.setState({
+    //     isReject: false,
+    //   });
+    // }
   };
 
   // ON COMMENT CHANGE
@@ -130,22 +131,22 @@ class RequestInformation extends PureComponent {
 
   // ON REJECT SUBMIT
   onRejectSubmit = async (_id) => {
-    const { commentContent } = this.state;
-    const { dispatch } = this.props;
-    const res = await dispatch({
-      type: 'timeOff/reportingManagerReject',
-      payload: {
-        _id,
-        comment: commentContent,
-      },
-    });
-    const { statusCode = 0 } = res;
-    if (statusCode === 200) {
-      this.setShowModal(true);
-      this.setState({
-        isReject: false,
-      });
-    }
+    // const { commentContent } = this.state;
+    // const { dispatch } = this.props;
+    // const res = await dispatch({
+    //   type: 'timeOff/reportingManagerReject',
+    //   payload: {
+    //     _id,
+    //     comment: commentContent,
+    //   },
+    // });
+    // const { statusCode = 0 } = res;
+    // if (statusCode === 200) {
+    //   this.setShowModal(true);
+    //   this.setState({
+    //     isReject: false,
+    //   });
+    // }
   };
 
   // WITHDRAW
@@ -196,7 +197,6 @@ class RequestInformation extends PureComponent {
     const {
       status = '',
       _id = '',
-      subject = '',
       employee: {
         generalInfo: { firstName = '', lastName = '' } = {},
         employeeId = '',
@@ -210,13 +210,12 @@ class RequestInformation extends PureComponent {
       project: {
         name = '',
         manager: {
-          employeeId: projectManagerId = '',
-          generalInfo: { firstName1 = '', lastName1 = '' } = {},
+          generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
         } = {},
       } = {},
     } = viewingCompoffRequest;
 
-    const projectManagerName = `${firstName} ${lastName}`;
+    const projectManagerName = `${firstName1} ${lastName1}`;
 
     const formatDurationTime = this.formatDurationTime(extraTime);
 
@@ -253,14 +252,14 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Current Project</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span>Intranet</span>
+                <span>{name}</span>
               </Col>
             </Row>
             <Row>
               <Col span={6}>Project Manager</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
-                  Rose Mary
+                  {projectManagerName}
                 </span>
               </Col>
             </Row>
@@ -497,8 +496,8 @@ class RequestInformation extends PureComponent {
           onOk={() => this.setShowModal(false)}
           content={
             isReject
-              ? 'Timeoff request has been rejected from your end. All in loop will be notified.'
-              : 'Timeoff request has been approved from your end. All in loop will be notified.'
+              ? 'Compoff request has been rejected from your end. All in loop will be notified.'
+              : 'Compoff request has been approved from your end. All in loop will be notified.'
           }
           submitText="OK"
         />
@@ -507,8 +506,8 @@ class RequestInformation extends PureComponent {
           onOk={() => this.setShowWithdrawModal(false)}
           content={
             acceptWithdraw
-              ? 'Withdrawing timeoff request has been approved from your end. All in loop will be notified.'
-              : 'Withdrawing timeoff request has been rejected from your end. All in loop will be notified.'
+              ? 'Withdrawing Compoff request has been approved from your end. All in loop will be notified.'
+              : 'Withdrawing Compoff request has been rejected from your end. All in loop will be notified.'
           }
           submitText="OK"
         />

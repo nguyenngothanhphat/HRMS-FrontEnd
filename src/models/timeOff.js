@@ -31,6 +31,8 @@ import {
   managerRejectWithdrawRequest,
   // compoff approval flow
   getCompoffApprovalFlow,
+  approveCompoffRequest,
+  rejectCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -56,6 +58,7 @@ const timeOff = {
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
+    currentUserRole: '', // employee, manager, hr-manager
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -262,7 +265,7 @@ const timeOff = {
         return {};
       }
     },
-    *fetchMyCompoffRequests({ status = '' }, { call, put }) {
+    *fetchMyCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getMyCompoffRequests, { status });
@@ -359,7 +362,7 @@ const timeOff = {
     },
 
     // MANAGER
-    *fetchTeamCompoffRequests({ status = '' }, { call, put }) {
+    *fetchTeamCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getTeamCompoffRequests, { status });
@@ -589,6 +592,44 @@ const timeOff = {
       }
       return 0;
     },
+    *ApproveCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(approveCompoffRequest, payload);
+        const { statusCode, data: { compoffRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *RejectCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(rejectCompoffRequest, payload);
+        const { statusCode, data: { compoffRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
   },
   reducers: {
     save(state, action) {
@@ -603,6 +644,16 @@ const timeOff = {
         ...state,
         viewingLeaveRequest: {
           ...viewingLeaveRequest,
+          ...action.payload,
+        },
+      };
+    },
+    saveViewingCompoffRequest(state, action) {
+      const { viewingCompoffRequest } = state;
+      return {
+        ...state,
+        viewingCompoffRequest: {
+          ...viewingCompoffRequest,
           ...action.payload,
         },
       };

@@ -6,8 +6,9 @@ import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
+  currentUserRole,
 }))
 class ManagerViewCompoffForm extends PureComponent {
   constructor(props) {
@@ -37,6 +38,12 @@ class ManagerViewCompoffForm extends PureComponent {
   };
 
   getColorOfStatus = (status) => {
+    const { currentUserRole = '' } = this.props;
+    if (currentUserRole === 'ADMIN-CLA') {
+      if (status === 'IN-PROGRESS-NEXT') return `${styles.leaveStatus} ${styles.inProgressColor}`;
+    } else if (status === 'IN-PROGRESS-NEXT')
+      return `${styles.leaveStatus} ${styles.approvedColor}`;
+
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
@@ -56,6 +63,11 @@ class ManagerViewCompoffForm extends PureComponent {
   };
 
   getNameOfStatus = (status) => {
+    const { currentUserRole = '' } = this.props;
+    if (currentUserRole === 'ADMIN-CLA') {
+      if (status === 'IN-PROGRESS-NEXT') return 'In Progress (PM Approved)';
+    } else if (status === 'IN-PROGRESS-NEXT') return 'Approved';
+
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';

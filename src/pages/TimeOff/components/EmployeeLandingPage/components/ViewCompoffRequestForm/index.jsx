@@ -6,8 +6,9 @@ import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
+  currentUserRole,
 }))
 class ViewCompoffRequestForm extends PureComponent {
   constructor(props) {
@@ -40,6 +41,8 @@ class ViewCompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
+      case 'IN-PROGRESS-NEXT':
+        return `${styles.leaveStatus} ${styles.inProgressColor}`;
       case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
@@ -59,6 +62,8 @@ class ViewCompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
+      case 'IN-PROGRESS-NEXT':
+        return 'In Progress (PM Approved)';
       case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
