@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Tabs, Button } from 'antd';
-import { formatMessage } from 'umi';
-import EmploymentDetails from '../EmploymentDetails';
-import YourInformation from '../YourInformation';
+import { Editor } from '@tinymce/tinymce-react';
+import { history } from 'umi';
 import styles from './index.less';
 
 class EditForm extends Component {
@@ -41,31 +39,46 @@ class EditForm extends Component {
   };
 
   render() {
-    const { currentTab } = this.state;
     const { currentTemplate } = this.props;
-    const { settings } = currentTemplate;
-    const { TabPane } = Tabs;
     return (
       <div className={styles.EditForm}>
-        <Tabs onTabClick={this.onTabClick} defaultActiveKey="1" activeKey={currentTab}>
-          <TabPane
-            className={styles.tabs}
-            tab={formatMessage({ id: 'component.editForm.employmentDetails' })}
-            key="1"
-          >
-            <EmploymentDetails onNext={this.onSwitchTabs} settingsList={settings} />
-          </TabPane>
-          <TabPane
-            className={styles.tabs}
-            tab={formatMessage({ id: 'component.editForm.yourInformation' })}
-            key="2"
-          >
-            <YourInformation onNext={this.onNext} />
-          </TabPane>
-        </Tabs>
-        {/* <Button onClick={this.onNext} type="primary">
-          {formatMessage({ id: 'component.editForm.next' })}
-        </Button> */}
+        <Editor
+          initialValue={currentTemplate.htmlContent}
+          // apiKey={process.env.REACT_APP_TINYMCE_KEY}
+          init={{
+            height: '100%',
+            menubar: true,
+            plugins: [
+              'save advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount variable',
+            ],
+            toolbar:
+              'undo redo formatselect bold italic backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
+            content_style: 'body { margin: 1rem auto; max-width: 900px; }',
+            setup(ed) {
+              window.tester = ed;
+              ed.ui.registry.addButton('variable', {
+                text: 'Insert auto-text',
+                onAction() {
+                  ed.plugins.variable.addVariable('account_id');
+                },
+              });
+
+              ed.on('variableClick', function (e) {
+                console.log('click', e);
+                console.log(history);
+              });
+            },
+
+            external_plugins: {
+              variable: window.location.href.replace(
+                history.location.pathname,
+                '/tinymce/plugins/auto_text/plugin.js',
+              ),
+            },
+          }}
+        />
       </div>
     );
   }

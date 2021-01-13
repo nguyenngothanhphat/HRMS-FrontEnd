@@ -79,6 +79,7 @@ class TemplateDetailsForm extends PureComponent {
           <CustomModal
             open={openModal}
             closeModal={this.closeModal}
+            width="90%"
             content={<EditForm currentTemplate={currentTemplate} onNext={this.onNext} />}
           />
         );
