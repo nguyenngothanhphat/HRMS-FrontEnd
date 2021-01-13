@@ -52,6 +52,11 @@ class RequestInformation extends PureComponent {
     this.setState({
       showModal: value,
     });
+    if (!value) {
+      this.setState({
+        isReject: false,
+      });
+    }
   };
 
   setShowWithdrawModal = (value) => {
@@ -143,9 +148,6 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
-      this.setState({
-        isReject: false,
-      });
     }
   };
 

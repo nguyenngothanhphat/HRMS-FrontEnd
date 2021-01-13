@@ -67,7 +67,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'center',
-      render: () => <span />,
+      render: (comment) => <span>{comment}</span>,
     },
     {
       title: 'Assigned',
@@ -185,6 +185,8 @@ class TeamCompoffTable extends PureComponent {
         onDate,
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
         approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
+        commentPM = '',
+        commentCLA = '',
       } = value;
 
       let duration = '';
@@ -215,6 +217,7 @@ class TeamCompoffTable extends PureComponent {
           _id,
           onDate,
         },
+        comment: commentCLA || commentPM,
         requestee: `${firstName} ${lastName}`,
       };
     });

@@ -16,8 +16,37 @@ class ManagerViewCompoffForm extends PureComponent {
     this.state = {};
   }
 
+  findRole = (roles) => {
+    const { dispatch } = this.props;
+
+    const hrManager = roles.find((item) => item === 'hr-manager');
+    const manager = roles.find((item) => item === 'manager');
+    const employee = roles.find((item) => item === 'employee');
+    const admincla = roles.find((item) => item === 'admin-cla');
+
+    let role = '';
+    role = hrManager || manager || employee || 'employee';
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentUserRole: role,
+      },
+    });
+
+    if (admincla) {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentUserRole: 'ADMIN-CLA',
+        },
+      });
+    }
+  };
+
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
+    const listRole = localStorage.getItem('antd-pro-authority');
+    this.findRole(JSON.parse(listRole));
     const {
       dispatch,
       match: { params: { reId: id = '' } = {} },
