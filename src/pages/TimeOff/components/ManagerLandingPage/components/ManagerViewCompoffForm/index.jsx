@@ -66,7 +66,7 @@ class ManagerViewCompoffForm extends PureComponent {
     const { currentUserRole = '' } = this.props;
     if (currentUserRole === 'ADMIN-CLA') {
       if (status === 'IN-PROGRESS-NEXT') return 'In Progress (PM Approved)';
-    } else if (status === 'IN-PROGRESS-NEXT') return 'Approved';
+    } else if (status === 'IN-PROGRESS-NEXT') return 'Approved (PM Approved)';
 
     switch (status) {
       case 'IN-PROGRESS':

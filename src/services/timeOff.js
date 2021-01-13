@@ -208,7 +208,7 @@ export async function approveCompoffRequest(data) {
 }
 
 export async function rejectCompoffRequest(data) {
-  return request('/api/compoffrequest/approve-compoff-request', {
+  return request('/api/compoffrequest/reject-compoff-request', {
     method: 'POST',
     data,
   });

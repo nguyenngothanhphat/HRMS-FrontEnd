@@ -50,6 +50,7 @@ const timeOff = {
     emailsList: [],
     projectsList: [],
     viewingLeaveRequest: {},
+    viewingCompoffRequest: {},
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
@@ -297,7 +298,7 @@ const timeOff = {
       try {
         if (id !== '') {
           const response = yield call(getCompoffRequestById, { id });
-          const { statusCode, data: viewingCompoffRequest = [] } = response;
+          const { statusCode, data: viewingCompoffRequest = {} } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
@@ -592,10 +593,10 @@ const timeOff = {
       }
       return 0;
     },
-    *ApproveCompoffRequest({ payload = {} }, { call, put }) {
+    *approveCompoffRequest({ payload = {} }, { call, put }) {
       try {
         const response = yield call(approveCompoffRequest, payload);
-        const { statusCode, data: { compoffRequest = {} } = {} } = response;
+        const { statusCode, data: compoffRequest = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveViewingCompoffRequest',
@@ -603,6 +604,7 @@ const timeOff = {
             status: compoffRequest.status,
             commentCLA: compoffRequest.commentCLA,
             commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
           },
         });
         return response;
@@ -611,10 +613,10 @@ const timeOff = {
       }
       return 0;
     },
-    *RejectCompoffRequest({ payload = {} }, { call, put }) {
+    *rejectCompoffRequest({ payload = {} }, { call, put }) {
       try {
         const response = yield call(rejectCompoffRequest, payload);
-        const { statusCode, data: { compoffRequest = {} } = {} } = response;
+        const { statusCode, data: compoffRequest = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveViewingCompoffRequest',
@@ -622,6 +624,7 @@ const timeOff = {
             status: compoffRequest.status,
             commentCLA: compoffRequest.commentCLA,
             commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
           },
         });
         return response;
