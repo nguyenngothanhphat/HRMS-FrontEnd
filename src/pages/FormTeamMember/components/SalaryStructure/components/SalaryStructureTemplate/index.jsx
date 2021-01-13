@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button, Input, Row, Col } from 'antd';
+import { Select, Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
-import { dialog } from '@/utils/utils';
+// import { dialog } from '@/utils/utils';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
@@ -21,66 +21,66 @@ import PROCESS_STATUS from '../../../utils';
         processStatus = '',
         salaryStructure: {
           settings = [
-            {
-              key: 'basic',
-              title: 'Basic',
-              value: '',
-              order: 'A',
-            },
-            {
-              key: 'hra',
-              title: 'HRA',
-              value: '',
-              order: 'B',
-            },
-            {
-              title: 'Other allowances',
-              key: 'otherAllowances',
-              value: 'Balance amount',
-              order: 'C',
-            },
-            {
-              key: 'totalEarning',
-              title: 'Total earning (Gross)',
-              order: 'D',
-              value: 'A + B + C',
-            },
-            {
-              key: 'deduction',
-              title: 'Deduction',
-              order: 'E',
-              value: ' ',
-            },
-            {
-              key: 'employeesPF',
-              title: "Employee's PF",
-              value: '',
-              order: 'G',
-            },
-            {
-              key: 'employeesESI',
-              title: "Employee's ESI",
-              value: '',
-              order: 'H',
-            },
-            {
-              key: 'professionalTax',
-              title: 'Professional Tax',
-              value: 'Rs.200',
-              order: 'I',
-            },
-            {
-              key: 'tds',
-              title: 'TDS',
-              value: 'As per IT rules',
-              order: 'J',
-            },
-            {
-              key: 'netPayment',
-              title: 'Net Payment',
-              value: 'F - (G + H + I + J)',
-              order: ' ',
-            },
+            // {
+            //   key: 'basic',
+            //   title: 'Basic',
+            //   value: '',
+            //   order: 'A',
+            // },
+            // {
+            //   key: 'hra',
+            //   title: 'HRA',
+            //   value: '',
+            //   order: 'B',
+            // },
+            // {
+            //   title: 'Other allowances',
+            //   key: 'otherAllowances',
+            //   value: 'Balance amount',
+            //   order: 'C',
+            // },
+            // {
+            //   key: 'totalEarning',
+            //   title: 'Total earning (Gross)',
+            //   order: 'D',
+            //   value: 'A + B + C',
+            // },
+            // {
+            //   key: 'deduction',
+            //   title: 'Deduction',
+            //   order: 'E',
+            //   value: ' ',
+            // },
+            // {
+            //   key: 'employeesPF',
+            //   title: "Employee's PF",
+            //   value: '',
+            //   order: 'G',
+            // },
+            // {
+            //   key: 'employeesESI',
+            //   title: "Employee's ESI",
+            //   value: '',
+            //   order: 'H',
+            // },
+            // {
+            //   key: 'professionalTax',
+            //   title: 'Professional Tax',
+            //   value: 'Rs.200',
+            //   order: 'I',
+            // },
+            // {
+            //   key: 'tds',
+            //   title: 'TDS',
+            //   value: 'As per IT rules',
+            //   order: 'J',
+            // },
+            // {
+            //   key: 'netPayment',
+            //   title: 'Net Payment',
+            //   value: 'F - (G + H + I + J)',
+            //   order: ' ',
+            // },
           ],
         } = {},
       } = {},
@@ -279,16 +279,57 @@ class SalaryStructureTemplate extends PureComponent {
     return orderNonDisplay.includes(order);
   };
 
-  handleChange = (e) => {
+  handleChange = (e, current) => {
+    console.log('TEXT');
     const { dispatch, settings } = this.props;
 
     const { target } = e;
     const { name, value } = target;
 
+    const isNumber = !!current;
+
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
 
-    tempTableData[index].value = value;
+    if (isNumber) {
+      tempTableData[index].value = `${current} ${value}`;
+    } else {
+      tempTableData[index].value = value;
+    }
+    const isFilled = tempTableData.filter((item) => item.value === '');
+    if (isFilled.length === 0 && tempTableData.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: false,
+        },
+      });
+    }
+    // dispatch({
+    //   type: 'candidateInfo/saveSalaryStructure',
+    //   payload: {
+    //     settings: tempTableData,
+    //   },
+    // });
+  };
+
+  handleNumberChange = (name, current, value) => {
+    console.log('NUMBER');
+    const { dispatch, settings } = this.props;
+    const tempTableData = [...settings];
+    const index = tempTableData.findIndex((data) => data.key === name);
+
+    // tempTableData[index].value = value;
+    tempTableData[index].number.current = current;
+    console.log(tempTableData);
+
     const isFilled = tempTableData.filter((item) => item.value === '');
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -384,14 +425,45 @@ class SalaryStructureTemplate extends PureComponent {
     const { isEditted } = this.state;
     const { settings = [] } = this.props;
     const data = settings?.find((item) => item.order === order);
-    const { value = '', key } = data;
-    if (this.isEditted(order) && isEditted) {
+    const { value = '', key, edit = false, number = {} } = data;
+    // if (this.isEditted(order) && isEditted) {
+    const isNumber = Object.keys(number).length > 0;
+    if (edit && isEditted) {
+      if (isNumber) {
+        console.log(data);
+        const { current = '', max = '' } = number;
+        return (
+          <Form.Item name={key} className={styles.formNumber}>
+            <InputNumber
+              onChange={(val) => this.handleNumberChange(key, val, value)}
+              defaultValue={current}
+              max={parseFloat(max)}
+              name={key}
+            />
+            <span>{value}</span>
+          </Form.Item>
+        );
+      }
       return (
         <Form.Item name={key} className={styles.formInput}>
           <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
         </Form.Item>
       );
     }
+
+    if (isNumber) {
+      const { current = '' } = number;
+      return (
+        <span
+          className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
+            data.order === ' ' ? `big-text` : null
+          }`}
+        >
+          {`${current}${value}`}
+        </span>
+      );
+    }
+
     return (
       <span
         className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
