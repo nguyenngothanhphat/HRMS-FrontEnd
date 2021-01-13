@@ -10,6 +10,7 @@ import CompanySignatory from './components/CompanySignatory';
 import BillingPayments from './components/BillingPayments';
 import PlanInfo from './components/PlanInfo';
 import Integrations from './components/Integrations';
+import CompanyDocuments from './components/CompanyDocuments';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -72,6 +73,9 @@ export default class CompanyProfile extends PureComponent {
             </TabPane>
             <TabPane tab="User Management" key="2">
               <UserManagement />
+            </TabPane>
+            <TabPane tab="Company Documents" key="3">
+              <CompanyDocuments />
             </TabPane>
           </Tabs>
         </div>
