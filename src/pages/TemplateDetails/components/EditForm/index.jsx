@@ -3,6 +3,19 @@ import { Editor } from '@tinymce/tinymce-react';
 import { history } from 'umi';
 import styles from './index.less';
 
+const myListItems = [
+  'Item1',
+  'Item2',
+  'Item3',
+  'Item4',
+  'Item5',
+  'Item6',
+  'Item7',
+  'Item8',
+  'Item9',
+  'Item10',
+  'Item11',
+];
 class EditForm extends Component {
   constructor(props) {
     super(props);
@@ -58,14 +71,21 @@ class EditForm extends Component {
             content_style: 'body { margin: 1rem auto; max-width: 900px; }',
             setup(ed) {
               window.tester = ed;
-              ed.ui.registry.addButton('variable', {
+              ed.ui.registry.addMenuButton('variable', {
                 text: 'Insert auto-text',
-                onAction() {
-                  ed.plugins.variable.addVariable('account_id');
+                fetch(callback) {
+                  const menuItems = myListItems.map((item) => ({
+                    type: 'menuitem',
+                    text: item,
+                    onAction() {
+                      ed.plugins.variable.addVariable(item);
+                    },
+                  }));
+                  callback(menuItems);
                 },
               });
 
-              ed.on('variableClick', function (e) {
+              ed.on('variableClick', (e) => {
                 console.log('click', e);
                 console.log(history);
               });
