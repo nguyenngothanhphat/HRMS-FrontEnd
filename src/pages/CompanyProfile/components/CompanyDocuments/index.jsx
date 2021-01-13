@@ -8,27 +8,31 @@ class CompanyDocuments extends Component {
     super(props);
     this.state = {
       visible: false,
+      keyModal: '',
     };
   }
 
   handleSubmitUpload = (values) => {
     console.log('values', values);
+    this.hideModalUpload();
   };
 
   showModalUpload = () => {
     this.setState({
       visible: true,
+      keyModal: Date.now(),
     });
   };
 
   hideModalUpload = () => {
     this.setState({
       visible: false,
+      keyModal: '',
     });
   };
 
   render() {
-    const { visible = false } = this.state;
+    const { visible = false, keyModal = '' } = this.state;
     return (
       <>
         <Row className={s.root} gutter={[24, 0]}>
@@ -49,6 +53,7 @@ class CompanyDocuments extends Component {
           </Col>
         </Row>
         <ModalUploadDocument
+          keyModal={keyModal}
           visible={visible}
           handleCancel={this.hideModalUpload}
           handleSubmit={this.handleSubmitUpload}
