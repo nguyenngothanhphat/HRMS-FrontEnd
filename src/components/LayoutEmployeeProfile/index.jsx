@@ -1,13 +1,11 @@
-/* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { Row, Col, Modal, Affix } from 'antd';
+import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import ViewInformation from './components/ViewInformation';
+import UploadLogoCompany from './components/UploadLogoCompany';
 import s from './index.less';
-
-const { confirm } = Modal;
 
 @connect(({ employeeProfile: { isModified } = {} }) => ({
   isModified,
@@ -70,46 +68,28 @@ class CommonLayout extends PureComponent {
     });
   };
 
-  showConfirm = (item) => {
-    const _this = this;
-    confirm({
-      title: 'Save your changes ?',
-      onOk() {
-        _this.saveChanges(item);
-      },
-      onCancel() {
-        _this.onCancel(item);
-      },
-    });
-  };
-
-  saveChanges = (item) => {
-    console.log('item', item);
-  };
-
-  onCancel = (item) => {
-    console.log('item', item);
-  };
-
   render() {
     const {
       listMenu = [],
       employeeLocation = '',
       permissions = {},
       profileOwner = false,
+      isCompanyProfile = false,
     } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={90}>
+        <Affix offsetTop={isCompanyProfile ? 0 : 90}>
           <div className={s.viewLeft}>
-            <div className={s.viewLeft__menu}>
+            <div
+              className={s.viewLeft__menu}
+              style={isCompanyProfile ? { padding: '24px 0 24px 40px' } : {}}
+            >
               {listMenu.map((item) => (
                 <ItemMenu
                   key={item.id}
                   item={item}
-                  // handleClick={!isModified ? this.handleCLickItemMenu : this.showConfirm}
                   handleClick={this.handleCLickItemMenu}
                   selectedItemId={selectedItemId}
                 />
@@ -118,13 +98,17 @@ class CommonLayout extends PureComponent {
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={18}>{displayComponent}</Col>
-          <Col span={6}>
-            <ViewInformation
-              permissions={permissions}
-              profileOwner={profileOwner}
-              employeeLocation={employeeLocation}
-            />
+          <Col span={isCompanyProfile ? 16 : 18}>{displayComponent}</Col>
+          <Col span={isCompanyProfile ? 8 : 6}>
+            {isCompanyProfile ? (
+              <UploadLogoCompany />
+            ) : (
+              <ViewInformation
+                permissions={permissions}
+                profileOwner={profileOwner}
+                employeeLocation={employeeLocation}
+              />
+            )}
           </Col>
         </Row>
       </div>

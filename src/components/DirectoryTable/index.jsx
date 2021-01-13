@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Popover } from 'antd';
+import { Table, Avatar, Button, Menu, Dropdown, message } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -11,7 +12,6 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       isSort: false,
-      visible: false,
     };
   }
 
@@ -35,24 +35,23 @@ class DirectoryTable extends Component {
     );
   };
 
-  renderContent = (row) => {
-    // const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
+  renderMenu = (data) => {
+
     return (
-      <div
-        style={{ textDecoration: 'none', cursor: 'pointer', color: '#2C6DF9' }}
-        onClick={() => this.checkFunction(row)}
-      >
-        Menu actions
-      </div>
-    );
-  };
+      <Menu onClick={(e) => this.handleClickMenu(e)}>
+        {
+        data.map(item => (
+          <Menu.Item key={item.key}>{item.label}</Menu.Item>    
+        ))
+      }
+      </Menu>
+    )
+  }
+  
 
-  checkFunction = (row) => {
-    alert(`Clicked action[${row}`);
-  };
-
-  handleVisibleChange = (visible) => {
-    this.setState({ visible });
+  handleClickMenu = (e) => {
+    e.domEvent.stopPropagation()
+    message.info('Clicked');
   };
 
   generateColumns = (sortedName) => {
@@ -149,25 +148,38 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
-        dataIndex: '_id',
-        // key: 'action',
+        dataIndex: 'action',
+        key: 'action',
         align: 'center',
         width: '8%',
-        render: (_id, row) => {
+        render: () => {
+          const data = [
+            {
+              key: 'item 1',
+              label: 'Menu 1'
+            },
+            {
+              key: 'item 2',
+              label: 'Menu 2'
+            },
+            {
+              key: 'item 3',
+              label: 'Menu 3'
+            }
+          ];
+
           return (
             <div className={styles.viewAction}>
-              <div className={styles.viewAction__popOver}>
-                <Popover
-                  content={this.renderContent(row)}
-                  title="title action"
-                  trigger="click"
-                  placement="bottomRight"
-                  visible={this.state.visible}
-                  onVisibleChange={this.handleVisibleChange}
-                >
-                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-                </Popover>
-              </div>
+              <Dropdown
+                overlay={this.renderMenu(data)}
+                placement="bottomLeft"
+                arrow
+                className={styles.action}
+              >
+                <Button onClick={(e) => e.stopPropagation()} className={styles.action__btn}>
+                  <span className={styles.action__popOver__dots}>&#8285;</span>
+                </Button>
+              </Dropdown>
             </div>
           );
         },

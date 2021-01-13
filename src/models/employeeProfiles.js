@@ -162,6 +162,7 @@ const employeeProfile = {
             if (updates.statusCode !== 200) throw updates;
             yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
             const employment = yield call(getEmploymentInfo, { id: payload.employee });
+
             yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
             if (employment.statusCode !== 200) throw response;
             const compensation = yield call(getCompensation, { employee: payload.employee });
@@ -1018,6 +1019,7 @@ const employeeProfile = {
         notification.success({
           message,
         });
+
         const { newChangeList = [] } = revoke;
         yield put({
           type: 'saveOrigin',
@@ -1026,13 +1028,13 @@ const employeeProfile = {
 
         ////////////////////////
         if (statusCode === 200) {
-          const employment = yield call(getEmploymentInfo, payload);
+          const employment = yield call(getEmploymentInfo, { id: payload.employee });
           yield put({
             type: 'saveOrigin',
             payload: { employmentData: employment.data },
           });
           if (employment.statusCode !== 200) throw response;
-          const compensation = yield call(getCompensation, { employee: payload.id });
+          const compensation = yield call(getCompensation, { employee: payload.employee });
           if (compensation.statusCode !== 200) throw response;
           yield put({
             type: 'saveOrigin',
