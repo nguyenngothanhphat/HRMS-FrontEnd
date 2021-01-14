@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Form, Table, Button, Input, Row, Col } from 'antd';
+import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 import styles from './index.less';
 
@@ -123,16 +123,51 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { salaryStructure } = this.props;
-    const data = salaryStructure.find((item) => item.order === order);
-    const { value, key } = data;
-    if (this.isEditted(order) && isEditted) {
+    const { settings = [] } = this.props;
+    const data = settings?.find((item) => item.order === order);
+    const { value = '', key, edit = false, number = {} } = data;
+    const isNumber = Object.keys(number).length > 0;
+
+    if (edit && isEditted) {
+      if (isNumber) {
+        console.log(data);
+        const { current = '', max = '' } = number;
+        return (
+          <Form.Item name={key} className={styles.formNumber}>
+            <InputNumber
+              // onChange={(val) => this.handleNumberChange(key, val, value)}
+              defaultValue={current}
+              max={parseFloat(max)}
+              name={key}
+            />
+            <span>{value}</span>
+          </Form.Item>
+        );
+      }
       return (
         <Form.Item name={key} className={styles.formInput}>
-          <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
+          <Input
+            //  onChange={(e) => this.handleChange(e)}
+            defaultValue={value}
+            name={key}
+          />
         </Form.Item>
       );
     }
+
+    if (isNumber) {
+      const { current = '' } = number;
+      return (
+        <span
+          className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
+            data.order === ' ' ? `big-text` : null
+          }`}
+        >
+          {`${current}${value}`}
+        </span>
+      );
+    }
+
     return (
       <span
         className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
