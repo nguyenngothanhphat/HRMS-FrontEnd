@@ -15,9 +15,10 @@ class DirectoryTable extends Component {
       isSort: false,
       openModal: false,
       isRow: {},
-      valueReason: ''
+      valueReason: '',
     };
   }
+
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
@@ -55,9 +56,10 @@ class DirectoryTable extends Component {
   };
 
   handleSubmit = (e) => {
-    const {isRow = {}} = this.state;
+    const {isRow = {}, valueReason = ''} = this.state;
     e.stopPropagation();
     console.log('Row: ', isRow);
+    console.log('Text: ', valueReason);
   }
 
   onChangeReason = ({ target: { value } }) => {
@@ -220,7 +222,12 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal = false, valueReason } = this.state;
+    const { 
+      sortedName = {}, 
+      pageSelected, 
+      openModal = false, 
+      valueReason = '',
+    } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {

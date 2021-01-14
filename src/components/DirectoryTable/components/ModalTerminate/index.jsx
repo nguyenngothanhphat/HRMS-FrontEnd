@@ -1,10 +1,12 @@
-import React from 'react'
-import { Button, Modal, Input, Form } from 'antd';
+import React, { useState } from 'react'
+import { Modal, Input, Form } from 'antd';
 import styles from './index.less';
 
 const { TextArea } = Input;
 
 const ModalTerminate = (props) => {
+    const [form] = Form.useForm();
+    const [isValid, setIsValid] = useState(false)
 
     const {
         visible = false,
@@ -22,33 +24,26 @@ const ModalTerminate = (props) => {
         onOk={handleSubmit}
         onCancel={handleCandelModal}
         destroyOnClose
-        footer={[
-          <div className={styles.flexContent}>
-            <Button
-              className={`${styles.btnGroup} ${styles.btnCancel}`}
-              onClick={handleCandelModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              className={`${styles.btnGroup} ${styles.btnSubmit}`}
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-          </div>
-          ]}
+        okText='Submit'
+        cancelText='Cancel'
+        okButtonProps={{ disabled:  isValid  }}
       >
         <div className={styles.contentModal}>
           <div className={styles.titleModal}>Terminate employee</div>
-          <Form>
+          <Form 
+            form={form}
+            onFieldsChange={() =>
+                setIsValid(
+                    form.getFieldsError().some((field) => field.errors.length > 0)
+                )}
+          >
             <Form.Item 
               label='Reason' 
               name='reason' 
               className={styles.formModal}
               rules={[
                     {
-                        pattern: /^[\W\S_]{0,1000}$/,
+                        pattern: /^[\W\S_]{0,10}$/,
                         message: 'Character limit is 1000',
                     }
                 ]}
@@ -61,6 +56,20 @@ const ModalTerminate = (props) => {
                 autoSize={{ minRows: 3, maxRows: 6 }}
               />
             </Form.Item>
+            {/* <div className={styles.flexContent}>
+              <Button
+                className={`${styles.btnGroup} ${styles.btnCancel}`}
+                onClick={handleCandelModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                className={`${styles.btnGroup} ${styles.btnSubmit}`}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </div> */}
           </Form>
         </div>
       </Modal>
