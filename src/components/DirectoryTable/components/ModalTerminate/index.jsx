@@ -48,9 +48,8 @@ const ModalTerminate = (props) => {
               className={styles.formModal}
               rules={[
                     {
-                        // pattern: /[a-zA-Z] {0,10}$/,
-                        pattern: /^[\w ]{0,1000}$/,
-                        message: 'Value should be character and limit characters is 1000',
+                        pattern: /^[\W\S_]{0,1000}$/,
+                        message: 'Character limit is 1000',
                     }
                 ]}
             >
