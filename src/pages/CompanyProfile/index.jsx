@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
+import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
 import UserManagement from './components/UserManagement';
 import CompanyDetails from './components/CompanyDetails';
@@ -9,6 +10,7 @@ import CompanySignatory from './components/CompanySignatory';
 import BillingPayments from './components/BillingPayments';
 import PlanInfo from './components/PlanInfo';
 import Integrations from './components/Integrations';
+import CompanyDocuments from './components/CompanyDocuments';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -53,23 +55,31 @@ const listMenu = [
 
 export default class CompanyProfile extends PureComponent {
   render() {
-    // const {
-    //   match: { params: { reId: companyId = '' } = {} },
-    // } = this.props;
-
-    // console.log('companyid', companyId);
+    const {
+      match: { params: { reId: companyId = '' } = {} },
+    } = this.props;
+    const routes = [
+      { name: 'Getting Started', path: '/account-setup/get-started' },
+      { name: 'Company Profile', path: `/account-setup/get-started/company-profile/${companyId}` },
+    ];
     return (
-      <div className={styles.root}>
-        <div className={styles.titlePage}>Company Profile</div>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Profile Information" key="1">
-            <Layout listMenu={listMenu} isCompanyProfile />
-          </TabPane>
-          <TabPane tab="User Management" key="2">
-            <UserManagement />
-          </TabPane>
-        </Tabs>
-      </div>
+      <>
+        <Breadcrumb routes={routes} />
+        <div className={styles.root}>
+          <div className={styles.titlePage}>Company Profile</div>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Profile Information" key="1">
+              <Layout listMenu={listMenu} isCompanyProfile />
+            </TabPane>
+            <TabPane tab="User Management" key="2">
+              <UserManagement />
+            </TabPane>
+            <TabPane tab="Company Documents" key="3">
+              <CompanyDocuments />
+            </TabPane>
+          </Tabs>
+        </div>
+      </>
     );
   }
 }

@@ -1,5 +1,6 @@
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
+import Breadcrumb from '@/components/Breadcrumb';
 import ItemSetup from './components/ItemSetup';
 import s from './index.less';
 
@@ -11,27 +12,31 @@ export default class GetStarted extends PureComponent {
         id: '2',
         name: 'Setup Employee Directory',
         description: 'Setup company profile to unlock',
-        status: 'lock',
+        // status: 'lock',
       },
     ];
+    const routes = [{ name: 'Getting Started', path: '/account-setup/get-started' }];
     return (
-      <div className={s.root}>
-        <div className={s.content}>
-          <p className={s.title}>Get Started</p>
-          <p className={s.text}>
-            We’ve got a list of tasks to get you set up. We’ll walk you through everything and you
-            will be done in no time!
-          </p>
-          {dummyListSetup.map((item) => (
-            <ItemSetup key={item.id} item={item} />
-          ))}
+      <>
+        <Breadcrumb routes={routes} />
+        <div className={s.root}>
+          <div className={s.content}>
+            <p className={s.title}>Get Started</p>
+            <p className={s.text}>
+              We’ve got a list of tasks to get you set up. We’ll walk you through everything and you
+              will be done in no time!
+            </p>
+            {dummyListSetup.map((item) => (
+              <ItemSetup key={item.id} item={item} />
+            ))}
+          </div>
+          <div className={s.viewBtn}>
+            <Button disabled className={s.btnGoToDashboard}>
+              Go to dashboard
+            </Button>
+          </div>
         </div>
-        <div className={s.viewBtn}>
-          <Button disabled className={s.btnGoToDashboard}>
-            Go to dashboard
-          </Button>
-        </div>
-      </div>
+      </>
     );
   }
 }
