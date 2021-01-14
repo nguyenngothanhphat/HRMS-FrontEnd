@@ -96,7 +96,6 @@ class ModalUploadDocument extends Component {
       showUploadList: false,
     };
     const checkDisabled = !valueName || !type || !urlImage;
-    console.log('urlImage', urlImage);
     return (
       <Modal
         className={styles.root}
