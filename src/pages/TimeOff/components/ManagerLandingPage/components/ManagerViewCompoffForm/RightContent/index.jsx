@@ -62,14 +62,6 @@ class RightContent extends PureComponent {
 
     return (
       <div className={styles.RightContent}>
-        <div className={styles.header}>
-          <span className={styles.title}>Note</span>
-          <span className={styles.description}>
-            <p className={styles.text1}>Withdrawal of applications/requests</p>
-            <p className={styles.text2}>You can withdraw this compoff application...</p>
-          </span>
-        </div>
-
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
           <Steps current={currentStep - 1} labelPlacement="vertical">

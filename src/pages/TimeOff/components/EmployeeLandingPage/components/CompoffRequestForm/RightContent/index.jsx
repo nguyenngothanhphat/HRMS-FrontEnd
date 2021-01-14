@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Steps } from 'antd';
+import { Steps, Spin } from 'antd';
 import NoteIcon from '@/assets/NoteIcon.svg';
 import styles from './index.less';
 
@@ -16,33 +16,55 @@ class RightContent extends PureComponent {
   // };
 
   renderIcon = (url) => {
-    return <img className={styles.avatar} src={url} alt="avatar" />;
+    return (
+      <div className={styles.avatar}>
+        <img src={url} alt="avatar" />
+      </div>
+    );
+  };
+
+  getFlow = () => {
+    const {
+      compoffApprovalFlow: {
+        step1: {
+          generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
+        } = {},
+        step2: {
+          generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+        } = {},
+        step3: {
+          generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+        } = {},
+      } = {},
+    } = this.props;
+
+    const arr = [];
+    arr.push({
+      name: `${fn1} ${ln1}`,
+      avatar:
+        av1 === ''
+          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
+          : av1,
+    });
+    arr.push({
+      name: `${fn2} ${ln2}`,
+      avatar:
+        av2 === ''
+          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
+          : av2,
+    });
+    arr.push({
+      name: `${fn3} ${ln3}`,
+      avatar:
+        av3 === ''
+          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
+          : av3,
+    });
+    return arr;
   };
 
   render() {
-    const people = [
-      {
-        id: 1,
-        body: '',
-        text: 'Rose Mary',
-        avatar:
-          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
-      },
-      {
-        id: 2,
-        body: '',
-        text: 'Aditya Venkatesan',
-        avatar:
-          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
-      },
-      {
-        id: 3,
-        body: '',
-        text: 'Thammu Ayappa',
-        avatar:
-          'https://i1.wp.com/nicholegabrielle.com/wp-content/uploads/2019/04/sample-avatar-003.jpg',
-      },
-    ];
+    const { compoffApprovalFlow = {}, loading } = this.props;
 
     return (
       <div className={styles.RightContent}>
@@ -58,15 +80,36 @@ class RightContent extends PureComponent {
             balance. You can apply for compoff leave then.
           </span>
         </div>
-        <div className={styles.content}>
-          <span className={styles.title}>Chain of approval</span>
-          <Steps current={0} labelPlacement="vertical">
-            {people.map((value, index) => {
-              const { avatar = '', text = '' } = value;
-              return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={text} />;
-            })}
-          </Steps>
-        </div>
+
+        {loading ? (
+          <>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '20px 0',
+              }}
+            >
+              <Spin size="medium" />
+            </div>
+          </>
+        ) : (
+          <>
+            {Object.keys(compoffApprovalFlow).length !== 0 && (
+              <div className={styles.content}>
+                <span className={styles.title}>Chain of approval</span>
+                <Steps current={0} labelPlacement="vertical">
+                  {this.getFlow().map((value, index) => {
+                    const { avatar = '', name = '' } = value;
+                    return (
+                      <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />
+                    );
+                  })}
+                </Steps>
+              </div>
+            )}
+          </>
+        )}
       </div>
     );
   }

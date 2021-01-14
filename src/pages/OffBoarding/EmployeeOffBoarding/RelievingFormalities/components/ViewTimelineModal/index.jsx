@@ -30,12 +30,23 @@ class ViewTimelineModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMonth: parseInt(moment().subtract(1, 'months').format('MM'), 10),
-      selectedYear: parseInt(moment().format('YYYY'), 10),
+      selectedMonth: 0,
+      selectedYear: 0,
     };
   }
 
-  componentDidMount = () => {};
+  resetToCurrent = () => {
+    const currentMonth = parseInt(moment().format('MM'), 10);
+    const currentYear = parseInt(moment().format('YYYY'), 10);
+    this.setState({
+      selectedMonth: currentMonth - 1,
+      selectedYear: currentYear,
+    });
+  };
+
+  componentDidMount = () => {
+    this.resetToCurrent();
+  };
 
   onPanelChange = (value) => {
     const selectedMonth = parseInt(moment(value).format('MM'), 10);
@@ -69,7 +80,7 @@ class ViewTimelineModal extends PureComponent {
     const date = value.date();
     const status = this.getStatusDay(value);
     return status === 'normal'
-      ? this.handeCheckTimeSheet(value, date)
+      ? this.handleCheckTimeSheet(value, date)
       : this.renderItemDay(status, date);
   };
 
@@ -98,7 +109,7 @@ class ViewTimelineModal extends PureComponent {
     return dates;
   };
 
-  handeCheckTimeSheet = (value, date) => {
+  handleCheckTimeSheet = (value, date) => {
     const { lastWorkingDate = '', requestDate = '' } = this.props;
 
     const beginDate = moment(requestDate).format('YYYY-MM-DD');
@@ -157,6 +168,9 @@ class ViewTimelineModal extends PureComponent {
         centered
         visible={visible}
         footer={null}
+        afterClose={() => {
+          this.resetToCurrent();
+        }}
       >
         <div className={styles.container}>
           <p className={styles.title}>View timeline</p>
@@ -164,7 +178,6 @@ class ViewTimelineModal extends PureComponent {
             <Calendar
               headerRender={({ value, onChange }) => {
                 const { selectedMonth, selectedYear } = this.state;
-
                 const start = 0;
                 const end = 12;
                 const monthOptions = [];
@@ -209,7 +222,7 @@ class ViewTimelineModal extends PureComponent {
                             newValue.month(parseInt(selectedMonth1, 10));
                             onChange(newValue);
                             this.setState({
-                              selectedMonth: selectedMonth1,
+                              selectedMonth: parseInt(selectedMonth1, 10),
                             });
                           }}
                         >
@@ -264,7 +277,6 @@ class ViewTimelineModal extends PureComponent {
                               const newMonth = value.clone();
                               newMonth.month(parseInt(selectedMonth + 1, 10));
                               onChange(newMonth);
-
                               this.setState({
                                 selectedMonth: selectedMonth + 1,
                               });

@@ -10,14 +10,43 @@ import styles from './index.less';
   timeOff,
   currentUserRole,
 }))
-class ViewCompoffRequestForm extends PureComponent {
+class ManagerViewCompoffForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  findRole = (roles) => {
+    const { dispatch } = this.props;
+
+    const hrManager = roles.find((item) => item === 'hr-manager');
+    const manager = roles.find((item) => item === 'manager');
+    const employee = roles.find((item) => item === 'employee');
+    const admincla = roles.find((item) => item === 'admin-cla');
+
+    let role = '';
+    role = hrManager || manager || employee || 'employee';
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentUserRole: role,
+      },
+    });
+
+    if (admincla) {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentUserRole: 'ADMIN-CLA',
+        },
+      });
+    }
+  };
+
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
+    const listRole = localStorage.getItem('antd-pro-authority');
+    this.findRole(JSON.parse(listRole));
     const {
       dispatch,
       match: { params: { reId: id = '' } = {} },
@@ -29,7 +58,7 @@ class ViewCompoffRequestForm extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  // clear viewingCompoffRequest
+  // clear viewingLeaveRequest
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -38,10 +67,14 @@ class ViewCompoffRequestForm extends PureComponent {
   };
 
   getColorOfStatus = (status) => {
+    const { currentUserRole = '' } = this.props;
+    if (currentUserRole === 'ADMIN-CLA') {
+      if (status === 'IN-PROGRESS-NEXT') return `${styles.leaveStatus} ${styles.inProgressColor}`;
+    } else if (status === 'IN-PROGRESS-NEXT')
+      return `${styles.leaveStatus} ${styles.approvedColor}`;
+
     switch (status) {
       case 'IN-PROGRESS':
-        return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'IN-PROGRESS-NEXT':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
       case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
@@ -59,11 +92,14 @@ class ViewCompoffRequestForm extends PureComponent {
   };
 
   getNameOfStatus = (status) => {
+    const { currentUserRole = '' } = this.props;
+    if (currentUserRole === 'ADMIN-CLA') {
+      if (status === 'IN-PROGRESS-NEXT') return 'In Progress (PM Approved)';
+    } else if (status === 'IN-PROGRESS-NEXT') return 'Approved (PM Approved)';
+
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'IN-PROGRESS-NEXT':
-        return 'In Progress (PM Approved)';
       case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
@@ -82,8 +118,8 @@ class ViewCompoffRequestForm extends PureComponent {
   render() {
     const {
       timeOff: {
+        viewingCompoffRequest: { status = '', ticketID = '' } = {},
         viewingCompoffRequest = {},
-        viewingCompoffRequest: { ticketID = '', status = '' } = {},
       } = {},
     } = this.props;
 
@@ -93,7 +129,7 @@ class ViewCompoffRequestForm extends PureComponent {
 
     return (
       <PageContainer>
-        <div className={styles.ViewCompoffRequestForm}>
+        <div className={styles.ManagerViewCompoffForm}>
           <Affix offsetTop={40}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
@@ -117,4 +153,4 @@ class ViewCompoffRequestForm extends PureComponent {
   }
 }
 
-export default ViewCompoffRequestForm;
+export default ManagerViewCompoffForm;

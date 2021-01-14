@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Badge } from 'antd';
 
 import styles from './index.less';
 
@@ -23,12 +23,14 @@ export default class FilterBar extends PureComponent {
         approvedLength = '',
         rejectedLength = '',
         draftLength = '',
-        onHoldLength = '',
+        // onHoldLength = '',
       } = {},
       category = '',
     } = this.props;
 
     const { selectedTab } = this.props;
+
+    const inProgressExist = inProgressLength > 0;
 
     return (
       <div className={styles.FilterBar}>
@@ -39,7 +41,18 @@ export default class FilterBar extends PureComponent {
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
-          <TabPane tab={`In Progress (${this.addZeroToNumber(inProgressLength)})`} key="1" />
+          <TabPane
+            tab={
+              inProgressExist ? (
+                <Badge dot>
+                  <span>In Progress ({this.addZeroToNumber(inProgressLength)}) </span>
+                </Badge>
+              ) : (
+                <span>In Progress ({this.addZeroToNumber(inProgressLength)}) </span>
+              )
+            }
+            key="1"
+          />
           <TabPane tab={`Approved (${this.addZeroToNumber(approvedLength)})`} key="2" />
           <TabPane tab={`Rejected (${this.addZeroToNumber(rejectedLength)})`} key="3" />
           {category === 'MY' && (

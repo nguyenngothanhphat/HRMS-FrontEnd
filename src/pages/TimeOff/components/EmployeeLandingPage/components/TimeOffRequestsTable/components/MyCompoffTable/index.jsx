@@ -42,7 +42,7 @@ class MyCompoffTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -127,11 +127,10 @@ class MyCompoffTable extends PureComponent {
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
         ticketID = '',
         _id = '',
         extraTime = [],
+        approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
       } = value;
 
       let duration = '';
@@ -143,13 +142,15 @@ class MyCompoffTable extends PureComponent {
         )}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      const oneAssign = (step) => {
+        const { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = step;
+        return {
+          firstName,
+          lastName,
+          avatar,
+        };
+      };
+      const assigned = [oneAssign(step1), oneAssign(step2), oneAssign(step3)];
 
       return {
         ...value,
