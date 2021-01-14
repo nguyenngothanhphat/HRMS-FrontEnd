@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Menu, message, Modal } from 'antd';
+import { Table, Avatar, Button, Modal } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -39,7 +39,6 @@ class DirectoryTable extends Component {
 
   handleClick = (e, item = {}) => {
     e.stopPropagation();
-    console.log('item: ', item);
     this.setState({
       isRow: item,
       openModal: true,
@@ -53,8 +52,14 @@ class DirectoryTable extends Component {
     });
   };
 
+  handleSubmit = (e) => {
+    const {isRow = {}} = this.state;
+    e.stopPropagation();
+    console.log('Row: ', isRow);
+  }
+
   generateColumns = (sortedName) => {
-    const { isSort, openModal } = this.state;
+    const { isSort } = this.state;
     const columns = [
       {
         title: (
@@ -209,7 +214,7 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal } = this.state;
+    const { sortedName = {}, pageSelected, openModal = false } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
@@ -257,11 +262,27 @@ class DirectoryTable extends Component {
         </div>
         <Modal
           visible={openModal}
+          className={styles.terminateModal}
           title={false}
-          // onOk={this.handleSubmit}
+          onOk={this.handleSubmit}
           onCancel={this.handleCandelModal}
           destroyOnClose
-          footer={false}
+          footer={[
+            <div className={styles.flexContent} style={{ justifyContent: 'center' }}>
+              <Button
+                className={`${styles.btnGroup} ${styles.btnCancel}`}
+                onClick={this.handleCandelModal}
+              >
+                Cancel
+              </Button>
+              <Button
+                className={`${styles.btnGroup} ${styles.btnSubmit}`}
+                onClick={this.handleSubmit}
+              >
+                Submit
+              </Button>
+            </div>
+          ]}
         >
           <div className={styles.contentModal}>
             <div className={styles.titleModal}>Reason</div>
