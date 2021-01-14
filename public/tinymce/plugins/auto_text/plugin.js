@@ -44,7 +44,7 @@
          * Get custom variable class name
          * @type {string}
          */
-        const className = editor.getParam("variable_class", "variable");
+        const styles = editor.getParam("variable_style", "");
     
         /**
          * Prefix and suffix to use to mark a variable
@@ -109,7 +109,7 @@
             });
     
             const variable = prefix + cleanValue + suffix;
-            return `<span class="${  className  }" data-original-variable="${  variable  }" contenteditable="false">${  cleanMappedValue  }</span>`;
+            return `<span style="${styles}" data-original-variable="${  variable  }" contenteditable="false">${  cleanMappedValue  }</span>`;
         }
     
         /**
@@ -211,7 +211,7 @@
          */
         function addVariable(value) {
             const htmlVariable = createHTMLVariable(value);
-            editor.execCommand('mceInsertContent', false, htmlVariable);
+            editor.insertContent(htmlVariable);
         }
     
         function isVariable(element) {

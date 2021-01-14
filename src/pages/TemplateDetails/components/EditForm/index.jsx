@@ -1,58 +1,53 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { history } from 'umi';
+import { history, connect } from 'umi';
+import { Button, notification } from 'antd';
 import styles from './index.less';
 
-const myListItems = [
-  'Item1',
-  'Item2',
-  'Item3',
-  'Item4',
-  'Item5',
-  'Item6',
-  'Item7',
-  'Item8',
-  'Item9',
-  'Item10',
-  'Item11',
-];
+@connect(({ employeeSetting }) => ({
+  employeeSetting,
+}))
 class EditForm extends Component {
   constructor(props) {
     super(props);
-
+    this.mapValues = {};
+    const { currentTemplate } = this.props;
+    currentTemplate.settings.map((item) =>
+      Object.assign(this.mapValues, { [item.key]: item.description }),
+    );
     this.state = {
-      currentTab: '1',
+      editorContent: currentTemplate.htmlContent,
     };
   }
 
-  onNext = () => {
-    const { onNext = {} } = this.props;
-    onNext();
+  handleSubmit = () => {
+    const { editorContent } = this.state;
+    const {
+      currentTemplate: { title, settings = [] },
+      dispatch,
+    } = this.props;
+    dispatch({
+      type: 'employeeSetting/addCustomTemplate',
+      payload: {
+        html: editorContent,
+        settings,
+        type: 'ON_BOARDING',
+        title,
+      },
+    });
   };
 
-  onSwitchTabs = () => {
-    const { currentTab } = this.state;
-
-    this.setState(
-      {
-        currentTab: '2',
-      },
-      () => {
-        console.log(currentTab);
-      },
-    );
-  };
-
-  onTabClick = () => {
-    const { currentTab } = this.state;
-
+  handleEditorChange = (content) => {
     this.setState({
-      currentTab: currentTab === '1' ? '2' : '1',
+      editorContent: content,
     });
   };
 
   render() {
-    const { currentTemplate } = this.props;
+    const {
+      currentTemplate: { settings = [] },
+      currentTemplate,
+    } = this.props;
     return (
       <div className={styles.EditForm}>
         <Editor
@@ -63,8 +58,8 @@ class EditForm extends Component {
             menubar: true,
             plugins: [
               'save advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount variable',
+              'searchreplace visualblocks fullscreen',
+              'insertdatetime media table paste help wordcount variable',
             ],
             toolbar:
               'undo redo formatselect bold italic backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
@@ -74,11 +69,11 @@ class EditForm extends Component {
               ed.ui.registry.addMenuButton('variable', {
                 text: 'Insert auto-text',
                 fetch(callback) {
-                  const menuItems = myListItems.map((item) => ({
+                  const menuItems = settings.map((item) => ({
                     type: 'menuitem',
-                    text: item,
+                    text: item.description,
                     onAction() {
-                      ed.plugins.variable.addVariable(item);
+                      ed.plugins.variable.addVariable(item.key);
                     },
                   }));
                   callback(menuItems);
@@ -86,11 +81,17 @@ class EditForm extends Component {
               });
 
               ed.on('variableClick', (e) => {
-                console.log('click', e);
-                console.log(history);
+                notification.info({
+                  message: `You clicked on ${e.value}!`,
+                  description:
+                    'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
+                });
               });
             },
 
+            variable_mapper: this.mapValues,
+            variable_style:
+              'background-color: #ffa100; color: #fff; border-radius: 4px; padding: 4px;',
             external_plugins: {
               variable: window.location.href.replace(
                 history.location.pathname,
@@ -98,7 +99,12 @@ class EditForm extends Component {
               ),
             },
           }}
+          onEditorChange={this.handleEditorChange}
+          outputFormat="raw"
         />
+        <Button variant="contained" color="secondary" onClick={this.handleSubmit}>
+          Click me to save
+        </Button>
       </div>
     );
   }

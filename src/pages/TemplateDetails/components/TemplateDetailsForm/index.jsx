@@ -14,7 +14,9 @@ import styles from './index.less';
 
 @connect(({ loading, employeeSetting: { currentTemplate = {} } }) => ({
   currentTemplate,
-  loadingTemplate: loading.effects['employeeSetting/fetchTemplateById'],
+  loadingTemplate:
+    loading.effects['employeeSetting/fetchTemplateById'] ||
+    loading.effects['employeeSetting/addCustomTemplate'],
 }))
 class TemplateDetailsForm extends PureComponent {
   constructor(props) {
