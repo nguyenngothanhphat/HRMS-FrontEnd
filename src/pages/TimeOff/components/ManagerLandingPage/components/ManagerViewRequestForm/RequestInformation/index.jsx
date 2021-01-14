@@ -3,6 +3,7 @@ import { Button, Row, Col, Spin, Progress, Input } from 'antd';
 import TimeOffModal from '@/components/TimeOffModal';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import Project from './components/Project';
 
 import styles from './index.less';
 
@@ -210,6 +211,18 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
+    const projects = [
+      {
+        name: 'Intranet',
+        projectManager: 'Matt Canaday',
+        projectHealth: 60,
+      },
+      {
+        name: 'HRMS',
+        projectManager: 'Fion Nguyen',
+        projectHealth: 85,
+      },
+    ];
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.requesteeDetails}>
@@ -240,33 +253,27 @@ class RequestInformation extends PureComponent {
                 <span>{position}</span>
               </Col>
             </Row>
-            <Row>
-              <Col span={6}>Current Project</Col>
-              <Col span={18} className={styles.detailColumn}>
-                <span>Intranet</span>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={6}>Project Manager</Col>
-              <Col span={18} className={styles.detailColumn}>
-                <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
-                  Rose Mary
-                </span>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={6}>Project Health</Col>
-              <Col span={18} className={styles.detailColumn}>
-                <div className={styles.projectHealth}>
-                  <span className={styles.bar}>
-                    <Progress strokeLinecap="square" strokeColor="#00C598" percent={75} />
-                  </span>
-                  <span className={styles.viewReport} onClick={this.onViewReport}>
-                    View Report
-                  </span>
-                </div>
-              </Col>
-            </Row>
+            <div className={styles.projectList}>
+              {/* <span className={styles.title}>Projects</span> */}
+              <Row>
+                <Col span={6}>Current Project</Col>
+                <Col span={6}>Project Manager</Col>
+                <Col span={12}>Project Health</Col>
+              </Row>
+              {projects.map((project) => {
+                const { name: prName = '', projectManager = '', projectHealth = 0 } = project;
+                return (
+                  <>
+                    <Project
+                      name={prName}
+                      projectManager={projectManager}
+                      projectHealth={projectHealth}
+                    />
+                    {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
+                  </>
+                );
+              })}
+            </div>
           </div>
         </div>
 

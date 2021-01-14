@@ -105,12 +105,23 @@ export async function getEmailsListByCompany(payload) {
   });
 }
 
+// export async function getProjectsListByEmployee(payload) {
+//   return request('/api/project/get-by-employee', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function getProjectsListByEmployee(payload) {
-  return request('/api/project/get-by-employee', {
+  return request('/api/project/list', {
     method: 'POST',
-    data: payload,
+    data: {
+      company: "5e8723f131c6e53d60ae9678",
+      location: "5e874d5c1e9c3e148a8c5345"
+    },
   });
 }
+
 
 export async function getHolidaysList(payload) {
   return request('/api/holidaycalendar/list', {
