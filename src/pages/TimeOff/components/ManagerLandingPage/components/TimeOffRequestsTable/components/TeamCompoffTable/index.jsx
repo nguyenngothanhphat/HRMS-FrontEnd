@@ -66,7 +66,7 @@ class TeamCompoffTable extends PureComponent {
     {
       title: 'Comment',
       dataIndex: 'comment',
-      align: 'center',
+      align: 'left',
       render: (comment) => <span>{comment}</span>,
     },
     {
