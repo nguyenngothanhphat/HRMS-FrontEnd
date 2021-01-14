@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Menu, Dropdown, message } from 'antd';
+import { Table, Avatar, Button, Menu, message, Modal } from 'antd';
 import styles from './index.less';
 
 class DirectoryTable extends Component {
@@ -12,6 +12,8 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       isSort: false,
+      openModal: false,
+      isRow: {},
     };
   }
 
@@ -35,27 +37,24 @@ class DirectoryTable extends Component {
     );
   };
 
-  renderMenu = (data) => {
+  handleClick = (e, item = {}) => {
+    e.stopPropagation();
+    console.log('item: ', item);
+    this.setState({
+      isRow: item,
+      openModal: true,
+    });
+  };
 
-    return (
-      <Menu onClick={(e) => this.handleClickMenu(e)}>
-        {
-        data.map(item => (
-          <Menu.Item key={item.key}>{item.label}</Menu.Item>    
-        ))
-      }
-      </Menu>
-    )
-  }
-  
-
-  handleClickMenu = (e) => {
-    e.domEvent.stopPropagation()
-    message.info('Clicked');
+  handleCandelModal = (e) => {
+    e.stopPropagation();
+    this.setState({
+      openModal: false,
+    });
   };
 
   generateColumns = (sortedName) => {
-    const { isSort } = this.state;
+    const { isSort, openModal } = this.state;
     const columns = [
       {
         title: (
@@ -152,34 +151,12 @@ class DirectoryTable extends Component {
         key: 'action',
         align: 'center',
         width: '8%',
-        render: () => {
-          const data = [
-            {
-              key: 'item 1',
-              label: 'Menu 1'
-            },
-            {
-              key: 'item 2',
-              label: 'Menu 2'
-            },
-            {
-              key: 'item 3',
-              label: 'Menu 3'
-            }
-          ];
-
+        render: (_, row) => {
           return (
             <div className={styles.viewAction}>
-              <Dropdown
-                overlay={this.renderMenu(data)}
-                placement="bottomLeft"
-                arrow
-                className={styles.action}
-              >
-                <Button onClick={(e) => e.stopPropagation()} className={styles.action__btn}>
-                  <span className={styles.action__popOver__dots}>&#8285;</span>
-                </Button>
-              </Dropdown>
+              <Button onClick={(e) => this.handleClick(e, row)} className={styles.actionBtn}>
+                Terminate
+              </Button>
             </div>
           );
         },
@@ -232,7 +209,7 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected } = this.state;
+    const { sortedName = {}, pageSelected, openModal } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
@@ -259,24 +236,38 @@ class DirectoryTable extends Component {
     };
 
     return (
-      <div className={styles.directoryTable}>
-        <Table
-          size="small"
-          columns={this.generateColumns(sortedName)}
-          onRow={(record) => {
-            return {
-              onClick: () => this.handleProfileEmployee(record), // click row
-            };
-          }}
-          dataSource={list}
-          rowKey={(record) => record._id}
-          // pagination={{ ...pagination, total: list.length }}
-          pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-          loading={loading}
-          onChange={this.handleChangeTable}
-          scroll={scroll}
-        />
-      </div>
+      <>
+        <div className={styles.directoryTable}>
+          <Table
+            size="small"
+            columns={this.generateColumns(sortedName)}
+            onRow={(record) => {
+              return {
+                onClick: () => this.handleProfileEmployee(record), // click row
+              };
+            }}
+            dataSource={list}
+            rowKey={(record) => record._id}
+            // pagination={{ ...pagination, total: list.length }}
+            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            loading={loading}
+            onChange={this.handleChangeTable}
+            scroll={scroll}
+          />
+        </div>
+        <Modal
+          visible={openModal}
+          title={false}
+          // onOk={this.handleSubmit}
+          onCancel={this.handleCandelModal}
+          destroyOnClose
+          footer={false}
+        >
+          <div className={styles.contentModal}>
+            <div className={styles.titleModal}>Reason</div>
+          </div>
+        </Modal>
+      </>
     );
   }
 }
