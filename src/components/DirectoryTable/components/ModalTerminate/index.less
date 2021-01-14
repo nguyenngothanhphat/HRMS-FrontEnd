@@ -16,7 +16,7 @@
 
     }
     .ant-modal-body {
-      padding: 0px;
+      padding: 0px 0px 1px 0px;
     }
 
     .ant-modal-close-x {
@@ -39,27 +39,9 @@
       padding: 10px 67px;
     }
 
-    .ant-btn{
-      display: inline-block;
-      width: 110px;
-      height: 35px;
-      color: #ffa100;
-      font-size: 14px;
-      font-weight: 500;
-      margin-top: 4px;
-      border-radius: 25px;
-      cursor: pointer;
-      border: 1px solid #ffa100;
-      transition: all .3s ease-in-out;
-
-      &:active {
-        opacity: 0.5;
-      }
-    }
-
-    .ant-btn-primary{
-      background-color: #ffa100;
-      color: #fff;
+    .ant-form-item-control-input-content{
+      display: flex;
+      justify-content: flex-end;
     }
   }
 
@@ -89,35 +71,34 @@
       }
     }
 
-  // .flexContent{
-  //   display: flex;
-  //   justify-content: flex-end;
-  //   height: 46px;
+  .flexContent{
+    height: 46px;
 
-  //   .btnGroup {
-  //     display: inline-block;
-  //     width: 110px;
-  //     height: 35px;
-  //     background-color: #ffa100;
-  //     color: white;
-  //     font-size: 14px;
-  //     font-weight: 500;
-  //     margin-top: 4px;
-  //     border-radius: 25px;
-  //     cursor: pointer;
-  //     &:active {
-  //       opacity: 0.5;
-  //     }
-  //   }
+    .btnGroup {
+      display: inline-block;
+      width: 110px;
+      height: 35px;
+      background-color: #ffa100;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 4px;
+      border-radius: 25px;
+      border: 1px solid #ffa100;
+      cursor: pointer;
+      &:active {
+        opacity: 0.5;
+      }
+    }
 
-  //   .btnSubmit{
-  //     background-color: #ffa100;
-  //   }
-  //   .btnCancel{
-  //     background-color: #fff;
-  //     color: #ffa100;
+    .btnSubmit{
+      background-color: #ffa100;
+    }
+    .btnCancel{
+      background-color: #fff;
+      color: #ffa100;
       
-  //     margin-right: 20px;
-  //   }
-  // }
+      margin-right: 20px;
+    }
+  }
 }

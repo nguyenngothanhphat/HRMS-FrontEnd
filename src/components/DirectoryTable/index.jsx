@@ -55,9 +55,9 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = () => {
     const {isRow = {}, valueReason = ''} = this.state;
-    e.stopPropagation();
+    // e.stopPropagation();
     console.log('Row: ', isRow);
     console.log('Text: ', valueReason);
   }
