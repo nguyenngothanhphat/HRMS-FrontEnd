@@ -40,11 +40,11 @@ class MineOrTeamTabs extends PureComponent {
           <TabPane tab={`Team ${tabName}`} key="1">
             <TimeOffRequestTab tab={tab} type={type} category="TEAM" />
           </TabPane>
-          <TabPane tab={`All ${tabName}`} key="2">
-            <TimeOffRequestTab tab={tab} type={type} category="ALL" />
-          </TabPane>
-          <TabPane tab={`My ${tabName}`} key="3">
+          <TabPane tab={`My ${tabName}`} key="2">
             <TimeOffRequestTab tab={tab} type={type} category="MY" />
+          </TabPane>
+          <TabPane tab={`All ${tabName}`} key="3">
+            <TimeOffRequestTab tab={tab} type={type} category="ALL" />
           </TabPane>
         </Tabs>
       </div>

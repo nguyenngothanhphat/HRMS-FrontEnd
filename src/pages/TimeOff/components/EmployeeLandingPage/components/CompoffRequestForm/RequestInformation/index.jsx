@@ -32,6 +32,19 @@ class RequestInformation extends PureComponent {
     };
   }
 
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    const { buttonState } = this.state;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+        currentMineOrTeamTab: '2', // my compoff request tab has index "2"
+        currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
+      },
+    });
+  };
+
   // SET DATE List
   setDateList = (list) => {
     this.setState({
@@ -196,6 +209,7 @@ class RequestInformation extends PureComponent {
       showSuccessModal: value,
     });
     if (!value) {
+      this.saveCurrentTypeTab('5'); // COMPOFF TAB INDEX = 5
       history.push('/time-off');
     }
   };
