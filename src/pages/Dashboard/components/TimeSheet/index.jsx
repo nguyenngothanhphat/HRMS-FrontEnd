@@ -66,7 +66,11 @@ export default class TimeSheet extends PureComponent {
   };
 
   renderItemDay = (status, date) => {
-    return <div className={`${s.date} ${s[status]}`}>{date}</div>;
+    return (
+      <div className={`${s.date} ${s[status]}`}>
+        <div style={status === 'current' ? { display: 'block' } : { display: 'none' }}>{date}</div>
+      </div>
+    );
   };
 
   handeCheckTimeSheet = (value, date) => {
@@ -85,7 +89,9 @@ export default class TimeSheet extends PureComponent {
         <CheckOutlined className={s.iconCheck} />
       </div>
     ) : (
-      <div className={`${s.date} ${s.notCheck}`}>{date}</div>
+      <div className={`${s.date} ${s.notCheck}`}>
+        <div style={{ display: 'none' }}>{date}</div>
+      </div>
     );
   };
 
