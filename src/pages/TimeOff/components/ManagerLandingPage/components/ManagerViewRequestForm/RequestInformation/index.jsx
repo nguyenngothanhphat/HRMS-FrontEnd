@@ -205,7 +205,10 @@ class RequestInformation extends PureComponent {
         position: { name: position = '' } = {},
       } = {},
       comment = '',
-      withdraw: { title = '', reason = '' } = {},
+      withdraw: {
+        //  title = '',
+        reason = '',
+      } = {},
       withdraw = {},
     } = viewingLeaveRequest;
 
@@ -351,14 +354,14 @@ class RequestInformation extends PureComponent {
               <span className={styles.title}>Withdraw request details</span>
             </div>
             <div className={styles.formContent}>
-              <Row>
+              {/* <Row>
                 <Col span={6}>Title</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span className={styles.fieldValue}>{title}</span>
                 </Col>
-              </Row>
+              </Row> */}
               <Row>
-                <Col span={6}>Subject</Col>
+                <Col span={6}>Reason</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{reason}</span>
                 </Col>
