@@ -4,6 +4,7 @@ import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Table, Avatar, Button, Modal } from 'antd';
 import styles from './index.less';
+import ModalTerminate from './components/ModalTerminate';
 
 class DirectoryTable extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class DirectoryTable extends Component {
       isSort: false,
       openModal: false,
       isRow: {},
+      valueReason: ''
     };
   }
 
@@ -57,6 +59,11 @@ class DirectoryTable extends Component {
     e.stopPropagation();
     console.log('Row: ', isRow);
   }
+
+  onChangeReason = ({ target: { value } }) => {
+    console.log('value: ', value)
+    this.setState({ valueReason: value });
+  };
 
   generateColumns = (sortedName) => {
     const { isSort } = this.state;
@@ -214,7 +221,7 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal = false } = this.state;
+    const { sortedName = {}, pageSelected, openModal = false, valueReason } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
@@ -260,34 +267,13 @@ class DirectoryTable extends Component {
             scroll={scroll}
           />
         </div>
-        <Modal
+        <ModalTerminate
           visible={openModal}
-          className={styles.terminateModal}
-          title={false}
-          onOk={this.handleSubmit}
-          onCancel={this.handleCandelModal}
-          destroyOnClose
-          footer={[
-            <div className={styles.flexContent} style={{ justifyContent: 'center' }}>
-              <Button
-                className={`${styles.btnGroup} ${styles.btnCancel}`}
-                onClick={this.handleCandelModal}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={`${styles.btnGroup} ${styles.btnSubmit}`}
-                onClick={this.handleSubmit}
-              >
-                Submit
-              </Button>
-            </div>
-          ]}
-        >
-          <div className={styles.contentModal}>
-            <div className={styles.titleModal}>Reason</div>
-          </div>
-        </Modal>
+          handleSubmit={this.handleSubmit}
+          handleCandelModal={this.handleCandelModal}
+          valueReason={valueReason}
+          onChange={this.onChangeReason}
+        />
       </>
     );
   }
