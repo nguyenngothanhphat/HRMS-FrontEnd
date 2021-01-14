@@ -53,7 +53,7 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YYYY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -157,9 +157,9 @@ class MyLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
           .locale('en')
-          .format('MM.DD.YYYY')}`;
+          .format('DD.MM.YYYY')}`;
       }
 
       let employeeFromCC = [];

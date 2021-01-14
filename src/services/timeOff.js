@@ -191,3 +191,25 @@ export async function managerRejectWithdrawRequest(data) {
     data,
   });
 }
+
+// COMPOFF FLOW
+export async function getCompoffApprovalFlow(data) {
+  return request('/api/compoffrequest/get-approval-flow', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function approveCompoffRequest(data) {
+  return request('/api/compoffrequest/approve-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function rejectCompoffRequest(data) {
+  return request('/api/compoffrequest/reject-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}

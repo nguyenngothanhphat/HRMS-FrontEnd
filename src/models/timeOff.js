@@ -29,6 +29,10 @@ import {
   employeeWithdrawApproved,
   managerApproveWithdrawRequest,
   managerRejectWithdrawRequest,
+  // compoff approval flow
+  getCompoffApprovalFlow,
+  approveCompoffRequest,
+  rejectCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -46,6 +50,7 @@ const timeOff = {
     emailsList: [],
     projectsList: [],
     viewingLeaveRequest: {},
+    viewingCompoffRequest: {},
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
@@ -53,6 +58,8 @@ const timeOff = {
     balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
+    compoffApprovalFlow: {},
+    currentUserRole: '', // employee, manager, hr-manager
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -259,7 +266,7 @@ const timeOff = {
         return {};
       }
     },
-    *fetchMyCompoffRequests({ status = '' }, { call, put }) {
+    *fetchMyCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getMyCompoffRequests, { status });
@@ -291,7 +298,7 @@ const timeOff = {
       try {
         if (id !== '') {
           const response = yield call(getCompoffRequestById, { id });
-          const { statusCode, data: viewingCompoffRequest = [] } = response;
+          const { statusCode, data: viewingCompoffRequest = {} } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
@@ -356,7 +363,7 @@ const timeOff = {
     },
 
     // MANAGER
-    *fetchTeamCompoffRequests({ status = '' }, { call, put }) {
+    *fetchTeamCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getTeamCompoffRequests, { status });
@@ -569,6 +576,63 @@ const timeOff = {
       }
       return 0;
     },
+    *getCompoffApprovalFlow({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getCompoffApprovalFlow, payload);
+        const { statusCode, data: compoffApprovalFlow = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            compoffApprovalFlow,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *approveCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(approveCompoffRequest, payload);
+        const { statusCode, data: compoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *rejectCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(rejectCompoffRequest, payload);
+        const { statusCode, data: compoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
   },
   reducers: {
     save(state, action) {
@@ -583,6 +647,16 @@ const timeOff = {
         ...state,
         viewingLeaveRequest: {
           ...viewingLeaveRequest,
+          ...action.payload,
+        },
+      };
+    },
+    saveViewingCompoffRequest(state, action) {
+      const { viewingCompoffRequest } = state;
+      return {
+        ...state,
+        viewingCompoffRequest: {
+          ...viewingCompoffRequest,
           ...action.payload,
         },
       };
