@@ -64,19 +64,14 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  fetchProjectsListByCompany = () => {
+  fetchProjectsListByEmployee = () => {
     const {
       dispatch,
-      user: {
-        currentUser: {
-          company: { _id: company = '' } = {},
-          location: { _id: location = '' } = {},
-        } = {},
-      } = {},
+      user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {},
     } = this.props;
     dispatch({
-      type: 'timeOff/fetchProjectsListByCompany',
-      payload: { company, location },
+      type: 'timeOff/fetchProjectsListByEmployee',
+      payload: { employee },
     });
   };
 
@@ -91,7 +86,7 @@ class RequestInformation extends PureComponent {
   componentDidMount = () => {
     const { action = '' } = this.props;
     this.fetchEmailsListByCompany();
-    this.fetchProjectsListByCompany();
+    this.fetchProjectsListByEmployee();
 
     if (action === 'edit-compoff-request') {
       const { viewingCompoffRequest = {} } = this.props;

@@ -12,11 +12,6 @@ const { TextArea } = Input;
   timeOff,
   currentUserRole,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
-  // loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
-  // loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
-  // loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
-  // loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
-  // loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -25,10 +20,8 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showModal: false,
-      showWithdrawModal: false,
       isReject: false,
       commentContent: '',
-      acceptWithdraw: false,
     };
   }
 
@@ -59,12 +52,6 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  setShowWithdrawModal = (value) => {
-    this.setState({
-      showWithdrawModal: value,
-    });
-  };
-
   formatDurationTime = (extraTime) => {
     let fromDate = '';
     let toDate = '';
@@ -84,6 +71,7 @@ class RequestInformation extends PureComponent {
 
   // ON VIEW REPORT
   onViewReport = () => {
+    // eslint-disable-next-line no-alert
     alert('VIEW REPORT');
   };
 
@@ -175,6 +163,7 @@ class RequestInformation extends PureComponent {
         manager: {
           generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
         } = {},
+        projectHealth = 0,
       } = {},
       currentStep = 0,
       commentPM = '',
@@ -234,7 +223,11 @@ class RequestInformation extends PureComponent {
               <Col span={18} className={styles.detailColumn}>
                 <div className={styles.projectHealth}>
                   <span className={styles.bar}>
-                    <Progress strokeLinecap="square" strokeColor="#00C598" percent={75} />
+                    <Progress
+                      strokeLinecap="square"
+                      strokeColor="#00C598"
+                      percent={projectHealth}
+                    />
                   </span>
                   <span className={styles.viewReport} onClick={this.onViewReport}>
                     View Report

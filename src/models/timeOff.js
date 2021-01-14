@@ -12,7 +12,7 @@ import {
   getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
-  getProjectsListByCompany,
+  getProjectsListByEmployee,
   getLeaveRequestById,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
@@ -347,13 +347,9 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchProjectsListByCompany({ payload: { company = '', location = '' } = {} }, { call, put }) {
+    *fetchProjectsListByEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getProjectsListByCompany, {
-          company,
-          location,
-        });
-        // console.log('email res', response);
+        const response = yield call(getProjectsListByEmployee, payload);
         const { statusCode, data: projectsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

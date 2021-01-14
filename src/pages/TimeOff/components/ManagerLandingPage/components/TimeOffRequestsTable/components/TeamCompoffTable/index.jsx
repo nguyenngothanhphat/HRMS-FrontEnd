@@ -68,7 +68,12 @@ class TeamCompoffTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'left',
-      render: (comment) => <span>{comment}</span>,
+      render: (comment) =>
+        comment ? (
+          <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
+        ) : (
+          <span />
+        ),
     },
     {
       title: 'Assigned',

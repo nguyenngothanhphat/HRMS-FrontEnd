@@ -105,8 +105,8 @@ export async function getEmailsListByCompany(payload) {
   });
 }
 
-export async function getProjectsListByCompany(payload) {
-  return request('/api/project/list', {
+export async function getProjectsListByEmployee(payload) {
+  return request('/api/project/get-by-employee', {
     method: 'POST',
     data: payload,
   });

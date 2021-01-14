@@ -1066,10 +1066,21 @@ class RequestInformation extends PureComponent {
               {selectedShortType !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
-                    {selectedShortType}s are covered under{' '}
-                    <span className={styles.link} onClick={this.onLinkClick}>
-                      Standard Policy
-                    </span>
+                    {!unpaidLeaveActivate ? (
+                      <>
+                        {selectedShortType}s are covered under{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Standard Policy
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        Advance leaves will be later deducted from CL balance.{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Learn More
+                        </span>
+                      </>
+                    )}
                   </span>
                 </div>
               )}
