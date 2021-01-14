@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Modal } from 'antd';
+import { Table, Avatar, Button } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
@@ -61,7 +61,6 @@ class DirectoryTable extends Component {
   }
 
   onChangeReason = ({ target: { value } }) => {
-    console.log('value: ', value)
     this.setState({ valueReason: value });
   };
 
