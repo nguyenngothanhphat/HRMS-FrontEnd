@@ -40,6 +40,37 @@ class RequestInformation extends PureComponent {
     };
   }
 
+  getTableTabIndexOfSubmittedType = (selectedType, selectedShortType) => {
+    switch (selectedShortType) {
+      case 'LWP':
+        return '3';
+      default:
+        break;
+    }
+    switch (selectedType) {
+      case 'A':
+        return '1';
+      case 'B':
+        return '1';
+      case 'C':
+        return '2';
+      case 'D':
+        return '4';
+      default:
+        return '1';
+    }
+  };
+
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+      },
+    });
+  };
+
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
@@ -292,6 +323,9 @@ class RequestInformation extends PureComponent {
     this.setState({
       showSuccessModal: value,
     });
+    const { selectedType, selectedShortType } = this.state;
+    const returnTab = this.getTableTabIndexOfSubmittedType(selectedType, selectedShortType);
+    this.saveCurrentTypeTab(returnTab);
     if (!value) {
       setTimeout(() => {
         history.goBack();
@@ -1077,7 +1111,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      disabled={selectedType === 'C' || selectedType === 'D'}
+                      // disabled={selectedType === 'C' || selectedType === 'D'}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}

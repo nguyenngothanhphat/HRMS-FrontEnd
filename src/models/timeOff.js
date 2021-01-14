@@ -38,6 +38,9 @@ import {
 const timeOff = {
   namespace: 'timeOff',
   state: {
+    currentLeaveTypeTab: '1',
+    currentMineOrTeamTab: '1',
+    currentFilterTab: '1',
     holidaysList: [],
     allMyLeaveRequests: {},
     leavingList: [],
