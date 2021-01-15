@@ -161,6 +161,7 @@ class RequestInformation extends PureComponent {
       project: {
         name = '',
         manager: {
+          _id: managerId = '',
           generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
         } = {},
         projectHealth = 0,
@@ -213,7 +214,10 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Project Manager</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
+                <span
+                  onClick={() => this.onViewEmployeeProfile(managerId)}
+                  className={styles.employeeLink}
+                >
                   {projectManagerName}
                 </span>
               </Col>

@@ -33,6 +33,8 @@ import {
   getCompoffApprovalFlow,
   approveCompoffRequest,
   rejectCompoffRequest,
+  rmApproveMultipleTickets,
+  rmRejectMultipleTickets,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -510,6 +512,28 @@ const timeOff = {
           },
         });
         return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rmApproveMultipleTickets({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rmApproveMultipleTickets, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rmRejectMultipleTickets({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rmRejectMultipleTickets, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
       } catch (errors) {
         dialog(errors);
         return {};
