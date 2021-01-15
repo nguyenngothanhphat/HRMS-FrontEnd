@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import iconPDF from '@/assets/pdf-2.svg';
-import { Affix, Row, Col, Avatar } from 'antd';
+import { Affix, Row, Col, Avatar, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import TableSearch from './components/TableSearch';
@@ -19,7 +19,10 @@ const dummyListPeople = [
 
 const arr = [1, 2, 3, 4];
 
-@connect()
+@connect(({ loading, searchAdvance: { result = [] } = {} }) => ({
+  loading: loading.effects['searchAdvance/search'],
+  result,
+}))
 class SearchResult extends PureComponent {
   componentDidMount() {
     const { location: { query } = {} } = this.props;
@@ -36,7 +39,11 @@ class SearchResult extends PureComponent {
   }
 
   handleSearch = (payload) => {
-    console.log('payload search', payload);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'searchAdvance/search',
+      payload,
+    });
   };
 
   renderItemListPeople = (item, index) => {
@@ -73,6 +80,15 @@ class SearchResult extends PureComponent {
   };
 
   render() {
+    const { result = [], loading = false } = this.props;
+    console.log('result', result);
+    if (loading) {
+      return (
+        <div className={styles.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
+    }
     return (
       <PageContainer>
         <div className={styles.root}>
