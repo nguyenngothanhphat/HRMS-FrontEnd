@@ -29,6 +29,7 @@ class RequestInformation extends PureComponent {
       buttonState: 0, // save draft or submit
       isEditingDrafts: false,
       viewingCompoffRequestId: '',
+      totalHours: 0,
     };
   }
 
@@ -215,7 +216,7 @@ class RequestInformation extends PureComponent {
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
-    const { dateLists, buttonState, viewingCompoffRequestId } = this.state;
+    const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
     const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
@@ -228,6 +229,7 @@ class RequestInformation extends PureComponent {
       approvalFlow: compoffApprovalFlow,
       cc: personCC,
       onDate: moment(),
+      totalHours,
     };
 
     let type = '';
@@ -283,6 +285,7 @@ class RequestInformation extends PureComponent {
       const list = this.getDateLists(value, durationTo);
       this.setDateList(list);
       this.formRef.current.setFieldsValue({
+        totalHours: 0,
         extraTimeLists: [],
       });
     }
@@ -303,6 +306,7 @@ class RequestInformation extends PureComponent {
       const list = this.getDateLists(durationFrom, value);
       this.setDateList(list);
       this.formRef.current.setFieldsValue({
+        totalHours: 0,
         extraTimeLists: [],
       });
     }
@@ -374,10 +378,14 @@ class RequestInformation extends PureComponent {
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
     const listValue = modifiedList.map((data) => data.timeSpend);
 
+    // count total days and total hours
+    const totalHours = listValue.reduce((a, b) => a + b, 0);
+
     this.setDateList(modifiedList);
     this.formRef.current.setFieldsValue({
       extraTimeLists: listValue,
     });
+    this.setState({ totalHours });
   };
 
   // ON DATE onDataChange
@@ -387,8 +395,13 @@ class RequestInformation extends PureComponent {
     const originalList = JSON.parse(JSON.stringify(dateLists));
     originalList[indexToChange].timeSpend = parseFloat(value);
 
+    // count total days and total hours
+    const listValue = originalList.map((data) => data.timeSpend);
+    const totalHours = listValue.reduce((a, b) => a + b, 0);
+
     this.setState({
       dateLists: originalList,
+      totalHours,
     });
   };
 
@@ -442,13 +455,10 @@ class RequestInformation extends PureComponent {
       projectManagerName,
       buttonState,
       isEditingDrafts,
+      totalHours,
     } = this.state;
 
     const { loadingAddCompoffRequest } = this.props;
-
-    // count total days and total hours
-    const listValue = dateLists.map((data) => data.timeSpend);
-    const totalHours = listValue.reduce((a, b) => a + b, 0);
 
     // generate project list
     const projectsList = this.generateProjectsList();

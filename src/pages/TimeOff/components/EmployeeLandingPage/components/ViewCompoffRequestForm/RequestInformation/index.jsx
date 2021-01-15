@@ -109,6 +109,7 @@ class RequestInformation extends PureComponent {
       commentPM = '',
       commentCLA = '',
       currentStep = 0,
+      totalHours = 0,
     } = viewingCompoffRequest;
 
     const projectManagerName = `${firstName} ${lastName}`;
@@ -196,6 +197,18 @@ class RequestInformation extends PureComponent {
                           </Row>
                         );
                       })}
+                    </div>
+                    <div className={styles.totalHours}>
+                      <Row>
+                        <Col span={7}>
+                          Total:{' '}
+                          <span style={{ fontWeight: 'bold' }}>
+                            {totalHours} hours ({totalHours / 24} days)
+                          </span>
+                        </Col>
+                        <Col span={7} />
+                        <Col span={10} />
+                      </Row>
                     </div>
                   </div>
                 </Col>

@@ -169,6 +169,7 @@ class RequestInformation extends PureComponent {
       currentStep = 0,
       commentPM = '',
       commentCLA = '',
+      totalHours = 0,
     } = viewingCompoffRequest;
 
     const projectManagerName = `${firstName1} ${lastName1}`;
@@ -311,6 +312,18 @@ class RequestInformation extends PureComponent {
                           );
                         })}
                       </div>
+                      <div className={styles.totalHours}>
+                        <Row>
+                          <Col span={7}>
+                            Total:{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {totalHours} hours ({totalHours / 24} days)
+                            </span>
+                          </Col>
+                          <Col span={7} />
+                          <Col span={10} />
+                        </Row>
+                      </div>
                     </div>
                   </Col>
                 </Row>
@@ -361,7 +374,7 @@ class RequestInformation extends PureComponent {
             (currentUserRole === 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) && (
             <div className={styles.footer}>
               <span className={styles.note}>
-                By default notifications will be sent to HR, your manager and recursively loop to
+                By default notifications will be sent to HR, the requestee and recursively loop to
                 your department head.
               </span>
               <div className={styles.formButtons}>
