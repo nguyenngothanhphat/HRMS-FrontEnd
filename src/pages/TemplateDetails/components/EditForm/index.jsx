@@ -102,9 +102,11 @@ class EditForm extends Component {
           onEditorChange={this.handleEditorChange}
           outputFormat="raw"
         />
-        <Button variant="contained" color="secondary" onClick={this.handleSubmit}>
-          Click me to save
-        </Button>
+        <div className={styles.buttonArea}>
+          <Button variant="contained" onClick={this.handleSubmit}>
+            Save
+          </Button>
+        </div>
       </div>
     );
   }
