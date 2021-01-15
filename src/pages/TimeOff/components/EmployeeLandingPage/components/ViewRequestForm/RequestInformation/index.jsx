@@ -3,6 +3,7 @@ import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
@@ -21,8 +22,21 @@ class RequestInformation extends PureComponent {
     this.state = {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
+      viewPolicyModal: false,
     };
   }
+
+  // view policy modal
+  setViewPolicyModal = (value) => {
+    this.setState({
+      viewPolicyModal: value,
+    });
+  };
+
+  // on policy link clicked
+  onLinkClick = () => {
+    this.setViewPolicyModal(true);
+  };
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
@@ -138,7 +152,7 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal, showWithdraw2Modal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewPolicyModal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
@@ -199,7 +213,9 @@ class RequestInformation extends PureComponent {
                     <span className={styles.smallNotice}>
                       <span className={styles.normalText}>
                         {shortType}s are covered under{' '}
-                        <span className={styles.link}>Standard Policy</span>
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Standard Policy
+                        </span>
                       </span>
                     </span>
                   )}
@@ -296,6 +312,7 @@ class RequestInformation extends PureComponent {
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />
+        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
       </div>
     );
   }
