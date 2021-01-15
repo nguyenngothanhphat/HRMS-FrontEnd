@@ -12,7 +12,7 @@ import {
   getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
-  getProjectsListByCompany,
+  getProjectsListByEmployee,
   getLeaveRequestById,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
@@ -33,11 +33,19 @@ import {
   getCompoffApprovalFlow,
   approveCompoffRequest,
   rejectCompoffRequest,
+  // approve, reject multiple requests
+  approveMultipleTimeoffRequest,
+  rejectMultipleTimeoffRequest,
+  approveMultipleCompoffRequest,
+  rejectMultipleCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
+    currentLeaveTypeTab: '1',
+    currentMineOrTeamTab: '1',
+    currentFilterTab: '1',
     holidaysList: [],
     allMyLeaveRequests: {},
     leavingList: [],
@@ -344,13 +352,9 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchProjectsListByCompany({ payload: { company = '', location = '' } = {} }, { call, put }) {
+    *fetchProjectsListByEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getProjectsListByCompany, {
-          company,
-          location,
-        });
-        // console.log('email res', response);
+        const response = yield call(getProjectsListByEmployee, payload);
         const { statusCode, data: projectsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -517,6 +521,29 @@ const timeOff = {
       }
     },
 
+    *approveMultipleTimeoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(approveMultipleTimeoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rejectMultipleTimeoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rejectMultipleTimeoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
     // WITHDRAW (INCLUDING SEND EMAILs)
     *employeeWithdrawInProgress({ payload = {} }, { call }) {
       try {
@@ -632,6 +659,30 @@ const timeOff = {
         dialog(errors);
       }
       return 0;
+    },
+
+    // multiple compoff request
+    *approveMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(approveMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rejectMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rejectMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
     },
   },
   reducers: {

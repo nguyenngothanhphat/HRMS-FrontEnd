@@ -5,12 +5,15 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
+import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
+  loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
 }))
 class TeamLeaveTable extends PureComponent {
   columns = [
@@ -86,7 +89,12 @@ class TeamLeaveTable extends PureComponent {
       title: 'Comment',
       dataIndex: 'comment',
       align: 'left',
-      render: (comment) => (comment ? <span>{comment.slice(0, 12)}...</span> : <span />),
+      render: (comment) =>
+        comment ? (
+          <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
+        ) : (
+          <span />
+        ),
     },
     // {
     //   title: 'Assigned',
@@ -161,6 +169,8 @@ class TeamLeaveTable extends PureComponent {
       commentModalVisible: false,
       rejectingId: '',
       rejectingTicketID: '',
+      multipleCheckModalVisible: false,
+      rejectMultiple: false,
     };
   }
 
@@ -196,11 +206,11 @@ class TeamLeaveTable extends PureComponent {
   };
 
   onCancelClick = (_id, ticketID) => {
-    this.toggleCommentModal(true);
     this.setState({
       rejectingId: _id,
       rejectingTicketID: ticketID,
     });
+    this.toggleCommentModal(true);
   };
 
   onReject = async (comment) => {
@@ -242,9 +252,11 @@ class TeamLeaveTable extends PureComponent {
   };
 
   onSelectChange = (selectedRowKeys) => {
-    // eslint-disable-next-line no-console
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+    let visible = false;
+    if (selectedRowKeys.length > 0) visible = true;
+    const { selectedTab = '' } = this.props;
+    if (selectedTab === 'IN-PROGRESS') this.setState({ multipleCheckModalVisible: visible });
   };
 
   // PARSE DATA FOR TABLE
@@ -297,11 +309,74 @@ class TeamLeaveTable extends PureComponent {
     this.setState({
       commentModalVisible: value,
     });
+    if (!value) {
+      // this.setState({
+      //   multipleCheckModalVisible: false,
+      // });
+      setTimeout(() => {
+        this.setState({
+          rejectMultiple: false,
+        });
+      }, 500);
+    }
+  };
+
+  // on multiple checkbox
+  onMultipleApprove = async () => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/approveMultipleTimeoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.onRefreshTable('2');
+    }
+  };
+
+  onMultipleCancelClick = () => {
+    this.toggleCommentModal(true);
+    this.setState({
+      rejectMultiple: true,
+    });
+  };
+
+  onMultipleReject = async (comment) => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/rejectMultipleTimeoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+        comment,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.toggleCommentModal(false);
+      this.onRefreshTable('3');
+    }
   };
 
   render() {
-    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
-    const { selectedRowKeys, pageSelected, commentModalVisible, rejectingTicketID } = this.state;
+    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
+    const {
+      selectedRowKeys,
+      pageSelected,
+      commentModalVisible,
+      rejectingTicketID,
+      multipleCheckModalVisible,
+      rejectMultiple,
+    } = this.state;
     const rowSize = 10;
 
     const parsedData = this.processData(data);
@@ -350,14 +425,25 @@ class TeamLeaveTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey={(id) => id.ticketID}
+          rowKey={(id) => id._id}
         />
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}
-          onReject={this.onReject}
+          onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
+          rejectMultiple={rejectMultiple}
+          loading={loading4}
         />
+        {multipleCheckModalVisible && selectedTab === 'IN-PROGRESS' && (
+          <MultipleCheckTablePopup
+            onApprove={this.onMultipleApprove}
+            onReject={this.onMultipleCancelClick}
+            length={selectedRowKeys.length}
+            loading3={loading3}
+            loading4={loading4}
+          />
+        )}
       </div>
     );
   }

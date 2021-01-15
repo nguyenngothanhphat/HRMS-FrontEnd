@@ -6,9 +6,10 @@ import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-@connect(({ timeOff, timeOff: { currentUserRole = '' } = {} }) => ({
+@connect(({ timeOff, timeOff: { currentUserRole = '' } = {}, loading }) => ({
   timeOff,
   currentUserRole,
+  loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
 }))
 class ManagerViewCompoffForm extends PureComponent {
   constructor(props) {
@@ -121,6 +122,7 @@ class ManagerViewCompoffForm extends PureComponent {
         viewingCompoffRequest: { status = '', ticketID = '' } = {},
         viewingCompoffRequest = {},
       } = {},
+      loadingFetchCompoffRequestById,
     } = this.props;
 
     const {
@@ -144,7 +146,10 @@ class ManagerViewCompoffForm extends PureComponent {
               <RequestInformation id={id} />
             </Col>
             <Col xs={24} lg={8}>
-              <RightContent viewingCompoffRequest={viewingCompoffRequest} />
+              <RightContent
+                viewingCompoffRequest={viewingCompoffRequest}
+                loading={loadingFetchCompoffRequestById}
+              />
             </Col>
           </Row>
         </div>

@@ -141,13 +141,25 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   componentDidMount = () => {
+    const { timeOff: { currentFilterTab } = {} } = this.props;
     this.fetchAllData();
-    this.fetchFilteredDataFromServer('1');
+    this.fetchFilteredDataFromServer(currentFilterTab);
+  };
+
+  saveCurrentTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentFilterTab: String(type),
+      },
+    });
   };
 
   setSelectedFilterTab = (id) => {
     this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
+    this.saveCurrentTab(id);
   };
 
   countTotal = (newData) => {

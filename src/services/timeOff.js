@@ -105,10 +105,20 @@ export async function getEmailsListByCompany(payload) {
   });
 }
 
-export async function getProjectsListByCompany(payload) {
+// export async function getProjectsListByEmployee(payload) {
+//   return request('/api/project/get-by-employee', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
+export async function getProjectsListByEmployee(payload) {
   return request('/api/project/list', {
     method: 'POST',
-    data: payload,
+    data: {
+      company: '5e8723f131c6e53d60ae9678',
+      location: '5e874d5c1e9c3e148a8c5345',
+    },
   });
 }
 
@@ -156,6 +166,20 @@ export async function reportingManagerApprove(data) {
 
 export async function reportingManagerReject(data) {
   return request('/api/leaverequest/reporting-manager-reject', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function approveMultipleTimeoffRequest(data) {
+  return request('/api/leaverequest/rm-approve-multiple-tickets', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function rejectMultipleTimeoffRequest(data) {
+  return request('/api/leaverequest/rm-reject-multiple-tickets', {
     method: 'POST',
     data,
   });
@@ -209,6 +233,20 @@ export async function approveCompoffRequest(data) {
 
 export async function rejectCompoffRequest(data) {
   return request('/api/compoffrequest/reject-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function approveMultipleCompoffRequest(data) {
+  return request('/api/compoffrequest/approve-multiple-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function rejectMultipleCompoffRequest(data) {
+  return request('/api/compoffrequest/reject-multiple-compoff-request', {
     method: 'POST',
     data,
   });

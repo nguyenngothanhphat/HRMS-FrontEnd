@@ -20,7 +20,14 @@ export default class RejectCommentModal extends PureComponent {
 
   render() {
     const { comment } = this.state;
-    const { visible, onClose = () => {}, onReject = () => {}, ticketID = '' } = this.props;
+    const {
+      visible,
+      onClose = () => {},
+      onReject = () => {},
+      ticketID = '',
+      rejectMultiple = false,
+      loading,
+    } = this.props;
     const header = 'Request Rejection Comments';
 
     return (
@@ -33,7 +40,7 @@ export default class RejectCommentModal extends PureComponent {
       >
         <div className={styles.container}>
           <span className={styles.title}>{header}</span>
-          <span className={styles.subtitle1}>Ticket ID: {ticketID}</span>
+          {!rejectMultiple && <span className={styles.subtitle1}>Ticket ID: {ticketID}</span>}
           <div className={styles.formContainer}>
             <div className={styles.formInput}>
               <TextArea
@@ -45,7 +52,11 @@ export default class RejectCommentModal extends PureComponent {
             </div>
           </div>
           <div className={styles.operationButtons}>
-            <Button className={styles.proceedBtn} onClick={() => onReject(comment)}>
+            <Button
+              loading={loading}
+              className={styles.proceedBtn}
+              onClick={() => onReject(comment)}
+            >
               Submit
             </Button>
             <Button className={styles.cancelBtn} onClick={() => onClose()}>

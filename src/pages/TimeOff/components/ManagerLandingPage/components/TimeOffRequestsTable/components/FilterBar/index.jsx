@@ -1,14 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Tabs, Badge } from 'antd';
-
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-export default class FilterBar extends PureComponent {
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class FilterBar extends PureComponent {
+  saveCurrentTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentFilterTab: String(type),
+      },
+    });
+  };
+
   onChangeTab = (activeKey) => {
     const { setSelectedFilterTab } = this.props;
     setSelectedFilterTab(activeKey);
+    this.saveCurrentTab(activeKey);
   };
 
   addZeroToNumber = (number) => {
@@ -26,9 +40,8 @@ export default class FilterBar extends PureComponent {
         // onHoldLength = '',
       } = {},
       category = '',
+      timeOff: { currentFilterTab = '' } = {},
     } = this.props;
-
-    const { selectedTab } = this.props;
 
     const inProgressExist = inProgressLength > 0;
 
@@ -36,8 +49,7 @@ export default class FilterBar extends PureComponent {
       <div className={styles.FilterBar}>
         <Tabs
           tabBarGutter={35}
-          defaultActiveKey="1"
-          activeKey={selectedTab}
+          activeKey={currentFilterTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
         >
@@ -67,3 +79,4 @@ export default class FilterBar extends PureComponent {
     );
   }
 }
+export default FilterBar;

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Steps } from 'antd';
+import { Steps, Spin } from 'antd';
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -58,18 +58,34 @@ class RightContent extends PureComponent {
 
   render() {
     const people = this.getFlow();
-    const { viewingCompoffRequest: { currentStep = 0 } = {} } = this.props;
+    const { viewingCompoffRequest: { currentStep = 0 } = {}, loading } = this.props;
 
     return (
       <div className={styles.RightContent}>
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
-          <Steps current={currentStep - 1} labelPlacement="vertical">
-            {people.map((value, index) => {
-              const { avatar = '', name = '' } = value;
-              return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;
-            })}
-          </Steps>
+          {loading ? (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '20px 0',
+                }}
+              >
+                <Spin size="medium" />
+              </div>
+            </>
+          ) : (
+            <>
+              <Steps current={currentStep - 1} labelPlacement="vertical">
+                {people.map((value, index) => {
+                  const { avatar = '', name = '' } = value;
+                  return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;
+                })}
+              </Steps>
+            </>
+          )}
         </div>
       </div>
     );

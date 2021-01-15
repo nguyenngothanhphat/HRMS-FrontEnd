@@ -12,11 +12,6 @@ const { TextArea } = Input;
   timeOff,
   currentUserRole,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
-  // loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
-  // loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
-  // loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
-  // loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
-  // loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -25,10 +20,8 @@ class RequestInformation extends PureComponent {
     super(props);
     this.state = {
       showModal: false,
-      showWithdrawModal: false,
       isReject: false,
       commentContent: '',
-      acceptWithdraw: false,
     };
   }
 
@@ -59,12 +52,6 @@ class RequestInformation extends PureComponent {
     }
   };
 
-  setShowWithdrawModal = (value) => {
-    this.setState({
-      showWithdrawModal: value,
-    });
-  };
-
   formatDurationTime = (extraTime) => {
     let fromDate = '';
     let toDate = '';
@@ -84,6 +71,7 @@ class RequestInformation extends PureComponent {
 
   // ON VIEW REPORT
   onViewReport = () => {
+    // eslint-disable-next-line no-alert
     alert('VIEW REPORT');
   };
 
@@ -173,12 +161,15 @@ class RequestInformation extends PureComponent {
       project: {
         name = '',
         manager: {
+          _id: managerId = '',
           generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
         } = {},
+        projectHealth = 0,
       } = {},
       currentStep = 0,
       commentPM = '',
       commentCLA = '',
+      totalHours = 0,
     } = viewingCompoffRequest;
 
     const projectManagerName = `${firstName1} ${lastName1}`;
@@ -224,7 +215,10 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Project Manager</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span onClick={this.onViewEmployeeProfile} className={styles.employeeLink}>
+                <span
+                  onClick={() => this.onViewEmployeeProfile(managerId)}
+                  className={styles.employeeLink}
+                >
                   {projectManagerName}
                 </span>
               </Col>
@@ -234,7 +228,11 @@ class RequestInformation extends PureComponent {
               <Col span={18} className={styles.detailColumn}>
                 <div className={styles.projectHealth}>
                   <span className={styles.bar}>
-                    <Progress strokeLinecap="square" strokeColor="#00C598" percent={75} />
+                    <Progress
+                      strokeLinecap="square"
+                      strokeColor="#00C598"
+                      percent={projectHealth}
+                    />
                   </span>
                   <span className={styles.viewReport} onClick={this.onViewReport}>
                     View Report
@@ -314,6 +312,18 @@ class RequestInformation extends PureComponent {
                           );
                         })}
                       </div>
+                      <div className={styles.totalHours}>
+                        <Row>
+                          <Col span={7}>
+                            Total:{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {totalHours} hours ({totalHours / 24} days)
+                            </span>
+                          </Col>
+                          <Col span={7} />
+                          <Col span={10} />
+                        </Row>
+                      </div>
                     </div>
                   </Col>
                 </Row>
@@ -364,7 +374,7 @@ class RequestInformation extends PureComponent {
             (currentUserRole === 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) && (
             <div className={styles.footer}>
               <span className={styles.note}>
-                By default notifications will be sent to HR, your manager and recursively loop to
+                By default notifications will be sent to HR, the requestee and recursively loop to
                 your department head.
               </span>
               <div className={styles.formButtons}>

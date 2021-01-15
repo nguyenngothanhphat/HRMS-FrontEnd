@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin } from 'antd';
+import { Button, Row, Col, Spin, Input } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -97,7 +97,7 @@ class RequestInformation extends PureComponent {
       status = '',
       ticketID = '',
       _id = '',
-      extraTime = '',
+      extraTime = [],
       description = '',
       project: {
         name = '',
@@ -106,6 +106,10 @@ class RequestInformation extends PureComponent {
           generalInfo: { firstName = '', lastName = '' } = {},
         } = {},
       } = {},
+      commentPM = '',
+      commentCLA = '',
+      currentStep = 0,
+      totalHours = 0,
     } = viewingCompoffRequest;
 
     const projectManagerName = `${firstName} ${lastName}`;
@@ -160,11 +164,77 @@ class RequestInformation extends PureComponent {
                 )}
               </Row>
               <Row>
+                <Col span={6}>Extra time spent</Col>
+                <Col span={18} className={styles.detailColumn}>
+                  <div className={styles.extraTimeSpent}>
+                    <Row className={styles.header}>
+                      <Col span={7}>Date</Col>
+                      <Col span={7}>Day</Col>
+                      <Col span={10}>Time Spent (In Hrs)</Col>
+                    </Row>
+
+                    <div className={styles.content}>
+                      {extraTime.map((day, index) => {
+                        const { date = '', timeSpend = 0 } = day;
+                        return (
+                          <Row
+                            key={`${index + 1}`}
+                            justify="center"
+                            align="center"
+                            className={styles.rowContainer}
+                          >
+                            <Col span={7}>{moment(date).locale('en').format('DD.MM.YYYY')}</Col>
+                            <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
+                            <Col span={7}>
+                              <Input
+                                disabled
+                                placeholder="0"
+                                suffix="Hrs"
+                                defaultValue={timeSpend}
+                              />
+                            </Col>
+                            <Col span={3} />
+                          </Row>
+                        );
+                      })}
+                    </div>
+                    <div className={styles.totalHours}>
+                      <Row>
+                        <Col span={7}>
+                          Total:{' '}
+                          <span style={{ fontWeight: 'bold' }}>
+                            {totalHours} hours ({totalHours / 24} days)
+                          </span>
+                        </Col>
+                        <Col span={7} />
+                        <Col span={10} />
+                      </Row>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
                 <Col span={6}>Description</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span>{description}</span>
                 </Col>
               </Row>
+              {status === 'REJECTED' && currentStep === 2 && (
+                <Row>
+                  <Col span={6}>Request Rejection Comments (Project Manager)</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>{commentPM}</span>
+                  </Col>
+                </Row>
+              )}
+              {status === 'REJECTED' && currentStep > 2 && (
+                <Row>
+                  <Col span={6}>Request Rejection Comments (Region Head)</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>{commentCLA}</span>
+                  </Col>
+                </Row>
+              )}
             </div>
             {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
               <div className={styles.footer}>
