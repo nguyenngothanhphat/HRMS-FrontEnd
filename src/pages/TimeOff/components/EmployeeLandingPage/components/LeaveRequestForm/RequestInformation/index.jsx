@@ -3,7 +3,9 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import LeaveTimeRow from './LeaveTimeRow';
+
 import styles from './index.less';
 
 const { Option } = Select;
@@ -37,9 +39,52 @@ class RequestInformation extends PureComponent {
       numberOfDaySelectedTypeC: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
+      viewPolicyModal: false,
     };
   }
 
+  getTableTabIndexOfSubmittedType = (selectedType, selectedShortType) => {
+    switch (selectedShortType) {
+      case 'LWP':
+        return '3';
+      default:
+        break;
+    }
+    switch (selectedType) {
+      case 'A':
+        return '1';
+      case 'B':
+        return '1';
+      case 'C':
+        return '2';
+      case 'D':
+        return '4';
+      default:
+        return '1';
+    }
+  };
+
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    const { buttonState } = this.state;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+        currentMineOrTeamTab: '2', // my leave request tab has index "2"
+        currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
+      },
+    });
+  };
+
+  // view policy modal
+  setViewPolicyModal = (value) => {
+    this.setState({
+      viewPolicyModal: value,
+    });
+  };
+
+  // fetch email list of company
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
@@ -292,7 +337,11 @@ class RequestInformation extends PureComponent {
     this.setState({
       showSuccessModal: value,
     });
+
     if (!value) {
+      const { selectedType, selectedShortType } = this.state;
+      const returnTab = this.getTableTabIndexOfSubmittedType(selectedType, selectedShortType);
+      this.saveCurrentTypeTab(returnTab);
       setTimeout(() => {
         history.goBack();
         // history.push({
@@ -912,6 +961,11 @@ class RequestInformation extends PureComponent {
     return content;
   };
 
+  // on policy link clicked
+  onLinkClick = () => {
+    this.setViewPolicyModal(true);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -935,7 +989,8 @@ class RequestInformation extends PureComponent {
       buttonState,
       remainingDayOfSelectedType,
       unpaidLeaveActivate,
-      negativeLeave,
+      // negativeLeave,
+      viewPolicyModal,
     } = this.state;
 
     const {
@@ -1011,8 +1066,21 @@ class RequestInformation extends PureComponent {
               {selectedShortType !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
-                    {selectedShortType}s are covered under{' '}
-                    <span className={styles.link}>Standard Policy</span>
+                    {!unpaidLeaveActivate ? (
+                      <>
+                        {selectedShortType}s are covered under{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Standard Policy
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        Advance leaves will be later deducted from CL balance.{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Learn More
+                        </span>
+                      </>
+                    )}
                   </span>
                 </div>
               )}
@@ -1077,7 +1145,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      disabled={selectedType === 'C' || selectedType === 'D'}
+                      // disabled={selectedType === 'C' || selectedType === 'D'}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -1275,6 +1343,8 @@ class RequestInformation extends PureComponent {
           content={this.renderModalContent()}
           submitText="OK"
         />
+
+        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
       </div>
     );
   }

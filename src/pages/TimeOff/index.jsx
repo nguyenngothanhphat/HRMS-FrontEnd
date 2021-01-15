@@ -55,6 +55,18 @@ class TimeOff extends PureComponent {
     return role;
   };
 
+  // componentWillUnmount = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'timeOff/save',
+  //     payload: {
+  //       currentLeaveTypeTab: '1',
+  //       currentMineOrTeamTab: '1',
+  //       currentFilterTab: '1',
+  //     },
+  //   });
+  // };
+
   componentDidMount = () => {
     const listRole = localStorage.getItem('antd-pro-authority');
     const role = this.findRole(JSON.parse(listRole));
