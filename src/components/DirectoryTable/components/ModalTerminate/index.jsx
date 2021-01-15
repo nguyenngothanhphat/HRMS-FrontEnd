@@ -6,7 +6,6 @@ const { TextArea } = Input;
 
 const ModalTerminate = (props) => {
   const [form] = Form.useForm();
-  const [isValid, setIsValid] = useState(false);
 
   const {
     visible = false,
@@ -14,7 +13,6 @@ const ModalTerminate = (props) => {
     onChange = () => {},
     handleSubmit = () => {},
     handleCandelModal = () => {},
-    keyModal = '',
   } = props;
 
   const handleFinish = (values) => {
@@ -23,11 +21,9 @@ const ModalTerminate = (props) => {
 
   return (
     <Modal
-      key={keyModal === '' ? undefined : keyModal}
       visible={visible}
       className={styles.terminateModal}
       title={false}
-      // onOk={handleSubmit}
       onCancel={handleCandelModal}
       destroyOnClose
       footer={false}
@@ -39,9 +35,6 @@ const ModalTerminate = (props) => {
           onFinish={handleFinish}
           preserve={false}
           initialValues={{ reason: valueReason }}
-          onFieldsChange={() =>
-            setIsValid(form.getFieldsError().some((field) => field.errors.length > 0))
-          }
         >
           <Form.Item
             label="Reason"
@@ -52,20 +45,23 @@ const ModalTerminate = (props) => {
                 pattern: /^[\W\S_]{0,1000}$/,
                 message: 'Only fill up to 1000 characters !',
               },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  const valueReason = getFieldValue('reason');
-                  if (valueReason) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('Please input field !');
-                },
-              }),
+              {
+                required: true,
+                message: 'Please input field !',
+              },
+              // ({ getFieldValue }) => ({
+              //   validator(_, value) {
+              //     const valueReason = getFieldValue('reason');
+              //     if (valueReason) {
+              //       return Promise.resolve();
+              //     }
+              //     return Promise.reject('Please input field !');
+              //   },
+              // }),
             ]}
           >
             <TextArea
               className={styles.fieldModal}
-              // onChange={onChange}
               placeholder="Fill in the box..."
               autoSize={{ minRows: 3, maxRows: 6 }}
             />
@@ -77,11 +73,7 @@ const ModalTerminate = (props) => {
             >
               Cancel
             </Button>
-            <Button
-              className={`${styles.btnGroup} ${styles.btnSubmit}`}
-              htmlType="submit"
-              disabled={isValid}
-            >
+            <Button className={`${styles.btnGroup} ${styles.btnSubmit}`} htmlType="submit">
               Submit
             </Button>
           </Form.Item>
