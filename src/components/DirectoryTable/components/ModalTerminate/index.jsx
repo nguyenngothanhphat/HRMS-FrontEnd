@@ -44,12 +44,17 @@ const ModalTerminate = (props) => {
             rules={[
               {
                 pattern: /^[\W\S_]{0,1000}$/,
-                message: 'Only fill up to 1000 characters',
+                message: 'Only fill up to 1000 characters !',
               },
-              {
-                required: true,
-                message: 'Please input field !',
-              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const valueReason = getFieldValue('reason');
+                  if (valueReason) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('Please input field !');
+                },
+              }),
             ]}
           >
             <TextArea
