@@ -14,11 +14,10 @@ class DirectoryTable extends Component {
       pageSelected: 1,
       isSort: false,
       openModal: false,
-      isRow: {},
+      rowData: {},
       valueReason: '',
     };
   }
-
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
@@ -43,7 +42,7 @@ class DirectoryTable extends Component {
   handleClick = (e, item = {}) => {
     e.stopPropagation();
     this.setState({
-      isRow: item,
+      rowData: item,
       openModal: true,
     });
   };
@@ -56,11 +55,11 @@ class DirectoryTable extends Component {
   };
 
   handleSubmit = () => {
-    const {isRow = {}, valueReason = ''} = this.state;
+    const { rowData = {}, valueReason = '' } = this.state;
     // e.stopPropagation();
-    console.log('Row: ', isRow);
+    console.log('Row: ', rowData);
     console.log('Text: ', valueReason);
-  }
+  };
 
   onChangeReason = ({ target: { value } }) => {
     this.setState({ valueReason: value });
@@ -156,13 +155,13 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '15%',
+        width: '12%',
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
         dataIndex: 'action',
         key: 'action',
-        align: 'center',
+        align: 'left',
         width: '8%',
         render: (_, row) => {
           return (
@@ -222,12 +221,7 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { 
-      sortedName = {}, 
-      pageSelected, 
-      openModal = false, 
-      valueReason = '',
-    } = this.state;
+    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
