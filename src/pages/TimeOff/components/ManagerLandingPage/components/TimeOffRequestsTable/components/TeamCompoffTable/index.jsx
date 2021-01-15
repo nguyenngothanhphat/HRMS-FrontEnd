@@ -292,9 +292,9 @@ class TeamCompoffTable extends PureComponent {
       commentModalVisible: value,
     });
     if (!value) {
-      this.setState({
-        multipleCheckModalVisible: false,
-      });
+      // this.setState({
+      //   multipleCheckModalVisible: false,
+      // });
       setTimeout(() => {
         this.setState({
           rejectMultiple: false,
