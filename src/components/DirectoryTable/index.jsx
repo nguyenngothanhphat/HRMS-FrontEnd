@@ -16,6 +16,7 @@ class DirectoryTable extends Component {
       openModal: false,
       rowData: {},
       valueReason: '',
+      keyModal: '',
     };
   }
 
@@ -44,6 +45,7 @@ class DirectoryTable extends Component {
     this.setState({
       rowData: item,
       openModal: true,
+      keyModal: Date.now(),
     });
   };
 
@@ -51,20 +53,22 @@ class DirectoryTable extends Component {
     // e.stopPropagation();
     this.setState({
       openModal: false,
+      keyModal: '',
     });
   };
 
-  handleSubmit = () => {
-    const { rowData = {}, valueReason = '' } = this.state;
-    // e.stopPropagation();
-    console.log('Row: ', rowData);
-    console.log('Text: ', valueReason);
-    message.success('Submit successfully !');
+  handleSubmit = (values) => {
+    // const { rowData = {}, valueReason = '' } = this.state;
+    // // e.stopPropagation();
+    // console.log('Row: ', rowData);
+    // console.log('Text: ', valueReason);
+    // message.success('Submit successfully !');
+    console.log('values', values);
   };
 
-  onChangeReason = ({ target: { value } }) => {
-    this.setState({ valueReason: value });
-  };
+  // onChangeReason = ({ target: { value } }) => {
+  //   this.setState({ valueReason: value });
+  // };
 
   generateColumns = (sortedName) => {
     const { isSort } = this.state;
@@ -222,7 +226,13 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
+    const {
+      sortedName = {},
+      pageSelected,
+      openModal = false,
+      valueReason = '',
+      keyModal,
+    } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
@@ -274,6 +284,7 @@ class DirectoryTable extends Component {
           handleCandelModal={this.handleCandelModal}
           valueReason={valueReason}
           onChange={this.onChangeReason}
+          keyModal={keyModal}
         />
       </>
     );

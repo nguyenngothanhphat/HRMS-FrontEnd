@@ -14,14 +14,20 @@ const ModalTerminate = (props) => {
     onChange = () => {},
     handleSubmit = () => {},
     handleCandelModal = () => {},
+    keyModal = '',
   } = props;
+
+  const handleFinish = (values) => {
+    handleSubmit(values);
+  };
 
   return (
     <Modal
+      key={keyModal === '' ? undefined : keyModal}
       visible={visible}
       className={styles.terminateModal}
       title={false}
-      onOk={handleSubmit}
+      // onOk={handleSubmit}
       onCancel={handleCandelModal}
       destroyOnClose
       footer={false}
@@ -30,7 +36,7 @@ const ModalTerminate = (props) => {
         <div className={styles.titleModal}>Terminate employee</div>
         <Form
           form={form}
-          onFinish={handleSubmit}
+          onFinish={handleFinish}
           preserve={false}
           initialValues={{ reason: valueReason }}
           onFieldsChange={() =>
@@ -59,7 +65,7 @@ const ModalTerminate = (props) => {
           >
             <TextArea
               className={styles.fieldModal}
-              onChange={onChange}
+              // onChange={onChange}
               placeholder="Fill in the box..."
               autoSize={{ minRows: 3, maxRows: 6 }}
             />
