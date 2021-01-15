@@ -31,7 +31,8 @@ const ModalTerminate = (props) => {
         <Form
           form={form}
           onFinish={handleSubmit}
-          initialValues={valueReason}
+          preserve={false}
+          initialValues={{ reason: valueReason }}
           onFieldsChange={() =>
             setIsValid(form.getFieldsError().some((field) => field.errors.length > 0))
           }

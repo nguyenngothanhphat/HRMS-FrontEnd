@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button } from 'antd';
+import { Table, Avatar, Button, message } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
@@ -48,7 +48,7 @@ class DirectoryTable extends Component {
   };
 
   handleCandelModal = (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     this.setState({
       openModal: false,
     });
@@ -59,6 +59,7 @@ class DirectoryTable extends Component {
     // e.stopPropagation();
     console.log('Row: ', rowData);
     console.log('Text: ', valueReason);
+    message.success('Submit successfully !');
   };
 
   onChangeReason = ({ target: { value } }) => {
