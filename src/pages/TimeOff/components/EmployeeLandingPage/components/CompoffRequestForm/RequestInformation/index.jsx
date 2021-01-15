@@ -175,6 +175,19 @@ class RequestInformation extends PureComponent {
       projectManagerId,
       projectManagerName,
     });
+
+    const {
+      dispatch,
+      user: { currentUser: { employee: { _id: userId } = {} } = {} } = {},
+    } = this.props;
+
+    dispatch({
+      type: 'timeOff/getCompoffApprovalFlow',
+      payload: {
+        employeeId: userId,
+        projectId: value,
+      },
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -194,6 +207,7 @@ class RequestInformation extends PureComponent {
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
     const { dateLists, buttonState, viewingCompoffRequestId } = this.state;
+    const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
@@ -202,8 +216,9 @@ class RequestInformation extends PureComponent {
       extraTime: dateLists,
       description,
       action,
-      approvalFlow: '5fb37597daeffc0c68763d8b',
+      approvalFlow: compoffApprovalFlow,
       cc: personCC,
+      onDate: moment(),
     };
 
     let type = '';
@@ -312,18 +327,18 @@ class RequestInformation extends PureComponent {
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
     return (
-      (current && current > moment(durationTo)) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6
+      current && current > moment(durationTo)
+      // || moment(current).day() === 0 ||
+      // moment(current).day() === 6
     );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
     return (
-      (current && current < moment(durationFrom)) ||
-      moment(current).day() === 0 ||
-      moment(current).day() === 6
+      current && current < moment(durationFrom)
+      // || moment(current).day() === 0 ||
+      // moment(current).day() === 6
     );
   };
 
@@ -407,7 +422,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'MM/DD/YYYY';
+    const dateFormat = 'DD.MM.YYYY';
 
     const {
       showSuccessModal,

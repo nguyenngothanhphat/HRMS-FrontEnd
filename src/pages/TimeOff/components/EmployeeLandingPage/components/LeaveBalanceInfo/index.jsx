@@ -86,7 +86,7 @@ class LeaveBalanceInfo extends PureComponent {
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
                 {this.renderTimeOffTypeInfo('A')}
-                {this.renderTimeOffTypeInfo('B')}
+                {/* {this.renderTimeOffTypeInfo('B')} */}
                 {this.renderTimeOffTypeInfo('C')}
                 {this.renderTimeOffTypeInfo('D')}
               </Collapse>

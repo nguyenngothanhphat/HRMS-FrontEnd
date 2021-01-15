@@ -35,6 +35,11 @@ class TeamLeaveTable extends PureComponent {
           </span>
         );
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Requestee',
@@ -259,9 +264,9 @@ class TeamLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
           .locale('en')
-          .format('MM.DD.YYYY')}`;
+          .format('DD.MM.YYYY')}`;
       }
 
       // let employeeFromCC = [];

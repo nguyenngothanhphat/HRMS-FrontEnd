@@ -51,6 +51,11 @@ class RequestInformation extends PureComponent {
     this.setState({
       showModal: value,
     });
+    if (!value) {
+      this.setState({
+        isReject: false,
+      });
+    }
   };
 
   setShowWithdrawModal = (value) => {
@@ -62,9 +67,9 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
         .locale('en')
-        .format('MM.DD.YYYY')}`;
+        .format('DD.MM.YYYY')}`;
     }
     return leaveTimes;
   };
@@ -135,9 +140,6 @@ class RequestInformation extends PureComponent {
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.setShowModal(true);
-      this.setState({
-        isReject: false,
-      });
     }
   };
 

@@ -96,6 +96,11 @@ const routes = [
             component: './CompanyProfile',
             name: 'Company Profile',
           },
+          {
+            path: '/account-setup/get-started/setup-employee-directory/:reId',
+            component: './SetupEmployeeDirectory',
+            name: 'Setup Employee Directory',
+          },
         ],
       },
       {
@@ -270,6 +275,13 @@ const routes = [
             hideInMenu: true,
             component: './TimeOff/components/EmployeeLandingPage/components/ViewCompoffRequestForm',
             // authority: ['employee'],
+          },
+          {
+            path: '/time-off/manager-view-compoff/:reId',
+            name: 'View compoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/ManagerLandingPage/components/ManagerViewCompoffForm',
+            authority: ['hr-manager', 'manager'],
           },
           {
             // path: '/time-off/new-leave-request',

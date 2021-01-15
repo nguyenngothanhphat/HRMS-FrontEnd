@@ -7,22 +7,18 @@
   border-radius: 5px;
   overflow: hidden;
 
-  :global{
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+  :global {
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
       font-weight: bold;
       font-size: 16px;
     }
-    .ant-tabs-tab-btn{
+    .ant-tabs-tab-btn {
       font-weight: bold;
       font-size: 16px;
     }
 
-    .ant-tabs-tab{
+    .ant-tabs-tab {
       margin: 0px 25px 0 0;
-    }
-
-    .ant-tabs-ink-bar{
-
     }
   }
 
@@ -40,7 +36,7 @@
       transform: translateY(-1px);
     }
 
-    &:hover{
+    &:hover {
       transition: 0.6s;
       transform: rotateZ(180deg);
     }
@@ -48,7 +44,7 @@
   .contentTab {
     height: 370px;
     width: 100%;
-    padding: 24px 38px;
+    padding: 20px;
     overflow-y: scroll;
     border-radius: 0 0 0 6px;
     &__loading {
@@ -74,7 +70,7 @@
     }
   }
   .containerItemMyTeam {
-    min-width: 160px;
+    min-width: 210px;
     height: 74px;
     background: #ffffff;
     border: 1px solid #e8eef2;
@@ -105,45 +101,10 @@
     }
 
     &:hover {
-      -webkit-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
-      -moz-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
-      box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.2);
-      transition: all .3s ease-in-out;
-    }
-  }
-  .containerItemProject {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid #e8eef2;
-    box-sizing: border-box;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    .viewTop {
-      border-bottom: 1px solid #e8eef2;
-      padding: 10px;
-      color: #fff;
-      font-weight: 500;
-      background: #2c6df9;
-    }
-    .viewBottom {
-      .viewTop();
-      border-bottom: none;
-      background-color: #fff;
-      color: rgb(22, 28, 41);
-
-      &__row {
-        p {
-          margin: 0;
-        }
-        span {
-          opacity: 0.5;
-        }
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
+      -webkit-box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
     }
   }
 }

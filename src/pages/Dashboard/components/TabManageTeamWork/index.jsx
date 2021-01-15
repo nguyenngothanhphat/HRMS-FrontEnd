@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-indent */
 import React, { PureComponent } from 'react';
-import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined, ProjectOutlined } from '@ant-design/icons';
 import { Tabs, Row, Col, Avatar, Spin } from 'antd';
 import moment from 'moment';
 import s from './index.less';
@@ -25,23 +25,16 @@ export default class ManageTeamWork extends PureComponent {
   };
 
   renderItemProject = (item = {}) => {
-    const { name = '', status = '', createdAt = '', endDate = '' } = item;
+    const { logo = '', name = '', beginDate = '', endDate = '' } = item;
+    const start = moment(beginDate).format('MMM YYYY');
+    const end = moment(endDate).format('MMM YYYY');
     return (
-      <div className={s.containerItemProject}>
-        <div className={s.viewTop}>{name}</div>
-        <div className={s.viewBottom}>
-          <div className={s.viewBottom__row}>
-            <p>
-              Status: <span>{status}</span>
-            </p>
-          </div>
-          <div className={s.viewBottom__row}>
-            <p>
-              Created: <span>{moment(createdAt).format('DD/MM/YYYY')}</span>
-            </p>
-            <p>
-              End: <span>{moment(endDate).format('DD/MM/YYYY')}</span>
-            </p>
+      <div className={s.containerItemMyTeam}>
+        <Avatar size={42} src={logo} icon={<ProjectOutlined />} />
+        <div className={s.containerItemMyTeam__viewInfo}>
+          <div className={s.containerItemMyTeam__viewInfo__name}>{name}</div>
+          <div className={s.containerItemMyTeam__viewInfo__jobDetail}>
+            {start} - {end}
           </div>
         </div>
       </div>
@@ -96,11 +89,15 @@ export default class ManageTeamWork extends PureComponent {
                   <Spin />
                 </div>
               ) : (
-                <>
+                <Row gutter={[40, 10]}>
                   {listProject.length === 0
                     ? this.viewEmpty('Project')
-                    : listProject.map((item) => this.renderItemProject(item))}
-                </>
+                    : listProject.map((item) => (
+                        <Col span={12} key={item._id}>
+                          {this.renderItemProject(item)}
+                        </Col>
+                      ))}
+                </Row>
               )}
             </div>
           </TabPane>
