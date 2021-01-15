@@ -5,12 +5,15 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
+import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
+  loading3: loading.effects['timeOff/approveMultipleCompoffRequest'],
+  loading4: loading.effects['timeOff/rejectMultipleCompoffRequest'],
 }))
 class TeamCompoffTable extends PureComponent {
   columns = [
@@ -145,6 +148,8 @@ class TeamCompoffTable extends PureComponent {
       commentModalVisible: false,
       rejectingId: '',
       rejectingTicketID: '',
+      multipleCheckModalVisible: false,
+      rejectMultiple: false,
     };
   }
 
@@ -180,11 +185,11 @@ class TeamCompoffTable extends PureComponent {
   };
 
   onCancelClick = (_id, ticketID) => {
-    this.toggleCommentModal(true);
     this.setState({
       rejectingId: _id,
       rejectingTicketID: ticketID,
     });
+    this.toggleCommentModal(true);
   };
 
   onReject = async (comment) => {
@@ -226,9 +231,12 @@ class TeamCompoffTable extends PureComponent {
   };
 
   onSelectChange = (selectedRowKeys) => {
-    // eslint-disable-next-line no-console
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+    let visible = false;
+    if (selectedRowKeys.length > 0) visible = true;
+    const { selectedTab = '' } = this.props;
+    if (['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab))
+      this.setState({ multipleCheckModalVisible: visible });
   };
 
   // PARSE DATA FOR TABLE
@@ -283,11 +291,74 @@ class TeamCompoffTable extends PureComponent {
     this.setState({
       commentModalVisible: value,
     });
+    if (!value) {
+      this.setState({
+        multipleCheckModalVisible: false,
+      });
+      setTimeout(() => {
+        this.setState({
+          rejectMultiple: false,
+        });
+      }, 500);
+    }
+  };
+
+  // on multiple checkbox
+  onMultipleApprove = async () => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/approveMultipleCompoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.onRefreshTable('2');
+    }
+  };
+
+  onMultipleCancelClick = () => {
+    this.toggleCommentModal(true);
+    this.setState({
+      rejectMultiple: true,
+    });
+  };
+
+  onMultipleReject = async (comment) => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/rejectMultipleCompoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+        comment,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.toggleCommentModal(false);
+      this.onRefreshTable('3');
+    }
   };
 
   render() {
-    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
-    const { selectedRowKeys, pageSelected, commentModalVisible, rejectingTicketID } = this.state;
+    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
+    const {
+      selectedRowKeys,
+      pageSelected,
+      commentModalVisible,
+      rejectingTicketID,
+      multipleCheckModalVisible,
+      rejectMultiple,
+    } = this.state;
 
     const rowSize = 10;
 
@@ -338,14 +409,24 @@ class TeamCompoffTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey={(id) => id.ticketID}
+          rowKey={(id) => id._id}
         />
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}
-          onReject={this.onReject}
+          onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
+          rejectMultiple={rejectMultiple}
+          loading={loading4}
         />
+        {multipleCheckModalVisible && ['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab) && (
+          <MultipleCheckTablePopup
+            onApprove={this.onMultipleApprove}
+            onReject={this.onMultipleCancelClick}
+            loading3={loading3}
+            loading4={loading4}
+          />
+        )}
       </div>
     );
   }

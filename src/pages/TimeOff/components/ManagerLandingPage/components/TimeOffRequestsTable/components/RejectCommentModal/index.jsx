@@ -26,6 +26,7 @@ export default class RejectCommentModal extends PureComponent {
       onReject = () => {},
       ticketID = '',
       rejectMultiple = false,
+      loading,
     } = this.props;
     const header = 'Request Rejection Comments';
 
@@ -51,7 +52,11 @@ export default class RejectCommentModal extends PureComponent {
             </div>
           </div>
           <div className={styles.operationButtons}>
-            <Button className={styles.proceedBtn} onClick={() => onReject(comment)}>
+            <Button
+              loading={loading}
+              className={styles.proceedBtn}
+              onClick={() => onReject(comment)}
+            >
               Submit
             </Button>
             <Button className={styles.cancelBtn} onClick={() => onClose()}>

@@ -33,8 +33,11 @@ import {
   getCompoffApprovalFlow,
   approveCompoffRequest,
   rejectCompoffRequest,
-  rmApproveMultipleTickets,
-  rmRejectMultipleTickets,
+  // approve, reject multiple requests
+  approveMultipleTimeoffRequest,
+  rejectMultipleTimeoffRequest,
+  approveMultipleCompoffRequest,
+  rejectMultipleCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -517,9 +520,10 @@ const timeOff = {
         return {};
       }
     },
-    *rmApproveMultipleTickets({ payload = {} }, { call }) {
+
+    *approveMultipleTimeoffRequest({ payload = {} }, { call }) {
       try {
-        const response = yield call(rmApproveMultipleTickets, payload);
+        const response = yield call(approveMultipleTimeoffRequest, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -528,9 +532,9 @@ const timeOff = {
         return {};
       }
     },
-    *rmRejectMultipleTickets({ payload = {} }, { call }) {
+    *rejectMultipleTimeoffRequest({ payload = {} }, { call }) {
       try {
-        const response = yield call(rmRejectMultipleTickets, payload);
+        const response = yield call(rejectMultipleTimeoffRequest, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -655,6 +659,30 @@ const timeOff = {
         dialog(errors);
       }
       return 0;
+    },
+
+    // multiple compoff request
+    *approveMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(approveMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rejectMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rejectMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
     },
   },
   reducers: {

@@ -171,14 +171,14 @@ export async function reportingManagerReject(data) {
   });
 }
 
-export async function rmApproveMultipleTickets(data) {
+export async function approveMultipleTimeoffRequest(data) {
   return request('/api/leaverequest/rm-approve-multiple-tickets', {
     method: 'POST',
     data,
   });
 }
 
-export async function rmRejectMultipleTickets(data) {
+export async function rejectMultipleTimeoffRequest(data) {
   return request('/api/leaverequest/rm-reject-multiple-tickets', {
     method: 'POST',
     data,
@@ -233,6 +233,20 @@ export async function approveCompoffRequest(data) {
 
 export async function rejectCompoffRequest(data) {
   return request('/api/compoffrequest/reject-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function approveMultipleCompoffRequest(data) {
+  return request('/api/compoffrequest/approve-multiple-compoff-request', {
+    method: 'POST',
+    data,
+  });
+}
+
+export async function rejectMultipleCompoffRequest(data) {
+  return request('/api/compoffrequest/reject-multiple-compoff-request', {
     method: 'POST',
     data,
   });

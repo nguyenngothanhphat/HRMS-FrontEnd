@@ -11,14 +11,15 @@ const { TabPane } = Tabs;
 }))
 class MineOrTeamTabs extends PureComponent {
   saveCurrentTab = (type) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        currentMineOrTeamTab: String(type),
-        currentFilterTab: '1',
-      },
-    });
+    const { dispatch, timeOff: { currentMineOrTeamTab = '' } = {} } = this.props;
+    if (currentMineOrTeamTab !== String(type))
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentMineOrTeamTab: String(type),
+          currentFilterTab: '1',
+        },
+      });
   };
 
   render() {

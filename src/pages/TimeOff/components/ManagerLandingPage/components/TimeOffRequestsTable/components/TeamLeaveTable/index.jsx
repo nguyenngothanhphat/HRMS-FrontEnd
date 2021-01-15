@@ -12,8 +12,8 @@ import styles from './index.less';
 @connect(({ loading }) => ({
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
-  loading3: loading.effects['timeOff/rmApproveMultipleTickets'],
-  loading4: loading.effects['timeOff/rmRjectMultipleTickets'],
+  loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
+  loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
 }))
 class TeamLeaveTable extends PureComponent {
   columns = [
@@ -206,11 +206,11 @@ class TeamLeaveTable extends PureComponent {
   };
 
   onCancelClick = (_id, ticketID) => {
-    this.toggleCommentModal(true);
     this.setState({
       rejectingId: _id,
       rejectingTicketID: ticketID,
     });
+    this.toggleCommentModal(true);
   };
 
   onReject = async (comment) => {
@@ -255,7 +255,8 @@ class TeamLeaveTable extends PureComponent {
     this.setState({ selectedRowKeys });
     let visible = false;
     if (selectedRowKeys.length > 0) visible = true;
-    this.setState({ multipleCheckModalVisible: visible });
+    const { selectedTab = '' } = this.props;
+    if (selectedTab === 'IN-PROGRESS') this.setState({ multipleCheckModalVisible: visible });
   };
 
   // PARSE DATA FOR TABLE
@@ -310,9 +311,13 @@ class TeamLeaveTable extends PureComponent {
     });
     if (!value) {
       this.setState({
-        rejectMultiple: false,
         multipleCheckModalVisible: false,
       });
+      setTimeout(() => {
+        this.setState({
+          rejectMultiple: false,
+        });
+      }, 500);
     }
   };
 
@@ -321,7 +326,7 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/rmApproveMultipleTickets',
+      type: 'timeOff/approveMultipleTimeoffRequest',
       payload: {
         ticketList: selectedRowKeys,
       },
@@ -346,7 +351,7 @@ class TeamLeaveTable extends PureComponent {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/rmRejectMultipleTickets',
+      type: 'timeOff/rejectMultipleTimeoffRequest',
       payload: {
         ticketList: selectedRowKeys,
         comment,
@@ -363,7 +368,7 @@ class TeamLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
+    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
@@ -428,11 +433,14 @@ class TeamLeaveTable extends PureComponent {
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
           rejectMultiple={rejectMultiple}
+          loading={loading4}
         />
-        {multipleCheckModalVisible && ['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab) && (
+        {multipleCheckModalVisible && selectedTab === 'IN-PROGRESS' && (
           <MultipleCheckTablePopup
             onApprove={this.onMultipleApprove}
             onReject={this.onMultipleCancelClick}
+            loading3={loading3}
+            loading4={loading4}
           />
         )}
       </div>
