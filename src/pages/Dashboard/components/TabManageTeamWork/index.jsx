@@ -89,7 +89,7 @@ export default class ManageTeamWork extends PureComponent {
                   <Spin />
                 </div>
               ) : (
-                <>
+                <Row gutter={[40, 10]}>
                   {listProject.length === 0
                     ? this.viewEmpty('Project')
                     : listProject.map((item) => (
@@ -97,7 +97,7 @@ export default class ManageTeamWork extends PureComponent {
                           {this.renderItemProject(item)}
                         </Col>
                       ))}
-                </>
+                </Row>
               )}
             </div>
           </TabPane>
