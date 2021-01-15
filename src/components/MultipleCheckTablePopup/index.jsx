@@ -7,7 +7,13 @@ import styles from './index.less';
 
 class MultipleCheckTablePopup extends PureComponent {
   render() {
-    const { onApprove = () => {}, onReject = () => {}, loading3, loading4 } = this.props;
+    const {
+      onApprove = () => {},
+      onReject = () => {},
+      loading3,
+      loading4,
+      length = 0,
+    } = this.props;
     const loadingGraphic = <LoadingOutlined style={{ fontSize: 18, color: '#fff' }} spin />;
     return (
       <div className={styles.MultipleCheckTablePopup}>
@@ -20,7 +26,7 @@ class MultipleCheckTablePopup extends PureComponent {
                 <Spin indicator={loadingGraphic} />
               )}
             </div>
-            <span className={styles.approve}>Approve tickets</span>
+            <span className={styles.approve}>Approve {length} tickets</span>
           </div>
           <div className={styles.button2} onClick={onReject}>
             <div className={styles.icon}>
@@ -30,7 +36,7 @@ class MultipleCheckTablePopup extends PureComponent {
                 <Spin indicator={loadingGraphic} />
               )}
             </div>
-            <span className={styles.reject}>Reject tickets</span>
+            <span className={styles.reject}>Reject {length} tickets</span>
           </div>
         </div>
       </div>

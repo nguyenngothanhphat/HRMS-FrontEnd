@@ -423,6 +423,7 @@ class TeamCompoffTable extends PureComponent {
           <MultipleCheckTablePopup
             onApprove={this.onMultipleApprove}
             onReject={this.onMultipleCancelClick}
+            length={selectedRowKeys.length}
             loading3={loading3}
             loading4={loading4}
           />
