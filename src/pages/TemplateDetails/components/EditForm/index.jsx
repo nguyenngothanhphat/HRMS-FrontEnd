@@ -4,8 +4,9 @@ import { history, connect } from 'umi';
 import { Button, notification } from 'antd';
 import styles from './index.less';
 
-@connect(({ employeeSetting }) => ({
+@connect(({ employeeSetting, loading }) => ({
   employeeSetting,
+  loading: loading.effects['employeeSetting/addCustomTemplate'],
 }))
 class EditForm extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class EditForm extends Component {
     const {
       currentTemplate: { title, settings = [] },
       dispatch,
+      onClose = () => {},
     } = this.props;
     dispatch({
       type: 'employeeSetting/addCustomTemplate',
@@ -34,6 +36,14 @@ class EditForm extends Component {
         type: 'ON_BOARDING',
         title,
       },
+    }).then((statusCode) => {
+      if (statusCode === 200) {
+        onClose();
+        history.push({
+          pathname: '/employee-onboarding',
+          state: { defaultActiveKey: '2' },
+        });
+      }
     });
   };
 
@@ -47,6 +57,7 @@ class EditForm extends Component {
     const {
       currentTemplate: { settings = [] },
       currentTemplate,
+      loading,
     } = this.props;
     return (
       <div className={styles.EditForm}>
@@ -103,7 +114,7 @@ class EditForm extends Component {
           outputFormat="raw"
         />
         <div className={styles.buttonArea}>
-          <Button variant="contained" onClick={this.handleSubmit}>
+          <Button variant="contained" onClick={this.handleSubmit} loading={loading}>
             Save
           </Button>
         </div>
