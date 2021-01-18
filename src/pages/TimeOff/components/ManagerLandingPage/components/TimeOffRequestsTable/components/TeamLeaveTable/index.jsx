@@ -341,6 +341,11 @@ class TeamLeaveTable extends PureComponent {
       this.setState({
         selectedRowKeys: [],
       });
+      const { onHandle = () => {} } = this.props;
+      const payload = {
+        length: 0,
+      };
+      onHandle(payload);
       this.onRefreshTable('2');
     }
   };
@@ -366,6 +371,11 @@ class TeamLeaveTable extends PureComponent {
       this.setState({
         selectedRowKeys: [],
       });
+      const { onHandle = () => {} } = this.props;
+      const payload = {
+        length: 0,
+      };
+      onHandle(payload);
       this.toggleCommentModal(false);
       this.onRefreshTable('3');
     }
