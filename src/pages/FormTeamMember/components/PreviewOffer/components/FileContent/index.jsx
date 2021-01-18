@@ -39,8 +39,8 @@ const FileContent = (props) => {
   return (
     <div className={s.viewFile}>
       <Document
-        // file="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff"
-        file={url}
+        file="http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff"
+        // file={url}
         onLoadSuccess={onLoadSuccess}
         loading={documentWarning('Loading document. Please wait...')}
         noData={documentWarning('URL is not available.')}
