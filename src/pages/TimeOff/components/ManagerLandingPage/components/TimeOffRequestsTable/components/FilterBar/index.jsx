@@ -67,7 +67,9 @@ class FilterBar extends PureComponent {
           tabBarGutter={35}
           activeKey={currentFilterTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
-          tabBarExtraContent={length > 0 ? this.renderActionBtn() : null}
+          tabBarExtraContent={
+            length > 0 && currentFilterTab === '1' ? this.renderActionBtn() : null
+          }
         >
           <TabPane
             tab={

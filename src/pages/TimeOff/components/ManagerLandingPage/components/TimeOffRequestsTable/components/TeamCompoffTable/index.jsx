@@ -5,7 +5,6 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
-import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
@@ -148,7 +147,6 @@ class TeamCompoffTable extends PureComponent {
       commentModalVisible: false,
       rejectingId: '',
       rejectingTicketID: '',
-      multipleCheckModalVisible: false,
       rejectMultiple: false,
     };
   }
@@ -232,11 +230,17 @@ class TeamCompoffTable extends PureComponent {
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
-    let visible = false;
-    if (selectedRowKeys.length > 0) visible = true;
-    const { selectedTab = '' } = this.props;
-    if (['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab))
-      this.setState({ multipleCheckModalVisible: visible });
+    const { selectedTab = '', loading3, loading4, onHandle = () => {} } = this.props;
+    if (['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab)) {
+      const payload = {
+        onApprove: this.onMultipleApprove,
+        onReject: this.onMultipleCancelClick,
+        length: selectedRowKeys.length,
+        loading3,
+        loading4,
+      };
+      onHandle(payload);
+    }
   };
 
   // PARSE DATA FOR TABLE
@@ -316,7 +320,6 @@ class TeamCompoffTable extends PureComponent {
     if (statusCode === 200) {
       this.setState({
         selectedRowKeys: [],
-        multipleCheckModalVisible: false,
       });
       this.onRefreshTable('2');
     }
@@ -342,7 +345,6 @@ class TeamCompoffTable extends PureComponent {
     if (statusCode === 200) {
       this.setState({
         selectedRowKeys: [],
-        multipleCheckModalVisible: false,
       });
       this.toggleCommentModal(false);
       this.onRefreshTable('3');
@@ -350,13 +352,12 @@ class TeamCompoffTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
+    const { data = [], loading1, loading2, loading4, selectedTab = '' } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
       commentModalVisible,
       rejectingTicketID,
-      multipleCheckModalVisible,
       rejectMultiple,
     } = this.state;
 
@@ -419,15 +420,6 @@ class TeamCompoffTable extends PureComponent {
           rejectMultiple={rejectMultiple}
           loading={loading4}
         />
-        {multipleCheckModalVisible && ['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab) && (
-          <MultipleCheckTablePopup
-            onApprove={this.onMultipleApprove}
-            onReject={this.onMultipleCancelClick}
-            length={selectedRowKeys.length}
-            loading3={loading3}
-            loading4={loading4}
-          />
-        )}
       </div>
     );
   }

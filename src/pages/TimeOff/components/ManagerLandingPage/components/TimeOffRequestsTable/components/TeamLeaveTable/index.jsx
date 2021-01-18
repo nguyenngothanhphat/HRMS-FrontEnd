@@ -5,7 +5,7 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
-import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
+// import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
@@ -169,7 +169,6 @@ class TeamLeaveTable extends PureComponent {
       commentModalVisible: false,
       rejectingId: '',
       rejectingTicketID: '',
-      multipleCheckModalVisible: false,
       rejectMultiple: false,
     };
   }
@@ -253,8 +252,6 @@ class TeamLeaveTable extends PureComponent {
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
-    let visible = false;
-    if (selectedRowKeys.length > 0) visible = true;
     const { selectedTab = '', onHandle = () => {}, loading3, loading4 } = this.props;
     if (selectedTab === 'IN-PROGRESS') {
       const payload = {
@@ -265,7 +262,6 @@ class TeamLeaveTable extends PureComponent {
         loading4,
       };
       onHandle(payload);
-      // this.setState({ multipleCheckModalVisible: visible });
     }
   };
 
@@ -344,7 +340,6 @@ class TeamLeaveTable extends PureComponent {
     if (statusCode === 200) {
       this.setState({
         selectedRowKeys: [],
-        multipleCheckModalVisible: false,
       });
       this.onRefreshTable('2');
     }
@@ -370,7 +365,6 @@ class TeamLeaveTable extends PureComponent {
     if (statusCode === 200) {
       this.setState({
         selectedRowKeys: [],
-        multipleCheckModalVisible: false,
       });
       this.toggleCommentModal(false);
       this.onRefreshTable('3');
@@ -378,13 +372,12 @@ class TeamLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
+    const { data = [], loading1, loading2, loading4, selectedTab = '' } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
       commentModalVisible,
       rejectingTicketID,
-      multipleCheckModalVisible,
       rejectMultiple,
     } = this.state;
     const rowSize = 10;
@@ -445,15 +438,6 @@ class TeamLeaveTable extends PureComponent {
           rejectMultiple={rejectMultiple}
           loading={loading4}
         />
-        {/* {multipleCheckModalVisible && selectedTab === 'IN-PROGRESS' && (
-          <MultipleCheckTablePopup
-            onApprove={this.onMultipleApprove}
-            onReject={this.onMultipleCancelClick}
-            length={selectedRowKeys.length}
-            loading3={loading3}
-            loading4={loading4}
-          />
-        )} */}
       </div>
     );
   }

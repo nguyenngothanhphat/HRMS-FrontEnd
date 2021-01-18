@@ -26,6 +26,7 @@ class TimeOffRequestTab extends PureComponent {
       selectedTabNumber: '1',
       onHoldLength: 0,
       deletedLength: 0,
+      handlePackage: {},
     };
   }
 
@@ -253,6 +254,12 @@ class TimeOffRequestTab extends PureComponent {
     });
   };
 
+  onApproveRejectHandle = (obj) => {
+    this.setState({
+      handlePackage: obj,
+    });
+  };
+
   render() {
     const { type = 0, category = '' } = this.props;
 
@@ -266,6 +273,7 @@ class TimeOffRequestTab extends PureComponent {
       selectedTabNumber,
       onHoldLength,
       deletedLength,
+      handlePackage,
     } = this.state;
 
     const dataNumber = {
@@ -284,6 +292,7 @@ class TimeOffRequestTab extends PureComponent {
           setSelectedFilterTab={this.setSelectedFilterTab}
           category={category}
           selectedTab={selectedTabNumber}
+          handlePackage={handlePackage}
         />
         <div className={styles.tableContainer}>
           <div>
@@ -293,6 +302,7 @@ class TimeOffRequestTab extends PureComponent {
                 category={category}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 1 && category === 'MY' && (
@@ -303,6 +313,7 @@ class TimeOffRequestTab extends PureComponent {
                 data={formatData}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 2 && category === 'TEAM' && (
@@ -311,6 +322,7 @@ class TimeOffRequestTab extends PureComponent {
                 category={category}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 2 && category === 'MY' && (
@@ -321,6 +333,7 @@ class TimeOffRequestTab extends PureComponent {
                 data={formatData}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
           </div>

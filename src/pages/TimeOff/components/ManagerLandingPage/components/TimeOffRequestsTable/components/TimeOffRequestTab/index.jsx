@@ -320,6 +320,7 @@ class TimeOffRequestTab extends PureComponent {
                 category={category}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 2 && category === 'MY' && (
