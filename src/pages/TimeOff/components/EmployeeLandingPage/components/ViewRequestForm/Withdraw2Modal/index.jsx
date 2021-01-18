@@ -49,9 +49,9 @@ export default class Withdraw2Modal extends PureComponent {
           <span className={styles.title}>{header}</span>
           <div className={styles.formContainer}>
             <p className={styles.subtitle1}>{content1}</p>
-            <div className={styles.formInput}>
+            {/* <div className={styles.formInput}>
               <Input placeholder="Title" onChange={this.onTitleChange} />
-            </div>
+            </div> */}
             <div className={styles.formInput}>
               <TextArea
                 autoSize={{ minRows: 3, maxRows: 7 }}

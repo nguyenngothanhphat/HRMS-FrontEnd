@@ -106,7 +106,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status !== 'DRAFTS') {
+      if (status === 'ACCEPTED') {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         const now = moment().locale('en').format('MM/DD/YYYY');

@@ -23,11 +23,13 @@
     display: flex;
     margin-right: 15px;
     .iconContainer {
+      transition: 0.3s;
       width: 25px;
       display: flex;
       justify-content: center;
       align-items: center;
       img {
+        transition: 0.3s;
         height: 25px;
         padding: 5px;
         // margin-left: 10px;
@@ -37,6 +39,10 @@
         transition: 0.3s;
         background: #568afa26;
         border-radius: 2px;
+        img {
+          transition: 0.3s;
+          filter: invert(27%) sepia(81%) saturate(3092%) hue-rotate(202deg) brightness(99%) contrast(101%);
+        }
       }
     }
     .activeShowType {

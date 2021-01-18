@@ -23,7 +23,6 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength: 0,
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
-      selectedTabNumber: '1',
       onHoldLength: 0,
     };
   }
@@ -163,13 +162,26 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   componentDidMount = () => {
-    this.fetchAllData();
-    this.fetchFilteredDataFromServer('1');
+    const { timeOff: { currentFilterTab } = {} } = this.props;
+    // this.fetchAllData();
+    // this.fetchFilteredDataFromServer(currentFilterTab);
+    this.setSelectedFilterTab(currentFilterTab);
+  };
+
+  saveCurrentTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentFilterTab: String(type),
+      },
+    });
   };
 
   setSelectedFilterTab = (id) => {
     this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
+    this.saveCurrentTab(id);
 
     let selectedTab = 'IN-PROGRESS';
     if (id === '2') {
@@ -184,7 +196,6 @@ class TimeOffRequestTab extends PureComponent {
 
     this.setState({
       selectedTab,
-      selectedTabNumber: id,
     });
   };
 
@@ -262,7 +273,6 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       selectedTab,
-      selectedTabNumber,
       onHoldLength,
     } = this.state;
 
@@ -280,7 +290,6 @@ class TimeOffRequestTab extends PureComponent {
           dataNumber={dataNumber}
           setSelectedFilterTab={this.setSelectedFilterTab}
           category={category}
-          selectedTab={selectedTabNumber}
         />
         <div className={styles.tableContainer}>
           <div>

@@ -3,8 +3,8 @@
 
 .EditForm {
   font-family: 'Roboto';
-  padding: 40px;
-  height: 510px;
+  padding: 20px 10px;
+  // max-height: 500px;
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -12,11 +12,14 @@
     background: transparent; /* Optional: just make scrollbar invisible */
   }
   /* Optional: show position indicator in red */
-  &::-webkit-scrollbar-thumb {
-    background: #ff0000;
-  }
+  // &::-webkit-scrollbar-thumb {
+  //   background: #ff0000;
+  // }
 
   :global {
+    .tox {
+      min-height: 430px;
+    }
     .tabs {
       .ant-form-item-label {
         label {
@@ -26,6 +29,21 @@
           text-align: left;
           color: #161c29;
         }
+      }
+    }
+    .ant-btn {
+      margin-top: 15px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      height: 40px;
+      width: 108px;
+      span {
+        color: white;
+        font-weight: bold;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
       }
     }
     .ant-btn-primary {
@@ -79,5 +97,9 @@
       display: flex;
       justify-content: center;
     }
+  }
+  .buttonArea {
+    display: flex;
+    justify-content: flex-end;
   }
 }
