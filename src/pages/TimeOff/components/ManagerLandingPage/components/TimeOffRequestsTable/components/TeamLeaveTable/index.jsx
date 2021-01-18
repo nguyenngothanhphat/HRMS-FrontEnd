@@ -255,8 +255,18 @@ class TeamLeaveTable extends PureComponent {
     this.setState({ selectedRowKeys });
     let visible = false;
     if (selectedRowKeys.length > 0) visible = true;
-    const { selectedTab = '' } = this.props;
-    if (selectedTab === 'IN-PROGRESS') this.setState({ multipleCheckModalVisible: visible });
+    const { selectedTab = '', onHandle = () => {}, loading3, loading4 } = this.props;
+    if (selectedTab === 'IN-PROGRESS') {
+      const payload = {
+        onApprove: this.onMultipleApprove,
+        onReject: this.onMultipleCancelClick,
+        length: selectedRowKeys.length,
+        loading3,
+        loading4,
+      };
+      onHandle(payload);
+      // this.setState({ multipleCheckModalVisible: visible });
+    }
   };
 
   // PARSE DATA FOR TABLE
@@ -435,7 +445,7 @@ class TeamLeaveTable extends PureComponent {
           rejectMultiple={rejectMultiple}
           loading={loading4}
         />
-        {multipleCheckModalVisible && selectedTab === 'IN-PROGRESS' && (
+        {/* {multipleCheckModalVisible && selectedTab === 'IN-PROGRESS' && (
           <MultipleCheckTablePopup
             onApprove={this.onMultipleApprove}
             onReject={this.onMultipleCancelClick}
@@ -443,7 +453,7 @@ class TeamLeaveTable extends PureComponent {
             loading3={loading3}
             loading4={loading4}
           />
-        )}
+        )} */}
       </div>
     );
   }
