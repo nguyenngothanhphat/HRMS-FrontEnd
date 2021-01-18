@@ -40,12 +40,7 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
-    const { dispatch, id = '', employeeId = '' } = this.props;
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestById',
-      id,
-    });
-
+    const { dispatch, employeeId = '' } = this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
       payload: { employee: employeeId },

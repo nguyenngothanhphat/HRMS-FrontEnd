@@ -22,15 +22,6 @@ class RequestInformation extends PureComponent {
     };
   }
 
-  // FETCH LEAVE REQUEST DETAIL
-  componentDidMount = () => {
-    const { dispatch, id = '' } = this.props;
-    dispatch({
-      type: 'timeOff/fetchCompoffRequestById',
-      id,
-    });
-  };
-
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
@@ -203,7 +194,7 @@ class RequestInformation extends PureComponent {
                         <Col span={7}>
                           Total:{' '}
                           <span style={{ fontWeight: 'bold' }}>
-                            {totalHours} hours ({totalHours / 24} days)
+                            {totalHours} hours ({parseFloat(totalHours / 24).toFixed(2)} days)
                           </span>
                         </Col>
                         <Col span={7} />

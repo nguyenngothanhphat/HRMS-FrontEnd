@@ -38,15 +38,6 @@ class RequestInformation extends PureComponent {
     this.setViewPolicyModal(true);
   };
 
-  // FETCH LEAVE REQUEST DETAIL
-  componentDidMount = () => {
-    const { dispatch, id = '' } = this.props;
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestById',
-      id,
-    });
-  };
-
   refreshPage = () => {
     setTimeout(() => {
       window.location.reload(false);

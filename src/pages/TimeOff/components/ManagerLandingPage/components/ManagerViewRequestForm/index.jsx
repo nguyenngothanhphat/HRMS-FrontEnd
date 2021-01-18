@@ -8,7 +8,7 @@ import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
   timeOff,
-  loadingFetchLeaveRequestById: loading.effects['timeOff/loadingFetchLeaveRequestById'],
+  loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
 }))
 class ManagerViewRequestForm extends PureComponent {
   constructor(props) {
@@ -92,10 +92,6 @@ class ManagerViewRequestForm extends PureComponent {
       loadingFetchLeaveRequestById,
     } = this.props;
 
-    const {
-      match: { params: { reId: id = '' } = {} },
-    } = this.props;
-
     return (
       <PageContainer>
         <div className={styles.ManagerViewRequestForm}>
@@ -122,7 +118,7 @@ class ManagerViewRequestForm extends PureComponent {
           {!loadingFetchLeaveRequestById && employeeId !== '' && (
             <Row className={styles.container} gutter={[20, 20]}>
               <Col xs={24} lg={16}>
-                <RequestInformation id={id} employeeId={employeeId} />
+                <RequestInformation employeeId={employeeId} />
               </Col>
               <Col xs={24} lg={8}>
                 <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
