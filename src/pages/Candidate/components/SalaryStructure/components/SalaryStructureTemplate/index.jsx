@@ -123,10 +123,15 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { settings = [] } = this.props;
-    const data = settings?.find((item) => item.order === order);
+    const { salaryStructure = [] } = this.props;
+    const data = salaryStructure?.find((item) => item.order === order) || {};
     const { value = '', key, edit = false, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
+
+    // console.log(salaryStructure);
+    // console.log(order);
+    // console.log(data);
+    // return null;
 
     if (edit && isEditted) {
       if (isNumber) {
@@ -163,7 +168,7 @@ class SalaryStructureTemplate extends PureComponent {
             data.order === ' ' ? `big-text` : null
           }`}
         >
-          {`${current}${value}`}
+          {`${current} ${value}`}
         </span>
       );
     }
