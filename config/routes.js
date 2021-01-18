@@ -77,6 +77,33 @@ const routes = [
         ],
       },
       {
+        path: '/account-setup',
+        component: '../layouts/AccountSetupLayout',
+        // authority: ['candidate'],
+        routes: [
+          {
+            path: '/account-setup',
+            component: './AccountSetup',
+            name: 'Account Setup',
+          },
+          {
+            path: '/account-setup/get-started',
+            component: './GetStarted',
+            name: 'Getting Started',
+          },
+          {
+            path: '/account-setup/get-started/company-profile/:reId',
+            component: './CompanyProfile',
+            name: 'Company Profile',
+          },
+          {
+            path: '/account-setup/get-started/setup-employee-directory/:reId',
+            component: './SetupEmployeeDirectory',
+            name: 'Setup Employee Directory',
+          },
+        ],
+      },
+      {
         path: '/',
         component: '../layouts/BasicLayout',
         authority: [
@@ -240,7 +267,7 @@ const routes = [
             name: 'View timeoff request',
             hideInMenu: true,
             component: './TimeOff/components/ManagerLandingPage/components/ManagerViewRequestForm',
-            // authority: ['employee'],
+            authority: ['hr-manager', 'manager'],
           },
           {
             path: '/time-off/view-compoff-request/:reId',
@@ -248,6 +275,13 @@ const routes = [
             hideInMenu: true,
             component: './TimeOff/components/EmployeeLandingPage/components/ViewCompoffRequestForm',
             // authority: ['employee'],
+          },
+          {
+            path: '/time-off/manager-view-compoff/:reId',
+            name: 'View compoff request',
+            hideInMenu: true,
+            component: './TimeOff/components/ManagerLandingPage/components/ManagerViewCompoffForm',
+            authority: ['hr-manager', 'manager'],
           },
           {
             // path: '/time-off/new-leave-request',
@@ -488,6 +522,7 @@ const routes = [
           },
         ],
       },
+
       {
         component: './404',
       },

@@ -5,14 +5,14 @@ import {
   getLeaveBalanceOfUser,
   getLeaveRequestOfEmployee,
   addLeaveRequest,
-  withdrawLeaveRequest,
+  removeLeaveRequestOnDatabase,
   addCompoffRequest,
   updateCompoffRequest,
   getMyCompoffRequests,
   getCompoffRequestById,
   getTimeOffTypes,
   getEmailsListByCompany,
-  getProjectsListByCompany,
+  getProjectsListByEmployee,
   getLeaveRequestById,
   updateLeaveRequestById,
   saveDraftLeaveRequest,
@@ -22,11 +22,30 @@ import {
   uploadFile,
   uploadBalances,
   withdrawCompoffRequest,
+  reportingManagerApprove,
+  reportingManagerReject,
+  // WITHDRAW
+  employeeWithdrawInProgress,
+  employeeWithdrawApproved,
+  managerApproveWithdrawRequest,
+  managerRejectWithdrawRequest,
+  // compoff approval flow
+  getCompoffApprovalFlow,
+  approveCompoffRequest,
+  rejectCompoffRequest,
+  // approve, reject multiple requests
+  approveMultipleTimeoffRequest,
+  rejectMultipleTimeoffRequest,
+  approveMultipleCompoffRequest,
+  rejectMultipleCompoffRequest,
 } from '../services/timeOff';
 
 const timeOff = {
   namespace: 'timeOff',
   state: {
+    currentLeaveTypeTab: '1',
+    currentMineOrTeamTab: '1',
+    currentFilterTab: '1',
     holidaysList: [],
     allMyLeaveRequests: {},
     leavingList: [],
@@ -39,6 +58,7 @@ const timeOff = {
     emailsList: [],
     projectsList: [],
     viewingLeaveRequest: {},
+    viewingCompoffRequest: {},
     savedDraftLR: {},
     teamCompoffRequests: {},
     teamLeaveRequests: {},
@@ -46,6 +66,8 @@ const timeOff = {
     balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
+    compoffApprovalFlow: {},
+    currentUserRole: '', // employee, manager, hr-manager
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -177,18 +199,16 @@ const timeOff = {
         return {};
       }
     },
-    *withdrawLeaveRequest({ id = '' }, { call, put }) {
+    *removeLeaveRequestOnDatabase({ id = '' }, { call, put }) {
       try {
-        if (id !== '') {
-          const response = yield call(withdrawLeaveRequest, { id });
-          const { statusCode, data: withdrawnLeaveRequest = [] } = response;
-          if (statusCode !== 200) throw response;
-          yield put({
-            type: 'save',
-            payload: { withdrawnLeaveRequest },
-          });
-          return statusCode;
-        }
+        const response = yield call(removeLeaveRequestOnDatabase, { id });
+        const { statusCode, data: withdrawnLeaveRequest = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { withdrawnLeaveRequest },
+        });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
       }
@@ -254,7 +274,7 @@ const timeOff = {
         return {};
       }
     },
-    *fetchMyCompoffRequests({ status = '' }, { call, put }) {
+    *fetchMyCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getMyCompoffRequests, { status });
@@ -286,7 +306,7 @@ const timeOff = {
       try {
         if (id !== '') {
           const response = yield call(getCompoffRequestById, { id });
-          const { statusCode, data: viewingCompoffRequest = [] } = response;
+          const { statusCode, data: viewingCompoffRequest = {} } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
@@ -332,13 +352,9 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchProjectsListByCompany({ payload: { company = '', location = '' } = {} }, { call, put }) {
+    *fetchProjectsListByEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getProjectsListByCompany, {
-          company,
-          location,
-        });
-        // console.log('email res', response);
+        const response = yield call(getProjectsListByEmployee, payload);
         const { statusCode, data: projectsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -351,7 +367,7 @@ const timeOff = {
     },
 
     // MANAGER
-    *fetchTeamCompoffRequests({ status = '' }, { call, put }) {
+    *fetchTeamCompoffRequests({ status = [] }, { call, put }) {
       try {
         if (status !== '') {
           const response = yield call(getTeamCompoffRequests, { status });
@@ -466,12 +482,234 @@ const timeOff = {
         // dialog(errors);
       }
     },
+
+    // REPORTING MANAGER
+    *reportingManagerApprove({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(reportingManagerApprove, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *reportingManagerReject({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(reportingManagerReject, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
+    *approveMultipleTimeoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(approveMultipleTimeoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rejectMultipleTimeoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rejectMultipleTimeoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
+    // WITHDRAW (INCLUDING SEND EMAILs)
+    *employeeWithdrawInProgress({ payload = {} }, { call }) {
+      try {
+        const response = yield call(employeeWithdrawInProgress, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *employeeWithdrawApproved({ payload = {} }, { call }) {
+      try {
+        const response = yield call(employeeWithdrawApproved, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *managerApproveWithdrawRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(managerApproveWithdrawRequest, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *managerRejectWithdrawRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(managerRejectWithdrawRequest, payload);
+        const { statusCode, data: { leaveRequest = {} } = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingLeaveRequest',
+          payload: {
+            status: leaveRequest.status,
+            comment: leaveRequest.comment,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *getCompoffApprovalFlow({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getCompoffApprovalFlow, payload);
+        const { statusCode, data: compoffApprovalFlow = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            compoffApprovalFlow,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *approveCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(approveCompoffRequest, payload);
+        const { statusCode, data: compoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+    *rejectCompoffRequest({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(rejectCompoffRequest, payload);
+        const { statusCode, data: compoffRequest = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveViewingCompoffRequest',
+          payload: {
+            status: compoffRequest.status,
+            commentCLA: compoffRequest.commentCLA,
+            commentPM: compoffRequest.commentPM,
+            currentStep: compoffRequest.currentStep,
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return 0;
+    },
+
+    // multiple compoff request
+    *approveMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(approveMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *rejectMultipleCompoffRequest({ payload = {} }, { call }) {
+      try {
+        const response = yield call(rejectMultipleCompoffRequest, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
   },
   reducers: {
     save(state, action) {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveViewingLeaveRequest(state, action) {
+      const { viewingLeaveRequest } = state;
+      return {
+        ...state,
+        viewingLeaveRequest: {
+          ...viewingLeaveRequest,
+          ...action.payload,
+        },
+      };
+    },
+    saveViewingCompoffRequest(state, action) {
+      const { viewingCompoffRequest } = state;
+      return {
+        ...state,
+        viewingCompoffRequest: {
+          ...viewingCompoffRequest,
+          ...action.payload,
+        },
       };
     },
   },

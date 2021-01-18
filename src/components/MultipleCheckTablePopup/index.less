@@ -1,0 +1,66 @@
+.MultipleCheckTablePopup {
+  z-index: 10;
+  display: block;
+  position: fixed;
+  // width: 100%;
+  // margin: 0 auto;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  margin: 20px 47px 20px 0;
+  //   padding: 10px 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  //   border: 1px solid #2c6df9;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.281);
+  .container {
+    display: flex;
+    flex-direction: row;
+    .button {
+      padding: 10px;
+      .icon {
+        min-width: 25px;
+        display: inline-block;
+        margin: 0 auto;
+        margin-right: 10px;
+      }
+      //   margin-right: 10px;
+      cursor: pointer;
+      span {
+        font-weight: bold;
+        font-weight: 13px;
+      }
+      .approve {
+        color: #2c6df9;
+      }
+      .reject {
+        color: #fd4546;
+      }
+      &:hover {
+        transition: 0.3s;
+        img {
+          filter: brightness(0) invert(1);
+          transition: 0.3s;
+        }
+        span {
+          color: white;
+          transition: 0.3s;
+        }
+      }
+    }
+    .button1 {
+      .button();
+      &:hover {
+        background-color: #2c6df9;
+        transition: 0.3s;
+      }
+    }
+    .button2 {
+      .button();
+      &:hover {
+        background-color: #fd4546;
+        transition: 0.3s;
+      }
+    }
+  }
+}

@@ -16,6 +16,16 @@ class TimeOffRequestsTable extends PureComponent {
     this.state = {};
   }
 
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+      },
+    });
+  };
+
   renderTableTitle = {
     left: (
       <div className={styles.renderTableTitle}>
@@ -25,12 +35,14 @@ class TimeOffRequestsTable extends PureComponent {
   };
 
   render() {
+    const { timeOff: { currentLeaveTypeTab = '' } = {} } = this.props;
     return (
       <div className={styles.TimeOffRequestsTable}>
         <Tabs
           tabPosition="left"
           tabBarGutter={40}
-          defaultActiveKey="1"
+          activeKey={currentLeaveTypeTab}
+          onTabClick={(activeKey) => this.saveCurrentTypeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
           destroyInactiveTabPane
         >

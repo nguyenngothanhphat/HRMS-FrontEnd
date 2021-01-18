@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
 import TeamLeaveTable from '../TeamLeaveTable';
 import TeamCompoffTable from '../TeamCompoffTable';
@@ -9,9 +8,10 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-@connect(({ timeOff, user }) => ({
+@connect(({ timeOff, user, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
   user,
+  currentUserRole,
 }))
 class TimeOffRequestTab extends PureComponent {
   constructor(props) {
@@ -23,6 +23,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength: 0,
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
+      onHoldLength: 0,
     };
   }
 
@@ -60,21 +61,53 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   fetchFilteredDataFromServer = (filterTab) => {
-    const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
+    const {
+      dispatch,
+      tab = 0,
+      type: tabType = 0,
+      category = '',
+      currentUserRole = '',
+    } = this.props;
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
-    if (filterTab === '1') {
-      status = 'IN-PROGRESS';
-    }
-    if (filterTab === '2') {
-      status = 'APPROVED';
-    }
-    if (filterTab === '3') {
-      status = 'REJECTED';
-    }
-    if (filterTab === '4') {
-      status = 'DRAFTS';
+    if (tabType === 1) {
+      if (filterTab === '1') {
+        status = 'IN-PROGRESS';
+      }
+      if (filterTab === '2') {
+        status = 'ACCEPTED';
+      }
+      if (filterTab === '3') {
+        status = 'REJECTED';
+      }
+      if (filterTab === '4') {
+        status = 'DRAFTS';
+      }
+      if (filterTab === '5') {
+        status = 'ON-HOLD';
+      }
+    } else if (tabType === 2) {
+      // compoff
+      if (filterTab === '1') {
+        if (currentUserRole === 'ADMIN-CLA') {
+          status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+        } else status = ['IN-PROGRESS'];
+      }
+      if (filterTab === '2') {
+        if (currentUserRole === 'ADMIN-CLA') {
+          status = ['ACCEPTED'];
+        } else status = ['IN-PROGRESS-NEXT', 'ACCEPTED'];
+      }
+      if (filterTab === '3') {
+        status = ['REJECTED'];
+      }
+      if (filterTab === '4') {
+        status = ['DRAFTS'];
+      }
+      if (filterTab === '5') {
+        status = ['ON-HOLD'];
+      }
     }
 
     const commonFunction = (res = {}) => {
@@ -129,21 +162,36 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   componentDidMount = () => {
-    this.fetchAllData();
-    this.fetchFilteredDataFromServer('1');
+    const { timeOff: { currentFilterTab } = {} } = this.props;
+    // this.fetchAllData();
+    // this.fetchFilteredDataFromServer(currentFilterTab);
+    this.setSelectedFilterTab(currentFilterTab);
+  };
+
+  saveCurrentTab = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentFilterTab: String(type),
+      },
+    });
   };
 
   setSelectedFilterTab = (id) => {
     this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
+    this.saveCurrentTab(id);
 
     let selectedTab = 'IN-PROGRESS';
     if (id === '2') {
-      selectedTab = 'APPROVED';
+      selectedTab = 'ACCEPTED';
     } else if (id === '3') {
       selectedTab = 'REJECTED';
     } else if (id === '4') {
       selectedTab = 'DRAFTS';
+    } else if (id === '5') {
+      selectedTab = 'ON-HOLD';
     }
 
     this.setState({
@@ -152,19 +200,41 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   countTotal = (newData) => {
+    const { currentUserRole = '' } = this.props;
     const inProgressLength = [];
     const approvedLength = [];
     const rejectedLength = [];
     const draftLength = [];
+    const onHoldLength = [];
 
     newData.forEach((row) => {
       const { status = '' } = row;
+      if (currentUserRole === 'ADMIN-CLA') {
+        switch (status) {
+          case 'IN-PROGRESS-NEXT': {
+            inProgressLength.push(row);
+            break;
+          }
+          default:
+            break;
+        }
+      } else if (currentUserRole !== 'ADMIN-CLA') {
+        switch (status) {
+          case 'IN-PROGRESS-NEXT': {
+            approvedLength.push(row);
+            break;
+          }
+          default:
+            break;
+        }
+      }
+
       switch (status) {
         case 'IN-PROGRESS': {
           inProgressLength.push(row);
           break;
         }
-        case 'APPROVED': {
+        case 'ACCEPTED': {
           approvedLength.push(row);
           break;
         }
@@ -176,6 +246,10 @@ class TimeOffRequestTab extends PureComponent {
           draftLength.push(row);
           break;
         }
+        case 'ON-HOLD': {
+          onHoldLength.push(row);
+          break;
+        }
         default:
           break;
       }
@@ -185,6 +259,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: approvedLength.length,
       rejectedLength: rejectedLength.length,
       draftLength: draftLength.length,
+      onHoldLength: onHoldLength.length,
     });
   };
 
@@ -198,6 +273,7 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       selectedTab,
+      onHoldLength,
     } = this.state;
 
     const dataNumber = {
@@ -205,6 +281,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength,
       rejectedLength,
       draftLength,
+      onHoldLength,
     };
 
     return (
@@ -215,36 +292,25 @@ class TimeOffRequestTab extends PureComponent {
           category={category}
         />
         <div className={styles.tableContainer}>
-          {
-            //     data.length === 0 ? (
-            //   <div className={styles.emptyTable}>
-            //     <img src={EmptyIcon} alt="empty-table" />
-            //     <p className={styles.describeTexts}>
-            //       {category === 'MY' && (
-            //         <>
-            //           You have not applied for any Leave requests. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //       {category === 'TEAM' && (
-            //         <>
-            //           No Leave requests received. <br />
-            //           Submitted Casual, Sick & Compoff requests will be displayed here.
-            //         </>
-            //       )}
-            //     </p>
-            //   </div>
-            // ) : (
-          }
           <div>
             {type === 1 && category === 'TEAM' && (
-              <TeamLeaveTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamLeaveTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 1 && category === 'MY' && (
               <MyLeaveTable data={formatData} selectedTab={selectedTab} />
             )}
             {type === 2 && category === 'TEAM' && (
-              <TeamCompoffTable data={formatData} category={category} selectedTab={selectedTab} />
+              <TeamCompoffTable
+                data={formatData}
+                category={category}
+                selectedTab={selectedTab}
+                onRefreshTable={this.setSelectedFilterTab}
+              />
             )}
             {type === 2 && category === 'MY' && (
               <MyCompoffTable data={formatData} selectedTab={selectedTab} />

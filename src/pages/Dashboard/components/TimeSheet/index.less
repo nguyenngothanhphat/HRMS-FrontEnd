@@ -7,6 +7,7 @@
     font-size: 13px;
     line-height: 20px;
     color: #161c29;
+    margin-left: 13px;
   }
   .btnFillTimeSheet {
     width: 138px;
@@ -19,12 +20,13 @@
     color: #ffffff;
     border: none;
     margin-top: 10px;
+    margin-left: 13px;
 
     &:hover {
-      -webkit-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.4);
-      -moz-box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.4);
-      box-shadow: 2px 2px 8px 0px rgba(0,0,0,0.4);
-      transition: all .3s ease-in-out;
+      -webkit-box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.4);
+      -moz-box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.4);
+      box-shadow: 2px 2px 8px 0px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease-in-out;
     }
   }
   width: 100%;
@@ -34,10 +36,11 @@
   box-sizing: border-box;
   border-radius: 5px;
   overflow: hidden;
-  padding: 24px;
+  padding: 20px;
   table > thead {
     display: none;
   }
+
   :global {
     .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
       .ant-select-selector {
@@ -62,6 +65,10 @@
     .ant-picker-calendar-header .ant-picker-calendar-mode-switch {
       display: none;
     }
+
+    .ant-picker-content {
+      margin: auto !important;
+    }
   }
   .iconCheck {
     color: #fff;
@@ -69,13 +76,14 @@
     font-weight: 600;
   }
   .date {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    margin-bottom: 13px;
+    margin-bottom: 9px;
+    margin-left: 7px;
   }
   .check {
     background: #00c598;
@@ -101,5 +109,50 @@
     font-size: 12px;
     line-height: 14px;
     color: #ffffff;
+  }
+
+  .customHeader {
+    margin-bottom: 20px;
+    .monthYearControl {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .leftPart {
+        justify-content: flex-start;
+        display: flex;
+        :global {
+          .ant-select {
+            padding-right: 5px;
+          }
+        }
+      }
+
+      .rightPart {
+        span {
+          font-size: 18px;
+          cursor: pointer;
+          &:hover {
+            color: #2c6df9;
+            background-color: rgb(219, 219, 219);
+          }
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  .arrowBtn {
+    cursor: pointer;
+  }
+
+  .nextArrowBtn {
+    margin-left: 16px;
+  }
+
+  .headerText {
+    font-size: 16px;
+    font-weight: 700;
+    font-style: normal;
+    line-height: 18.75px;
   }
 }

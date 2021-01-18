@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
@@ -75,8 +76,8 @@ class UploadImage extends Component {
         action={(file) => this.handleUpload(file)}
         className={styles.UploadImageFile}
       >
-        {check ? '' : <span className={styles.ShowTestValidation}>File must me under 5 Mb </span>}
-        {content} {check ? '' : <img src={undo} alt="undo" />}
+        {!check && <span className={styles.ShowTestValidation}>File must me under 5 Mb </span>}
+        {content} {!check && <img src={undo} alt="undo" />}
       </Upload>
     );
   }

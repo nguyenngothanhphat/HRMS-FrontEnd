@@ -1,17 +1,20 @@
 import React, { PureComponent } from 'react';
 import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
-import Balances from './components/Balances';
+// import Balances from './components/Balances';
 import SetupTimeoff from './components/SetupTimeoff';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-export default class TimeOff extends PureComponent {
+@connect(({ timeOff }) => ({
+  timeOff,
+}))
+class TimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,12 +28,44 @@ export default class TimeOff extends PureComponent {
   };
 
   findRole = (roles) => {
+    const { dispatch } = this.props;
+
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || employee || 'employee';
+    const admincla = roles.find((item) => item === 'admin-cla');
+
+    let role = '';
+    role = hrManager || manager || employee || 'employee';
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentUserRole: role,
+      },
+    });
+
+    if (admincla) {
+      dispatch({
+        type: 'timeOff/save',
+        payload: {
+          currentUserRole: 'ADMIN-CLA',
+        },
+      });
+    }
     return role;
   };
+
+  // componentWillUnmount = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'timeOff/save',
+  //     payload: {
+  //       currentLeaveTypeTab: '1',
+  //       currentMineOrTeamTab: '1',
+  //       currentFilterTab: '1',
+  //     },
+  //   });
+  // };
 
   componentDidMount = () => {
     const listRole = localStorage.getItem('antd-pro-authority');
@@ -92,3 +127,4 @@ export default class TimeOff extends PureComponent {
     );
   }
 }
+export default TimeOff;

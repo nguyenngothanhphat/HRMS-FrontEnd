@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin } from 'antd';
+import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
@@ -10,7 +11,8 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
-  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  loadingEmployeeWithdrawInProgress: loading.effects['timeOff/employeeWithdrawInProgress'],
+  loadingEmployeeWithdrawApproved: loading.effects['timeOff/employeeWithdrawApproved'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -20,8 +22,21 @@ class RequestInformation extends PureComponent {
     this.state = {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
+      viewPolicyModal: false,
     };
   }
+
+  // view policy modal
+  setViewPolicyModal = (value) => {
+    this.setState({
+      viewPolicyModal: value,
+    });
+  };
+
+  // on policy link clicked
+  onLinkClick = () => {
+    this.setViewPolicyModal(true);
+  };
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
@@ -30,6 +45,12 @@ class RequestInformation extends PureComponent {
       type: 'timeOff/fetchLeaveRequestById',
       id,
     });
+  };
+
+  refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
   };
 
   // EDIT BUTTON
@@ -55,30 +76,49 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
         .locale('en')
-        .format('MM.DD.YYYY')}`;
+        .format('DD.MM.YYYY')}`;
     }
     return leaveTimes;
   };
 
   // WITHDRAW CLICKED
   withDraw = (status) => {
-    if (status !== 'APPROVED') this.setShowWithdrawModal(true);
+    if (status !== 'ACCEPTED') this.setShowWithdrawModal(true);
     else this.setShowWithdraw2Modal(true);
   };
 
   // ON WITHDRAW WHEN A TICKET IS DRAFT OR IN PROGRESS
-  onProceed = async () => {
+  onProceedInProgress = async () => {
     const {
       timeOff: {
-        viewingLeaveRequest: { _id: id = '', ticketID = '', type: { name = '' } = {} } = {},
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
       } = {},
     } = this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
-      type: 'timeOff/withdrawLeaveRequest',
-      id,
+      type: 'timeOff/employeeWithdrawInProgress',
+      payload: { _id },
+    });
+    if (statusCode === 200) {
+      history.push({
+        pathname: `/time-off`,
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
+      });
+    }
+  };
+
+  onProceedDrafts = async () => {
+    const {
+      timeOff: {
+        viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+      } = {},
+    } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/removeLeaveRequestOnDatabase',
+      id: _id,
     });
     if (statusCode === 200) {
       history.push({
@@ -89,9 +129,20 @@ class RequestInformation extends PureComponent {
   };
 
   // ON WITHDRAW WHEN A TICKET WAS APPROVED
-  onProceed2 = async (title, reason) => {
-    // eslint-disable-next-line no-console
-    console.log('withdraw', title, reason);
+  onProceedApproved = async (title, reason) => {
+    const { timeOff: { viewingLeaveRequest: { _id = '' } = {} } = {} } = this.props;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/employeeWithdrawApproved',
+      payload: { _id, title, reason },
+    });
+    if (statusCode === 200) {
+      notification.success({
+        message: 'Withdraw request sent!',
+      });
+      this.setShowWithdraw2Modal(false);
+      this.refreshPage();
+    }
   };
 
   checkWithdrawValid = (fromDate) => {
@@ -101,11 +152,12 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal, showWithdraw2Modal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewPolicyModal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
-      loadingWithdrawLeaveRequest,
+      loadingEmployeeWithdrawInProgress,
+      loadingEmployeeWithdrawApproved,
     } = this.props;
     const {
       ticketID = '',
@@ -118,6 +170,7 @@ class RequestInformation extends PureComponent {
       // onDate = '',
       description = '',
       type: { name = '', type = '', shortType = '' } = {},
+      comment = '',
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
@@ -156,12 +209,30 @@ class RequestInformation extends PureComponent {
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
                   <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
-                  <span className={styles.smallNotice}>
-                    <span className={styles.normalText}>
-                      {shortType}s are covered under{' '}
-                      <span className={styles.link}>Standard Policy</span>
+                  {type === 'A' && (
+                    <span className={styles.smallNotice}>
+                      <span className={styles.normalText}>
+                        {shortType}s are covered under{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Standard Policy
+                        </span>
+                      </span>
                     </span>
-                  </span>
+                  )}
+                  {type === 'B' && (
+                    <span
+                      style={{
+                        marginLeft: '10px',
+                        color: '#00C598',
+                        padding: '5px 10px',
+                        fontSize: '10px',
+                        boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      Advanced leave activated
+                    </span>
+                  )}
                 </Col>
               </Row>
               <Row>
@@ -201,10 +272,18 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
               </Row>
+              {status === 'REJECTED' && (
+                <Row>
+                  <Col span={6}>Request Rejection Comments</Col>
+                  <Col span={18} className={styles.detailColumn}>
+                    <span>{comment}</span>
+                  </Col>
+                </Row>
+              )}
             </div>
             {(status === 'DRAFTS' ||
               status === 'IN-PROGRESS' ||
-              (status === 'APPROVED' && checkWithdrawValid)) && (
+              (status === 'ACCEPTED' && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
@@ -220,19 +299,20 @@ class RequestInformation extends PureComponent {
           </>
         )}
         <WithdrawModal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
-          onProceed={this.onProceed}
+          onProceed={status === 'IN-PROGRESS' ? this.onProceedInProgress : this.onProceedDrafts}
           onClose={this.setShowWithdrawModal}
           status={status}
         />
         <Withdraw2Modal
-          loading={loadingWithdrawLeaveRequest}
+          loading={loadingEmployeeWithdrawApproved}
           visible={showWithdraw2Modal}
-          onProceed={this.onProceed2}
+          onProceed={this.onProceedApproved}
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />
+        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
       </div>
     );
   }

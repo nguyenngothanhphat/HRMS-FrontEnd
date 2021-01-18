@@ -5,11 +5,15 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
+import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
+import RejectCommentModal from '../RejectCommentModal';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading1: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading2: loading.effects['timeOff/fetchTeamCompoffRequests'],
+  loading3: loading.effects['timeOff/approveMultipleCompoffRequest'],
+  loading4: loading.effects['timeOff/rejectMultipleCompoffRequest'],
 }))
 class TeamCompoffTable extends PureComponent {
   columns = [
@@ -27,6 +31,11 @@ class TeamCompoffTable extends PureComponent {
           </span>
         );
       },
+      defaultSortOrder: ['ascend'],
+      sorter: {
+        compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
+      },
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Requestee',
@@ -61,8 +70,13 @@ class TeamCompoffTable extends PureComponent {
     {
       title: 'Comment',
       dataIndex: 'comment',
-      align: 'center',
-      render: () => <span />,
+      align: 'left',
+      render: (comment) =>
+        comment ? (
+          <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
+        ) : (
+          <span />
+        ),
     },
     {
       title: 'Assigned',
@@ -94,15 +108,26 @@ class TeamCompoffTable extends PureComponent {
     {
       title: 'Action',
       align: 'left',
-      dataIndex: '_id',
-      render: (_id) => {
+      dataIndex: 'id',
+      render: (id) => {
+        const { ticketID = '', _id = '' } = id;
         const { selectedTab = '' } = this.props;
-        if (selectedTab === 'IN-PROGRESS')
+        if (selectedTab === 'IN-PROGRESS' || selectedTab === 'IN-PROGRESS-NEXT')
           return (
             <div className={styles.rowAction}>
-              <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
-              <img src={ApproveIcon} onClick={this.onApproveClick} alt="approve" />
-              <img src={CancelIcon} onClick={this.onCancelClick} alt="cancel" />
+              <Tooltip title="View">
+                <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
+              </Tooltip>
+              <Tooltip title="Approve">
+                <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
+              </Tooltip>
+              <Tooltip title="Reject">
+                <img
+                  src={CancelIcon}
+                  onClick={() => this.onCancelClick(_id, ticketID)}
+                  alt="cancel"
+                />
+              </Tooltip>
             </div>
           );
 
@@ -120,13 +145,18 @@ class TeamCompoffTable extends PureComponent {
     this.state = {
       pageSelected: 1,
       selectedRowKeys: [],
+      commentModalVisible: false,
+      rejectingId: '',
+      rejectingTicketID: '',
+      multipleCheckModalVisible: false,
+      rejectMultiple: false,
     };
   }
 
   // HANDLE TEAM REQUESTS
   onOpenClick = (_id) => {
     history.push({
-      pathname: `/time-off/manager-view-request/${_id}`,
+      pathname: `/time-off/manager-view-compoff/${_id}`,
       // state: { location: name },
     });
   };
@@ -135,12 +165,48 @@ class TeamCompoffTable extends PureComponent {
     this.onOpenClick(_id);
   };
 
-  onApproveClick = () => {
-    alert('Approve');
+  onRefreshTable = (onMovedTab) => {
+    const { onRefreshTable = () => {} } = this.props;
+    onRefreshTable(onMovedTab);
   };
 
-  onCancelClick = () => {
-    alert('Cancel');
+  onApproveClick = async (_id) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'timeOff/approveCompoffRequest',
+      payload: {
+        _id,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.onRefreshTable('2');
+    }
+  };
+
+  onCancelClick = (_id, ticketID) => {
+    this.setState({
+      rejectingId: _id,
+      rejectingTicketID: ticketID,
+    });
+    this.toggleCommentModal(true);
+  };
+
+  onReject = async (comment) => {
+    const { dispatch } = this.props;
+    const { rejectingId } = this.state;
+    const res = await dispatch({
+      type: 'timeOff/rejectCompoffRequest',
+      payload: {
+        _id: rejectingId,
+        comment,
+      },
+    });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.toggleCommentModal(false);
+      this.onRefreshTable('3');
+    }
   };
 
   // view request
@@ -165,21 +231,26 @@ class TeamCompoffTable extends PureComponent {
   };
 
   onSelectChange = (selectedRowKeys) => {
-    // eslint-disable-next-line no-console
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+    let visible = false;
+    if (selectedRowKeys.length > 0) visible = true;
+    const { selectedTab = '' } = this.props;
+    if (['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab))
+      this.setState({ multipleCheckModalVisible: visible });
   };
 
   // PARSE DATA FOR TABLE
   processData = (data) => {
     return data.map((value) => {
       const {
-        manager: { generalInfo: generalInfoA = {} } = {},
-        cc = [],
         ticketID = '',
         _id = '',
         extraTime = [],
+        onDate,
         employee: { generalInfo: { firstName = '', lastName = '' } = {} },
+        approvalFlow: { step1 = {}, step2 = {}, step3 = {} } = {},
+        commentPM = '',
+        commentCLA = '',
       } = value;
 
       let duration = '';
@@ -191,13 +262,15 @@ class TeamCompoffTable extends PureComponent {
         )}`;
       }
 
-      let employeeFromCC = [];
-      if (cc.length > 0) {
-        employeeFromCC = cc[0].map((each) => {
-          return each;
-        });
-      }
-      const assigned = [generalInfoA, ...employeeFromCC];
+      const oneAssign = (step) => {
+        const { generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {} } = step;
+        return {
+          firstName: fn,
+          lastName: ln,
+          avatar,
+        };
+      };
+      const assigned = [oneAssign(step1), oneAssign(step2), oneAssign(step3)];
 
       return {
         ...value,
@@ -206,15 +279,87 @@ class TeamCompoffTable extends PureComponent {
         id: {
           ticketID,
           _id,
+          onDate,
         },
+        comment: commentCLA || commentPM,
         requestee: `${firstName} ${lastName}`,
       };
     });
   };
 
+  toggleCommentModal = (value) => {
+    this.setState({
+      commentModalVisible: value,
+    });
+    if (!value) {
+      // this.setState({
+      //   multipleCheckModalVisible: false,
+      // });
+      setTimeout(() => {
+        this.setState({
+          rejectMultiple: false,
+        });
+      }, 500);
+    }
+  };
+
+  // on multiple checkbox
+  onMultipleApprove = async () => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/approveMultipleCompoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.onRefreshTable('2');
+    }
+  };
+
+  onMultipleCancelClick = () => {
+    this.toggleCommentModal(true);
+    this.setState({
+      rejectMultiple: true,
+    });
+  };
+
+  onMultipleReject = async (comment) => {
+    const { selectedRowKeys } = this.state;
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'timeOff/rejectMultipleCompoffRequest',
+      payload: {
+        ticketList: selectedRowKeys,
+        comment,
+      },
+    });
+    if (statusCode === 200) {
+      this.setState({
+        selectedRowKeys: [],
+        multipleCheckModalVisible: false,
+      });
+      this.toggleCommentModal(false);
+      this.onRefreshTable('3');
+    }
+  };
+
   render() {
-    const { data = [], loading1, loading2, selectedTab = '' } = this.props;
-    const { selectedRowKeys, pageSelected } = this.state;
+    const { data = [], loading1, loading2, loading3, loading4, selectedTab = '' } = this.props;
+    const {
+      selectedRowKeys,
+      pageSelected,
+      commentModalVisible,
+      rejectingTicketID,
+      multipleCheckModalVisible,
+      rejectMultiple,
+    } = this.state;
+
     const rowSize = 10;
 
     const parsedData = this.processData(data);
@@ -250,7 +395,7 @@ class TeamCompoffTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === 'REJECTED' || selectedTab === 'APPROVED'
+      selectedTab === 'REJECTED' || selectedTab === 'ACCEPTED'
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
@@ -264,8 +409,25 @@ class TeamCompoffTable extends PureComponent {
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
-          rowKey={(id) => id.ticketID}
+          rowKey={(id) => id._id}
         />
+        <RejectCommentModal
+          visible={commentModalVisible}
+          onClose={() => this.toggleCommentModal(false)}
+          onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
+          ticketID={rejectingTicketID}
+          rejectMultiple={rejectMultiple}
+          loading={loading4}
+        />
+        {multipleCheckModalVisible && ['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab) && (
+          <MultipleCheckTablePopup
+            onApprove={this.onMultipleApprove}
+            onReject={this.onMultipleCancelClick}
+            length={selectedRowKeys.length}
+            loading3={loading3}
+            loading4={loading4}
+          />
+        )}
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
@@ -124,7 +124,7 @@ class Dashboard extends PureComponent {
               <Carousel />
               <MyApps />
               <Row gutter={[12, 12]}>
-                <Col span={12}>
+                <Col span={14}>
                   <TabManageTeamWork
                     listMyTeam={listEmployeeMyTeam}
                     loadingMyTeam={fetchMyTeam}
@@ -132,13 +132,13 @@ class Dashboard extends PureComponent {
                     loadingProject={fetchListProject}
                   />
                 </Col>
-                <Col span={12}>
+                <Col span={10}>
                   <TimeSheet />
                 </Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
                 </Col>
-                <Col span={12}>
+                <Col span={10}>
                   <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
                 </Col>
               </Row>

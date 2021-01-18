@@ -3,7 +3,9 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import LeaveTimeRow from './LeaveTimeRow';
+
 import styles from './index.less';
 
 const { Option } = Select;
@@ -34,9 +36,55 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
+      numberOfDaySelectedTypeC: 0,
+      unpaidLeaveActivate: false,
+      negativeLeave: 0,
+      viewPolicyModal: false,
     };
   }
 
+  getTableTabIndexOfSubmittedType = (selectedType, selectedShortType) => {
+    switch (selectedShortType) {
+      case 'LWP':
+        return '3';
+      default:
+        break;
+    }
+    switch (selectedType) {
+      case 'A':
+        return '1';
+      case 'B':
+        return '1';
+      case 'C':
+        return '2';
+      case 'D':
+        return '4';
+      default:
+        return '1';
+    }
+  };
+
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    const { buttonState } = this.state;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+        currentMineOrTeamTab: '2', // my leave request tab has index "2"
+        currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
+      },
+    });
+  };
+
+  // view policy modal
+  setViewPolicyModal = (value) => {
+    this.setState({
+      viewPolicyModal: value,
+    });
+  };
+
+  // fetch email list of company
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
@@ -122,9 +170,18 @@ class RequestInformation extends PureComponent {
       const leaveTimeLists = resultDates.map((date) => (date ? date.timeOfDay : null));
       // }
 
+      // paid or unpaid leave?
+      let timeOffType = '';
+      if (type === 'B') {
+        timeOffType = this.getUnpaidLeaveIdOfTypeB(shortType, name);
+        this.setState({
+          unpaidLeaveActivate: true,
+        });
+      } else timeOffType = typeId;
+
       // set values from server to fields
       this.formRef.current.setFieldsValue({
-        timeOffType: typeId,
+        timeOffType,
         subject,
         durationFrom: fromDate === null ? null : moment(fromDate),
         durationTo: toDate === null ? null : moment(toDate),
@@ -135,7 +192,12 @@ class RequestInformation extends PureComponent {
 
       // set notice
       this.autoValueForToDate(type, shortType, moment(fromDate));
-      if ((type === 'A' || type === 'B') && moment(fromDate) !== null && moment(fromDate) !== '') {
+      if (
+        (type === 'A' || type === 'B') &&
+        moment(fromDate) !== null &&
+        moment(fromDate) !== '' &&
+        shortType === 'CL'
+      ) {
         this.setSecondNotice(`${shortType}s gets credited each month.`);
       }
 
@@ -147,19 +209,66 @@ class RequestInformation extends PureComponent {
   // GET REMAINING DAY
   getRemainingDay = (shortType) => {
     const {
-      timeOff: { totalLeaveBalance: { commonLeaves: { timeOffTypes = [] } = {} } = {} } = {},
+      timeOff: {
+        totalLeaveBalance: {
+          commonLeaves: { timeOffTypes = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypeC = [] } = {},
+        } = {},
+      } = {},
     } = this.props;
+
     let count = 0;
+    let total = 0;
+
     timeOffTypes.forEach((value) => {
+      const {
+        defaultSettings: { shortType: shortType1 = '', type = '' } = {},
+        currentAllowance = 0,
+      } = value;
+      if (shortType === shortType1 && type === 'A') {
+        count = currentAllowance;
+      }
+    });
+
+    timeOffTypeC.forEach((value) => {
       const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
       if (shortType === shortType1) {
-        count = currentAllowance;
+        total = currentAllowance;
       }
     });
 
     this.setState({
       remainingDayOfSelectedType: count,
+      numberOfDaySelectedTypeC: total,
     });
+
+    return count;
+  };
+
+  // get negative of timeoff type
+  getNegativeLeave = (timeOffTypes, shortType) => {
+    let result = 0;
+    timeOffTypes.forEach((type) => {
+      const {
+        defaultSettings: {
+          shortType: st1 = '',
+          type: t1 = '',
+          balance: { negative: { unlimited = false, unto = 0 } = {} } = {},
+        } = {},
+        currentAllowance = 0,
+      } = type;
+
+      if (shortType === st1 && t1 === 'A') {
+        if (unlimited) result = -1;
+        else result = unto;
+      }
+      // get unpaid currentAllowance in type B with same shortType
+      else if (shortType === st1 && t1 === 'B') {
+        result += currentAllowance;
+      }
+    });
+
+    return result;
   };
 
   // GET TIME OFF TYPE BY ID
@@ -169,16 +278,48 @@ class RequestInformation extends PureComponent {
     timeOffTypes.forEach((eachType) => {
       const { _id = '', name = '', shortType = '', type = '' } = eachType;
       if (id === _id) {
-        this.getRemainingDay(shortType);
+        const remainingDay = this.getRemainingDay(shortType);
         this.autoValueForToDate(type, shortType, durationFrom);
-        if ((type === 'A' || type === 'B') && durationFrom !== null && durationFrom !== '') {
+        if (
+          (type === 'A' || type === 'B') &&
+          durationFrom !== null &&
+          durationFrom !== '' &&
+          shortType === 'CL'
+        ) {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
+        }
+
+        if (
+          (type === 'A' || type === 'B') &&
+          durationFrom !== null &&
+          durationFrom !== '' &&
+          shortType !== 'CL'
+        ) {
+          this.setSecondNotice('');
+        }
+
+        // if remaining day = 0, activate unpaid leaves
+        let unpaidLeaveActivate = false;
+        let negativeLeave = 0;
+        if (remainingDay === 0) {
+          if (type === 'A') {
+            const { timeOff: { totalLeaveBalance: { commonLeaves = {} } = {} } = {} } = this.props;
+            const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
+            negativeLeave = this.getNegativeLeave(typesOfCommonLeaves, shortType);
+            if (negativeLeave !== 0) {
+              if (this.checkDuplicateTypeAAndB(typesOfCommonLeaves, shortType, 'B')) {
+                unpaidLeaveActivate = true;
+              }
+            }
+          }
         }
 
         this.setState({
           selectedShortType: shortType,
           selectedType: type,
           selectedTypeName: name,
+          unpaidLeaveActivate,
+          negativeLeave,
         });
       }
     });
@@ -196,9 +337,16 @@ class RequestInformation extends PureComponent {
     this.setState({
       showSuccessModal: value,
     });
+
     if (!value) {
+      const { selectedType, selectedShortType } = this.state;
+      const returnTab = this.getTableTabIndexOfSubmittedType(selectedType, selectedShortType);
+      this.saveCurrentTypeTab(returnTab);
       setTimeout(() => {
         history.goBack();
+        // history.push({
+        //   pathname: `/time-off`,
+        // });
       }, 200);
     }
   };
@@ -257,7 +405,16 @@ class RequestInformation extends PureComponent {
 
   // ON SAVE DRAFT
   onSaveDraft = (values) => {
-    const { buttonState, isEditingDrafts, viewingLeaveRequestId } = this.state;
+    const {
+      buttonState,
+      isEditingDrafts,
+      viewingLeaveRequestId,
+      numberOfDaySelectedTypeC,
+      selectedType,
+      unpaidLeaveActivate,
+      selectedShortType,
+      selectedTypeName,
+    } = this.state;
     if (buttonState === 1) {
       const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
       const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
@@ -272,14 +429,18 @@ class RequestInformation extends PureComponent {
       } = values;
 
       if (timeOffType === '') {
-        message.error('Nothing to save as draft!');
+        message.error('Please fill required fields!');
       } else {
         const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
 
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        let duration = 0;
+        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        else duration = numberOfDaySelectedTypeC;
 
         const data = {
-          type: timeOffType,
+          type: unpaidLeaveActivate
+            ? this.getUnpaidLeaveIdOfTypeA(selectedShortType, selectedTypeName)
+            : timeOffType,
           employee: employeeId,
           subject,
           fromDate: durationFrom,
@@ -323,7 +484,16 @@ class RequestInformation extends PureComponent {
       user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
-    const { viewingLeaveRequestId, remainingDayOfSelectedType, selectedTypeName } = this.state;
+    const {
+      viewingLeaveRequestId,
+      numberOfDaySelectedTypeC,
+      remainingDayOfSelectedType,
+      selectedTypeName,
+      selectedType,
+      selectedShortType,
+      unpaidLeaveActivate,
+      negativeLeave,
+    } = this.state;
     const {
       timeOffType = '',
       subject = '',
@@ -345,15 +515,32 @@ class RequestInformation extends PureComponent {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        const duration = this.calculateNumberOfLeaveDay(leaveDates);
+        let duration = 0;
+        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        else duration = numberOfDaySelectedTypeC;
 
-        if (duration > remainingDayOfSelectedType) {
+        if (
+          (selectedType === 'A' || selectedType === 'B') &&
+          duration > remainingDayOfSelectedType &&
+          !unpaidLeaveActivate
+        ) {
           message.error(
             `You only have ${remainingDayOfSelectedType} day(s) of ${selectedTypeName} left.`,
           );
+        } else if (
+          (selectedType === 'A' || selectedType === 'B') &&
+          duration > remainingDayOfSelectedType &&
+          unpaidLeaveActivate &&
+          duration > negativeLeave + remainingDayOfSelectedType
+        ) {
+          message.error(
+            `You only have ${negativeLeave} unpaid leave days of ${selectedTypeName} left.`,
+          );
         } else {
           const data = {
-            type: timeOffType,
+            type: unpaidLeaveActivate
+              ? this.getUnpaidLeaveIdOfTypeA(selectedShortType, selectedTypeName)
+              : timeOffType,
             status: 'IN-PROGRESS',
             employee: employeeId,
             subject,
@@ -367,22 +554,20 @@ class RequestInformation extends PureComponent {
             cc: personCC,
           };
 
+          let type = '';
           if (action === 'new-leave-request') {
-            dispatch({
-              type: 'timeOff/addLeaveRequest',
-              payload: data,
-            }).then((statusCode) => {
-              if (statusCode === 200) this.setShowSuccessModal(true);
-            });
+            type = 'timeOff/addLeaveRequest';
           } else if (action === 'edit-leave-request') {
             data._id = viewingLeaveRequestId;
-            dispatch({
-              type: 'timeOff/updateLeaveRequestById',
-              payload: data,
-            }).then((statusCode) => {
-              if (statusCode === 200) this.setShowSuccessModal(true);
-            });
+            type = 'timeOff/updateLeaveRequestById';
           }
+
+          dispatch({
+            type,
+            payload: data,
+          }).then((statusCode) => {
+            if (statusCode === 200) this.setShowSuccessModal(true);
+          });
         }
       }
     } else if (buttonState === 1) {
@@ -436,7 +621,7 @@ class RequestInformation extends PureComponent {
             );
           }
 
-          autoToDate = moment(durationFrom).add(time, 'day');
+          autoToDate = moment(durationFrom).add(time - 1, 'day');
         }
       });
 
@@ -460,8 +645,10 @@ class RequestInformation extends PureComponent {
 
     const { selectedShortType, selectedType } = this.state;
     this.autoValueForToDate(selectedType, selectedShortType, value);
-    if (selectedType === 'A' || selectedType === 'B')
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
+      this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationTo } = this.state;
@@ -483,8 +670,10 @@ class RequestInformation extends PureComponent {
       });
     }
     const { selectedShortType, selectedType } = this.state;
-    if (selectedType === 'A' || selectedType === 'B')
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
+    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
+      this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationFrom } = this.state;
@@ -495,28 +684,72 @@ class RequestInformation extends PureComponent {
     });
   };
 
+  checkDuplicateTypeAAndB = (typesOfCommonLeaves, shortTypeToCheck, typeToCheck) => {
+    let check = false;
+    if (typeToCheck === 'B') {
+      typesOfCommonLeaves.forEach((type) => {
+        const { defaultSettings = {} } = type;
+        if (defaultSettings !== null) {
+          const { shortType = '', type: type1 = '' } = defaultSettings;
+          if (type1 === 'A' && shortTypeToCheck === shortType) check = true;
+        }
+      });
+    }
+    return check;
+  };
+
+  // get unpaid leave id of type A
+  getUnpaidLeaveIdOfTypeA = (shortTypeToCheck, nameToCheck) => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    let id = '';
+
+    timeOffTypes.forEach((type) => {
+      const { type: type1 = '', shortType = '', _id = '', name = '' } = type;
+      if (type1 === 'B' && name === nameToCheck && shortType === shortTypeToCheck) id = _id;
+    });
+
+    return id;
+  };
+
+  // get paid leave id of type B
+  getUnpaidLeaveIdOfTypeB = (shortTypeToCheck, nameToCheck) => {
+    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
+    let id = '';
+
+    timeOffTypes.forEach((type) => {
+      const { type: type1 = '', shortType = '', _id = '', name = '' } = type;
+      if (type1 === 'A' && name === nameToCheck && shortType === shortTypeToCheck) id = _id;
+    });
+
+    return id;
+  };
+
   // RENDER SELECT BOX
   // GET DATA FOR SELECT BOX TYPE 1,2
   renderTimeOffTypes1 = (data) => {
-    return data.map((type) => {
+    const result = data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
         const {
           _id = '',
           name = '',
           shortType = '',
+          type: type1 = '',
           baseAccrual: { time = 0 } = {},
         } = defaultSettings;
-        return {
-          name,
-          shortName: shortType,
-          remaining: currentAllowance,
-          total: time,
-          _id,
-        };
+        if (!this.checkDuplicateTypeAAndB(data, shortType, type1))
+          return {
+            name,
+            shortName: shortType,
+            remaining: currentAllowance,
+            total: time,
+            type: type1,
+            _id,
+          };
       }
       return '';
     });
+    return result.filter((v) => v !== '');
   };
 
   // GET DATA FOR SELECT BOX TYPE 3 (WFH/CP...)
@@ -539,8 +772,10 @@ class RequestInformation extends PureComponent {
   // RENDER OPTIONS
   // TYPE A: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
+    const { unpaidLeaveActivate, selectedShortType } = this.state;
+
     return data.map((value) => {
-      const { name = '', shortName = '', remaining = 0, total = 0, _id = '' } = value;
+      const { name = '', type = '', shortName = '', remaining = 0, total = 0, _id = '' } = value;
       const defaultCss = {
         fontSize: 12,
         color: '#6f7076',
@@ -560,25 +795,42 @@ class RequestInformation extends PureComponent {
             <>
               <span style={{ fontSize: 13 }} className={styles.name}>
                 {`${name} (${shortName})`}
+                {type === 'A' && selectedShortType === shortName && unpaidLeaveActivate && (
+                  <span
+                    style={{
+                      marginLeft: '10px',
+                      color: '#00C598',
+                      padding: '5px 10px',
+                      fontSize: '10px',
+                      boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    Advanced leave activated
+                  </span>
+                )}
               </span>
+
               <span
                 className={styles.days}
                 style={{
                   float: 'right',
                 }}
               >
-                <span style={remaining === 0 ? invalidCss : defaultCss} className={styles.totals}>
-                  <span
-                    style={
-                      remaining === 0
-                        ? { fontSize: 12, color: '#FD4546' }
-                        : { fontSize: 12, color: 'black' }
-                    }
-                  >
-                    {remaining}
+                {type === 'A' && (
+                  <span style={remaining === 0 ? invalidCss : defaultCss}>
+                    <span
+                      style={
+                        remaining === 0
+                          ? { fontSize: 12, color: '#FD4546' }
+                          : { fontSize: 12, color: 'black' }
+                      }
+                    >
+                      {remaining}
+                    </span>
+                    /{total} days
                   </span>
-                  /{total} days
-                </span>
+                )}
               </span>
             </>
           </div>
@@ -638,12 +890,20 @@ class RequestInformation extends PureComponent {
   // DISABLE DATE OF DATE PICKER
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
-    return current && current > moment(durationTo);
+    return (
+      (current && current > moment(durationTo)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
-    return current && current < moment(durationFrom);
+    return (
+      (current && current < moment(durationFrom)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
   };
 
   // RENDER EMAILS LIST
@@ -701,6 +961,11 @@ class RequestInformation extends PureComponent {
     return content;
   };
 
+  // on policy link clicked
+  onLinkClick = () => {
+    this.setViewPolicyModal(true);
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -711,7 +976,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'MM/DD/YYYY';
+    const dateFormat = 'DD.MM.YYYY';
 
     const {
       selectedShortType,
@@ -723,6 +988,9 @@ class RequestInformation extends PureComponent {
       isEditingDrafts,
       buttonState,
       remainingDayOfSelectedType,
+      unpaidLeaveActivate,
+      // negativeLeave,
+      viewPolicyModal,
     } = this.state;
 
     const {
@@ -798,8 +1066,21 @@ class RequestInformation extends PureComponent {
               {selectedShortType !== '' && (
                 <div className={styles.smallNotice}>
                   <span className={styles.normalText}>
-                    {selectedShortType}s are covered under{' '}
-                    <span className={styles.link}>Standard Policy</span>
+                    {!unpaidLeaveActivate ? (
+                      <>
+                        {selectedShortType}s are covered under{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Standard Policy
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        Advance leaves will be later deducted from CL balance.{' '}
+                        <span className={styles.link} onClick={this.onLinkClick}>
+                          Learn More
+                        </span>
+                      </>
+                    )}
                   </span>
                 </div>
               )}
@@ -864,7 +1145,7 @@ class RequestInformation extends PureComponent {
                     <DatePicker
                       disabledDate={this.disabledToDate}
                       format={dateFormat}
-                      disabled={selectedType === 'C' || selectedType === 'D'}
+                      // disabled={selectedType === 'C' || selectedType === 'D'}
                       onChange={(value) => {
                         this.toDateOnChange(value);
                       }}
@@ -1042,6 +1323,7 @@ class RequestInformation extends PureComponent {
               form="myForm"
               disabled={
                 remainingDayOfSelectedType === 0 &&
+                !unpaidLeaveActivate &&
                 (selectedType === 'A' || selectedType === 'B') &&
                 action === 'new-leave-request'
               }
@@ -1057,10 +1339,12 @@ class RequestInformation extends PureComponent {
 
         <TimeOffModal
           visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
+          onOk={() => this.setShowSuccessModal(false)}
           content={this.renderModalContent()}
           submitText="OK"
         />
+
+        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
       </div>
     );
   }

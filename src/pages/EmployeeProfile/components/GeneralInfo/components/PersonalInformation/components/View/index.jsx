@@ -63,6 +63,23 @@ class View extends PureComponent {
     const { dataAPI, generalData, permissions = {}, profileOwner = false } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
+    const {
+      residentAddress = {},
+      currentAddress = {},
+      residentAddress: {
+        address: r_Address = '',
+        country: { name: r_countryName = '' } = {},
+        state: r_state = '',
+        zipCode: r_zipCode = '',
+      } = {},
+      currentAddress: {
+        address: c_Address = '',
+        country: { name: c_countryName = '' } = {},
+        state: c_state = '',
+        zipCode: c_zipCode = '',
+      } = {},
+    } = dataAPI;
+
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },
       { label: 'Personal Email', value: dataAPI.personalEmail },
@@ -71,9 +88,12 @@ class View extends PureComponent {
       { label: 'Linkedin', value: dataAPI.linkedIn },
       {
         label: 'Residence Address',
-        value: dataAPI.residentAddress,
+        value: residentAddress ? `${r_Address}, ${r_state}, ${r_zipCode}, ${r_countryName}` : '',
       },
-      { label: 'Current Address', value: dataAPI.currentAddress },
+      {
+        label: 'Current Address',
+        value: currentAddress ? `${c_Address}, ${c_state}, ${c_zipCode}, ${c_countryName}` : '',
+      },
     ];
     const content =
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';

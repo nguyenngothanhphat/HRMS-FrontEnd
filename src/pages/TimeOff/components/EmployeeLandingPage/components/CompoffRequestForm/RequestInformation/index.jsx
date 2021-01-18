@@ -29,8 +29,22 @@ class RequestInformation extends PureComponent {
       buttonState: 0, // save draft or submit
       isEditingDrafts: false,
       viewingCompoffRequestId: '',
+      totalHours: 0,
     };
   }
+
+  saveCurrentTypeTab = (type) => {
+    const { dispatch } = this.props;
+    const { buttonState } = this.state;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        currentLeaveTypeTab: String(type),
+        currentMineOrTeamTab: '2', // my compoff request tab has index "2"
+        currentFilterTab: buttonState === 1 ? '4' : '1', // draft 4, in-progress 1
+      },
+    });
+  };
 
   // SET DATE List
   setDateList = (list) => {
@@ -51,19 +65,14 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  fetchProjectsListByCompany = () => {
+  fetchProjectsListByEmployee = () => {
     const {
       dispatch,
-      user: {
-        currentUser: {
-          company: { _id: company = '' } = {},
-          location: { _id: location = '' } = {},
-        } = {},
-      } = {},
+      user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {},
     } = this.props;
     dispatch({
-      type: 'timeOff/fetchProjectsListByCompany',
-      payload: { company, location },
+      type: 'timeOff/fetchProjectsListByEmployee',
+      payload: { employee },
     });
   };
 
@@ -78,7 +87,7 @@ class RequestInformation extends PureComponent {
   componentDidMount = () => {
     const { action = '' } = this.props;
     this.fetchEmailsListByCompany();
-    this.fetchProjectsListByCompany();
+    this.fetchProjectsListByEmployee();
 
     if (action === 'edit-compoff-request') {
       const { viewingCompoffRequest = {} } = this.props;
@@ -175,6 +184,19 @@ class RequestInformation extends PureComponent {
       projectManagerId,
       projectManagerName,
     });
+
+    const {
+      dispatch,
+      user: { currentUser: { employee: { _id: userId } = {} } = {} } = {},
+    } = this.props;
+
+    dispatch({
+      type: 'timeOff/getCompoffApprovalFlow',
+      payload: {
+        employeeId: userId,
+        projectId: value,
+      },
+    });
   };
 
   // ON FINISH & SHOW SUCCESS MODAL WHEN CLICKING ON SUBMIT
@@ -183,6 +205,7 @@ class RequestInformation extends PureComponent {
       showSuccessModal: value,
     });
     if (!value) {
+      this.saveCurrentTypeTab('5'); // COMPOFF TAB INDEX = 5
       history.push('/time-off');
     }
   };
@@ -193,7 +216,8 @@ class RequestInformation extends PureComponent {
     console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
-    const { dateLists, buttonState, viewingCompoffRequestId } = this.state;
+    const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
+    const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
@@ -202,8 +226,10 @@ class RequestInformation extends PureComponent {
       extraTime: dateLists,
       description,
       action,
-      approvalFlow: '5fb37597daeffc0c68763d8b',
+      approvalFlow: compoffApprovalFlow,
       cc: personCC,
+      onDate: moment(),
+      totalHours,
     };
 
     let type = '';
@@ -259,6 +285,7 @@ class RequestInformation extends PureComponent {
       const list = this.getDateLists(value, durationTo);
       this.setDateList(list);
       this.formRef.current.setFieldsValue({
+        totalHours: 0,
         extraTimeLists: [],
       });
     }
@@ -279,6 +306,7 @@ class RequestInformation extends PureComponent {
       const list = this.getDateLists(durationFrom, value);
       this.setDateList(list);
       this.formRef.current.setFieldsValue({
+        totalHours: 0,
         extraTimeLists: [],
       });
     }
@@ -311,12 +339,20 @@ class RequestInformation extends PureComponent {
   // DISABLE DATE OF DATE PICKER
   disabledFromDate = (current) => {
     const { durationTo } = this.state;
-    return current && current > moment(durationTo);
+    return (
+      current && current > moment(durationTo)
+      // || moment(current).day() === 0 ||
+      // moment(current).day() === 6
+    );
   };
 
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
-    return current && current < moment(durationFrom);
+    return (
+      current && current < moment(durationFrom)
+      // || moment(current).day() === 0 ||
+      // moment(current).day() === 6
+    );
   };
 
   // RENDER EMAILS LIST
@@ -342,10 +378,14 @@ class RequestInformation extends PureComponent {
     const modifiedList = originalList.filter((value, index) => index !== indexToRemove);
     const listValue = modifiedList.map((data) => data.timeSpend);
 
+    // count total days and total hours
+    const totalHours = listValue.reduce((a, b) => a + b, 0);
+
     this.setDateList(modifiedList);
     this.formRef.current.setFieldsValue({
       extraTimeLists: listValue,
     });
+    this.setState({ totalHours });
   };
 
   // ON DATE onDataChange
@@ -355,8 +395,13 @@ class RequestInformation extends PureComponent {
     const originalList = JSON.parse(JSON.stringify(dateLists));
     originalList[indexToChange].timeSpend = parseFloat(value);
 
+    // count total days and total hours
+    const listValue = originalList.map((data) => data.timeSpend);
+    const totalHours = listValue.reduce((a, b) => a + b, 0);
+
     this.setState({
       dateLists: originalList,
+      totalHours,
     });
   };
 
@@ -399,7 +444,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'MM/DD/YYYY';
+    const dateFormat = 'DD.MM.YYYY';
 
     const {
       showSuccessModal,
@@ -410,13 +455,10 @@ class RequestInformation extends PureComponent {
       projectManagerName,
       buttonState,
       isEditingDrafts,
+      totalHours,
     } = this.state;
 
     const { loadingAddCompoffRequest } = this.props;
-
-    // count total days and total hours
-    const listValue = dateLists.map((data) => data.timeSpend);
-    const totalHours = listValue.reduce((a, b) => a + b, 0);
 
     // generate project list
     const projectsList = this.generateProjectsList();
@@ -699,7 +741,7 @@ class RequestInformation extends PureComponent {
         </div>
         <TimeOffModal
           visible={showSuccessModal}
-          onClose={this.setShowSuccessModal}
+          onOk={() => this.setShowSuccessModal(false)}
           content={this.renderModalContent()}
           submitText="OK"
         />

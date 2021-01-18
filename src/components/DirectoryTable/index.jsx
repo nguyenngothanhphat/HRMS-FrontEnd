@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { history, formatMessage } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar } from 'antd';
+import { Table, Avatar, Button, message } from 'antd';
 import styles from './index.less';
+import ModalTerminate from './components/ModalTerminate';
 
 class DirectoryTable extends Component {
   constructor(props) {
@@ -11,6 +13,9 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       isSort: false,
+      openModal: false,
+      rowData: {},
+      valueReason: '',
     };
   }
 
@@ -33,6 +38,33 @@ class DirectoryTable extends Component {
       </div>
     );
   };
+
+  handleClick = (e, item = {}) => {
+    e.stopPropagation();
+    this.setState({
+      rowData: item,
+      openModal: true,
+    });
+  };
+
+  handleCandelModal = (e) => {
+    // e.stopPropagation();
+    this.setState({
+      openModal: false,
+    });
+  };
+
+  handleSubmit = (values) => {
+    const { rowData = {} } = this.state;
+    // // e.stopPropagation();
+    console.log('Row: ', rowData);
+    console.log('values', values);
+    message.success('Submit successfully !');
+  };
+
+  // onChangeReason = ({ target: { value } }) => {
+  //   this.setState({ valueReason: value });
+  // };
 
   generateColumns = (sortedName) => {
     const { isSort } = this.state;
@@ -124,7 +156,23 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '15%',
+        width: '12%',
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.action' }),
+        dataIndex: 'action',
+        key: 'action',
+        align: 'left',
+        width: '8%',
+        render: (_, row) => {
+          return (
+            <div className={styles.viewAction}>
+              <Button onClick={(e) => this.handleClick(e, row)} className={styles.actionBtn}>
+                Terminate
+              </Button>
+            </div>
+          );
+        },
       },
     ];
 
@@ -174,7 +222,7 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected } = this.state;
+    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
     const { list = [], loading } = this.props;
     const rowSize = 10;
     const pagination = {
@@ -201,24 +249,33 @@ class DirectoryTable extends Component {
     };
 
     return (
-      <div className={styles.directoryTable}>
-        <Table
-          size="small"
-          columns={this.generateColumns(sortedName)}
-          onRow={(record) => {
-            return {
-              onClick: () => this.handleProfileEmployee(record), // click row
-            };
-          }}
-          dataSource={list}
-          rowKey={(record) => record._id}
-          // pagination={{ ...pagination, total: list.length }}
-          pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-          loading={loading}
-          onChange={this.handleChangeTable}
-          scroll={scroll}
+      <>
+        <div className={styles.directoryTable}>
+          <Table
+            size="small"
+            columns={this.generateColumns(sortedName)}
+            onRow={(record) => {
+              return {
+                onClick: () => this.handleProfileEmployee(record), // click row
+              };
+            }}
+            dataSource={list}
+            rowKey={(record) => record._id}
+            // pagination={{ ...pagination, total: list.length }}
+            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            loading={loading}
+            onChange={this.handleChangeTable}
+            scroll={scroll}
+          />
+        </div>
+        <ModalTerminate
+          visible={openModal}
+          handleSubmit={this.handleSubmit}
+          handleCandelModal={this.handleCandelModal}
+          valueReason={valueReason}
+          onChange={this.onChangeReason}
         />
-      </div>
+      </>
     );
   }
 }

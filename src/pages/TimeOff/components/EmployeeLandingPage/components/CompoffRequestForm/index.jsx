@@ -9,12 +9,23 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
+  loadingFetchCompoffApprovalFlow: loading.effects['timeOff/getCompoffApprovalFlow'],
 }))
 class CompoffRequestForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { action: '' };
   }
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        compoffApprovalFlow: {},
+      },
+    });
+  };
 
   componentDidMount = () => {
     const {
@@ -40,12 +51,14 @@ class CompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'APPROVED':
+      case 'ACCEPTED':
         return `${styles.leaveStatus} ${styles.approvedColor}`;
       case 'REJECTED':
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case 'DRAFTS':
         return `${styles.leaveStatus} ${styles.draftsColor}`;
+      case 'ON-HOLD':
+        return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
     }
@@ -55,12 +68,15 @@ class CompoffRequestForm extends PureComponent {
     switch (status) {
       case 'IN-PROGRESS':
         return 'In Progress';
-      case 'APPROVED':
+      case 'ACCEPTED':
         return 'Approved';
       case 'REJECTED':
         return 'Rejected';
       case 'DRAFTS':
         return 'Drafts';
+      case 'ON-HOLD':
+        return 'Withdraw';
+
       default:
         return 'Unknown';
     }
@@ -72,8 +88,10 @@ class CompoffRequestForm extends PureComponent {
       timeOff: {
         viewingCompoffRequest = {},
         viewingCompoffRequest: { status = '', ticketID = '' } = {},
+        compoffApprovalFlow = {},
       } = {},
       loadingFetchCompoffRequestById,
+      loadingFetchCompoffApprovalFlow,
     } = this.props;
 
     return (
@@ -113,7 +131,8 @@ class CompoffRequestForm extends PureComponent {
 
           {!loadingFetchCompoffRequestById &&
             action === 'edit-compoff-request' &&
-            (status === 'APPROVED' || status === 'REJECTED') && (
+            status !== 'DRAFTS' &&
+            status !== 'IN-PROGRESS' && (
               <div
                 style={{
                   display: 'flex',
@@ -125,22 +144,28 @@ class CompoffRequestForm extends PureComponent {
               </div>
             )}
 
-          {!loadingFetchCompoffRequestById && status !== 'APPROVED' && status !== 'REJECTED' && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingCompoffRequest={viewingCompoffRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent />
-                </Col>
-              </Row>
-            </>
+          {(action === 'new-compoff-request' ||
+            (action === 'edit-compoff-request' &&
+              !loadingFetchCompoffRequestById &&
+              (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingCompoffRequest={viewingCompoffRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent
+                      compoffApprovalFlow={compoffApprovalFlow}
+                      loading={loadingFetchCompoffApprovalFlow}
+                    />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>

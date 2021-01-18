@@ -14,20 +14,26 @@
       margin-bottom: 36px;
     }
     .avatar {
-      width: 36px;
-      height: auto;
+      width: 36px !important;
+      height: 36px !important;
+      img {
+        width: 36px !important;
+        height: 36px !important;
+      }
+      // height: auto;
     }
     :global {
       // avatar label
       .ant-steps-item-title {
         color: #707177;
         font-size: 13px;
+        line-height: 1.5;
       }
 
       .ant-steps-item-tail::after {
         height: 0;
         border: none;
-        border-top: 2px dashed #dedede !important;
+        border-top: 1px dashed #dedede !important;
       }
       .ant-steps-item {
         .ant-steps-icon {
@@ -43,9 +49,13 @@
         .ant-steps-icon {
           border-radius: 50%;
           img {
-            border: 2px solid #2c6df9;
+            border: 3px solid #2c6df9;
             border-radius: 50%;
           }
+        }
+        .ant-steps-item-title {
+          font-size: 13px;
+          line-height: 1.5;
         }
       }
     }

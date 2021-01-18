@@ -30,6 +30,20 @@ const CollapseInformation = (props) => {
     return <a>Unknown file</a>;
   };
 
+  const checkDuplicateTypeAAndB = (shortTypeToCheck, typeToCheck) => {
+    let check = false;
+    if (typeToCheck === 'B') {
+      typesOfCommonLeaves.forEach((type) => {
+        const { defaultSettings = {} } = type;
+        if (defaultSettings !== null) {
+          const { shortType = '', type: type1 = '' } = defaultSettings;
+          if (type1 === 'A' && shortTypeToCheck === shortType) check = true;
+        }
+      });
+    }
+    return check;
+  };
+
   return (
     <div className={styles.CollapseInformation}>
       <div className={styles.hrLine} />
@@ -45,19 +59,30 @@ const CollapseInformation = (props) => {
           {typesOfCommonLeaves.map((type, index) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
             if (defaultSettings !== null) {
-              const { name = '', shortType = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
-              return (
-                <div key={`${index + 1}`}>
-                  <LeaveProgressBar
-                    color={colorsList[index % 3]}
-                    title={name}
-                    shortType={shortType}
-                    stepNumber={currentAllowance}
-                    limitNumber={time}
-                  />
-                  {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
-                </div>
-              );
+              const {
+                name = '',
+                shortType = '',
+                baseAccrual: { time = 0 } = {},
+                type: type1 = '',
+              } = defaultSettings;
+              if (type1 === 'A') {
+                return (
+                  <div key={`${index + 1}`}>
+                    <LeaveProgressBar
+                      color={colorsList[index % 3]}
+                      title={name}
+                      shortType={shortType}
+                      stepNumber={currentAllowance}
+                      limitNumber={time}
+                    />
+                    {index + 1 !== typesOfCommonLeaves.length
+                      ? typesOfCommonLeaves[index + 1].defaultSettings.type === 'A' && (
+                      <div className={styles.hr} />
+                        )
+                      : ''}
+                  </div>
+                );
+              }
             }
             return '';
           })}
@@ -154,9 +179,11 @@ class LeaveInformation extends PureComponent {
     typesOfCommonLeaves.forEach((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
       if (defaultSettings !== null) {
-        const { baseAccrual: { time = 0 } = {} } = defaultSettings;
-        remaining += currentAllowance;
-        total += time;
+        const { type: type1 = '', baseAccrual: { time = 0 } = {} } = defaultSettings;
+        if (type1 === 'A') {
+          remaining += currentAllowance;
+          total += time;
+        }
         this.setState({
           remaining,
         });
