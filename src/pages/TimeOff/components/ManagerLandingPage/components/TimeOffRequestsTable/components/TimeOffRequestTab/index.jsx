@@ -24,6 +24,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength: 0,
       selectedTab: 'IN-PROGRESS',
       onHoldLength: 0,
+      handlePackage: {},
     };
   }
 
@@ -263,6 +264,12 @@ class TimeOffRequestTab extends PureComponent {
     });
   };
 
+  onApproveRejectHandle = (obj) => {
+    this.setState({
+      handlePackage: obj,
+    });
+  };
+
   render() {
     const { type = 0, category = '' } = this.props;
 
@@ -274,6 +281,7 @@ class TimeOffRequestTab extends PureComponent {
       draftLength,
       selectedTab,
       onHoldLength,
+      handlePackage,
     } = this.state;
 
     const dataNumber = {
@@ -290,6 +298,7 @@ class TimeOffRequestTab extends PureComponent {
           dataNumber={dataNumber}
           setSelectedFilterTab={this.setSelectedFilterTab}
           category={category}
+          handlePackage={handlePackage}
         />
         <div className={styles.tableContainer}>
           <div>
@@ -299,6 +308,7 @@ class TimeOffRequestTab extends PureComponent {
                 category={category}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 1 && category === 'MY' && (
@@ -310,6 +320,7 @@ class TimeOffRequestTab extends PureComponent {
                 category={category}
                 selectedTab={selectedTab}
                 onRefreshTable={this.setSelectedFilterTab}
+                onHandle={this.onApproveRejectHandle}
               />
             )}
             {type === 2 && category === 'MY' && (
