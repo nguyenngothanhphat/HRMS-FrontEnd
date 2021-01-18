@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Spin, Progress, Input } from 'antd';
+import { Button, Row, Col, Spin, Input } from 'antd';
 import TimeOffModal from '@/components/TimeOffModal';
 import { connect, history } from 'umi';
 import moment from 'moment';
@@ -40,10 +40,15 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE REQUEST DETAIL
   componentDidMount = () => {
-    const { dispatch, id = '' } = this.props;
+    const { dispatch, id = '', employeeId = '' } = this.props;
     dispatch({
       type: 'timeOff/fetchLeaveRequestById',
       id,
+    });
+
+    dispatch({
+      type: 'timeOff/fetchProjectsListByEmployee',
+      payload: { employee: employeeId },
     });
   };
 
@@ -77,6 +82,7 @@ class RequestInformation extends PureComponent {
 
   // ON VIEW REPORT
   onViewReport = () => {
+    // eslint-disable-next-line no-alert
     alert('VIEW REPORT');
   };
 
@@ -182,7 +188,7 @@ class RequestInformation extends PureComponent {
   render() {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
-      timeOff: { viewingLeaveRequest = {} } = {},
+      timeOff: { viewingLeaveRequest = {}, projectsList = [] } = {},
       loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
@@ -214,18 +220,6 @@ class RequestInformation extends PureComponent {
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
 
-    const projects = [
-      {
-        name: 'Intranet',
-        projectManager: 'Matt Canaday',
-        projectHealth: 60,
-      },
-      {
-        name: 'HRMS',
-        projectManager: 'Fion Nguyen',
-        projectHealth: 85,
-      },
-    ];
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.requesteeDetails}>
@@ -263,19 +257,37 @@ class RequestInformation extends PureComponent {
                 <Col span={6}>Project Manager</Col>
                 <Col span={12}>Project Health</Col>
               </Row>
-              {projects.map((project) => {
-                const { name: prName = '', projectManager = '', projectHealth = 0 } = project;
-                return (
-                  <>
-                    <Project
-                      name={prName}
-                      projectManager={projectManager}
-                      projectHealth={projectHealth}
-                    />
-                    {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
-                  </>
-                );
-              })}
+              {projectsList.length === 0 ? (
+                <>
+                  <Row>
+                    <Col span={6} className={styles.detailColumn}>
+                      <span>No project</span>
+                    </Col>
+                  </Row>
+                </>
+              ) : (
+                <>
+                  {projectsList.map((project) => {
+                    const {
+                      _id: pjManagerId = '',
+                      name: prName = '',
+                      manager: { generalInfo: { firstName: fn = '', lastName: ln = '' } = {} } = {},
+                      projectHealth = 0,
+                    } = project;
+                    return (
+                      <>
+                        <Project
+                          name={prName}
+                          projectManager={`${fn} ${ln}`}
+                          projectHealth={projectHealth}
+                          employeeId={pjManagerId}
+                        />
+                        {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
+                      </>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col } from 'antd';
+import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, loading }) => ({
   timeOff,
+  loadingFetchLeaveRequestById: loading.effects['timeOff/loadingFetchLeaveRequestById'],
 }))
 class ManagerViewRequestForm extends PureComponent {
   constructor(props) {
@@ -32,7 +33,11 @@ class ManagerViewRequestForm extends PureComponent {
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/clearViewingLeaveRequest',
+      type: 'timeOff/save',
+      payload: {
+        viewingLeaveRequest: {},
+        projectsList: [],
+      },
     });
   };
 
@@ -77,9 +82,14 @@ class ManagerViewRequestForm extends PureComponent {
   render() {
     const {
       timeOff: {
-        viewingLeaveRequest: { status = '', ticketID = '' } = {},
+        viewingLeaveRequest: {
+          status = '',
+          ticketID = '',
+          employee: { _id: employeeId = '' } = {},
+        } = {},
         viewingLeaveRequest = {},
       } = {},
+      loadingFetchLeaveRequestById,
     } = this.props;
 
     const {
@@ -98,14 +108,27 @@ class ManagerViewRequestForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          <Row className={styles.container} gutter={[20, 20]}>
-            <Col xs={24} lg={16}>
-              <RequestInformation id={id} />
-            </Col>
-            <Col xs={24} lg={8}>
-              <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
-            </Col>
-          </Row>
+          {loadingFetchLeaveRequestById && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '100px 0',
+              }}
+            >
+              <Spin size="medium" />
+            </div>
+          )}
+          {!loadingFetchLeaveRequestById && employeeId !== '' && (
+            <Row className={styles.container} gutter={[20, 20]}>
+              <Col xs={24} lg={16}>
+                <RequestInformation id={id} employeeId={employeeId} />
+              </Col>
+              <Col xs={24} lg={8}>
+                <RightContent viewingLeaveRequest={viewingLeaveRequest} status={status} />
+              </Col>
+            </Row>
+          )}
         </div>
       </PageContainer>
     );
