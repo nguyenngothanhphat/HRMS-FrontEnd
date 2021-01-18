@@ -427,7 +427,7 @@ class SalaryStructureTemplate extends PureComponent {
     const data = settings?.find((item) => item.order === order);
     const { value = '', key, edit = false, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
-    
+
     if (edit && isEditted) {
       if (isNumber) {
         console.log(data);
@@ -459,7 +459,7 @@ class SalaryStructureTemplate extends PureComponent {
             data.order === ' ' ? `big-text` : null
           }`}
         >
-          {`${current}${value}`}
+          {`${current} ${value}`}
         </span>
       );
     }
