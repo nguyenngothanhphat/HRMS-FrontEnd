@@ -14,7 +14,9 @@ import styles from './index.less';
 
 @connect(({ loading, employeeSetting: { currentTemplate = {} } }) => ({
   currentTemplate,
-  loadingTemplate: loading.effects['employeeSetting/fetchTemplateById'],
+  loadingTemplate:
+    loading.effects['employeeSetting/fetchTemplateById'] ||
+    loading.effects['employeeSetting/addCustomTemplate'],
 }))
 class TemplateDetailsForm extends PureComponent {
   constructor(props) {
@@ -79,7 +81,14 @@ class TemplateDetailsForm extends PureComponent {
           <CustomModal
             open={openModal}
             closeModal={this.closeModal}
-            content={<EditForm currentTemplate={currentTemplate} onNext={this.onNext} />}
+            width="90%"
+            content={
+              <EditForm
+                currentTemplate={currentTemplate}
+                onNext={this.onNext}
+                onClose={this.closeModal}
+              />
+            }
           />
         );
       case 2:

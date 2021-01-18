@@ -140,8 +140,10 @@ const employeeSetting = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
+        return 0;
       }
     },
     *fetchOptionalQuestions(_, { call, put }) {
