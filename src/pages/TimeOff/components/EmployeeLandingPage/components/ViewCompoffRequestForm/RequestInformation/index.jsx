@@ -71,7 +71,7 @@ class RequestInformation extends PureComponent {
     if (statusCode === 200) {
       history.push({
         pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: ticketID },
+        state: { status: 'WITHDRAW', tickedId: ticketID, category: 'COMPOFF' },
       });
     }
   };
