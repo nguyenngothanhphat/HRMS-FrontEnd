@@ -139,8 +139,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onFocusSelect = () => {
-    const { dispatch, _id, settings, processStatus } = this.props;
-    const tempTableData = [...settings];
+    const { dispatch, _id, processStatus } = this.props;
+    // const tempTableData = [...settings];
 
     if (processStatus === 'DRAFT') {
       dispatch({
@@ -151,7 +151,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { dispatch, _id, settings, processStatus } = this.props;
+    const { dispatch, settings } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
@@ -280,7 +280,6 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e, current) => {
-    console.log('TEXT');
     const { dispatch, settings } = this.props;
 
     const { target } = e;
@@ -321,14 +320,11 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleNumberChange = (name, current, value) => {
-    console.log('NUMBER');
     const { dispatch, settings } = this.props;
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
 
-    // tempTableData[index].value = value;
     tempTableData[index].number.current = current;
-    console.log(tempTableData);
 
     const isFilled = tempTableData.filter((item) => item.value === '');
     if (isFilled.length === 0 && tempTableData.length > 0) {
@@ -346,12 +342,6 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
-    // dispatch({
-    //   type: 'candidateInfo/saveSalaryStructure',
-    //   payload: {
-    //     settings: tempTableData,
-    //   },
-    // });
   };
 
   handleChangeSelect = (value) => {
