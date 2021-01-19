@@ -57,6 +57,7 @@ class HeaderSearch extends Component {
   };
 
   onPressEnter = ({ target: { value } }) => {
+    this.closeSearch();
     history.push({
       pathname: '/search-result',
       query: { keySearch: value },

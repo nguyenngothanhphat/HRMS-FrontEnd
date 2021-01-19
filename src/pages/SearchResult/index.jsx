@@ -80,8 +80,12 @@ class SearchResult extends PureComponent {
   };
 
   render() {
-    const { result = [], loading = false } = this.props;
-    console.log('result', result);
+    const { loading = false } = this.props;
+    // console.log('result', result);
+    // const doc = result.map((item) => item.attachment).filter((e) => e._id);
+    // const listEmployee = result.map((item) => item.employee);
+    // console.log('doc', doc);
+    // console.log('listEmployee', listEmployee);
     if (loading) {
       return (
         <div className={styles.viewLoading}>

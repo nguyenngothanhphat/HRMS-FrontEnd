@@ -4,7 +4,7 @@ import searchAdvance from '../services/searchAdvance';
 export default {
   namespace: 'searchAdvance',
   state: {
-    result: {},
+    result: [],
   },
   effects: {
     *search({ payload }, { call, put }) {
