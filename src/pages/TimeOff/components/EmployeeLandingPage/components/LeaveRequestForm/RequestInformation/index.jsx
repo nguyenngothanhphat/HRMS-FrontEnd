@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewPolicyModal from '@/components/ViewPolicyModal';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
@@ -916,7 +917,9 @@ class RequestInformation extends PureComponent {
         _id = '',
         generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
       } = user;
-      return { workEmail, firstName, lastName, _id, avatar };
+      let newAvatar = avatar;
+      if (avatar === '') newAvatar = DefaultAvatar;
+      return { workEmail, firstName, lastName, _id, avatar: newAvatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
