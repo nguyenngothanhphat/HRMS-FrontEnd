@@ -127,14 +127,13 @@ class RequestInformation extends PureComponent {
       const listValue = dateLists.map((data) => data.timeSpend);
 
       // set cc
-      const formattedCc = cc.length > 0 ? cc[0] : [];
-      const personCC = formattedCc.map((person) => (person ? person._id : null));
+      // const personCC = cc.map((person) => (person ? person._id : null));
 
       // update form
       this.formRef.current.setFieldsValue({
         projectId,
         description,
-        personCC,
+        personCC: cc,
         extraTimeLists: listValue,
         durationFrom: durationFrom === null ? null : moment(durationFrom),
         durationTo: durationTo === null ? null : moment(durationTo),

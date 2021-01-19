@@ -149,7 +149,7 @@ class RequestInformation extends PureComponent {
         selectedType: type,
       });
 
-      const personCC = cc.map((person) => (person ? person._id : null));
+      // const personCC = cc.map((person) => (person ? person._id : null));
 
       // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       // generate date lists and leave time
@@ -186,7 +186,7 @@ class RequestInformation extends PureComponent {
         durationFrom: fromDate === null ? null : moment(fromDate),
         durationTo: toDate === null ? null : moment(toDate),
         description,
-        personCC,
+        personCC: cc,
         leaveTimeLists,
       });
 
