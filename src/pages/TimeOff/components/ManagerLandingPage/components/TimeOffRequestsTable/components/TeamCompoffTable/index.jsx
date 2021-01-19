@@ -261,9 +261,7 @@ class TeamCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
-          'DD.MM.YYYY',
-        )}`;
+        duration = `${moment(fromDate).format('DD.MM.YY')} - ${moment(toDate).format('DD.MM.YY')}`;
       }
 
       const oneAssign = (step) => {

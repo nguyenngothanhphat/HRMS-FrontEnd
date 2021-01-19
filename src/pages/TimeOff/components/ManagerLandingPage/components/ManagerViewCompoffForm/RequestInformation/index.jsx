@@ -53,9 +53,9 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YYYY')}`;
+        .format('DD.MM.YY')}`;
     }
     return leaveTimes;
   };
@@ -288,7 +288,7 @@ class RequestInformation extends PureComponent {
                               align="center"
                               className={styles.rowContainer}
                             >
-                              <Col span={7}>{moment(date).locale('en').format('DD.MM.YYYY')}</Col>
+                              <Col span={7}>{moment(date).locale('en').format('DD.MM.YY')}</Col>
                               <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
                               <Col span={7}>
                                 <Input

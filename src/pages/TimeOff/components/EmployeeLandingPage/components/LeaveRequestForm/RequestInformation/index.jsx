@@ -976,7 +976,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'DD.MM.YYYY';
+    const dateFormat = 'DD.MM.YY';
 
     const {
       selectedShortType,
