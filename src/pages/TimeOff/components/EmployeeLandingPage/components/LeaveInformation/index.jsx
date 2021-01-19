@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import { connect, history } from 'umi';
+import ViewPolicyModal from '@/components/ViewPolicyModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
 
@@ -20,14 +21,20 @@ const CollapseInformation = (props) => {
     policySpecialLeaves = {},
   } = props;
 
+  const [viewPolicyModal, setViewPolicyModal] = useState(false);
+
   const renderPolicyLink = (policy) => {
     if (policy !== null) {
       if (Object.keys(policy).length !== 0) {
-        const { key = '', _id = '' } = policy;
-        return <a onClick={() => history.push(`/view-document/${_id}`)}>{key}</a>;
+        const {
+          key = '',
+          //  _id = ''
+        } = policy;
+        // return <a onClick={() => history.push(`/view-document/${_id}`)}>{key}</a>;
+        return <a onClick={() => setViewPolicyModal(true)}>{key}</a>;
       }
     }
-    return <a>Unknown file</a>;
+    return <a onClick={() => setViewPolicyModal(true)}>Standard Policy</a>;
   };
 
   return (
@@ -104,6 +111,7 @@ const CollapseInformation = (props) => {
           })}
         </Row>
       </div>
+      <ViewPolicyModal visible={viewPolicyModal} onClose={setViewPolicyModal} />
     </div>
   );
 };
