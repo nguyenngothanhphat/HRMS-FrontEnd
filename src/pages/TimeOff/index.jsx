@@ -75,13 +75,21 @@ class TimeOff extends PureComponent {
     });
 
     const {
-      location: { state: { status = '', tickedId = '', typeName = '' } = {} } = {},
+      location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
     } = this.props;
     if (status === 'WITHDRAW') {
-      notification.success({
-        message: 'Time off request',
-        description: `Time off request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
-      });
+      if (category === 'TIMEOFF') {
+        notification.success({
+          message: 'Timeoff request',
+          description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+        });
+      }
+      if (category === 'COMPOFF') {
+        notification.success({
+          message: 'Compoff request',
+          description: `Compoff request [Ticket id: ${tickedId}] was withdrawn & deleted.`,
+        });
+      }
       history.replace();
     }
   };

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button, Form } from 'antd';
+import { Row, Col, Typography, Form } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
