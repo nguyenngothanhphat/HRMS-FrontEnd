@@ -5,9 +5,11 @@ import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import { LoadingOutlined } from '@ant-design/icons';
 import GoBackButton from '@/assets/goBack_icon.svg';
+import CustomModal from '@/components/CustomModal';
 
 import ArrowLeftIcon from '@/assets/arrow-left_icon.svg';
 import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
+import ModalImg from '@/assets/modal_img_1.png';
 import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -31,6 +33,32 @@ const identifyImageOrPdf = (fileName) => {
   }
 };
 
+const ModalContent = ({ closeModal = () => {} }) => {
+  return (
+    <div className={styles.modal} style={{ textAlign: 'center', padding: 20 }}>
+      <img src={ModalImg} alt="modalImg" style={{ maxWidth: '100%' }} />
+      <h3 className={styles.title}>Share document successfully</h3>
+      <Button
+        onClick={() => closeModal()}
+        style={{
+          background: '#ffa100',
+          borderRadius: 25,
+          height: 40,
+          width: 70,
+          fontWeight: 600,
+          fontSize: 14,
+          lineHeight: '16px',
+          textAlign: 'center',
+          color: '#ffffff',
+          border: 0,
+        }}
+      >
+        OK
+      </Button>
+    </div>
+  );
+};
+
 @connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['upload/uploadFile'],
   loadingFileDetail: loading.effects['employeeProfile/fetchViewingDocumentDetail'],
@@ -43,7 +71,11 @@ class ViewDocument extends PureComponent {
     this.state = {
       numPages: null,
       currentViewingFile: selectedFile,
+      shareWith: [],
+      openModal: false,
+      selectedStr: undefined,
     };
+    this.shareRef = React.createRef();
   }
 
   // get document details
@@ -147,9 +179,35 @@ class ViewDocument extends PureComponent {
   };
 
   // on Save button click
-  onSaveClick = () => {
-    // eslint-disable-next-line no-alert
-    alert('Save');
+  onSaveClick = async () => {
+    this.shareRef.current.value = '';
+    const { shareWith = [] } = this.state;
+    if (shareWith.length === 0) {
+      return;
+    }
+
+    const {
+      employeeProfile: {
+        documentDetail: { attachment: { fileName = '', url = '' } = {} } = {},
+      } = {},
+      dispatch,
+    } = this.props;
+    const res = await dispatch({
+      type: 'employeeProfile/shareDocumentEffect',
+      payload: {
+        shareWith,
+        fileName,
+        url,
+      },
+    });
+
+    if (res.statusCode === 200) {
+      this.setState({
+        openModal: true,
+        shareWith: [],
+        selectedStr: undefined,
+      });
+    }
   };
 
   uploadNew = (resp) => {
@@ -177,6 +235,15 @@ class ViewDocument extends PureComponent {
   handleChange = (value) => {
     // eslint-disable-next-line no-console
     console.log(`selected emails ${value}`);
+    this.setState({
+      selectedStr: value,
+    });
+    if (value) {
+      const shareEmail = value.toString().split(',');
+      this.setState({
+        shareWith: shareEmail,
+      });
+    }
   };
 
   documentWarning = (msg) => (
@@ -220,8 +287,8 @@ class ViewDocument extends PureComponent {
   };
 
   render() {
-    const { numPages, currentViewingFile } = this.state;
-    const { onBackClick, loading, loadingFileDetail } = this.props;
+    const { numPages, currentViewingFile, openModal, selectedStr } = this.state;
+    const { onBackClick, loading, loadingFileDetail, loading2 } = this.props;
     const {
       employeeProfile: {
         tempData: { passportData = [], visaData = [], generalData: { adhaarCardNumber = '' } = {} },
@@ -349,7 +416,9 @@ class ViewDocument extends PureComponent {
                   })}
                   onChange={this.handleChange}
                   showArrow
+                  value={selectedStr}
                   className={styles.shareViaEmailInput}
+                  ref={this.shareRef}
                 >
                   {this.renderEmailsList().map((email) => (
                     <Option key={email}>{email}</Option>
@@ -376,10 +445,16 @@ class ViewDocument extends PureComponent {
             getResponse={this.uploadNew}
           />
 
-          <Button onClick={this.onSaveClick} className={styles.saveButton}>
+          <Button loading={loading2} onClick={this.onSaveClick} className={styles.saveButton}>
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>
         </div>
+
+        <CustomModal
+          open={openModal}
+          // open
+          content={<ModalContent closeModal={() => this.setState({ openModal: false })} />}
+        />
       </div>
     );
   }
