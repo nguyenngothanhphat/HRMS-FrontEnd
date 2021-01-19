@@ -91,7 +91,7 @@ class LeaveRequestForm extends PureComponent {
             <div className={styles.titlePage}>
               {action === 'new-leave-request' && (
                 <>
-                  <p className={styles.titlePage__text}>Request for Timeoff</p>
+                  <p className={styles.titlePage__text}>Apply for Timeoff</p>
                 </>
               )}
               {action === 'edit-leave-request' && (
@@ -136,21 +136,21 @@ class LeaveRequestForm extends PureComponent {
             (action === 'edit-leave-request' &&
               !loadingFetchLeaveRequestById &&
               (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
-              <>
-                <Row className={styles.container} gutter={[20, 20]}>
-                  <Col xs={24} lg={16}>
-                    <RequestInformation
-                      action={action}
-                      status={status}
-                      ticketID={ticketID}
-                      viewingLeaveRequest={viewingLeaveRequest}
-                    />
-                  </Col>
-                  <Col xs={24} lg={8}>
-                    <RightContent />
-                  </Col>
-                </Row>
-              </>
+            <>
+              <Row className={styles.container} gutter={[20, 20]}>
+                <Col xs={24} lg={16}>
+                  <RequestInformation
+                    action={action}
+                    status={status}
+                    ticketID={ticketID}
+                    viewingLeaveRequest={viewingLeaveRequest}
+                  />
+                </Col>
+                <Col xs={24} lg={8}>
+                  <RightContent />
+                </Col>
+              </Row>
+            </>
           )}
         </div>
       </PageContainer>
