@@ -294,3 +294,11 @@ export async function getRevokeHistory(payload) {
     data: payload,
   });
 }
+
+export async function shareDocument(payload) {
+  // payload: {shareWith: [""], fileName: "", url: ""}
+  return request('/api/document/share', {
+    method: 'POST',
+    data: payload,
+  });
+}

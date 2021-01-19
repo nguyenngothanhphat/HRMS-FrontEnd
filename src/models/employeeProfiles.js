@@ -45,6 +45,7 @@ import {
   getListRelation,
   getCountryStates,
   getRevokeHistory,
+  shareDocument,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -1026,7 +1027,7 @@ const employeeProfile = {
           payload: { changeHistories: newChangeList },
         });
 
-        ////////////////////////
+        /// /////////////////////
         if (statusCode === 200) {
           const employment = yield call(getEmploymentInfo, { id: payload.employee });
           yield put({
@@ -1048,6 +1049,16 @@ const employeeProfile = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+
+    *shareDocumentEffect({ payload = {} }, { call }) {
+      let response;
+      try {
+        response = yield call(shareDocument, payload);
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 
