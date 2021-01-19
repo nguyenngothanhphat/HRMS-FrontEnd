@@ -21,7 +21,7 @@ export default class LeaveProgressBar extends PureComponent {
           });
         }, 0);
       }
-    }, 500);
+    }, 800);
   };
 
   renderCircle = (stepNumber, limitNumber, color) => {
