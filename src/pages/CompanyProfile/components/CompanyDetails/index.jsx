@@ -2,15 +2,16 @@
 import React, { Component } from 'react';
 import { Form, Input, Select, Button, Checkbox } from 'antd';
 import classnames from 'classnames';
+import { connect } from 'umi';
 import s from './index.less';
 
 const { Option } = Select;
 
-const dummyListCountry = [
-  { _id: '12345', name: 'Country 1', states: ['State 1', 'State 2'] },
-  { _id: '45678', name: 'Country 2', states: ['State 3', 'State 4'] },
-];
-
+@connect(({ loading, country: { listCountry = [] } = {}, user: { currentUser = {} } = {} }) => ({
+  listCountry,
+  currentUser,
+  loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+}))
 class CompanyDetails extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +21,18 @@ class CompanyDetails extends Component {
       countryLegal: '',
       checkLegalSameHeadQuarter: false,
     };
+  }
+
+  componentDidMount() {
+    const { currentUser: { company = {} } = {} } = this.props;
+    const {
+      headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
+      legalAddress: { country: { _id: countryLegal } = {} } = {},
+    } = company;
+    this.setState({
+      countryHeadquarter,
+      countryLegal,
+    });
   }
 
   onChangeCountry = (value, name) => {
@@ -33,7 +46,8 @@ class CompanyDetails extends Component {
   };
 
   findListState = (idCountry) => {
-    const itemCountry = dummyListCountry.find((item) => item._id === idCountry) || {};
+    const { listCountry = [] } = this.props;
+    const itemCountry = listCountry.find((item) => item._id === idCountry) || {};
     const listState = itemCountry.states || [];
     return listState;
   };
@@ -66,7 +80,46 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    console.log('Success:', values);
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const {
+      countryHeadquarter,
+      countryLegal,
+      dba,
+      ein,
+      headquarterAddress,
+      legalAddress,
+      name,
+      stateHeadquarter,
+      stateLegal,
+      website,
+      zipHeadquarter,
+      zipLegal,
+    } = values;
+    const payload = {
+      id,
+      dba,
+      ein,
+      name,
+      website,
+      headQuarterAddress: {
+        address: headquarterAddress,
+        country: countryHeadquarter,
+        state: stateHeadquarter,
+        zipCode: zipHeadquarter,
+      },
+      legalAddress: {
+        address: legalAddress,
+        country: countryLegal,
+        state: stateLegal,
+        zipCode: zipLegal,
+      },
+    };
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
   };
 
   render() {
@@ -75,38 +128,74 @@ class CompanyDetails extends Component {
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
     } = this.state;
+    const { listCountry = [], currentUser: { company = {} } = {}, loadingUpdate } = this.props;
     const fieldCompanyDetail = [
       {
         label: 'Legal Business Name*',
-        name: 'legalBussinessName',
+        name: 'name',
         required: true,
         message: 'Please enter Legal Business Name!',
       },
       {
         label: 'Doing Business As (DBA)*',
-        name: 'DBA',
+        name: 'dba',
         required: true,
         message: 'Please enter DBA!',
       },
-      { label: 'Employer Identification Number (EIN)', name: 'EIN' },
-      { label: 'Compay Website', name: 'companyWebsite' },
+      { label: 'Employer Identification Number (EIN)', name: 'ein' },
+      { label: 'Compay Website', name: 'website' },
     ];
-
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
-
+    const {
+      name,
+      dba,
+      ein,
+      website,
+      headQuarterAddress: {
+        address: headquarterAddress,
+        country: { _id: countryHeadquarterProps } = {},
+        state: stateHeadquarter,
+        zipCode: zipHeadquarter,
+      } = {},
+      legalAddress: {
+        address: legalAddress,
+        country: { _id: countryLegalProps } = {},
+        state: stateLegal,
+        zipCode: zipLegal,
+      } = {},
+    } = company;
     return (
-      <Form className={s.root} ref={this.formRef} onFinish={this.onFinish} autoComplete="off">
+      <Form
+        className={s.root}
+        ref={this.formRef}
+        onFinish={this.onFinish}
+        autoComplete="off"
+        initialValues={{
+          name,
+          dba,
+          ein,
+          website,
+          headquarterAddress,
+          countryHeadquarter: countryHeadquarterProps,
+          stateHeadquarter,
+          zipHeadquarter,
+          legalAddress,
+          countryLegal: countryLegalProps,
+          stateLegal,
+          zipLegal,
+        }}
+      >
         <div className={s.blockContent}>
           <div className={s.content__viewTop}>
             <p className={s.title}>Company Details</p>
           </div>
           <div className={s.content__viewBottom}>
-            {fieldCompanyDetail.map(({ label, name, required = false, message }) => (
-              <div key={name} className={s.content__viewBottom__row}>
+            {fieldCompanyDetail.map(({ label, name: nameField, required = false, message }) => (
+              <div key={nameField} className={s.content__viewBottom__row}>
                 <p className={s.content__viewBottom__row__textLabel}>{label}</p>
                 <Form.Item
-                  name={name}
+                  name={nameField}
                   rules={[
                     {
                       required,
@@ -169,7 +258,7 @@ class CompanyDetails extends Component {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {dummyListCountry.map((item) => (
+                    {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
                     ))}
                   </Select>
@@ -284,7 +373,7 @@ class CompanyDetails extends Component {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {dummyListCountry.map((item) => (
+                    {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
                     ))}
                   </Select>
@@ -350,7 +439,7 @@ class CompanyDetails extends Component {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit">
+          <Button className={s.btnSubmit} htmlType="submit" loading={loadingUpdate}>
             Save
           </Button>
         </div>
