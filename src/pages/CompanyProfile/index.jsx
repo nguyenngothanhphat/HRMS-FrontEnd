@@ -54,12 +54,18 @@ const listMenu = [
   },
 ];
 
-@connect()
+@connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))
 class CompanyProfile extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
     dispatch({
       type: 'country/fetchListCountry',
+    });
+    dispatch({
+      type: 'companiesManagement/fetchLocationsList',
+      payload: { company: id },
     });
   }
 

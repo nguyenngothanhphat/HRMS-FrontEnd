@@ -4,15 +4,24 @@
 import React, { PureComponent } from 'react';
 import { Form, Divider, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import FormWorkLocation from './components/FormWorkLocation';
 import s from './index.less';
 
-const dummyListCountry = [
-  { _id: '12345', name: 'Country 1', states: ['State 1', 'State 2'] },
-  { _id: '45678', name: 'Country 2', states: ['State 3', 'State 4'] },
-];
-
-export default class WorkLocations extends PureComponent {
+@connect(
+  ({
+    loading,
+    country: { listCountry = [] } = {},
+    user: { currentUser = {} } = {},
+    companiesManagement: { locationsList: workLocations = [] } = {},
+  }) => ({
+    listCountry,
+    currentUser,
+    workLocations,
+    // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
+)
+class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
@@ -26,6 +35,8 @@ export default class WorkLocations extends PureComponent {
   };
 
   render() {
+    const { listCountry = [], workLocations = [] } = this.props;
+    console.log('workLocations', workLocations);
     return (
       <Form ref={this.formRef} onFinish={this.onFinish} autoComplete="off">
         <div className={s.root}>
@@ -41,7 +52,7 @@ export default class WorkLocations extends PureComponent {
           <div className={s.content__viewBottom}>
             <FormWorkLocation
               title="Headquarter"
-              listCountry={dummyListCountry}
+              listCountry={listCountry}
               formRef={this.formRef}
             />
             <Divider className={s.divider} />
@@ -53,7 +64,7 @@ export default class WorkLocations extends PureComponent {
                       {...field}
                       key={field.name}
                       formRef={this.formRef}
-                      listCountry={dummyListCountry}
+                      listCountry={listCountry}
                     />
                   ))}
                   <div className={s.viewAddWorkLocation}>
@@ -76,3 +87,5 @@ export default class WorkLocations extends PureComponent {
     );
   }
 }
+
+export default WorkLocations;
