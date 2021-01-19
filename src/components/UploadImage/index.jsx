@@ -13,7 +13,7 @@ class UploadImage extends Component {
   }
 
   beforeUpload = (file) => {
-    const { setSizeImageMatch = () => {}, isUploadPDF = false } = this.props;
+    const { setSizeImageMatch = () => {}, isUploadPDF = false, maxFileSize = 5 } = this.props;
     let checkType;
     if (isUploadPDF) {
       checkType = file.type === 'application/pdf';
@@ -28,22 +28,22 @@ class UploadImage extends Component {
         message.error('You can only upload JPG/PNG/PDF file!');
       }
     }
-    const isLt5M = file.size / 1024 / 1024 < 5;
-    if (!isLt5M) {
+    const isLtMaxFileSize = file.size / 1024 / 1024 < maxFileSize;
+    if (!isLtMaxFileSize) {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
-        message.error('Image must smaller than 5MB!');
+        message.error(`Image must smaller than ${maxFileSize}MB!`);
       }
       if (file.type === 'application/pdf') {
-        message.error('File must smaller than 5MB!');
+        message.error(`File must smaller than ${maxFileSize}MB!`);
       }
-      setSizeImageMatch(isLt5M);
-      this.setState({ check: isLt5M });
+      setSizeImageMatch(isLtMaxFileSize);
+      this.setState({ check: isLtMaxFileSize });
     }
     setTimeout(() => {
-      setSizeImageMatch(isLt5M);
-      this.setState({ check: isLt5M });
+      setSizeImageMatch(isLtMaxFileSize);
+      this.setState({ check: isLtMaxFileSize });
     }, 2000);
-    return checkType && isLt5M;
+    return checkType && isLtMaxFileSize;
   };
 
   handleUpload = (file) => {
