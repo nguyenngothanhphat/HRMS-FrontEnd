@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tabs, Badge } from 'antd';
 import { connect } from 'umi';
+import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -30,6 +31,19 @@ class FilterBar extends PureComponent {
     return number;
   };
 
+  renderActionBtn = () => {
+    const { handlePackage = {} } = this.props;
+    const { onApprove = () => {}, onReject = () => {}, loading3, loading4 } = handlePackage;
+    return (
+      <MultipleCheckTablePopup
+        onApprove={onApprove}
+        onReject={onReject}
+        loading3={loading3}
+        loading4={loading4}
+      />
+    );
+  };
+
   render() {
     const {
       dataNumber: {
@@ -41,7 +55,9 @@ class FilterBar extends PureComponent {
       } = {},
       category = '',
       timeOff: { currentFilterTab = '' } = {},
+      handlePackage = {},
     } = this.props;
+    const { length = 0 } = handlePackage;
 
     const inProgressExist = inProgressLength > 0;
 
@@ -51,7 +67,9 @@ class FilterBar extends PureComponent {
           tabBarGutter={35}
           activeKey={currentFilterTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
-          tabBarExtraContent={this.renderTableTitle}
+          tabBarExtraContent={
+            length > 0 && currentFilterTab === '1' ? this.renderActionBtn() : null
+          }
         >
           <TabPane
             tab={

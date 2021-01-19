@@ -81,10 +81,6 @@ class ViewRequestForm extends PureComponent {
       } = {},
     } = this.props;
 
-    const {
-      match: { params: { reId: id = '' } = {} },
-    } = this.props;
-
     return (
       <PageContainer>
         <div className={styles.ViewRequestForm}>
@@ -99,7 +95,7 @@ class ViewRequestForm extends PureComponent {
           </Affix>
           <Row className={styles.container} gutter={[20, 20]}>
             <Col xs={24} lg={16}>
-              <RequestInformation id={id} />
+              <RequestInformation />
             </Col>
             <Col xs={24} lg={8}>
               <RightContent approvalManager={approvalManager} status={status} />

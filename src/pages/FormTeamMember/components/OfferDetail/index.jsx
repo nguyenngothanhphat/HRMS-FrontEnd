@@ -528,6 +528,7 @@ const OfferDetail = (props) => {
                               {uploadedOffer.name}
                             </Button>
                             <UploadImage
+                              maxFileSize={2}
                               isUploadPDF
                               content="Choose file"
                               getResponse={(res) => handleUploadResponse(res)}
@@ -538,6 +539,7 @@ const OfferDetail = (props) => {
                         ) : (
                           // <span>{uploadedOffer.url}</span>
                           <UploadImage
+                            maxFileSize={2}
                             isUploadPDF
                             content="Choose file"
                             getResponse={(res) => handleUploadResponse(res)}

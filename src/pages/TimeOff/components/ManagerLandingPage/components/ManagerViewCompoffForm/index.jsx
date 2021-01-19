@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col } from 'antd';
+import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
@@ -125,10 +125,6 @@ class ManagerViewCompoffForm extends PureComponent {
       loadingFetchCompoffRequestById,
     } = this.props;
 
-    const {
-      match: { params: { reId: id = '' } = {} },
-    } = this.props;
-
     return (
       <PageContainer>
         <div className={styles.ManagerViewCompoffForm}>
@@ -141,17 +137,30 @@ class ManagerViewCompoffForm extends PureComponent {
               </div>
             </div>
           </Affix>
-          <Row className={styles.container} gutter={[20, 20]}>
-            <Col xs={24} lg={16}>
-              <RequestInformation id={id} />
-            </Col>
-            <Col xs={24} lg={8}>
-              <RightContent
-                viewingCompoffRequest={viewingCompoffRequest}
-                loading={loadingFetchCompoffRequestById}
-              />
-            </Col>
-          </Row>
+          {loadingFetchCompoffRequestById && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '100px 0',
+              }}
+            >
+              <Spin size="medium" />
+            </div>
+          )}
+          {!loadingFetchCompoffRequestById && (
+            <Row className={styles.container} gutter={[20, 20]}>
+              <Col xs={24} lg={16}>
+                <RequestInformation />
+              </Col>
+              <Col xs={24} lg={8}>
+                <RightContent
+                  viewingCompoffRequest={viewingCompoffRequest}
+                  loading={loadingFetchCompoffRequestById}
+                />
+              </Col>
+            </Row>
+          )}
         </div>
       </PageContainer>
     );

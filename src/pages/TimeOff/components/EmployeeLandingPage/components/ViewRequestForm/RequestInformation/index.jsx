@@ -38,15 +38,6 @@ class RequestInformation extends PureComponent {
     this.setViewPolicyModal(true);
   };
 
-  // FETCH LEAVE REQUEST DETAIL
-  componentDidMount = () => {
-    const { dispatch, id = '' } = this.props;
-    dispatch({
-      type: 'timeOff/fetchLeaveRequestById',
-      id,
-    });
-  };
-
   refreshPage = () => {
     setTimeout(() => {
       window.location.reload(false);
@@ -104,7 +95,7 @@ class RequestInformation extends PureComponent {
     if (statusCode === 200) {
       history.push({
         pathname: `/time-off`,
-        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
+        state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name, category: 'TIMEOFF' },
       });
     }
   };
