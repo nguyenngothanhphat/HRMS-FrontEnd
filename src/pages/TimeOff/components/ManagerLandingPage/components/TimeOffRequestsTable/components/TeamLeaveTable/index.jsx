@@ -263,7 +263,7 @@ class TeamLeaveTable extends PureComponent {
         loading4,
       };
       onHandle(payload);
-    }
+    } else onHandle({});
   };
 
   // PARSE DATA FOR TABLE

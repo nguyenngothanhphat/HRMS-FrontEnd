@@ -240,7 +240,7 @@ class TeamCompoffTable extends PureComponent {
         loading4,
       };
       onHandle(payload);
-    }
+    } else onHandle({});
   };
 
   // PARSE DATA FOR TABLE
