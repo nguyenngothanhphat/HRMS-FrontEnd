@@ -914,9 +914,9 @@ class RequestInformation extends PureComponent {
     const list = emailsList.map((user) => {
       const {
         _id = '',
-        generalInfo: { firstName = '', lastName = '', workEmail = '' } = {},
+        generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
       } = user;
-      return { workEmail, firstName, lastName, _id };
+      return { workEmail, firstName, lastName, _id, avatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
@@ -976,7 +976,7 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'DD.MM.YYYY';
+    const dateFormat = 'DD.MM.YY';
 
     const {
       selectedShortType,
@@ -1270,6 +1270,12 @@ class RequestInformation extends PureComponent {
                   {this.renderEmailsList().map((value) => {
                     const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
                     return (
+                      // <Option key={_id} value={_id}>
+                      //   <div className={styles.ccAvatar}>
+                      //     <img src={avatar} alt="user" />
+                      //   </div>
+                      //   <span className={styles.ccEmail}>{workEmail}</span>
+                      // </Option>
                       <Option key={_id} value={_id}>
                         <span style={{ fontSize: 13 }}>
                           {firstName} {lastName}

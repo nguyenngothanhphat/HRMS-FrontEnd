@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import TeamLeaveTable from '../TeamLeaveTable';
 import TeamCompoffTable from '../TeamCompoffTable';
 import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
@@ -8,16 +9,21 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-@connect(({ timeOff, user, timeOff: { currentUserRole = '' } = {} }) => ({
+@connect(({ timeOff, loading, user, timeOff: { currentUserRole = '' } = {} }) => ({
   timeOff,
   user,
   currentUserRole,
+  loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
+  loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
+  loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],
 }))
 class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       formatData: [],
+      formatMainTabData: [],
       inProgressLength: 0,
       approvedLength: 0,
       rejectedLength: 0,
@@ -37,8 +43,8 @@ class TimeOffRequestTab extends PureComponent {
 
     if (key === 2)
       return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'C';
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType !== 'LWP';
       });
 
     if (key === 3)
@@ -158,6 +164,10 @@ class TimeOffRequestTab extends PureComponent {
       if (statusCode === 200) {
         const newData = this.getDataByType(items, tab);
         this.countTotal(newData);
+        const formatMainTabData = newData.filter((data) => data.status !== 'DELETED');
+        this.setState({
+          formatMainTabData,
+        });
       }
     });
   };
@@ -270,8 +280,71 @@ class TimeOffRequestTab extends PureComponent {
     });
   };
 
+  renderEmptyTableContent = (tab, category) => {
+    if (category === 'MY') {
+      switch (tab) {
+        case 1:
+          return (
+            <>
+              You have not applied for any Leave requests. <br />
+              Submitted Casual, Sick & Compoff requests will be displayed here.
+            </>
+          );
+        case 2:
+          return (
+            <>
+              You have not applied for any Special Leave requests.
+              <br />
+              Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+              requests will be displayed here.
+            </>
+          );
+        case 3:
+          return <>You have not applied for any LWP requests.</>;
+        case 4:
+          return <>You have not applied any request to Work from home or Client’s place.</>;
+        case 5:
+          return <>You have not submitted any requests to earn compensation leaves.</>;
+        default:
+          return '';
+      }
+    }
+    if (category === 'TEAM') {
+      switch (tab) {
+        case 1:
+          return (
+            <>
+              No Leave requests received. <br />
+              Submitted Casual, Sick & Compoff requests will be displayed here.
+            </>
+          );
+        case 2:
+          return (
+            <>
+              No Special Leave requests received. <br />
+              Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+              requests will be displayed here.
+            </>
+          );
+        case 3:
+          return (
+            <>
+              No LWP requests received. <br />
+            </>
+          );
+        case 4:
+          return <>No Work from home or Client’s place requests received.</>;
+        case 5:
+          return <>No Compoff requests received.</>;
+        default:
+          return '';
+      }
+    }
+    return '';
+  };
+
   render() {
-    const { type = 0, category = '' } = this.props;
+    const { type = 0, category = '', tab = 0, loading1, loading2, loading3, loading4 } = this.props;
 
     const {
       formatData,
@@ -282,6 +355,7 @@ class TimeOffRequestTab extends PureComponent {
       selectedTab,
       onHoldLength,
       handlePackage,
+      formatMainTabData,
     } = this.state;
 
     const dataNumber = {
@@ -291,6 +365,10 @@ class TimeOffRequestTab extends PureComponent {
       draftLength,
       onHoldLength,
     };
+
+    const checkEmptyTable = formatMainTabData.length === 0;
+
+    const emptyTableContent = this.renderEmptyTableContent(tab, category);
 
     return (
       <div className={styles.TimeOffRequestTab}>
@@ -302,29 +380,38 @@ class TimeOffRequestTab extends PureComponent {
         />
         <div className={styles.tableContainer}>
           <div>
-            {type === 1 && category === 'TEAM' && (
-              <TeamLeaveTable
-                data={formatData}
-                category={category}
-                selectedTab={selectedTab}
-                onRefreshTable={this.setSelectedFilterTab}
-                onHandle={this.onApproveRejectHandle}
-              />
-            )}
-            {type === 1 && category === 'MY' && (
-              <MyLeaveTable data={formatData} selectedTab={selectedTab} />
-            )}
-            {type === 2 && category === 'TEAM' && (
-              <TeamCompoffTable
-                data={formatData}
-                category={category}
-                selectedTab={selectedTab}
-                onRefreshTable={this.setSelectedFilterTab}
-                onHandle={this.onApproveRejectHandle}
-              />
-            )}
-            {type === 2 && category === 'MY' && (
-              <MyCompoffTable data={formatData} selectedTab={selectedTab} />
+            {checkEmptyTable && !loading1 && !loading2 && !loading3 && !loading4 ? (
+              <div className={styles.emptyTable}>
+                <img src={EmptyIcon} alt="empty-table" />
+                <p className={styles.describeTexts}>{emptyTableContent}</p>
+              </div>
+            ) : (
+              <>
+                {type === 1 && category === 'TEAM' && (
+                  <TeamLeaveTable
+                    data={formatData}
+                    category={category}
+                    selectedTab={selectedTab}
+                    onRefreshTable={this.setSelectedFilterTab}
+                    onHandle={this.onApproveRejectHandle}
+                  />
+                )}
+                {type === 1 && category === 'MY' && (
+                  <MyLeaveTable data={formatData} selectedTab={selectedTab} />
+                )}
+                {type === 2 && category === 'TEAM' && (
+                  <TeamCompoffTable
+                    data={formatData}
+                    category={category}
+                    selectedTab={selectedTab}
+                    onRefreshTable={this.setSelectedFilterTab}
+                    onHandle={this.onApproveRejectHandle}
+                  />
+                )}
+                {type === 2 && category === 'MY' && (
+                  <MyCompoffTable data={formatData} selectedTab={selectedTab} />
+                )}
+              </>
             )}
           </div>
         </div>

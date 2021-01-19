@@ -55,7 +55,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      render: (type) => <span>{type ? type.shortType : '-'}</span>,
       // defaultSortOrder: ['ascend'],
       // sorter: {
       //   compare: (a, b) => {
@@ -72,6 +72,7 @@ class TeamLeaveTable extends PureComponent {
       width: '20%',
       dataIndex: 'leaveTimes',
       align: 'left',
+      render: (leaveTimes) => (leaveTimes !== '' ? <span>{leaveTimes}</span> : <span>-</span>),
     },
     // {
     //   title: `Req’ted on `,
@@ -93,7 +94,7 @@ class TeamLeaveTable extends PureComponent {
         comment ? (
           <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
         ) : (
-          <span />
+          <span>-</span>
         ),
     },
     // {
@@ -262,7 +263,7 @@ class TeamLeaveTable extends PureComponent {
         loading4,
       };
       onHandle(payload);
-    }
+    } else onHandle({});
   };
 
   // PARSE DATA FOR TABLE
@@ -282,9 +283,9 @@ class TeamLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
           .locale('en')
-          .format('DD.MM.YYYY')}`;
+          .format('DD.MM.YY')}`;
       }
 
       // let employeeFromCC = [];
@@ -440,6 +441,7 @@ class TeamLeaveTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id._id}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}

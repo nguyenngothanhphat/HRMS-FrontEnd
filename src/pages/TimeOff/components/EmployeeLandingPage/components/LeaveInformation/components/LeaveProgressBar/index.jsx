@@ -3,6 +3,27 @@ import { Progress } from 'antd';
 import styles from './index.less';
 
 export default class LeaveProgressBar extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      percent: 0,
+    };
+  }
+
+  componentDidMount = () => {
+    const { stepNumber = 0, limitNumber = 0 } = this.props;
+    const remaining = (stepNumber / limitNumber) * 100;
+    setTimeout(() => {
+      for (let i = 0; i < remaining; i += 1) {
+        setTimeout(() => {
+          this.setState({
+            percent: i,
+          });
+        }, 0);
+      }
+    }, 500);
+  };
+
   renderCircle = (stepNumber, limitNumber, color) => {
     return (
       <span className={styles.smallCircle}>
@@ -13,13 +34,13 @@ export default class LeaveProgressBar extends PureComponent {
   };
 
   renderProgressBar = () => {
-    const { stepNumber = 0, limitNumber = 0, color = '#000' } = this.props;
-    const remaining = (stepNumber / limitNumber) * 100;
+    const { color = '', stepNumber = 0, limitNumber = 0 } = this.props;
+    const { percent } = this.state;
     return (
       <div className={styles.renderProgressBar}>
         <Progress
           type="circle"
-          percent={remaining}
+          percent={percent}
           width={50}
           strokeColor={color}
           trailColor="#d6dce0"
