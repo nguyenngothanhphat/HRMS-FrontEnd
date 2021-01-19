@@ -2,12 +2,17 @@
   font-family: Roboto, sans-serif;
   :global {
     .ant-tabs-tab-btn {
+      font-weight: bold;
       color: #707177;
     }
     .ant-tabs-ink-bar {
       display: none;
     }
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      font-weight: bold;
+    }
   }
+
   .viewActivityLog {
     margin-right: 24px;
     background-color: #568afa1f; // hex with alpha 0.12

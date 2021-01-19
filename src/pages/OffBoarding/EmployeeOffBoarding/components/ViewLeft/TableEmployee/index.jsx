@@ -4,7 +4,7 @@ import { Table, Avatar } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
 import { UserOutlined } from '@ant-design/icons';
-import empty from '@/assets/empty.svg';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import t from './index.less';
 
 @connect(({ loading }) => ({

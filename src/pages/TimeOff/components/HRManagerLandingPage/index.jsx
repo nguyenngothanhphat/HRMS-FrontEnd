@@ -51,8 +51,12 @@ export default class HRManagerLandingPage extends PureComponent {
 
   render() {
     const describeText = [
-      <p>Apply for leaves with/without pay, work from home or client office.</p>,
-      <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
+      <p className={styles.subText}>
+        Apply for leaves with/without pay, work from home or client office.
+      </p>,
+      <p className={styles.subText}>
+        Request for a compensation leave if you have worked for extra days/hours.
+      </p>,
     ];
     const { viewInformation, closeFeedbackBar } = this.state;
     return (

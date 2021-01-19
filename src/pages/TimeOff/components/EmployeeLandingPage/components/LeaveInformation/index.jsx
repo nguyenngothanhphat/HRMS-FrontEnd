@@ -226,12 +226,7 @@ class LeaveInformation extends PureComponent {
               />
             </div>
           </div>
-          <Collapse
-            destroyInactivePanel
-            onChange={this.handleShow}
-            bordered={false}
-            defaultActiveKey={['']}
-          >
+          <Collapse destroyInactivePanel onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
             <Panel showArrow={false} header={this.renderHeader()} key="1">
               <CollapseInformation
                 typesOfCommonLeaves={typesOfCommonLeaves}
