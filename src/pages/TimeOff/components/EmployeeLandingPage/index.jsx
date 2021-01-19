@@ -51,8 +51,8 @@ export default class EmployeeLandingPage extends PureComponent {
 
   render() {
     const describeText = [
-      <p>Apply for leaves with/without pay, work from home or client office.</p>,
-      <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
+      'Apply for leaves with/without pay, work from home or client office.',
+      'Request for a compensation leave if you have worked for extra days/hours.',
     ];
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
@@ -62,7 +62,7 @@ export default class EmployeeLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationCLick={this.onInformationCLick} />
+                  <LeaveInformation onInformationClick={this.onInformationClick} />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />

@@ -197,7 +197,7 @@ class LeaveInformation extends PureComponent {
   render() {
     const { remaining, percentMainCircle } = this.state;
     const {
-      onInformationCLick = () => {},
+      onInformationClick = () => {},
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
     } = this.props;
     const {
@@ -243,7 +243,7 @@ class LeaveInformation extends PureComponent {
           </Collapse>
         </div>
         <Tooltip title="Leave balances detail">
-          <div onClick={onInformationCLick} className={styles.infoIcon}>
+          <div onClick={onInformationClick} className={styles.infoIcon}>
             <InfoCircleOutlined />
           </div>
         </Tooltip>

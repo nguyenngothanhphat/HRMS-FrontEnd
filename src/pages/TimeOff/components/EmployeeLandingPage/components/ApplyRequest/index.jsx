@@ -13,7 +13,9 @@ export default class ApplyRequest extends PureComponent {
       >
         <div className={styles.abovePart}>
           <span className={styles.title}>{title}</span>
-          <div className={type === 1 ? styles.describe1 : styles.describe}>{describe}</div>
+          <div className={type === 1 ? styles.describe1 : styles.describe}>
+            <p>{describe}</p>
+          </div>
         </div>
         <Button onClick={onClick}>{buttonText}</Button>
       </div>
