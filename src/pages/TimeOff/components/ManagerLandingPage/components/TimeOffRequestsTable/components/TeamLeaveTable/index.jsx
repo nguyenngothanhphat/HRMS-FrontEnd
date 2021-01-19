@@ -55,7 +55,7 @@ class TeamLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      render: (type) => <span>{type ? type.shortType : '-'}</span>,
       // defaultSortOrder: ['ascend'],
       // sorter: {
       //   compare: (a, b) => {
@@ -72,6 +72,7 @@ class TeamLeaveTable extends PureComponent {
       width: '20%',
       dataIndex: 'leaveTimes',
       align: 'left',
+      render: (leaveTimes) => (leaveTimes !== '' ? <span>{leaveTimes}</span> : <span>-</span>),
     },
     // {
     //   title: `Req’ted on `,
@@ -93,7 +94,7 @@ class TeamLeaveTable extends PureComponent {
         comment ? (
           <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
         ) : (
-          <span />
+          <span>-</span>
         ),
     },
     // {

@@ -47,7 +47,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
+      render: (project) => <span>{project ? project.name : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
@@ -74,7 +74,7 @@ class TeamCompoffTable extends PureComponent {
         comment ? (
           <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
         ) : (
-          <span />
+          <span>-</span>
         ),
     },
     {

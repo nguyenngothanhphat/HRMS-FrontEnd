@@ -30,7 +30,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      render: (type) => <span>{type ? type.shortType : '-'}</span>,
       // defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => {
@@ -47,6 +47,7 @@ class MyLeaveTable extends PureComponent {
       width: '20%',
       dataIndex: 'leaveTimes',
       align: 'left',
+      render: (leaveTimes) => <span>{leaveTimes !== '' ? leaveTimes : '-'}</span>,
     },
     {
       title: `Req’ted on `,
@@ -64,6 +65,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'center',
+      render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
     },
     {
       title: 'Assigned',

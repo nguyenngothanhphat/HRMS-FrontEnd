@@ -30,13 +30,14 @@ class MyCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
+      render: (project) => <span>{project ? project.name : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'left',
+      render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
     },
     {
       title: `Req’ted on `,
