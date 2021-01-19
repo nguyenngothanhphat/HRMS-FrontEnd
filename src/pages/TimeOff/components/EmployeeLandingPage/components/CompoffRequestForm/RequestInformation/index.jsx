@@ -363,9 +363,9 @@ class RequestInformation extends PureComponent {
     const list = emailsList.map((user) => {
       const {
         _id = '',
-        generalInfo: { firstName = '', lastName = '', workEmail = '' } = {},
+        generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
       } = user;
-      return { workEmail, firstName, lastName, _id };
+      return { workEmail, firstName, lastName, _id, avatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
@@ -443,6 +443,8 @@ class RequestInformation extends PureComponent {
         span: 10,
       },
     };
+
+    const formatListEmail = this.renderEmailsList() || [];
 
     const dateFormat = 'DD.MM.YY';
 
@@ -676,15 +678,40 @@ class RequestInformation extends PureComponent {
                   },
                 ]}
               >
-                <Select mode="multiple" allowClear placeholder="Search a person you want to loop">
-                  {this.renderEmailsList().map((value) => {
-                    const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Search a person you want to loop"
+                  filterOption={(input, option) => {
+                    return (
+                      option.children[1].props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {formatListEmail.map((value) => {
+                    const { _id = '', workEmail = '', avatar = '' } = value;
+
                     return (
                       <Option key={_id} value={_id}>
-                        <span style={{ fontSize: 13 }}>
-                          {firstName} {lastName}
+                        <div style={{ display: 'inline', marginRight: '10px' }}>
+                          <img
+                            style={{
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                            }}
+                            src={avatar}
+                            alt="user"
+                          />
+                        </div>
+                        <span
+                          style={{ fontSize: '13px', color: '#161C29' }}
+                          className={styles.ccEmail}
+                        >
+                          {workEmail}
                         </span>
-                        <span style={{ fontSize: 12, color: '#464646' }}>({workEmail})</span>
                       </Option>
                     );
                   })}
