@@ -186,18 +186,12 @@ class ViewDocument extends PureComponent {
       return;
     }
 
-    const {
-      employeeProfile: {
-        documentDetail: { attachment: { fileName = '', url = '' } = {} } = {},
-      } = {},
-      dispatch,
-    } = this.props;
+    const { employeeProfile: { documentDetail: { _id } = {} } = {}, dispatch } = this.props;
     const res = await dispatch({
       type: 'employeeProfile/shareDocumentEffect',
       payload: {
         shareWith,
-        fileName,
-        url,
+        id: _id,
       },
     });
 
