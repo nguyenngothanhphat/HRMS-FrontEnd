@@ -250,7 +250,12 @@ class TimeOffRequestTab extends PureComponent {
       formatMainTabData,
     } = this.state;
 
-    const { type = 0, tab = 0 } = this.props;
+    const {
+      type = 0,
+      tab = 0,
+      loadingFetchLeaveRequests,
+      loadingFetchMyCompoffRequests,
+    } = this.props;
 
     const dataNumber = {
       inProgressLength,
@@ -268,7 +273,7 @@ class TimeOffRequestTab extends PureComponent {
       <div className={styles.TimeOffRequestTab}>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
-          {checkEmptyTable ? (
+          {checkEmptyTable && !loadingFetchLeaveRequests && !loadingFetchMyCompoffRequests ? (
             <div className={styles.emptyTable}>
               <img src={EmptyIcon} alt="empty-table" />
               <p className={styles.describeTexts}>{emptyTableContent}</p>
