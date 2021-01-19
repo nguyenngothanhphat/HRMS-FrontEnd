@@ -1,28 +1,28 @@
 .MultipleCheckTablePopup {
   z-index: 10;
   display: block;
-  position: fixed;
+  // position: fixed;
   // width: 100%;
   // margin: 0 auto;
-  right: 0;
-  bottom: 0;
+  // right: 0;
+  // bottom: 0;
   background-color: white;
-  margin: 20px 47px 20px 0;
+  // margin: 20px 47px 20px 0;
   //   padding: 10px 20px;
-  border-radius: 5px;
-  overflow: hidden;
+  // border-radius: 5px;
+  // overflow: hidden;
   //   border: 1px solid #2c6df9;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.281);
+  // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.281);
   .container {
     display: flex;
     flex-direction: row;
     .button {
-      padding: 10px;
+      margin-left: 10px;
       .icon {
-        min-width: 25px;
+        // min-width: 25px;
         display: inline-block;
         margin: 0 auto;
-        margin-right: 10px;
+        // margin-right: 10px;
       }
       //   margin-right: 10px;
       cursor: pointer;
@@ -39,7 +39,7 @@
       &:hover {
         transition: 0.3s;
         img {
-          filter: brightness(0) invert(1);
+          // filter: brightness(0) invert(1);
           transition: 0.3s;
         }
         span {
@@ -50,16 +50,26 @@
     }
     .button1 {
       .button();
+      img {
+        filter: invert(32%) sepia(85%) saturate(2978%) hue-rotate(214deg) brightness(101%)
+          contrast(95%);
+      }
       &:hover {
-        background-color: #2c6df9;
+        // background-color: #2c6df9;
         transition: 0.3s;
+        transform: scale(1.1);
       }
     }
     .button2 {
       .button();
+      img {
+        filter: invert(28%) sepia(100%) saturate(1629%) hue-rotate(336deg) brightness(109%)
+          contrast(98%);
+      }
       &:hover {
-        background-color: #fd4546;
+        // background-color: #fd4546;
         transition: 0.3s;
+        transform: scale(1.1);
       }
     }
   }
