@@ -30,20 +30,6 @@ const CollapseInformation = (props) => {
     return <a>Unknown file</a>;
   };
 
-  const checkDuplicateTypeAAndB = (shortTypeToCheck, typeToCheck) => {
-    let check = false;
-    if (typeToCheck === 'B') {
-      typesOfCommonLeaves.forEach((type) => {
-        const { defaultSettings = {} } = type;
-        if (defaultSettings !== null) {
-          const { shortType = '', type: type1 = '' } = defaultSettings;
-          if (type1 === 'A' && shortTypeToCheck === shortType) check = true;
-        }
-      });
-    }
-    return check;
-  };
-
   return (
     <div className={styles.CollapseInformation}>
       <div className={styles.hrLine} />
@@ -130,17 +116,32 @@ class LeaveInformation extends PureComponent {
     this.state = {
       show: false,
       remaining: 0,
+      percentMainCircle: 0,
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { dispatch } = this.props;
-    dispatch({
+    await dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
     });
     // dispatch({
     //   type: 'timeOff/fetchLeaveRequestOfEmployee',
     // });
+    const { timeOff: { totalLeaveBalance: { commonLeaves = {} } = {} } = {} } = this.props;
+    const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
+
+    const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
+
+    setTimeout(() => {
+      for (let i = 0; i < percent; i += 1) {
+        setTimeout(() => {
+          this.setState({
+            percentMainCircle: i,
+          });
+        }, 0);
+      }
+    }, 1000);
   };
 
   handleShow = () => {
@@ -194,7 +195,7 @@ class LeaveInformation extends PureComponent {
   };
 
   render() {
-    const { remaining } = this.state;
+    const { remaining, percentMainCircle } = this.state;
     const {
       onInformationCLick = () => {},
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
@@ -208,7 +209,7 @@ class LeaveInformation extends PureComponent {
       policy: policySpecialLeaves = {},
     } = specialLeaves;
 
-    const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
+    // this.calculateValueForCircleProgress(typesOfCommonLeaves);
 
     return (
       <div className={styles.LeaveInformation}>
@@ -220,12 +221,17 @@ class LeaveInformation extends PureComponent {
                 type="circle"
                 strokeColor="#FFA100"
                 trailColor="#EAE7E3"
-                percent={percent}
+                percent={percentMainCircle}
                 format={(percentVal) => this.renderCircleProgress(percentVal, remaining)}
               />
             </div>
           </div>
-          <Collapse onChange={this.handleShow} bordered={false} defaultActiveKey={['']}>
+          <Collapse
+            destroyInactivePanel
+            onChange={this.handleShow}
+            bordered={false}
+            defaultActiveKey={['']}
+          >
             <Panel showArrow={false} header={this.renderHeader()} key="1">
               <CollapseInformation
                 typesOfCommonLeaves={typesOfCommonLeaves}
