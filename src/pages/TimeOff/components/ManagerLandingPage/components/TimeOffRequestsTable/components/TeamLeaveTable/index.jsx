@@ -441,6 +441,7 @@ class TeamLeaveTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id._id}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}

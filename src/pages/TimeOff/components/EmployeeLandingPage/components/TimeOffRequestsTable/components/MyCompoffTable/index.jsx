@@ -209,6 +209,7 @@ class MyCompoffTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id.ticketID}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }
