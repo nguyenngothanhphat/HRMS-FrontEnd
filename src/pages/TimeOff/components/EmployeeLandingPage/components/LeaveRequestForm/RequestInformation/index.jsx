@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
 import ViewPolicyModal from '@/components/ViewPolicyModal';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
@@ -149,7 +150,7 @@ class RequestInformation extends PureComponent {
         selectedType: type,
       });
 
-      const personCC = cc.map((person) => (person ? person._id : null));
+      // const personCC = cc.map((person) => (person ? person._id : null));
 
       // if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
       // generate date lists and leave time
@@ -186,7 +187,7 @@ class RequestInformation extends PureComponent {
         durationFrom: fromDate === null ? null : moment(fromDate),
         durationTo: toDate === null ? null : moment(toDate),
         description,
-        personCC,
+        personCC: cc,
         leaveTimeLists,
       });
 
@@ -916,7 +917,9 @@ class RequestInformation extends PureComponent {
         _id = '',
         generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
       } = user;
-      return { workEmail, firstName, lastName, _id, avatar };
+      let newAvatar = avatar;
+      if (avatar === '') newAvatar = DefaultAvatar;
+      return { workEmail, firstName, lastName, _id, avatar: newAvatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
@@ -975,6 +978,7 @@ class RequestInformation extends PureComponent {
         span: 10,
       },
     };
+    const formatListEmail = this.renderEmailsList() || [];
 
     const dateFormat = 'DD.MM.YY';
 
@@ -1038,7 +1042,7 @@ class RequestInformation extends PureComponent {
         >
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Select Timeoff Type</span>
+              <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -1089,7 +1093,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Subject</span>
+              <span>Subject</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -1108,7 +1112,7 @@ class RequestInformation extends PureComponent {
           </Row>
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Duration</span>
+              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Row gutter={['20', '0']}>
@@ -1166,7 +1170,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Leave time</span>
+              <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <div
@@ -1231,7 +1235,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Description</span>
+              <span>Description</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -1266,21 +1270,40 @@ class RequestInformation extends PureComponent {
                   },
                 ]}
               >
-                <Select mode="multiple" allowClear placeholder="Search a person you want to loop">
-                  {this.renderEmailsList().map((value) => {
-                    const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Search a person you want to loop"
+                  filterOption={(input, option) => {
                     return (
-                      // <Option key={_id} value={_id}>
-                      //   <div className={styles.ccAvatar}>
-                      //     <img src={avatar} alt="user" />
-                      //   </div>
-                      //   <span className={styles.ccEmail}>{workEmail}</span>
-                      // </Option>
+                      option.children[1].props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {formatListEmail.map((value) => {
+                    const { _id = '', workEmail = '', avatar = '' } = value;
+
+                    return (
                       <Option key={_id} value={_id}>
-                        <span style={{ fontSize: 13 }}>
-                          {firstName} {lastName}
+                        <div style={{ display: 'inline', marginRight: '10px' }}>
+                          <img
+                            style={{
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                            }}
+                            src={avatar}
+                            alt="user"
+                          />
+                        </div>
+                        <span
+                          style={{ fontSize: '13px', color: '#161C29' }}
+                          className={styles.ccEmail}
+                        >
+                          {workEmail}
                         </span>
-                        <span style={{ fontSize: 12, color: '#464646' }}>({workEmail})</span>
                       </Option>
                     );
                   })}

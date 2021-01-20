@@ -149,7 +149,7 @@ class LeaveInformation extends PureComponent {
           });
         }, 0);
       }
-    }, 500);
+    }, 1000);
   };
 
   handleShow = () => {

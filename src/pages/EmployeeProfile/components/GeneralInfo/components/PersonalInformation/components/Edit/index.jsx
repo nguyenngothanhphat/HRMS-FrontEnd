@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import styles from './index.less';
 
@@ -27,7 +27,6 @@ class Edit extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      dropdown: false,
       residentAddress: {
         address: '',
         country: {
@@ -58,10 +57,6 @@ class Edit extends PureComponent {
       currentAddress: current,
     });
   }
-
-  handleDropdown = (open) => {
-    this.setState({ dropdown: open });
-  };
 
   handleChange = (changedValues) => {
     const { dispatch, generalData, generalDataOrigin } = this.props;
@@ -254,7 +249,7 @@ class Edit extends PureComponent {
   render() {
     const { Option } = Select;
     const { TextArea } = Input;
-    const { dropdown, residentAddress: addressState, currentAddress: _addressState } = this.state;
+    const { residentAddress: addressState, currentAddress: _addressState } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -346,14 +341,7 @@ class Edit extends PureComponent {
           <Form.Item label="Blood Group" name="Blood">
             <Select
               className={styles.selectForm}
-              onDropdownVisibleChange={this.handleDropdown}
-              suffixIcon={
-                dropdown ? (
-                  <UpOutlined className={styles.arrowUP} />
-                ) : (
-                  <DownOutlined className={styles.arrowDown} />
-                )
-              }
+              suffixIcon={<DownOutlined className={styles.arrowUP} />}
             >
               <Option value="O-">O-</Option>
               <Option value="O+">O+</Option>
@@ -368,14 +356,7 @@ class Edit extends PureComponent {
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
               className={styles.selectForm}
-              onDropdownVisibleChange={this.handleDropdown}
-              suffixIcon={
-                dropdown ? (
-                  <UpOutlined className={styles.arrowUP} />
-                ) : (
-                  <DownOutlined className={styles.arrowDown} />
-                )
-              }
+              suffixIcon={<DownOutlined className={styles.arrowUP} />}
             >
               <Option value="Single">Single</Option>
               <Option value="Married">Married</Option>
@@ -413,7 +394,6 @@ class Edit extends PureComponent {
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
-                  onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_countryName}
                   onChange={(value) => {
                     this.handleChangeAddress('r_countryName', value);
@@ -425,13 +405,7 @@ class Edit extends PureComponent {
                       type: 'array',
                     },
                   ]}
-                  suffixIcon={
-                    dropdown ? (
-                      <UpOutlined className={styles.arrowUP} />
-                    ) : (
-                      <DownOutlined className={styles.arrowDown} />
-                    )
-                  }
+                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {formatCountryList.map((itemCountry) => {
                     return (
@@ -447,16 +421,9 @@ class Edit extends PureComponent {
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
-                  onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={r_state}
                   onChange={(e) => this.handleChangeAddress('r_state', e)}
-                  suffixIcon={
-                    dropdown ? (
-                      <UpOutlined className={styles.arrowUP} />
-                    ) : (
-                      <DownOutlined className={styles.arrowDown} />
-                    )
-                  }
+                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {loadingStates ? (
                     <div className={styles.selectForm_loading}>
@@ -500,16 +467,9 @@ class Edit extends PureComponent {
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
-                  onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_countryName}
                   onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                  suffixIcon={
-                    dropdown ? (
-                      <UpOutlined className={styles.arrowUP} />
-                    ) : (
-                      <DownOutlined className={styles.arrowDown} />
-                    )
-                  }
+                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {formatCountryList.map((itemCountry) => {
                     return (
@@ -525,16 +485,9 @@ class Edit extends PureComponent {
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
-                  onDropdownVisibleChange={this.handleDropdown}
                   defaultValue={c_state}
                   onChange={(value) => this.handleChangeAddress('c_state', value)}
-                  suffixIcon={
-                    dropdown ? (
-                      <UpOutlined className={styles.arrowUP} />
-                    ) : (
-                      <DownOutlined className={styles.arrowDown} />
-                    )
-                  }
+                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {loadingStates ? (
                     <div className={styles.selectForm_loading}>

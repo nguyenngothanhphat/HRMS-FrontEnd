@@ -42,7 +42,7 @@ export default class EmployeeLandingPage extends PureComponent {
     });
   };
 
-  onInformationCLick = () => {
+  onInformationClick = () => {
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -106,7 +106,7 @@ export default class EmployeeLandingPage extends PureComponent {
                   </Col>
                 </Row>
               )}
-              <LeaveBalanceInfo onClose={this.onInformationCLick} visible={viewInformation} />
+              <LeaveBalanceInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>
         </div>

@@ -163,8 +163,10 @@ class TimeOffRequestTab extends PureComponent {
         const newData = this.getDataByType(items, tab);
         this.countTotal(newData);
         let formatMainTabData = newData;
+        if (category === 'TEAM' || category === 'ALL')
+          formatMainTabData = formatMainTabData.filter((data) => data.status !== 'DRAFTS');
         if (category === 'MY')
-          formatMainTabData = newData.filter((data) => data.status !== 'DELETED');
+          formatMainTabData = formatMainTabData.filter((data) => data.status !== 'DELETED');
         this.setState({
           formatMainTabData,
         });
