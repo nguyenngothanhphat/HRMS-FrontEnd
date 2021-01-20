@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
+import { connect } from 'umi';
 import UserManagement from './components/UserManagement';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
@@ -53,14 +54,25 @@ const listMenu = [
   },
 ];
 
-export default class CompanyProfile extends PureComponent {
+@connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))
+class CompanyProfile extends Component {
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    dispatch({
+      type: 'country/fetchListCountry',
+    });
+    dispatch({
+      type: 'companiesManagement/fetchLocationsList',
+      payload: { company: id },
+    });
+  }
+
   render() {
-    const {
-      match: { params: { reId: companyId = '' } = {} },
-    } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup/get-started' },
-      { name: 'Company Profile', path: `/account-setup/get-started/company-profile/${companyId}` },
+      { name: 'Company Profile', path: `/account-setup/get-started/company-profile` },
     ];
     return (
       <>
@@ -83,3 +95,5 @@ export default class CompanyProfile extends PureComponent {
     );
   }
 }
+
+export default CompanyProfile;

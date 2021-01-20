@@ -6,7 +6,7 @@ import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
 import TabManageTeamWork from './components/TabManageTeamWork';
-import TimeSheet from './components/TimeSheet';
+// import TimeSheet from './components/TimeSheet';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
 
@@ -108,23 +108,18 @@ class Dashboard extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
-          {/* <Affix offsetTop={40}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>Dashboard</p>
-            </div>
-          </Affix> */}
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
-            <Col span={7}>
+            <Col span={8}>
               <Greeting name={currentUser?.generalInfo?.firstName} />
               <div className={styles.leftContainer}>
                 <ActivityLog />
               </div>
             </Col>
-            <Col span={17}>
+            <Col span={16}>
               <Carousel />
               <MyApps />
               <Row gutter={[12, 12]}>
-                <Col span={14}>
+                <Col span={24}>
                   <TabManageTeamWork
                     listMyTeam={listEmployeeMyTeam}
                     loadingMyTeam={fetchMyTeam}
@@ -132,9 +127,9 @@ class Dashboard extends PureComponent {
                     loadingProject={fetchListProject}
                   />
                 </Col>
-                <Col span={10}>
+                {/* <Col span={10}>
                   <TimeSheet />
-                </Col>
+                </Col> */}
                 <Col span={14}>
                   <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
                 </Col>
