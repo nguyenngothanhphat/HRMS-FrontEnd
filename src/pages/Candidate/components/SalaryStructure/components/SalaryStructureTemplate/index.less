@@ -110,10 +110,13 @@
     border: solid 1px #d6dce0;
     background-color: #ffffff;
     padding: 30px;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    p {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .title,
+    .value {
       width: 448px;
       height: 36px;
       font-family: Roboto;
@@ -232,6 +235,42 @@
           color: #ffa100;
           padding-right: 41px;
         }
+      }
+    }
+  }
+
+  :global {
+    .ant-empty-description {
+      width: 100% !important;
+      display: none !important;
+    }
+    .ant-table-placeholder {
+      display: none !important;
+      width: 100% !important;
+      height: 100% !important;
+
+      .ant-empty {
+        p {
+          width: unset !important;
+        }
+      }
+    }
+  }
+}
+
+:global {
+  .ant-empty-description {
+    width: 100% !important;
+    display: none !important;
+  }
+  .ant-table-placeholder {
+    display: none !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    .ant-empty {
+      p {
+        width: unset !important;
       }
     }
   }
