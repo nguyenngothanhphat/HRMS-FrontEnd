@@ -142,7 +142,9 @@ class MyCompoffTable extends PureComponent {
       }
 
       const oneAssign = (step) => {
-        const { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = step;
+        const {
+          employee: { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = {},
+        } = step;
         return {
           firstName,
           lastName,

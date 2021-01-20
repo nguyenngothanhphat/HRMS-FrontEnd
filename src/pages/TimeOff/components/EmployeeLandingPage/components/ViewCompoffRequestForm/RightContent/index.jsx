@@ -22,13 +22,19 @@ class RightContent extends PureComponent {
     const { viewingCompoffRequest: { approvalFlow = {} } = {} } = this.props;
     const {
       step1: {
-        generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
+        } = {},
       } = {},
       step2: {
-        generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+        } = {},
       } = {},
       step3: {
-        generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+        } = {},
       } = {},
     } = approvalFlow;
 
