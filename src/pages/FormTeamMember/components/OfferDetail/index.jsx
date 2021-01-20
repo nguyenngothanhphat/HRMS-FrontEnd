@@ -160,6 +160,8 @@ const OfferDetail = (props) => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 70); // Back to top of the page
+
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues, agreement, handbook });
   }, []);
