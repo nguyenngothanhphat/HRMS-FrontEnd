@@ -12,9 +12,8 @@
   }
 
   :global {
-    .ant-dropdown-menu-item-divider {
+    .ant-dropdown-menu-item-divider:not(:last-child) {
       background-color: #d6dce0;
-      margin-top: 18px;
     }
   }
 
@@ -36,7 +35,6 @@
 
   position: relative;
   min-width: 240px;
-  // padding: 10px;
   text-align: center;
   border-radius: 4%;
   box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
@@ -46,6 +44,10 @@
     border-radius: 50px;
     border: 1px solid #2c6df9;
     margin-top: 10px;
+  }
+
+  .firstDivider {
+    margin-top: 18px;
   }
 
   .menuItemLink {
@@ -119,9 +121,9 @@
     .sessionLogin {
       position: absolute;
       bottom: -30px;
-      left: 62px;
+      left: 24px;
       color: #c2c2c2;
-      font-size: 14px;
+      font-size: 13px;
     }
   }
 }
