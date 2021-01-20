@@ -113,6 +113,22 @@
   }
 
   :global {
+    .ant-input:focus,
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-select-focused .ant-select-selector,
+    .ant-select-selector:focus,
+    .ant-select-selector:active,
+    .ant-select-open .ant-select-selector {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset !important;
+    }
+
     .ant-select-selection-item {
       margin-top: 0px;
     }
