@@ -169,7 +169,8 @@ class ViewInformation extends Component {
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
-    const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
 
     if (loading)
