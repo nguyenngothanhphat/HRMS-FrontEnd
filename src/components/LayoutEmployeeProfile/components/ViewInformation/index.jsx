@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Tag, Button, Spin, Input } from 'antd';
+import { Divider, Button, Spin, Input } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -165,12 +165,13 @@ class ViewInformation extends Component {
       permissions = {},
       profileOwner = false,
     } = this.props;
-    const { firstName = '', avatar = '', skills = [], createdAt = '', linkedIn = '' } = generalData;
+    const { firstName = '', avatar = '', createdAt = '', linkedIn = '' } = generalData;
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
-    const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    const formatListSkill = this.formatListSkill(skills, listColors) || [];
+    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
     if (loading)
       return (
@@ -202,16 +203,13 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
           <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
         </div>
+
         <div className={s.infoEmployee__viewBottom}>
           <p className={s.infoEmployee__viewBottom__description}>{bioInfo}</p>
-          <Divider />
-          <p className={s.titleTag}>Skills</p>
-          <div>
-            {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
-                {item.name}
-              </Tag>
-            ))}
+          <div className={s.viewBtnAction}>
+            <Button onClick={this.handleEditBio} className={s.btnEditBio}>
+              Edit Bio
+            </Button>
           </div>
           <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
@@ -222,6 +220,20 @@ class ViewInformation extends Component {
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{employeeLocation}</p>
           </div>
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag}>Reporting to</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{employeeLocation}</p>
+          </div>
+          <Divider />
+          {/* <p className={s.titleTag}>Skills</p>
+          <div>
+            {formatListSkill.map((item) => (
+              <Tag key={item.id} color={item.color}>
+                {item.name}
+              </Tag>
+            ))}
+          </div> */}
+          <Divider />
           <div>
             <a
               href={linkedIn || 'https://www.linkedin.com/company/terralogic/'}
@@ -241,11 +253,6 @@ class ViewInformation extends Component {
               style={{ marginLeft: '5px', cursor: 'pointer' }}
             />
           </div>
-        </div>
-        <div className={s.viewBtnAction}>
-          <Button onClick={this.handleEditBio} className={s.btnEditBio}>
-            Edit Bio
-          </Button>
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"

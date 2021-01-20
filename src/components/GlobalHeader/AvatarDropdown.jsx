@@ -1,5 +1,5 @@
 import { SettingOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
+import { Avatar, Menu, Spin, Button } from 'antd';
 import React from 'react';
 import { history, connect, formatMessage } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
@@ -92,25 +92,27 @@ class AvatarDropdown extends React.Component {
           </div>
           <div className={styles.viewProfileInfo}>
             <p>{name}</p>
-            <p>{title.name}</p>
-            <p>{employeeId}</p>
+            <p>
+              {title.name} - {employeeId}
+            </p>
           </div>
-          <UpOutlined className={styles.menuItemIcon} />
         </div>
-        <Menu.Item
-          key={VIEWPROFILE}
-          className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}
-        >
-          {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-        </Menu.Item>
-        <Menu.Divider />
+        <Button className={styles.buttonLink}>
+          <Menu.Item
+            key={VIEWPROFILE}
+            className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}
+          >
+            {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+          </Menu.Item>
+        </Button>
+        <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
         </Menu.Item>
         <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
         </Menu.Item>
-        <Menu.Divider />
+        <Menu.Divider className={styles.secondDivider} />
         <Menu.ItemGroup className={styles.groupMenuItem}>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}

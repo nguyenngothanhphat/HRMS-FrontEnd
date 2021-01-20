@@ -21,32 +21,34 @@ class Payslips extends PureComponent {
     );
     return (
       <div>
-        {paySlip.length === 0
-          ? formatMessage({ id: 'pages.employeeProfile.Payslip' })
-          : paySlip.map((item, index) => {
-              return (
-                <div key={`${item.key} ${index + 1}`} className={styles.PaySlipMonth}>
-                  <p className={styles.nameMonth}>{`${item.key}`}</p>
-                  <div className={styles.downLoad}>
-                    <p
-                      className={styles.downLoadText}
-                      onClick={() =>
-                        this.handleViewFile(item.attachment ? item.attachment.url : '')
-                      }
-                    >
-                      View
-                    </p>
+        {paySlip.length === 0 ? (
+          <p className={styles.textPaySlips}>
+            {formatMessage({ id: 'pages.employeeProfile.Payslip' })}
+          </p>
+        ) : (
+          paySlip.map((item, index) => {
+            return (
+              <div key={`${item.key} ${index + 1}`} className={styles.PaySlipMonth}>
+                <p className={styles.nameMonth}>{`${item.key}`}</p>
+                <div className={styles.downLoad}>
+                  <p
+                    className={styles.downLoadText}
+                    onClick={() => this.handleViewFile(item.attachment ? item.attachment.url : '')}
+                  >
+                    View
+                  </p>
 
-                    <div className={styles.downloadFile}>
-                      <DownloadFile
-                        content={renderDownloadIcon()}
-                        url={item.attachment ? item.attachment.url : ''}
-                      />
-                    </div>
+                  <div className={styles.downloadFile}>
+                    <DownloadFile
+                      content={renderDownloadIcon()}
+                      url={item.attachment ? item.attachment.url : ''}
+                    />
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })
+        )}
       </div>
     );
   }

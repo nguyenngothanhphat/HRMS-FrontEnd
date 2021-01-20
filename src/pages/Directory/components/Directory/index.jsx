@@ -536,7 +536,7 @@ class DirectoryComponent extends PureComponent {
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} />
+            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} keyTab={key} />
           </Content>
           <TableFilter
             onToggle={this.handleToggle}
