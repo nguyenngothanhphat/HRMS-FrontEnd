@@ -42,7 +42,7 @@ export default class HRManagerLandingPage extends PureComponent {
     });
   };
 
-  onInformationCLick = () => {
+  onInformationClick = () => {
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -66,7 +66,7 @@ export default class HRManagerLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationCLick={this.onInformationCLick} />
+                  <LeaveInformation onInformationClick={this.onInformationClick} />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />
@@ -110,7 +110,7 @@ export default class HRManagerLandingPage extends PureComponent {
                   </Col>
                 </Row>
               )}
-              <LeaveBalanceInfo onClose={this.onInformationCLick} visible={viewInformation} />
+              <LeaveBalanceInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>
         </div>

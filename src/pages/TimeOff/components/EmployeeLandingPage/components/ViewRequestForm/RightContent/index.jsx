@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import AlertIcon from '@/assets/alertIcon.svg';
+// import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 class RightContent extends PureComponent {

@@ -7,25 +7,20 @@ import s from './index.less';
 const ActivityItem = (props) => {
   const { day = '', month = '', info = '' } = props;
   return (
-    <div className={s.container}>
-      <Row gutter={10}>
-        <Col span={5} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className={s.date}>
-            <span>{day}</span>
-            <span>{month}</span>
-          </div>
-        </Col>
-        <Col span={15}>
-          <div className={s.description}>
-            <p>{info}</p>
-          </div>
-        </Col>
-        <Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <MyIcon />
-        </Col>
-      </Row>
-      {/* <div /> */}
-    </div>
+    <Row className={s.container}>
+      <Col span={5} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={s.date}>
+          <span>{day}</span>
+          <span>{month}</span>
+        </div>
+      </Col>
+      <Col span={16}>
+        <div className={s.description}>{info}</div>
+      </Col>
+      <Col span={3} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <MyIcon />
+      </Col>
+    </Row>
   );
 };
 

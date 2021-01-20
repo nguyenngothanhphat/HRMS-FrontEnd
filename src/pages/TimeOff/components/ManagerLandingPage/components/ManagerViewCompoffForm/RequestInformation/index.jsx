@@ -144,7 +144,8 @@ class RequestInformation extends PureComponent {
       _id = '',
       employee: {
         generalInfo: { firstName = '', lastName = '' } = {},
-        employeeId = '',
+        _id: employeeId = '',
+        employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
       extraTime = [],
@@ -177,14 +178,14 @@ class RequestInformation extends PureComponent {
             <Row>
               <Col span={6}>Employee ID</Col>
               <Col span={18} className={styles.detailColumn}>
-                <span className={styles.fieldValue}>{employeeId}</span>
+                <span className={styles.fieldValue}>{employeeIdText}</span>
               </Col>
             </Row>
             <Row>
               <Col span={6}>Employee Name</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span
-                  onClick={() => this.onViewEmployeeProfile(_id)}
+                  onClick={() => this.onViewEmployeeProfile(employeeId)}
                   className={styles.employeeLink}
                 >
                   {`${firstName} ${lastName}`}

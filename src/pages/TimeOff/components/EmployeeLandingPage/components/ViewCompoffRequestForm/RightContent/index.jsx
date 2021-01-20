@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Steps, Spin } from 'antd';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -21,37 +22,34 @@ class RightContent extends PureComponent {
     const { viewingCompoffRequest: { approvalFlow = {} } = {} } = this.props;
     const {
       step1: {
-        generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn1 = '', lastName: ln1 = '', avatar: av1 = '' } = {},
+        } = {},
       } = {},
       step2: {
-        generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn2 = '', lastName: ln2 = '', avatar: av2 = '' } = {},
+        } = {},
       } = {},
       step3: {
-        generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+        employee: {
+          generalInfo: { firstName: fn3 = '', lastName: ln3 = '', avatar: av3 = '' } = {},
+        } = {},
       } = {},
     } = approvalFlow;
 
     const arr = [];
     arr.push({
       name: `${fn1} ${ln1}`,
-      avatar:
-        av1 === ''
-          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
-          : av1,
+      avatar: av1 === '' ? DefaultAvatar : av1,
     });
     arr.push({
       name: `${fn2} ${ln2}`,
-      avatar:
-        av2 === ''
-          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
-          : av2,
+      avatar: av2 === '' ? DefaultAvatar : av2,
     });
     arr.push({
       name: `${fn3} ${ln3}`,
-      avatar:
-        av3 === ''
-          ? 'https://i.pinimg.com/originals/7c/c7/a6/7cc7a630624d20f7797cb4c8e93c09c1.png'
-          : av3,
+      avatar: av3 === '' ? DefaultAvatar : av3,
     });
     return arr;
   };

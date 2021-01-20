@@ -28,7 +28,13 @@ export default class Withdraw2Modal extends PureComponent {
 
   render() {
     const { title, reason } = this.state;
-    const { visible, onClose = () => {}, onProceed = () => {}, status = '' } = this.props;
+    const {
+      visible,
+      onClose = () => {},
+      onProceed = () => {},
+      status = '',
+      loading = false,
+    } = this.props;
     let header = 'Withdraw timeoff request?';
     const content1 =
       'Withdrawing request will delete this ticket id and no longer will be kept track of.';
@@ -63,7 +69,11 @@ export default class Withdraw2Modal extends PureComponent {
           </div>
           {content2 !== '' && <p className={styles.subtitle2}>{content2}</p>}
           <div className={styles.operationButtons}>
-            <Button className={styles.proceedBtn} onClick={() => onProceed(title, reason)}>
+            <Button
+              loading={loading}
+              className={styles.proceedBtn}
+              onClick={() => onProceed(title, reason)}
+            >
               Submit
             </Button>
             <Button className={styles.cancelBtn} onClick={() => onClose(false)}>

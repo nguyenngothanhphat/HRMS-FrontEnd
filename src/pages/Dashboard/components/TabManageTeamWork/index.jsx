@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { PlusOutlined, UserOutlined, ProjectOutlined } from '@ant-design/icons';
 import { Tabs, Row, Col, Avatar, Spin } from 'antd';
+import { Link } from 'umi';
 import moment from 'moment';
 import s from './index.less';
 
@@ -12,15 +13,18 @@ export default class ManageTeamWork extends PureComponent {
     const {
       generalInfo: { avatar = '', firstName = '' } = {},
       title: { name: title = '' } = {},
+      _id = '',
     } = item;
     return (
-      <div className={s.containerItemMyTeam}>
-        <Avatar size={42} src={avatar} icon={<UserOutlined />} />
-        <div className={s.containerItemMyTeam__viewInfo}>
-          <div className={s.containerItemMyTeam__viewInfo__name}>{firstName}</div>
-          <div className={s.containerItemMyTeam__viewInfo__jobDetail}>{title}</div>
+      <Link to={`/employees/employee-profile/${_id}`}>
+        <div className={s.containerItemMyTeam}>
+          <Avatar size={42} src={avatar} icon={<UserOutlined />} />
+          <div className={s.containerItemMyTeam__viewInfo}>
+            <div className={s.containerItemMyTeam__viewInfo__name}>{firstName}</div>
+            <div className={s.containerItemMyTeam__viewInfo__jobDetail}>{title}</div>
+          </div>
         </div>
-      </div>
+      </Link>
     );
   };
 

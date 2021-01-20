@@ -265,7 +265,11 @@ class TeamCompoffTable extends PureComponent {
       }
 
       const oneAssign = (step) => {
-        const { generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {} } = step;
+        const {
+          employee: {
+            generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {},
+          } = {},
+        } = step;
         return {
           firstName: fn,
           lastName: ln,
