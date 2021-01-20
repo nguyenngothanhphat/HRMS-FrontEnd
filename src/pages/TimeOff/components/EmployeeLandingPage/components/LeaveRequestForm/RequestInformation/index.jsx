@@ -1001,7 +1001,6 @@ class RequestInformation extends PureComponent {
       timeOff: {
         timeOffTypes = [],
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
-        emailsList = [],
       } = {},
       loadingAddLeaveRequest,
       loadingUpdatingLeaveRequest,
@@ -1043,7 +1042,7 @@ class RequestInformation extends PureComponent {
         >
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Select Timeoff Type</span>
+              <span>Select Timeoff Type</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -1094,7 +1093,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Subject</span>
+              <span>Subject</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -1113,7 +1112,7 @@ class RequestInformation extends PureComponent {
           </Row>
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Duration</span>
+              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Row gutter={['20', '0']}>
@@ -1171,7 +1170,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Leave time</span>
+              <span>Leave time</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <div
@@ -1236,7 +1235,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Description</span>
+              <span>Description</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item

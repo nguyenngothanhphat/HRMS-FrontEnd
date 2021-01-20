@@ -493,7 +493,7 @@ class RequestInformation extends PureComponent {
         >
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Enter Project name</span>
+              <span>Enter Project name</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -537,7 +537,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Duration</span>
+              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Row gutter={['20', '0']}>
@@ -588,7 +588,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Extra time spent</span>
+              <span>Extra time spent</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <div className={styles.extraTimeSpent}>
@@ -647,7 +647,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Description</span>
+              <span>Description</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item

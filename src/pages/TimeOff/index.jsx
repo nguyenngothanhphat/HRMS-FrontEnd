@@ -110,12 +110,12 @@ class TimeOff extends PureComponent {
           {/* tabBarExtraContent={this.options()} */}
           <Tabs defaultActiveKey="1">
             {role === 'employee' && (
-              <TabPane tab="Timeoff" key="1">
+              <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="1">
                 <EmployeeLandingPage />
               </TabPane>
             )}
             {role === 'manager' && (
-              <TabPane tab="Timeoff" key="2">
+              <TabPane tab={<span className={styles.managerTabPane}>Timeoff</span>} key="2">
                 <ManagerLandingPage />
               </TabPane>
             )}
