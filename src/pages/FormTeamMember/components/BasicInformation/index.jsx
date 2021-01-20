@@ -42,6 +42,9 @@ class BasicInformation extends Component {
       dispatch,
       data: { candidate, processStatus },
     } = this.props;
+
+    window.scrollTo(0, 70);
+
     this.checkBottomBar();
 
     if (processStatus === 'DRAFT') {

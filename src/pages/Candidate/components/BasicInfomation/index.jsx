@@ -26,6 +26,10 @@ class BasicInformation extends PureComponent {
     return null;
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 70); // Back to top of the page
+  }
+
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);

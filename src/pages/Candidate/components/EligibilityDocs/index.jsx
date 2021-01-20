@@ -39,6 +39,7 @@ class EligibilityDocs extends PureComponent {
   }
 
   componentDidMount() {
+    window.scrollTo(0, 70); // Back to top of the page
     const {
       data: { documentList },
       dispatch,

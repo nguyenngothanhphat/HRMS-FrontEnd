@@ -44,6 +44,8 @@ class BackgroundRecheck extends Component {
       tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
     } = this.props;
 
+    window.scrollTo(0, 70); // Back to top of the page
+
     this.setState({
       docsList: docsListProp,
     });

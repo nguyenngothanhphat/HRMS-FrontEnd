@@ -31,6 +31,8 @@ class Benefit extends PureComponent {
     const { data = {}, dispatch, currentStep } = this.props;
     const { candidate = '', processStatus = '' } = data;
 
+    window.scrollTo(0, 70); // Back to top of the page
+
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({

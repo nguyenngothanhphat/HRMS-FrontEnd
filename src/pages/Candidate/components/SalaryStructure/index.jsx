@@ -25,6 +25,10 @@ import styles from './index.less';
   }),
 )
 class SalaryStructure extends PureComponent {
+  componentDidMount() {
+    window.scrollTo(0, 70); // Back to top of the page
+  }
+
   _renderTable = () => {
     return (
       <div className={styles.tableWrapper}>
