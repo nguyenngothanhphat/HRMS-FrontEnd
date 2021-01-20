@@ -11,41 +11,60 @@
     min-width: 160px;
   }
 
-  :global(.ant-dropdown-menu-item-divider) {
-    background-color: #79ccda;
+  :global {
+    .ant-dropdown-menu-item-divider:not(:last-child) {
+      background-color: #d6dce0;
+    }
   }
 
   :global {
     .ant-dropdown-menu-item:not(:last-child),
     .ant-dropdown-menu-submenu-title {
       text-align: left;
-      padding-left: 62px;
+      padding: 8px 24px;
+      color: #000;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 15.23px;
     }
     .ant-dropdown-menu-item-group-list {
       margin: 0 0 10px 0;
+      padding: 0;
+    }
+
+    .ant-dropdown-menu-item-group-title {
       padding: 0;
     }
   }
 
   position: relative;
   min-width: 240px;
-  padding: 10px;
   text-align: center;
   border-radius: 4%;
   box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
     0 12px 48px 16px rgba(0, 0, 0, 0.03);
 
+  .buttonLink {
+    border-radius: 50px;
+    border: 1px solid #2c6df9;
+    margin-top: 10px;
+  }
+
+  .firstDivider {
+    margin-top: 18px;
+  }
+
   .menuItemLink {
-    margin-top: @margin-xs + 2px;
-    margin-bottom: @margin-xs + 2px;
-    color: #1890ff;
-    font-size: @font-size-base;
-    text-decoration: underline;
+    // margin-top: @margin-xs + 2px;
+    // margin-bottom: @margin-xs + 2px;
+    // font-size: @font-size-base;
+    color: #2c6df9;
+    font-size: 13px;
+    text-decoration: none;
   }
 
   .menuItemLink.menuItemViewProfile {
-    padding-left: 62px;
-    text-align: left;
+    padding: 0 58px;
   }
 
   .menuItemLogout {
@@ -53,21 +72,25 @@
     margin: 0;
     margin-bottom: 50px;
     padding: 0;
-    color: red;
+    color: #fd4546 !important;
   }
 
   .viewProfile {
     display: flex;
     width: 100%;
-    padding-top: 5px;
-    padding-left: @padding-xs + 2px;
+    padding-top: 18px;
+    padding-left: 24px;
+    padding-right: 24px;
+    // padding-left: @padding-xs + 2px;
     text-align: left;
 
     .viewProfileAvatar {
       .avatar {
         margin-top: 5px;
+        width: 50px;
+        height: 50px;
         background: @black;
-        box-shadow: 0 0 0 1.75px @white, 0 0 0 3.75px #2294e3;
+        // box-shadow: 0 0 0 1.75px @white, 0 0 0 3.75px #2294e3;
       }
     }
 
@@ -102,9 +125,9 @@
     .sessionLogin {
       position: absolute;
       bottom: -30px;
-      left: 62px;
+      left: 24px;
       color: #c2c2c2;
-      font-size: 14px;
+      font-size: 13px;
     }
   }
 }
@@ -120,7 +143,7 @@
     display: flex;
     align-items: center;
     height: 100%;
-    padding: 0 12px;
+    margin-left: 12px;
     cursor: pointer;
     transition: all 0.3s;
 

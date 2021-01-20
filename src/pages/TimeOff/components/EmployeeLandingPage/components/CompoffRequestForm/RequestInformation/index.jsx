@@ -3,7 +3,9 @@ import { Select, DatePicker, Input, Button, Row, Col, Form } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import ExtraTimeSpentRow from './ExtraTimeSpentRow';
+
 import styles from './index.less';
 
 const { Option } = Select;
@@ -127,14 +129,13 @@ class RequestInformation extends PureComponent {
       const listValue = dateLists.map((data) => data.timeSpend);
 
       // set cc
-      const formattedCc = cc.length > 0 ? cc[0] : [];
-      const personCC = formattedCc.map((person) => (person ? person._id : null));
+      // const personCC = cc.map((person) => (person ? person._id : null));
 
       // update form
       this.formRef.current.setFieldsValue({
         projectId,
         description,
-        personCC,
+        personCC: cc,
         extraTimeLists: listValue,
         durationFrom: durationFrom === null ? null : moment(durationFrom),
         durationTo: durationTo === null ? null : moment(durationTo),
@@ -363,9 +364,11 @@ class RequestInformation extends PureComponent {
     const list = emailsList.map((user) => {
       const {
         _id = '',
-        generalInfo: { firstName = '', lastName = '', workEmail = '' } = {},
+        generalInfo: { firstName = '', lastName = '', workEmail = '', avatar = '' } = {},
       } = user;
-      return { workEmail, firstName, lastName, _id };
+      let newAvatar = avatar;
+      if (avatar === '') newAvatar = DefaultAvatar;
+      return { workEmail, firstName, lastName, _id, avatar: newAvatar };
     });
     // return list.filter((value) => Object.keys(value).length !== 0);
     return list;
@@ -444,7 +447,9 @@ class RequestInformation extends PureComponent {
       },
     };
 
-    const dateFormat = 'DD.MM.YYYY';
+    const formatListEmail = this.renderEmailsList() || [];
+
+    const dateFormat = 'DD.MM.YY';
 
     const {
       showSuccessModal,
@@ -488,7 +493,7 @@ class RequestInformation extends PureComponent {
         >
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Enter Project name</span>
+              <span>Enter Project name</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -532,7 +537,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Duration</span>
+              <span>Duration</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Row gutter={['20', '0']}>
@@ -583,7 +588,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Extra time spent</span>
+              <span>Extra time spent</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <div className={styles.extraTimeSpent}>
@@ -642,7 +647,7 @@ class RequestInformation extends PureComponent {
 
           <Row className={styles.eachRow}>
             <Col className={styles.label} span={6}>
-              <span>Description</span>
+              <span>Description</span> <span className={styles.mandatoryField}>*</span>
             </Col>
             <Col span={12}>
               <Form.Item
@@ -676,15 +681,40 @@ class RequestInformation extends PureComponent {
                   },
                 ]}
               >
-                <Select mode="multiple" allowClear placeholder="Search a person you want to loop">
-                  {this.renderEmailsList().map((value) => {
-                    const { firstName = '', lastName = '', _id = '', workEmail = '' } = value;
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Search a person you want to loop"
+                  filterOption={(input, option) => {
+                    return (
+                      option.children[1].props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                >
+                  {formatListEmail.map((value) => {
+                    const { _id = '', workEmail = '', avatar = '' } = value;
+
                     return (
                       <Option key={_id} value={_id}>
-                        <span style={{ fontSize: 13 }}>
-                          {firstName} {lastName}
+                        <div style={{ display: 'inline', marginRight: '10px' }}>
+                          <img
+                            style={{
+                              borderRadius: '50%',
+                              width: '30px',
+                              height: '30px',
+                            }}
+                            src={avatar}
+                            alt="user"
+                          />
+                        </div>
+                        <span
+                          style={{ fontSize: '13px', color: '#161C29' }}
+                          className={styles.ccEmail}
+                        >
+                          {workEmail}
                         </span>
-                        <span style={{ fontSize: 12, color: '#464646' }}>({workEmail})</span>
                       </Option>
                     );
                   })}

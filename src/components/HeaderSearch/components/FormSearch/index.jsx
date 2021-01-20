@@ -1,32 +1,28 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, DatePicker } from 'antd';
+import { Form, Button, Select, DatePicker } from 'antd';
 import styles from './index.less';
 
 const { Option } = Select;
 
-const listType = ['.doc', '.csv', '.xsxl', '.jpeg', '.mp4'];
+const listType = ['doc', 'csv', 'xsxl', 'jpeg', 'mp4'];
 const listAssigned = [
   'Krithi Priyadarshini',
   'Shipra Purohit',
   'Aditya Venkatesan',
   'Manasi Sanghani',
-  'Krithi Priyadarshini',
-  'Shipra Purohit',
-  'Aditya Venkatesan',
-  'Manasi Sanghani',
 ];
 
-const listLocation = [
-  'Employee Directory',
-  'Reports',
-  'Company Profile',
-  'Payroll',
-  'Hiring',
-  'PM',
-  'Timesheet',
-  'Performance ',
-];
+// const listLocation = [
+//   'Employee Directory',
+//   'Reports',
+//   'Company Profile',
+//   'Payroll',
+//   'Hiring',
+//   'PM',
+//   'Timesheet',
+//   'Performance ',
+// ];
 
 class FormSearch extends Component {
   formRef = React.createRef();
@@ -38,6 +34,31 @@ class FormSearch extends Component {
 
   onReset = () => {
     this.formRef.current.resetFields();
+  };
+
+  renderButton = (getFieldsValue) => {
+    const arrValues = Object.values(getFieldsValue());
+    const check = arrValues.filter((item) => item);
+    return (
+      <div className={styles.viewBtn}>
+        <Button
+          className={styles.btnReset}
+          htmlType="button"
+          onClick={this.onReset}
+          disabled={check.length === 0}
+        >
+          Reset
+        </Button>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className={styles.btnSubmit}
+          disabled={check.length === 0}
+        >
+          Submit
+        </Button>
+      </div>
+    );
   };
 
   render() {
@@ -75,28 +96,23 @@ class FormSearch extends Component {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item name="location" label="Location">
+            {/* <Form.Item name="location" label="Location">
               <Select placeholder="Select location" allowClear>
                 {listLocation.map((item) => (
                   <Option key={item}>{item}</Option>
                 ))}
               </Select>
-            </Form.Item>
-            <Form.Item name="date" label="Date Modified">
+            </Form.Item> */}
+            <Form.Item name="dateModified" label="Date Modified">
               <DatePicker />
             </Form.Item>
-            <Form.Item name="includesTheWords" label="Includes the words">
+            {/* <Form.Item name="includesTheWords" label="Includes the words">
               <Input.TextArea />
-            </Form.Item>
+            </Form.Item> */}
           </div>
-          <div className={styles.viewBtn}>
-            <Button className={styles.btnReset} htmlType="button" onClick={this.onReset}>
-              Reset
-            </Button>
-            <Button type="primary" htmlType="submit" className={styles.btnSubmit}>
-              Submit
-            </Button>
-          </div>
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldsValue }) => this.renderButton(getFieldsValue)}
+          </Form.Item>
         </Form>
       </div>
     );

@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Table, Popover, notification, Avatar } from 'antd';
 import moment from 'moment';
-import empty from '@/assets/empty.svg';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import styles from './index.less';

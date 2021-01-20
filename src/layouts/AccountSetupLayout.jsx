@@ -1,15 +1,38 @@
 import React, { PureComponent } from 'react';
-import { Layout } from 'antd';
+import { Layout, Button, Result } from 'antd';
 import RightContent from '@/components/GlobalHeader/RightContent';
+import Authorized from '@/utils/Authorized';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import { Link } from 'umi';
 import styles from './AccountSetupLayout.less';
 
 const { Header, Content } = Layout;
 
+const noMatch = (
+  <Result
+    status={403}
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={
+      <Button type="primary">
+        <Link to="/login">Go Login</Link>
+      </Button>
+    }
+  />
+);
+
 class AccountSetup extends PureComponent {
   render() {
-    const { children } = this.props;
-
+    const {
+      children,
+      location = {
+        pathname: '/',
+      },
+      route: { routes } = {},
+    } = this.props;
+    const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
+      authority: undefined,
+    };
     return (
       <Layout className={styles.root}>
         <Header>
@@ -22,7 +45,9 @@ class AccountSetup extends PureComponent {
           </Link>
           <RightContent />
         </Header>
-        <Content className={styles.content}>{children}</Content>
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          <Content className={styles.content}>{children}</Content>
+        </Authorized>
       </Layout>
     );
   }

@@ -1,12 +1,12 @@
 .root {
   margin-bottom: 12px;
   .content {
+    position: relative;
     width: 100%;
+    height: 300px;
     height: 300px;
     background: #fff;
     border-radius: 6px;
-    height: 300px;
-    position: relative;
   }
   .bg1 {
     background-image: url(../../../../assets/BG_Carousel1.png);
@@ -54,45 +54,42 @@
   }
   .content1 {
     position: absolute;
-    width: 255px;
-    right: 18%;
     top: 40%;
+    right: 18%;
+    width: 255px;
     &__text1 {
-      font-weight: bold;
+      color: #161c29;
+      font-weight: 700;
       font-size: 20px;
       line-height: 23px;
-      color: #161c29;
     }
     &__text2 {
+      margin: 8px 0;
+      color: #707177;
       font-weight: normal;
       font-size: 13px;
       line-height: 20px;
-      margin: 8px 0;
-      color: #707177;
     }
     &__text3 {
+      color: #ffa100;
       font-weight: 500;
       font-size: 13px;
       line-height: 15px;
-      text-decoration-line: underline;
-      color: #ffa100;
       cursor: pointer;
+      text-decoration-line: underline;
     }
   }
 }
 
 .arrow {
-  font-size: 11px;
-  font-weight: 900;
   z-index: 1;
-  width: 31px;
-  height: 31px;
-  background: #ffffff;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 31px;
+  height: 31px;
+  padding: 10px;
+  background: #ffffff;
   border-radius: 50%;
-  padding-top: 10px;
-  color: #2c6df9;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
 }

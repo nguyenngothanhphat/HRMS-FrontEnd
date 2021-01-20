@@ -66,7 +66,7 @@ class DirectoryTable extends Component {
   //   this.setState({ valueReason: value });
   // };
 
-  generateColumns = (sortedName) => {
+  generateColumns = (sortedName, keyTab) => {
     const { isSort } = this.state;
     const columns = [
       {
@@ -167,9 +167,11 @@ class DirectoryTable extends Component {
         render: (_, row) => {
           return (
             <div className={styles.viewAction}>
-              <Button onClick={(e) => this.handleClick(e, row)} className={styles.actionBtn}>
-                Terminate
-              </Button>
+              {keyTab === 'active' ? (
+                <Button onClick={(e) => this.handleClick(e, row)} className={styles.actionBtn}>
+                  Terminate
+                </Button>
+              ) : null}
             </div>
           );
         },
@@ -223,7 +225,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
-    const { list = [], loading } = this.props;
+    const { list = [], loading, keyTab } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -253,7 +255,7 @@ class DirectoryTable extends Component {
         <div className={styles.directoryTable}>
           <Table
             size="small"
-            columns={this.generateColumns(sortedName)}
+            columns={this.generateColumns(sortedName, keyTab)}
             onRow={(record) => {
               return {
                 onClick: () => this.handleProfileEmployee(record), // click row

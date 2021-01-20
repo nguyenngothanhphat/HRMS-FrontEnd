@@ -82,7 +82,10 @@ const companiesManagement = {
       }
     },
 
-    *updateCompany({ payload = {}, dataTempKept = {} }, { put, call, select }) {
+    *updateCompany(
+      { payload = {}, dataTempKept = {}, isAccountSetup = false },
+      { put, call, select },
+    ) {
       let resp = '';
       try {
         const response = yield call(updateCompany, payload);
@@ -92,15 +95,21 @@ const companiesManagement = {
         notification.success({
           message,
         });
-        yield put({
-          type: 'fetchCompanyDetails',
-          payload: { id: payload.id },
-          dataTempKept,
-        });
-        yield put({
-          type: 'save',
-          payload: { idCurrentCompany },
-        });
+        if (!isAccountSetup) {
+          yield put({
+            type: 'fetchCompanyDetails',
+            payload: { id: payload.id },
+            dataTempKept,
+          });
+          yield put({
+            type: 'save',
+            payload: { idCurrentCompany },
+          });
+        } else {
+          yield put({
+            type: 'user/fetchCurrent',
+          });
+        }
         resp = response;
       } catch (errors) {
         dialog(errors);

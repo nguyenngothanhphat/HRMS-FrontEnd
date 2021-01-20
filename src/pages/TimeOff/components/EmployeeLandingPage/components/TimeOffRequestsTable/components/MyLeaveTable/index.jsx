@@ -30,7 +30,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Type',
       dataIndex: 'type',
       align: 'center',
-      render: (type) => <span>{type ? type.shortType : ''}</span>,
+      render: (type) => <span>{type ? type.shortType : '-'}</span>,
       // defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => {
@@ -47,13 +47,14 @@ class MyLeaveTable extends PureComponent {
       width: '20%',
       dataIndex: 'leaveTimes',
       align: 'left',
+      render: (leaveTimes) => <span>{leaveTimes !== '' ? leaveTimes : '-'}</span>,
     },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -64,6 +65,7 @@ class MyLeaveTable extends PureComponent {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'center',
+      render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
     },
     {
       title: 'Assigned',
@@ -157,9 +159,9 @@ class MyLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
           .locale('en')
-          .format('DD.MM.YYYY')}`;
+          .format('DD.MM.YY')}`;
       }
 
       let employeeFromCC = [];
@@ -233,6 +235,7 @@ class MyLeaveTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id.ticketID}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }

@@ -105,7 +105,8 @@ class View extends Component {
       { id: 4, label: 'Total Experience', value: totalExp },
       { id: 5, label: 'Qualification', value: qualification },
     ];
-    const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
+    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
 
     return (

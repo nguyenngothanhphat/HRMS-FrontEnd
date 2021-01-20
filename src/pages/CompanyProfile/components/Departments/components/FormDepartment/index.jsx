@@ -41,9 +41,9 @@ class FormDepartment extends PureComponent {
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     const checkUnique = getFieldValue('listDepartment').filter(
-                      (item) => item.name === value,
+                      (item) => item?.name && item?.name === value,
                     );
-                    if (checkUnique.length === 1) {
+                    if (checkUnique.length <= 1) {
                       return Promise.resolve();
                     }
                     return Promise.reject('This department has already been used!');
@@ -59,8 +59,10 @@ class FormDepartment extends PureComponent {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {dummyListDepartment.map((item) => (
-                  <Option key={item._id}>{item.name}</Option>
+                {dummyListDepartment.map(({ name = '', _id = '' }) => (
+                  <Option key={_id} value={name}>
+                    {name}
+                  </Option>
                 ))}
               </Select>
             </Form.Item>

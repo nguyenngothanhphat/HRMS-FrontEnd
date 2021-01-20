@@ -7,12 +7,10 @@ import s from './index.less';
 
 export default class ItemCompany extends Component {
   handleStartSetup = (name) => {
-    const dummyID = '1234566789';
-    const id = dummyID;
     if (name === 'Setup Company profile') {
-      history.push(`/account-setup/get-started/company-profile/${id}`);
+      history.push(`/account-setup/get-started/company-profile`);
     } else {
-      history.push(`/account-setup/get-started/setup-employee-directory/${id}`);
+      history.push(`/account-setup/get-started/setup-employee-directory`);
     }
   };
 

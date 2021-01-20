@@ -79,27 +79,31 @@ const routes = [
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        // authority: ['candidate'],
+        authority: ['hr-manager'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
+            authority: ['hr-manager'],
           },
           {
             path: '/account-setup/get-started',
             component: './GetStarted',
             name: 'Getting Started',
+            authority: ['hr-manager'],
           },
           {
-            path: '/account-setup/get-started/company-profile/:reId',
+            path: '/account-setup/get-started/company-profile',
             component: './CompanyProfile',
             name: 'Company Profile',
+            authority: ['hr-manager'],
           },
           {
-            path: '/account-setup/get-started/setup-employee-directory/:reId',
+            path: '/account-setup/get-started/setup-employee-directory',
             component: './SetupEmployeeDirectory',
             name: 'Setup Employee Directory',
+            authority: ['hr-manager'],
           },
         ],
       },
@@ -125,7 +129,7 @@ const routes = [
           {
             path: '/dashboard',
             name: 'dashboard',
-            icon: '/assets/images/home.svg',
+            icon: '/assets/images/menuIcons/dashboard.svg',
             component: './Dashboard',
           },
           {
@@ -236,7 +240,7 @@ const routes = [
           {
             path: '/directory',
             name: 'directory',
-            icon: '/assets/images/directory.svg',
+            icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
             authority: ['P_DIRECTORY_VIEW'],
           },
@@ -317,14 +321,14 @@ const routes = [
           {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
-            icon: '/assets/images/onboarding.svg',
+            icon: '/assets/images/menuIcons/onboarding.svg',
             component: './EmployeeOnboarding',
             authority: ['P_ONBOARDING_VIEW'],
           },
           {
             path: '/time-off',
             name: 'timeOff',
-            icon: '/assets/images/timeOff.svg',
+            icon: '/assets/images/menuIcons/timeoff.svg',
             component: './TimeOff',
             // authority: ['P_TIMEOFF_VIEW'],
             authority: [
@@ -373,7 +377,7 @@ const routes = [
           {
             path: '/offboarding',
             name: 'OffBoarding',
-            icon: '/assets/images/iconOffboarding.svg',
+            icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
             authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
           },

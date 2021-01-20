@@ -1,5 +1,10 @@
 .RejectCommentModal {
   :global {
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
     .ant-modal-content {
       border-radius: 10px;
     }
@@ -40,7 +45,7 @@
     justify-content: center;
     padding: 32px;
     .title {
-      font-weight: bold;
+      font-weight: 700;
       font-size: 18px;
       color: #161c29;
     }
@@ -82,7 +87,7 @@
         width: 128px;
         span {
           color: white;
-          font-weight: bold;
+          font-weight: 700;
         }
         &:hover {
           background-color: #ffa100cc; // hex with alpha 0.8

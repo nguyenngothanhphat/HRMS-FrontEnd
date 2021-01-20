@@ -47,7 +47,7 @@ class TeamCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
+      render: (project) => <span>{project ? project.name : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
@@ -74,7 +74,7 @@ class TeamCompoffTable extends PureComponent {
         comment ? (
           <span>{comment.length >= 12 ? `${comment.slice(0, 12)}...` : comment}</span>
         ) : (
-          <span />
+          <span>-</span>
         ),
     },
     {
@@ -240,7 +240,7 @@ class TeamCompoffTable extends PureComponent {
         loading4,
       };
       onHandle(payload);
-    }
+    } else onHandle({});
   };
 
   // PARSE DATA FOR TABLE
@@ -261,13 +261,15 @@ class TeamCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
-          'DD.MM.YYYY',
-        )}`;
+        duration = `${moment(fromDate).format('DD.MM.YY')} - ${moment(toDate).format('DD.MM.YY')}`;
       }
 
       const oneAssign = (step) => {
-        const { generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {} } = step;
+        const {
+          employee: {
+            generalInfo: { firstName: fn = '', lastName: ln = '', avatar = '' } = {},
+          } = {},
+        } = step;
         return {
           firstName: fn,
           lastName: ln,
@@ -422,6 +424,7 @@ class TeamCompoffTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id._id}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
         <RejectCommentModal
           visible={commentModalVisible}
           onClose={() => this.toggleCommentModal(false)}

@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Table, Avatar } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
-import empty from '@/assets/empty.svg';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
 

@@ -9,6 +9,8 @@
   .totalLeaveBalance {
     background: white;
     display: flex;
+    overflow: hidden;
+    border-radius: 5px;
     // align-items: center;
     flex-direction: column;
     .aboveContainer {
@@ -19,7 +21,7 @@
 
       padding: 24px 24px 0 24px;
       .title {
-        font-weight: bold;
+        font-weight: 700;
         font-size: 18px;
         color: #464646;
       }
@@ -32,7 +34,7 @@
           margin-top: 10px;
           .percentValue {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 700;
             color: #464646;
           }
           .remainingText {
@@ -46,6 +48,7 @@
       .ant-collapse {
         width: 100%;
         background-color: white;
+        border-radius: 5px;
         > .ant-collapse {
           border: none;
         }
@@ -54,6 +57,7 @@
         border: none;
       }
       .ant-collapse-header {
+        // overflow: hidden;
         text-align: center;
         border-bottom: 1px solid #ebeff2;
         border-left: 1px solid #ebeff2;
@@ -68,7 +72,7 @@
       cursor: pointer;
       margin-bottom: 10px;
       span {
-        font-weight: bold;
+        font-weight: 500;
         color: #2c6df9;
         text-decoration: underline;
         margin-right: 10px;
@@ -117,7 +121,7 @@
         display: flex;
         flex-direction: column;
         &__left {
-          font-weight: bold;
+          font-weight: 700;
           line-height: 1;
           color: #464646;
         }
@@ -128,7 +132,7 @@
           a {
             text-decoration: underline;
             color: #2c6df9;
-            font-weight: bold;
+            font-weight: 700;
           }
         }
       }

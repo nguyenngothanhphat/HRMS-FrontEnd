@@ -104,7 +104,7 @@ class FilterBar extends PureComponent {
               key="5"
             />
           )}
-          {deletedLength !== 0 && (
+          {deletedLength !== 0 && category !== 'MY' && (
             <TabPane tab={`Deleted (${this.addZeroToNumber(deletedLength)})`} key="6" />
           )}
         </Tabs>

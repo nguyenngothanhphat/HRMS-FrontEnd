@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button, Spin, Col } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -55,7 +55,6 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dropdown: false,
       isLt5M: true,
       getContent: true,
       isDate: true,
@@ -65,10 +64,6 @@ class Edit extends Component {
       checkValidate: [{}],
     };
   }
-
-  handleDropdown = (open) => {
-    this.setState({ dropdown: open });
-  };
 
   validateDate = (getPassportData) => {
     if (getPassportData === []) return;
@@ -369,9 +364,8 @@ class Edit extends Component {
 
       if (idPassPort) {
         return this.handleUpdatePassportGroup(item, index);
-      } else {
-        return this.handleAddPassPortAllField(item, index);
       }
+      return this.handleAddPassPortAllField(item, index);
     });
 
     visaData.map((item, index) => {
@@ -474,15 +468,7 @@ class Edit extends Component {
   };
 
   render() {
-    const {
-      isLt5M,
-      getContent,
-      isDate,
-      isCheckDateVisa,
-      visible,
-      linkImage,
-      dropdown,
-    } = this.state;
+    const { isLt5M, getContent, isDate, isCheckDateVisa, visible, linkImage } = this.state;
 
     const { Option } = Select;
     const {
@@ -573,8 +559,7 @@ class Edit extends Component {
                         <UploadImage
                           content={isLt5M ? 'Choose file' : `Retry`}
                           setSizeImageMatch={(isImage5M) =>
-                            this.handleGetSetSizeImage(index, isImage5M)
-                          }
+                            this.handleGetSetSizeImage(index, isImage5M)}
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                           loading={loading}
                           index={index}
@@ -617,18 +602,11 @@ class Edit extends Component {
                 <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
                   <Select
                     className={styles.selectForm}
-                    onDropdownVisibleChange={this.handleDropdown}
                     defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
                     onChange={(value) => {
                       this.handleChange(index, 'passportIssuedCountry', value);
                     }}
-                    suffixIcon={
-                      dropdown ? (
-                        <UpOutlined className={styles.arrowUP} />
-                      ) : (
-                        <DownOutlined className={styles.arrowDown} />
-                      )
-                    }
+                    suffixIcon={<DownOutlined className={styles.arrowDown} />}
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (

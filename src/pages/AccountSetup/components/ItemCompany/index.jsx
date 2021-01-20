@@ -6,25 +6,22 @@ import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
   render() {
-    const { company: { logo = '', name = '', location = '', status = '' } = {} } = this.props;
-    const textBtn = status === 'done' ? 'Go to dashboard' : 'Get Started';
-    const link = status === 'done' ? '/' : '/account-setup/get-started';
-
+    const { company: { logoUrl = '', name = '', address = '' } = {} } = this.props;
     return (
       <div className={s.root}>
         <img
-          src={logo || logoDefault}
+          src={logoUrl || logoDefault}
           alt="logo"
           className={s.logoCompany}
-          style={logo ? {} : { opacity: 0.8 }}
+          style={logoUrl ? {} : { opacity: 0.8 }}
         />
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{location}</p>
+          <p className={s.viewInfo__location}>{address}</p>
         </div>
         <div className={s.viewAction}>
-          <Link to={link}>
-            <Button className={s.btnOutline}>{textBtn}</Button>
+          <Link to="/account-setup/get-started">
+            <Button className={s.btnOutline}>Get Started</Button>
           </Link>
           <div className={s.option}>&#8285;</div>
         </div>

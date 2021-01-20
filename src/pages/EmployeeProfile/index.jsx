@@ -8,7 +8,7 @@ import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
-import Test from './components/test';
+// import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
 
@@ -126,9 +126,9 @@ class EmployeeProfile extends Component {
     if (permissions.viewTabDocument !== -1 || profileOwner) {
       listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
     }
-    if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
-    }
+    // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
+    //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
+    // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
       listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
     }

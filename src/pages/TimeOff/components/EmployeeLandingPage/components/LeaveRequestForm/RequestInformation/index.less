@@ -10,7 +10,7 @@
     span {
       font-size: 16px;
       color: #464646;
-      font-weight: bold;
+      font-weight: 700;
     }
   }
 
@@ -25,7 +25,7 @@
           background-color: #e1e9fa;
           border-radius: 5px;
           color: #00000083;
-          font-weight: bold;
+          font-weight: 700;
           padding: 7px 10px;
           font-size: 13px;
         }
@@ -51,6 +51,9 @@
         padding-top: 8px;
         padding-right: 10px;
         color: #161c29;
+        .mandatoryField {
+          color: #f04b37;
+        }
       }
       .smallNotice {
         height: 42px;
@@ -70,7 +73,7 @@
           cursor: pointer;
           font-size: 10px;
           color: #ffa100;
-          font-weight: bold;
+          font-weight: 700;
           text-decoration: underline;
         }
       }
@@ -95,7 +98,7 @@
           background-color: #e1e9fa;
           border-radius: 5px;
           color: #00000083;
-          font-weight: bold;
+          font-weight: 700;
           padding: 7px 10px;
           font-size: 13px;
         }
@@ -124,7 +127,18 @@
           .ant-select-selector {
             padding-top: 4px !important;
             padding-bottom: 2px !important;
+            min-height: 42px;
             height: auto !important;
+          }
+          .ant-select-selection-item {
+            height: 30px !important;
+            align-items: center !important;
+          }
+          .ant-select-selection-item-content {
+            img {
+              width: 22px !important;
+              height: 22px !important;
+            }
           }
           // .ant-select-selection-item {
           //   margin-top: -3px !important;
@@ -141,6 +155,22 @@
   }
 
   :global {
+    .ant-input:focus,
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-select-focused .ant-select-selector,
+    .ant-select-selector:focus,
+    .ant-select-selector:active,
+    .ant-select-open .ant-select-selector {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset !important;
+    }
+
     .ant-select-selection-item {
       margin-top: 0px;
     }
@@ -229,7 +259,7 @@
           margin-left: 25px;
           span {
             color: white;
-            font-weight: bold;
+            font-weight: 700;
           }
           &:hover {
             background-color: #ffa100cc; // hex with alpha 0.8

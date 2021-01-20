@@ -64,7 +64,7 @@ const BasicLayout = (props) => {
       <img
         src="/assets/images/terralogic-logo.png"
         alt="logo"
-        style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
+        style={{ width: '120px', objectFit: 'contain', marginBottom: '4px' }}
       />
     </Link>
   );

@@ -30,19 +30,20 @@ class MyCompoffTable extends PureComponent {
       title: 'Project',
       dataIndex: 'project',
       align: 'left',
-      render: (project) => <span>{project ? project.name : ''}</span>,
+      render: (project) => <span>{project ? project.name : '-'}</span>,
       // sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Duration',
       dataIndex: 'duration',
       align: 'left',
+      render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
     },
     {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YYYY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -137,13 +138,13 @@ class MyCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YYYY')} - ${moment(toDate).format(
-          'DD.MM.YYYY',
-        )}`;
+        duration = `${moment(fromDate).format('DD.MM.YY')} - ${moment(toDate).format('DD.MM.YY')}`;
       }
 
       const oneAssign = (step) => {
-        const { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = step;
+        const {
+          employee: { generalInfo: { firstName = '', lastName = '', avatar = '' } = {} } = {},
+        } = step;
         return {
           firstName,
           lastName,
@@ -210,6 +211,7 @@ class MyCompoffTable extends PureComponent {
           scroll={scroll}
           rowKey={(id) => id.ticketID}
         />
+        {parsedData.length === 0 && <div className={styles.paddingContainer} />}
       </div>
     );
   }

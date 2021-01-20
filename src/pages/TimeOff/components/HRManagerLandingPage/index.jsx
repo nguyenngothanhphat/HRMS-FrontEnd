@@ -42,7 +42,7 @@ export default class HRManagerLandingPage extends PureComponent {
     });
   };
 
-  onInformationCLick = () => {
+  onInformationClick = () => {
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -51,8 +51,12 @@ export default class HRManagerLandingPage extends PureComponent {
 
   render() {
     const describeText = [
-      <p>Apply for leaves with/without pay, work from home or client office.</p>,
-      <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
+      <p className={styles.subText}>
+        Apply for leaves with/without pay, work from home or client office.
+      </p>,
+      <p className={styles.subText}>
+        Request for a compensation leave if you have worked for extra days/hours.
+      </p>,
     ];
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
@@ -62,7 +66,7 @@ export default class HRManagerLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationCLick={this.onInformationCLick} />
+                  <LeaveInformation onInformationClick={this.onInformationClick} />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />
@@ -106,7 +110,7 @@ export default class HRManagerLandingPage extends PureComponent {
                   </Col>
                 </Row>
               )}
-              <LeaveBalanceInfo onClose={this.onInformationCLick} visible={viewInformation} />
+              <LeaveBalanceInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>
         </div>

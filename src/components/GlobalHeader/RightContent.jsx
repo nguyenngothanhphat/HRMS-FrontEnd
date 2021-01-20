@@ -54,11 +54,11 @@ const GlobalHeaderRight = (props) => {
           }
         }}
       />
-      <Link to="/time-off">
+      {/* <Link to="/time-off">
         <div className={`${styles.action} ${styles.calendar}`}>
           <CalendarOutlined />
         </div>
-      </Link>
+      </Link> */}
 
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
