@@ -9,6 +9,8 @@
   .totalLeaveBalance {
     background: white;
     display: flex;
+    overflow: hidden;
+    border-radius: 5px;
     // align-items: center;
     flex-direction: column;
     .aboveContainer {
@@ -46,6 +48,7 @@
       .ant-collapse {
         width: 100%;
         background-color: white;
+        border-radius: 5px;
         > .ant-collapse {
           border: none;
         }
@@ -54,6 +57,7 @@
         border: none;
       }
       .ant-collapse-header {
+        // overflow: hidden;
         text-align: center;
         border-bottom: 1px solid #ebeff2;
         border-left: 1px solid #ebeff2;
@@ -68,7 +72,7 @@
       cursor: pointer;
       margin-bottom: 10px;
       span {
-        font-weight: 700;
+        font-weight: 500;
         color: #2c6df9;
         text-decoration: underline;
         margin-right: 10px;
