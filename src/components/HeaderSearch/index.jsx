@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Dropdown } from 'antd';
 import { SearchOutlined, EnterOutlined } from '@ant-design/icons';
+import { history } from 'umi';
 import ViewHistory from './components/ViewHistory';
 import ViewAdvancedSearch from './components/ViewAdvancedSearch';
 import styles from './index.less';
@@ -9,15 +10,17 @@ class HeaderSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // q:'',
+      q: '',
       mode: 'history',
       visible: false,
     };
   }
 
   changeMode = (mode) => {
+    const { q } = this.state;
     this.setState({
       mode,
+      q: mode === 'advanced' ? '' : q,
     });
   };
 
@@ -47,8 +50,22 @@ class HeaderSearch extends Component {
     );
   };
 
+  onChangeInput = ({ target: { value } }) => {
+    this.setState({
+      q: value,
+    });
+  };
+
+  onPressEnter = ({ target: { value } }) => {
+    this.closeSearch();
+    history.push({
+      pathname: '/search-result',
+      query: { keySearch: value },
+    });
+  };
+
   render() {
-    const { visible } = this.state;
+    const { visible, q } = this.state;
     return (
       <div className={styles.root}>
         <Dropdown
@@ -59,10 +76,13 @@ class HeaderSearch extends Component {
           onVisibleChange={this.handleVisibleChange}
         >
           <Input
+            value={q}
             size="large"
             placeholder="Search for Employees, Documents, Reports, Events and Requests"
+            onChange={this.onChangeInput}
             prefix={<SearchOutlined />}
             suffix={<EnterOutlined style={{ fontSize: '11px', opacity: 0.5, cursor: 'pointer' }} />}
+            onPressEnter={this.onPressEnter}
           />
         </Dropdown>
       </div>

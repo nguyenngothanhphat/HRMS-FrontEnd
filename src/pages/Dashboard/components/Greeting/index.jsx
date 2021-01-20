@@ -10,9 +10,9 @@ const Greeting = (props) => {
       <h1>
         {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
       </h1>
-      <p>
+      {/* <p>
         You have <span>7 activities </span> today and <span>16 notifications</span>
-      </p>
+      </p> */}
     </div>
   );
 };
