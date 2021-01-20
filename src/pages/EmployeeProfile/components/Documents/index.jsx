@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import { Button, Spin } from 'antd';
-import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import ViewDocument from './ViewDocument';
+import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import styles from './index.less';
 
 @connect(({ employeeProfile, loading }) => ({
   loading: loading.effects['employeeProfile/fetchDocuments'],
+  loading2: loading.effects['employeeProfile/shareDocumentEffect'],
   employeeProfile,
 }))
 class Documents extends Component {
@@ -153,6 +154,7 @@ class Documents extends Component {
     const {
       employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
       loading,
+      loading2,
     } = this.props;
 
     const data = this.generateArrayDocument(saveDocuments);
@@ -184,7 +186,11 @@ class Documents extends Component {
             ) : (
               <div>
                 {isViewingDocument && groupViewingDocuments.length !== 0 ? (
-                  <ViewDocument selectedFile={selectedFile} onBackClick={this.onBackClick} />
+                  <ViewDocument
+                    selectedFile={selectedFile}
+                    onBackClick={this.onBackClick}
+                    loading2={loading2}
+                  />
                 ) : (
                   data.map((value, index) => (
                     <InfoCollapseType2

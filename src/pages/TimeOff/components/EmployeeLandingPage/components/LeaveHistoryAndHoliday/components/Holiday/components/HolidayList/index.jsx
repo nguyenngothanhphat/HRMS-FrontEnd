@@ -26,8 +26,8 @@ export default class HolidayList extends PureComponent {
           );
         })}
         {holidaysList.length === 0 && (
-          <Row style={{ marginTop: 0 }} className={styles.eachRow}>
-            <span>No data</span>
+          <Row className={styles.eachRow_noData}>
+            <span>No holiday data</span>
           </Row>
         )}
       </div>

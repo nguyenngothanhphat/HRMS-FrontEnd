@@ -17,6 +17,7 @@ class TimeOffRequestTab extends PureComponent {
     super(props);
     this.state = {
       formatData: [],
+      formatMainTabData: [],
       inProgressLength: 0,
       approvedLength: 0,
       rejectedLength: 0,
@@ -34,8 +35,8 @@ class TimeOffRequestTab extends PureComponent {
 
     if (key === 2)
       return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'C';
+        const { type: { type = '', shortType = '' } = {} } = req;
+        return type === 'C' && shortType !== 'LWP';
       });
 
     if (key === 3)
@@ -136,6 +137,10 @@ class TimeOffRequestTab extends PureComponent {
       if (statusCode === 200) {
         const newData = this.getDataByType(items, tab);
         this.countTotal(newData);
+        const formatMainTabData = newData.filter((data) => data.status !== 'DELETED');
+        this.setState({
+          formatMainTabData,
+        });
       }
     });
   };
@@ -205,6 +210,35 @@ class TimeOffRequestTab extends PureComponent {
     });
   };
 
+  renderEmptyTableContent = (tab) => {
+    switch (tab) {
+      case 1:
+        return (
+          <>
+            You have not applied for any Leave requests. <br />
+            Submitted Casual, Sick & Compoff requests will be displayed here.
+          </>
+        );
+      case 2:
+        return (
+          <>
+            You have not applied for any Special Leave requests.
+            <br />
+            Submitted Restricted Holiday, Bereavement, Marriage & Maternity/ Paternity leave
+            requests will be displayed here.
+          </>
+        );
+      case 3:
+        return <>You have not applied for any LWP requests.</>;
+      case 4:
+        return <>You have not applied any request to Work from home or Client’s place.</>;
+      case 5:
+        return <>You have not submitted any requests to earn compensation leaves.</>;
+      default:
+        return '';
+    }
+  };
+
   render() {
     const {
       formatData,
@@ -213,8 +247,15 @@ class TimeOffRequestTab extends PureComponent {
       rejectedLength,
       draftLength,
       onHoldLength,
+      formatMainTabData,
     } = this.state;
-    const { type = 0 } = this.props;
+
+    const {
+      type = 0,
+      tab = 0,
+      loadingFetchLeaveRequests,
+      loadingFetchMyCompoffRequests,
+    } = this.props;
 
     const dataNumber = {
       inProgressLength,
@@ -224,33 +265,33 @@ class TimeOffRequestTab extends PureComponent {
       onHoldLength,
     };
 
+    const checkEmptyTable = formatMainTabData.length === 0;
+
+    const emptyTableContent = this.renderEmptyTableContent(tab);
+
     return (
       <div className={styles.TimeOffRequestTab}>
         <FilterBar dataNumber={dataNumber} setSelectedFilterTab={this.setSelectedFilterTab} />
         <div className={styles.tableContainer}>
-          {
-            //     formatData.length === 0 ? (
-            //   <div className={styles.emptyTable}>
-            //     <img src={EmptyIcon} alt="empty-table" />
-            //     <p className={styles.describeTexts}>
-            //       You have not applied for any Leave requests. <br />
-            //       Submitted Casual, Sick & Compoff requests will be displayed here.
-            //     </p>
-            //   </div>
-            // ) : (
-          }
-          <div>
-            {type === 1 && (
-              <>
-                <MyLeaveTable data={formatData} />
-              </>
-            )}
-            {type === 2 && (
-              <>
-                <MyCompoffTable data={formatData} />
-              </>
-            )}
-          </div>
+          {checkEmptyTable && !loadingFetchLeaveRequests && !loadingFetchMyCompoffRequests ? (
+            <div className={styles.emptyTable}>
+              <img src={EmptyIcon} alt="empty-table" />
+              <p className={styles.describeTexts}>{emptyTableContent}</p>
+            </div>
+          ) : (
+            <div>
+              {type === 1 && (
+                <>
+                  <MyLeaveTable data={formatData} />
+                </>
+              )}
+              {type === 2 && (
+                <>
+                  <MyCompoffTable data={formatData} />
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );

@@ -17,6 +17,7 @@ const { TextArea } = Input;
   loadingRejectRequest: loading.effects['timeOff/reportingManagerReject'],
   loadingManagerApproveWithdrawRequest: loading.effects['timeOff/managerApproveWithdrawRequest'],
   loadingManagerRejectWithdrawRequest: loading.effects['timeOff/managerRejectWithdrawRequest'],
+  loadingFetchProjectsOfEmployee: loading.effects['timeOff/fetchProjectsListByEmployee'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -68,9 +69,9 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YYYY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YYYY')}`;
+        .format('DD.MM.YY')}`;
     }
     return leaveTimes;
   };
@@ -189,6 +190,7 @@ class RequestInformation extends PureComponent {
       loadingRejectRequest,
       loadingManagerApproveWithdrawRequest,
       loadingManagerRejectWithdrawRequest,
+      loadingFetchProjectsOfEmployee,
     } = this.props;
     const {
       status = '',
@@ -252,35 +254,52 @@ class RequestInformation extends PureComponent {
                 <Col span={6}>Project Manager</Col>
                 <Col span={12}>Project Health</Col>
               </Row>
-              {projectsList.length === 0 ? (
+              {loadingFetchProjectsOfEmployee && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '50px 0',
+                  }}
+                >
+                  <Spin size="medium" />
+                </div>
+              )}
+              {!loadingFetchProjectsOfEmployee && (
                 <>
-                  <Row>
-                    <Col span={6} className={styles.detailColumn}>
-                      <span>No project</span>
-                    </Col>
-                  </Row>
-                </>
-              ) : (
-                <>
-                  {projectsList.map((project) => {
-                    const {
-                      _id: pjManagerId = '',
-                      name: prName = '',
-                      manager: { generalInfo: { firstName: fn = '', lastName: ln = '' } = {} } = {},
-                      projectHealth = 0,
-                    } = project;
-                    return (
-                      <>
-                        <Project
-                          name={prName}
-                          projectManager={`${fn} ${ln}`}
-                          projectHealth={projectHealth}
-                          employeeId={pjManagerId}
-                        />
-                        {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
-                      </>
-                    );
-                  })}
+                  {projectsList.length === 0 ? (
+                    <>
+                      <Row>
+                        <Col span={6} className={styles.detailColumn}>
+                          <span>No project</span>
+                        </Col>
+                      </Row>
+                    </>
+                  ) : (
+                    <>
+                      {projectsList.map((project) => {
+                        const {
+                          _id: pjManagerId = '',
+                          name: prName = '',
+                          manager: {
+                            generalInfo: { firstName: fn = '', lastName: ln = '' } = {},
+                          } = {},
+                          projectHealth = 0,
+                        } = project;
+                        return (
+                          <>
+                            <Project
+                              name={prName}
+                              projectManager={`${fn} ${ln}`}
+                              projectHealth={projectHealth}
+                              employeeId={pjManagerId}
+                            />
+                            {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
+                          </>
+                        );
+                      })}
+                    </>
+                  )}
                 </>
               )}
             </div>
