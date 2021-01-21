@@ -20,9 +20,7 @@ class ScreenBegin extends PureComponent {
                   Tell us the kind of time offs (both paid, unpaid & holidays) your company provide.
                   We will setup the policies for you.
                 </div>
-                <Button className={t.btnStart} onClick={handleChange}>
-                  Get Started
-                </Button>
+                <Button onClick={handleChange}>Get Started</Button>
               </Col>
               <Col span={12}>
                 <div className={t.footer}>

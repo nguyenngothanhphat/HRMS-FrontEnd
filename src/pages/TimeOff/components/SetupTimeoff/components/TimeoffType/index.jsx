@@ -22,9 +22,9 @@ class TimeoffType extends Component {
         <div className={styles.TimeoffContain}>
           <div className={styles.TimeoffFrom}>
             {viewType === 'ruleForm' ? (
-              <div className={styles.Content}> Select & Configure timeoff types</div>
+              <div className={styles.Content}>Select & Configure timeoff types</div>
             ) : (
-              <div className={styles.Content}> Configure Casual leave policy </div>
+              <div className={styles.Content}>Configure Casual leave policy </div>
             )}
             {viewType === 'ruleForm' ? (
               <div className={styles.SubContent}>
