@@ -111,7 +111,9 @@ class WorkShedule extends Component {
             employee work in a week?
           </div>
           <div className={s.formActive}>
-            <div className={s.activeText}>Standard work schedule policy</div>
+            <div className={s.activeText}>
+              <span>Standard work schedule policy</span>
+            </div>
             <div className={s.straight} />
             <div className={s.formWorkHour}>
               <div className={s.workHour}>Work hour</div>
@@ -188,9 +190,7 @@ class WorkShedule extends Component {
             </div>
             <div className={s.straight} />
             <div className={s.flex}>
-              <Button className={s.btnSave} htmlType="submit">
-                Save
-              </Button>
+              <Button htmlType="submit">Save</Button>
             </div>
           </div>
         </Form>

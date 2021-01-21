@@ -130,13 +130,9 @@ class AssignPolicy extends Component {
               </Row>
             </div>
             <div className={styles.straightLine} />
-            <Row className={styles.footer}>
-              <Col xs={24} sm={24} md={24} lg={10} xl={3}>
-                <Button className={styles.btnSubmit} onClick={this.handleClick}>
-                  Finish
-                </Button>
-              </Col>
-            </Row>
+            <div className={styles.footer}>
+              <Button onClick={this.handleClick}>Finish</Button>
+            </div>
           </Form>
           {/* <ModalNotice
             modalContent="Syncing all data and setting up your Timeoff app."
