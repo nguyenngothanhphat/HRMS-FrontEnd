@@ -78,7 +78,7 @@ export default class ManageTeamWork extends PureComponent {
                   {listMyTeam.length === 0
                     ? this.viewEmpty()
                     : listMyTeam.map((item) => (
-                        <Col span={12} key={item._id}>
+                        <Col span={8} key={item._id}>
                           {this.renderItemMyTeam(item)}
                         </Col>
                       ))}
@@ -97,7 +97,7 @@ export default class ManageTeamWork extends PureComponent {
                   {listProject.length === 0
                     ? this.viewEmpty('Project')
                     : listProject.map((item) => (
-                        <Col span={12} key={item._id}>
+                        <Col span={8} key={item._id}>
                           {this.renderItemProject(item)}
                         </Col>
                       ))}

@@ -11,7 +11,7 @@ class ViewAdvancedSearch extends PureComponent {
       pathname: '/search-result',
       query: { ...query, keySearch },
     });
-    closeSearch(false);
+    closeSearch(true);
   };
 
   render() {
