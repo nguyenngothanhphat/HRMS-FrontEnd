@@ -8,7 +8,7 @@
   :global(.ant-layout-header) {
     display: flex;
     justify-content: space-between;
-    padding: 20px 50px;
+    padding: 20px 50px 0 50px;
     color: rgba(0, 0, 0, 0.85);
     background: none;
   }
@@ -37,23 +37,28 @@
         &__image {
           img {
             width: 100%;
-            min-width: 20rem;
+            min-width: 15rem;
             margin-left: -25px;
           }
         }
         &__text1 {
           // width: 90%;
           min-width: 20rem;
-          font-size: 2rem;
-          line-height: 2.5rem;
-          color: #000;
           font-weight: 700;
+          font-size: 32px;
+          line-height: 1.22;
+          letter-spacing: 0.58px;
+          text-align: left;
+          color: #161c29;
         }
         &__text2 {
           // width: 80%;
+          margin-top: -10px;
           min-width: 20rem;
-          color: #acacac;
-          font-size: 1rem;
+          color: #707177;
+          font-size: 14px;
+          letter-spacing: 0.17;
+          line-height: 22px;
         }
       }
       .contentRight {
