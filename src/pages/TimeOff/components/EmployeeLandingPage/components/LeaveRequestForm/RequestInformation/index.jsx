@@ -692,7 +692,7 @@ class RequestInformation extends PureComponent {
           durationTo: autoToDate,
           leaveTimeLists: initialValuesForLeaveTimesList,
         });
-      } else {
+      } else if (prevType !== '') {
         this.formRef.current.setFieldsValue({
           leaveTimeLists: [],
           durationTo: null,
