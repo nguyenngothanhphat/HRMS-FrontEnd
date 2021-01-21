@@ -460,8 +460,8 @@ class RequestInformation extends PureComponent {
       buttonState,
       isEditingDrafts,
       viewingLeaveRequestId,
-      totalDayOfSelectedType,
-      selectedType,
+      // totalDayOfSelectedType,
+      // selectedType,
       unpaidLeaveActivate,
       selectedShortType,
       selectedTypeName,
@@ -539,7 +539,7 @@ class RequestInformation extends PureComponent {
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
     const {
       viewingLeaveRequestId,
-      totalDayOfSelectedType,
+      // totalDayOfSelectedType,
       remainingDayOfSelectedType,
       selectedTypeName,
       selectedType,
@@ -915,7 +915,7 @@ class RequestInformation extends PureComponent {
   // TYPE C: SPECIAL LEAVES
   renderType2 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', total = 0, _id } = value;
+      const { name = '', shortName = '', remaining = 0, _id } = value;
       return (
         <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
@@ -926,12 +926,12 @@ class RequestInformation extends PureComponent {
             <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
               <span
                 style={
-                  total === 0
+                  remaining === 0
                     ? { fontSize: 12, color: '#FD4546' }
                     : { fontSize: 12, color: 'black' }
                 }
               >
-                {total} days
+                {remaining} days
               </span>
             </span>
           </div>
@@ -1089,7 +1089,6 @@ class RequestInformation extends PureComponent {
       viewPolicyModal,
     } = this.state;
 
-    console.log('time', durationFrom, durationTo);
     const {
       timeOff: {
         timeOffTypes = [],
