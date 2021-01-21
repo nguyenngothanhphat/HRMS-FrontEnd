@@ -1,31 +1,28 @@
 import React, { PureComponent } from 'react';
-import iconClose from '@/assets/iconClose.png';
 import { history } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import FormSearch from '../FormSearch';
 import s from './index.less';
 
 class ViewAdvancedSearch extends PureComponent {
   handleSearch = (query) => {
-    const { closeSearch = () => {} } = this.props;
+    const { closeSearch = () => {}, keySearch } = this.props;
     history.push({
       pathname: '/search-result',
-      query,
+      query: { ...query, keySearch },
     });
-    closeSearch();
+    closeSearch(true);
   };
 
   render() {
-    const { changeMode = () => {} } = this.props;
+    const { closeSearch = () => {} } = this.props;
     return (
       <div className={s.root}>
         <div className={s.viewTop}>
           <p className={s.viewTop__title}>Advanced Search</p>
-          <img
-            className={s.viewTop__icon}
-            onClick={() => changeMode('history')}
-            src={iconClose}
-            alt="iconClose"
-          />
+          <div className={s.viewTop__circle} onClick={() => closeSearch(true)}>
+            <CloseOutlined className={s.viewTop__circle__icon} />
+          </div>
         </div>
         <FormSearch handleSearch={this.handleSearch} />
       </div>

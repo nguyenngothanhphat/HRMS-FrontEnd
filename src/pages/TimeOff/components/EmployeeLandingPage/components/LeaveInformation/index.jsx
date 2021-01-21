@@ -70,7 +70,7 @@ const CollapseInformation = (props) => {
                     />
                     {index + 1 !== typesOfCommonLeaves.length
                       ? typesOfCommonLeaves[index + 1].defaultSettings.type === 'A' && (
-                      <div className={styles.hr} />
+                          <div className={styles.hr} />
                         )
                       : ''}
                   </div>

@@ -10,6 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl } from 'umi';
+import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -81,7 +82,11 @@ const BasicLayout = (props) => {
       : styles.breadCrumbB;
 
   return (
-    <div className={`${styles.root} ${classNameBreadCrumb}`}>
+    <div
+      className={classnames(styles.root, classNameBreadCrumb, {
+        [styles.hiddenBreadCrumb]: pathname === '/dashboard',
+      })}
+    >
       <ProLayout
         logo={logo}
         headerHeight={76}

@@ -426,6 +426,7 @@ const routes = [
             name: 'setting',
             icon: '/assets/images/CP-icons_settings.svg',
             component: './Setting',
+            hideInMenu: true,
             authority: [
               'employee',
               'hr-manager',

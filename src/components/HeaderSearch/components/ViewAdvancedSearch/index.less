@@ -4,22 +4,35 @@
   }
   width: 100%;
   height: 100%;
+  color: #161c29;
   font-size: 14px;
   line-height: 16px;
-  color: #161c29;
   .viewTop {
-    padding: 24px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #e2e4e8;
+    padding: 24px;
     &__title {
-      font-weight: 700;
-      font-size: 16px;
+      color: #161c29;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      opacity: 0.56;
+      mix-blend-mode: normal;
     }
-    &__icon {
-      width: 16px;
-      height: 16px;
+    &__circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: rgba(112, 113, 119, 0.17);
+      border-radius: 50%;
       cursor: pointer;
+      &__icon {
+        font-size: 13px;
+        opacity: 0.5;
+      }
     }
   }
 }

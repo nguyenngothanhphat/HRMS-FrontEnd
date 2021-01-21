@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Dropdown } from 'antd';
-import { SearchOutlined, EnterOutlined } from '@ant-design/icons';
+import { SearchOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import ViewHistory from './components/ViewHistory';
 import ViewAdvancedSearch from './components/ViewAdvancedSearch';
@@ -17,10 +17,8 @@ class HeaderSearch extends Component {
   }
 
   changeMode = (mode) => {
-    const { q } = this.state;
     this.setState({
       mode,
-      q: mode === 'advanced' ? '' : q,
     });
   };
 
@@ -33,21 +31,39 @@ class HeaderSearch extends Component {
     }
   };
 
-  closeSearch = () => {
-    this.setState({ visible: false, mode: 'history' });
+  closeSearch = (isChangeMode) => {
+    this.setState({
+      visible: false,
+      mode: isChangeMode ? 'history' : 'advanced',
+    });
+  };
+
+  forceOpenAdvanced = () => {
+    this.setState({
+      visible: true,
+      mode: 'advanced',
+    });
   };
 
   renderAdvancedSearch = () => {
-    const { mode } = this.state;
+    const { mode, q } = this.state;
     return (
       <div className={styles.viewAdvancedSearch}>
         {mode === 'history' ? (
-          <ViewHistory changeMode={this.changeMode} />
+          <ViewHistory
+            changeMode={this.changeMode}
+            closeSearch={this.closeSearch}
+            setKeyword={this.setKeyword}
+          />
         ) : (
-          <ViewAdvancedSearch changeMode={this.changeMode} closeSearch={this.closeSearch} />
+          <ViewAdvancedSearch closeSearch={this.closeSearch} keySearch={q} />
         )}
       </div>
     );
+  };
+
+  setKeyword = (value) => {
+    this.setState({ q: value });
   };
 
   onChangeInput = ({ target: { value } }) => {
@@ -66,8 +82,9 @@ class HeaderSearch extends Component {
 
   render() {
     const { visible, q } = this.state;
+    const className = visible ? styles.viewOpen : styles.viewClose;
     return (
-      <div className={styles.root}>
+      <div className={className}>
         <Dropdown
           overlay={this.renderAdvancedSearch()}
           placement="bottomCenter"
@@ -81,7 +98,24 @@ class HeaderSearch extends Component {
             placeholder="Search for Employees, Documents, Reports, Events and Requests"
             onChange={this.onChangeInput}
             prefix={<SearchOutlined />}
-            suffix={<EnterOutlined style={{ fontSize: '11px', opacity: 0.5, cursor: 'pointer' }} />}
+            suffix={
+              <div className={styles.viewSuffix}>
+                {q && (
+                  <div
+                    className={styles.viewSuffix__circle}
+                    style={{ marginRight: '12px' }}
+                    onClick={() => {
+                      this.setState({ q: '' });
+                    }}
+                  >
+                    <CloseOutlined className={styles.viewSuffix__circle__icon} />
+                  </div>
+                )}
+                <div className={styles.viewSuffix__circle} onClick={this.forceOpenAdvanced}>
+                  <CaretDownOutlined className={styles.viewSuffix__circle__icon} />
+                </div>
+              </div>
+            }
             onPressEnter={this.onPressEnter}
           />
         </Dropdown>
