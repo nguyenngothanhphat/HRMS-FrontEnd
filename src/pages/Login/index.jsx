@@ -104,8 +104,7 @@ class FormLogin extends Component {
           >
             <Input.Password
               iconRender={(visible) =>
-                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
-              }
+                visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />}
               className={styles.inputPassword}
             />
           </Form.Item>
@@ -118,12 +117,11 @@ class FormLogin extends Component {
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
               prevValues.email !== currentValues.email ||
-              prevValues.password !== currentValues.password
-            }
+              prevValues.password !== currentValues.password}
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <div className={styles.textOr}>Or</div>
+          <div className={styles.textOr}>or sign in with</div>
           <GoogleLogin
             clientId="979138479820-7hv5jn95k39tb42ltiscoi552ce9i2an.apps.googleusercontent.com"
             render={(renderProps) => (
