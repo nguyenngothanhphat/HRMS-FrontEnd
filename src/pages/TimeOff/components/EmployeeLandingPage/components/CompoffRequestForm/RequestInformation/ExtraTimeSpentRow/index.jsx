@@ -22,7 +22,7 @@ class ExtraTimeSpentRow extends PureComponent {
     } = this.props;
 
     const { date = '' } = eachDate;
-    const totalDays = totalHours / 8;
+    const totalDays = parseFloat(totalHours / 8).toFixed(2);
 
     return (
       <Row className={styles.ExtraTimeSpentRow}>

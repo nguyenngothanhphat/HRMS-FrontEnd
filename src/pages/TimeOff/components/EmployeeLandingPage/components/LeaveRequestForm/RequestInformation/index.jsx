@@ -37,7 +37,7 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
-      numberOfDaySelectedTypeC: 0,
+      totalDayOfSelectedType: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
       viewPolicyModal: false,
@@ -192,7 +192,7 @@ class RequestInformation extends PureComponent {
       });
 
       // set notice
-      this.autoValueForToDate(type, shortType, moment(fromDate));
+      // this.autoValueForToDate(type, shortType, moment(fromDate), '');
       if (
         (type === 'A' || type === 'B') &&
         moment(fromDate) !== null &&
@@ -212,35 +212,94 @@ class RequestInformation extends PureComponent {
     const {
       timeOff: {
         totalLeaveBalance: {
-          commonLeaves: { timeOffTypes = [] } = {},
-          specialLeaves: { timeOffTypes: timeOffTypeC = [] } = {},
+          commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypesC = [] } = {},
         } = {},
+        timeOffTypes = [],
       } = {},
     } = this.props;
 
     let count = 0;
     let total = 0;
+    let check = false;
 
-    timeOffTypes.forEach((value) => {
+    timeOffTypesAB.forEach((value) => {
       const {
-        defaultSettings: { shortType: shortType1 = '', type = '' } = {},
+        defaultSettings: {
+          baseAccrual: { time = 0 } = {},
+          shortType: shortType1 = '',
+          type = '',
+        } = {},
         currentAllowance = 0,
       } = value;
       if (shortType === shortType1 && type === 'A') {
+        count = currentAllowance;
+        total = time;
+        check = true;
+      }
+    });
+
+    if (!check)
+      timeOffTypesC.forEach((value) => {
+        const {
+          defaultSettings: { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '' } = {},
+          currentAllowance = 0,
+        } = value;
+        if (shortType === shortType1) {
+          count = currentAllowance;
+          total = time;
+        }
+      });
+
+    if (!check)
+      timeOffTypes.forEach((value) => {
+        const { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '', type = '' } = value;
+        if (shortType === shortType1 && type === 'D') {
+          count = time;
+          total = time;
+        }
+      });
+
+    this.setState({
+      remainingDayOfSelectedType: count,
+      totalDayOfSelectedType: total,
+    });
+
+    return count;
+  };
+
+  getRemainingDayById = (_id) => {
+    const {
+      timeOff: {
+        totalLeaveBalance: {
+          commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypeC = [] } = {},
+        } = {},
+        timeOffTypes = [],
+      } = {},
+    } = this.props;
+
+    let count = 0;
+
+    timeOffTypesAB.forEach((value) => {
+      const { defaultSettings: { _id: _id1 = '', type = '' } = {}, currentAllowance = 0 } = value;
+      if (_id1 === _id && type === 'A') {
         count = currentAllowance;
       }
     });
 
     timeOffTypeC.forEach((value) => {
-      const { defaultSettings: { shortType: shortType1 = '' } = {}, currentAllowance = 0 } = value;
-      if (shortType === shortType1) {
-        total = currentAllowance;
+      const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
+      if (_id1 === _id) {
+        count = currentAllowance;
       }
     });
 
-    this.setState({
-      remainingDayOfSelectedType: count,
-      numberOfDaySelectedTypeC: total,
+    timeOffTypes.forEach((value) => {
+      const { _id: _id1 = '', type = '' } = value;
+      if (_id1 === _id && type === 'D') {
+        count = 'VALID';
+      }
     });
 
     return count;
@@ -274,13 +333,13 @@ class RequestInformation extends PureComponent {
 
   // GET TIME OFF TYPE BY ID
   onSelectTimeOffTypeChange = (id) => {
-    const { durationFrom } = this.state;
+    const { durationFrom, selectedType } = this.state;
     const { timeOff: { timeOffTypes = [] } = {} } = this.props;
     timeOffTypes.forEach((eachType) => {
       const { _id = '', name = '', shortType = '', type = '' } = eachType;
       if (id === _id) {
         const remainingDay = this.getRemainingDay(shortType);
-        this.autoValueForToDate(type, shortType, durationFrom);
+        this.autoValueForToDate(type, shortType, durationFrom, selectedType);
         if (
           (type === 'A' || type === 'B') &&
           durationFrom !== null &&
@@ -288,15 +347,6 @@ class RequestInformation extends PureComponent {
           shortType === 'CL'
         ) {
           this.setSecondNotice(`${shortType}s gets credited each month.`);
-        }
-
-        if (
-          (type === 'A' || type === 'B') &&
-          durationFrom !== null &&
-          durationFrom !== '' &&
-          shortType !== 'CL'
-        ) {
-          this.setSecondNotice('');
         }
 
         // if remaining day = 0, activate unpaid leaves
@@ -410,8 +460,8 @@ class RequestInformation extends PureComponent {
       buttonState,
       isEditingDrafts,
       viewingLeaveRequestId,
-      numberOfDaySelectedTypeC,
-      selectedType,
+      // totalDayOfSelectedType,
+      // selectedType,
       unpaidLeaveActivate,
       selectedShortType,
       selectedTypeName,
@@ -434,9 +484,11 @@ class RequestInformation extends PureComponent {
       } else {
         const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
 
-        let duration = 0;
-        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
-        else duration = numberOfDaySelectedTypeC;
+        // let duration = 0;
+        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        // else duration = totalDayOfSelectedType;
+
+        const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
         const data = {
           type: unpaidLeaveActivate
@@ -487,7 +539,7 @@ class RequestInformation extends PureComponent {
     const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
     const {
       viewingLeaveRequestId,
-      numberOfDaySelectedTypeC,
+      // totalDayOfSelectedType,
       remainingDayOfSelectedType,
       selectedTypeName,
       selectedType,
@@ -516,9 +568,11 @@ class RequestInformation extends PureComponent {
         message.error('Please select valid leave time dates!');
       } else {
         // generate data for API
-        let duration = 0;
-        if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
-        else duration = numberOfDaySelectedTypeC;
+        // let duration = 0;
+        // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
+        // else duration = totalDayOfSelectedType;
+
+        const duration = this.calculateNumberOfLeaveDay(leaveDates);
 
         if (
           (selectedType === 'A' || selectedType === 'B') &&
@@ -584,51 +638,70 @@ class RequestInformation extends PureComponent {
   };
 
   // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
-  autoValueForToDate = (selectedType, selectedShortType, durationFrom) => {
-    if (
-      durationFrom !== null &&
-      durationFrom !== '' &&
-      (selectedType === 'C' || selectedType === 'D')
-    ) {
-      const {
-        timeOff: { timeOffTypes = [] },
-      } = this.props;
+  autoValueForToDate = (selectedType, selectedShortType, durationFrom, prevType) => {
+    let autoToDate = null;
+    if (prevType !== 'A' || (prevType === 'A' && selectedType !== 'A')) {
+      if (
+        durationFrom !== null &&
+        durationFrom !== '' &&
+        (selectedType === 'C' || selectedType === 'D')
+      ) {
+        const {
+          timeOff: { timeOffTypes = [] },
+        } = this.props;
 
-      let typeList = timeOffTypes.map((eachType) => {
-        const { type = '', shortType = '', baseAccrual: { time = 0 } = {} } = eachType;
-        return {
-          type,
-          shortType,
-          time,
-        };
-      });
+        let typeList = timeOffTypes.map((eachType) => {
+          const { type = '', shortType = '', baseAccrual: { time = 0 } = {} } = eachType;
+          return {
+            type,
+            shortType,
+            time,
+          };
+        });
 
-      if (selectedType === 'C') {
-        typeList = typeList.filter((value) => value.type === 'C');
-      } else if (selectedType === 'D') {
-        typeList = typeList.filter((value) => value.type === 'D');
-      }
-
-      let autoToDate = null;
-      typeList.forEach((eachType) => {
-        const { shortType = '', time = 0 } = eachType;
-        if (selectedShortType === shortType) {
-          if (selectedType === 'D') {
-            this.setSecondNotice(`${shortType} applied for: ${time} days`);
-          }
-          if (selectedType === 'C') {
-            this.setSecondNotice(
-              `A 'To date' will be set automatically as per a duration of ${time} days from the selected 'From date'`,
-            );
-          }
-
-          autoToDate = moment(durationFrom).add(time - 1, 'day');
+        if (selectedType === 'C') {
+          typeList = typeList.filter((value) => value.type === 'C');
+        } else if (selectedType === 'D') {
+          typeList = typeList.filter((value) => value.type === 'D');
         }
-      });
 
-      this.formRef.current.setFieldsValue({
-        durationTo: autoToDate,
-      });
+        typeList.forEach((eachType) => {
+          const { shortType = '', time = 0 } = eachType;
+          if (selectedShortType === shortType) {
+            if (selectedType === 'D') {
+              this.setSecondNotice(`${shortType} applied for: ${time} days`);
+            }
+            if (selectedType === 'C') {
+              this.setSecondNotice(
+                `A 'To date' will be set automatically as per a duration of ${time} days from the selected 'From date'`,
+              );
+            }
+            if (time !== 0) autoToDate = moment(durationFrom).add(time - 1, 'day');
+            else autoToDate = moment(durationFrom).add(time, 'day');
+          }
+        });
+
+        const dateLists = this.getDateLists(durationFrom, autoToDate);
+        const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+
+        this.setState({
+          durationTo: autoToDate,
+        });
+
+        this.formRef.current.setFieldsValue({
+          durationTo: autoToDate,
+          leaveTimeLists: initialValuesForLeaveTimesList,
+        });
+      } else if (prevType !== '') {
+        this.formRef.current.setFieldsValue({
+          leaveTimeLists: [],
+          durationTo: null,
+        });
+        this.setState({
+          durationTo: '',
+        });
+        this.setSecondNotice(``);
+      }
     }
   };
 
@@ -645,19 +718,20 @@ class RequestInformation extends PureComponent {
     }
 
     const { selectedShortType, selectedType } = this.state;
-    this.autoValueForToDate(selectedType, selectedShortType, value);
+    if (selectedType === 'C' || selectedType === 'D')
+      this.autoValueForToDate(selectedType, selectedShortType, value);
+
     if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
-      this.setSecondNotice('');
 
-    // initial value for leave dates list
-    const { durationTo } = this.state;
-    const dateLists = this.getDateLists(value, durationTo);
-    const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
-    this.formRef.current.setFieldsValue({
-      leaveTimeLists: initialValuesForLeaveTimesList,
-    });
+    // // initial value for leave dates list
+    // const { durationTo } = this.state;
+    // const dateLists = this.getDateLists(value, autoToDate || durationTo);
+    // const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+    // console.log('initialValuesForLeaveTimesList', initialValuesForLeaveTimesList);
+    // this.formRef.current.setFieldsValue({
+    //   leaveTimeLists: initialValuesForLeaveTimesList,
+    // });
   };
 
   toDateOnChange = (value) => {
@@ -673,8 +747,6 @@ class RequestInformation extends PureComponent {
     const { selectedShortType, selectedType } = this.state;
     if ((selectedType === 'A' || selectedType === 'B') && selectedShortType === 'CL')
       this.setSecondNotice(`${selectedShortType}s gets credited each month.`);
-    if ((selectedType === 'A' || selectedType === 'B') && selectedShortType !== 'CL')
-      this.setSecondNotice('');
 
     // initial value for leave dates list
     const { durationFrom } = this.state;
@@ -843,14 +915,25 @@ class RequestInformation extends PureComponent {
   // TYPE C: SPECIAL LEAVES
   renderType2 = (data) => {
     return data.map((value) => {
-      const { name = '', shortName = '', total = 0, _id } = value;
+      const { name = '', shortName = '', remaining = 0, _id } = value;
       return (
         <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
             <span style={{ fontSize: 13 }} className={styles.name}>
               {`${name} (${shortName})`}
             </span>
-            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>{total} days</span>
+
+            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
+              <span
+                style={
+                  remaining === 0
+                    ? { fontSize: 12, color: '#FD4546' }
+                    : { fontSize: 12, color: 'black' }
+                }
+              >
+                {remaining} days
+              </span>
+            </span>
           </div>
         </Option>
       );
@@ -969,6 +1052,15 @@ class RequestInformation extends PureComponent {
     this.setViewPolicyModal(true);
   };
 
+  // validator
+  typeValidator = (rule, value, callback) => {
+    const remaining = this.getRemainingDayById(value);
+    if (remaining === 'VALID') callback();
+    else if (remaining > 0) {
+      callback();
+    } else callback('Leave dates reach limit.');
+  };
+
   render() {
     const layout = {
       labelCol: {
@@ -1052,6 +1144,7 @@ class RequestInformation extends PureComponent {
                     required: true,
                     message: 'Please select Timeoff Type!',
                   },
+                  { validator: this.typeValidator },
                 ]}
               >
                 <Select
@@ -1175,7 +1268,7 @@ class RequestInformation extends PureComponent {
             <Col span={12}>
               <div
                 className={styles.extraTimeSpent}
-                style={selectedType === 'C' || selectedType === 'D' ? { marginBottom: '24px' } : {}}
+                // style={selectedType === 'C' || selectedType === 'D' ? { marginBottom: '24px' } : {}}
               >
                 <Row className={styles.header}>
                   <Col span={7}>Date</Col>
@@ -1189,7 +1282,7 @@ class RequestInformation extends PureComponent {
                     </div>
                   </div>
                 )}
-                {durationFrom !== '' &&
+                {/* {durationFrom !== '' &&
                   durationTo !== '' &&
                   (selectedType === 'C' || selectedType === 'D') && (
                     <div className={styles.content}>
@@ -1197,16 +1290,16 @@ class RequestInformation extends PureComponent {
                         <span>Selected days are automatically set to whole-day leave</span>
                       </div>
                     </div>
-                  )}
+                  )} */}
               </div>
             </Col>
             <Col span={6} />
           </Row>
 
           {durationFrom !== '' &&
-            durationTo !== '' &&
-            selectedType !== 'C' && // Type C: Special Leaves
-            selectedType !== 'D' && ( // Type D: Working out of office
+            durationTo !== '' && ( // Type D: Working out of office
+              // selectedType !== 'C' && // Type C: Special Leaves
+              // selectedType !== 'D' &&
               <Form.List name="leaveTimeLists">
                 {() => (
                   <Row key={1} className={styles.eachRow}>

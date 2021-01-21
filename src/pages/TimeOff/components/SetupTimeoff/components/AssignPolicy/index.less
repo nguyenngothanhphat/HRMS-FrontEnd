@@ -7,6 +7,20 @@
     .ant-divider-horizontal {
       margin: 0;
     }
+    .ant-btn {
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      height: 40px;
+      padding: 0 40px;
+      span {
+        color: white;
+        font-weight: 500;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
+    }
   }
 
   .balanceFrom {
@@ -44,14 +58,8 @@
     .footer {
       display: flex;
       justify-content: flex-end;
-      padding: 20px 30px;
-      .btnSubmit {
-        width: 108px;
-        height: 40px;
-        background: #ffa100;
-        border-radius: 25px;
-        color: #fff;
-      }
+      padding: 20px;
+      align-items: center;
     }
     .straightLine {
       width: 100%;
