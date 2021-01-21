@@ -97,14 +97,11 @@ class AvatarDropdown extends React.Component {
             </p>
           </div>
         </div>
-        <Button className={styles.buttonLink}>
-          <Menu.Item
-            key={VIEWPROFILE}
-            className={`${styles.menuItemLink} ${styles.menuItemViewProfile}`}
-          >
+        <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}>
+          <Button className={styles.buttonLink}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-          </Menu.Item>
-        </Button>
+          </Button>
+        </Menu.Item>
         <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
@@ -117,9 +114,9 @@ class AvatarDropdown extends React.Component {
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
-          <span className={styles.sessionLogin}>
+          <Menu.Item className={styles.sessionLogin}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
-          </span>
+          </Menu.Item>
         </Menu.ItemGroup>
       </Menu>
     );
