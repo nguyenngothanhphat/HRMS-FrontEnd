@@ -66,7 +66,17 @@ const ModalTerminate = (props) => {
               autoSize={{ minRows: 3, maxRows: 6 }}
             />
           </Form.Item>
-          <Form.Item label="Working Day" name="workingDay" className={styles.datePickerForm}>
+          <Form.Item
+            label="Working Day"
+            name="workingDay"
+            className={styles.datePickerForm}
+            rules={[
+              {
+                required: true,
+                message: 'Please choose date !',
+              },
+            ]}
+          >
             <DatePicker className={styles.datePicker} format={dateFormat} onChange={changeDate} />
           </Form.Item>
           <Form.Item className={styles.flexContent}>
