@@ -7,7 +7,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import FormDepartment from './components/FormDepartment';
 import s from './index.less';
 
-export default class Departments extends PureComponent {
+class Departments extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -65,3 +65,5 @@ export default class Departments extends PureComponent {
     );
   }
 }
+
+export default Departments;

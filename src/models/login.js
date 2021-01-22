@@ -36,13 +36,7 @@ const Model = {
           });
           return;
         }
-        const isNew = response.data?.user?.firstCreated;
-        if (isNew) {
-          console.log('isNew', isNew);
-          history.replace('/account-setup');
-        } else {
-          history.replace('/');
-        }
+        history.replace('/');
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {
