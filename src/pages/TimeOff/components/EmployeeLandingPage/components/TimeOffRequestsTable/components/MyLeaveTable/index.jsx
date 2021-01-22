@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip, Tag } from 'antd';
+import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
 import styles from './index.less';
-
+// loading
 @connect(({ loading }) => ({
   loadingFetchLeaveRequests: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
 }))
@@ -192,6 +193,13 @@ class MyLeaveTable extends PureComponent {
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    const tableLoading = {
+      spinning: loadingFetchLeaveRequests,
+      indicator: <Spin indicator={antIcon} />,
+    };
+
     const parsedData = this.processData(data);
 
     const pagination = {
@@ -227,7 +235,7 @@ class MyLeaveTable extends PureComponent {
       <div className={styles.MyLeaveTable}>
         <Table
           size="middle"
-          loading={loadingFetchLeaveRequests}
+          loading={tableLoading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: parsedData.length }}
           columns={this.columns}

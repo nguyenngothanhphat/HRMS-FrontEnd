@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
+import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
@@ -10,10 +11,20 @@ class RightContent extends PureComponent {
     this.state = {};
   }
 
-  renderIcon = (url) => {
+  renderIcon = (url, status) => {
     return (
       <div className={styles.avatar}>
         <img src={url} alt="avatar" />
+        {status === 'REJECTED' && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+      </div>
+    );
+  };
+
+  renderIcon2 = (url) => {
+    return (
+      <div className={styles.avatar}>
+        <img src={url} alt="avatar" />
+        <CheckCircleTwoTone twoToneColor="#52c41a" />
       </div>
     );
   };
@@ -53,7 +64,28 @@ class RightContent extends PureComponent {
           <Steps current={status === 'IN-PROGRESS' ? 1 : 2} labelPlacement="vertical">
             {people.map((value, index) => {
               const { avatar = '', name = '' } = value;
-              return <Step key={`${index + 1}`} icon={this.renderIcon(avatar)} title={name} />;
+              return (
+                <Step
+                  key={`${index + 1}`}
+                  icon={
+                    status === 'DELETED' ? (
+                      this.renderIcon(avatar)
+                    ) : (
+                      <>
+                        {index === 0 && this.renderIcon2(avatar)}
+                        {index === 1 && (
+                          <>
+                            {status === 'REJECTED' && this.renderIcon(avatar, 'REJECTED')}
+                            {status === 'IN-PROGRESS' && this.renderIcon(avatar)}
+                            {status === 'ACCEPTED' && this.renderIcon2(avatar)}
+                          </>
+                        )}
+                      </>
+                    )
+                  }
+                  title={name}
+                />
+              );
             })}
           </Steps>
         </div>
