@@ -46,8 +46,9 @@ class FormSearch extends Component {
           htmlType="button"
           onClick={this.onReset}
           disabled={check.length === 0}
+          type="text"
         >
-          Reset
+          <p>Reset</p>
         </Button>
         <Button
           type="primary"
@@ -67,7 +68,7 @@ class FormSearch extends Component {
         span: 8,
       },
       wrapperCol: {
-        span: 8,
+        span: 12,
       },
     };
 
@@ -96,19 +97,9 @@ class FormSearch extends Component {
                 ))}
               </Select>
             </Form.Item>
-            {/* <Form.Item name="location" label="Location">
-              <Select placeholder="Select location" allowClear>
-                {listLocation.map((item) => (
-                  <Option key={item}>{item}</Option>
-                ))}
-              </Select>
-            </Form.Item> */}
             <Form.Item name="dateModified" label="Date Modified">
               <DatePicker />
             </Form.Item>
-            {/* <Form.Item name="includesTheWords" label="Includes the words">
-              <Input.TextArea />
-            </Form.Item> */}
           </div>
           <Form.Item noStyle shouldUpdate>
             {({ getFieldsValue }) => this.renderButton(getFieldsValue)}
