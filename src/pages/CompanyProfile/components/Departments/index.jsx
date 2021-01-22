@@ -45,8 +45,8 @@ export default class Departments extends PureComponent {
                       onRemove={() => remove(field.name)}
                     />
                   ))}
-                  <div className={s.viewAddDepartments}>
-                    <p className={s.viewAddDepartments__icon} onClick={() => add()}>
+                  <div className={s.viewAddDepartments} onClick={() => add()}>
+                    <p className={s.viewAddDepartments__icon}>
                       <PlusOutlined />
                     </p>
                     <p className={s.viewAddDepartments__text}>Add a department</p>

@@ -1,6 +1,3 @@
-/* eslint-disable compat/compat */
-/* eslint-disable require-yield */
-// import { stringify } from 'querystring';
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
@@ -22,7 +19,6 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-
         if (response.statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
@@ -40,7 +36,13 @@ const Model = {
           });
           return;
         }
-        history.replace('/');
+        const isNew = response.data?.user?.firstCreated;
+        if (isNew) {
+          console.log('isNew', isNew);
+          history.replace('/account-setup');
+        } else {
+          history.replace('/');
+        }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {

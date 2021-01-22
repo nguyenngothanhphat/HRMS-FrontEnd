@@ -1,8 +1,9 @@
-import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import ItemCompany from './components/ItemCompany';
+
 import s from './index.less';
 
 @connect(({ user: { currentUser = {} } = {} }) => ({
@@ -32,14 +33,7 @@ class AccountSetup extends Component {
         <div style={{ width: '629px' }}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
-              <img
-                src={
-                  avatar ||
-                  'https://orthosera.com/wp-content/uploads/2016/02/user-profile-placeholder.png'
-                }
-                alt="avatar"
-                className={s.blockUserLogin__avt__img}
-              />
+              <Avatar size={56} icon={<UserOutlined />} src={avatar} />
             </div>
             <div className={s.blockUserLogin__info}>
               <p>
@@ -66,8 +60,7 @@ class AccountSetup extends Component {
           /> */}
 
           <ItemCompany company={company} />
-
-          <Button className={s.btnAddNew}>Add a new company profile</Button>
+          {/* <Button className={s.btnAddNew}>Add a new company profile</Button> */}
         </div>
       </div>
     );

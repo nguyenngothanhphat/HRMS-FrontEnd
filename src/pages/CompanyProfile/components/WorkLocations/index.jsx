@@ -4,6 +4,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Divider, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import { connect } from 'umi';
 import FormWorkLocation from './components/FormWorkLocation';
 import s from './index.less';
@@ -18,7 +19,7 @@ import s from './index.less';
     listCountry,
     currentUser,
     workLocations,
-    // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+    loading: loading.effects['companiesManagement/upsertLocationsList'],
   }),
 )
 class WorkLocations extends PureComponent {
@@ -28,17 +29,38 @@ class WorkLocations extends PureComponent {
     this.state = {};
   }
 
-  onFinish = (values) => {
-    const { address, country, state, zipCode, workLocations = [] } = values;
-    const payload = { headquarter: { address, country, state, zipCode }, workLocations };
-    console.log('payload works location:', payload);
+  onFinish = ({ workLocations: locations = [] }) => {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { locations, company: _id };
+    dispatch({
+      type: 'companiesManagement/upsertLocationsList',
+      payload,
+    });
+  };
+
+  formatListLocation = () => {
+    const { workLocations = [] } = this.props;
+    const formatData = workLocations.map((item) => {
+      const { country: { _id: country } = {} } = item;
+      return { ...item, country };
+    });
+    const listLocation = formatData.sort((item, nextItem) => {
+      return moment.utc(item.createdAt).diff(moment.utc(nextItem.createdAt));
+    });
+    return listLocation;
   };
 
   render() {
-    const { listCountry = [], workLocations = [] } = this.props;
-    console.log('workLocations', workLocations);
+    const { listCountry = [], workLocations = [], loading } = this.props;
+    const listLocation = this.formatListLocation();
+
     return (
-      <Form ref={this.formRef} onFinish={this.onFinish} autoComplete="off">
+      <Form
+        ref={this.formRef}
+        onFinish={this.onFinish}
+        autoComplete="off"
+        initialValues={{ workLocations: listLocation }}
+      >
         <div className={s.root}>
           <div className={s.content__viewTop}>
             <p className={s.title}>Work Locations</p>
@@ -50,12 +72,6 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            <FormWorkLocation
-              title="Headquarter"
-              listCountry={listCountry}
-              formRef={this.formRef}
-            />
-            <Divider className={s.divider} />
             <Form.List name="workLocations">
               {(fields, { add, remove }) => (
                 <>
@@ -65,10 +81,11 @@ class WorkLocations extends PureComponent {
                       key={field.name}
                       formRef={this.formRef}
                       listCountry={listCountry}
+                      listLocation={listLocation}
                     />
                   ))}
-                  <div className={s.viewAddWorkLocation}>
-                    <p className={s.viewAddWorkLocation__icon} onClick={() => add()}>
+                  <div className={s.viewAddWorkLocation} onClick={() => add()}>
+                    <p className={s.viewAddWorkLocation__icon}>
                       <PlusOutlined />
                     </p>
                     <p className={s.viewAddWorkLocation__text}>Add work location</p>
@@ -79,7 +96,7 @@ class WorkLocations extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit">
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
         </div>

@@ -6,7 +6,7 @@ import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
   render() {
-    const { company: { logoUrl = '', name = '', address = '' } = {} } = this.props;
+    const { company: { logoUrl = '', name = '', headQuarterAddress = {} } = {} } = this.props;
     return (
       <div className={s.root}>
         <img
@@ -17,13 +17,13 @@ export default class ItemCompany extends PureComponent {
         />
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{address}</p>
+          <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p>
         </div>
         <div className={s.viewAction}>
           <Link to="/account-setup/get-started">
             <Button className={s.btnOutline}>Get Started</Button>
           </Link>
-          <div className={s.option}>&#8285;</div>
+          {/* <div className={s.option}>&#8285;</div> */}
         </div>
       </div>
     );
