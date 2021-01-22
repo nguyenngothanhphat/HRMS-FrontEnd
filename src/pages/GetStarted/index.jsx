@@ -14,6 +14,11 @@ export default class GetStarted extends PureComponent {
         description: 'Setup company profile to unlock',
         // status: 'lock',
       },
+      {
+        id: '3',
+        name: 'Setup Timeoff',
+        description: 'Setup timeoff types',
+      },
     ];
     const routes = [{ name: 'Getting Started', path: '/account-setup/get-started' }];
     return (
