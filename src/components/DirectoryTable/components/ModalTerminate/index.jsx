@@ -1,22 +1,31 @@
 import React, { useState } from 'react';
-import { Modal, Input, Form, Button } from 'antd';
+import { Modal, Input, Form, Button, DatePicker } from 'antd';
+// import moment from 'moment';
+
 import styles from './index.less';
+
+const dateFormat = 'YYYY/MM/DD';
 
 const { TextArea } = Input;
 
 const ModalTerminate = (props) => {
   const [form] = Form.useForm();
+  const [date, setDate] = useState('');
 
   const {
     visible = false,
     valueReason = '',
-    onChange = () => {},
+    // onChange = () => {},
     handleSubmit = () => {},
     handleCandelModal = () => {},
   } = props;
 
   const handleFinish = (values) => {
     handleSubmit(values);
+  };
+
+  const changeDate = (_, dateValue) => {
+    setDate(dateValue);
   };
 
   return (
@@ -49,15 +58,6 @@ const ModalTerminate = (props) => {
                 required: true,
                 message: 'Please input field !',
               },
-              // ({ getFieldValue }) => ({
-              //   validator(_, value) {
-              //     const valueReason = getFieldValue('reason');
-              //     if (valueReason) {
-              //       return Promise.resolve();
-              //     }
-              //     return Promise.reject('Please input field !');
-              //   },
-              // }),
             ]}
           >
             <TextArea
@@ -65,6 +65,9 @@ const ModalTerminate = (props) => {
               placeholder="Fill in the box..."
               autoSize={{ minRows: 3, maxRows: 6 }}
             />
+          </Form.Item>
+          <Form.Item label="Working Day" name="workingDay" className={styles.datePickerForm}>
+            <DatePicker className={styles.datePicker} format={dateFormat} onChange={changeDate} />
           </Form.Item>
           <Form.Item className={styles.flexContent}>
             <Button
