@@ -8,12 +8,6 @@ import React, { PureComponent } from 'react';
 import FormDefineTeam from '../FormDefineTeam';
 import s from './index.less';
 
-const dummyListDepartment = [
-  { _id: '12345', name: 'Engineering' },
-  { _id: '45678', name: 'User Experience Design & Research' },
-  { _id: '99999', name: 'Visual Design' },
-];
-
 const { Option } = Select;
 
 class FormDepartment extends PureComponent {
@@ -23,7 +17,7 @@ class FormDepartment extends PureComponent {
   };
 
   render() {
-    const { field = {} } = this.props;
+    const { field = {}, list = [] } = this.props;
     return (
       <div className={s.content}>
         <div className={s.viewTop}>
@@ -59,10 +53,8 @@ class FormDepartment extends PureComponent {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {dummyListDepartment.map(({ name = '', _id = '' }) => (
-                  <Option key={_id} value={name}>
-                    {name}
-                  </Option>
+                {list.map((item) => (
+                  <Option key={item}>{item}</Option>
                 ))}
               </Select>
             </Form.Item>

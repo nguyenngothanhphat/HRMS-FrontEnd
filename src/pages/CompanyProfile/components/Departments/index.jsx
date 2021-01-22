@@ -4,21 +4,32 @@
 import React, { PureComponent } from 'react';
 import { Form, Divider, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import FormDepartment from './components/FormDepartment';
 import s from './index.less';
 
+@connect(
+  ({
+    loading,
+    departmentManagement: { listDefault = [], listByCompany: listDepartment = [] } = {},
+  }) => ({
+    listDefault,
+    listDepartment,
+    // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
+)
 class Departments extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  onFinish = ({ listDepartment }) => {
-    console.log('payload department:', listDepartment);
+  onFinish = (values) => {
+    console.log('payload department:', values?.listDepartment);
   };
 
   render() {
-    const listDepartment = [undefined];
+    const { listDefault = [], listDepartment = [] } = this.props;
     return (
       <Form
         ref={this.formRef}
@@ -43,6 +54,7 @@ class Departments extends PureComponent {
                       field={field}
                       key={field.name}
                       onRemove={() => remove(field.name)}
+                      list={listDefault}
                     />
                   ))}
                   <div className={s.viewAddDepartments} onClick={() => add()}>
