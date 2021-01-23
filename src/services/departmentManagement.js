@@ -14,9 +14,9 @@ export async function getListDepartmentByCompany(payload) {
   });
 }
 
-export async function upsertLocationsList(payload) {
-  return request('/api/location/upsert', {
+export async function upsertDepartment(payload) {
+  return request('/api/department/upsert', {
     method: 'POST',
-    data: payload.locations,
+    data: payload.listDepartment,
   });
 }

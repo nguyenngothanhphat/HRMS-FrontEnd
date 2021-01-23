@@ -12,10 +12,12 @@ import s from './index.less';
   ({
     loading,
     departmentManagement: { listDefault = [], listByCompany: listDepartment = [] } = {},
+    user: { currentUser = {} } = {},
   }) => ({
     listDefault,
     listDepartment,
-    // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+    currentUser,
+    loading: loading.effects['departmentManagement/upsertDepartment'],
   }),
 )
 class Departments extends PureComponent {
@@ -24,12 +26,17 @@ class Departments extends PureComponent {
     this.state = {};
   }
 
-  onFinish = (values) => {
-    console.log('payload department:', values?.listDepartment);
+  onFinish = ({ listDepartment }) => {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { listDepartment, company: _id };
+    dispatch({
+      type: 'departmentManagement/upsertDepartment',
+      payload,
+    });
   };
 
   render() {
-    const { listDefault = [], listDepartment = [] } = this.props;
+    const { listDefault = [], listDepartment = [], loading } = this.props;
     return (
       <Form
         ref={this.formRef}
@@ -69,7 +76,7 @@ class Departments extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit">
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
         </div>

@@ -2,8 +2,9 @@ import { dialog } from '@/utils/utils';
 import {
   getListDefaultDepartment,
   getListDepartmentByCompany,
+  upsertDepartment,
 } from '@/services/departmentManagement';
-// import { notification } from 'antd';
+import { notification } from 'antd';
 
 const departmentManagement = {
   namespace: 'departmentManagement',
@@ -35,22 +36,22 @@ const departmentManagement = {
       }
     },
 
-    // *upsertLocationsList({ payload: { locations = [], company = '' } = {} }, { call, put }) {
-    //   try {
-    //     const response = yield call(upsertLocationsList, { locations });
-    //     const { statusCode, message } = response;
-    //     if (statusCode !== 200) throw response;
-    //     notification.success({
-    //       message,
-    //     });
-    //     yield put({ type: 'fetchLocationsList', payload: { company } });
-    //     yield put({
-    //       type: 'user/fetchCurrent',
-    //     });
-    //   } catch (errors) {
-    //     dialog(errors);
-    //   }
-    // },
+    *upsertDepartment({ payload: { listDepartment = [], company = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(upsertDepartment, { listDepartment });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchListDepartmentByCompany', payload: { company } });
+        yield put({
+          type: 'user/fetchCurrent',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
