@@ -7,6 +7,11 @@ import s from './index.less';
 const dummySignature = [{}];
 
 class CompanySignatory extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.formRef = React.createRef();
+  }
+
   onFinish = (values) => {
     console.log('values', values);
   };
@@ -17,6 +22,7 @@ class CompanySignatory extends PureComponent {
         onFinish={this.onFinish}
         autoComplete="off"
         initialValues={{ listSignature: dummySignature }}
+        ref={this.formRef}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>
@@ -33,8 +39,8 @@ class CompanySignatory extends PureComponent {
                   {fields.map((field) => (
                     <FormSignature
                       field={field}
-                      key={field.name}
                       onRemove={() => remove(field.name)}
+                      formRef={this.formRef}
                     />
                   ))}
                   <div className={s.viewAddNew} onClick={() => add()}>
