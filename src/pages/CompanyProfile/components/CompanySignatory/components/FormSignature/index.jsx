@@ -143,7 +143,7 @@ class FormSignature extends Component {
                     rules={[
                       {
                         required: true,
-                        message: 'Please upload!',
+                        message: 'Please upload signature!',
                       },
                     ]}
                   >
