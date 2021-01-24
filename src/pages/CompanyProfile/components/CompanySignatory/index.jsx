@@ -4,7 +4,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import FormSignature from './components/FormSignature';
 import s from './index.less';
 
-const dummySignature = [{}];
+const dummySignature = [
+  {
+    name: 'Phat Signature',
+    position: 'CEO',
+    upload:
+      'http://api-stghrms.paxanimi.ai/api/attachments/600cec2854634a45594c4591/bigstock-Test-word-on-white-keyboard-27134336.jpg',
+  },
+];
 
 class CompanySignatory extends PureComponent {
   constructor(props) {
