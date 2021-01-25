@@ -3,8 +3,9 @@ export default {
   'pages.employeeProfile.validateWorkNumber': 'Just only number & maxinum 10 number, please!',
   'pages.employeeProfile.validateNumber':
     'Just only number & this field must be 12 number, please!',
-  'pages.employeeProfile.validatePassPortNumber': 'This field limit 12 character!',
-  'pages.employeeProfile.validateDate': ' Day Valid Till must greater than day Issue On, please!',
+  'pages.employeeProfile.validatePassPortNumber': 'Invalid passport number',
+  'pages.employeeProfile.validateDate':
+    'Inappropriate date. Valid till date must be after issue date',
   'pages.employeeProfile.validateName': 'Just only word not number, please!',
   'pages.employeeProfile.validateEmail': 'This field must be a valid email.',
   'pages.employeeProfile.validatelinkedIn': 'This field must be a valid url.',
