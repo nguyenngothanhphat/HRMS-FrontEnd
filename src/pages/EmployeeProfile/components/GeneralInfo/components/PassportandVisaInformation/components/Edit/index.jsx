@@ -601,12 +601,13 @@ class Edit extends Component {
                 )}
                 <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
                   <Select
+                    showArrow
                     className={styles.selectForm}
                     defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
                     onChange={(value) => {
                       this.handleChange(index, 'passportIssuedCountry', value);
                     }}
-                    suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                    // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (
