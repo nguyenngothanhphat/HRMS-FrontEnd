@@ -38,6 +38,10 @@ import {
   rejectMultipleTimeoffRequest,
   approveMultipleCompoffRequest,
   rejectMultipleCompoffRequest,
+
+  // ACCOUNT SETTINGS
+  getDefaultTimeoffTypesList,
+  getCountryList,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -68,6 +72,22 @@ const timeOff = {
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
     currentUserRole: '', // employee, manager, hr-manager
+    // account settings
+    defaultTimeoffTypesList: [],
+    countryList: [],
+    selectedConfigCountry: null,
+    setupPack: [
+      // {
+      //   shortType: 'CL',
+      //   totalPerYear: 12,
+      //   whenToAdd: 'month',
+      // },
+      // {
+      //   shortType: 'SL',
+      //   totalPerYear: 7,
+      //   whenToAdd: 'year',
+      // },
+    ],
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
@@ -682,6 +702,34 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+
+    // ACCOUNT SETTING
+    *getDefaultTimeoffTypesList(_, { call, put }) {
+      try {
+        const response = yield call(getDefaultTimeoffTypesList);
+        const { statusCode, data: defaultTimeoffTypesList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { defaultTimeoffTypesList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getCountryList(_, { call, put }) {
+      try {
+        const response = yield call(getCountryList);
+        const { statusCode, data: countryList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { countryList },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

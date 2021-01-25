@@ -105,6 +105,12 @@ const routes = [
             name: 'Setup Employee Directory',
             authority: ['employee'],
           },
+          {
+            path: '/account-setup/get-started/setup-timeoff',
+            component: './SetupTimeoff',
+            name: 'Setup Timeoff',
+            authority: ['hr-manager'],
+          },
         ],
       },
       {

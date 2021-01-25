@@ -6,16 +6,20 @@ import { history } from 'umi';
 import s from './index.less';
 
 export default class ItemCompany extends Component {
-  handleStartSetup = (name) => {
-    if (name === 'Setup Company profile') {
+  handleStartSetup = (id) => {
+    if (id === '1') {
       history.push(`/account-setup/get-started/company-profile`);
-    } else {
+    } else if (id === '2') {
       history.push(`/account-setup/get-started/setup-employee-directory`);
+    } else if (id === '3') {
+      history.push(`/account-setup/get-started/setup-timeoff`);
     }
   };
 
   render() {
-    const { item: { logo = '', name = '', description = '', status = '' } = {} } = this.props;
+    const {
+      item: { logo = '', id = '', name = '', description = '', status = '' } = {},
+    } = this.props;
 
     return (
       <div className={s.root}>
@@ -37,7 +41,7 @@ export default class ItemCompany extends Component {
           <Button
             disabled={status === 'lock'}
             className={s.btnOutline}
-            onClick={() => this.handleStartSetup(name)}
+            onClick={() => this.handleStartSetup(id)}
           >
             Start
           </Button>
