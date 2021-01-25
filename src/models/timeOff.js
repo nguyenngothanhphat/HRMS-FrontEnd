@@ -75,6 +75,19 @@ const timeOff = {
     // account settings
     defaultTimeoffTypesList: [],
     countryList: [],
+    selectedConfigCountry: '',
+    setupPack: [
+      // {
+      //   shortType: 'CL',
+      //   totalPerYear: 12,
+      //   whenToAdd: 'month',
+      // },
+      // {
+      //   shortType: 'SL',
+      //   totalPerYear: 7,
+      //   whenToAdd: 'year',
+      // },
+    ],
   },
   effects: {
     *fetchTimeOffTypes(_, { call, put }) {
