@@ -19,6 +19,7 @@ import styles from './index.less';
   ({
     candidateInfo: {
       data: { processStatus = '', candidate = '' },
+      tempData: { salaryTitle = '' } = {},
       salaryStructure = {},
       checkMandatory = {},
       currentStep = 0,
@@ -29,6 +30,7 @@ import styles from './index.less';
     checkMandatory,
     candidate,
     currentStep,
+    salaryTitle,
   }),
 )
 class SalaryStructure extends PureComponent {
@@ -60,7 +62,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { processStatus } = this.props;
+    const { processStatus, salaryTitle = '' } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -82,7 +84,7 @@ class SalaryStructure extends PureComponent {
               <div className={styles.salaryStructure__top}>
                 <SalaryStructureHeader />
                 {/* <hr /> */}
-                <SalaryStructureTemplate />
+                <SalaryStructureTemplate salaryTitle={salaryTitle} />
               </div>
             </Form>
           </div>
