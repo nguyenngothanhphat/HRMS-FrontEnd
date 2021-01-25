@@ -2,18 +2,37 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
-import { DeleteOutlined } from '@ant-design/icons';
-import { Form, Select } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Form, Select, Modal } from 'antd';
 import React, { PureComponent } from 'react';
 import FormDefineTeam from '../FormDefineTeam';
 import s from './index.less';
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 class FormDepartment extends PureComponent {
+  showConfirm = (id) => {
+    const { removeDepartment = () => {} } = this.props;
+    confirm({
+      title: 'Do you Want to delete these items?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      onOk() {
+        removeDepartment(id);
+      },
+      onCancel() {},
+    });
+  };
+
   handleRemove = () => {
-    const { onRemove = () => {} } = this.props;
-    onRemove();
+    const { onRemove = () => {}, listDepartment = [], field: { name } = {} } = this.props;
+    const itemRemove = listDepartment[name] || {};
+    const id = itemRemove?.id;
+    console.log('id', id);
+    if (id) {
+      this.showConfirm(id);
+    } else onRemove();
   };
 
   render() {

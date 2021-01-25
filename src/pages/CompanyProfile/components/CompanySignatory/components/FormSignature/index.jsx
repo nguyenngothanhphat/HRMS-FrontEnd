@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 import { DeleteOutlined } from '@ant-design/icons';
-import { Input, Form, Upload, message } from 'antd';
+import { Input, Form, Upload, message, Image } from 'antd';
 import { connect } from 'umi';
 import React, { Component } from 'react';
 import s from './index.less';
@@ -86,7 +86,7 @@ class FormSignature extends Component {
           <p className={s.viewTop__title}>Signature {(field?.name || 0) + 1}</p>
         </div>
         <div className={s.viewAddNew}>
-          <div style={{ width: '68%', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ width: '80%', display: 'flex', justifyContent: 'space-between' }}>
             <div className={s.viewAddNew__viewInput}>
               <div>
                 <Form.Item
@@ -161,9 +161,7 @@ class FormSignature extends Component {
                   <div>
                     <div className={s.viewAddNew__viewUpload}>
                       <div className={s.viewAddNew__viewUpload__upload}>
-                        <div className={s.viewAddNew__viewUpload__upload__icon}>
-                          <img src={upload} alt="" />
-                        </div>
+                        <Image src={upload} />
                       </div>
                     </div>
                     <Form.Item

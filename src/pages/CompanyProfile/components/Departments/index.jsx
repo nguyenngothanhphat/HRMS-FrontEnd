@@ -35,6 +35,16 @@ class Departments extends PureComponent {
     });
   };
 
+  removeDepartment = (id) => {
+    console.log('remove id', id);
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { id, company: _id };
+    dispatch({
+      type: 'departmentManagement/removeDepartment',
+      payload,
+    });
+  };
+
   render() {
     const { listDefault = [], listDepartment = [], loading } = this.props;
     return (
@@ -62,6 +72,8 @@ class Departments extends PureComponent {
                       key={field.name}
                       onRemove={() => remove(field.name)}
                       list={listDefault}
+                      listDepartment={listDepartment}
+                      removeDepartment={this.removeDepartment}
                     />
                   ))}
                   <div className={s.viewAddDepartments} onClick={() => add()}>

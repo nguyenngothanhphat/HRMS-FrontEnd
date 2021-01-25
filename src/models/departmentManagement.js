@@ -3,6 +3,7 @@ import {
   getListDefaultDepartment,
   getListDepartmentByCompany,
   upsertDepartment,
+  removeDepartment,
 } from '@/services/departmentManagement';
 import { notification } from 'antd';
 
@@ -39,6 +40,22 @@ const departmentManagement = {
     *upsertDepartment({ payload: { listDepartment = [], company = '' } = {} }, { call, put }) {
       try {
         const response = yield call(upsertDepartment, { listDepartment });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchListDepartmentByCompany', payload: { company } });
+        yield put({
+          type: 'user/fetchCurrent',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeDepartment({ payload: { id = '', company = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(removeDepartment, { id });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({

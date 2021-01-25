@@ -20,3 +20,10 @@ export async function upsertDepartment(payload) {
     data: payload.listDepartment,
   });
 }
+
+export async function removeDepartment(payload) {
+  return request('/api/department/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
