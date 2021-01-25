@@ -15,9 +15,9 @@ class FormDepartment extends PureComponent {
   showConfirm = (id) => {
     const { removeDepartment = () => {} } = this.props;
     confirm({
-      title: 'Do you Want to delete these items?',
+      title: 'Do you want to delete these department?',
       icon: <ExclamationCircleOutlined />,
-      content: 'Some descriptions',
+      // content: 'Some descriptions',
       onOk() {
         removeDepartment(id);
       },
@@ -28,8 +28,7 @@ class FormDepartment extends PureComponent {
   handleRemove = () => {
     const { onRemove = () => {}, listDepartment = [], field: { name } = {} } = this.props;
     const itemRemove = listDepartment[name] || {};
-    const id = itemRemove?.id;
-    console.log('id', id);
+    const { _id: id } = itemRemove;
     if (id) {
       this.showConfirm(id);
     } else onRemove();

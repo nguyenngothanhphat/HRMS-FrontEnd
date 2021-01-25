@@ -47,7 +47,7 @@ class WorkLocations extends PureComponent {
     const listLocation = formatData.sort((item, nextItem) => {
       return moment.utc(item.createdAt).diff(moment.utc(nextItem.createdAt));
     });
-    return listLocation;
+    return listLocation.reverse();
   };
 
   render() {

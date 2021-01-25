@@ -1,15 +1,31 @@
 .root {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  padding: 25px 56px;
+  padding-top: 50px;
   .content {
-    background-color: #fff;
+    width: 60%;
     height: 30vh;
-    padding: 24px;
-    .title {
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 19px;
-      color: #161c29;
+    background-color: #fff;
+    &__viewTop {
+      display: flex;
+      justify-content: space-between;
+      &__title {
+        color: #161c29;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 19px;
+      }
+      &__add {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        span {
+          margin-left: 4px;
+          color: #ffa100;
+          font-weight: 500;
+        }
+      }
     }
   }
 }

@@ -1,34 +1,39 @@
 import React, { PureComponent } from 'react';
 import { Form, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import FormSignature from './components/FormSignature';
 import s from './index.less';
 
-const dummySignature = [
-  {
-    name: 'Phat Signature',
-    position: 'CEO',
-    upload:
-      'http://api-stghrms.paxanimi.ai/api/attachments/600cec2854634a45594c4591/bigstock-Test-word-on-white-keyboard-27134336.jpg',
-  },
-];
-
+@connect(({ loading, user: { currentUser = {} } = {} }) => ({
+  currentUser,
+  loading: loading.effects['companiesManagement/updateCompany'],
+}))
 class CompanySignatory extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
   }
 
-  onFinish = (values) => {
-    console.log('values', values);
+  onFinish = ({ listSignature = [] }) => {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const payload = { id, companySignature: listSignature };
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
   };
 
   render() {
+    const { currentUser: { company: { companySignature = [] } = {} } = {}, loading } = this.props;
+    const defaultList = companySignature.length === 0 ? [{}] : companySignature;
     return (
       <Form
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ listSignature: dummySignature }}
+        initialValues={{ listSignature: defaultList }}
         ref={this.formRef}
       >
         <div className={s.root}>
@@ -46,6 +51,7 @@ class CompanySignatory extends PureComponent {
                   {fields.map((field) => (
                     <FormSignature
                       field={field}
+                      key={field.name}
                       onRemove={() => remove(field.name)}
                       formRef={this.formRef}
                     />
@@ -62,7 +68,7 @@ class CompanySignatory extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit">
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
         </div>
