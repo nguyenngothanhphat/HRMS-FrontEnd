@@ -13,6 +13,7 @@
       border: none;
       color: #707177;
       background-color: white;
+      height: unset;
       span {
         font-size: 13px;
       }
@@ -84,12 +85,14 @@
     padding: 22px;
     .totalPerYear,
     .timeToAdd {
+      display: block;
       font-size: 13px;
+      padding-top: 5px;
       :global {
         .ant-input {
           // min-width: 50px;
           width: fit-content !important;
-          max-width: 70px !important;
+          max-width: 40px !important;
           text-align: center;
         }
       }

@@ -1,4 +1,4 @@
-import { Input, Select, Radio } from 'antd';
+import { Input, Select, Radio, InputNumber } from 'antd';
 import React, { PureComponent } from 'react';
 
 import { connect } from 'umi';
@@ -74,10 +74,10 @@ class EachType extends PureComponent {
     });
   };
 
-  onTotalChange = (e) => {
-    const { target: { value = '' } = {} } = e;
+  onTotalChange = (value) => {
+    // const { target: { value = '' } = {} } = e;
     const { dispatch, dataIndex = 0, setupPack = [] } = this.props;
-    setupPack[dataIndex].totalPerYear = parseFloat(value) || 0;
+    setupPack[dataIndex].totalPerYear = value;
     dispatch({
       type: 'timeOff/save',
       payload: {
@@ -151,7 +151,14 @@ class EachType extends PureComponent {
       <div className={s.belowPart}>
         <div className={s.totalPerYear}>
           Total {name} per year
-          <Input onChange={this.onTotalChange} value={totalPerYear} style={{ margin: '0 10px' }} />
+          <InputNumber
+            min={0}
+            max={100}
+            onChange={this.onTotalChange}
+            value={totalPerYear}
+            style={{ margin: '0 10px' }}
+          />
+          {/* <Input onChange={this.onTotalChange} value={totalPerYear} style={{ margin: '0 10px' }} /> */}
           days/year
         </div>
         <div className={s.timeToAdd}>
@@ -169,13 +176,16 @@ class EachType extends PureComponent {
   };
 
   render() {
-    const { isTypeSelected } = this.state;
-    const { hovering } = this.state;
+    const { isTypeSelected, hovering } = this.state;
+    const { data: { shortType = '' } = {} } = this.props;
 
     return (
       <div className={`${s.EachType} ${hovering ? s.hovering : ''}`}>
         {this._renderList()}
-        {isTypeSelected && this._renderConfigTimeoffType()}
+        {isTypeSelected &&
+          shortType !== '' &&
+          shortType !== null &&
+          this._renderConfigTimeoffType()}
       </div>
     );
   }

@@ -58,28 +58,62 @@ class TimeOffTypes extends PureComponent {
 
   // RENDER
   _renderSelectCountry = () => {
-    const { countryList = [], selectedConfigCountry = '' } = this.props;
+    const { countryList = [], selectedConfigCountry = '', setupPack = [] } = this.props;
+    const checkValidationSaveBtn = setupPack.length > 0;
+
     return (
       <div className={s.selectCountry}>
         <div className={s.selectBox}>
           <span className={s.title}>Set timeoff type for each company location</span>
           <Select
             placeholder="Choose country"
-            showSearch
+            // showSearch
             defaultValue={selectedConfigCountry}
             optionFilterProp="children"
             onChange={this.onCountryChange}
             filterOption={(input, option) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              option.children.props.children[1].props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0}
           >
             {countryList.map((country) => {
-              const { _id = '', name = '' } = country;
-              return <Option value={_id}>{name}</Option>;
+              const { _id = '', name = '', flag = '' } = country;
+              return (
+                <Option value={_id}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div
+                      style={{
+                        minWidth: '24px',
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <img style={{ width: '170%' }} src={flag} alt="flag" />
+                    </div>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '10px',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: '#2C6DF9',
+                      }}
+                    >
+                      {name}
+                    </span>
+                  </div>
+                </Option>
+              );
             })}
           </Select>
         </div>
         <div className={s.saveButton}>
-          <Button>Save</Button>
+          <Button disabled={!checkValidationSaveBtn}>Save</Button>
         </div>
       </div>
     );
@@ -118,10 +152,11 @@ class TimeOffTypes extends PureComponent {
 
   _renderAddTimeoffTypeButton = () => {
     const { selectedCountry } = this.state;
+    const check = selectedCountry !== '' && selectedCountry !== null;
     return (
       <div
-        className={selectedCountry !== '' ? s.addTimeoffTypeBtn : s.disabledButton}
-        onClick={selectedCountry !== '' ? this.addButton : () => {}}
+        className={check ? s.addTimeoffTypeBtn : s.disabledButton}
+        onClick={check ? this.addButton : () => {}}
       >
         <img src={PlusIcon} alt="add" />
         <span>Add Timeoff Type</span>
