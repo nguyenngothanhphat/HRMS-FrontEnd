@@ -38,6 +38,7 @@ import {
   rejectMultipleTimeoffRequest,
   approveMultipleCompoffRequest,
   rejectMultipleCompoffRequest,
+  getCalendarHoliday,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -683,6 +684,24 @@ const timeOff = {
         dialog(errors);
         return {};
       }
+    },
+    *fetchGoogleHolidayList(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getCalendarHoliday);
+        console.log(response);
+        // const { statusCode, data: holidaysList = [] } = response;
+        // if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'save',
+        //   payload: { holidaysList },
+        // });
+      } catch (errors) {
+        // dialog(errors);
+        // eslint-disable-next-line no-console
+        // console.log('errors of holiday list', erros);
+      }
+      return response;
     },
   },
   reducers: {

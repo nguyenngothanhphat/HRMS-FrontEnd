@@ -241,3 +241,12 @@ export async function rejectMultipleCompoffRequest(data) {
     data,
   });
 }
+
+export async function getCalendarHoliday() {
+  return request(`/apigoogle/en.indian%23holiday%40group.v.calendar.google.com/events`, {
+    params: {
+      key: 'AIzaSyAF20l8ukEe3i6LF0jRm70c0M47G-5U_hM',
+    },
+    method: 'GET',
+  });
+}

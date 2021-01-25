@@ -8,12 +8,19 @@
 export default {
   dev: {
     '/api/': {
-      target: 'http://localhost:4500',
-      // target: 'http://api-stghrms.paxanimi.ai',
+      // target: 'http://localhost:4500',
+      target: 'http://api-stghrms.paxanimi.ai',
       changeOrigin: true,
       pathRewrite: {
         '^': '',
       },
+    },
+    '/apigoogle': {
+      target: 'https://www.googleapis.com/calendar/v3/calendars/',
+      // target: 'http://jsonplaceholder.typicode.com/',
+
+      changeOrigin: true,
+      pathRewrite: { '^/apigoogle/': '' },
     },
   },
   test: {
