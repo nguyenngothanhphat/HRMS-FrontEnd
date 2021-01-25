@@ -213,11 +213,14 @@ class Benefit extends PureComponent {
   // };
 
   onClickNext = () => {
-    const { hidePreviewOffer } = this.props;
+    const { hidePreviewOffer, dispatch } = this.props;
     if (hidePreviewOffer) {
+      dispatch({
+        type: 'candidateInfo/redirectToOnboardList',
+      });
       return;
     }
-    const { dispatch, currentStep } = this.props;
+    const { currentStep } = this.props;
     const nextStep = currentStep + 1;
 
     dispatch({

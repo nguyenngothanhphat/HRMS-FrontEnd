@@ -208,6 +208,7 @@ const candidateInfo = {
       ],
 
       cancelCandidate: false,
+      salaryTitle: '',
     },
     data: {
       fullName: null,
@@ -1023,6 +1024,17 @@ const candidateInfo = {
         history.push({
           pathname: `/employee-onboarding/review/${rookieId}`,
           state: { isAddNew: true },
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *redirectToOnboardList() {
+      try {
+        history.push({
+          pathname: `/employee-onboarding`,
         });
         yield null;
       } catch (error) {
