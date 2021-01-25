@@ -8,11 +8,14 @@ import s from './index.less';
 
 const { Option } = Select;
 
-const listDummy = [1, 2, 3, 4, 5, 6, 7];
+const dummyPosition = ['Owner', 'CEO', 'ADMIN-CSA', 'HR-GLOBAL', 'HR-MANAGER'];
 
-@connect(({ user: { currentUser = {} } = {} }) => ({
-  currentUser,
-}))
+@connect(
+  ({ user: { currentUser = {} } = {}, companiesManagement: { locationsList = [] } = {} }) => ({
+    currentUser,
+    locationsList,
+  }),
+)
 class AccountSetup extends Component {
   constructor(props) {
     super(props);
@@ -22,17 +25,39 @@ class AccountSetup extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    dispatch({
+      type: 'companiesManagement/fetchLocationsList',
+      payload: { company: id },
+    });
+    // dispatch({
+    //   type: 'departmentManagement/fetchListDepartmentByCompany',
+    //   payload: { company: id },
+    // });
+  }
+
   onChangeSelect = (value, name) => {
     this.setState({
       [name]: value,
     });
   };
 
+  handleLogout = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: 'login/logout',
+      });
+    }
+  };
+
   render() {
     const {
       currentUser: { generalInfo: { workEmail = '', avatar = '' } = {}, company = {} } = {},
+      locationsList = [],
     } = this.props;
-    const { position = '', location = '' } = this.state;
+    const { position, location } = this.state;
     return (
       <div className={s.root}>
         <div style={{ width: '629px' }}>
@@ -50,6 +75,7 @@ class AccountSetup extends Component {
             <div className={s.blockUserLogin__action}>
               <SettingOutlined className={s.blockUserLogin__action__icon} />
               <LogoutOutlined
+                onClick={this.handleLogout}
                 className={s.blockUserLogin__action__icon}
                 style={{ marginLeft: '24px' }}
               />
@@ -68,8 +94,8 @@ class AccountSetup extends Component {
                 }
                 value={position}
               >
-                {listDummy.map((item) => (
-                  <Option key={item}>{item.name}</Option>
+                {dummyPosition.map((item) => (
+                  <Option key={item}>{item}</Option>
                 ))}
               </Select>
             </Col>
@@ -85,13 +111,13 @@ class AccountSetup extends Component {
                 }
                 value={location}
               >
-                {listDummy.map((item) => (
-                  <Option key={item}>{item.name}</Option>
+                {locationsList.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
                 ))}
               </Select>
             </Col>
           </Row>
-          <ItemCompany company={company} />
+          <ItemCompany company={company} payload={{ position, location }} />
         </div>
       </div>
     );

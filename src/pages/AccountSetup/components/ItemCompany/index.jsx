@@ -1,12 +1,22 @@
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
-import { Link } from 'umi';
+import { history } from 'umi';
 import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
+  handleGetStarted = () => {
+    const { payload } = this.props;
+    console.log('payload', payload);
+    history.push('/account-setup/get-started');
+  };
+
   render() {
-    const { company: { logoUrl = '', name = '', headQuarterAddress = {} } = {} } = this.props;
+    const {
+      company: { logoUrl = '', name = '', headQuarterAddress = {} } = {},
+      payload = {},
+    } = this.props;
+    const check = !payload?.position || !payload?.location;
     return (
       <div className={s.root}>
         <img
@@ -20,10 +30,9 @@ export default class ItemCompany extends PureComponent {
           <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p>
         </div>
         <div className={s.viewAction}>
-          <Link to="/account-setup/get-started">
-            <Button className={s.btnOutline}>Get Started</Button>
-          </Link>
-          {/* <div className={s.option}>&#8285;</div> */}
+          <Button className={s.btnOutline} disabled={check} onClick={this.handleGetStarted}>
+            Get Started
+          </Button>
         </div>
       </div>
     );

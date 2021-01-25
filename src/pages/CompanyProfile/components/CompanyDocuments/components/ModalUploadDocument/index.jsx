@@ -107,6 +107,7 @@ class ModalUploadDocument extends Component {
         title="Upload a new document"
         onOk={this.onOk}
         onCancel={handleCancel}
+        style={{ top: 20 }}
         footer={[
           <Button
             key="submit"

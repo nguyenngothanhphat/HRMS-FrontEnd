@@ -217,22 +217,20 @@ class TableDocuments extends Component {
     ];
 
     return (
-      <>
-        <div className={s.tableDocuments}>
-          <Table
-            columns={columns}
-            dataSource={data}
-            hideOnSinglePage
-            pagination={{
-              ...pagination,
-              total: data.length,
-            }}
-            rowKey="id"
-            scroll={{ x: 'max-content' }}
-            loading={false}
-          />
-        </div>
-      </>
+      <div className={s.tableDocuments}>
+        <Table
+          columns={columns}
+          dataSource={data}
+          hideOnSinglePage
+          pagination={{
+            ...pagination,
+            total: data.length,
+          }}
+          rowKey="id"
+          scroll={{ x: 'max-content' }}
+          loading={false}
+        />
+      </div>
     );
   }
 }

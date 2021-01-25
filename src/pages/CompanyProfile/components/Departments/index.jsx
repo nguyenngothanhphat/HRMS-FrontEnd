@@ -36,7 +36,6 @@ class Departments extends PureComponent {
   };
 
   removeDepartment = (id) => {
-    console.log('remove id', id);
     const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
     const payload = { id, company: _id };
     dispatch({

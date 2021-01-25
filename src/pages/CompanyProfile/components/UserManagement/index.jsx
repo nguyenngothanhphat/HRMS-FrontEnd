@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import TableAdministrators from './components/TableAdministrators';
 import s from './index.less';
 
 class UserManagement extends PureComponent {
@@ -13,6 +14,7 @@ class UserManagement extends PureComponent {
               <span>Add Employee</span>
             </div>
           </div>
+          <TableAdministrators />
         </div>
       </div>
     );
