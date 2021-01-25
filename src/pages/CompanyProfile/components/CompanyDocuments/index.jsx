@@ -1,8 +1,15 @@
 import { Col, Row, Button } from 'antd';
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import ModalUploadDocument from './components/ModalUploadDocument';
+import TableDocuments from './components/TableDocuments';
 import s from './index.less';
 
+@connect(({ //  loading,
+  user: { currentUser = {} } = {} }) => ({
+  currentUser,
+  // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+}))
 class CompanyDocuments extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +20,9 @@ class CompanyDocuments extends Component {
   }
 
   handleSubmitUpload = (values) => {
-    console.log('values', values);
+    const { currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const payload = { ...values, company: id };
+    console.log('payload', payload);
     this.hideModalUpload();
   };
 
@@ -49,7 +58,9 @@ class CompanyDocuments extends Component {
             </div>
           </Col>
           <Col span={17}>
-            <div className={`${s.container} ${s.viewRight}`}>View Right</div>
+            <div className={`${s.container} ${s.viewRight}`}>
+              <TableDocuments />
+            </div>
           </Col>
         </Row>
         <ModalUploadDocument

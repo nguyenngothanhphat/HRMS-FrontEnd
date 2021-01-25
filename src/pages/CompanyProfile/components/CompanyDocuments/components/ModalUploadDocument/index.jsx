@@ -25,6 +25,7 @@ class ModalUploadDocument extends Component {
       type: '',
       name: '',
       urlImage: '',
+      attachment: '',
     };
   }
 
@@ -36,6 +37,7 @@ class ModalUploadDocument extends Component {
         type: '',
         name: '',
         urlImage: '',
+        attachment: '',
       });
     }
     return true;
@@ -43,8 +45,8 @@ class ModalUploadDocument extends Component {
 
   onOk = () => {
     const { handleSubmit = () => {} } = this.props;
-    const { name, type } = this.state;
-    handleSubmit({ name, type });
+    const { name, type, attachment } = this.state;
+    handleSubmit({ name, type, attachment });
   };
 
   onChangeField = (name, value) => {
@@ -68,6 +70,7 @@ class ModalUploadDocument extends Component {
   handleRemoveFile = () => {
     this.setState({
       urlImage: '',
+      attachment: '',
     });
   };
 
@@ -82,7 +85,7 @@ class ModalUploadDocument extends Component {
       const { statusCode, data = [] } = resp;
       if (statusCode === 200) {
         const [first] = data;
-        this.setState({ urlImage: first.url });
+        this.setState({ urlImage: first.url, attachment: first.id });
       }
     });
   };
