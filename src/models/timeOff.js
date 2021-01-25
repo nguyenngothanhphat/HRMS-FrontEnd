@@ -75,7 +75,7 @@ const timeOff = {
     // account settings
     defaultTimeoffTypesList: [],
     countryList: [],
-    selectedConfigCountry: '',
+    selectedConfigCountry: null,
     setupPack: [
       // {
       //   shortType: 'CL',
