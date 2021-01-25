@@ -241,3 +241,43 @@ export async function rejectMultipleCompoffRequest(data) {
     data,
   });
 }
+
+// ACCOUNT SETTINGS
+const mockData = [
+  {
+    id: 1,
+    type: 'A',
+    name: 'Casual or Annual Leave',
+    shortType: 'CL',
+  },
+  {
+    id: 2,
+    type: 'A',
+    name: 'Compensation Leave',
+    shortType: 'CO',
+  },
+  {
+    id: 3,
+    type: 'C',
+    name: 'Maternity Leave',
+    shortType: 'ML',
+  },
+  {
+    id: 4,
+    type: 'D',
+    name: 'Work From Home',
+    shortType: 'WFH',
+  },
+];
+export async function getDefaultTimeoffTypesList() {
+  return {
+    statusCode: 200,
+    data: mockData,
+  };
+}
+
+export async function getCountryList() {
+  return request('/api/country/list', {
+    method: 'POST',
+  });
+}

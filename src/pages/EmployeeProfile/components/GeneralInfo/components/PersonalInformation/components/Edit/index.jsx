@@ -340,8 +340,9 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item label="Blood Group" name="Blood">
             <Select
+              showArrow
               className={styles.selectForm}
-              suffixIcon={<DownOutlined className={styles.arrowUP} />}
+              // suffixIcon={<DownOutlined className={styles.arrowUP} />}
             >
               <Option value="O-">O-</Option>
               <Option value="O+">O+</Option>
@@ -355,8 +356,9 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
             <Select
+              showArrow
               className={styles.selectForm}
-              suffixIcon={<DownOutlined className={styles.arrowUP} />}
+              // suffixIcon={<DownOutlined className={styles.arrowUP} />}
             >
               <Option value="Single">Single</Option>
               <Option value="Married">Married</Option>
@@ -389,8 +391,9 @@ class Edit extends PureComponent {
               ]}
             />
           </Form.Item>
-          <Row gutter={[0, 24]} align="middle">
-            <Col span={4} className={styles.address}>
+
+          <Row gutter={[24, 24]} align="middle">
+            <Col span={8} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
@@ -405,7 +408,8 @@ class Edit extends PureComponent {
                       type: 'array',
                     },
                   ]}
-                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
+                  showArrow
+                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {formatCountryList.map((itemCountry) => {
                     return (
@@ -417,13 +421,14 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={4} className={styles.address}>
+            <Col span={8} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
+                  showArrow
                   className={styles.selectForm}
                   defaultValue={r_state}
                   onChange={(e) => this.handleChangeAddress('r_state', e)}
-                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
+                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {loadingStates ? (
                     <div className={styles.selectForm_loading}>
@@ -443,7 +448,7 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={4} className={styles.address}>
+            <Col span={8} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
                   className={styles.selectForm}
@@ -462,14 +467,15 @@ class Edit extends PureComponent {
               onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
             />
           </Form.Item>
-          <Row gutter={[0, 24]} align="middle">
-            <Col span={4} className={styles.address}>
+          <Row gutter={[24, 24]} align="middle">
+            <Col span={8} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
+                  showArrow
                   className={styles.selectForm}
                   defaultValue={c_countryName}
                   onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
+                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {formatCountryList.map((itemCountry) => {
                     return (
@@ -481,13 +487,14 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={4} className={styles.address}>
+            <Col span={8} className={styles.address}>
               <Form.Item label="State" className={styles.addressSection}>
                 <Select
+                  showArrow
                   className={styles.selectForm}
                   defaultValue={c_state}
                   onChange={(value) => this.handleChangeAddress('c_state', value)}
-                  suffixIcon={<DownOutlined className={styles.arrowUP} />}
+                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
                 >
                   {loadingStates ? (
                     <div className={styles.selectForm_loading}>
@@ -497,7 +504,7 @@ class Edit extends PureComponent {
                     <>
                       {listStates.map((item, index) => {
                         return (
-                          <Option key={index + 1} value={item}>
+                          <Option key={`${index + 1}`} value={item}>
                             {item}
                           </Option>
                         );
@@ -507,7 +514,7 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={4} className={styles.address}>
+            <Col span={8} className={styles.address}>
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
                   className={styles.selectForm}
@@ -517,20 +524,20 @@ class Edit extends PureComponent {
               </Form.Item>
             </Col>
           </Row>
-          <div className={styles.spaceFooter}>
-            <div className={styles.cancelFooter} onClick={handleCancel}>
-              Cancel
-            </div>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={styles.buttonFooter}
-              loading={loading}
-            >
-              Save
-            </Button>
-          </div>
         </Form>
+        <div className={styles.spaceFooter}>
+          <div className={styles.cancelFooter} onClick={handleCancel}>
+            Cancel
+          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={styles.buttonFooter}
+            loading={loading}
+          >
+            Save
+          </Button>
+        </div>
         {/* Custom Col Here */}
       </Row>
     );

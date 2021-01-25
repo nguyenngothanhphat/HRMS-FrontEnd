@@ -310,7 +310,7 @@ class VisaGeneral extends Component {
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       <Option value="B1">B1</Option>
                       <Option value="B2">B2</Option>
@@ -320,11 +320,12 @@ class VisaGeneral extends Component {
                   </Form.Item>
                   <Form.Item label="Country" name={`visaIssuedCountry${index}`}>
                     <Select
+                      showArrow
                       className={styles.selectForm}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       {formatCountryList.map((itemCountry) => {
                         return (
@@ -337,11 +338,12 @@ class VisaGeneral extends Component {
                   </Form.Item>
                   <Form.Item label="Entry Type" name={`visaEntryType${index}`}>
                     <Select
+                      showArrow
                       className={styles.selectForm}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaEntryType', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       <Option value="Single Entry">Single Entry</Option>
                       <Option value="nothing">nothing....</Option>
@@ -458,13 +460,12 @@ class VisaGeneral extends Component {
                       className={styles.selectForm}
                       tagRender={this.tagRender}
                       mode="multiple"
-                      showArrow
                       filterOption={(input, option) =>
                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaType', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       <Option value="B1">B1</Option>
                       <Option value="B2">B2</Option>
@@ -482,7 +483,8 @@ class VisaGeneral extends Component {
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaIssuedCountry', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      showArrow
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       {formatCountryList.map((itemCountry) => {
                         return (
@@ -503,7 +505,8 @@ class VisaGeneral extends Component {
                       onChange={(value) => {
                         this.handleFieldChange(index, 'visaEntryType', value);
                       }}
-                      suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      showArrow
+                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                     >
                       <Option value="Single Entry">Single Entry</Option>
                       <Option value="nothing">nothing....</Option>
