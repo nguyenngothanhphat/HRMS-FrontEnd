@@ -54,7 +54,7 @@ class AccountSetup extends Component {
 
   render() {
     const {
-      currentUser: { generalInfo: { workEmail = '', avatar = '' } = {}, company = {} } = {},
+      currentUser: { generalInfo: { avatar = '' } = {}, company = {}, email = '' } = {},
       locationsList = [],
     } = this.props;
     const { position, location } = this.state;
@@ -67,8 +67,7 @@ class AccountSetup extends Component {
             </div>
             <div className={s.blockUserLogin__info}>
               <p>
-                You are logged in as{' '}
-                <span className={s.blockUserLogin__info__email}>{workEmail}</span>
+                You are logged in as <span className={s.blockUserLogin__info__email}>{email}</span>
               </p>
               <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
             </div>
