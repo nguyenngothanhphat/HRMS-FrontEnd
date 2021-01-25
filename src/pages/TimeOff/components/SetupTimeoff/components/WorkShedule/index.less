@@ -1,5 +1,19 @@
 .root {
   :global {
+    .ant-btn {
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      height: 40px;
+      padding: 0 40px;
+      span {
+        color: white;
+        font-weight: 500;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
+    }
     .ant-input-number {
       padding: 3px;
       width: 141px;
@@ -15,14 +29,22 @@
       border-radius: 5px;
       border: 1px solid #d6dce4;
     }
+    .ant-radio-button-wrapper {
+      border: none;
+      color: #707177;
+      background-color: white;
+    }
+    .ant-radio-button-wrapper-checked {
+      background-color: #2c6df9;
+    }
     .ant-radio-button-wrapper:first-child {
-      border-radius: 10px;
+      border-radius: 5px;
     }
     .ant-radio-button-wrapper:last-child {
-      border-radius: 10px;
+      border-radius: 5px;
     }
     .ant-radio-button-wrapper > .ant-radio-button {
-      border-radius: 10px;
+      border-radius: 5px;
     }
     .ant-form-item {
       margin-bottom: 0px;
@@ -38,15 +60,15 @@
     background-color: #fff;
     width: auto;
     height: auto;
+    border: 1px solid #ebeff2;
     // padding: 27px 24px;
     .straight {
       height: 1px;
       width: 100%;
       background-color: #e2e4e8;
-      margin: 27px 0 27px;
     }
     .formWorkHour {
-      padding: 0 24px;
+      padding: 24px;
     }
     .content {
       font-weight: normal;
@@ -57,7 +79,6 @@
     }
     .formInput {
       padding: 24px;
-      width: 208px;
       height: auto;
       background: #fafafa;
       border-radius: 13px;
@@ -72,7 +93,7 @@
     font-weight: 700;
     font-size: 18px;
     line-height: 21px;
-    color: #464646;
+    color: #161c29;
     padding-bottom: 20px;
   }
   .description {
@@ -80,16 +101,18 @@
     font-weight: normal;
     font-size: 13px;
     line-height: 15px;
-    color: #464646;
+    color: #707177;
     padding-bottom: 14px;
   }
   .activeText {
-    padding: 27px 24px 0px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-    color: #2c6df9;
+    padding: 24px;
+    span {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      color: #161c29;
+    }
     // padding-bottom: 16px;
   }
   .workHour {
@@ -97,7 +120,7 @@
     font-weight: 500;
     font-size: 14px;
     line-height: 16px;
-    color: #464646;
+    color: #161c29;
     padding-bottom: 17px;
   }
   .pb17 {
@@ -106,7 +129,7 @@
   .radio {
     width: 72px;
     height: 30px;
-    border-radius: 5px;
+    border-radius: 5px !important;
   }
   // .form {
   //   display: flex;
@@ -136,6 +159,9 @@
     justify-content: center;
     align-items: center;
     margin: 0 17px;
+    .padding {
+      color: #707177;
+    }
   }
   .circleActive {
     width: 48px;
@@ -152,19 +178,13 @@
 
     .padding {
       color: #2c6df9;
+      font-weight: 500;
     }
   }
   .flex {
-    padding-bottom: 27px;
+    padding: 20px;
     display: flex;
     justify-content: flex-end;
-    .btnSave {
-      width: 108px;
-      color: #fff;
-      margin: 0 20px;
-      height: 40px;
-      background: #ffa100;
-      border-radius: 25px;
-    }
+    align-items: center;
   }
 }

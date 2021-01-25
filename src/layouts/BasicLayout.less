@@ -4,17 +4,21 @@
     align-items: center;
     height: 100%;
     .buttonToggle {
-      background-color: #161c29;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 80px;
       height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-color: #161c29;
       cursor: pointer;
     }
   }
 
   :global {
+    .ant-pro-menu-item {
+      display: flex;
+      align-items: center;
+    }
     .ant-layout.ant-layout-has-sider > .ant-layout,
     .ant-layout.ant-layout-has-sider > .ant-layout-content {
       width: 100%;
@@ -38,11 +42,11 @@
       position: relative;
       display: flex;
       align-items: center;
+      height: 76px;
       padding: 0;
       line-height: 32px;
-      height: 76px;
-      cursor: pointer;
       background-color: #161c29;
+      cursor: pointer;
     }
 
     .ant-pro-global-header-logo {
@@ -54,27 +58,27 @@
       padding: 24px;
     }
     .ant-page-header {
-      background-color: #eee;
-      padding: 10px 0 0 20px;
       width: 100%;
+      padding: 10px 0 0 20px;
+      background-color: #eee;
     }
 
     .ant-breadcrumb {
-      height: 30px;
       display: flex;
       align-items: center;
+      height: 30px;
     }
 
     .ant-breadcrumb a {
-      font-size: 13px;
       color: #161c29;
+      font-size: 13px;
       opacity: 0.6;
     }
 
     .ant-breadcrumb-separator {
       margin: 0px 20px;
-      font-size: large;
       color: rgba(0, 0, 0, 0.45);
+      font-size: large;
     }
 
     .ant-page-header-heading {
@@ -99,16 +103,16 @@
       .ant-menu-vertical-left .ant-menu-submenu-title,
       .ant-menu-vertical-right .ant-menu-submenu-title,
       .ant-menu-inline .ant-menu-submenu-title {
-        padding: 0 !important;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        padding: 0 !important;
       }
       &:hover {
+        z-index: 1000;
         width: 242px !important;
         min-width: 242px !important;
         max-width: 242px !important;
-        z-index: 1000;
         .ant-menu-vertical .ant-menu-item,
         .ant-menu-vertical-left .ant-menu-item,
         .ant-menu-vertical-right .ant-menu-item,
@@ -117,16 +121,16 @@
         .ant-menu-vertical-left .ant-menu-submenu-title,
         .ant-menu-vertical-right .ant-menu-submenu-title,
         .ant-menu-inline .ant-menu-submenu-title {
-          padding-left: 24px !important;
           justify-content: start;
+          padding-left: 24px !important;
         }
         .ant-menu-item .anticon + span,
         .ant-menu-submenu-title .anticon + span {
           display: inline-block;
-          font-size: 13px;
+          margin-left: 10px !important;
           color: #fff;
           font-weight: 600;
-          margin-left: 10px !important;
+          font-size: 13px;
         }
       }
     }
@@ -155,8 +159,8 @@
 
     .ant-pro-sider .ant-menu-inline-collapsed .ant-menu-item {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
     .ant-menu-item .anticon,
     .ant-menu-submenu-title .anticon {
@@ -164,11 +168,11 @@
       margin-right: 0 !important;
     }
     .ant-menu-item-only-child {
-      border-bottom: 1px solid #3158d1;
-      height: 75px;
       display: flex;
       align-items: center;
+      height: 75px;
       margin: 0 !important;
+      border-bottom: 1px solid #3158d1;
       &:active {
         height: 75px;
         margin: 0 !important;
@@ -199,20 +203,17 @@
 .breadCrumbA {
   :global {
     .ant-breadcrumb > span:last-child a {
-      color: #161c29;
-      font-size: 13px;
-      font-weight: 500;
+      display: flex;
+      align-items: center;
       height: 30px;
+      padding: 0 15px;
+      color: #161c29;
+      font-weight: 500;
+      font-size: 13px;
       background-color: #fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      align-items: center;
-      display: flex;
-      padding: 0 15px;
       opacity: 1;
-    }
-    .ant-page-header {
-      display: none;
     }
   }
 }
@@ -220,18 +221,26 @@
 .breadCrumbB {
   :global {
     .ant-breadcrumb > span:last-child a {
-      color: #161c29;
-      font-size: 13px;
-      font-weight: 500;
+      display: flex;
+      align-items: center;
       height: 30px;
+      margin-left: -24px;
+      padding: 0 15px;
+      color: #161c29;
+      font-weight: 500;
+      font-size: 13px;
       background-color: #fff;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      align-items: center;
-      display: flex;
-      padding: 0 15px;
       opacity: 1;
-      margin-left: -24px;
+    }
+  }
+}
+
+.hiddenBreadCrumb {
+  :global {
+    .ant-page-header {
+      display: none;
     }
   }
 }

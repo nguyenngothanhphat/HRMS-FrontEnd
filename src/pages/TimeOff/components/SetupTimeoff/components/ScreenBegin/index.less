@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 80vh;
   .from {
     padding: 88px 75px;
     width: 822px;
@@ -31,15 +31,21 @@
   .footer {
     padding: 27px 28px;
   }
-  .btnStart {
-    width: 129px;
-    height: 40px;
-    color: #fff;
-    background: #ffa100;
-    border-radius: 25px;
-    border: none;
-    &:hover {
-      background-color: #ffa100cc; // hex with alpha 0.8
+  :global {
+    .ant-btn {
+      margin-top: 15px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      height: 40px;
+      padding: 0 28px;
+      span {
+        color: white;
+        font-weight: 500;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
     }
   }
 }

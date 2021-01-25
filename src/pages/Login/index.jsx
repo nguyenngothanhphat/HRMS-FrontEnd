@@ -123,7 +123,7 @@ class FormLogin extends Component {
           >
             {({ getFieldValue }) => this._renderButton(getFieldValue)}
           </Form.Item>
-          <div className={styles.textOr}>Or</div>
+          <div className={styles.textOr}>or sign in with</div>
           <GoogleLogin
             clientId="979138479820-7hv5jn95k39tb42ltiscoi552ce9i2an.apps.googleusercontent.com"
             render={(renderProps) => (

@@ -30,8 +30,8 @@ const CollapseInformation = (props) => {
           key = '',
           //  _id = ''
         } = policy;
-        // return <a onClick={() => history.push(`/view-document/${_id}`)}>{key}</a>;
-        return <a onClick={() => setViewPolicyModal(true)}>{key}</a>;
+
+        return <a onClick={() => setViewPolicyModal(true)}>{key || 'Unknown name'}</a>;
       }
     }
     return <a onClick={() => setViewPolicyModal(true)}>Standard Policy</a>;
@@ -70,7 +70,7 @@ const CollapseInformation = (props) => {
                     />
                     {index + 1 !== typesOfCommonLeaves.length
                       ? typesOfCommonLeaves[index + 1].defaultSettings.type === 'A' && (
-                      <div className={styles.hr} />
+                          <div className={styles.hr} />
                         )
                       : ''}
                   </div>

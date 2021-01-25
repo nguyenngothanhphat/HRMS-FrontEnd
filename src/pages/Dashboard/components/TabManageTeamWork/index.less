@@ -1,11 +1,11 @@
 .root {
+  box-sizing: border-box;
   width: 100%;
   height: 436px;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid #ebeff2;
-  box-sizing: border-box;
   border-radius: 5px;
-  overflow: hidden;
 
   :global {
     .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -13,10 +13,10 @@
       font-size: 16px;
     }
     .ant-tabs-tab-btn {
+      color: #707177;
       font-weight: 700;
       font-size: 16px;
       opacity: 1;
-      color: #707177;
     }
 
     .ant-tabs-tab {
@@ -26,35 +26,35 @@
 
   .extraBtn {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 24px;
     height: 24px;
+    margin-right: 16px;
     border-radius: 50%;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.23);
-    margin-right: 16px;
     cursor: pointer;
     &:active {
       transform: translateY(-1px);
     }
 
     &:hover {
-      transition: 0.6s;
       transform: rotateZ(180deg);
+      transition: 0.6s;
     }
   }
   .contentTab {
-    height: 370px;
     width: 100%;
+    height: 370px;
     padding: 20px;
     overflow-y: scroll;
     border-radius: 0 0 0 6px;
     &__loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     &::-webkit-scrollbar {
       width: 6px;
@@ -67,37 +67,37 @@
       background-color: transparent;
     }
     &::-webkit-scrollbar-thumb:vertical {
-      border-radius: 10px;
       background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
     }
   }
   .containerItemMyTeam {
-    min-width: 210px;
-    height: 74px;
-    background: #ffffff;
-    border: 1px solid #e8eef2;
-    box-sizing: border-box;
-    border-radius: 8px;
-    padding: 16px;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
+    min-width: 210px;
+    height: 74px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e8eef2;
+    border-radius: 8px;
     cursor: pointer;
     &__viewInfo {
       display: flex;
       flex-direction: column;
+      width: 72%;
       margin-left: 10px;
-      width: 58%;
       &__name {
+        margin-bottom: 6px;
+        color: #161c29;
         font-size: 14px;
         line-height: 16px;
-        color: #161c29;
-        margin-bottom: 6px;
         .textEllipsis();
       }
       &__jobDetail {
+        color: #707177;
         font-size: 13px;
         line-height: 15px;
-        color: #707177;
         .textEllipsis();
       }
     }
@@ -109,18 +109,18 @@
 }
 
 .textEllipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .viewEmpty {
-  height: 370px;
-  width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 370px;
   color: rgb(22, 28, 41);
   font-weight: 500;
   opacity: 0.3;

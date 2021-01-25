@@ -104,6 +104,7 @@ class RequestInformation extends PureComponent {
     const {
       timeOff: {
         viewingLeaveRequest: { _id = '', ticketID = '', type: { name = '' } = {} } = {},
+        // currentLeaveTypeTab = '1',
       } = {},
     } = this.props;
     const { dispatch } = this.props;
@@ -116,6 +117,14 @@ class RequestInformation extends PureComponent {
         pathname: `/time-off`,
         state: { status: 'WITHDRAW', tickedId: ticketID, typeName: name },
       });
+      // dispatch({
+      //   type: 'timeOff/save',
+      //   payload: {
+      //     currentMineOrTeamTab: '2',
+      //     currentFilterTab: '1',
+      //     currentLeaveTypeTab,
+      //   },
+      // });
     }
   };
 

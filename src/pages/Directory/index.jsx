@@ -1,11 +1,9 @@
-import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Menu, Dropdown, Button } from 'antd';
-import { ThunderboltFilled, CloseOutlined } from '@ant-design/icons';
-import { formatMessage, connect } from 'umi';
-import styles from './index.less';
-import OrganChart from './components/OrganisationChart';
+import { Tabs } from 'antd';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import DirectoryComponent from './components/Directory';
+import styles from './index.less';
 
 @connect(({ user: { currentUser = {} } }) => ({ currentUser }))
 class Directory extends PureComponent {
@@ -104,9 +102,9 @@ class Directory extends PureComponent {
             <TabPane tab={formatMessage({ id: 'pages.directory.directoryTab' })} key="1">
               <DirectoryComponent />
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
+            {/* <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
               <OrganChart />
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </PageContainer>
