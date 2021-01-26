@@ -23,7 +23,7 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      emergencyContactDetails: [],
+      formEmergencyDetail: [{}],
     };
   }
 
@@ -42,13 +42,23 @@ class Edit extends Component {
 
   handleAddBtn = () => {
     const { generalData, dispatch } = this.props;
+    const { formEmergencyDetail } = this.state;
     const { emergencyContactDetails = [] } = generalData;
-    const newEmergencyContactDetails = [...emergencyContactDetails, {}];
+    if (emergencyContactDetails.length > 0) {
+      const newEmergencyContactDetails = [...emergencyContactDetails, {}];
 
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
-    });
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
+      });
+    } else {
+      const newEmergencyContactDetails = [...formEmergencyDetail, {}];
+
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { generalData: { emergencyContactDetails: newEmergencyContactDetails } },
+      });
+    }
   };
 
   handleChange = (changedValues) => {
@@ -101,7 +111,7 @@ class Edit extends Component {
     } = this.props;
 
     const item = emergencyContactDetails[index];
-    const newItem = { ...item, ['emergencyRelation']: value };
+    const newItem = { ...item, emergencyRelation: value };
     const newList = [...emergencyContactDetails];
 
     newList.splice(index, 1, newItem);
@@ -157,7 +167,7 @@ class Edit extends Component {
       },
       wrapperCol: {
         xs: { span: 9 },
-        sm: { span: 9 },
+        sm: { span: 12 },
       },
     };
 
@@ -166,20 +176,23 @@ class Edit extends Component {
       loading,
       handleCancel = () => {},
     } = this.props;
-
+    const { formEmergencyDetail } = this.state;
+    const formEmergency =
+      emergencyContactDetails.length > 0 ? emergencyContactDetails : formEmergencyDetail;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           ref={this.formRef}
           className={styles.Form}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           onValuesChange={this.handleChange}
           onFinish={this.handleSave}
         >
-          {emergencyContactDetails.map((item, index) => {
+          {formEmergency.map((item, index) => {
             const { emergencyContact, emergencyPersonName, emergencyRelation } = item;
             return (
-              <div key={index}>
+              <div key={`${index + 1}`}>
                 {index > 0 ? <div className={styles.line} /> : null}
                 <Form.Item
                   label="Emergency Contact"
@@ -227,20 +240,22 @@ class Edit extends Component {
                   ]}
                 >
                   <Select
-                    size="large"
+                    size={14}
                     placeholder="Please select a choice"
                     showArrow
-                    filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    filterOption={
+                      (input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      // eslint-disable-next-line react/jsx-curly-newline
                     }
                     className={styles.inputForm}
                     defaultValue={emergencyRelation}
                     onChange={(value) => this.handleChangeFieldSelect(value, index)}
                   >
-                    {listRelation.map((item, index) => {
+                    {listRelation.map((value, i) => {
                       return (
-                        <Option key={index} value={item}>
-                          {item}
+                        <Option key={`${i + 1}`} value={value}>
+                          {value}
                         </Option>
                       );
                     })}
