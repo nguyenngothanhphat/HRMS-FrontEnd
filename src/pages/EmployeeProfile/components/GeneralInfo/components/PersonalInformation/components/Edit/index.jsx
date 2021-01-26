@@ -24,6 +24,8 @@ import styles from './index.less';
   }),
 )
 class Edit extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -222,6 +224,7 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
+    console.log('aaaaa');
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
@@ -303,6 +306,8 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           name="personal_information"
+          ref={this.formRef}
+          id="myForm"
           {...formItemLayout}
           initialValues={{
             personalNumber,
@@ -532,6 +537,7 @@ class Edit extends PureComponent {
           <Button
             type="primary"
             htmlType="submit"
+            form="myForm"
             className={styles.buttonFooter}
             loading={loading}
           >
