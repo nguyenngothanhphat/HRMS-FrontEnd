@@ -107,7 +107,7 @@ class TableListActive extends Component {
             total: data.length,
             hideOnSinglePage: true,
           }}
-          rowKey="id"
+          rowKey="_id"
           scroll={{ x: 'max-content' }}
           loading={loading}
         />

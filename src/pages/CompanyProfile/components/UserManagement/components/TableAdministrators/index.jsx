@@ -2,14 +2,6 @@ import { Table } from 'antd';
 import React, { Component } from 'react';
 import s from './index.less';
 
-const data = [
-  { role: 'Owner' },
-  { role: 'CEO' },
-  { role: 'ADMIN-CSA' },
-  { role: 'HR-GLOBAL' },
-  { role: 'HR-MANAGER' },
-];
-
 class TableAdministrators extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +19,7 @@ class TableAdministrators extends Component {
   };
 
   render() {
-    // const { data = [] } = this.props;
+    const { data = [] } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
