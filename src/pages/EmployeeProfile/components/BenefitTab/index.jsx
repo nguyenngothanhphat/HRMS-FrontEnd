@@ -92,8 +92,7 @@ export default class BenefitTab extends PureComponent {
                   <MinusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
                 ) : (
                   <PlusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
-                )
-              }
+                )}
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
             >
