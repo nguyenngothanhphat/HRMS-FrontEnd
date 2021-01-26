@@ -22,6 +22,8 @@ import styles from './index.less';
   }),
 )
 class Edit extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -223,6 +225,7 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
+    console.log('aaaaa');
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
@@ -301,6 +304,8 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           name="personal_information"
+          ref={this.formRef}
+          id="myForm"
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           initialValues={{
@@ -545,8 +550,6 @@ class Edit extends PureComponent {
             </Button>
           </div>
         </Form>
-
-        {/* Custom Col Here */}
       </Row>
     );
   }

@@ -448,11 +448,7 @@ class Edit extends Component {
   handleAddBtn = () => {
     const { passportData = [], dispatch } = this.props;
     const { dummyPassPorts } = this.state;
-    // const newList = [...passportData, {}];
-    // dispatch({
-    //   type: 'employeeProfile/saveTemp',
-    //   payload: { passportData: newList },
-    // });
+
     if (passportData.length > 0) {
       const newData = [...passportData, {}];
 

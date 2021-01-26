@@ -238,6 +238,13 @@ class FormTeamMember extends PureComponent {
     });
 
     dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        salaryTitle: '',
+      },
+    });
+
+    dispatch({
       type: 'candidateInfo/updateBackgroundRecheck',
       payload: [],
     });

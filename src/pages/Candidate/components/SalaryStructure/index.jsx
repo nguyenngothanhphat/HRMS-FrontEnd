@@ -17,11 +17,16 @@ import styles from './index.less';
 
 @connect(
   ({
-    candidateInfo: { data: { processStatus = '' }, salaryStructure = {}, checkMandatory = {} } = {},
+    candidateInfo: {
+      data: { processStatus = '' }, // tempData = {},
+      salaryStructure = {},
+      checkMandatory = {},
+    } = {},
   }) => ({
     processStatus,
     salaryStructure,
     checkMandatory,
+    // tempData,
   }),
 )
 class SalaryStructure extends PureComponent {

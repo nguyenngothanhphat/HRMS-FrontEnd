@@ -312,7 +312,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { salaryStructure = [], options } = this.props;
+    const { salaryStructure = [], options, tempData = {} } = this.props;
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
     return (
       <div className={styles.salaryStructureTemplate}>
