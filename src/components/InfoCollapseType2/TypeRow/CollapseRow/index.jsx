@@ -96,9 +96,9 @@ class CollapseRow extends PureComponent {
     <div className={styles.headerWithArrowIcon}>
       <span>{title}</span>
       {status ? (
-        <img onClick={this.onChange} src={UpArrowIcon} alt="up-arrow" />
-      ) : (
         <img onClick={this.onChange} src={DownArrowIcon} alt="down-arrow" />
+      ) : (
+        <img onClick={this.onChange} src={UpArrowIcon} alt="up-arrow" />
       )}
     </div>
   );
@@ -124,11 +124,18 @@ class CollapseRow extends PureComponent {
     <img alt="download" src={DownloadIcon} className={styles.downloadButton} />
   );
 
+  processData = (files) => {
+    return files.filter((file) => {
+      const { id = '' } = file;
+      return id !== null && id !== '';
+    });
+  };
+
   render() {
     const { open, uploadModalVisible } = this.state;
-    const { data: row = [], onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
-
-    const { kind = '' } = row;
+    const { data: row = {}, onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
+    const { kind = '', files = [] } = row;
+    const processData = this.processData(files);
 
     return (
       <div>
@@ -150,12 +157,11 @@ class CollapseRow extends PureComponent {
             className={styles.eachPanel}
             key="1"
             showArrow={false}
-            header={this.headerWithArrowIcon(open, row.kind)}
+            header={this.headerWithArrowIcon(open, kind)}
             extra={this.statusAndButtons()}
           >
-            {row.files.map((file) => {
+            {processData.map((file) => {
               const { id = '', fileName = '', source = '', generatedBy = '', date = '' } = file;
-              if (id === '') return null;
               return (
                 <Row key={id} className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
