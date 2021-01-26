@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input } from 'antd';
+import { Divider, Button, Spin, Input, Tooltip } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -13,7 +13,10 @@ const { TextArea } = Input;
     loading,
     employeeProfile: {
       tempData: { generalData = {}, compensationData = {} } = {},
-      originData: { generalData: originGeneralData = {} } = {},
+      originData: {
+        generalData: originGeneralData = {},
+        employmentData: { manager = {}, location = {}, department = {} } = {},
+      } = {},
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
   }) => ({
@@ -22,6 +25,9 @@ const { TextArea } = Input;
     originGeneralData,
     loading: loading.effects['employeeProfile/fetchGeneralInfo'],
     myEmployeeID,
+    manager,
+    location,
+    department,
   }),
 )
 class ViewInformation extends Component {
@@ -164,11 +170,23 @@ class ViewInformation extends Component {
       employeeLocation = '',
       permissions = {},
       profileOwner = false,
+      manager = {},
+      location: { name: locationName = '' } = {},
+      department: { name: departmentName = '' } = {},
     } = this.props;
-    const { firstName = '', avatar = '', createdAt = '', linkedIn = '' } = generalData;
+    const {
+      firstName = '',
+      avatar = '',
+      createdAt = '',
+      linkedIn = '',
+      workEmail = '',
+      workNumber = '',
+    } = generalData;
+
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     const joinningDate = moment(createdAt).format('DD/MM/YYYY');
+    const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
     // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
@@ -218,11 +236,13 @@ class ViewInformation extends Component {
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{employeeLocation}</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{employeeLocation}</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>
+              {managerFN} {managerLN}
+            </p>
           </div>
           <Divider />
           {/* <p className={s.titleTag}>Skills</p>
@@ -233,25 +253,45 @@ class ViewInformation extends Component {
               </Tag>
             ))}
           </div> */}
-          <Divider />
-          <div>
-            <a
-              href={linkedIn || 'https://www.linkedin.com/company/terralogic/'}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="/assets/images/iconLinkedin.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
-            </a>
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag1}>Email</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
+          </div>
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag1}>Contact number</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
+          </div>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag1}>Joining department</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
+          </div> */}
+          <div className={s.infoEmployee__viewBottom__row}>
+            <p className={s.titleTag1}>Current department</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
+          </div>
 
-            <img
-              src="/assets/images/iconMail.svg"
-              alt="img-arrow"
-              style={{ marginLeft: '5px', cursor: 'pointer' }}
-            />
+          <Divider />
+          <div className={s.infoEmployee__socialMedia}>
+            <Tooltip title="LinkedIn">
+              <a
+                href={linkedIn || 'https://www.linkedin.com/company/terralogic/'}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
           </div>
         </div>
         <ModalUpload
