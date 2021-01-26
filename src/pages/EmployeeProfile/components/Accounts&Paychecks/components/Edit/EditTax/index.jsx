@@ -109,6 +109,7 @@ class EditTax extends Component {
         <Form
           ref={this.formRef}
           className={styles.Form}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           initialValues={{
             incomeTaxRule: taxData[0] ? taxData[0].incomeTaxRule : '',
@@ -135,7 +136,7 @@ class EditTax extends Component {
             validateTrigger="onChange"
             rules={[
               {
-                pattern: /^[+]*[\d]{0,12}$/,
+                pattern: /^[A-Z0-9]{0,12}$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
               },
             ]}

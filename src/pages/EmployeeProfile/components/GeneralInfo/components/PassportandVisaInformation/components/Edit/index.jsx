@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button, Spin, Col } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -55,6 +56,7 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dummyPassPorts: [{}],
       isLt5M: true,
       getContent: true,
       isDate: true,
@@ -69,13 +71,13 @@ class Edit extends Component {
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
-      passportDataOrigin[0].passportIssuedOn && moment(passportDataOrigin[0].passportIssuedOn);
+      passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
     const DatePassportIssueOn =
-      getPassportData[0].passportIssuedOn && moment(getPassportData[0].passportIssuedOn);
+      getPassportData.passportIssuedOn && moment(getPassportData.passportIssuedOn);
     const formatDatePassportValidTill =
-      passportDataOrigin[0].passportValidTill && moment(passportDataOrigin[0].passportValidTill);
+      passportDataOrigin.passportValidTill && moment(passportDataOrigin.passportValidTill);
     const DatePassportValidTill =
-      getPassportData[0].passportValidTill && moment(getPassportData[0].passportValidTill);
+      getPassportData.passportValidTill && moment(getPassportData.passportValidTill);
     const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
     const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
     if (IssuedOn > ValidTill) {
@@ -445,11 +447,23 @@ class Edit extends Component {
 
   handleAddBtn = () => {
     const { passportData = [], dispatch } = this.props;
-    const newList = [...passportData, {}];
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { passportData: newList },
-    });
+    const { dummyPassPorts } = this.state;
+
+    if (passportData.length > 0) {
+      const newData = [...passportData, {}];
+
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { passportData: newData },
+      });
+    } else {
+      const newData = [...dummyPassPorts, {}];
+
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { passportData: newData },
+      });
+    }
   };
 
   onRemoveCondition = (index) => {
@@ -458,8 +472,8 @@ class Edit extends Component {
     const newPassportData = [...passportData];
 
     newPassportData.splice(index, 1);
-    console.log('remove index: ', index);
-    console.log('newPassportData: ', newPassportData);
+    // console.log('remove index: ', index);
+    // console.log('newPassportData: ', newPassportData);
 
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -468,7 +482,15 @@ class Edit extends Component {
   };
 
   render() {
-    const { isLt5M, getContent, isDate, isCheckDateVisa, visible, linkImage } = this.state;
+    const {
+      isLt5M,
+      getContent,
+      isDate,
+      isCheckDateVisa,
+      visible,
+      linkImage,
+      dummyPassPorts,
+    } = this.state;
 
     const { Option } = Select;
     const {
@@ -494,16 +516,21 @@ class Edit extends Component {
       },
       wrapperCol: {
         xs: { span: 9 },
-        sm: { span: 9 },
+        sm: { span: 12 },
       },
     };
 
     const dateFormat = 'Do MMM YYYY';
-
+    const renderForm = passportData.length > 0 ? passportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        <Form className={styles.Form} {...formItemLayout} onFinish={this.handleSave}>
-          {passportData.map((item, index) => {
+        <Form
+          className={styles.Form}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...formItemLayout}
+          onFinish={this.handleSave}
+        >
+          {renderForm.map((item, index) => {
             const {
               passportNumber,
               passportIssuedCountry,
@@ -525,14 +552,10 @@ class Edit extends Component {
                     name={`passportNumber ${index}`}
                     rules={[
                       {
-                        pattern: /^(?!^0+$)[a-zA-Z0-9]{6,9}$/,
+                        pattern: /^[a-zA-Z0-9]{0,12}$/,
                         message: formatMessage({
                           id: 'pages.employeeProfile.validatePassPortNumber',
                         }),
-                      },
-                      {
-                        message: 'Passport number is missing',
-                        required: true,
                       },
                     ]}
                   >

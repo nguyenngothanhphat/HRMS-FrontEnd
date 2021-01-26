@@ -125,9 +125,14 @@ const employeeProfile = {
         const { statusCode, data: generalData = {} } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
-        let generalDataTemp = { ...generalData };
+        let generalDataTemp = {
+          ...generalData,
+        };
         if (!checkDataTempKept) {
-          generalDataTemp = { ...generalDataTemp, ...dataTempKept };
+          generalDataTemp = {
+            ...generalDataTemp,
+            ...dataTempKept,
+          };
           delete generalDataTemp.updatedAt;
           delete generalData.updatedAt;
           const isModified = JSON.stringify(generalDataTemp) !== JSON.stringify(generalData);
