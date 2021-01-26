@@ -93,9 +93,9 @@ class AvatarDropdown extends React.Component {
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
-          <Menu.Item className={styles.sessionLogin}>
+          {/* <Menu.Item className={styles.sessionLogin}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu.ItemGroup>
       </Menu>
     );
