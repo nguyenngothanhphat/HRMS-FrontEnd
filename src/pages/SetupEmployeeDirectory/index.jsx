@@ -2,29 +2,67 @@ import Breadcrumb from '@/components/Breadcrumb';
 import DownloadTemplate from '@/components/DownloadEmployeeTemplate';
 import UploadListEmployee from '@/components/UploadListEmployee';
 import React from 'react';
+import { Spin } from 'antd';
+import { connect } from 'umi';
+import Table from './Components/TableListActive';
 import s from './index.less';
 
+const routes = [
+  { name: 'Getting Started', path: '/account-setup/get-started' },
+  {
+    name: 'Setup Employee Directory',
+    path: '/account-setup/get-started/setup-employee-directory',
+  },
+];
+
+@connect(
+  ({ user: { currentUser = {} } = {}, employee: { listEmployeeActive = [] } = {}, loading }) => ({
+    currentUser,
+    listEmployeeActive,
+    loading: loading.effects['employee/fetchListEmployeeActive'],
+  }),
+)
 class SetupEmployeeDirectory extends React.PureComponent {
-  render() {
-    const {
-      match: { params: { reId: companyId = '' } = {} },
-    } = this.props;
-    const routes = [
-      { name: 'Getting Started', path: '/account-setup/get-started' },
-      {
-        name: 'Setup Employee Directory',
-        path: '/account-setup/get-started/setup-employee-directory',
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: id,
       },
-    ];
+    });
+  }
+
+  renderContent = () => {
+    const { listEmployeeActive = [] } = this.props;
+    return listEmployeeActive.length === 1 ? (
+      <>
+        <div style={{ marginBottom: '24px' }}>
+          <DownloadTemplate />
+        </div>
+        <UploadListEmployee />
+      </>
+    ) : (
+      <div style={{ width: '85%' }}>
+        <Table data={listEmployeeActive} />
+      </div>
+    );
+  };
+
+  render() {
+    const { loading } = this.props;
     return (
       <>
         <Breadcrumb routes={routes} />
         <div className={s.root}>
           <div className={s.titlePage}>Setup Employee Directory</div>
-          <div className={s.content}>
-            <DownloadTemplate />
-            <UploadListEmployee companyId={companyId} />
-          </div>
+          {loading ? (
+            <div className={s.viewLoading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <div className={s.content}>{this.renderContent()}</div>
+          )}
         </div>
       </>
     );

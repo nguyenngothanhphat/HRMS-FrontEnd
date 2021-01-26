@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-curly-newline */
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Row, Col, Select } from 'antd';
+import { Avatar } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
-const { Option } = Select;
+// const { Option } = Select;
 
-const dummyPosition = ['Owner', 'CEO', 'ADMIN-CSA', 'HR-GLOBAL', 'HR-MANAGER'];
+// const dummyPosition = ['Owner', 'CEO', 'ADMIN-CSA', 'HR-GLOBAL', 'HR-MANAGER'];
 
 @connect(
   ({ user: { currentUser = {} } = {}, companiesManagement: { locationsList = [] } = {} }) => ({
@@ -20,8 +20,8 @@ class AccountSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      position: undefined,
-      location: undefined,
+      // position: undefined,
+      // location: undefined,
     };
   }
 
@@ -55,9 +55,8 @@ class AccountSetup extends Component {
   render() {
     const {
       currentUser: { generalInfo: { avatar = '' } = {}, company = {}, email = '' } = {},
-      locationsList = [],
+      // locationsList = [],
     } = this.props;
-    const { position, location } = this.state;
     return (
       <div className={s.root}>
         <div style={{ width: '629px' }}>
@@ -80,7 +79,7 @@ class AccountSetup extends Component {
               />
             </div>
           </div>
-          <Row className={s.blockQuestion}>
+          {/* <Row className={s.blockQuestion}>
             <Col span={11}>
               <p className={s.blockQuestion__title}>What’s your position in company</p>
               <Select
@@ -115,8 +114,8 @@ class AccountSetup extends Component {
                 ))}
               </Select>
             </Col>
-          </Row>
-          <ItemCompany company={company} payload={{ position, location }} />
+          </Row> */}
+          <ItemCompany company={company} />
         </div>
       </div>
     );

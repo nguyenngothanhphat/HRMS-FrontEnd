@@ -10,7 +10,7 @@ import styles from './index.less';
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const listType = ['Employee Handbook', 'Agreement'];
+const listType = ['Employee Handbook', 'Agreement', 'Identity'];
 @connect(({ loading }) => ({
   loading: loading.effects['upload/uploadFile'],
 }))

@@ -3,11 +3,16 @@ import React from 'react';
 import { Button, Upload, message, notification } from 'antd';
 import { CloudUploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { connect } from 'umi';
 import csvtojson from 'csvtojson';
 import s from './index.less';
 
 const { Dragger } = Upload;
 
+@connect(({ user: { currentUser = {} } = {}, loading }) => ({
+  currentUser,
+  loading: loading.effects['employeesManagement/importEmployees'],
+}))
 class UploadListEmployee extends React.Component {
   constructor(props) {
     super(props);
@@ -76,8 +81,7 @@ class UploadListEmployee extends React.Component {
     const employees = data.map((item) => {
       return {
         employeeId: item['Employee Id'],
-        firstName: item['First Name'],
-        lastName: item['Last Name'],
+        firstName: `${item['First Name']} ${item['Last Name']}`,
         joinDate: item['Joined Date'] && moment(new Date(item['Joined Date'])).format('YYYY-MM-DD'),
         workEmail: item['Work Email'],
         location: item.Location,
@@ -102,15 +106,19 @@ class UploadListEmployee extends React.Component {
   };
 
   handleFinish = () => {
-    const { companyId: company = '' } = this.props;
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
     const { employees = [] } = this.state;
-    const payload = { company, employees };
-    console.log('payload', payload);
+    const payload = { company: id, employees };
+    dispatch({
+      type: 'employeesManagement/importEmployees',
+      payload,
+      isAccountSetup: true,
+    });
   };
 
   render() {
-    // const { companyId = '' } = this.props;
     const { employees = [], name } = this.state;
+    const { loading } = this.props;
     const propsUpload = {
       name: 'file',
       multiple: false,
@@ -145,6 +153,7 @@ class UploadListEmployee extends React.Component {
           className={s.btnFinish}
           onClick={this.handleFinish}
           disabled={employees.length === 0}
+          loading={loading}
         >
           Finish Setup
         </Button>

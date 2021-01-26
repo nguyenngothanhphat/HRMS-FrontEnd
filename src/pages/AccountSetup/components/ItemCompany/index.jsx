@@ -6,17 +6,11 @@ import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
   handleGetStarted = () => {
-    const { payload } = this.props;
-    console.log('payload', payload);
     history.push('/account-setup/get-started');
   };
 
   render() {
-    const {
-      company: { logoUrl = '', name = '', headQuarterAddress = {} } = {},
-      payload = {},
-    } = this.props;
-    const check = !payload?.position || !payload?.location;
+    const { company: { logoUrl = '', name = '', headQuarterAddress = {} } = {} } = this.props;
     return (
       <div className={s.root}>
         <img
@@ -30,7 +24,7 @@ export default class ItemCompany extends PureComponent {
           <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p>
         </div>
         <div className={s.viewAction}>
-          <Button className={s.btnOutline} disabled={check} onClick={this.handleGetStarted}>
+          <Button className={s.btnOutline} onClick={this.handleGetStarted}>
             Get Started
           </Button>
         </div>
