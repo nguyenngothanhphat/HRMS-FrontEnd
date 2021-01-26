@@ -192,7 +192,7 @@ class View extends PureComponent {
         <Col span={6} className={styles.textLabel}>
           {item.label}
         </Col>
-        <Col span={18} className={styles.textValue}>
+        <Col span={18} className={styles.EarlyIcon}>
           {item.value}
           {(item.label === 'Passport Number' && index === 0) ||
           (item.label === 'Passport Number' && index === 1) ? (

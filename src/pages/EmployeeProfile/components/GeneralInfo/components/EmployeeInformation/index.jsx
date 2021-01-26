@@ -5,7 +5,6 @@ import { connect } from 'umi';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
-import EditIcon from '@/assets/edit-24px.svg';
 
 @connect(
   ({

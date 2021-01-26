@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
 import { Row, Input, Form, DatePicker, Select, Button, Spin, Col } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
@@ -55,6 +56,7 @@ class Edit extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dummyPassPorts: [{}],
       isLt5M: true,
       getContent: true,
       isDate: true,
@@ -445,11 +447,27 @@ class Edit extends Component {
 
   handleAddBtn = () => {
     const { passportData = [], dispatch } = this.props;
-    const newList = [...passportData, {}];
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { passportData: newList },
-    });
+    const { dummyPassPorts } = this.state;
+    // const newList = [...passportData, {}];
+    // dispatch({
+    //   type: 'employeeProfile/saveTemp',
+    //   payload: { passportData: newList },
+    // });
+    if (passportData.length > 0) {
+      const newData = [...passportData, {}];
+
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { passportData: newData },
+      });
+    } else {
+      const newData = [...dummyPassPorts, {}];
+
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { passportData: newData },
+      });
+    }
   };
 
   onRemoveCondition = (index) => {
@@ -458,8 +476,8 @@ class Edit extends Component {
     const newPassportData = [...passportData];
 
     newPassportData.splice(index, 1);
-    console.log('remove index: ', index);
-    console.log('newPassportData: ', newPassportData);
+    // console.log('remove index: ', index);
+    // console.log('newPassportData: ', newPassportData);
 
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -468,7 +486,15 @@ class Edit extends Component {
   };
 
   render() {
-    const { isLt5M, getContent, isDate, isCheckDateVisa, visible, linkImage } = this.state;
+    const {
+      isLt5M,
+      getContent,
+      isDate,
+      isCheckDateVisa,
+      visible,
+      linkImage,
+      dummyPassPorts,
+    } = this.state;
 
     const { Option } = Select;
     const {
@@ -494,16 +520,21 @@ class Edit extends Component {
       },
       wrapperCol: {
         xs: { span: 9 },
-        sm: { span: 9 },
+        sm: { span: 12 },
       },
     };
 
     const dateFormat = 'Do MMM YYYY';
-
+    const renderForm = passportData.length > 0 ? passportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        <Form className={styles.Form} {...formItemLayout} onFinish={this.handleSave}>
-          {passportData.map((item, index) => {
+        <Form
+          className={styles.Form}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...formItemLayout}
+          onFinish={this.handleSave}
+        >
+          {renderForm.map((item, index) => {
             const {
               passportNumber,
               passportIssuedCountry,
@@ -559,7 +590,8 @@ class Edit extends Component {
                         <UploadImage
                           content={isLt5M ? 'Choose file' : `Retry`}
                           setSizeImageMatch={(isImage5M) =>
-                            this.handleGetSetSizeImage(index, isImage5M)}
+                            this.handleGetSetSizeImage(index, isImage5M)
+                          }
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                           loading={loading}
                           index={index}

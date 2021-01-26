@@ -88,10 +88,12 @@ class View extends PureComponent {
       { label: 'Linkedin', value: dataAPI.linkedIn },
       {
         label: 'Residence Address',
+        // eslint-disable-next-line camelcase
         value: residentAddress ? `${r_Address}, ${r_state}, ${r_zipCode}, ${r_countryName}` : '',
       },
       {
         label: 'Current Address',
+        // eslint-disable-next-line camelcase
         value: currentAddress ? `${c_Address}, ${c_state}, ${c_zipCode}, ${c_countryName}` : '',
       },
     ];
