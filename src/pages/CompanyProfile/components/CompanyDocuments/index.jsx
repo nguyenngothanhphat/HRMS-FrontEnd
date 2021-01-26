@@ -5,11 +5,18 @@ import ModalUploadDocument from './components/ModalUploadDocument';
 import TableDocuments from './components/TableDocuments';
 import s from './index.less';
 
-@connect(({ //  loading,
-  user: { currentUser = {} } = {} }) => ({
-  currentUser,
-  // loadingUpdate: loading.effects['companiesManagement/updateCompany'],
-}))
+@connect(
+  ({
+    loading,
+    user: { currentUser = {} } = {},
+    documentsManagement: { listDocumentAccountSetup = [] } = {},
+  }) => ({
+    currentUser,
+    loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
+    loadingSubmit: loading.effects['documentsManagement/addDocumentAccountSetup'],
+    listDocumentAccountSetup,
+  }),
+)
 class CompanyDocuments extends Component {
   constructor(props) {
     super(props);
@@ -19,11 +26,27 @@ class CompanyDocuments extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    dispatch({
+      type: 'documentsManagement/fetchListDocumentsAccountSetup',
+      payload: {
+        company: _id,
+      },
+    });
+  }
+
   handleSubmitUpload = (values) => {
-    const { currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
     const payload = { ...values, company: id };
-    console.log('payload', payload);
-    this.hideModalUpload();
+    dispatch({
+      type: 'documentsManagement/addDocumentAccountSetup',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.hideModalUpload();
+      }
+    });
   };
 
   showModalUpload = () => {
@@ -42,6 +65,7 @@ class CompanyDocuments extends Component {
 
   render() {
     const { visible = false, keyModal = '' } = this.state;
+    const { listDocumentAccountSetup = [], loading, loadingSubmit } = this.props;
     return (
       <>
         <Row className={s.root} gutter={[24, 0]}>
@@ -59,7 +83,7 @@ class CompanyDocuments extends Component {
           </Col>
           <Col span={17}>
             <div className={`${s.container} ${s.viewRight}`}>
-              <TableDocuments />
+              <TableDocuments loading={loading} data={listDocumentAccountSetup} />
             </div>
           </Col>
         </Row>
@@ -68,6 +92,7 @@ class CompanyDocuments extends Component {
           visible={visible}
           handleCancel={this.hideModalUpload}
           handleSubmit={this.handleSubmitUpload}
+          loadingSubmit={loadingSubmit}
         />
       </>
     );

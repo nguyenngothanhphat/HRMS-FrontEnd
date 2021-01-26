@@ -1,125 +1,9 @@
 import { Table, Avatar } from 'antd';
 import React, { Component } from 'react';
 import { UserOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import Download from '@/components/DownloadFile';
 import s from './index.less';
-
-const data = [];
-
-// const data = [
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar:
-//         'https://www.freevector.com/uploads/vector/preview/12675/FreeVector-Man-Vector-Avatar.jpg',
-//     },
-//     url: 'http://api-stghrms.paxanimi.ai/api/attachments/600e5009a51df8566c4f8dae/test.jpg',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-//   {
-//     name: 'ABC Document',
-//     type: 'Type 1',
-//     lastUpdate: '22nd Nov, 2020',
-//     owner: {
-//       name: 'Rajani Bathula',
-//       avatar: '',
-//     },
-//     url: '',
-//   },
-// ];
 
 class TableDocuments extends Component {
   constructor(props) {
@@ -129,8 +13,6 @@ class TableDocuments extends Component {
     };
   }
 
-  componentDidMount() {}
-
   onChangePagination = (pageNumber) => {
     this.setState({
       pageNavigation: pageNumber,
@@ -138,7 +20,7 @@ class TableDocuments extends Component {
   };
 
   render() {
-    // const { data = [] } = this.props;
+    const { loading, data = [] } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -161,33 +43,33 @@ class TableDocuments extends Component {
     const columns = [
       {
         title: <span className={s.title}>Document name</span>,
-        dataIndex: 'name',
+        dataIndex: 'key',
         key: 'name',
-        render: (name) => {
-          return <p className={s.text}>{name}</p>;
+        render: (key) => {
+          return <p className={s.text}>{key}</p>;
         },
       },
       {
         title: <span className={s.title}>Type</span>,
-        dataIndex: 'type',
-        key: 'type',
-        render: (type) => {
-          return <p className={s.text}>{type}</p>;
+        dataIndex: 'documentType',
+        key: 'documentType',
+        render: (documentType) => {
+          return <p className={s.text}>{documentType}</p>;
         },
       },
       {
         title: <span className={s.title}>Last updated</span>,
-        dataIndex: 'lastUpdate',
-        key: 'lastUpdate',
-        render: (lastUpdate) => {
-          return <p className={s.text}>{lastUpdate}</p>;
+        dataIndex: 'updatedAt',
+        key: 'updatedAt',
+        render: (updatedAt) => {
+          return <p className={s.text}>{moment(updatedAt).format('YYYY/MM/DD')}</p>;
         },
       },
       {
         title: <span className={s.title}>Owner</span>,
         dataIndex: 'owner',
         key: 'owner',
-        render: (owner) => {
+        render: (owner = {}) => {
           const { name = '', avatar = '' } = owner;
           return (
             <div className={s.viewOwner}>
@@ -225,10 +107,11 @@ class TableDocuments extends Component {
           pagination={{
             ...pagination,
             total: data.length,
+            hideOnSinglePage: true,
           }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
-          loading={false}
+          loading={loading}
         />
       </div>
     );

@@ -10,11 +10,7 @@ import styles from './index.less';
 const { Dragger } = Upload;
 const { Option } = Select;
 
-const listType = [
-  { _id: '12345', name: 'Type 1' },
-  { _id: '45678', name: 'Type 2' },
-];
-
+const listType = ['Employee Handbook', 'Agreement'];
 @connect(({ loading }) => ({
   loading: loading.effects['upload/uploadFile'],
 }))
@@ -22,8 +18,8 @@ class ModalUploadDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
-      name: '',
+      type: undefined,
+      name: undefined,
       urlImage: '',
       attachment: '',
     };
@@ -34,8 +30,8 @@ class ModalUploadDocument extends Component {
     const { keyModal: nextKeyModal } = nextProps;
     if (keyModal !== nextKeyModal) {
       this.setState({
-        type: '',
-        name: '',
+        type: undefined,
+        name: undefined,
         urlImage: '',
         attachment: '',
       });
@@ -46,7 +42,7 @@ class ModalUploadDocument extends Component {
   onOk = () => {
     const { handleSubmit = () => {} } = this.props;
     const { name, type, attachment } = this.state;
-    handleSubmit({ name, type, attachment });
+    handleSubmit({ key: name, documentType: type, attachment });
   };
 
   onChangeField = (name, value) => {
@@ -180,9 +176,7 @@ class ModalUploadDocument extends Component {
                 }
               >
                 {listType.map((item) => (
-                  <Option key={item._id} value={item.name}>
-                    {item.name}
-                  </Option>
+                  <Option key={item}>{item}</Option>
                 ))}
               </Select>
             </div>
