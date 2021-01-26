@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Table, Spin } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
+import AddIcon from '@/assets/add-symbols.svg';
 import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
@@ -143,6 +144,10 @@ class CustomEmailsTableField extends PureComponent {
     return columns;
   };
 
+  addNewEmailTemplate = () => {
+    history.push('/employee-onboarding/create-email-reminder');
+  };
+
   render() {
     const { listCustomEmail, loading } = this.props;
     const { pageSelected } = this.state;
@@ -179,7 +184,13 @@ class CustomEmailsTableField extends PureComponent {
         ) : (
           <div>
             <div className={styles.CustomEmailsTableField_title}>
-              {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+              <span className={styles.title}>
+                {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+              </span>
+              <div className={styles.addButton} onClick={this.addNewEmailTemplate}>
+                <img src={AddIcon} alt="add" />
+                <span>Add new email template</span>
+              </div>
             </div>
             <div className={styles.CustomEmailsTableField_table}>
               <Table

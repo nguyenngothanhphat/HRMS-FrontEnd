@@ -92,16 +92,22 @@
           }
         }
         &__viewBottom {
-          padding: 16px 16px 0;
+          padding: 0 16px;
           &__row {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            align-items: flex-start;
           }
           .titleTag {
             color: #161c29;
             font-weight: 500;
             font-size: 12px;
+          }
+          .titleTag1 {
+            font-size: 12px;
+            font-weight: 400;
+            color: #161c29;
           }
           &__description {
             margin: 0;
@@ -114,7 +120,7 @@
           }
           :global {
             .ant-divider-horizontal {
-              margin: 16px 0;
+              margin: 5px 0 15px 0;
             }
             .ant-tag {
               margin-bottom: 10px;
@@ -124,6 +130,9 @@
               border-radius: 5px;
             }
           }
+        }
+        &__socialMedia {
+          margin-bottom: 20px;
         }
       }
     }

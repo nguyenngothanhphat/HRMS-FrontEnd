@@ -184,14 +184,15 @@ class EditUserModal extends PureComponent {
               status,
             }}
           >
-            <Form.Item label="Employee ID" name="employeeId">
+            <Form.Item label="Employee ID" labelAlign="left" name="employeeId">
               <Input disabled />
             </Form.Item>
-            <Form.Item label="Created Date" name="joinDate">
+            <Form.Item label="Created Date" labelAlign="left" name="joinDate">
               <DatePicker disabled format={dateFormat} />
             </Form.Item>
             <Form.Item
               label="Email"
+              labelAlign="left"
               name="workEmail"
               rules={[{ required: false, message: 'Please input work email!' }]}
             >
@@ -199,6 +200,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="First Name"
+              labelAlign="left"
               name="firstName"
               rules={[{ required: false, message: 'Please input first name!' }]}
             >
@@ -206,6 +208,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Last Name"
+              labelAlign="left"
               name="lastName"
               rules={[{ required: false, message: 'Please input last name!' }]}
             >
@@ -213,6 +216,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Roles"
+              labelAlign="left"
               name="roles"
               rules={[{ required: false, message: 'Please select roles!' }]}
             >
@@ -229,6 +233,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Location"
+              labelAlign="left"
               name="locationName"
               rules={[{ required: false, message: 'Please select location!' }]}
             >
@@ -251,6 +256,7 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Company"
+              labelAlign="left"
               name="companyName"
               rules={[{ required: false, message: 'Please select company!' }]}
             >
@@ -274,12 +280,13 @@ class EditUserModal extends PureComponent {
             </Form.Item>
             <Form.Item
               label="Status"
+              labelAlign="left"
               name="status"
               rules={[{ required: false, message: 'Please input!' }]}
             >
               <Select>
-                <Option value="ACTIVE">ACTIVE</Option>
-                <Option value="INACTIVE">INACTIVE</Option>
+                <Option value="ACTIVE">Active</Option>
+                <Option value="INACTIVE">Inactive</Option>
               </Select>
             </Form.Item>
           </Form>
