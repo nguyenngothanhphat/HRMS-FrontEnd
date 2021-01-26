@@ -70,7 +70,7 @@ class TableDocuments extends Component {
         dataIndex: 'owner',
         key: 'owner',
         render: (owner = {}) => {
-          const { name = '', avatar = '' } = owner;
+          const { generalInfo: { firstName: name = '', avatar = '' } = {} } = owner;
           return (
             <div className={s.viewOwner}>
               <Avatar
@@ -86,12 +86,15 @@ class TableDocuments extends Component {
       },
       {
         title: <span className={s.title}>Action</span>,
-        dataIndex: 'url',
+        dataIndex: 'attachment',
         key: 'download',
-        render: (url) => {
-          return url ? (
+        render: (attachment) => {
+          return attachment?.url ? (
             <div className={s.viewDownload}>
-              <Download url={url} content={<p className={s.textDownload}>Download</p>} />
+              <Download
+                url={attachment?.url}
+                content={<p className={s.textDownload}>Download</p>}
+              />
             </div>
           ) : null;
         },
@@ -107,7 +110,7 @@ class TableDocuments extends Component {
           pagination={{
             ...pagination,
             total: data.length,
-            hideOnSinglePage: true,
+            // hideOnSinglePage: true,
           }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
