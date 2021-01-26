@@ -9,14 +9,11 @@ import styles from './index.less';
 const LocationForm = (props) => {
   const { formIndex } = props;
   const { locations = [], listCountry, dispatch, locationItem, removeLocation } = props;
-  const [locationsState, setLocationsState] = useState([]);
   const [country, setCountry] = useState('');
 
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    setLocationsState(locations);
-  }, [locations]);
+  useEffect(() => {}, [locations]);
 
   const removeAutocomplete = () => {
     const searchInputs = document.querySelectorAll(`input[type='search']`);
@@ -74,12 +71,7 @@ const LocationForm = (props) => {
   }, [country]);
 
   const _renderSelectState = (index) => {
-    console.log('render STATE');
-    console.log(index);
     if (!locations || locations.length === 0 || !locations[index]) {
-      console.log('return');
-      console.log(locations);
-      console.log(locations[index]);
       return (
         <Form.Item
           label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
@@ -95,7 +87,7 @@ const LocationForm = (props) => {
 
     const itemCountry = listCountry.find((item) => item._id === countryValue) || {};
     const listStateByItemCountry = itemCountry.states || [];
-    console.log('all states: ', listStateByItemCountry);
+
     return (
       <Form.Item
         label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
@@ -114,102 +106,100 @@ const LocationForm = (props) => {
   };
 
   return (
-    locations.length > 0 && (
-      <Form form={form} onValuesChange={() => saveToStore()} initialValues={locationItem}>
-        <div className={styles.card}>
-          <h2 className={styles.header}>Work location</h2>
+    <Form form={form} onValuesChange={() => saveToStore()} initialValues={locationItem}>
+      <div className={styles.card}>
+        <h2 className={styles.header}>Work location</h2>
 
-          <Form.Item
-            name="name"
-            label="Name"
-            className={styles.vertical}
-            rules={[
-              {
-                required: true,
-                message: 'Please input name location!',
-              },
-            ]}
-          >
-            <Input onChange={() => handleOnChange()} />
-          </Form.Item>
+        <Form.Item
+          name="name"
+          label="Name"
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: 'Please input name location!',
+            },
+          ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
 
-          <Form.Item
-            name="address"
-            label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
-            className={styles.vertical}
-            rules={[
-              {
-                required: true,
-                message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
-              },
-            ]}
-          >
-            <Input onChange={() => handleOnChange()} />
-          </Form.Item>
+        <Form.Item
+          name="address"
+          label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+            },
+          ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
 
-          <Form.Item
-            name="country"
-            label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}
-            className={styles.vertical}
-            rules={[
-              {
-                required: true,
-                message: useIntl().formatMessage({ id: 'page.signUp.step2.countryError' }),
-              },
-            ]}
+        <Form.Item
+          name="country"
+          label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: useIntl().formatMessage({ id: 'page.signUp.step2.countryError' }),
+            },
+          ]}
+        >
+          <Select
+            onChange={(value) => {
+              setCountry(value);
+            }}
+            showArrow
+            showSearch
+            filterOption={
+              (input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
           >
-            <Select
-              onChange={(value) => {
-                setCountry(value);
-              }}
-              showArrow
-              showSearch
-              filterOption={
-                (input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                // eslint-disable-next-line react/jsx-curly-newline
-              }
+            {listCountry.map((countryItem) => {
+              const { name, _id } = countryItem;
+              return <Select.Option key={_id}>{name}</Select.Option>;
+            })}
+          </Select>
+        </Form.Item>
+
+        <Row gutter={30}>
+          <Col xm={24} sm={24} md={12} lg={12}>
+            {_renderSelectState(locations.findIndex((item) => item.index === formIndex))}
+          </Col>
+
+          <Col xm={24} sm={24} md={12} lg={12}>
+            <Form.Item
+              name="zipCode"
+              label={useIntl().formatMessage({ id: 'page.signUp.step2.zipCode' })}
+              className={styles.vertical}
+              rules={[
+                {
+                  required: true,
+                  message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
+                },
+                {
+                  pattern: /^[0-9]{6}$/,
+                  message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError2' }),
+                },
+              ]}
             >
-              {listCountry.map((countryItem) => {
-                const { name, _id } = countryItem;
-                return <Select.Option key={_id}>{name}</Select.Option>;
-              })}
-            </Select>
-          </Form.Item>
+              <InputNumber onChange={() => handleOnChange()} />
+            </Form.Item>
+          </Col>
+        </Row>
 
-          <Row gutter={30}>
-            <Col xm={24} sm={24} md={12} lg={12}>
-              {_renderSelectState(locations.findIndex((item) => item.index === formIndex))}
-            </Col>
-
-            <Col xm={24} sm={24} md={12} lg={12}>
-              <Form.Item
-                name="zipCode"
-                label={useIntl().formatMessage({ id: 'page.signUp.step2.zipCode' })}
-                className={styles.vertical}
-                rules={[
-                  {
-                    required: true,
-                    message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
-                  },
-                  {
-                    pattern: /^[0-9]{6}$/,
-                    message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError2' }),
-                  },
-                ]}
-              >
-                <InputNumber onChange={() => handleOnChange()} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <span className={styles.remove} onClick={() => removeLocation(formIndex)}>
-            <img src={bin} alt="bin icon" />
-            {useIntl().formatMessage({ id: 'page.signUp.step2.remove' })}
-          </span>
-        </div>
-      </Form>
-    )
+        <span className={styles.remove} onClick={() => removeLocation(formIndex)}>
+          <img src={bin} alt="bin icon" />
+          {useIntl().formatMessage({ id: 'page.signUp.step2.remove' })}
+        </span>
+      </div>
+    </Form>
   );
 };
 
