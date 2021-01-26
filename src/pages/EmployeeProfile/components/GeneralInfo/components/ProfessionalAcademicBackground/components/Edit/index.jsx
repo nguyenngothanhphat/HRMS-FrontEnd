@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
@@ -7,7 +8,7 @@ import s from './index.less';
 
 const formItemLayout = {
   labelCol: { span: 6 },
-  wrapperCol: { span: 9 },
+  wrapperCol: { span: 12 },
 };
 
 const { Option } = Select;
@@ -197,6 +198,7 @@ class Edit extends PureComponent {
             skills: getIdSkill,
             certification,
           }}
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           onFinish={this.handleSave}
           requiredMark={false}
