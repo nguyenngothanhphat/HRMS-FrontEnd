@@ -93,7 +93,12 @@ class HollidayCalendar extends Component {
       const yearCurrent = moment(ngay).format('YYYY');
       return yearCurrent === n;
     });
-    console.log(newList, 'newList');
+
+    const { dispatch } = this.props;
+    // const { year } = this.state;
+    dispatch({
+      type: 'timeOff/fetchGoogleHolidayList',
+    });
 
     this.initListHoliday(newList);
   };

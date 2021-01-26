@@ -16,11 +16,15 @@ export default {
       },
     },
     '/apigoogle': {
-      target: 'https://www.googleapis.com/calendar/v3/calendars/',
-      // target: 'http://jsonplaceholder.typicode.com/',
-
+      target: 'https://www.googleapis.com/',
       changeOrigin: true,
       pathRewrite: { '^/apigoogle/': '' },
+    },
+
+    '/apisds': {
+      target: 'http://jsonplaceholder.typicode.com/',
+      changeOrigin: true,
+      pathRewrite: { '^/apisds': '' },
     },
   },
   test: {

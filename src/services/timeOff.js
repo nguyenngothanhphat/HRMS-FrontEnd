@@ -243,10 +243,18 @@ export async function rejectMultipleCompoffRequest(data) {
 }
 
 export async function getCalendarHoliday() {
-  return request(`/apigoogle/en.indian%23holiday%40group.v.calendar.google.com/events`, {
-    params: {
-      key: 'AIzaSyAF20l8ukEe3i6LF0jRm70c0M47G-5U_hM',
+  return request(
+    `/apigoogle/calendar/v3/calendars/en.vietnamese%23holiday%40group.v.calendar.google.com/events`,
+    {
+      params: {
+        key: 'AIzaSyD7eFV9iwCw-YR7UKRHCV7ayiiDQl1SYHo',
+      },
+      method: 'GET',
     },
+  );
+}
+export async function dssd() {
+  return request(`/apisds/users`, {
     method: 'GET',
   });
 }
