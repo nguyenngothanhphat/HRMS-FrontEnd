@@ -18,6 +18,16 @@ class Screen1 extends Component {
     this.formRefLegal = React.createRef();
   }
 
+  componentDidMount() {
+    this.removeAutocomplete();
+  }
+
+  removeAutocomplete = () => {
+    const searchInputs = document.querySelectorAll(`input[type='search']`);
+
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
+  };
+
   onChangeCountryHeadquarter = (value) => {
     const { dispatch } = this.props;
     this.formRef.current.setFieldsValue({
