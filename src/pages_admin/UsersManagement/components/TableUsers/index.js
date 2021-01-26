@@ -132,7 +132,7 @@ class TableUsers extends PureComponent {
         align: 'left',
         render: (_id) => (
           <div className={styles.userPasswordReset}>
-            <span className={styles.userPassword}>*******</span>
+            {/* <span className={styles.userPassword}>*******</span> */}
             <div onClick={(e) => this.resetPassword(_id, e)}>
               <span>RESET</span>
             </div>
