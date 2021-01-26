@@ -69,7 +69,7 @@ class CompanyDocuments extends Component {
     return (
       <>
         <Row className={s.root} gutter={[24, 0]}>
-          <Col span={7}>
+          <Col span={6}>
             <div className={`${s.container} ${s.viewLeft}`}>
               <p>All administrative and policy documents are store here.</p>
               <p>
@@ -81,7 +81,7 @@ class CompanyDocuments extends Component {
               </Button>
             </div>
           </Col>
-          <Col span={17}>
+          <Col span={18}>
             <div className={`${s.container} ${s.viewRight}`}>
               <TableDocuments loading={loading} data={listDocumentAccountSetup} />
             </div>
