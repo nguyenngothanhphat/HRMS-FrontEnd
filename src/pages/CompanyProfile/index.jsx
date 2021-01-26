@@ -36,9 +36,15 @@ const listMenu = [
   },
 ];
 
-@connect(({ user: { currentUser = {} } = {} }) => ({
-  currentUser,
-}))
+@connect(
+  ({
+    user: { currentUser = {} } = {},
+    departmentManagement: { listByCompany: listDepartment = [] } = {},
+  }) => ({
+    currentUser,
+    listDepartment,
+  }),
+)
 class CompanyProfile extends Component {
   componentDidMount() {
     const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
@@ -60,10 +66,12 @@ class CompanyProfile extends Component {
   }
 
   render() {
+    const { listDepartment = [] } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup/get-started' },
       { name: 'Company Profile', path: `/account-setup/get-started/company-profile` },
     ];
+
     return (
       <>
         <Breadcrumb routes={routes} />
@@ -71,7 +79,11 @@ class CompanyProfile extends Component {
           <div className={styles.titlePage}>Company Profile</div>
           <Tabs defaultActiveKey="1">
             <TabPane tab="Profile Information" key="1">
-              <Layout listMenu={listMenu} isCompanyProfile />
+              <Layout
+                listMenu={listMenu}
+                isCompanyProfile
+                disableSetupDirectory={listDepartment.length === 0}
+              />
             </TabPane>
             <TabPane tab="User Management" key="2">
               <UserManagement />

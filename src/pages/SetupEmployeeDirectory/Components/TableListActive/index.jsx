@@ -18,7 +18,6 @@ class TableListActive extends Component {
 
   render() {
     const { loading, data = [] } = this.props;
-    console.log('data', data);
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -53,14 +52,6 @@ class TableListActive extends Component {
         key: 'employeeId',
         render: (employeeId) => {
           return <p className={s.text}>{employeeId}</p>;
-        },
-      },
-      {
-        title: <span className={s.title}>Email</span>,
-        dataIndex: 'generalInfo',
-        key: 'email',
-        render: (generalInfo) => {
-          return <p className={s.text}>{generalInfo?.workEmail}</p>;
         },
       },
       {
