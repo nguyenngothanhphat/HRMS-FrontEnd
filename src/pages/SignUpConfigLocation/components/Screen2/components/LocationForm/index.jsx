@@ -9,7 +9,6 @@ import styles from './index.less';
 const LocationForm = (props) => {
   const { formIndex } = props;
   const { locations = [], listCountry, dispatch, locationItem, removeLocation } = props;
-
   const [country, setCountry] = useState('');
 
   const [form] = Form.useForm();
@@ -171,7 +170,7 @@ const LocationForm = (props) => {
 
         <Row gutter={30}>
           <Col xm={24} sm={24} md={12} lg={12}>
-            {_renderSelectState(formIndex)}
+            {_renderSelectState(locations.findIndex((item) => item.index === formIndex))}
           </Col>
 
           <Col xm={24} sm={24} md={12} lg={12}>
