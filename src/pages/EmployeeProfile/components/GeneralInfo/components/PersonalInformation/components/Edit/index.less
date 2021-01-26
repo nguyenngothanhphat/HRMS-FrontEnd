@@ -1,6 +1,7 @@
 .root {
   .Form {
     width: 100%;
+    padding: 0 48px;
     :global {
       .ant-select .ant-select-arrow {
         transition: transform 0.2s ease-in;
@@ -21,7 +22,7 @@
       }
       .ant-form-item {
         width: 100%;
-        padding: 0px 48px;
+        // padding: 0px 48px;
       }
       .ant-form-item:first-child {
         margin-top: 35px;
@@ -44,13 +45,18 @@
       }
     }
 
-    .address {
-      margin-right: 14px;
-    }
+    // .address {
+    //   margin-right: 14px;
+    // }
     .addressSection {
       display: flex;
       flex-direction: column;
-      width: 420px;
+      width: 100%;
+      :global {
+        .ant-col {
+          max-width: 100%;
+        }
+      }
     }
   }
 
@@ -117,6 +123,7 @@
     align-items: center;
     padding: 24px;
     border-top: solid 1px #d6dce0;
+    width: 100%;
   }
   .cancelFooter {
     margin-right: 40px;

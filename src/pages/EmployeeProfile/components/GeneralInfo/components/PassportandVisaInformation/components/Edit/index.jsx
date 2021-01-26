@@ -69,13 +69,13 @@ class Edit extends Component {
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
-      passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
+      passportDataOrigin[0].passportIssuedOn && moment(passportDataOrigin[0].passportIssuedOn);
     const DatePassportIssueOn =
-      getPassportData.passportIssuedOn && moment(getPassportData.passportIssuedOn);
+      getPassportData[0].passportIssuedOn && moment(getPassportData[0].passportIssuedOn);
     const formatDatePassportValidTill =
-      passportDataOrigin.passportValidTill && moment(passportDataOrigin.passportValidTill);
+      passportDataOrigin[0].passportValidTill && moment(passportDataOrigin[0].passportValidTill);
     const DatePassportValidTill =
-      getPassportData.passportValidTill && moment(getPassportData.passportValidTill);
+      getPassportData[0].passportValidTill && moment(getPassportData[0].passportValidTill);
     const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
     const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
     if (IssuedOn > ValidTill) {
@@ -525,10 +525,14 @@ class Edit extends Component {
                     name={`passportNumber ${index}`}
                     rules={[
                       {
-                        pattern: /^[a-zA-Z0-9]{0,12}$/,
+                        pattern: /^(?!^0+$)[a-zA-Z0-9]{6,9}$/,
                         message: formatMessage({
                           id: 'pages.employeeProfile.validatePassPortNumber',
                         }),
+                      },
+                      {
+                        message: 'Passport number is missing',
+                        required: true,
                       },
                     ]}
                   >
@@ -559,7 +563,8 @@ class Edit extends Component {
                         <UploadImage
                           content={isLt5M ? 'Choose file' : `Retry`}
                           setSizeImageMatch={(isImage5M) =>
-                            this.handleGetSetSizeImage(index, isImage5M)}
+                            this.handleGetSetSizeImage(index, isImage5M)
+                          }
                           getResponse={(resp) => this.handleGetUpLoad(index, resp)}
                           loading={loading}
                           index={index}
@@ -601,12 +606,13 @@ class Edit extends Component {
                 )}
                 <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
                   <Select
+                    showArrow
                     className={styles.selectForm}
                     defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
                     onChange={(value) => {
                       this.handleChange(index, 'passportIssuedCountry', value);
                     }}
-                    suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                    // suffixIcon={<DownOutlined className={styles.arrowDown} />}
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (
