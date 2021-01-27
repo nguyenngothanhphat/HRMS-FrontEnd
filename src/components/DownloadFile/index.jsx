@@ -1,7 +1,7 @@
 /* eslint-disable compat/compat */
-import React, { Component, Fragment } from 'react';
 import { SyncOutlined } from '@ant-design/icons';
 import axios from 'axios';
+import React, { Component } from 'react';
 
 class DownloadFile extends Component {
   constructor(props) {
@@ -33,16 +33,12 @@ class DownloadFile extends Component {
   render() {
     const { content = 'Download', url = '' } = this.props;
     const { isDownloading } = this.state;
-    return (
-      <>
-        {isDownloading ? (
-          <SyncOutlined spin style={{ color: '#1890ff' }} />
-        ) : (
-          <div onClick={url ? this.downloadFile : () => {}} style={{ cursor: 'pointer' }}>
-            {content}
-          </div>
-        )}
-      </>
+    return isDownloading ? (
+      <SyncOutlined spin style={{ color: '#1890ff' }} />
+    ) : (
+      <div onClick={url ? this.downloadFile : () => {}} style={{ cursor: 'pointer' }}>
+        {content}
+      </div>
     );
   }
 }

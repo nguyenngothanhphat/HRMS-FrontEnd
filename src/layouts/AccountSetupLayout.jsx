@@ -36,13 +36,12 @@ class AccountSetup extends PureComponent {
     return (
       <Layout className={styles.root}>
         <Header>
-          <Link to="/">
-            <img
-              src="/assets/images/terralogic-logo.png"
-              alt="logo"
-              style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
-            />
-          </Link>
+          <img
+            src="/assets/images/terralogic-logo.png"
+            alt="logo"
+            style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
+          />
+
           <RightContent />
         </Header>
         <Authorized authority={authorized.authority} noMatch={noMatch}>

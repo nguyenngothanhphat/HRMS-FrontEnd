@@ -40,11 +40,11 @@ class Screen3 extends Component {
       locations = [],
       user = {},
     } = signup;
-    const defaultLocation = [{ name: company.name, ...headQuarterAddress }];
+    const defaultLocation = { name: company.name, ...headQuarterAddress, isHeadQuarter: true };
     const payload = {
       codeNumber,
       company: { ...company, headQuarterAddress, legalAddress },
-      locations: locations.length === 0 ? defaultLocation : locations,
+      locations: [defaultLocation, ...locations],
       user: { ...user, password: psw },
     };
     return payload;

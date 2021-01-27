@@ -4,9 +4,12 @@ import { Redirect, connect } from 'umi';
 import { getToken } from '../utils/token';
 
 class SecurityLayout extends React.Component {
-  state = {
-    isReady: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false,
+    };
+  }
 
   componentDidMount() {
     this.setState({

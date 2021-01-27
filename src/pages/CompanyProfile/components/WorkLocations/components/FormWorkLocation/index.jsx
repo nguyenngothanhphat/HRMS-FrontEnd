@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, Divider } from 'antd';
 import classnames from 'classnames';
 import s from './index.less';
 
@@ -13,6 +13,14 @@ class FormWorkLocation extends Component {
     this.state = {
       country: '',
     };
+  }
+
+  componentDidMount() {
+    const { name = 0, listLocation = [] } = this.props;
+    const itemLocation = listLocation[name] || {};
+    this.setState({
+      country: itemLocation?.country,
+    });
   }
 
   onChangeCountry = (country, nameField) => {
@@ -48,13 +56,17 @@ class FormWorkLocation extends Component {
 
   render() {
     const { country = '' } = this.state;
-    const { title = '', listCountry = [], isListField = false, name = 0 } = this.props;
+    const { listCountry = [], isListField = false, name = 0, listLocation = [] } = this.props;
     const listState = this.findListState(country) || [];
-
+    const itemLocation = listLocation[name] || {};
     return (
-      <div className={s.content} style={isListField ? { marginTop: '24px' } : {}}>
+      <div className={s.content} style={name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
-          <p className={classnames(s.title, s.mgb16)}>{title || `Work Location ${name + 1}`}</p>
+          <p className={classnames(s.title, s.mgb16)}>
+            {itemLocation?.isHeadQuarter
+              ? `Headquarter (${itemLocation?.name})`
+              : itemLocation?.name || `Work Location ${name}`}
+          </p>
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address</p>
             <Form.Item
@@ -69,6 +81,22 @@ class FormWorkLocation extends Component {
               ]}
             >
               <Input placeholder="Address" />
+            </Form.Item>
+          </div>
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Name</p>
+            <Form.Item
+              isListField={isListField}
+              name={this.getName('name')}
+              label={false}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter name!',
+                },
+              ]}
+            >
+              <Input placeholder="Name Location" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
@@ -146,6 +174,7 @@ class FormWorkLocation extends Component {
             </div>
           </div>
         </div>
+        <Divider className={s.divider} />
       </div>
     );
   }

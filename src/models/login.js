@@ -1,6 +1,3 @@
-/* eslint-disable compat/compat */
-/* eslint-disable require-yield */
-// import { stringify } from 'querystring';
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
@@ -22,7 +19,6 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-
         if (response.statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);

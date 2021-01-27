@@ -9,7 +9,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
-import { connect, Link, useIntl } from 'umi';
+import { connect, Link, useIntl, Redirect } from 'umi';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -46,6 +46,7 @@ const BasicLayout = (props) => {
       pathname: '/',
     },
     route: { routes } = {},
+    currentUser,
   } = props;
   /**
    * init variables
@@ -80,6 +81,10 @@ const BasicLayout = (props) => {
     pathname === '/dashboard' || pathname === '/search-result'
       ? styles.breadCrumbA
       : styles.breadCrumbB;
+
+  if (currentUser?.firstCreated) {
+    return <Redirect to="/account-setup" />;
+  }
 
   return (
     <div
@@ -140,7 +145,8 @@ const BasicLayout = (props) => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, user }) => ({
   collapsed: global.collapsed,
   settings,
+  currentUser: user.currentUser,
 }))(BasicLayout);

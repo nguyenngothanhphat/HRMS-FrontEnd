@@ -45,3 +45,10 @@ export async function getDataOrgChart() {
     method: 'POST',
   });
 }
+
+export async function getListAdministrator(payload) {
+  return request('/api/employee/list-administrator', {
+    method: 'POST',
+    data: payload,
+  });
+}

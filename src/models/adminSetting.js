@@ -9,11 +9,14 @@ import {
   getPermissionByIdRole,
   addPosition,
   addDepartment,
+  getRolesByCompany,
+  setupComplete,
 } from '../services/adminSetting';
 
 const adminSetting = {
   namespace: 'adminSetting',
   state: {
+    listRoleByCompany: [],
     idRoles: '',
     originData: {
       listTitle: [],
@@ -128,6 +131,28 @@ const adminSetting = {
           message,
         });
         yield put({ type: 'fetchDepartment' });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getRolesByCompany({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getRolesByCompany, { company });
+        const { statusCode, data: listRoleByCompany = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listRoleByCompany } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *setupComplete(_, { call, put }) {
+      try {
+        const response = yield call(setupComplete);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'user/fetchCurrent',
+        });
       } catch (errors) {
         dialog(errors);
       }

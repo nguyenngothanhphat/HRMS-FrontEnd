@@ -8,9 +8,6 @@ import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
 import Departments from './components/Departments';
 import CompanySignatory from './components/CompanySignatory';
-import BillingPayments from './components/BillingPayments';
-import PlanInfo from './components/PlanInfo';
-import Integrations from './components/Integrations';
 import CompanyDocuments from './components/CompanyDocuments';
 import styles from './index.less';
 
@@ -37,26 +34,17 @@ const listMenu = [
     name: 'Company Signatory',
     component: <CompanySignatory />,
   },
-  {
-    id: 5,
-    name: 'Billing & Payments',
-    component: <BillingPayments />,
-  },
-  {
-    id: 6,
-    name: 'Plan info',
-    component: <PlanInfo />,
-  },
-  {
-    id: 7,
-    name: 'Integrations',
-    component: <Integrations />,
-  },
 ];
 
-@connect(({ user: { currentUser = {} } = {} }) => ({
-  currentUser,
-}))
+@connect(
+  ({
+    user: { currentUser = {} } = {},
+    departmentManagement: { listByCompany: listDepartment = [] } = {},
+  }) => ({
+    currentUser,
+    listDepartment,
+  }),
+)
 class CompanyProfile extends Component {
   componentDidMount() {
     const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
@@ -67,23 +55,46 @@ class CompanyProfile extends Component {
       type: 'companiesManagement/fetchLocationsList',
       payload: { company: id },
     });
+    dispatch({
+      type: 'departmentManagement/fetchListDefaultDepartment',
+      payload: { company: id },
+    });
+    dispatch({
+      type: 'departmentManagement/fetchListDepartmentByCompany',
+      payload: { company: id },
+    });
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: id,
+      },
+    });
   }
 
   render() {
+    const {
+      listDepartment = [],
+      history: { location: { state: { activeTag = '1' } = {} } = {} } = {},
+    } = this.props;
     const routes = [
-      { name: 'Getting Started', path: '/account-setup/get-started' },
-      { name: 'Company Profile', path: `/account-setup/get-started/company-profile` },
+      { name: 'Getting Started', path: '/account-setup' },
+      { name: 'Company Profile', path: '/account-setup/get-started/company-profile' },
     ];
+
     return (
       <>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
           <div className={styles.titlePage}>Company Profile</div>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey={activeTag}>
             <TabPane tab="Profile Information" key="1">
-              <Layout listMenu={listMenu} isCompanyProfile />
+              <Layout
+                listMenu={listMenu}
+                isCompanyProfile
+                disableSetupDirectory={listDepartment.length === 0}
+              />
             </TabPane>
-            <TabPane tab="User Management" key="2">
+            <TabPane tab="User Management" key="2" disabled={listDepartment.length === 0}>
               <UserManagement />
             </TabPane>
             <TabPane tab="Company Documents" key="3">
