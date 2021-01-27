@@ -147,7 +147,7 @@ class SalaryStructureTemplate extends PureComponent {
     const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
     const { salaryTitle = '' } = this.state;
     console.log('DID UPDATE');
-    console.log(salaryTitleId);
+    console.log('id', salaryTitleId === null);
     if (!salaryTitleId) {
       return;
     }
@@ -390,7 +390,7 @@ class SalaryStructureTemplate extends PureComponent {
     //     },
     //   },
     // });
-
+    console.log('id', this.props.salaryTitleId === null);
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
@@ -576,7 +576,6 @@ class SalaryStructureTemplate extends PureComponent {
     ) {
       return (
         <Form.Item className={styles.buttons}>
-          {' '}
           {isEditted === true ? (
             <Button type="primary" onClick={this.onClickEdit}>
               <img src={doneIcon} alt="icon" />

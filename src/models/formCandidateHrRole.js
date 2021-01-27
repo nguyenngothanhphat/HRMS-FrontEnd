@@ -673,7 +673,8 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...data, listTitle: data },
+          // payload: { ...data, listTitle: data },
+          payload: { listTitle: data },
         });
       } catch (error) {
         dialog(error);
