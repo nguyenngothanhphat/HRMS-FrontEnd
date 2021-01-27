@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
-// import TableAdministrators from './components/TableAdministrators';
+import DownloadTemplate from '@/components/DownloadEmployeeTemplate';
+import UploadListEmployee from '@/components/UploadListEmployee';
 import AddEmployeeForm from './components/AddEmployeeForm';
 import TableListActive from './components/TableListActive';
 import s from './index.less';
@@ -103,7 +104,6 @@ class UserManagement extends PureComponent {
   };
 
   formatData = (values) => {
-    console.log('values', values);
     const {
       _id,
       employeeId,
@@ -138,7 +138,14 @@ class UserManagement extends PureComponent {
       loading,
       loadingFetchListAdmin,
     } = this.props;
-    return (
+    return listEmployeeActive.length === 1 ? (
+      <>
+        <div className={s.center}>
+          <DownloadTemplate />
+        </div>
+        <UploadListEmployee />
+      </>
+    ) : (
       <>
         <div className={s.root}>
           <div className={s.content}>

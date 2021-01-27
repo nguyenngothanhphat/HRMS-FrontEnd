@@ -63,6 +63,12 @@ class CompanyProfile extends Component {
       type: 'departmentManagement/fetchListDepartmentByCompany',
       payload: { company: id },
     });
+    dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        company: id,
+      },
+    });
   }
 
   render() {

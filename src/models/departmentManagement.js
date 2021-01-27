@@ -29,9 +29,8 @@ const departmentManagement = {
       try {
         const response = yield call(getListDepartmentByCompany, { company });
         const { statusCode, data = [] } = response;
-        const listByCompany = data.length === 0 ? [{}] : data;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listByCompany } });
+        yield put({ type: 'save', payload: { listByCompany: data } });
       } catch (errors) {
         dialog(errors);
       }

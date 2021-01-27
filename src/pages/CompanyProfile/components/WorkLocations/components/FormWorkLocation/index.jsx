@@ -64,7 +64,7 @@ class FormWorkLocation extends Component {
         <div className={s.content__viewBottom}>
           <p className={classnames(s.title, s.mgb16)}>
             {itemLocation?.isHeadQuarter
-              ? 'Headquarter'
+              ? `Headquarter (${itemLocation?.name})`
               : itemLocation?.name || `Work Location ${name}`}
           </p>
           <div className={s.content__viewBottom__row}>

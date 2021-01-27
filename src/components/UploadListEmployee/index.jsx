@@ -3,16 +3,26 @@ import React from 'react';
 import { Button, Upload, message, notification } from 'antd';
 import { CloudUploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import _ from 'lodash';
 import { connect } from 'umi';
 import csvtojson from 'csvtojson';
+import exportToCsv from '@/utils/exportToCsv';
 import s from './index.less';
 
 const { Dragger } = Upload;
 
-@connect(({ user: { currentUser = {} } = {}, loading }) => ({
-  currentUser,
-  loading: loading.effects['employeesManagement/importEmployees'],
-}))
+@connect(
+  ({
+    user: { currentUser = {} } = {},
+    loading,
+    employeesManagement: { statusImportEmployees, returnEmployeesList },
+  }) => ({
+    currentUser,
+    statusImportEmployees,
+    returnEmployeesList,
+    loading: loading.effects['employeesManagement/importEmployees'],
+  }),
+)
 class UploadListEmployee extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +31,69 @@ class UploadListEmployee extends React.Component {
       name: '',
     };
   }
+
+  componentDidUpdate() {
+    const { statusImportEmployees, dispatch } = this.props;
+    if (statusImportEmployees) {
+      dispatch({
+        type: 'employeesManagement/save',
+        payload: {
+          statusImportEmployees: false,
+        },
+      });
+    }
+    const { returnEmployeesList } = this.props;
+    if (
+      statusImportEmployees &&
+      !_.isEmpty(returnEmployeesList) &&
+      (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
+    ) {
+      const existList = returnEmployeesList.existList.map((item) => {
+        return {
+          ...item,
+          isAdded: false,
+          // status: '[FAILED] - Work Email existed!',
+        };
+      });
+      const exportData = [...returnEmployeesList.newList, ...existList];
+      exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
+    }
+  }
+
+  processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      return {
+        'Employee Id': item.employeeId,
+        'First Name': item.firstName,
+        'Last Name': item.lastName,
+        'Joined Date': item.joinDate,
+        Location: item.location,
+        Department: item.department,
+        'Work Email': item.workEmail,
+        'Personal Email': item.personalEmail,
+        'Manager Work Email': item.managerWorkEmail,
+        Title: item.title,
+        'Personal Number': item.personalNumber,
+        'Is Added': item.isAdded,
+        Status: item.status,
+      };
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+
+    return dataExport;
+  };
 
   beforeUpload = (file) => {
     const isCSV = file.type === 'text/csv';

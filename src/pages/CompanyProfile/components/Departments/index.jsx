@@ -46,12 +46,13 @@ class Departments extends PureComponent {
 
   render() {
     const { listDefault = [], listDepartment = [], loading } = this.props;
+    const listByCompany = listDepartment.length === 0 ? [{}] : listDepartment;
     return (
       <Form
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ listDepartment }}
+        initialValues={{ listDepartment: listByCompany }}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>
