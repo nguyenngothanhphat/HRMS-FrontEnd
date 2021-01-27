@@ -149,6 +149,9 @@ class SalaryAcceptance extends PureComponent {
         this.setState({
           openModal: true,
         });
+        dispatch({
+          type: 'candidateInfo/redirectToOnboardList',
+        });
       }
     });
   };

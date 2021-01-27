@@ -144,9 +144,13 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-    const { listTitle = [], salaryTitle: salaryTitleId = '' } = this.props;
+    const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
     const { salaryTitle = '' } = this.state;
-
+    console.log('DID UPDATE');
+    console.log(salaryTitleId);
+    if (!salaryTitleId) {
+      return;
+    }
     const titleName = listTitle.find((item) => item._id === salaryTitleId);
     if (titleName && !salaryTitle) {
       this.setState({
@@ -163,7 +167,7 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, settings, listTitle = [], salaryTitle: salaryTitleId = '' } = this.props;
+    const { dispatch, settings, listTitle = [] } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
@@ -172,7 +176,14 @@ class SalaryStructureTemplate extends PureComponent {
     //     type: 'candidateInfo/fetchTitleListByCompany',
     //     payload: { company: _id },
     //   });
-    // }
+    //
+
+    // dispatch({
+    //   type: 'candidateInfo/saveTemp',
+    //   payload: {
+    //     salaryTitle: '',
+    //   },
+    // });
 
     const { _id, processStatus } = this.props;
     // const tempTableData = [...settings];
@@ -643,15 +654,17 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { settings = [], loadingTable } = this.props;
+    const { settings = [], loadingTable, salaryTitle: salaryTitleId } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     // const idTitle = title?._id;
     const { salaryTitle = '' } = this.state;
 
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
+    console.log('render ', salaryTitle);
     return (
       <div className={styles.salaryStructureTemplate}>
-        {this.state.salaryTitle && (
+        {/* {(salaryTitle !== '' || salaryTitle === null) && ( */}
+        {(salaryTitle !== '' || salaryTitleId === null) && (
           <Form onFinish={this.onFinish}>
             {' '}
             <div className={styles.salaryStructureTemplate_select}>

@@ -208,7 +208,7 @@ const candidateInfo = {
       ],
 
       cancelCandidate: false,
-      salaryTitle: '',
+      salaryTitle: null,
     },
     data: {
       fullName: null,
