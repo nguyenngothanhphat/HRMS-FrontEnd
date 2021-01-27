@@ -10,6 +10,7 @@ import {
   addPosition,
   addDepartment,
   getRolesByCompany,
+  setupComplete,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -140,6 +141,18 @@ const adminSetting = {
         const { statusCode, data: listRoleByCompany = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listRoleByCompany } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *setupComplete(_, { call, put }) {
+      try {
+        const response = yield call(setupComplete);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'user/fetchCurrent',
+        });
       } catch (errors) {
         dialog(errors);
       }
