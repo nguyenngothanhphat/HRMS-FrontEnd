@@ -36,13 +36,15 @@ class EditorQuill extends Component {
               ed.ui.registry.addMenuButton('variable', {
                 text: 'Insert auto-text',
                 fetch(callback) {
-                  const menuItems = listAutoText.map((item) => ({
-                    type: 'menuitem',
-                    text: item,
-                    onAction() {
-                      ed.plugins.variable.addVariable(item);
-                    },
-                  }));
+                  const menuItems = listAutoText.map((item) => {
+                    return {
+                      type: 'menuitem',
+                      text: item,
+                      onAction() {
+                        ed.plugins.variable.addVariable(item);
+                      },
+                    };
+                  });
                   callback(menuItems);
                 },
               });

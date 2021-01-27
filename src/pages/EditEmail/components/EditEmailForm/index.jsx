@@ -617,11 +617,12 @@ class EditEmailForm extends PureComponent {
     const newValue = { ...values };
     const { subject } = newValue;
 
-    const message = messages.replace(/<[^>]+>/g, '');
+    // const message = messages.replace(/<[^>]+>/g, '');
+    
     dataSubmit = {
       _id,
       subject,
-      message,
+      message: messages,
     };
 
     console.log('dataSubmit: ', dataSubmit);

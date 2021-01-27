@@ -283,7 +283,6 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeEmail = (value) => {
-    console.log('message', value);
     this.setState({
       messages: value,
     });
@@ -582,13 +581,13 @@ class EmailReminderForm extends PureComponent {
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
-    const message = messages.replace(/<[^>]+>/g, '');
+    // const message = messages.replace(/<[^>]+>/g, '');
 
     if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, message: messages, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
-      dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, conditions, message: messages, sendToExistingWorker };
     }
 
     dispatch({
