@@ -6,7 +6,7 @@ import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
   handleGetStarted = () => {
-    history.push('/account-setup/get-started');
+    history.push('/account-setup/company-profile');
   };
 
   render() {

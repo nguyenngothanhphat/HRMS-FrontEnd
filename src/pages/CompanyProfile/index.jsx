@@ -71,8 +71,8 @@ class CompanyProfile extends Component {
       history: { location: { state: { activeTag = '1' } = {} } = {} } = {},
     } = this.props;
     const routes = [
-      { name: 'Getting Started', path: '/account-setup/get-started' },
-      { name: 'Company Profile', path: `/account-setup/get-started/company-profile` },
+      { name: 'Getting Started', path: '/account-setup' },
+      { name: 'Company Profile', path: '/account-setup/get-started/company-profile' },
     ];
 
     return (

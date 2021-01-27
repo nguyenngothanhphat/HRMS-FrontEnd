@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import {
   LocationFilter,
   DepartmentFilter,
@@ -7,7 +8,9 @@ import {
   getListEmployeeActive,
   getListEmployeeInActive,
   getDataOrgChart,
+  getListAdministrator,
 } from '../services/employee';
+import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
 const employee = {
   namespace: 'employee',
@@ -23,6 +26,7 @@ const employee = {
     clearFilter: false,
     clearName: false,
     dataOrgChart: {},
+    listAdministrator: [],
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -145,6 +149,48 @@ const employee = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *addEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(addEmployee, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add Employee Successfully',
+        });
+        yield put({ type: 'fetchListEmployeeActive', payload: { company: payload?.company } });
+        yield put({ type: 'fetchListAdministrator', payload: { company: payload?.company } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchListAdministrator({ payload: { company = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(getListAdministrator, { company });
+        const { statusCode, data: listAdministrator = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listAdministrator } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *updateEmployee({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(updateEmployee, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update Employee Successfully',
+        });
+        yield put({ type: 'fetchListEmployeeActive', payload: { company: payload?.company } });
+        yield put({ type: 'fetchListAdministrator', payload: { company: payload?.company } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

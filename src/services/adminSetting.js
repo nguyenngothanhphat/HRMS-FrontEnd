@@ -51,3 +51,10 @@ export async function addDepartment(payload) {
     data: payload,
   });
 }
+
+export async function getRolesByCompany(payload) {
+  return request('/api/role/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

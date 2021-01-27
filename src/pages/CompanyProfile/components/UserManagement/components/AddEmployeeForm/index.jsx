@@ -9,30 +9,30 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-const dummyListRole = [
-  { _id: 'Owner', name: 'Owner' },
-  { _id: 'CEO', name: 'CEO' },
-  { _id: 'ADMIN-CSA', name: 'ADMIN-CSA' },
-  { _id: 'HR-GLOBAL', name: 'HR-GLOBAL' },
-  { _id: 'HR-MANAGER', name: 'HR-MANAGER' },
-];
-
-@connect(({ // loading,
-  user: { currentUser = {} } = {}, companiesManagement: { locationsList: workLocations = [] } = {}, departmentManagement: { listByCompany: listDepartment = [] } = {}, employee: { listEmployeeActive = [] } = {} }) => ({
-  currentUser,
-  workLocations,
-  listDepartment,
-  listEmployeeActive,
-  // loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
-}))
+@connect(
+  ({
+    loading,
+    user: { currentUser = {} } = {},
+    companiesManagement: { locationsList: workLocations = [] } = {},
+    departmentManagement: { listByCompany: listDepartment = [] } = {},
+    employee: { listEmployeeActive = [] } = {},
+    adminSetting: { listRoleByCompany = [] } = {},
+  }) => ({
+    currentUser,
+    workLocations,
+    listDepartment,
+    listEmployeeActive,
+    listRoleByCompany,
+    loadingAdd: loading.effects['employee/addEmployee'],
+    loadingUpdate: loading.effects['employee/updateEmployee'],
+  }),
+)
 class AddEmployeeForm extends Component {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
     this.state = {};
   }
-
-  componentDidUpdate() {}
 
   handleCancel = () => {
     const { handleCancel = () => {} } = this.props;
@@ -60,8 +60,8 @@ class AddEmployeeForm extends Component {
       listDepartment = [],
       listEmployeeActive = [],
       userSelected = {},
+      listRoleByCompany = [],
     } = this.props;
-    console.log('userSelected', userSelected);
     const formLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
@@ -151,8 +151,9 @@ class AddEmployeeForm extends Component {
               style={{ width: '100%' }}
               getPopupContainer={() => document.getElementById('addEmployee__form')}
               placeholder="Select Roles"
+              disabled={userSelected._id}
             >
-              {dummyListRole.map((item) => (
+              {listRoleByCompany.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select>
@@ -225,7 +226,7 @@ class AddEmployeeForm extends Component {
               }
             >
               {listEmployeeActive.map((item = {}) => (
-                <Option key={item?.generalInfo?._id}>
+                <Option key={item?._id}>
                   {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
                 </Option>
               ))}
@@ -237,7 +238,7 @@ class AddEmployeeForm extends Component {
   };
 
   render() {
-    const { visible = false, loading } = this.props;
+    const { visible = false, loadingAdd, loadingUpdate } = this.props;
     return (
       <Modal
         className={styles.addEmployee}
@@ -255,7 +256,7 @@ class AddEmployeeForm extends Component {
             htmlType="submit"
             type="primary"
             form="addEmployeeForm"
-            loading={loading}
+            loading={loadingAdd || loadingUpdate}
             className={styles.btnSubmit}
           >
             {formatMessage({ id: 'employee.button.submit' })}
