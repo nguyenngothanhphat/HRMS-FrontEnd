@@ -62,8 +62,9 @@ class InfoCollapseType2 extends PureComponent {
     const {
       data = [],
       onFileClick = () => {},
-      employeeGroup = '',
-      parentEmployeeGroup = '',
+      // employeeGroup = '',
+      // parentEmployeeGroup = '',
+      showDivider = false,
     } = this.props;
     const { title = '' } = data;
     return (
@@ -93,7 +94,12 @@ class InfoCollapseType2 extends PureComponent {
             </Col>
           </Row>
           <div className={styles.tableOfContents}>
-            <TypeRow data={data.body} onFileClick={onFileClick} parentEmployeeGroup={title} />
+            <TypeRow
+              data={data.body}
+              onFileClick={onFileClick}
+              parentEmployeeGroup={title}
+              showDivider={showDivider}
+            />
           </div>
         </div>
       </div>

@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { DownOutlined } from '@ant-design/icons';
-import clsx from 'clsx';
 import styles from './index.less';
 
 @connect(
@@ -24,6 +22,8 @@ import styles from './index.less';
   }),
 )
 class Edit extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -112,12 +112,13 @@ class Edit extends PureComponent {
             id: value,
           },
         });
-        const r_country = this.getCountryObjData(value);
+        // eslint-disable-next-line no-case-declarations
+        const reCountry = this.getCountryObjData(value);
 
         this.setState((prevState) => ({
           residentAddress: {
             ...prevState.residentAddress,
-            country: r_country,
+            country: reCountry,
           },
         }));
         break;
@@ -152,12 +153,14 @@ class Edit extends PureComponent {
             id: value,
           },
         });
-        const c_country = this.getCountryObjData(value);
+
+        // eslint-disable-next-line no-case-declarations
+        const curCountry = this.getCountryObjData(value);
 
         this.setState((prevState) => ({
           currentAddress: {
             ...prevState.currentAddress,
-            country: c_country,
+            country: curCountry,
           },
         }));
         break;
@@ -222,6 +225,7 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
+    console.log('aaaaa');
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
@@ -249,7 +253,6 @@ class Edit extends PureComponent {
   render() {
     const { Option } = Select;
     const { TextArea } = Input;
-    const { residentAddress: addressState, currentAddress: _addressState } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -257,7 +260,7 @@ class Edit extends PureComponent {
       },
       wrapperCol: {
         xs: { span: 9 },
-        sm: { span: 9 },
+        sm: { span: 12 },
       },
     };
     const {
@@ -270,7 +273,7 @@ class Edit extends PureComponent {
     } = this.props;
 
     const formatCountryList = countryList.map((item) => {
-      const { _id: value, name, states } = item;
+      const { _id: value, name } = item;
       return {
         value,
         name,
@@ -283,8 +286,6 @@ class Edit extends PureComponent {
       Blood = '',
       maritalStatus = '',
       linkedIn = '',
-      residentAddress = {},
-      currentAddress = {},
       residentAddress: {
         address: r_Address = '',
         country: { name: r_countryName = '' } = {},
@@ -303,6 +304,9 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           name="personal_information"
+          ref={this.formRef}
+          id="myForm"
+          // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           initialValues={{
             personalNumber,
@@ -381,6 +385,7 @@ class Edit extends PureComponent {
             <TextArea
               autoSize={{ minRows: 2, maxRows: 6 }}
               className={styles.areaForm}
+              // eslint-disable-next-line camelcase
               defaultValue={r_Address}
               onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
               rules={[
@@ -392,11 +397,12 @@ class Edit extends PureComponent {
             />
           </Form.Item>
 
-          <Row gutter={[24, 24]} align="middle">
+          <Row gutter={[12, 24]} align="left">
             <Col span={8} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={r_countryName}
                   onChange={(value) => {
                     this.handleChangeAddress('r_countryName', value);
@@ -426,6 +432,7 @@ class Edit extends PureComponent {
                 <Select
                   showArrow
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={r_state}
                   onChange={(e) => this.handleChangeAddress('r_state', e)}
                   // suffixIcon={<DownOutlined className={styles.arrowUP} />}
@@ -438,7 +445,7 @@ class Edit extends PureComponent {
                     <>
                       {listStates.map((item, index) => {
                         return (
-                          <Option key={index + 1} value={item}>
+                          <Option key={`${index + 1}`} value={item}>
                             {item}
                           </Option>
                         );
@@ -452,6 +459,7 @@ class Edit extends PureComponent {
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={r_zipCode}
                   onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
                 />
@@ -463,16 +471,18 @@ class Edit extends PureComponent {
             <TextArea
               autoSize={{ minRows: 2, maxRows: 6 }}
               className={styles.areaForm}
+              // eslint-disable-next-line camelcase
               defaultValue={c_Address}
               onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
             />
           </Form.Item>
-          <Row gutter={[24, 24]} align="middle">
+          <Row gutter={[12, 24]} align="left">
             <Col span={8} className={styles.address}>
               <Form.Item label="Country" className={styles.addressSection}>
                 <Select
                   showArrow
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={c_countryName}
                   onChange={(value) => this.handleChangeAddress('c_countryName', value)}
                   // suffixIcon={<DownOutlined className={styles.arrowUP} />}
@@ -492,6 +502,7 @@ class Edit extends PureComponent {
                 <Select
                   showArrow
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={c_state}
                   onChange={(value) => this.handleChangeAddress('c_state', value)}
                   // suffixIcon={<DownOutlined className={styles.arrowUP} />}
@@ -518,27 +529,27 @@ class Edit extends PureComponent {
               <Form.Item label="Zip Code" className={styles.addressSection}>
                 <Input
                   className={styles.selectForm}
+                  // eslint-disable-next-line camelcase
                   defaultValue={c_zipCode}
                   onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
                 />
               </Form.Item>
             </Col>
           </Row>
-        </Form>
-        <div className={styles.spaceFooter}>
-          <div className={styles.cancelFooter} onClick={handleCancel}>
-            Cancel
+          <div className={styles.spaceFooter}>
+            <div className={styles.cancelFooter} onClick={handleCancel}>
+              Cancel
+            </div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.buttonFooter}
+              loading={loading}
+            >
+              Save
+            </Button>
           </div>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className={styles.buttonFooter}
-            loading={loading}
-          >
-            Save
-          </Button>
-        </div>
-        {/* Custom Col Here */}
+        </Form>
       </Row>
     );
   }

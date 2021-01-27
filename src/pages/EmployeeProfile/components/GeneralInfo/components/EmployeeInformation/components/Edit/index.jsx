@@ -285,7 +285,7 @@ class Edit extends PureComponent {
       },
       wrapperCol: {
         xs: { span: 9 },
-        sm: { span: 9 },
+        sm: { span: 12 },
       },
     };
     const formatDate = DOB && moment(DOB);

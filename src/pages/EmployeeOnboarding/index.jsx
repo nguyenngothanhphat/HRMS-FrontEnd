@@ -87,12 +87,12 @@ class EmployeeOnboarding extends PureComponent {
                     >
                       <Settings />
                     </TabPane>
-                    <TabPane
+                    {/* <TabPane
                       tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
                       key="3"
                     >
                       <CustomFields />
-                    </TabPane>
+                    </TabPane> */}
                   </>
                 ) : null}
               </Tabs>

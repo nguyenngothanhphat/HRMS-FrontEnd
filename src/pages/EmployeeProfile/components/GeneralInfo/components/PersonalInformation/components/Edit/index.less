@@ -3,6 +3,9 @@
     width: 100%;
     padding: 0 48px;
     :global {
+      .ant-row.ant-row-left {
+        padding: 0 155px;
+      }
       .ant-select .ant-select-arrow {
         transition: transform 0.2s ease-in;
       }
@@ -14,8 +17,8 @@
         text-align: left;
       }
       .ant-form-item-label > label {
-        font-size: 13px;
         color: #000000;
+        font-size: 13px;
       }
       .ant-form-item-label > label::after {
         content: '';
@@ -61,15 +64,15 @@
   }
 
   .inputForm {
-    border-radius: 5px;
     border: solid 1px #d6dce0;
+    border-radius: 5px;
   }
   .areaForm {
     border-radius: 5px;
   }
   .selectForm {
-    border-radius: 5px;
     border-color: #d6dce0;
+    border-radius: 5px;
     box-shadow: none;
 
     &_loading {
@@ -84,12 +87,12 @@
 
     :global {
       .ant-select-selector {
-        box-shadow: none;
         border-radius: 5px;
+        box-shadow: none;
       }
       .ant-select-focused {
-        box-shadow: none;
         border-color: #2c6df9;
+        box-shadow: none;
       }
 
       .ant-select-selection-item {
@@ -98,8 +101,8 @@
     }
   }
   .selectForm:focus {
-    box-shadow: none;
     border-radius: 5px;
+    box-shadow: none;
   }
   .arrowDown {
     color: #161c29;
@@ -119,17 +122,17 @@
   .spaceFooter {
     display: flex;
     flex-flow: row;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
+    width: 100%;
     padding: 24px;
     border-top: solid 1px #d6dce0;
-    width: 100%;
   }
   .cancelFooter {
     margin-right: 40px;
-    font-size: 14px;
-    font-weight: 500;
     color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
   }
   .cancelFooter:hover {
@@ -138,14 +141,14 @@
   .buttonFooter {
     width: 95px;
     height: 40px;
-    font-size: 14px;
     color: #ffffff;
-    border-radius: 25px;
-    border: solid 1px #ffa100;
+    font-size: 14px;
     background-color: #ffa100;
+    border: solid 1px #ffa100;
+    border-radius: 25px;
   }
   .buttonFooter:hover {
-    border: solid 1px #b1740c;
     background-color: #b1740c;
+    border: solid 1px #b1740c;
   }
 }
