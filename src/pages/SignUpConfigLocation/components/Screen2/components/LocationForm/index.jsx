@@ -16,7 +16,7 @@ const LocationForm = (props) => {
   useEffect(() => {}, [locations]);
 
   const removeAutocomplete = () => {
-    const searchInputs = document.querySelectorAll(`input[type='search']`);
+    const searchInputs = document.querySelectorAll(`input`);
 
     searchInputs.forEach((element) => element.setAttribute('autocomplete', 'nope'));
   };

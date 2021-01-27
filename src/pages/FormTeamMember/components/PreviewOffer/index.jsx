@@ -310,10 +310,18 @@ const PreviewOffer = (props) => {
 
   const closeModal = () => {
     setOpenModal(false);
+
+    dispatch({
+      type: 'candidateInfo/redirectToOnboardList',
+    });
   };
 
   const closeModal2 = () => {
     setOpenModal2(false);
+
+    dispatch({
+      type: 'candidateInfo/redirectToOnboardList',
+    });
   };
 
   // const disableHrSubmitActions = () => {

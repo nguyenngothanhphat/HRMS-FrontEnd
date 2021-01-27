@@ -330,6 +330,9 @@ class BackgroundCheck extends Component {
               isSentEmail: true,
             },
           });
+          dispatch({
+            type: 'candidateInfo/redirectToOnboardList',
+          });
         }
       });
       dispatch({

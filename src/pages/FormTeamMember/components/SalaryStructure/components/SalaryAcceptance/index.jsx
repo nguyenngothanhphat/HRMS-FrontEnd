@@ -83,6 +83,9 @@ class SalaryAcceptance extends PureComponent {
         notification.success({
           message: 'Candidate closed!',
         });
+        dispatch({
+          type: 'candidateInfo/redirectToOnboardList',
+        });
       }
     });
   };
