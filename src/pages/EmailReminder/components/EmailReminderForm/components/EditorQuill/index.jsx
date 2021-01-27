@@ -1,77 +1,73 @@
-/* eslint-disable no-console */
-/* eslint-disable no-bitwise */
-/* eslint-disable no-return-assign */
-import React from 'react';
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill, { Quill } from 'react-quill';
-import QuillMention from 'quill-mention';
-import './index.less';
+import React, { Component } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
+import { history, connect } from 'umi';
+import { notification } from 'antd';
+import styles from './index.less';
 
-Quill.register('modules/mentions', QuillMention);
-
-class EditorQuill extends React.Component {
-    
-    modules = {
-    toolbar: {
-      container: [
-        ['bold', 'italic', 'underline', 'strike'], 
-
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ script: 'sub' }, { script: 'super' }], 
-        [{ indent: '-1' }, { indent: '+1' }], 
-        [{ direction: 'rtl' }], 
-
-        [{ size: ['small', false, 'large', 'huge'] }], 
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
-        [{ color: [] }, { background: [] }], 
-        [{ font: [] }],
-        [{ align: [] }],
-
-        ['clean'],
-        [{ placeholder: this.props.listAutoText }],
-      ],
-      handlers: {
-        placeholder (value) {
-          if (value) {
-            const cursorPosition = this.quill.getSelection().index;
-            this.quill.insertText(cursorPosition, value);
-            this.quill.setSelection(cursorPosition + value.length);
-          }
-        },
-      },
-    },
-  };
-
+@connect(({ employeeSetting }) => ({
+  employeeSetting,
+}))
+class EditorQuill extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-    };
-  }
-
-  componentDidMount() { 
-    const placeholderPickerItems = Array.prototype.slice.call(
-      document.querySelectorAll('.ql-placeholder .ql-picker-item'),
-    );
-
-    placeholderPickerItems.forEach((item) => (item.textContent = item.dataset.value));
-
-    document.querySelector('.ql-placeholder .ql-picker-label').innerHTML =
-      `Auto text${  document.querySelector('.ql-placeholder .ql-picker-label').innerHTML}`;
+    this.mapValues = {};
   }
 
   render() {
-    const { handleChangeEmail, messages} = this.props;
+    const { messages = '', handleChangeEmail = () => {}, listAutoText = [] } = this.props;
 
     return (
-      <div className="text-editor">
-        <ReactQuill
-          theme="snow"
-          onChange={handleChangeEmail}
-          value={messages}
-          modules={this.modules}
-          placeholder={this.placeholder}
+      <div className={styles.EditorQuill}>
+        <Editor
+          initialValue={messages}
+          // apiKey={process.env.REACT_APP_TINYMCE_KEY}
+          init={{
+            height: '100%',
+            menubar: true,
+            plugins: [
+              'save advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks fullscreen',
+              'insertdatetime media table paste help wordcount variable',
+            ],
+            toolbar:
+              'undo redo formatselect bold italic size backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
+            content_style: 'body { margin: 1rem auto; max-width: 900px; padding: 0 13px; }',
+            setup(ed) {
+              window.tester = ed;
+              ed.ui.registry.addMenuButton('variable', {
+                text: 'Insert auto-text',
+                fetch(callback) {
+                  const menuItems = listAutoText.map((item) => ({
+                    type: 'menuitem',
+                    text: item,
+                    onAction() {
+                      ed.plugins.variable.addVariable(item);
+                    },
+                  }));
+                  callback(menuItems);
+                },
+              });
+
+              ed.on('variableClick', (e) => {
+                notification.info({
+                  message: `You clicked on ${e.value}!`,
+                  description:
+                    'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
+                });
+              });
+            },
+
+            variable_style:
+              'background-color: #ffa100; color: #fff; border-radius: 4px; padding: 4px; margin: 0 2px; font-weight: bold',
+            external_plugins: {
+              variable: window.location.href.replace(
+                history.location.pathname,
+                '/tinymce/plugins/auto_text/plugin.js',
+              ),
+            },
+          }}
+          onEditorChange={handleChangeEmail}
+          outputFormat="raw"
         />
       </div>
     );

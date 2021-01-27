@@ -283,6 +283,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeEmail = (value) => {
+    console.log('message', value);
     this.setState({
       messages: value,
     });
