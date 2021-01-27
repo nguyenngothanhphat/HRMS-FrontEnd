@@ -30,6 +30,9 @@ class ScheduleModal extends Component {
     const { handleCancel } = this.props;
     console.log('ye');
     this.setState({}, () => handleCancel());
+    // dispatch({
+    //   type: 'candidateInfo/redirectToOnboardList',
+    // });
   };
 
   handleSubmit = () => {
