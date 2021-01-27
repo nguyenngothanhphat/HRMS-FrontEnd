@@ -52,7 +52,7 @@ class UploadListEmployee extends React.Component {
         return {
           ...item,
           isAdded: false,
-          // status: '[FAILED] - Work Email existed!',
+          status: '[FAILED] - Work Email existed or Location not found!',
         };
       });
       const exportData = [...returnEmployeesList.newList, ...existList];
