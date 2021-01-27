@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { history, connect } from 'umi';
-import { notification } from 'antd';
 import styles from './index.less';
 
 @connect(({ employeeSetting }) => ({
@@ -48,17 +47,19 @@ class EditorQuill extends Component {
                 },
               });
 
-              ed.on('variableClick', (e) => {
-                notification.info({
-                  message: `You clicked on ${e.value}!`,
-                  description:
-                    'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
-                });
-              });
+              // ed.on('variableClick', (e) => {
+              //   notification.info({
+              //     message: `You clicked on ${e.value}!`,
+              //     description:
+              //       'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
+              //   });
+              // });
             },
+            variable_prefix: '@',
+            variable_suffix: '',
 
             variable_style:
-              'background-color: #ffa100; color: #fff; border-radius: 4px; padding: 4px; margin: 0 2px; font-weight: bold',
+              'background-color: #ffa100; color: #fff; border-radius: 4px; padding: 4px; margin: 0 2px; font-weight: 500',
             external_plugins: {
               variable: window.location.href.replace(
                 history.location.pathname,

@@ -120,26 +120,26 @@ class CustomEmailsTableField extends PureComponent {
           );
         },
       },
-      {
-        title: '',
-        dataIndex: 'delete',
-        key: 'delete',
-        render: () => {
-          const { currentRecord = {} } = this.state;
-          const { idCustomEmail = '' } = currentRecord;
-          const { loading } = this.props;
+      // {
+      //   title: '',
+      //   dataIndex: 'delete',
+      //   key: 'delete',
+      //   render: () => {
+      //     const { currentRecord = {} } = this.state;
+      //     const { idCustomEmail = '' } = currentRecord;
+      //     const { loading } = this.props;
 
-          return (
-            <img
-              src={trashIcon}
-              alt="trash"
-              className={styles.trashIcon}
-              onClick={() => this.handleActionDelete(idCustomEmail)}
-              loading={loading}
-            />
-          );
-        },
-      },
+      //     return (
+      //       <img
+      //         src={trashIcon}
+      //         alt="trash"
+      //         className={styles.trashIcon}
+      //         onClick={() => this.handleActionDelete(idCustomEmail)}
+      //         loading={loading}
+      //       />
+      //     );
+      //   },
+      // },
     ];
     return columns;
   };

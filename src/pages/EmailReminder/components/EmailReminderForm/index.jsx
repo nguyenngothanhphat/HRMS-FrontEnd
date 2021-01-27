@@ -11,11 +11,11 @@ import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } fro
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
+import EditorQuill from '@/components/EditorQuill';
 
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
-import EditorQuill from './components/EditorQuill';
 
 Quill.register('modules/mentions', QuillMention);
 
