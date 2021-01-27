@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-curly-newline */
 import Breadcrumb from '@/components/Breadcrumb';
 import DownloadTemplate from '@/components/DownloadEmployeeTemplate';
 import UploadListEmployee from '@/components/UploadListEmployee';
 import React from 'react';
-import { Spin } from 'antd';
-import { connect } from 'umi';
+import { Spin, Button } from 'antd';
+import { connect, history } from 'umi';
 import Table from './Components/TableListActive';
 import s from './index.less';
 
@@ -45,6 +46,19 @@ class SetupEmployeeDirectory extends React.PureComponent {
     ) : (
       <div style={{ width: '85%' }}>
         <Table data={listEmployeeActive} />
+        <div className={s.viewBtn}>
+          <Button
+            className={s.btnUserManagement}
+            onClick={() =>
+              history.push({
+                pathname: '/account-setup/get-started/company-profile',
+                state: { activeTag: '2' },
+              })
+            }
+          >
+            Go to User Management
+          </Button>
+        </div>
       </div>
     );
   };

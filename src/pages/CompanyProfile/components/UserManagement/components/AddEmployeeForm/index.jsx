@@ -1,19 +1,36 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-template-curly-in-string */
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, Modal, DatePicker, Select } from 'antd';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
+import _ from 'lodash';
 import styles from './index.less';
 
-@connect()
+const { Option } = Select;
+
+const dummyListRole = [
+  { _id: 'Owner', name: 'Owner' },
+  { _id: 'CEO', name: 'CEO' },
+  { _id: 'ADMIN-CSA', name: 'ADMIN-CSA' },
+  { _id: 'HR-GLOBAL', name: 'HR-GLOBAL' },
+  { _id: 'HR-MANAGER', name: 'HR-MANAGER' },
+];
+
+@connect(({ // loading,
+  user: { currentUser = {} } = {}, companiesManagement: { locationsList: workLocations = [] } = {}, departmentManagement: { listByCompany: listDepartment = [] } = {}, employee: { listEmployeeActive = [] } = {} }) => ({
+  currentUser,
+  workLocations,
+  listDepartment,
+  listEmployeeActive,
+  // loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
+}))
 class AddEmployeeForm extends Component {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
     this.state = {};
   }
-
-  componentDidMount() {}
 
   componentDidUpdate() {}
 
@@ -37,6 +54,14 @@ class AddEmployeeForm extends Component {
   };
 
   renderAddEmployeeForm = () => {
+    const {
+      currentUser: { company = {} } = {},
+      workLocations = [],
+      listDepartment = [],
+      listEmployeeActive = [],
+      userSelected = {},
+    } = this.props;
+    console.log('userSelected', userSelected);
     const formLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
@@ -52,6 +77,7 @@ class AddEmployeeForm extends Component {
     return (
       <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
+          autoComplete="off"
           name="formAddEmployee"
           colon={false}
           labelAlign="left"
@@ -60,6 +86,7 @@ class AddEmployeeForm extends Component {
           validateMessages={validateMessages}
           id="addEmployeeForm"
           onFinish={this.handleSubmitEmployee}
+          initialValues={{ ...userSelected }}
           {...formLayout}
         >
           <Form.Item
@@ -89,11 +116,120 @@ class AddEmployeeForm extends Component {
             <Input />
           </Form.Item>
           <Form.Item
+            label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
+            name="joinDate"
+            rules={[{ required: true }]}
+          >
+            <DatePicker
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+            />
+          </Form.Item>
+          <Form.Item
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
           >
             <Input />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.workEmail' })}
+            name="workEmail"
+            rules={[{ required: true, type: 'email' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.roles' })}
+            name="roles"
+            rules={[{ required: true }]}
+          >
+            <Select
+              mode="multiple"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              placeholder="Select Roles"
+            >
+              {dummyListRole.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.company' })}
+            name="company"
+            initialValue={company._id}
+            rules={[{ required: true }]}
+          >
+            <Select disabled>
+              <Option key={company._id} value={company._id}>
+                {company.name}
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.location' })}
+            name="location"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.location' })}
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {workLocations.map((item) => {
+                const { name = '', _id = '' } = item;
+                if (!_.isEmpty(name)) {
+                  return <Option key={_id}>{name}</Option>;
+                }
+                return null;
+              })}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.department' })}
+            name="department"
+            rules={[{ required: true }]}
+          >
+            <Select
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.department' })}
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {listDepartment.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            className={styles.reportingManager}
+            label={formatMessage({ id: 'addEmployee.manager' })}
+            name="manager"
+            rules={[{ required: true }]}
+          >
+            <Select
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
+              showArrow
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {listEmployeeActive.map((item = {}) => (
+                <Option key={item?.generalInfo?._id}>
+                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </div>
