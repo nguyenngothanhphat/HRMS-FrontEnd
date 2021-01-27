@@ -15,6 +15,37 @@
   }
 
   :global {
+    .ant-breadcrumb {
+      > span:first-child {
+        margin-bottom: 7px;
+        a {
+          font-weight: 500;
+          opacity: 1;
+          color: #fff;
+          display: inline-block;
+          padding-top: 1px;
+        }
+        span.ant-breadcrumb-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #2c6df9;
+          border-radius: 5px;
+          padding: 5px;
+          margin: 0 5px;
+          &::before {
+            content: '';
+            display: block;
+            width: 15px;
+            margin-right: 5px;
+            height: 15px;
+            // content: url(../../public/assets/images/menuIcons/dashboard.svg);
+            background: url(../../public/assets/images/menuIcons/dashboard.svg);
+            background-size: cover;
+          }
+        }
+      }
+    }
     .ant-pro-menu-item {
       display: flex;
       align-items: center;
@@ -67,6 +98,15 @@
       display: flex;
       align-items: center;
       height: 30px;
+      span {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .ant-breadcrumb-link {
+      display: inline-flex;
+      // align-items: center;
     }
 
     .ant-breadcrumb a {
