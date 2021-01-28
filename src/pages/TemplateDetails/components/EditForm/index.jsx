@@ -91,14 +91,16 @@ class EditForm extends Component {
                 },
               });
 
-              ed.on('variableClick', (e) => {
-                notification.info({
-                  message: `You clicked on ${e.value}!`,
-                  description:
-                    'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
-                });
-              });
+              // ed.on('variableClick', (e) => {
+              //   notification.info({
+              //     message: `You clicked on ${e.value}!`,
+              //     description:
+              //       'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
+              //   });
+              // });
             },
+            variable_prefix: '@',
+            variable_suffix: '',
 
             variable_mapper: this.mapValues,
             variable_style:

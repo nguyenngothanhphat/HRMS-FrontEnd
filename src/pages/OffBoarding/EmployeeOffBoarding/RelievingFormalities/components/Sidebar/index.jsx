@@ -41,14 +41,14 @@ export default class Sidebar extends PureComponent {
     this.state = {};
   }
 
-  rederItem = (reder) => {
+  renderItem = (render) => {
     return (
       <Row>
         <Col span={4}>
-          <img src={reder.icon} alt="iconCheck" />
+          <img src={render.icon} alt="iconCheck" />
         </Col>
         <Col span={19}>
-          <div className={styles.description}>{reder.decription} </div>
+          <div className={styles.description}>{render.decription} </div>
         </Col>
       </Row>
     );
@@ -69,7 +69,7 @@ export default class Sidebar extends PureComponent {
           <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div>
           <div className={styles.twoRight}>
             <p className={styles.text_twoRight}>Few thing to consider</p>
-            <div>{array.map((reder) => this.rederItem(reder))}</div>
+            <div>{array.map((render) => this.renderItem(render))}</div>
           </div>
         </div>
       </div>

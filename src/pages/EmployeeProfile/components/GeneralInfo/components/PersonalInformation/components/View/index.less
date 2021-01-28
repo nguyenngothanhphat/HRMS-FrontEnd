@@ -19,16 +19,23 @@
     margin-left: 9px;
   }
   .iconBox {
-    border-radius: 4px;
-    background-color: #f6f7f9;
+    // border-radius: 4px;
+    // background-color: #f6f7f9;
+    // background-color: red;
+    display: flex;
+    justify-content: flex-end;
   }
   .iconRadio {
     display: flex;
+    border-radius: 4px;
+    background-color: #f6f7f9;
     :global {
       .ant-radio-button-wrapper {
         border-color: #e4edff;
         background-color: #f6f7f9;
         color: #cdd2e6;
+        display: flex;
+        align-items: center;
       }
       .ant-radio-button-wrapper-checked {
         color: #2c6df9;

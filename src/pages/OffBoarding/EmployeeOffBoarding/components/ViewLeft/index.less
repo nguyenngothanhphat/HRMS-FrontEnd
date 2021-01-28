@@ -1,4 +1,4 @@
-.Contanner {
+.Container {
   :global {
     .ant-tabs-content-holder {
       padding: 0px 20px 0px;
@@ -29,7 +29,7 @@
     background: #fffdf7;
     border: 1px solid #ffc65a;
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   .icon {
@@ -52,17 +52,22 @@
   }
 
   .submitButton {
-    width: 220px;
+    padding: 0 30px;
     height: 40px;
     border-radius: 30px;
     margin-bottom: 30px;
     background-color: #ffa100;
     color: #fff;
     font-weight: 700;
+    border: none;
     &:hover,
     &:active,
     &:focus {
       border: none;
+    }
+    &:hover {
+      background-color: #ee9803;
+      transition: 0.3s;
     }
   }
 
