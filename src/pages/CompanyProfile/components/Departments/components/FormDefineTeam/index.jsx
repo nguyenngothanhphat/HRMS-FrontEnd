@@ -21,7 +21,7 @@ class FormDefineTeam extends React.PureComponent {
                       <p className={s.title}>Team {index2 + 1}</p>
                       <Form.Item
                         {...team}
-                        name={[team.name, 'team']}
+                        // name={[team.name, 'team']}
                         fieldKey={[team.fieldKey, 'team']}
                         key={index2}
                         rules={[

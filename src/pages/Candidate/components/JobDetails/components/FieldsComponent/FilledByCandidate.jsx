@@ -33,10 +33,13 @@ class FilledByCandidate extends PureComponent {
       dateOfJoining = '',
     } = this.props;
 
-    const dateJoin = dateOfJoining ? moment(dateOfJoining).locale('en').format(dateFormat) : '';
+    const dateJoin = dateOfJoining
+      ? moment(dateOfJoining).locale('en').format(dateFormat)
+      : moment(new Date());
     // console.log(dateOfJoining);
     // console.log(moment('12/23/2020', dateFormat));
     // console.log(dateJoin);
+
     const { isHidden } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>

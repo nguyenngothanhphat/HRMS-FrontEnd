@@ -1,26 +1,80 @@
 import React, { PureComponent } from 'react';
-import ItemSignature from './components/ItemSignature';
+import { Form, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
+import FormSignature from './components/FormSignature';
 import s from './index.less';
 
-const dummySignature = [1, 2, 3, 4];
+@connect(({ loading, user: { currentUser = {} } = {} }) => ({
+  currentUser,
+  loading: loading.effects['companiesManagement/updateCompany'],
+}))
+class CompanySignatory extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.formRef = React.createRef();
+  }
 
-export default class CompanySignatory extends PureComponent {
+  onFinish = ({ listSignature = [] }) => {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const payload = { id, companySignature: listSignature };
+    dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
+  };
+
   render() {
+    const { currentUser: { company: { companySignature = [] } = {} } = {}, loading } = this.props;
+    const defaultList = companySignature.length === 0 ? [{}] : companySignature;
     return (
-      <div className={s.root}>
-        <div className={s.content__viewTop}>
-          <p className={s.title}>Company Signatory</p>
-          <p className={s.text}>
-            Company Signatories are required for the approval of any policies, onboarding of
-            employees, any finance, administration or business related decisions.
-          </p>
+      <Form
+        onFinish={this.onFinish}
+        autoComplete="off"
+        initialValues={{ listSignature: defaultList }}
+        ref={this.formRef}
+      >
+        <div className={s.root}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Company Signatory</p>
+            <p className={s.text}>
+              Company Signatories are required for the approval of any policies, onboarding of
+              employees, any finance, administration or business related decisions.
+            </p>
+          </div>
+          <div className={s.content__viewBottom}>
+            <Form.List name="listSignature">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map((field) => (
+                    <FormSignature
+                      field={field}
+                      key={field.name}
+                      onRemove={() => remove(field.name)}
+                      formRef={this.formRef}
+                    />
+                  ))}
+                  <div className={s.viewAddNew} onClick={() => add()}>
+                    <p className={s.viewAddNew__icon}>
+                      <PlusOutlined />
+                    </p>
+                    <p className={s.viewAddNew__text}>Add New</p>
+                  </div>
+                </>
+              )}
+            </Form.List>
+          </div>
         </div>
-        <div className={s.content__viewBottom}>
-          {dummySignature.map((item, index) => (
-            <ItemSignature key={item} data={item} index={index} />
-          ))}
+        <div className={s.viewBtn}>
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
+            Save
+          </Button>
         </div>
-      </div>
+      </Form>
     );
   }
 }
+
+export default CompanySignatory;

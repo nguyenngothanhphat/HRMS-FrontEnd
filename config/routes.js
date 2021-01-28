@@ -79,38 +79,38 @@ const routes = [
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        authority: ['hr-manager'],
+        authority: ['employee'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
-            authority: ['hr-manager'],
+            authority: ['employee'],
           },
+          // {
+          //   path: '/account-setup/get-started',
+          //   component: './GetStarted',
+          //   name: 'Getting Started',
+          //   authority: ['employee'],
+          // },
           {
-            path: '/account-setup/get-started',
-            component: './GetStarted',
-            name: 'Getting Started',
-            authority: ['hr-manager'],
-          },
-          {
-            path: '/account-setup/get-started/company-profile',
+            path: '/account-setup/company-profile',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['hr-manager'],
+            authority: ['employee'],
           },
-          {
-            path: '/account-setup/get-started/setup-employee-directory',
-            component: './SetupEmployeeDirectory',
-            name: 'Setup Employee Directory',
-            authority: ['hr-manager'],
-          },
-          {
-            path: '/account-setup/get-started/setup-timeoff',
-            component: './SetupTimeoff',
-            name: 'Setup Timeoff',
-            authority: ['hr-manager'],
-          },
+          // {
+          //   path: '/account-setup/get-started/setup-employee-directory',
+          //   component: './SetupEmployeeDirectory',
+          //   name: 'Setup Employee Directory',
+          //   authority: ['employee'],
+          // },
+          // {
+          //   path: '/account-setup/get-started/setup-timeoff',
+          //   component: './SetupTimeoff',
+          //   name: 'Setup Timeoff',
+          //   authority: ['hr-manager'],
+          // },
         ],
       },
       {

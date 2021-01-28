@@ -1,15 +1,38 @@
 .root {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  padding: 25px 56px;
+  padding: 50px 0;
   .content {
-    background-color: #fff;
-    height: 30vh;
-    padding: 24px;
-    .title {
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 19px;
-      color: #161c29;
+    width: 85%;
+    height: fit-content;
+    &__viewTop {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      &__title {
+        color: #161c29;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 19px;
+      }
+      &__add {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        span {
+          margin-left: 4px;
+          color: #ffa100;
+          font-weight: 500;
+        }
+      }
     }
   }
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
 }

@@ -1,17 +1,11 @@
 // import { Tooltip, Tag } from 'antd';
-import { CalendarOutlined, BellOutlined } from '@ant-design/icons';
+import { BellOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import { connect, Link } from 'umi';
-import Avatar from './AvatarDropdown';
+import { connect } from 'umi';
 import HeaderSearch from '../HeaderSearch';
+import Avatar from './AvatarDropdown';
 import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
 import styles from './index.less';
-
-// const ENVTagColor = {
-//   dev: 'orange',
-//   test: 'green',
-//   pre: '#87d068',
-// };
 
 const GlobalHeaderRight = (props) => {
   const {
@@ -54,28 +48,9 @@ const GlobalHeaderRight = (props) => {
           }
         }}
       />
-      {/* <Link to="/time-off">
-        <div className={`${styles.action} ${styles.calendar}`}>
-          <CalendarOutlined />
-        </div>
-      </Link> */}
-
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>
-      {/* <Tooltip title="使用文档">
-        <a
-          style={{
-            color: 'inherit',
-          }}
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <QuestionCircleOutlined />
-        </a>
-      </Tooltip> */}
       <Avatar />
       <GlobalEmployeeSearch
         titleModal="GLOBAL EMPLOYEE SEARCH"

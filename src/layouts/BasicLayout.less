@@ -15,6 +15,23 @@
   }
 
   :global {
+    .ant-breadcrumb-link {
+      display: inline-flex;
+      // align-items: center;
+    }
+
+    .ant-breadcrumb a {
+      color: #161c29;
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    .ant-breadcrumb-separator {
+      margin: 0px 20px;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: large;
+    }
+
     .ant-breadcrumb {
       > span:first-child {
         margin-bottom: 7px;
@@ -31,8 +48,8 @@
           justify-content: center;
           background-color: #2c6df9;
           border-radius: 5px;
-          padding: 5px;
-          margin: 0 5px;
+          padding: 4px 10px;
+          margin: 0 5px 0 0;
           &::before {
             content: '';
             display: block;
@@ -43,6 +60,10 @@
             background: url(../../public/assets/images/menuIcons/dashboard.svg);
             background-size: cover;
           }
+        }
+        span.ant-breadcrumb-separator {
+          display: block;
+          margin-bottom: -4px;
         }
       }
     }
@@ -97,28 +118,11 @@
     .ant-breadcrumb {
       display: flex;
       align-items: center;
-      height: 30px;
+      height: 35px;
       span {
         display: flex;
         align-items: center;
       }
-    }
-
-    .ant-breadcrumb-link {
-      display: inline-flex;
-      // align-items: center;
-    }
-
-    .ant-breadcrumb a {
-      color: #161c29;
-      font-size: 13px;
-      opacity: 0.6;
-    }
-
-    .ant-breadcrumb-separator {
-      margin: 0px 20px;
-      color: rgba(0, 0, 0, 0.45);
-      font-size: large;
     }
 
     .ant-page-header-heading {
@@ -245,7 +249,7 @@
     .ant-breadcrumb > span:last-child a {
       display: flex;
       align-items: center;
-      height: 30px;
+      height: 37px;
       padding: 0 15px;
       color: #161c29;
       font-weight: 500;
@@ -263,7 +267,7 @@
     .ant-breadcrumb > span:last-child a {
       display: flex;
       align-items: center;
-      height: 30px;
+      height: 37px;
       margin-left: -24px;
       padding: 0 15px;
       color: #161c29;

@@ -112,7 +112,7 @@ class EmployeeOffBoading extends Component {
               <TabPane tab="Terminate work relationship" key="1">
                 <div className={styles.paddingHR}>
                   <div className={styles.root}>
-                    <Row className={styles.content} gutter={[40, 0]}>
+                    <Row className={styles.content} gutter={[20, 20]}>
                       <Col span={18}>
                         <ViewLeft
                           data={listOffboarding}

@@ -1,7 +1,7 @@
-import { SettingOutlined, UserOutlined, UpOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin, Button } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Menu, Spin } from 'antd';
 import React from 'react';
-import { history, connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -54,7 +54,7 @@ class AvatarDropdown extends React.Component {
   };
 
   render() {
-    const { currentUser = {}, menu = false } = this.props;
+    const { currentUser = {} } = this.props;
     const {
       name = '',
       generalInfo: { avatar = '', employeeId = '' } = {},
@@ -63,38 +63,17 @@ class AvatarDropdown extends React.Component {
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
-        {menu && (
-          <Menu.Item key="center">
-            <UserOutlined />
-            个人中心
-          </Menu.Item>
-        )}
-        {menu && (
-          <Menu.Item key="settings">
-            <SettingOutlined />
-            个人设置
-          </Menu.Item>
-        )}
-        {menu && <Menu.Divider />}
-
         <div className={styles.viewProfile}>
           <div className={styles.viewProfileAvatar}>
-            {avatar ? (
-              <Avatar size="medium" className={styles.avatar} src={avatar} alt="avatar" />
-            ) : (
-              <Avatar
-                size="medium"
-                className={styles.avatar}
-                icon={<UserOutlined />}
-                alt="default-avatar"
-              />
-            )}
+            <Avatar size={50} className={styles.avatar} icon={<UserOutlined />} src={avatar} />
           </div>
           <div className={styles.viewProfileInfo}>
             <p>{name}</p>
-            <p>
-              {title.name} - {employeeId}
-            </p>
+            {employeeId && (
+              <p>
+                {title.name} - {employeeId}
+              </p>
+            )}
           </div>
         </div>
         <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}>
@@ -114,19 +93,16 @@ class AvatarDropdown extends React.Component {
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
-          <Menu.Item className={styles.sessionLogin}>
+          {/* <Menu.Item className={styles.sessionLogin}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu.ItemGroup>
       </Menu>
     );
     return currentUser && name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size={44} className={styles.avatar} src={avatar} alt="avatar" />
-          {/* <span className={`${styles.name} anticon`} style={{ color: '#707177' }}>
-            {name}
-          </span> */}
+          <Avatar size={44} icon={<UserOutlined />} className={styles.avatar} src={avatar} />
         </span>
       </HeaderDropdown>
     ) : (
