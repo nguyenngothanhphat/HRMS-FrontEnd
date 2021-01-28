@@ -228,7 +228,7 @@ class UploadListEmployee extends React.Component {
           disabled={employees.length === 0}
           loading={loading}
         >
-          Finish Setup
+          Import Employees
         </Button>
       </div>
     );

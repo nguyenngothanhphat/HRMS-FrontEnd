@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row, Button } from 'antd';
+import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
@@ -72,7 +72,6 @@ class CommonLayout extends PureComponent {
 
   render() {
     const {
-      currentUser,
       listMenu = [],
       employeeLocation = '',
       permissions = {},
@@ -97,7 +96,7 @@ class CommonLayout extends PureComponent {
                   selectedItemId={selectedItemId}
                 />
               ))}
-              {isCompanyProfile && (
+              {/* {isCompanyProfile && (
                 <Button
                   className={s.viewLeft__menu__btn}
                   disabled={currentUser?.firstCreated}
@@ -109,7 +108,7 @@ class CommonLayout extends PureComponent {
                 >
                   Go to dashboard
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
         </Affix>

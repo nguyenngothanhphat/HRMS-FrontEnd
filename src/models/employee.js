@@ -96,7 +96,7 @@ const employee = {
           name = '',
         } = {},
       },
-      { call, put, select },
+      { call, put },
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
@@ -108,13 +108,7 @@ const employee = {
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
-        const { currentUser = {} } = yield select((state) => state.user);
-        const { firstCreated } = currentUser;
-        if (listEmployeeActive.length > 1 && firstCreated) {
-          yield put({
-            type: 'adminSetting/setupComplete',
-          });
-        }
+
         yield put({ type: 'listEmployeeActive', payload: { listEmployeeActive } });
       } catch (errors) {
         dialog(errors);

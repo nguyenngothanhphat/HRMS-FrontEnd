@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -167,7 +168,7 @@ class ViewInformation extends Component {
       compensationData,
       loading,
       originGeneralData: { bioInfo = '' } = {},
-      employeeLocation = '',
+      // employeeLocation = '',
       permissions = {},
       profileOwner = false,
       manager = {},
@@ -204,11 +205,7 @@ class ViewInformation extends Component {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img
-          src={avatar || 'https://iupac.org/wp-content/uploads/2018/05/default-avatar.png'}
-          alt="img-avt"
-          className={s.infoEmployee__imgAvt}
-        />
+        <img src={avatar || avtDefault} alt="img-avt" className={s.infoEmployee__imgAvt} />
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
           <img
             src="/assets/images/iconUploadImage.svg"

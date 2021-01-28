@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Button } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import UserManagement from './components/UserManagement';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
@@ -73,7 +74,7 @@ class CompanyProfile extends Component {
   }
 
   render() {
-    const { listDepartment = [] } = this.props;
+    const { currentUser } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup' },
       { name: 'Account Setup', path: '/account-setup/company-profile' },
@@ -83,21 +84,32 @@ class CompanyProfile extends Component {
       <>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
-          <Tabs defaultActiveKey="1">
+          <Tabs
+            defaultActiveKey="1"
+            tabBarExtraContent={
+              <Button
+                className={styles.btn}
+                disabled={currentUser?.firstCreated}
+                onClick={() =>
+                  history.push({
+                    pathname: '/',
+                  })
+                }
+              >
+                Finish Setup
+              </Button>
+            }
+          >
             <TabPane tab="Profile Information" key="1">
-              <Layout
-                listMenu={listMenu}
-                isCompanyProfile
-                disableSetupDirectory={listDepartment.length === 0}
-              />
+              <Layout listMenu={listMenu} isCompanyProfile />
             </TabPane>
-            <TabPane tab="User Management" key="2" disabled={listDepartment.length === 0}>
+            <TabPane tab="User Management" key="2" disabled={currentUser?.firstCreated}>
               <UserManagement />
             </TabPane>
             <TabPane tab="Company Documents" key="3">
               <CompanyDocuments />
             </TabPane>
-            <TabPane tab="Import Employees" key="4" disabled={listDepartment.length === 0}>
+            <TabPane tab="Import Employees" key="4" disabled={currentUser?.firstCreated}>
               <ImportEmployees />
             </TabPane>
           </Tabs>

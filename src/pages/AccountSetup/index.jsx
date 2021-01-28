@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import avtDefault from '@/assets/avtDefault.jpg';
 import { Avatar } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
@@ -19,10 +20,7 @@ import s from './index.less';
 class AccountSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // position: undefined,
-      // location: undefined,
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -62,7 +60,7 @@ class AccountSetup extends Component {
         <div style={{ width: '629px' }}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
-              <Avatar size={56} icon={<UserOutlined />} src={avatar} />
+              <Avatar size={56} icon={<UserOutlined />} src={avatar || avtDefault} />
             </div>
             <div className={s.blockUserLogin__info}>
               <p>
