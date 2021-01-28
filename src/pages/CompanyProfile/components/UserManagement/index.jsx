@@ -23,12 +23,6 @@ class UserManagement extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
-    // dispatch({
-    //   type: 'employee/fetchListEmployeeActive',
-    //   payload: {
-    //     company: id,
-    //   },
-    // });
     dispatch({
       type: 'employee/fetchListAdministrator',
       payload: {
@@ -62,6 +56,7 @@ class UserManagement extends PureComponent {
     const payload = {
       ...values,
       joinDate: moment(values.joinDate).format('YYYY-MM-DD'),
+      roles: [...values.roles, 'EMPLOYEE'],
       id: userSelected?._id,
     };
     if (userSelected?._id) {
