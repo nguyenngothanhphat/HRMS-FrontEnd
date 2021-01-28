@@ -7,34 +7,30 @@ import styles from './index.less';
 
 @connect(
   ({
-    upload: { passPortURL = '', visa0URL = '', visa1URL = '' } = {},
+    upload: { passPortURL = '' } = {},
     employeeProfile: {
-      editGeneral: { openPassportandVisa = false },
-      originData: { passportData: passportDataOrigin = [], visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = [], visaData = [] } = {},
+      editGeneral: { openPassport = false },
+      originData: { passportData: passportDataOrigin = [] } = {},
+      tempData: { passportData = [] } = {},
     } = {},
   }) => ({
-    openPassportandVisa,
+    openPassport,
     passportDataOrigin,
     passportData,
-    visaDataOrigin,
-    visaData,
     passPortURL,
-    visa0URL,
-    visa1URL,
   }),
 )
-class PassportVisaInformation extends PureComponent {
+class PassportDetails extends PureComponent {
   handleEdit = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openPassportandVisa: true },
+      payload: { openPassport: true },
     });
   };
 
   handleCancel = () => {
-    const { passportDataOrigin, passportData, visaDataOrigin, dispatch } = this.props;
+    const { passportDataOrigin, passportData, dispatch } = this.props;
     const {
       urlFile = '',
       passportNumber = '',
@@ -49,18 +45,11 @@ class PassportVisaInformation extends PureComponent {
       passportIssuedOn,
       passportValidTill,
     };
-    const payloadVisa = [...visaDataOrigin];
     const payloadPassPort = { ...passportData, ...reverseFields };
-    const isModified =
-      JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin) ||
-      JSON.stringify(payloadVisa) !== JSON.stringify(visaDataOrigin);
+    const isModified = JSON.stringify(payloadPassPort) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { passportData: passportDataOrigin },
-    });
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { visaData: visaDataOrigin },
     });
     dispatch({
       type: 'employeeProfile/save',
@@ -68,23 +57,23 @@ class PassportVisaInformation extends PureComponent {
     });
     dispatch({
       type: 'employeeProfile/saveOpenEdit',
-      payload: { openPassportandVisa: false },
+      payload: { openPassport: false },
     });
   };
 
   render() {
-    const { openPassportandVisa } = this.props;
-    const renderComponent = openPassportandVisa ? (
+    const { openPassport } = this.props;
+    const renderComponent = openPassport ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
       <View />
       // <View dataAPI={passportData} />
     );
     return (
-      <div className={styles.PassportVisaInformation}>
+      <div className={styles.PassportDetails}>
         <div className={styles.spaceTitle}>
-          <p className={styles.EmployeeTitle}>Passport and Visa Information</p>
-          {openPassportandVisa ? (
+          <p className={styles.EmployeeTitle}>Passport Details</p>
+          {openPassport ? (
             ''
           ) : (
             <div className={styles.flexEdit} onClick={this.handleEdit}>
@@ -99,4 +88,4 @@ class PassportVisaInformation extends PureComponent {
   }
 }
 
-export default PassportVisaInformation;
+export default PassportDetails;
