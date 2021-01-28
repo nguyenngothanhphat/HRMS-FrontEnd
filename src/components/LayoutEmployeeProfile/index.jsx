@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
-import { Affix, Col, Row } from 'antd';
+import { Affix, Col, Row, Button } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
@@ -95,20 +95,19 @@ class CommonLayout extends PureComponent {
                   selectedItemId={selectedItemId}
                 />
               ))}
-              {/* {isCompanyProfile && (
+              {isCompanyProfile && (
                 <Button
                   className={s.viewLeft__menu__btn}
-                  disabled={disableSetupDirectory}
+                  // disabled={disableSetupDirectory}
                   onClick={() =>
                     history.push({
-                      pathname: '/account-setup/company-profile',
-                      state: { activeTag: '2' },
+                      pathname: '/',
                     })
                   }
                 >
-                  Setup Employee Directory
+                  Go to dashboard
                 </Button>
-              )} */}
+              )}
             </div>
           </div>
         </Affix>

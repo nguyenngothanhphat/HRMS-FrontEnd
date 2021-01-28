@@ -129,6 +129,7 @@ class AddEmployeeForm extends Component {
             label={formatMessage({ id: 'addEmployee.personalEmail' })}
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
+            disabled={userSelected._id}
           >
             <Input />
           </Form.Item>
@@ -136,6 +137,7 @@ class AddEmployeeForm extends Component {
             label={formatMessage({ id: 'addEmployee.workEmail' })}
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
+            disabled={userSelected._id}
           >
             <Input />
           </Form.Item>
@@ -149,7 +151,6 @@ class AddEmployeeForm extends Component {
               allowClear
               showArrow
               style={{ width: '100%' }}
-              getPopupContainer={() => document.getElementById('addEmployee__form')}
               placeholder="Select Roles"
               disabled={userSelected._id}
             >
