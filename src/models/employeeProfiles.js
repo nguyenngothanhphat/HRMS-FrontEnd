@@ -1100,6 +1100,7 @@ const employeeProfile = {
         saveDocuments: result,
       };
     },
+
     saveTemp(state, action) {
       const { tempData } = state;
       return {

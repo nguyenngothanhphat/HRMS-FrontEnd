@@ -59,20 +59,22 @@ class Edit extends Component {
     };
   }
 
-  validateDate = (getPassportData) => {
+  validateDate = (getPassportData, index) => {
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
       passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
     const DatePassportIssueOn =
-      getPassportData.passportIssuedOn && moment(getPassportData.passportIssuedOn);
+      getPassportData[index].passportIssuedOn && moment(getPassportData[index].passportIssuedOn);
     const formatDatePassportValidTill =
       passportDataOrigin.passportValidTill && moment(passportDataOrigin.passportValidTill);
     const DatePassportValidTill =
-      getPassportData.passportValidTill && moment(getPassportData.passportValidTill);
+      getPassportData[index].passportValidTill && moment(getPassportData[index].passportValidTill);
     const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
     const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
-    if (IssuedOn > ValidTill) {
+
+    const issueAfter3Year = moment(IssuedOn).add(3, 'years');
+    if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
       this.setState({ isDate: false });
     } else {
       this.setState({ isDate: true });
@@ -87,7 +89,7 @@ class Edit extends Component {
     const newList = [...passportData];
 
     newList.splice(index, 1, newItem);
-    this.validateDate(newList);
+    this.validateDate(newList, index);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -325,6 +327,7 @@ class Edit extends Component {
     const { passportData = [], dispatch } = this.props;
     const newPassportData = [...passportData];
     newPassportData.splice(index, 1);
+    // console.log('newPassportData', newPassportData);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { passportData: newPassportData },
