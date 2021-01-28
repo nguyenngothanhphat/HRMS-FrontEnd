@@ -68,22 +68,6 @@ class FormWorkLocation extends Component {
               : itemLocation?.name || `Work Location ${name}`}
           </p>
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address</p>
-            <Form.Item
-              isListField={isListField}
-              name={this.getName('address')}
-              label={false}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter Address!',
-                },
-              ]}
-            >
-              <Input placeholder="Address" />
-            </Form.Item>
-          </div>
-          <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Name</p>
             <Form.Item
               isListField={isListField}
@@ -97,6 +81,22 @@ class FormWorkLocation extends Component {
               ]}
             >
               <Input placeholder="Name Location" />
+            </Form.Item>
+          </div>
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Address</p>
+            <Form.Item
+              isListField={isListField}
+              name={this.getName('address')}
+              label={false}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter Address!',
+                },
+              ]}
+            >
+              <Input placeholder="Address" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>

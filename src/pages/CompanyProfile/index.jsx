@@ -9,6 +9,7 @@ import WorkLocations from './components/WorkLocations';
 import Departments from './components/Departments';
 import CompanySignatory from './components/CompanySignatory';
 import CompanyDocuments from './components/CompanyDocuments';
+import ImportEmployees from './components/ImportEmployees';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -72,21 +73,17 @@ class CompanyProfile extends Component {
   }
 
   render() {
-    const {
-      listDepartment = [],
-      history: { location: { state: { activeTag = '1' } = {} } = {} } = {},
-    } = this.props;
+    const { listDepartment = [] } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup' },
-      { name: 'Company Profile', path: '/account-setup/get-started/company-profile' },
+      { name: 'Account Setup', path: '/account-setup/company-profile' },
     ];
 
     return (
       <>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
-          <div className={styles.titlePage}>Company Profile</div>
-          <Tabs defaultActiveKey={activeTag}>
+          <Tabs defaultActiveKey="1">
             <TabPane tab="Profile Information" key="1">
               <Layout
                 listMenu={listMenu}
@@ -99,6 +96,9 @@ class CompanyProfile extends Component {
             </TabPane>
             <TabPane tab="Company Documents" key="3">
               <CompanyDocuments />
+            </TabPane>
+            <TabPane tab="Import Employees" key="4" disabled={listDepartment.length === 0}>
+              <ImportEmployees />
             </TabPane>
           </Tabs>
         </div>

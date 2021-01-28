@@ -7,6 +7,7 @@ import styles from './index.less';
 @connect(({ loading, signup = {} }) => ({
   loading: loading.effects['signup/signupAdmin'],
   loadingActive: loading.effects['signup/loadingActive'],
+  loadingLogin: loading.effects['login/login'],
   signup,
 }))
 class Screen3 extends Component {
@@ -51,8 +52,8 @@ class Screen3 extends Component {
   };
 
   render() {
-    const { loading, loadingActive } = this.props;
-    const loadingSignUp = loading || loadingActive;
+    const { loading, loadingActive, loadingLogin } = this.props;
+    const loadingSignUp = loading || loadingActive || loadingLogin;
     const arrText = [
       'Use a minimum of 8 characters.',
       'Avoid common words and repetition (eg. password, 12121212)',

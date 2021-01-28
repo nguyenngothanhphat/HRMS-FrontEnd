@@ -73,7 +73,8 @@ class AddEmployeeForm extends Component {
         number: '${label} is not a validate number!',
       },
     };
-
+    const defineRoleAdmin = ['ADMIN-CSA', 'HR-GLOBAL', 'HR-MANAGER'];
+    const listRoleAdmin = listRoleByCompany.filter((role) => defineRoleAdmin.includes(role?._id));
     return (
       <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
@@ -130,14 +131,14 @@ class AddEmployeeForm extends Component {
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
           >
-            <Input />
+            <Input disabled={userSelected._id} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.workEmail' })}
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
           >
-            <Input />
+            <Input disabled={userSelected._id} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.roles' })}
@@ -149,12 +150,11 @@ class AddEmployeeForm extends Component {
               allowClear
               showArrow
               style={{ width: '100%' }}
-              getPopupContainer={() => document.getElementById('addEmployee__form')}
               placeholder="Select Roles"
               disabled={userSelected._id}
             >
-              {listRoleByCompany.map((item) => (
-                <Option key={item._id}>{item.name}</Option>
+              {listRoleAdmin.map((item) => (
+                <Option key={item?._id}>{item?._id}</Option>
               ))}
             </Select>
           </Form.Item>
