@@ -1,16 +1,18 @@
-.root {
-  background-color: #fff;
-
-  .boxRight {
-    padding: 10px 13px 0px 30px;
-  }
+.ViewRight {
+  border: 1px solid #ebeff2;
+  border-radius: 5px;
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  font-size: 16px;
 
   .text_Title {
     margin-top: 17px;
     line-height: 18.75px;
     font-size: 16px;
     font-weight: 700;
-    color: #464646;
+    // color: #464646;
   }
 
   .text_Schedule {
@@ -20,21 +22,26 @@
     font-weight: 500;
     color: #2c6df9;
     text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 
   .text_Body {
     margin-top: 12px;
-    line-height: 17px;
     font-size: 13px;
   }
 
   .twoRight {
-    margin-top: 120px;
-
+    margin: 30px 0 10px 0;
     .text_twoRight {
       margin-top: 28px;
       font-size: 16px;
       font-weight: 700;
+    }
+    .description {
+      font-size: 13px;
     }
   }
 }

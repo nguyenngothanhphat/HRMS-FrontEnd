@@ -63,7 +63,7 @@ class ViewLeft extends Component {
 
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     return (
-      <div className={styles.Contanner}>
+      <div className={styles.Container}>
         <div className={styles.title_Box}>
           <img src={icon} alt="iconCheck" className={styles.icon} />
           <span className={styles.title_Text}>
@@ -81,7 +81,7 @@ class ViewLeft extends Component {
               But, if you have made your mind then lets get to it.
             </div>
             <Button className={styles.submitButton}>
-              <Link to="/offboarding/resignation-request">Set a resgination request </Link>
+              <Link to="/offboarding/resignation-request">Set a resignation request</Link>
             </Button>
           </>
         )}
