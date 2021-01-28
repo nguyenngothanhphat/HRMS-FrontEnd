@@ -8,8 +8,9 @@ import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
-@connect(({ employeeProfile: { isModified } = {} }) => ({
+@connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
   isModified,
+  currentUser,
 }))
 class CommonLayout extends PureComponent {
   constructor(props) {
@@ -71,6 +72,7 @@ class CommonLayout extends PureComponent {
 
   render() {
     const {
+      currentUser,
       listMenu = [],
       employeeLocation = '',
       permissions = {},
@@ -98,7 +100,7 @@ class CommonLayout extends PureComponent {
               {isCompanyProfile && (
                 <Button
                   className={s.viewLeft__menu__btn}
-                  // disabled={disableSetupDirectory}
+                  disabled={currentUser?.firstCreated}
                   onClick={() =>
                     history.push({
                       pathname: '/',

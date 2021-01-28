@@ -1,22 +1,14 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
-import DownloadTemplate from '@/components/DownloadEmployeeTemplate';
-import UploadListEmployee from '@/components/UploadListEmployee';
-import AddEmployeeForm from './components/AddEmployeeForm';
-import TableListActive from './components/TableListActive';
+import AddAdminForm from './components/AddAdminForm';
+import TableAdministrator from './components/TableAdministrator';
 import s from './index.less';
 
 @connect(
-  ({
-    user: { currentUser = {} } = {},
-    employee: { listEmployeeActive = [], listAdministrator = [] } = {},
-    loading,
-  }) => ({
+  ({ user: { currentUser = {} } = {}, employee: { listAdministrator = [] } = {}, loading }) => ({
     currentUser,
-    listEmployeeActive,
     listAdministrator,
-    loading: loading.effects['employee/fetchListEmployeeActive'],
     loadingFetchListAdmin: loading.effects['employee/fetchListAdministrator'],
   }),
 )
@@ -31,12 +23,12 @@ class UserManagement extends PureComponent {
 
   componentDidMount() {
     const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: id,
-      },
-    });
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeActive',
+    //   payload: {
+    //     company: id,
+    //   },
+    // });
     dispatch({
       type: 'employee/fetchListAdministrator',
       payload: {
@@ -132,20 +124,8 @@ class UserManagement extends PureComponent {
 
   render() {
     const { visible, userSelected } = this.state;
-    const {
-      listEmployeeActive = [],
-      listAdministrator = [],
-      loading,
-      loadingFetchListAdmin,
-    } = this.props;
-    return listEmployeeActive.length === 1 ? (
-      <>
-        <div className={s.center}>
-          <DownloadTemplate />
-        </div>
-        <UploadListEmployee />
-      </>
-    ) : (
+    const { listAdministrator = [], loadingFetchListAdmin } = this.props;
+    return (
       <>
         <div className={s.root}>
           <div className={s.content}>
@@ -153,26 +133,18 @@ class UserManagement extends PureComponent {
               <p className={s.content__viewTop__title}>List of company administrators</p>
               <div className={s.content__viewTop__add} onClick={this.handleOpenModalAddEmployee}>
                 <img src="/assets/images/addMemberIcon.svg" alt="add" />
-                <span>Add employee</span>
+                <span>Add administrator</span>
               </div>
             </div>
-            <TableListActive
+            <TableAdministrator
               loading={loadingFetchListAdmin}
               data={listAdministrator}
               handleEdit={this.handleEdit}
             />
-            <div className={s.content__viewTop} style={{ marginTop: '50px' }}>
-              <p className={s.content__viewTop__title}>List of company employees</p>
-            </div>
-            <TableListActive
-              loading={loading}
-              data={listEmployeeActive}
-              handleEdit={this.handleEdit}
-            />
           </div>
         </div>
-        <AddEmployeeForm
-          titleModal={userSelected?._id ? 'Edit' : 'Add Employee'}
+        <AddAdminForm
+          titleModal={userSelected?._id ? 'Edit administrators' : 'Add administrators'}
           userSelected={userSelected}
           visible={visible}
           handleCancel={this.handleCancel}
