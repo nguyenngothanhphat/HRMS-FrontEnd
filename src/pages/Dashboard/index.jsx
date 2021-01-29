@@ -9,7 +9,7 @@ import TabManageTeamWork from './components/TabManageTeamWork';
 // import TimeSheet from './components/TimeSheet';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
-
+import SwitchLocation from './components/SwitchLocation';
 import styles from './index.less';
 
 const listLinkFQAs = [
@@ -53,24 +53,33 @@ const listQuickLinks = [
 @connect(
   ({
     loading,
-    user: { currentUser = {} } = {},
+    user: { currentUser = {}, currentUser: { roles = [] } = {} } = {},
     employee: { listEmployeeMyTeam = [] } = {},
     offboarding: { listProjectByEmployee = [] } = {},
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
     currentUser,
+    roles,
     listEmployeeMyTeam,
     listProjectByEmployee,
   }),
 )
 class Dashboard extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isAdminCSA: false,
+    };
+  }
+
   componentDidMount() {
     const {
       dispatch,
       currentUser: {
         location: { _id: locationId } = {},
         employee: { _id: employee = '' } = {},
+        roles = [],
       } = {},
     } = this.props;
     dispatch({
@@ -84,6 +93,15 @@ class Dashboard extends PureComponent {
       payload: {
         employee,
       },
+    });
+
+    roles.forEach((role) => {
+      const { _id = '' } = role;
+      if (_id === 'ADMIN-CSA') {
+        this.setState({
+          isAdminCSA: true,
+        });
+      }
     });
   }
 
@@ -105,6 +123,7 @@ class Dashboard extends PureComponent {
       listProjectByEmployee = [],
       fetchListProject,
     } = this.props;
+    const { isAdminCSA } = this.state;
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -117,6 +136,7 @@ class Dashboard extends PureComponent {
             </Col>
             <Col span={16}>
               <Carousel />
+              {isAdminCSA && <SwitchLocation />}
               <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={24}>
