@@ -1,7 +1,7 @@
 import { Button, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import Breadcrumb from '@/components/Breadcrumb';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import ItemSetup from './components/ItemSetup';
 import s from './index.less';
 
@@ -63,7 +63,7 @@ class GetStarted extends PureComponent {
             ))}
           </div>
           <div className={s.viewBtn}>
-            <Button disabled className={s.btnGoToDashboard}>
+            <Button className={s.btnGoToDashboard} onClick={() => history.push('/select-location')}>
               Go to dashboard
             </Button>
           </div>
