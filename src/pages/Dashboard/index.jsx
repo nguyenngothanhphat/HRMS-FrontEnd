@@ -12,14 +12,14 @@ import Carousel from './components/Carousel';
 
 import styles from './index.less';
 
-const listLinkFQAs = [
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-];
+// const listLinkFQAs = [
+//   { name: 'I cannot access an app?', href: '/faqpage' },
+//   { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
+//   { name: 'I cannot access an app?', href: '/faqpage' },
+//   { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
+//   { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
+//   { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
+// ];
 
 const listQuickLinks = [
   {
@@ -56,12 +56,14 @@ const listQuickLinks = [
     user: { currentUser = {} } = {},
     employee: { listEmployeeMyTeam = [] } = {},
     offboarding: { listProjectByEmployee = [] } = {},
+    frequentlyAskedQuestions: { getListByCompany = {} } = {},
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
     currentUser,
     listEmployeeMyTeam,
     listProjectByEmployee,
+    getListByCompany,
   }),
 )
 class Dashboard extends PureComponent {
@@ -71,6 +73,7 @@ class Dashboard extends PureComponent {
       currentUser: {
         location: { _id: locationId } = {},
         employee: { _id: employee = '' } = {},
+        company: { _id: idCompany = '' } = {},
       } = {},
     } = this.props;
     dispatch({
@@ -84,6 +87,10 @@ class Dashboard extends PureComponent {
       payload: {
         employee,
       },
+    });
+    dispatch({
+      type: 'frequentlyAskedQuestions/getListByCompany',
+      payload: { company: idCompany },
     });
   }
 
@@ -104,7 +111,16 @@ class Dashboard extends PureComponent {
       currentUser = {},
       listProjectByEmployee = [],
       fetchListProject,
+      getListByCompany = {},
     } = this.props;
+    const { faq = [] } = getListByCompany;
+
+    const listQuestion = [];
+    faq.forEach(({ questionAndAnswer, category }) => {
+      const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
+      listQuestion.push(...listQAs);
+      return listQuestion;
+    });
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -131,7 +147,7 @@ class Dashboard extends PureComponent {
                   <TimeSheet />
                 </Col> */}
                 <Col span={14}>
-                  <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
+                  <Links title="FAQs" showButton listData={listQuestion} type="link" />
                 </Col>
                 <Col span={10}>
                   <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'umi';
+import { Link, history } from 'umi';
 import ModalViewPDF from '@/components/ModalViewPDF';
 import s from './index.less';
 
@@ -29,14 +29,22 @@ export default class Links extends Component {
     });
   };
 
+  mapItemMenu = (value) => {
+    const { _id } = value;
+
+    history.push({
+      pathname: `/faqpage`,
+      query: {
+        id: _id,
+      },
+    });
+  };
+
   renderLink = (item) => {
-    const { name = '', href = '', isNew = false } = item;
+    const { question } = item;
     return (
-      <div style={{ display: 'flex' }}>
-        <Link to={href} className={s.link}>
-          {name}
-        </Link>
-        {isNew && <div className={s.new}>New</div>}
+      <div style={{ display: 'flex' }} key={item} onClick={() => this.mapItemMenu(item)}>
+        <div className={s.link}> {question}</div>
       </div>
     );
   };
