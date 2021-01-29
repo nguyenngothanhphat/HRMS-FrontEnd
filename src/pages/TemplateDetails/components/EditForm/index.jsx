@@ -99,8 +99,6 @@ class EditForm extends Component {
               //   });
               // });
             },
-            variable_prefix: '@',
-            variable_suffix: '',
 
             variable_mapper: this.mapValues,
             variable_style:
