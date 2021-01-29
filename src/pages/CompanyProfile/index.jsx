@@ -1,14 +1,16 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Button } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import UserManagement from './components/UserManagement';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
 import Departments from './components/Departments';
 import CompanySignatory from './components/CompanySignatory';
 import CompanyDocuments from './components/CompanyDocuments';
+import ImportEmployees from './components/ImportEmployees';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -72,33 +74,43 @@ class CompanyProfile extends Component {
   }
 
   render() {
-    const {
-      listDepartment = [],
-      history: { location: { state: { activeTag = '1' } = {} } = {} } = {},
-    } = this.props;
+    const { currentUser } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup' },
-      { name: 'Company Profile', path: '/account-setup/get-started/company-profile' },
+      { name: 'Account Setup', path: '/account-setup/company-profile' },
     ];
 
     return (
       <>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
-          <div className={styles.titlePage}>Company Profile</div>
-          <Tabs defaultActiveKey={activeTag}>
+          <Tabs
+            defaultActiveKey="1"
+            tabBarExtraContent={
+              <Button
+                className={styles.btn}
+                disabled={currentUser?.firstCreated}
+                onClick={() =>
+                  history.push({
+                    pathname: '/',
+                  })
+                }
+              >
+                Finish Setup
+              </Button>
+            }
+          >
             <TabPane tab="Profile Information" key="1">
-              <Layout
-                listMenu={listMenu}
-                isCompanyProfile
-                disableSetupDirectory={listDepartment.length === 0}
-              />
+              <Layout listMenu={listMenu} isCompanyProfile />
             </TabPane>
-            <TabPane tab="User Management" key="2" disabled={listDepartment.length === 0}>
+            <TabPane tab="User Management" key="2" disabled={currentUser?.firstCreated}>
               <UserManagement />
             </TabPane>
             <TabPane tab="Company Documents" key="3">
               <CompanyDocuments />
+            </TabPane>
+            <TabPane tab="Import Employees" key="4" disabled={currentUser?.firstCreated}>
+              <ImportEmployees />
             </TabPane>
           </Tabs>
         </div>

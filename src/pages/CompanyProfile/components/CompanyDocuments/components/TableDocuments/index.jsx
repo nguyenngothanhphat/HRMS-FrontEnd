@@ -1,5 +1,6 @@
 import { Table, Avatar } from 'antd';
 import React, { Component } from 'react';
+import avtDefault from '@/assets/avtDefault.jpg';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import Download from '@/components/DownloadFile';
@@ -75,7 +76,7 @@ class TableDocuments extends Component {
             <div className={s.viewOwner}>
               <Avatar
                 size={21}
-                src={avatar}
+                src={avatar || avtDefault}
                 icon={<UserOutlined />}
                 style={{ marginRight: '10px' }}
               />

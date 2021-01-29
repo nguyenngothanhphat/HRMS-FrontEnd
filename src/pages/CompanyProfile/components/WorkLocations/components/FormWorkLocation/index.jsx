@@ -1,3 +1,5 @@
+/* eslint-disable compat/compat */
+/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
@@ -63,10 +65,35 @@ class FormWorkLocation extends Component {
       <div className={s.content} style={name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
           <p className={classnames(s.title, s.mgb16)}>
-            {itemLocation?.isHeadQuarter
-              ? `Headquarter (${itemLocation?.name})`
-              : itemLocation?.name || `Work Location ${name}`}
+            {itemLocation?.name || 'New work location'}
           </p>
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Name</p>
+            <Form.Item
+              isListField={isListField}
+              name={this.getName('name')}
+              label={false}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter name!',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const checkUnique = getFieldValue('workLocations').filter(
+                      (item) => item?.name && item?.name === value,
+                    );
+                    if (checkUnique.length <= 1) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('This name has already been used!');
+                  },
+                }),
+              ]}
+            >
+              <Input placeholder="Name Location" />
+            </Form.Item>
+          </div>
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address</p>
             <Form.Item
@@ -81,22 +108,6 @@ class FormWorkLocation extends Component {
               ]}
             >
               <Input placeholder="Address" />
-            </Form.Item>
-          </div>
-          <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Name</p>
-            <Form.Item
-              isListField={isListField}
-              name={this.getName('name')}
-              label={false}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter name!',
-                },
-              ]}
-            >
-              <Input placeholder="Name Location" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>

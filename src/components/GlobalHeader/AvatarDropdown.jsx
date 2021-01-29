@@ -1,5 +1,6 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Menu, Spin } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
@@ -60,12 +61,17 @@ class AvatarDropdown extends React.Component {
       generalInfo: { avatar = '', employeeId = '' } = {},
       title = {},
     } = currentUser;
-    const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
+    const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <div className={styles.viewProfile}>
           <div className={styles.viewProfileAvatar}>
-            <Avatar size={50} className={styles.avatar} icon={<UserOutlined />} src={avatar} />
+            <Avatar
+              size={50}
+              className={styles.avatar}
+              icon={<UserOutlined />}
+              src={avatar || avtDefault}
+            />
           </div>
           <div className={styles.viewProfileInfo}>
             <p>{name}</p>
@@ -85,9 +91,9 @@ class AvatarDropdown extends React.Component {
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
         </Menu.Item>
-        <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
+        {/* <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Divider className={styles.secondDivider} />
         <Menu.ItemGroup className={styles.groupMenuItem}>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
@@ -102,7 +108,12 @@ class AvatarDropdown extends React.Component {
     return currentUser && name ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size={44} icon={<UserOutlined />} className={styles.avatar} src={avatar} />
+          <Avatar
+            size={44}
+            icon={<UserOutlined />}
+            className={styles.avatar}
+            src={avatar || avtDefault}
+          />
         </span>
       </HeaderDropdown>
     ) : (

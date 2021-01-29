@@ -40,23 +40,23 @@ class TableListActive extends Component {
 
     const columns = [
       {
-        title: <span className={s.title}>Full Name</span>,
+        title: <span className={s.title}>Admin name</span>,
         dataIndex: 'generalInfo',
         key: 'fullName',
         render: (generalInfo = {}) => {
           return <p className={s.text}>{generalInfo?.firstName}</p>;
         },
       },
+      // {
+      //   title: <span className={s.title}>Employee ID</span>,
+      //   dataIndex: 'employeeId',
+      //   key: 'employeeId',
+      //   render: (employeeId) => {
+      //     return <p className={s.text}>{employeeId}</p>;
+      //   },
+      // },
       {
-        title: <span className={s.title}>Employee ID</span>,
-        dataIndex: 'employeeId',
-        key: 'employeeId',
-        render: (employeeId) => {
-          return <p className={s.text}>{employeeId}</p>;
-        },
-      },
-      {
-        title: 'Role',
+        title: 'Admin role',
         dataIndex: 'user',
         key: 'role',
         render: (user = []) => {
@@ -87,22 +87,22 @@ class TableListActive extends Component {
           return <p className={s.text}>{department?.name}</p>;
         },
       },
-      {
-        title: <span className={s.title}>Location</span>,
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => {
-          return <p className={s.text}>{location?.name}</p>;
-        },
-      },
-      {
-        title: <span className={s.title}>Reporting Manager</span>,
-        dataIndex: 'manager',
-        key: 'manager',
-        render: (manager) => {
-          return <p className={s.text}>{manager?.generalInfo?.firstName}</p>;
-        },
-      },
+      // {
+      //   title: <span className={s.title}>Location</span>,
+      //   dataIndex: 'location',
+      //   key: 'location',
+      //   render: (location) => {
+      //     return <p className={s.text}>{location?.name}</p>;
+      //   },
+      // },
+      // {
+      //   title: <span className={s.title}>Reporting Manager</span>,
+      //   dataIndex: 'manager',
+      //   key: 'manager',
+      //   render: (manager) => {
+      //     return <p className={s.text}>{manager?.generalInfo?.firstName}</p>;
+      //   },
+      // },
       {
         title: <span className={s.title}>Action</span>,
         dataIndex: '_id',

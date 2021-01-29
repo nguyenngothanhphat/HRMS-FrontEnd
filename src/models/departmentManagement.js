@@ -25,11 +25,18 @@ const departmentManagement = {
         dialog(errors);
       }
     },
-    *fetchListDepartmentByCompany({ payload: { company = '' } = {} }, { call, put }) {
+    *fetchListDepartmentByCompany({ payload: { company = '' } = {} }, { call, put, select }) {
       try {
         const response = yield call(getListDepartmentByCompany, { company });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+        const { currentUser = {} } = yield select((state) => state.user);
+        const { firstCreated } = currentUser;
+        if (data.length > 0 && firstCreated) {
+          yield put({
+            type: 'adminSetting/setupComplete',
+          });
+        }
         yield put({ type: 'save', payload: { listByCompany: data } });
       } catch (errors) {
         dialog(errors);

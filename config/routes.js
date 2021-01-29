@@ -79,38 +79,23 @@ const routes = [
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        authority: ['employee'],
+        authority: ['admin-csa'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
-            authority: ['employee'],
+            authority: ['admin-csa'],
           },
-          // {
-          //   path: '/account-setup/get-started',
-          //   component: './GetStarted',
-          //   name: 'Getting Started',
-          //   authority: ['employee'],
-          // },
           {
             path: '/account-setup/company-profile',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['employee'],
+            authority: ['admin-csa'],
           },
-          // {
-          //   path: '/account-setup/get-started/setup-employee-directory',
-          //   component: './SetupEmployeeDirectory',
-          //   name: 'Setup Employee Directory',
-          //   authority: ['employee'],
-          // },
-          // {
-          //   path: '/account-setup/get-started/setup-timeoff',
-          //   component: './SetupTimeoff',
-          //   name: 'Setup Timeoff',
-          //   authority: ['hr-manager'],
-          // },
+          {
+            component: './404',
+          },
         ],
       },
       {
